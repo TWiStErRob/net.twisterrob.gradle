@@ -85,10 +85,17 @@ class AndroidEclipsePlugin extends BaseExposedPlugin {
 				// TODO referencedProjects for source code debug?
 				//addReferences()
 
-				def base = 'PROJECT_LOC/src/main'
-				linkedResource name: 'AndroidManifest.xml', type: '1', location: "${base}/AndroidManifest.xml"
-				linkedResource name: 'res', type: '2', location: "${base}/res"
-				linkedResource name: 'assets', type: '2', location: "${base}/assets"
+				def main = android.sourceSets.main
+				if (main.manifest.source != 'AndroidManifest.xml') {
+					linkedResource name: 'AndroidManifest.xml', type: '1',
+							location: "PROJECT_LOC/${main.manifest.source}"
+				}
+				if (!main.res.source.contains("res")) {
+					linkedResource name: 'res', type: '2', location: "PROJECT_LOC/${main.res.source.first()}"
+				}
+				if (!main.assets.source.contains("assets")) {
+					linkedResource name: 'assets', type: '2', location: "PROJECT_LOC/${main.assets.source.first()}"
+				}
 			}
 
 			eclipse.classpath.with {
