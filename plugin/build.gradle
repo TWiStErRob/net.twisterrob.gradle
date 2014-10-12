@@ -1,27 +1,28 @@
 group = rootProject.name
-version = '0.1'
+version = '0.3'
 if (!properties.containsKey('release')) { // -Prelease to build a release version
-    version += '-SNAPSHOT'
+	version += '-SNAPSHOT'
 }
+
 subprojects {
-    apply plugin: 'maven'
+	apply plugin: 'maven'
 
-    group = rootProject.group
-    version = rootProject.version
+	group = rootProject.group
+	version = rootProject.version
 
-    /*
-    uploadArchives.repositories {
-        mavenDeployer {
-            repository(url: mavenLocal().url)
-        }
-    }
-    */
+	/*
+	uploadArchives.repositories {
+		mavenDeployer {
+			repository(url: mavenLocal().url)
+		}
+	}
+	*/
 
-    uploadArchives.repositories.mavenDeployer {
-        configuration = configurations.create('deployerJars')
-        configuration.dependencies.add dependencies.create('org.apache.maven.wagon:wagon-ftp:2.2')
-        repository(url: 'ftp://localhost/maven') {
-            authentication(userName: 'maven', password: '')
-        }
-    }
+	uploadArchives.repositories.mavenDeployer {
+		configuration = configurations.create('deployerJars')
+		configuration.dependencies.add dependencies.create('org.apache.maven.wagon:wagon-ftp:2.2')
+		repository(url: 'ftp://localhost/maven') {
+			authentication(userName: 'maven', password: '')
+		}
+	}
 }
