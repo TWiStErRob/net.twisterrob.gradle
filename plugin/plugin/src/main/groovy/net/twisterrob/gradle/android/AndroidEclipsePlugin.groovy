@@ -5,7 +5,6 @@ import com.android.build.gradle.BasePlugin
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.AndroidSourceSet
 import net.twisterrob.gradle.common.BaseExposedPlugin
-import org.apache.commons.lang.StringUtils
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.XmlProvider
@@ -110,7 +109,7 @@ class AndroidEclipsePlugin extends BaseExposedPlugin {
 		return project.tasks[cleanName(worker.getName())];
 	}
 	protected static String cleanName(String taskName) {
-		return String.format("clean%s", StringUtils.capitalize(taskName));
+		return String.format("clean%s", taskName.capitalize());
 	}
 
 	private Task createExplodeAARTask(File aarFile, File targetFolder) {

@@ -8,14 +8,11 @@ import org.gradle.api.tasks.Exec
 public class AndroidInstallRunner extends Exec {
 	private ApplicationVariant variant;
 
-	public Run() {
-		group = BasePlugin.INSTALL_GROUP
-		onlyIf { variant }
-	}
-
 	public void setVariant(ApplicationVariant variant) {
 		this.variant = variant
+		group = BasePlugin.INSTALL_GROUP
 		description = "Installs the APK for ${variant.description}, and then runs the main launcher activity."
+		onlyIf { variant }
 	}
 
 	@Override

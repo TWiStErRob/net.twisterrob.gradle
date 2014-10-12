@@ -1,14 +1,12 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.*
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
-import org.gradle.api.Plugin
+import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.internal.DefaultDomainObjectSet
 
@@ -17,12 +15,14 @@ class AndroidBuildPluginExtension {
 	boolean addRunTasks = true
 }
 
-public class AndroidBuildPlugin implements Plugin<Project> {
+public class AndroidBuildPlugin extends BasePlugin {
 	private BaseExtension android
 
 	@Override
-	void apply(Project project) {
+	void apply(Project target) {
+		super.apply(target)
 		android = project.android
+
 		def twisterrob = android.extensions.create('twisterrob', AndroidBuildPluginExtension)
 
 		android.with {
@@ -47,32 +47,50 @@ public class AndroidBuildPlugin implements Plugin<Project> {
 			}
 		}
 
-		project.plugins.withType(AppPlugin) {
-			project.afterEvaluate {
-				def tasks = project.tasks
-				if (twisterrob.decorateBuildConfig) {
-					tasks.create('decorateBuildConfig', DecorateBuildConfigTask) {
-						description 'Add more information about build to BuildConfig.java'
-						tasks.preBuild.dependsOn delegate
-					}
+		project.afterEvaluate {
+			project.plugins.withType(AppPlugin) {
+				android.applicationVariants.all this.&fixVariantTaskGroups
 
-					android.applicationVariants.all { ApplicationVariant variant ->
-						addPackageName(variant)
-					}
+				if (twisterrob.decorateBuildConfig) {
+					decorateBuildConfig()
+					android.applicationVariants.all this.&addPackageName
 				}
 
 				if (twisterrob.addRunTasks) {
-					android.applicationVariants.all { ApkVariant variant ->
-						if (variant.install) {
-							variant.install.project.tasks.create(
-									name: "run${variant.name.capitalize()}",
-									type: AndroidInstallRunner,
-									dependsOn: variant.install
-							).variant = variant
-						}
-					}
+					android.applicationVariants.all this.&createRunTask
 				}
 			}
+
+			project.plugins.withType(LibraryPlugin) {
+				android.libraryVariants.all this.&fixVariantTaskGroups
+			}
+		}
+	}
+	void decorateBuildConfig() {
+		project.tasks.create('decorateBuildConfig', DecorateBuildConfigTask) {
+			description 'Add more information about build to BuildConfig.java'
+			project.tasks.preBuild.dependsOn delegate
+		}
+	}
+
+	static void createRunTask(ApkVariant variant) {
+		if (variant.install) {
+			variant.install.project.tasks.create(
+					name: "run${variant.name.capitalize()}",
+					type: AndroidInstallRunner,
+					dependsOn: variant.install
+			).variant = variant
+		}
+	}
+
+	static void fixVariantTaskGroups(BaseVariant variant) {
+		BaseVariantData variantData = variant.variantData
+		variantData.compileTask.group = "Build"
+		variantData.compileTask.description = "Compiles sources for ${variant.description}"
+		BaseVariantData testVariantData = variantData.testVariantData
+		if (testVariantData) {
+			testVariantData.compileTask.group = "Build"
+			testVariantData.compileTask.description = "Compiles test sources for ${variant.description}"
 		}
 	}
 
