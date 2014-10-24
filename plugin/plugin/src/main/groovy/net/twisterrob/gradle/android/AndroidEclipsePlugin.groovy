@@ -205,7 +205,7 @@ class AndroidEclipsePlugin extends BaseExposedPlugin {
 					projectPropertiesFile.append "android.library.reference.${++counter}=../${proj}\n"
 				}
 
-				println "Import to workspace: ${android.sdkDirectory}/extras/google/google_play_services/libproject/google-play-services_lib"
+				//println "Import to workspace: ${android.sdkDirectory}/extras/google/google_play_services/libproject/google-play-services_lib"
 			}
 		}
 	}

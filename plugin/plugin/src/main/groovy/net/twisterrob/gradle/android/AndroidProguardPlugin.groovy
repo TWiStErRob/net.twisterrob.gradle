@@ -17,31 +17,35 @@ class AndroidProguardPlugin extends BasePlugin {
 		super.apply(target)
 
 		BaseExtension android = project.android
-		File myProguardRules = new File(
-				"${project.buildDir}/${AndroidProject.FD_INTERMEDIATES}/proguard/twisterrob.pro")
+		File proguardBase = new File("${project.buildDir}/${AndroidProject.FD_INTERMEDIATES}/proguard")
+		File defaultModifiedAndroidRules = new File(proguardBase, "android-project.txt")
+		File myProguardRules = new File(proguardBase, "twisterrob.pro")
 		android.with {
 			DefaultBuildType release = buildTypes.release
 			release.setRunProguard(true)
-			release.proguardFiles.add android.getDefaultProguardFile('proguard-android.txt')
+			release.proguardFiles.add defaultModifiedAndroidRules
 			release.proguardFiles.add myProguardRules
 		}
 
-		project.task('extractProguardRules') {
+		def extractProguardRules = project.task('extractProguardRules') {
 			description = "Extract proguard file from 'net.twisterrob.android' plugin"
-			outputs.file(myProguardRules)
+			outputs.files defaultModifiedAndroidRules, myProguardRules
 			doLast {
-				new FileOutputStream(myProguardRules).withStream { outFile ->
-					AndroidProguardPlugin.classLoader.getResourceAsStream("twisterrob.pro").withStream { inFile ->
-						outFile << inFile
-					}
-				}
+				copy("android.pro", defaultModifiedAndroidRules)
+				copy("twisterrob.pro", myProguardRules)
 			}
 		}
+
+//		project.afterEvaluate {
+//			tasks.proguardRelease.doFirst {
+//				project.android.buildTypes.release.proguardFiles.each { println "Proguard configuration file: $it" }
+//			}
+//		}
 
 		project.afterEvaluate {
 			Utils.getVariants(android).all { BaseVariant variant ->
 				if (variant.obfuscation) {
-					variant.obfuscation.dependsOn variant.obfuscation.project.tasks.extractProguardRules
+					variant.obfuscation.dependsOn extractProguardRules
 				}
 			}
 
@@ -54,6 +58,13 @@ class AndroidProguardPlugin extends BasePlugin {
 					subProject.sourceSets[MAIN_SOURCE_SET_NAME]
 					          .java.srcDirs.each { File srcDir -> tryAdd(srcDir) }
 				}
+			}
+		}
+	}
+	private static void copy(String internalName, File targetFile) {
+		new FileOutputStream(targetFile).withStream { outFile ->
+			AndroidProguardPlugin.classLoader.getResourceAsStream(internalName).withStream { inFile ->
+				outFile << inFile
 			}
 		}
 	}

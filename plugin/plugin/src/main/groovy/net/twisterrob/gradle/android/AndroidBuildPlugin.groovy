@@ -31,19 +31,26 @@ public class AndroidBuildPlugin extends BasePlugin {
 				checkAllWarnings = true
 				disable 'Assert'
 			}
-			buildToolsVersion "20" // latest Android SDK Build-tools
-			compileSdkVersion "android-19" // Android 4.4.2/SDK Platform
+			buildToolsVersion "21.0.1" // latest Android SDK Build-tools
+			compileSdkVersion "android-21" // Android 5.0/SDK Platform
 
 			defaultConfig.with {
-				//minSdkVersion = new DefaultApiVersion(10) // 2.3.3 Gingerbread MR1
-				setTargetSdkVersion(new DefaultApiVersion(19)) // 4.4.2 KitKat
+				setMinSdkVersion(new DefaultApiVersion(10)) // 2.3.3 Gingerbread MR1
+				setTargetSdkVersion(new DefaultApiVersion(21)) // 5.0 Lollipop
 				buildConfigField "String", "EMAIL", "\"feedback@twisterrob.net\""
 			}
 
 			buildTypes['debug'].with {
+				// TODO make debug buildtypes configurable, use name of buildtype as suffix
 				setApplicationIdSuffix(".debug")
 				setVersionNameSuffix("-DEBUG")
 				buildConfigField "String", "EMAIL", "\"papp.robert.s@gmail.com\""
+				resValue "bool", "in_test", "true"
+				resValue "bool", "in_production", "false"
+			}
+			buildTypes['release'].with {
+				resValue "bool", "in_test", "false"
+				resValue "bool", "in_production", "true"
 			}
 		}
 
