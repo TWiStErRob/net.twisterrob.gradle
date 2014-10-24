@@ -31,12 +31,12 @@ public class AndroidBuildPlugin extends BasePlugin {
 				checkAllWarnings = true
 				disable 'Assert'
 			}
-			buildToolsVersion "21.0.1" // latest Android SDK Build-tools
+			buildToolsVersion "21.0.2" // latest Android SDK Build-tools
 			compileSdkVersion "android-21" // Android 5.0/SDK Platform
 
 			defaultConfig.with {
 				setMinSdkVersion(new DefaultApiVersion(10)) // 2.3.3 Gingerbread MR1
-				setTargetSdkVersion(new DefaultApiVersion(21)) // 5.0 Lollipop
+				setTargetSdkVersion(new DefaultApiVersion(19)) // 4.4 KitKat
 				buildConfigField "String", "EMAIL", "\"feedback@twisterrob.net\""
 			}
 
