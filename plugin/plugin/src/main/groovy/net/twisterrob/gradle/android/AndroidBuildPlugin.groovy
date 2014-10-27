@@ -43,7 +43,7 @@ public class AndroidBuildPlugin extends BasePlugin {
 			buildTypes['debug'].with {
 				// TODO make debug buildtypes configurable, use name of buildtype as suffix
 				setApplicationIdSuffix(".debug")
-				setVersionNameSuffix("-DEBUG")
+				setVersionNameSuffix("d")
 				buildConfigField "String", "EMAIL", "\"papp.robert.s@gmail.com\""
 				resValue "bool", "in_test", "true"
 				resValue "bool", "in_production", "false"
@@ -84,7 +84,7 @@ public class AndroidBuildPlugin extends BasePlugin {
 		if (variant.install) {
 			variant.install.project.tasks.create(
 					name: "run${variant.name.capitalize()}",
-					type: AndroidInstallRunner,
+					type: AndroidInstallRunnerTask,
 					dependsOn: variant.install
 			).variant = variant
 		}

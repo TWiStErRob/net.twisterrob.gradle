@@ -15,8 +15,9 @@ class AndroidAppPlugin extends BaseExposedPlugin {
 		project.apply plugin: VCSPlugin
 		project.apply plugin: JavaPlugin
 		project.apply plugin: AndroidBuildPlugin
-		project.apply plugin: AndroidVersionPlugin
 		project.apply plugin: AndroidSigningPlugin
 		project.apply plugin: AndroidProguardPlugin
+		project.apply plugin: AndroidVersionPlugin
+		project.apply plugin: AndroidReleasePlugin // after build, version
 	}
 }

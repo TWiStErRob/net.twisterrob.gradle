@@ -3,16 +3,15 @@ package net.twisterrob.gradle.android
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.*
 import com.android.build.gradle.internal.BadPluginException
-import com.android.build.gradle.internal.tasks.OutputFileTask
+import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.vcs.VCSPluginExtension
-import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 class AndroidVersionExtension {
 	/** Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648) */
 	boolean autoVersion = true
-	String nameFormat = '%1$d.%2$d.%3$d.%4$d'
-	File versionFile
+	String versionNameFormat = '%1$d.%2$d.%3$d#%4$d'
+	File versionFile = new File('version.properties')
 	int major = 0 // M 0..213
 	int minor = 0 // N 0..99
 	int minorMagnitude = 100
@@ -29,20 +28,25 @@ class AndroidVersionExtension {
 	}
 
 	boolean renameAPK = true
-	String renameFormat = '%1$s-v%2$s-%3$d.apk'
+	Closure<String> formatArtifactName = { Project project, ApkVariant variant, String baseName ->
+		baseName = baseName.replace("${project.archivesBaseName}-", "") // strip project name, leave only variant
+		"${variant.applicationId}@${variant.versionCode}-v${variant.versionName}+${baseName}"
+	}
 }
 
-public class AndroidVersionPlugin implements Plugin<Project> {
+public class AndroidVersionPlugin extends BasePlugin {
 	private AndroidVersionExtension version
 
 	@Override
-	void apply(Project project) {
+	void apply(Project target) {
+		super.apply(target)
+
 		if (!project.plugins.hasPlugin('com.android.application')) {
 			throw new BadPluginException("Can only use versioning with Android applications")
 		}
 		AppExtension android = project.android
 		version = android.defaultConfig.extensions.create('version', AndroidVersionExtension)
-		version.versionFile = project.file('version.properties')
+		version.versionFile = project.file(version.versionFile.name)
 
 		VCSPluginExtension vcs = project.VCS
 		if (vcs && vcs.current.available) {
@@ -70,23 +74,20 @@ public class AndroidVersionPlugin implements Plugin<Project> {
 	}
 
 	void appendVersionNameVersionCode(ApplicationVariant variant) {
-		for (BaseVariantOutput output : variant.outputs) {
-			if (output instanceof ApkVariantOutput) {
-				updateOutput(variant, output.zipAlign)
-				updateOutput(variant, output.packageApplication)
-			}
+		//noinspection GroovyAssignabilityCheck
+		for (ApkVariantOutput output : variant.outputs) {
+			updateOutput(variant, output.zipAlign)
+			updateOutput(variant, output.packageApplication)
 		}
 	}
 
-	private void updateOutput(ApkVariant variant, OutputFileTask task) {
+	private void updateOutput(ApplicationVariant variant, OutputFileTask task) {
 		if (task) {
-			task.outputFile = new File(task.outputFile.parent, fixName(variant, task.outputFile.name))
+			File original = task.outputFile
+			String name = original.name
+			def artifact = name.endsWith(".apk") ? name.substring(0, name.length() - ".apk".length()) : name
+			task.outputFile = new File(original.parent, version.formatArtifactName(project, variant, artifact) + ".apk")
 		}
-	}
-
-	private String fixName(ApkVariant variant, String name) {
-		def base = name.endsWith(".apk") ? name.substring(0, name.length() - ".apk".length()) : name
-		return String.format(version.renameFormat, base, variant.versionName, variant.versionCode)
 	}
 
 	void autoVersion(BaseVariant variant) {
@@ -96,7 +97,7 @@ public class AndroidVersionPlugin implements Plugin<Project> {
 
 	String calculateVersionName() {
 		readFromFileIfNeeded()
-		return String.format(version.nameFormat, version.major, version.minor, version.patch, version.build)
+		return String.format(version.versionNameFormat, version.major, version.minor, version.patch, version.build)
 	}
 
 	int calculateVersionCode() {
@@ -108,17 +109,17 @@ public class AndroidVersionPlugin implements Plugin<Project> {
 	private void readFromFileIfNeeded() {
 		if (version.versionFile) {
 			def versionProps = readVersion(version.versionFile)
-			if (versionProps['major']) {
-				version.major = versionProps['major'] as int
+			if (versionProps.getProperty('major')) {
+				version.major = versionProps.getProperty('major') as int
 			}
-			if (versionProps['minor']) {
-				version.minor = versionProps['minor'] as int
+			if (versionProps.getProperty('minor')) {
+				version.minor = versionProps.getProperty('minor') as int
 			}
-			if (versionProps['patch']) {
-				version.patch = versionProps['patch'] as int
+			if (versionProps.getProperty('patch')) {
+				version.patch = versionProps.getProperty('patch') as int
 			}
-			if (versionProps['build']) {
-				version.build = versionProps['build'] as int
+			if (versionProps.getProperty('build')) {
+				version.build = versionProps.getProperty('build') as int
 			}
 		}
 	}

@@ -5,7 +5,7 @@ import com.android.build.gradle.api.ApplicationVariant
 import groovy.util.slurpersupport.GPathResult
 import org.gradle.api.tasks.Exec
 
-public class AndroidInstallRunner extends Exec {
+public class AndroidInstallRunnerTask extends Exec {
 	private ApplicationVariant variant;
 
 	public void setVariant(ApplicationVariant variant) {
