@@ -1,10 +1,8 @@
 package net.twisterrob.gradle.java
 
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.LibraryPlugin
+import com.android.build.gradle.*
 import net.twisterrob.gradle.common.BaseExposedPlugin
-import org.gradle.api.JavaVersion
-import org.gradle.api.Project
+import org.gradle.api.*
 import org.gradle.api.tasks.compile.JavaCompile
 
 class JavaPlugin extends BaseExposedPlugin {

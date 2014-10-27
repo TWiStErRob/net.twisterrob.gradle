@@ -1,13 +1,10 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryPlugin
+import com.android.build.gradle.*
 import com.android.build.gradle.api.ApkVariant
 import com.android.builder.model.BuildType
 import net.twisterrob.gradle.common.BasePlugin
-import org.gradle.api.Project
-import org.gradle.api.Task
+import org.gradle.api.*
 import org.gradle.api.tasks.bundling.Zip
 
 public class AndroidReleasePlugin extends BasePlugin {

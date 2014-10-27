@@ -2,10 +2,11 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.*
-import com.android.build.gradle.internal.BadPluginException
+import com.android.build.gradle.internal.tasks.OutputFileTask
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.Project
+import org.gradle.api.plugins.PluginInstantiationException
 
 class AndroidVersionExtension {
 	/** Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648) */
@@ -42,7 +43,7 @@ public class AndroidVersionPlugin extends BasePlugin {
 		super.apply(target)
 
 		if (!project.plugins.hasPlugin('com.android.application')) {
-			throw new BadPluginException("Can only use versioning with Android applications")
+			throw new PluginInstantiationException("Can only use versioning with Android applications")
 		}
 		AppExtension android = project.android
 		version = android.defaultConfig.extensions.create('version', AndroidVersionExtension)

@@ -1,10 +1,7 @@
 package net.twisterrob.gradle
 
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.api.ApplicationVariant
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.*
+import com.android.build.gradle.api.*
 import org.gradle.api.DomainObjectSet
 
 class Utils {

@@ -3,8 +3,7 @@ package net.twisterrob.gradle.vcs
 import org.ajoberstar.grgit.Grgit
 import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.eclipse.jgit.revwalk.RevWalk
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+import org.gradle.api.*
 
 class GITPlugin implements Plugin<Project> {
 	void apply(Project project) {

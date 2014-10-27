@@ -1,19 +1,11 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.BasePlugin
-import com.android.build.gradle.LibraryPlugin
+import com.android.build.gradle.*
 import com.android.build.gradle.api.AndroidSourceSet
 import net.twisterrob.gradle.common.BaseExposedPlugin
-import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.XmlProvider
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.Dependency
-import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.Delete
-import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.api.*
+import org.gradle.api.artifacts.*
+import org.gradle.api.tasks.*
 import org.gradle.plugins.ide.api.XmlFileContentMerger
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
 import org.gradle.plugins.ide.eclipse.model.EclipseModel

@@ -1,9 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.gradle.*
-import com.android.build.gradle.api.ApkVariant
-import com.android.build.gradle.api.ApplicationVariant
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.api.*
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.common.BasePlugin

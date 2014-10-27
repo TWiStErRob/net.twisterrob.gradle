@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.vcs
 
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+import org.gradle.api.*
 import org.tmatesoft.svn.cli.SVN
 import org.tmatesoft.svn.core.SVNException
 import org.tmatesoft.svn.core.wc.*

@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.common
 
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+import org.gradle.api.*
 
 class BasePlugin implements Plugin<Project> {
 	protected Project project

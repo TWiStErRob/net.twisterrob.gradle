@@ -9,7 +9,7 @@ import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
 
-import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
+import static org.gradle.api.tasks.SourceSet.*
 
 class AndroidProguardPlugin extends BasePlugin {
 	@Override

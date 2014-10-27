@@ -2,8 +2,8 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.dsl.SigningConfigDsl
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+import org.gradle.api.*
+
 /**
  * Created by TWiStEr on 2014-10-02.
  */
