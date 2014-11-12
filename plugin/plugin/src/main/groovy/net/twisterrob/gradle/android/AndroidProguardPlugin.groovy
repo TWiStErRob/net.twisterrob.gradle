@@ -17,7 +17,7 @@ class AndroidProguardPlugin extends BasePlugin {
 		super.apply(target)
 
 		BaseExtension android = project.android
-		File proguardBase = new File("${project.buildDir}/${AndroidProject.FD_INTERMEDIATES}/proguard")
+		File proguardBase = new File("${project.buildDir}/${AndroidProject.FD_INTERMEDIATES}/proguard-rules")
 		File defaultModifiedAndroidRules = new File(proguardBase, "android-project.txt")
 		File myProguardRules = new File(proguardBase, "twisterrob.pro")
 		android.with {

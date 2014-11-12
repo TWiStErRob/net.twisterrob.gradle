@@ -1,6 +1,6 @@
 group = rootProject.name
-version = '0.3.2'
-if (!properties.containsKey('release')) { // -Prelease to build a release version
+version = '0.3.3'
+if (!project.hasProperty('release')) { // -Prelease to build a release version
 	version += '-SNAPSHOT'
 }
 
