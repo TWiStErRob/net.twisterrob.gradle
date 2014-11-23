@@ -1,12 +1,15 @@
 package net.twisterrob.gradle.vcs
 
+import net.twisterrob.gradle.common.BasePlugin
 import org.ajoberstar.grgit.Grgit
 import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.eclipse.jgit.revwalk.RevWalk
-import org.gradle.api.*
+import org.gradle.api.Project
 
-class GITPlugin implements Plugin<Project> {
-	void apply(Project project) {
+class GITPlugin extends BasePlugin {
+	void apply(Project target) {
+		super.apply(target)
+
 		def git = project.VCS.extensions.create("git", GITPluginExtension)
 		git.project = project // TODO better solution
 	}
@@ -18,6 +21,11 @@ class GITPluginExtension implements VCSExtension {
 	private Grgit open() {
 		return Grgit.open(project.rootDir)
 	}
+
+	boolean isAvailableQuick() {
+		return new File(project.rootDir, ".git").exists();
+	}
+
 	// 'git describe --always'.execute([], project.rootDir).waitFor() == 0
 	boolean isAvailable() {
 		try {

@@ -1,14 +1,18 @@
 package net.twisterrob.gradle.vcs
 
-import org.gradle.api.*
+import net.twisterrob.gradle.common.BasePlugin
+import org.gradle.api.Project
 import org.tmatesoft.svn.cli.SVN
 import org.tmatesoft.svn.core.SVNException
+import org.tmatesoft.svn.core.internal.wc.SVNFileUtil
 import org.tmatesoft.svn.core.wc.*
 
 import java.security.Permission
 
-class SVNPlugin implements Plugin<Project> {
-	void apply(Project project) {
+class SVNPlugin extends BasePlugin {
+	void apply(Project target) {
+		super.apply(target)
+
 		def svn = project.VCS.extensions.create("svn", SVNPluginExtension)
 		svn.project = project // TODO better solution
 	}
@@ -31,6 +35,10 @@ class SVNPluginExtension implements VCSExtension {
 	// Same as: new XmlSlurper().parseText(SVN.cli('info', '--xml')).entry.commit.@revision
 	int getRevisionNumber() {
 		return open().revision.number
+	}
+
+	boolean isAvailableQuick() {
+		return new File(project.rootDir, SVNFileUtil.getAdminDirectoryName()).exists();
 	}
 
 	// Same as 'svn info'.execute([], project.rootDir).waitFor() == 0

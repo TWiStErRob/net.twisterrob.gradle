@@ -1,9 +1,14 @@
 package net.twisterrob.gradle.vcs;
 
 class NOPPluginExtension implements VCSExtension {
-	boolean isAvailable() {
+	boolean isAvailableQuick() {
 		return false
 	}
+
+	boolean isAvailable() {
+		return isAvailableQuick()
+	}
+
 	String getRevision() {
 		return "no VCS"
 	}

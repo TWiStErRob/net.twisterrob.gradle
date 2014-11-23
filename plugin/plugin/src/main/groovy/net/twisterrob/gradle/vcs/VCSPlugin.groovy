@@ -4,19 +4,20 @@ import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.Project
 
 class VCSPluginExtension implements VCSExtension {
-	VCSExtension current
+	VCSExtension current //= new NOPPluginExtension();
 
-	@Override
+	boolean isAvailableQuick() {
+		return current.isAvailableQuick()
+	}
+
 	boolean isAvailable() {
 		return current.isAvailable()
 	}
 
-	@Override
 	String getRevision() {
 		return current.getRevision()
 	}
 
-	@Override
 	int getRevisionNumber() {
 		return current.getRevisionNumber()
 	}
@@ -24,7 +25,13 @@ class VCSPluginExtension implements VCSExtension {
 
 class VCSPlugin extends BaseExposedPlugin {
 	static VCSExtension whichVCS(container) {
-		if (container.svn.isAvailable()) {
+		if (container.current) {
+			return container.current
+		} else if (container.svn.isAvailableQuick()) {
+			return container.svn
+		} else if (container.git.isAvailableQuick()) {
+			return container.git
+		} else if (container.svn.isAvailable()) {
 			return container.svn
 		} else if (container.git.isAvailable()) {
 			return container.git
