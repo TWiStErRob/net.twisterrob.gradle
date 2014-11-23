@@ -22,7 +22,7 @@ class AndroidProguardPlugin extends BasePlugin {
 		File myProguardRules = new File(proguardBase, "twisterrob.pro")
 		android.with {
 			DefaultBuildType release = buildTypes.release
-			release.setRunProguard(true)
+			release.setMinifyEnabled(true)
 			release.proguardFiles.add defaultModifiedAndroidRules
 			release.proguardFiles.add myProguardRules
 		}
@@ -61,7 +61,9 @@ class AndroidProguardPlugin extends BasePlugin {
 			}
 		}
 	}
+
 	private static void copy(String internalName, File targetFile) {
+		targetFile.getParentFile().mkdirs();
 		new FileOutputStream(targetFile).withStream { outFile ->
 			AndroidProguardPlugin.classLoader.getResourceAsStream(internalName).withStream { inFile ->
 				outFile << inFile

@@ -4,7 +4,6 @@ import com.android.build.gradle.*
 import com.android.build.gradle.api.*
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
-import com.android.builder.internal.ClassFieldImpl
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.internal.DefaultDomainObjectSet
@@ -114,17 +113,8 @@ public class AndroidBuildPlugin extends BasePlugin {
 		}
 	}
 
-	// TODO variant.mergedFlavor.resValues.put(field.name, field)
-	// see https://code.google.com/p/android/issues/detail?id=79197
-	static void addPackageName(ApplicationVariant variant) {
-		def resValues = variant.variantData.generateResValuesTask.items
-		//resValues.add createClassField("resourceType", "name", "value")
-		resValues.add new ClassFieldImpl("string", "app_package", variant.applicationId, Collections.emptySet(),
-				"Package name for use e.g. in preferences to launch intent from the right package or for content providers")
-		variant.variantData.generateResValuesTask.items = resValues
-
-		def buildConfigs = variant.variantData.generateBuildConfigTask.items
-		//buildConfigs.add createClassField("JavaType", "name", "javaCode")
-		variant.variantData.generateBuildConfigTask.items = buildConfigs
+	static void addPackageName(BaseVariant variant) {
+		// Package name for use e.g. in preferences to launch intent from the right package or for content providers
+		variant.resValue "string", "app_package", variant.applicationId
 	}
 }

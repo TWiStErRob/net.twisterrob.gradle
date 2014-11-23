@@ -22,16 +22,21 @@ public class AndroidReleasePlugin extends BasePlugin {
 	}
 
 	private void createReleaseTasks(BuildType buildType) {
+		LOG.debug("Creating tasks for {}", buildType.name)
 		def allTask = project.tasks.create(name: 'release') {
 			group org.gradle.api.plugins.BasePlugin.BUILD_GROUP
 			description "Assembles and archives all ${buildType.name} builds"
 		}
 		def createReleaseTask = this.&createReleaseTask.curry(allTask)
 		project.plugins.withType(AppPlugin) {
-			android.applicationVariants.matching { it.buildType == buildType }.all createReleaseTask
+			def matching = android.applicationVariants.matching { it.buildType.name == buildType.name }
+			LOG.debug("Found android app, variants with {}: {}", buildType.name, matching)
+			matching.all createReleaseTask
 		}
 		project.plugins.withType(LibraryPlugin) {
-			android.libraryVariants.matching { it.buildType == buildType }.all createReleaseTask
+			def matching = android.libraryVariants.matching { it.buildType.name == buildType.name }
+			LOG.debug("Found android lib, variants with {}: {}", buildType.name, matching)
+			matching.all createReleaseTask
 		}
 	}
 
@@ -48,7 +53,7 @@ public class AndroidReleasePlugin extends BasePlugin {
 			variant.outputs.each { output ->
 				from(output.outputFile)
 			}
-			if (variant.buildType.runProguard) {
+			if (variant.buildType.minifyEnabled) {
 				from(variant.mappingFile.getParentFile()) {
 					include '*.txt'
 					rename '(.*)', 'proguard_$1'

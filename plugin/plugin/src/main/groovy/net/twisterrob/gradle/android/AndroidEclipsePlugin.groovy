@@ -10,6 +10,18 @@ import org.gradle.plugins.ide.api.XmlFileContentMerger
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
 import org.gradle.plugins.ide.eclipse.model.EclipseModel
 
+// @formatter:off
+/**
+ * <pre><code>
+ * allprojects {
+ *     apply plugin: 'idea'
+ *     project.plugins.withType(com.android.build.gradle.BasePlugin) {
+ *          project.apply plugin: 'net.twisterrob.android-eclipse'
+ *     }
+ * }
+ * </code><pre>
+ */
+// @formatter:on
 class AndroidEclipsePlugin extends BaseExposedPlugin {
 	private BaseExtension android
 	private EclipseModel eclipse
@@ -25,7 +37,8 @@ class AndroidEclipsePlugin extends BaseExposedPlugin {
 
 		project.plugins.withType(EclipsePlugin) { plugin = it }
 		if (plugin == null) {
-			return
+			throw new IllegalStateException(
+					"'eclipse' plugin has been applied, but no plugin with type EclipsePlugin found")
 		}
 
 		plugin.lifecycleTask.dependsOn plugin.cleanTask
@@ -68,11 +81,13 @@ class AndroidEclipsePlugin extends BaseExposedPlugin {
 
 		project.afterEvaluate {
 			def targetFolder = project.file("libs-aars/")
+			LOG.debug("Adding AAR explosion tasks (into {}) based on Android configuration", targetFolder)
 			project.configurations.compile.filter { it.name.endsWith 'aar' }.each { File aarFile ->
 				Task explodeAAR = createExplodeAARTask(aarFile, targetFolder)
 				addChildTask(eclipseExplodeAARs, explodeAAR)
 			}
 
+			LOG.debug("Creating Eclipse soft-links for AndroidManifest.xml, res and assets if needed")
 			eclipse.project.with {
 				// TODO referencedProjects for source code debug?
 				//addReferences()
