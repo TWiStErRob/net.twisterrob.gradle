@@ -1,7 +1,7 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.BasePlugin
 import com.android.build.gradle.api.ApplicationVariant
+import com.android.build.gradle.internal.TaskManager
 import groovy.util.slurpersupport.GPathResult
 import org.gradle.api.tasks.Exec
 
@@ -10,7 +10,7 @@ public class AndroidInstallRunnerTask extends Exec {
 
 	public void setVariant(ApplicationVariant variant) {
 		this.variant = variant
-		group = BasePlugin.INSTALL_GROUP
+		group = TaskManager.INSTALL_GROUP
 		description = "Installs the APK for ${variant.description}, and then runs the main launcher activity."
 		onlyIf { variant }
 	}

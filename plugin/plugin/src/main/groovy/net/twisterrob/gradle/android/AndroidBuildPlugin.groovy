@@ -31,8 +31,8 @@ public class AndroidBuildPlugin extends BasePlugin {
 				checkAllWarnings = true
 				disable 'Assert'
 			}
-			buildToolsVersion "21.1.1" // latest Android SDK Build-tools
-			compileSdkVersion "android-21" // Android 5.0/SDK Platform
+			buildToolsVersion "22.0.1" // latest Android SDK Build-tools
+			compileSdkVersion "android-22" // Android 5.1/SDK Platform
 
 			defaultConfig.with {
 				setMinSdkVersion(new DefaultApiVersion(10)) // 2.3.3 Gingerbread MR1
@@ -58,7 +58,7 @@ public class AndroidBuildPlugin extends BasePlugin {
 
 		project.afterEvaluate {
 			project.plugins.withType(AppPlugin) {
-				android.applicationVariants.all this.&fixVariantTaskGroups
+				//android.applicationVariants.all this.&fixVariantTaskGroups
 
 				if (twisterrob.decorateBuildConfig) {
 					decorateBuildConfig()
@@ -71,7 +71,7 @@ public class AndroidBuildPlugin extends BasePlugin {
 			}
 
 			project.plugins.withType(LibraryPlugin) {
-				android.libraryVariants.all this.&fixVariantTaskGroups
+				//android.libraryVariants.all this.&fixVariantTaskGroups
 			}
 		}
 	}

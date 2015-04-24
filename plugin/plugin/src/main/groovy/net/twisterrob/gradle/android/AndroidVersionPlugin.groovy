@@ -2,10 +2,9 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.*
-import com.android.build.gradle.internal.tasks.OutputFileTask
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.vcs.VCSPluginExtension
-import org.gradle.api.Project
+import org.gradle.api.*
 import org.gradle.api.plugins.PluginInstantiationException
 
 class AndroidVersionExtension {
@@ -82,7 +81,7 @@ public class AndroidVersionPlugin extends BasePlugin {
 		}
 	}
 
-	private void updateOutput(ApplicationVariant variant, OutputFileTask task) {
+	private void updateOutput(ApplicationVariant variant, DefaultTask task) {
 		if (task) {
 			File original = task.outputFile
 			String name = original.name
