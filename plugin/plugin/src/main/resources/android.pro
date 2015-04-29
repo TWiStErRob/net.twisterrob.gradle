@@ -1,24 +1,44 @@
+### -- twister-plugin-gradle/android.pro -- ###
+
 # This is a configuration file for ProGuard.
 # http://proguard.sourceforge.net/index.html#manual/usage.html
+
+# Optimizations: If you don't want to optimize, use the
+# proguard-android.txt configuration file instead of this one, which
+# turns off the optimization flags.  Adding optimization introduces
+# certain risks, since for example not all optimizations performed by
+# ProGuard works on all versions of Dalvik.  The following flags turn
+# off various optimizations known to have issues, but the list may not
+# be complete or up to date. (The "arithmetic" optimization can be
+# used if you are only targeting Android 2.0 or later.)  Make sure you
+# test thoroughly if you go this route.
+# MODIFICATION: removed !code/simplification/arithmetic
+-optimizations !code/simplification/cast,!field/marking/private,!field/propagation/value,field/removal/writeonly,!class/merging/*
+-optimizationpasses 5
+-allowaccessmodification
+-dontpreverify
+
+# The remainder of this file is identical to the non-optimized version
+# of the Proguard configuration file (except that the other file has
+# flags to turn off optimization).
 
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses
 -verbose
 
-# Optimization is turned off by default. Dex does not like code run
-# through the ProGuard optimize and preverify steps (and performs some
-# of these optimizations on its own).
--dontoptimize
--dontpreverify
-# Note that if you want to enable optimization, you cannot just
-# include optimization flags in your own project configuration file;
-# instead you will need to point to the
-# "proguard-android-optimize.txt" file instead of this one from your
-# project.properties file.
-
 -keepattributes *Annotation*
--keep public class com.google.vending.licensing.ILicensingService
--keep public class com.android.vending.licensing.ILicensingService
+
+# MODIFICATION: -dontnote in case no dependency on play services, allowshrinking in case it's not used
+-keep,allowshrinking public class com.google.vending.licensing.ILicensingService
+-dontnote com.google.vending.licensing.ILicensingService
+
+# MODIFICATION: -dontnote in case no dependency on play services, allowshrinking in case it's not used
+-keep,allowshrinking public class com.android.vending.licensing.ILicensingService
+-dontnote com.android.vending.licensing.ILicensingService
+
+# MODIFICATION: add IInAppBillingService
+-keep,allowshrinking public class com.android.vending.billing.IInAppBillingService
+-dontnote com.android.vending.billing.IInAppBillingService
 
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
@@ -27,9 +47,15 @@
 
 # keep setters in Views so that animations can still work.
 # see http://proguard.sourceforge.net/manual/examples.html#beans
+# This will result in a note, but need to keep those of ObjectAnimator.ofObject to work:
+# Note: the configuration keeps the entry point '... { void setP(C); }', but not the descriptor class 'C'
 -keepclassmembers public class * extends android.view.View {
-   void set*(***);
-   *** get*();
+   % get*();
+   void set*(%);
+   %[] get*();
+   void set*(%[]);
+   java.lang.String get*();
+   void set*(java.lang.String);
 }
 
 # We want to keep methods in Activity that could be used in the XML attribute onClick
@@ -56,3 +82,6 @@
 # Don't warn about those in case this app is linking against an older
 # platform version.  We know about them, and they are safe.
 -dontwarn android.support.**
+# MODIFICATION: add -dontnote for
+# Note: the configuration keeps the entry point '...', but not the descriptor class '...'
+-dontnote android.support.**

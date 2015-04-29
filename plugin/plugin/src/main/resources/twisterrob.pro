@@ -1,6 +1,13 @@
+### -- twister-plugin-gradle/twisterrob.pro -- ###
+
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 #   http://omgitsmgp.com/2013/09/09/a-conservative-guide-to-proguard-for-android/
+
+-keepattributes SourceFile,LineNumberTable
+# Conditionally added when releasing (depending on buildType.debuggable)
+#-renamesourcefileattribute SourceFile
+
 
 # Classes that extend from the framework, may be used from Manifest, layout, or xml resources
 #-keep public class * extends android.app.Activity
@@ -28,12 +35,20 @@
 #    public void *(android.view.MenuItem);
 #}
 
-# In-app purchases
-#-keep public class com.android.vending.billing.IInAppBillingService
+# Keep names of classes and their constructors for any Views that stay after shrinking
+-keepclasseswithmembernames public class * extends android.view.View {
+	public <init>(android.content.Context);
+}
+-keepclasseswithmembernames public class * extends android.view.View {
+	public <init>(android.content.Context, android.util.AttributeSet);
+}
+-keepclasseswithmembernames public class * extends android.view.View {
+	public <init>(android.content.Context, android.util.AttributeSet, int);
+}
 
 # JavaScript Interface for WebView (from API 17 the annotation is required)
 -keepclasseswithmembers class * {
-    @android.webkit.JavascriptInterface public <methods>;
+	@android.webkit.JavascriptInterface public <methods>;
 }
 
 #-libraryjars libs
@@ -59,3 +74,6 @@
 # http://viewpagerindicator.com/
 #-keep class com.viewpagerindicator.** { *; }
 #-keep interface com.viewpagerindicator.** { *; }
+
+# Debug helper options
+#-dontobfuscate # to keep long class/method names
