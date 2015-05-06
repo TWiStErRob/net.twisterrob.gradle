@@ -1,10 +1,11 @@
 package net.twisterrob.gradle.common
 
+import org.apache.tools.ant.BuildException
 import org.gradle.api.*
 import org.slf4j.*
 
 import java.text.SimpleDateFormat
-import java.util.jar.*
+import java.util.jar.Manifest
 
 class BasePlugin implements Plugin<Project> {
 	Logger LOG = LoggerFactory.getLogger(getClass())
@@ -15,6 +16,15 @@ class BasePlugin implements Plugin<Project> {
 	void apply(Project target) {
 		LOG.debug "Applying to ${target}"
 		project = target
+
+		if (!(project.gradle.gradleVersion ==~ /2\.[4].*/)) {
+			File file = new File("gradle" + File.separator + "wrapper" + File.separator + "gradle-wrapper.properties");
+			def required = "2.4+"
+			throw new BuildException(
+					"Gradle version ${required} is required; the current version is ${project.gradle.gradleVersion}."
+							+ " Edit the distributionUrl in ${file.absolutePath}."
+			)
+		}
 	}
 
 	Date getBuiltDate() {

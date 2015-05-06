@@ -55,7 +55,7 @@ public class AndroidReleasePlugin extends BasePlugin {
 			}
 			if (variant.buildType.minifyEnabled) {
 				from(variant.mappingFile.getParentFile()) {
-					include '*.txt'
+					include '*'
 					rename '(.*)', 'proguard_$1'
 				}
 			}
