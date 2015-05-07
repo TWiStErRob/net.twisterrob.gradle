@@ -21,10 +21,11 @@ class AndroidProguardPlugin extends BasePlugin {
 		File defaultAndroidRules = new File(proguardBase, "android-project-mod.txt")
 		File myProguardRules = new File(proguardBase, "twisterrob.pro")
 		android.with {
+			defaultConfig.proguardFiles.add defaultAndroidRules
+			defaultConfig.proguardFiles.add myProguardRules
+
 			DefaultBuildType release = buildTypes.release
 			release.setMinifyEnabled(true)
-			release.proguardFiles.add defaultAndroidRules
-			release.proguardFiles.add myProguardRules
 		}
 
 		def extractProguardRules = project.task('extractProguardRules') {
@@ -86,7 +87,7 @@ class AndroidProguardPlugin extends BasePlugin {
 	def tryAdd(File srcDir) {
 		File proguardFile = new File(srcDir, 'proguard.pro');
 		if (proguardFile.exists()) {
-			project.android.buildTypes.release.proguardFiles.add proguardFile
+			project.android.defaultConfig.proguardFiles.add proguardFile
 		}
 	}
 }
