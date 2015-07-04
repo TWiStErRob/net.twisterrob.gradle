@@ -1308,7 +1308,7 @@
       d3_behavior_zoomWheel = "onwheel" in d3_document ? (d3_behavior_zoomDelta = function() {
         return -d3.event.deltaY * (d3.event.deltaMode ? 120 : 1);
       }, "wheel") : "onmousewheel" in d3_document ? (d3_behavior_zoomDelta = function() {
-        return d3.event.wheelDelta;
+        return d3.event.wheelDelta / (4800/120);
       }, "mousewheel") : (d3_behavior_zoomDelta = function() {
         return -d3.event.detail;
       }, "MozMousePixelScroll");
