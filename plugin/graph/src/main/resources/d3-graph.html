@@ -35,6 +35,9 @@
 			<g id="nodes"></g>
 			<g id="links"></g>
 		</g>
+		<g id="legend" transform="translate(80, 50)">
+			<rect id="legend-bg" />
+		</g>
 		<!--<circle r="20" transform="translate(-100, -100)" />-->
 	</svg>
 	<script>//<![CDATA[
@@ -148,12 +151,9 @@ function restart() {
 	;
 
 	node = node.data(nodes);
-	uiNodes = node
-		.enter()
-		.append('g')
-		.each(function(d) { d.ui.node = this; })
-		.attr('id', function(d) { return d.nodeId(); })
-		.attr('class', 'node')
+
+	uiNodes = createNodes(node);
+	uiNodes
 		.on('click', function(d) {
 			d3.selectAll('.selected').classed('selected', false);
 			d3.select(this).classed('selected', true);
@@ -164,6 +164,56 @@ function restart() {
 				d3.event.sourceEvent.stopPropagation();
 			})
 		)
+
+	force.start();
+}
+
+var legendData = [
+	{ classes: 'skipped' },
+	{ classes: 'failure' },
+	{ classes: 'executed' },
+	{ classes: 'uptodate' },
+	{ classes: 'nowork' },
+	{ classes: 'executing' },
+	{ classes: 'selected' },
+	{ classes: 'requested' },
+	{ classes: 'unknown' },
+	{ classes: 'excluded' }
+];
+for(var i in legendData) {
+	legendData[i].ui = {};
+	legendData[i].id = legendData[i].classes.replace(/ /, '-');
+	legendData[i].nodeId = function() {
+		return 'legend_' + this.id;
+	}
+}
+var legend = svg
+	.select('#legend')
+	.selectAll('.node')
+	.data(legendData)
+;
+legend = createNodes(legend)
+	.attr('class', function(d) { return 'node ' + d.classes; })
+	.attr('transform', function(d, i) { return 'translate(0,' + (i * d.height * 1.3) + ')'; })
+;
+
+var legendBox = svg.select('#legend').node().getBBox();
+var legendPadding = 20;
+svg
+	.select('#legend-bg')
+	.attr("x", legendBox.x - legendPadding)
+	.attr("y", legendBox.y - legendPadding)
+	.attr("width", legendBox.width + 2*legendPadding)
+	.attr("height", legendBox.height + 2*legendPadding)
+;
+
+function createNodes(nodeData) {
+	var uiNodes = nodeData
+		.enter()
+		.append('g')
+		.each(function(d) { d.ui.node = this; })
+		.attr('id', function(d) { return d.nodeId(); })
+		.attr('class', 'node')
 	;
 	var rect = uiNodes.append('rect')
 		.each(function(d) { d.ui.bg = this; })
@@ -185,10 +235,8 @@ function restart() {
 		d.width = box.width;
 		d.height = box.height;
 	});
-
-	force.start();
+	return uiNodes;
 }
-
 var model = function() {
 	return {
 		add: function(id, extras) {

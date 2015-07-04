@@ -20,41 +20,32 @@ node {
 	shadow-mode: gradient-radial;
 */
 }
-/*
 node:clicked {
 	fill-color: gray;
 }
-node.selected {
-	fill-color: black;
+
+node.unknown {
+	fill-color: lightgray;
 }
+node.requested {
+	fill-color: purple;
+}
+node.excluded {
+	fill-color: pink;
+}
+
 node.executing {
-	fill-color: yellow;
-}
-edge.executing {
 	fill-color: yellow;
 }
 node.executed {
 	fill-color: green;
 }
-edge.executed {
-	fill-color: green;
-}
 node.failure {
-	fill-color: red;
-}
-edge.failure {
 	fill-color: red;
 }
 node.skipped {
 	fill-color: cyan;
 }
-edge.skipped {
-	fill-color: cyan;
-}
-*/
 node.uptodate {
-	fill-color: magenta;
-}
-edge.uptodate {
 	fill-color: magenta;
 }

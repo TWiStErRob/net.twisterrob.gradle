@@ -7,6 +7,11 @@ body, html, svg {
 svg {
 
 }
+#legend-bg {
+	fill: rgba(255,255,255,.7);
+	rx: 10px;
+	ry: 10px;
+}
 .node > rect {
 	fill: rgba(0,0,0,.8);
 	rx: 4px;
