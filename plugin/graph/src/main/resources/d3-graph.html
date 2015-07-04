@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Gradle Task Graph</title>
+	<link rel="stylesheet" href="d3-graph.css" />
+	<!-- src==xlink:href in svg-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.js"></script>
+	<!--<script src='https://getfirebug.com/releases/lite/1.3/firebug-lite.js'></script>-->
+	<script src="d3.js" charset="utf-8"></script>
+	<script src="d3-graph.phys.js"></script>
+	<script src="d3-graph.algo.js"></script>
+</head>
+<body onload="main()">
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" pointer-events="all">
+		<defs>
+			<radialGradient id="background-gradient" cx="70%" cy="100%" r="90%" fy="60%">
+				<stop offset="5%" stop-color="#EFF" />
+				<stop offset="95%" stop-color="#DEF" />
+			</radialGradient>
+			<filter id="negative">
+				<feColorMatrix in="SourceGraphic" type="matrix" values="
+					-1 0 0 0 1
+					0 -1 0 0 1
+					0 0 -1 0 1
+					0 0 0 1 0
+				" />
+			</filter>
+			<marker id="arrow" viewBox="0,0 10 10" refX="8" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
+				<path d="M 0 0 L 10 5 L 0 10 z" />
+			</marker>
+		</defs>
+		<rect id="background" width="100%" height="100%" fill="url(#background-gradient)" pointer-events="all" />
+		<g id="root">
+			<g id="nodes"></g>
+			<g id="links"></g>
+		</g>
+		<!--<circle r="20" transform="translate(-100, -100)" />-->
+	</svg>
+	<script>//<![CDATA[
+function main() {
+	// needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
+	setTimeout(function() {
+		console.log("Startup");
+		resize();
+		if (window['java'] !== undefined) {
+			console.log("We're in JavaFX");
+		} else {
+			demo();
+			console.log("We're in a browser");
+		}
+	}, 0);
+}
+
+var zoom = d3.behavior
+	.zoom()
+	.scaleExtent([1/4, 4])
+	.on('zoom', function () {
+		root.attr('transform',
+			'translate(' + d3.event.translate + ')'
+			+   'scale(' + d3.event.scale     + ')');
+	})
+;
+
+var svg = d3
+	.select('svg')
+	.call(zoom)
+	//.on('mousemove', function () {
+	//	cursor.attr('transform', 'translate(' + d3.mouse(this) + ')');
+	//})
+;
+
+var demoIdCounter = 0;
+svg.select('#background')
+	.on('mousedown', function () {
+		if(d3.event.which != 2) return;
+		d3.event.preventDefault();
+		var point = d3.mouse(this);
+		var id = '____' + demoIdCounter++ + '____';
+		model.add(id, {x: point[0], y: point[1]});
+		model.updateClasses(id, ['unknown'], []);
+		/*
+		// add links to any nearby nodes
+		nodes.forEach(function(target) {
+			var x = target.x - node.x,
+			    y = target.y - node.y;
+			if (Math.sqrt(x * x + y * y) < 30) {
+				links.push({source: node, target: target});
+			}
+		});
+		*/
+	})
+;
+//var cursor = svg.select('#cursor');
+var root = svg.select('#root');
+var node_group = svg.select('#nodes');
+var link_group = svg.select('#links');
+
+var force = d3.layout
+		.force()
+		.gravity(0.03)
+		.linkStrength(0.3)
+		.charge(-400)
+		.on('tick', function tick() {
+			//var q = d3.geom.quadtree(nodes);
+			//node.each(function(n) { q.visit(phys.collide(n)) });
+			// TODO make it finer by 22.5 degree units
+			// TODO fix \[  node   ]/ weird edges
+			//           \         /
+			//    [ node ]\       /[   node  ]
+			link
+				.attr('x1', function(d) { return phys.lineX(d.source, d.target); })
+				.attr('y1', function(d) { return phys.lineY(d.source, d.target); })
+				.attr('x2', function(d) { return phys.lineX(d.target, d.source); })
+				.attr('y2', function(d) { return phys.lineY(d.target, d.source); })
+			;
+
+			node.attr('transform', 	function translate(d) {
+				return 'translate(' + d.x + ',' + d.y + ')';
+			})
+			;
+		})
+;
+
+var nodes = force.nodes();
+var links = force.links();
+var node = node_group.selectAll('.node');
+var link = link_group.selectAll('.link');
+var uiNodes, uiLinks;
+
+d3.select(window).on('resize', resize);
+function resize() {
+	var width = window.innerWidth, height = window.innerHeight;
+	console.log("Resize", force.size(), [width, height]);
+	//zoom.center([width/2, height/2]);
+	force.size([width, height]).resume();
+}
+
+function restart() {
+	link = link.data(links);
+	uiLinks = link
+		.enter()
+		.insert('line', '.node')
+		.each(function(d) { d.ui = this; })
+		.attr('id', function(d) { return d.linkId(); })
+		.attr('class', 'link')
+		.style('marker-end',  'url(#arrow)')
+	;
+
+	node = node.data(nodes);
+	uiNodes = node
+		.enter()
+		.append('g')
+		.each(function(d) { d.ui.node = this; })
+		.attr('id', function(d) { return d.nodeId(); })
+		.attr('class', 'node')
+		.on('click', function(d) {
+			d3.selectAll('.selected').classed('selected', false);
+			d3.select(this).classed('selected', true);
+		})
+		.call(force
+			.drag()
+			.on('dragstart', function() {
+				d3.event.sourceEvent.stopPropagation();
+			})
+		)
+	;
+	var rect = uiNodes.append('rect')
+		.each(function(d) { d.ui.bg = this; })
+	;
+	var text = uiNodes.append('text')
+		.each(function(d) { d.ui.text = this; })
+		.text(function(d) { return d.id; })
+	;
+	var padding = {x: 6, y: 5};
+
+	rect.attr('width', function(d) { return d.ui.text.clientWidth + 2 * padding.x; })
+		.attr('height', function(d) { return d.ui.text.clientHeight + 2 * padding.y; })
+		.attr('x', function(d) { return -d.ui.text.clientWidth / 2 - padding.x; })
+		.attr('y', function(d) { return -d.ui.text.clientHeight / 2 - padding.y; })
+	;
+
+	uiNodes.each(function(d) {
+		var box = d.ui.node.getBBox();
+		d.width = box.width;
+		d.height = box.height;
+	});
+
+	force.start();
+}
+
+var model = function() {
+	return {
+		add: function(id, extras) {
+			if(d3.select('#' + constructNodeId(id)).empty()) {
+				var node = createNode(id, extras);
+				//console.log("Adding", node.id);
+				nodes.push(node);
+				restart();
+			} else {
+				//console.log("Already exists", id);
+			}
+		},
+		updateClasses: function(name, addClasses, removeClasses) {
+			var x = d3.select('#' + constructNodeId(name));
+			removeClasses.forEach(function (clazz) { x.classed(clazz, false); });
+			addClasses.forEach(function (clazz) { x.classed(clazz, true); });
+		},
+		depends: function(from, to) {
+			var fromNode = d3.select('#' + constructNodeId(from)).datum();
+			var toNode = d3.select('#' + constructNodeId(to)).datum();
+			var link = createLink(fromNode, toNode);
+			links.push(link);
+			fromNode.links.push({source: fromNode, target: toNode, link: link});
+			toNode.revLinks.push({source: toNode, target: fromNode, link: link});
+			restart();
+		}
+	};
+	function constructNodeId(name) {
+		return 'node_' + name.replace(/:/g, '-');
+	}
+	function constructLinkId(from, to) {
+		return 'link_' + constructNodeId(from) + '_' + constructNodeId(to);
+	}
+	function createNode(id, extras) {
+		var node = {
+			id: id,
+			links: [],
+			revLinks: [],
+			ui: {
+				node: null,
+				text: null,
+				bg: null
+			},
+			x2: function() {
+				return this.x + this.width;
+			},
+			y2: function() {
+				return this.y + this.height;
+			},
+			nodeId: function() {
+				return constructNodeId(this.id);
+			}
+		};
+		if(extras) {
+			for(var i in extras) {
+				if(node[i] === undefined) {
+					node[i] = extras[i];
+				}
+			}
+		}
+		return node;
+	}
+	function createLink(fromNode, toNode) {
+		return {
+			source: fromNode,
+			target: toNode,
+			weight: 1,
+			ui: null,
+			linkId: function() {
+				return constructLinkId(this.source.id, this.target.id);
+			}
+		};
+	}
+}();
+if (window.java || true) {
+	model = function javafy(model) {
+		function javaEntry(name, fun) {
+			return function() {
+				console.trace(name + "(" + JSON.stringify(arguments) + ")");
+				try {
+					return fun.apply(this, arguments);
+				} catch(e) {
+					console.warn(e.name + ": " + e.message + " " + e.stack);
+				}
+			}
+		}
+		for(var item in model) {
+			if(typeof model[item] === 'function') {
+				model[item] = javaEntry(item, model[item]);
+			}
+		}
+		return model;
+	}(model);
+}
+
+function demo() {
+	var allDeps = {
+		onlyIf: [],
+		throwTask: [],
+		preBuild: ['onlyIf', 'throwTask'],
+		preDebugBuild: ['preBuild'],
+		checkDebugManifest: ['preDebugBuild'],
+		prepareDebugDependencies: ['preDebugBuild', 'checkDebugManifest'],
+		compileDebugAidl: ['prepareDebugDependencies'],
+		compileDebugRenderscript: ['prepareDebugDependencies', 'checkDebugManifest'],
+		generateDebugBuildConfig: ['checkDebugManifest'],
+		generateDebugAssets: [],
+		mergeDebugAssets: ['prepareDebugDependencies', 'generateDebugAssets'],
+		generateDebugResValues: [],
+		generateDebugResources: ['generateDebugResValues', 'compileDebugRenderscript'],
+		mergeDebugResources: ['generateDebugResources'],
+		processDebugManifest: ['prepareDebugDependencies'],
+		processDebugResources: [ 'mergeDebugAssets', 'mergeDebugResources', 'processDebugManifest'],
+		generateDebugSources: ['compileDebugRenderscript', 'compileDebugAidl', 'processDebugResources', 'generateDebugBuildConfig'],
+		processDebugJavaRes: [],
+		compileDebugJava: ['prepareDebugDependencies', 'processDebugJavaRes', 'generateDebugSources', '_debugCompile' ],
+		compileDebugNdk: ['preDebugBuild'],
+		compileDebugSources: ['compileDebugJava', 'compileDebugNdk'],
+		preDexDebug: ['_debugApk'],
+		dexDebug: ['compileDebugJava', 'preDexDebug'],
+		validateDebugSigning: [],
+		packageDebug: ['compileDebugJava', 'validateDebugSigning', 'processDebugJavaRes', 'dexDebug', 'processDebugResources', 'compileDebugNdk'],
+		zipalignDebug: ['packageDebug'],
+		assembleDebug: ['zipalignDebug', 'compileDebugSources'],
+		assemble: ['assembleRelease', 'assembleDebug']
+	}
+
+	algo.transitiveReduction(allDeps);
+
+	for(var task in allDeps) {
+		model.add(task);
+		var deps = allDeps[task];
+		for(var depIndex in deps) { var dep = deps[depIndex];
+			model.add(dep);
+			model.depends(task, dep);
+		}
+	}
+	function updateClasses(taskName, classes) {
+		classes = typeof classes === 'string'? [classes] : classes;
+		model.updateClasses(taskName, classes, []);
+	}
+	updateClasses('_debugApk', 'unknown');
+	updateClasses('_debugCompile', 'unknown');
+	updateClasses('assembleRelease', 'requested');
+	updateClasses('assembleDebug', 'requested');
+	updateClasses('assemble', 'requested');
+	updateClasses('assemble', 'excluded');
+	updateClasses('onlyIf', ['executed','skipped']);
+	updateClasses('throwTask', ['executed','failure']);
+	updateClasses('preBuild', 'executed');
+	updateClasses('preDebugBuild', 'executed');
+	updateClasses('checkDebugManifest', ['executed','uptodate']);
+	updateClasses('prepareDebugDependencies', 'executed');
+	updateClasses('generateDebugBuildConfig', 'executing');
+	updateClasses('compileDebugNdk', ['executed','nowork']);
+}
+
+//]]></script>
+</body>
+</html>

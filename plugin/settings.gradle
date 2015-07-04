@@ -1,3 +1,4 @@
 rootProject.name = 'net.twisterrob.gradle'
 
 include 'plugin'
+include 'graph'
