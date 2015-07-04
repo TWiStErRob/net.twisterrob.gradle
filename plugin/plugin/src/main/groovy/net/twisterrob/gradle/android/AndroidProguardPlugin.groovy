@@ -53,7 +53,8 @@ class AndroidProguardPlugin extends BasePlugin {
 					obfuscation.dependsOn extractProguardRules
 					obfuscation.printconfiguration(new File(variant.mappingFile.parentFile, 'configuration.pro'))
 					if (!variant.buildType.debuggable) {
-						obfuscation.renamesourcefileattribute("SourceFile")
+						obfuscation.renamesourcefileattribute("SourceFile") // better stacktraces
+						obfuscation.keepattributes("LocalVariableTable,LocalVariableTypeTable") // debugger support
 					}
 				}
 			}

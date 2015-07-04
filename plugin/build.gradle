@@ -1,9 +1,10 @@
 group = rootProject.name
-version = '0.5.3.4'
 
 subprojects {
-	group = rootProject.group
-	version = rootProject.version
+	repositories {
+		jcenter()
+	}
 
+	group = rootProject.group
 	apply from: 'http://localhost/maven/configure.gradle'
 }
