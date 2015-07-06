@@ -7,6 +7,12 @@ body, html, svg {
 svg {
 
 }
+
+#menu {
+	position: absolute;
+	bottom: 1em;
+	left: 1em;
+}
 #legend-bg {
 	fill: rgba(255,255,255,.7);
 	rx: 10px;
@@ -93,10 +99,10 @@ svg {
 	fill: #FF0;
 }
 /* Already finished with some kind of result. */
-.node.executed > rect {
+.node.success > rect {
 	stroke: #6A0;
 }
-.node.executed > text {
+.node.success > text {
 	fill: #8F8;
 }
 /* ---- Execution results ---- */

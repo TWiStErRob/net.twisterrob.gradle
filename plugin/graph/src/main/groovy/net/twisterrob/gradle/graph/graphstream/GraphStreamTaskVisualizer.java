@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.graph.graphstream;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 
 import javax.swing.*;
@@ -13,7 +13,7 @@ import org.graphstream.ui.layout.Layout;
 import org.graphstream.ui.layout.springbox.implementations.LinLog;
 import org.graphstream.ui.view.Viewer;
 
-import net.twisterrob.gradle.graph.TaskVisualizer;
+import net.twisterrob.gradle.graph.*;
 
 import static net.twisterrob.gradle.graph.graphstream.GraphExtensions.*;
 
@@ -22,7 +22,7 @@ public class GraphStreamTaskVisualizer implements TaskVisualizer {
 	private Viewer viewer;
 	private Layout layout;
 
-	public void initModel(Project project) {
+	@Override public void showUI(Project project) {
 		graph = new SingleGraph(project.getName());
 		try {
 			String css = IOGroovyMethods.getText(getClass().getResourceAsStream("/graphstream.css"));
@@ -30,23 +30,9 @@ public class GraphStreamTaskVisualizer implements TaskVisualizer {
 		} catch (IOException e) {
 			throw new IllegalStateException("Cannot read style sheet");
 		}
-		graph.setStrict(false);
-		graph.setAutoCreate(true);
-	}
+		graph.setStrict(true);
+		graph.setAutoCreate(false);
 
-	@Override public void addTask(Task task) {
-		//createNode(task);
-	}
-	private Node createNode(Task task) {
-		Node node = graph.getNode(task.getName());
-		if (node == null) {
-			node = graph.addNode(task.getName());
-			setLabel(node, task.getName());
-			addClass(node, "unknown");
-		}
-		return node;
-	}
-	public void showUI() {
 		layout = new LinLog(false);
 		viewer = graph.display();
 		JFrame window = (JFrame)SwingUtilities.getWindowAncestor(viewer.getDefaultView());
@@ -57,6 +43,26 @@ public class GraphStreamTaskVisualizer implements TaskVisualizer {
 		//viewer.enableAutoLayout(layout);
 	}
 
+	private Node createNode(TaskData data) {
+		Node node = graph.addNode(id(data.getTask()));
+		setLabel(node, data.getTask().getName());
+		addClass(node, classMappingType.get(data.getType()));
+		return node;
+	}
+
+	@Override public void initModel(Map<Task, TaskData> tasks) {
+		for (TaskData data : tasks.values()) {
+			createNode(data);
+		}
+		for (TaskData data : tasks.values()) {
+			Node from = graph.getNode(id(data.getTask()));
+			for (TaskData dep : data.getDepsDirect()) {
+				Node to = graph.getNode(id(dep.getTask()));
+				graph.addEdge(id(data.getTask(), dep.getTask()), from, to, true);
+			}
+		}
+	}
+
 	public void closeUI() {
 		//println window.getLocation()
 		//println window.getSize()
@@ -64,34 +70,36 @@ public class GraphStreamTaskVisualizer implements TaskVisualizer {
 		viewer.close();
 	}
 
-	private static final EnumMap<TaskState, String> classMapping = new EnumMap<TaskState, String>(TaskState.class);
+	@Override public void update(Task task, TaskResult result) {
+		Node node = graph.getNode(id(task));
+		for (Map.Entry<TaskResult, String> possibleResult : classMappingResult.entrySet()) {
+			removeClass(node, possibleResult.getValue());
+		}
+		String[] classes = addClass(node, classMappingResult.get(result));
+		//System.out.println(task.getName() + ": " + Arrays.toString(classes));
+	}
+
+	private static final EnumMap<TaskResult, String> classMappingResult = new EnumMap<>(TaskResult.class);
+	private static final EnumMap<TaskType, String> classMappingType = new EnumMap<>(TaskType.class);
 
 	static {
-		classMapping.put(TaskState.executing, "executing");
-		classMapping.put(TaskState.result_nowork, "nowork");
-		classMapping.put(TaskState.executed, "executed");
-		classMapping.put(TaskState.result_skipped, "skipped");
-		classMapping.put(TaskState.result_uptodate, "uptodate");
-		classMapping.put(TaskState.result_failure, "failure");
-		classMapping.put(TaskState.unknown, "unknown");
-		classMapping.put(TaskState.requested, "requested");
-		classMapping.put(TaskState.excluded, "excluded");
+		classMappingResult.put(TaskResult.executing, "executing");
+		classMappingResult.put(TaskResult.completed, "executed");
+		classMappingResult.put(TaskResult.nowork, "nowork");
+		classMappingResult.put(TaskResult.skipped, "skipped");
+		classMappingResult.put(TaskResult.uptodate, "uptodate");
+		classMappingResult.put(TaskResult.failure, "failure");
+		classMappingType.put(TaskType.unknown, "unknown");
+		classMappingType.put(TaskType.normal, "norma");
+		classMappingType.put(TaskType.requested, "requested");
+		classMappingType.put(TaskType.excluded, "excluded");
 	}
 
-	@Override public void setVisuals(Task task, EnumSet<TaskState> addStates, EnumSet<TaskState> removeStates) {
-		Node node = createNode(task);
-		for (TaskState remove : removeStates) {
-			removeClass(node, classMapping.get(remove));
-			removeClass(node.getEachLeavingEdge(), classMapping.get(remove));
-		}
-		for (TaskState add : addStates) {
-			addClass(node, classMapping.get(add));
-			addClass(node.getEachLeavingEdge(), classMapping.get(add));
-		}
+	private String id(Task task) {
+		return task.getName();
 	}
-	@Override public void addDependency(Task from, Task to) {
-		createNode(from);
-		createNode(to);
-		graph.addEdge(from.getName() + "->" + to.getName(), from.getName(), to.getName(), true);
+
+	private String id(Task from, Task to) {
+		return id(from) + "->" + id(to);
 	}
 }

@@ -2,4 +2,5 @@
 /*.iws
 /.gradle
 /.idea
+/build
 *.iml

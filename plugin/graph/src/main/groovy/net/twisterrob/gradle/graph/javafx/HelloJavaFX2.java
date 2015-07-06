@@ -57,7 +57,7 @@ public class HelloJavaFX2 extends Application {
 		}
 		Platform.runLater(new Runnable() {
 			@Override public void run() {
-				app.ui.show(project);
+				app.ui.showUI(project);
 			}
 		});
 
@@ -72,14 +72,14 @@ public class HelloJavaFX2 extends Application {
 		}
 		Platform.runLater(new Runnable() {
 			@Override public void run() {
-				app.ui.hide();
+				app.ui.closeUI();
 			}
 		});
 	}
 
 	/** @see http://stackoverflow.com/a/31100941/253468 com.sun.webpane.platform.graphics.WCGPerfMeter */
 	private static class GradleJULFixer extends Thread {
-		private static final boolean DEBUG = true;
+		private static final boolean DEBUG = false;
 		private static final String MISCHIEF_LOGGER = com.sun.webpane.sg.prism.WCGraphicsPrismContext.class.getName();
 		public GradleJULFixer() {
 			super(GradleJULFixer.class.getSimpleName());

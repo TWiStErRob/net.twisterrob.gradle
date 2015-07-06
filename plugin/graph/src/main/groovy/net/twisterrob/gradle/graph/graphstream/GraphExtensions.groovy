@@ -26,6 +26,9 @@ class GraphExtensions {
 	static void setLabel(final Element self, String label) {
 		self.setAttribute("ui.label", label)
 	}
+	static String getLabel(final Element self) {
+		return self.getAttribute("ui.label")
+	}
 	static String[] removeClass(final Node self, String clazz) {
 		return removeClass((Element)self, clazz)
 	}

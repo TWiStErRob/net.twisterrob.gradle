@@ -6,6 +6,8 @@ import java.util.*;
 import org.codehaus.groovy.runtime.IOGroovyMethods;
 import org.gradle.api.*;
 
+import com.google.gson.*;
+
 import javafx.application.Platform;
 import javafx.beans.value.*;
 import javafx.concurrent.Worker.State;
@@ -17,13 +19,12 @@ import javafx.scene.web.*;
 import javafx.stage.*;
 import netscape.javascript.JSObject;
 
-import net.twisterrob.gradle.graph.TaskVisualizer.TaskState;
+import net.twisterrob.gradle.graph.*;
 
 // https://blogs.oracle.com/javafx/entry/communicating_between_javascript_and_javafx
 // http://docs.oracle.com/javafx/2/webview/jfxpub-webview.htm
-public class GraphWindow {
+public class GraphWindow implements TaskVisualizer {
 	private final Stage window;
-	private Project project;
 	private JavaBridge bridge;
 
 	public GraphWindow(Stage stage) {
@@ -76,53 +77,29 @@ public class GraphWindow {
 		}
 	}
 
-	public void show(Project project) {
+	@Override public void showUI(Project project) {
 		window.setTitle(String.format("%s - Gradle Build Graph", project.getName()));
 		window.show();
 	}
 
-	public void hide() {
+	@Override public void initModel(Map<Task, TaskData> graph) {
+		Gson gson = new GsonBuilder()
+				.setPrettyPrinting()
+				.enableComplexMapKeySerialization()
+				.registerTypeHierarchyAdapter(Task.class, new TaskSerializer())
+				.registerTypeAdapter(TaskData.class, new TaskDataSerializer())
+				.registerTypeAdapter(TaskType.class, new TaskTypeSerializer())
+				.registerTypeAdapter(TaskResult.class, new TaskStateSerializer())
+				.create();
+		bridge.init(gson.toJson(graph));
+	}
+
+	@Override public void update(Task task, TaskResult result) {
+		bridge.update(task.getName(), TaskStateSerializer.getState(result));
+	}
+
+	@Override public void closeUI() {
 		window.close();
-	}
-
-	public void addTask(Task task) {
-		bridge.newNode(task.getName());
-	}
-
-	private static final EnumMap<TaskState, String> classMapping = new EnumMap<TaskState, String>(TaskState.class);
-
-	static {
-		classMapping.put(TaskState.unknown, "unknown");
-		classMapping.put(TaskState.requested, "requested");
-		classMapping.put(TaskState.excluded, "excluded");
-		classMapping.put(TaskState.executing, "executing");
-		classMapping.put(TaskState.executed, "executed");
-		classMapping.put(TaskState.result_nowork, "nowork");
-		classMapping.put(TaskState.result_skipped, "skipped");
-		classMapping.put(TaskState.result_uptodate, "uptodate");
-		classMapping.put(TaskState.result_failure, "failure");
-	}
-
-	public void setClasses(Task task, EnumSet<TaskState> addStates, EnumSet<TaskState> removeStates) {
-		addTask(task);
-		String[] addClasses = new String[addStates.size()];
-		String[] removeClasses = new String[removeStates.size()];
-
-		int addIndex = 0;
-		for (TaskState state : addStates) {
-			addClasses[addIndex++] = classMapping.get(state);
-		}
-		int removeIndex = 0;
-		for (TaskState state : removeStates) {
-			removeClasses[removeIndex++] = classMapping.get(state);
-		}
-		bridge.updateClasses(task.getName(), addClasses, removeClasses);
-	}
-
-	public void addDependency(Task from, Task to) {
-		addTask(from);
-		addTask(to);
-		bridge.addLink(from.getName(), to.getName());
 	}
 
 	public static class JavaBridge {
@@ -133,15 +110,25 @@ public class GraphWindow {
 			this.model = (JSObject)engine.executeScript("model");
 		}
 		private void modelCall(final String methodName, final Object... args) {
+			final String argsStr = Arrays.toString(args);
+			final String argsShort = argsStr.length() < 50? argsStr
+					: argsStr.substring(0, 50).replaceAll("\\s+", " ") + "...";
+			//message(methodName + "(" + argsShort + ")");
 			Platform.runLater(new Runnable() {
 				@Override public void run() {
-					model.call(methodName, args);
+					try {
+						model.call(methodName, args);
+					} catch (RuntimeException ex) {
+						throw new RuntimeException("Failure " + methodName + "(" + argsStr + ")", ex);
+					}
 				}
 			});
 		}
 		public void message(String message) {
 			System.err.println(message);
 		}
+
+		@SuppressWarnings("unused")
 		public void log(JSObject args) {
 			for (int i = 0, len = (Integer)args.getMember("length"); i < len; i++) {
 				Object arg = args.getSlot(i);
@@ -152,14 +139,12 @@ public class GraphWindow {
 			}
 			System.err.println();
 		}
-		public void newNode(String name) {
-			modelCall("add", name);
+
+		public void init(String graph) {
+			modelCall("init", graph);
 		}
-		public void updateClasses(String name, String[] addClasses, String[] removeClasses) {
-			modelCall("updateClasses", name, addClasses, removeClasses);
-		}
-		public void addLink(String from, String to) {
-			modelCall("depends", from, to);
+		public void update(String name, String result) {
+			modelCall("update", name, result);
 		}
 	}
 }
