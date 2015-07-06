@@ -2,7 +2,8 @@ var phys = function() {
 	return {
 		lineX: lineX,
 		lineY: lineY,
-		collide: collide
+		collide: collide,
+		angle: angle
 	};
 	function overlap (a, b) {
 		var topLeft = a.x < b.x && b.x < a.x2() && a.y < b.y && b.y < a.y2();
@@ -55,33 +56,46 @@ var phys = function() {
 		var dx = end.x - start.x;
 		var theta = Math.atan2(dy, dx); // range (-PI, PI]
 		theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
-		if (theta < 0) theta = 360 + theta; // range [0, 360)
+		//if (theta < 0) theta = 360 + theta; // range [0, 360)
 		return theta;
 	};
-	function lineX (start, end) {
+	// TODO make it finer by 22.5 degree units
+	function lineX (start, end, flip) {
 		var x, theta = angle(start, end);
-		if (315 <= theta && theta <= 360 || 0 <= theta && theta <= 45) {
-			x = start.x2(); // right
+		if(flip) {
+			theta = -theta;
+			var temp = start;
+			start = end;
+			end = temp;
+		}
+		if (-45 <= theta && theta <= -0 || 0 <= theta && theta <= 45) {
+			x = flip? start.x : start.x2(); // right
 		} else if (45 <= theta && theta <= 135) {
 			x = (start.x + start.x2()) / 2; // top middle
-		} else if (135 <= theta && theta <= 225) {
-			x = start.x; // left
-		} else if (225 <= theta && theta <= 315) {
+		} else if (135 <= theta && theta <= 180 || -180 <= theta && theta <= -135) {
+			x = flip? start.x2() : start.x; // left
+		} else if (-135 <= theta && theta <= -45) {
 			x = (start.x + start.x2()) / 2; // bottom middle
 		} else {
 			throw theta + " is out of range (0..360)";
 		}
 		return x - start.width / 2;
 	};
-	function lineY (start, end) {
+	function lineY (start, end, flip) {
 		var y, theta = angle(start, end);
-		if (315 <= theta && theta <= 360 || 0 <= theta && theta <= 45) {
+		if(flip) {
+			theta = -theta;
+			var temp = start;
+			start = end;
+			end = temp;
+		}
+		if (-45 <= theta && theta <= -0 || 0 <= theta && theta <= 45) {
 			y = (start.y + start.y2()) / 2; // right middle
 		} else if (45 <= theta && theta <= 135) {
 			y = start.y2(); // top
-		} else if (135 <= theta && theta <= 225) {
+		} else if (135 <= theta && theta <= 180 || -180 <= theta && theta <= -135) {
 			y = (start.y + start.y2()) / 2; // left middle
-		} else if (225 <= theta && theta <= 315) {
+		} else if (-135 <= theta && theta <= -45) {
 			y = start.y; // bottom
 		} else {
 			throw theta + " is out of range (0..360)";
