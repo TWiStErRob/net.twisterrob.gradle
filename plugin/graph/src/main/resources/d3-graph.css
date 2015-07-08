@@ -37,9 +37,6 @@ svg {
 	stroke-width: 2px;
 	stroke-antialiasing: true;
 }
-.link.path {
-	stroke: red;
-}
 
 /* Cursor */
 svg {

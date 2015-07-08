@@ -1,9 +1,11 @@
 var phys = function() {
 	return {
-		lineX: lineX,
-		lineY: lineY,
-		collide: collide,
-		angle: angle
+		pointOnRect: function (rect, point) {
+			var w = rect.width / 2;
+			var h = rect.height / 2;
+			return pointOnRect(point.x, point.y, rect.x - w, rect.y - h, rect.x + w, rect.y + h);
+		},
+		collide: collide
 	};
 	function overlap (a, b) {
 		var topLeft = a.x < b.x && b.x < a.x2() && a.y < b.y && b.y < a.y2();
@@ -59,47 +61,65 @@ var phys = function() {
 		//if (theta < 0) theta = 360 + theta; // range [0, 360)
 		return theta;
 	};
-	// TODO make it finer by 22.5 degree units
-	function lineX (start, end, flip) {
-		var x, theta = angle(start, end);
-		if(flip) {
-			theta = -theta;
-			var temp = start;
-			start = end;
-			end = temp;
+	/**
+	 * Finds the intersection point between
+	 *     * the rectangle
+	 *       with parallel sides to the x and y axes
+	 *     * the half-line pointing towards (x,y)
+	 *       originating from the middle of the rectangle
+	 *
+	 * Note: the function works given min[XY] <= max[XY],
+	 *       even though minY may not be the "top" of the rectangle
+	 *       because the coordinate system is flipped.
+	 *
+	 * @param (x,y) point to build the line segment from
+	 * @param minX the "left" side of the rectangle
+	 * @param minY the "top" side of the rectangle
+	 * @param maxX the "right" side of the rectangle
+	 * @param maxY the "bottom" side of the rectangle
+	 * @param check whether to treat point inside the rect as error
+	 * @return an object with x and y members for the intersection
+	 * @throws if check == true and (x,y) is inside the rectangle
+	 * @author TWiStErRob
+	 * @see <a href="http://stackoverflow.com/a/18292964/253468">based on</a>
+	 */
+	function pointOnRect (x, y, minX, minY, maxX, maxY, check) {
+		//assert minX <= maxX;
+		//assert minY <= maxY;
+		if (check && (minX <= x && x <= maxX) && (minY <= y && y <= maxY))
+			throw "Point " + [x,y] + "cannot be inside "
+			    + "the rectangle: " + [minY, minY] + " - " + [maxX, maxY] + ".";
+		var midX = (minX + maxX) / 2;
+		var midY = (minY + maxY) / 2;
+		// if (midX - x == 0) -> m == ±Inf -> minYx/maxYx == x (because value / ±Inf = ±0)
+		var m = (midY - y) / (midX - x);
+
+		if (x <= midX) { // check "left" side
+			var minXy = m * (minX - x) + y;
+			if (minY < minXy && minXy < maxY)
+				return {x: minX, y: minXy};
 		}
-		if (-45 <= theta && theta <= -0 || 0 <= theta && theta <= 45) {
-			x = flip? start.x : start.x2(); // right
-		} else if (45 <= theta && theta <= 135) {
-			x = (start.x + start.x2()) / 2; // top middle
-		} else if (135 <= theta && theta <= 180 || -180 <= theta && theta <= -135) {
-			x = flip? start.x2() : start.x; // left
-		} else if (-135 <= theta && theta <= -45) {
-			x = (start.x + start.x2()) / 2; // bottom middle
-		} else {
-			throw theta + " is out of range (0..360)";
+
+		if (x >= midX) { // check "right" side
+			var maxXy = m * (maxX - x) + y;
+			if (minY < maxXy && maxXy < maxY)
+				return {x: maxX, y: maxXy};
 		}
-		return x - start.width / 2;
-	};
-	function lineY (start, end, flip) {
-		var y, theta = angle(start, end);
-		if(flip) {
-			theta = -theta;
-			var temp = start;
-			start = end;
-			end = temp;
+
+		if (y <= midY) { // check "top" side
+			var minYx = (minY - y) / m + x;
+			if (minX < minYx && minYx < maxX)
+				return {x: minYx, y: minY};
 		}
-		if (-45 <= theta && theta <= -0 || 0 <= theta && theta <= 45) {
-			y = (start.y + start.y2()) / 2; // right middle
-		} else if (45 <= theta && theta <= 135) {
-			y = start.y2(); // top
-		} else if (135 <= theta && theta <= 180 || -180 <= theta && theta <= -135) {
-			y = (start.y + start.y2()) / 2; // left middle
-		} else if (-135 <= theta && theta <= -45) {
-			y = start.y; // bottom
-		} else {
-			throw theta + " is out of range (0..360)";
+
+		if (y >= midY) { // check "bottom" side
+			var maxYx = (maxY - y) / m + x;
+			if (minX < maxYx && maxYx < maxX)
+				return {x: maxYx, y: maxY};
 		}
-		return y - start.height / 2;
+
+		// Should never happen :) If it does, please tell me!
+		throw "Cannot find intersection for " + [x,y]
+		    + " inside rectangle " + [minY, minY] + " - " + [maxX, maxY] + ".";
 	};
 }();

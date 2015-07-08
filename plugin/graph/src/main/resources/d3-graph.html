@@ -113,20 +113,17 @@ var force = d3.layout
 		.on('tick', function tick() {
 			//var q = d3.geom.quadtree(nodes);
 			//node.each(function(n) { q.visit(phys.collide(n)) });
-			// TODO make it finer by 22.5 degree units
-			// TODO fix \[  node   ]/ weird edges
-			//           \         /
-			//    [ node ]\       /[   node  ]
 			link
-				.attr('x1', function(d) { return phys.lineX(d.source, d.target); })
-				.attr('y1', function(d) { return phys.lineY(d.source, d.target); })
-				.attr('x2', function(d) { return phys.lineX(d.target, d.source); })
-				.attr('y2', function(d) { return phys.lineY(d.target, d.source); })
+				.attr('x1', function(d) { return phys.pointOnRect(d.source, d.target).x; })
+				.attr('y1', function(d) { return phys.pointOnRect(d.source, d.target).y; })
+				.attr('x2', function(d) { return phys.pointOnRect(d.target, d.source).x; })
+				.attr('y2', function(d) { return phys.pointOnRect(d.target, d.source).y; })
 			;
 
-			node.attr('transform', 	function translate(d) {
-				return 'translate(' + d.x + ',' + d.y + ')';
-			})
+			node
+				.attr('transform', 	function translate(d) {
+					return 'translate(' + d.x + ',' + d.y + ')';
+				})
 			;
 			//zoomFit();
 		})
@@ -144,7 +141,7 @@ function resize() {
 	console.trace("Resize", force.size(), [width, height]);
 	//zoom.center([width/2, height/2]);
 	force.size([width, height]).resume();
-	lapsedZoomFit(undefined, 0);
+	lapsedZoomFit(5, 0);
 }
 
 function restart(first) {
@@ -152,10 +149,10 @@ function restart(first) {
 	uiLinks = link
 		.enter()
 		.append('line')
-		.each(function(d) { d.ui = this; })
+		.each(function(d) { d.ui.edge = this; })
 		.attr('id', function(d) {
-		 return d.linkId();
-		  })
+			return d.linkId();
+		})
 		.attr('class', 'link')
 		.style('marker-end', 'url(#arrow)')
 	;
@@ -196,16 +193,15 @@ function zoomFit(paddingPercent, transitionDuration) {
 	    height = bounds.height;
 	var midX = bounds.x + width / 2,
 	    midY = bounds.y + height / 2;
-	if (width == 0 || height == 0) return;
+	if (width == 0 || height == 0) return; // nothing to fit
 	var scale = (paddingPercent || 0.75) / Math.max(width / fullWidth, height / fullHeight);
 	var translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
 
 	console.trace("zoomFit", translate, scale);
 	root
 		.transition()
-		.duration(transitionDuration || 0)
+		.duration(transitionDuration || 0) // milliseconds
 		.call(zoom.translate(translate).scale(scale).event);
-	//zoom.translate(translate).scale(scale).event(root);
 }
 
 var legendData = [
@@ -223,12 +219,12 @@ var legendData = [
 !function buildLegend() {
 	for(var i in legendData) {
 		legendData[i].ui = {
-			__data__: legendData[i],
+			data: legendData[i],
 			label: function() {
-			return this.__data__.title || this.__data__.classes;
+				return this.data.title || this.data.classes;
 			},
 			nodeId: function() {
-				return 'legend_' + this.__data__.id;
+				return 'legend_' + this.data.id;
 			}
 		};
 		legendData[i].id = legendData[i].classes.replace(/ /, '-');
@@ -345,15 +341,15 @@ var model = function() {
 		var viewModel = {
 			links: [],
 			ui: {
-				__data__: node,
+				data: node,
 				node: null,
 				text: null,
 				bg: null,
 				label: function() {
-					return this.__data__.label || this.__data__.id;
+					return this.data.label || this.data.id;
 				},
 				nodeId: function() {
-					return constructNodeId(this.__data__.id);
+					return constructNodeId(this.data.id);
 				}
 			},
 			x2: function() {
@@ -383,7 +379,9 @@ var model = function() {
 			source: fromNode,
 			target: toNode,
 			weight: 1,
-			ui: null,
+			ui: {
+				edge: null
+			},
 			linkId: function() {
 				return constructLinkId(this.source.id, this.target.id);
 			}
