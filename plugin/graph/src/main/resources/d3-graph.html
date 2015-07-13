@@ -162,7 +162,7 @@ function restart(first) {
 	uiNodes = createNodes(node);
 	uiNodes
 		.on('click', function(d) {
-			d3.selectAll('.selected').classed('selected', false);
+			uiNodes.selectAll('.selected').classed('selected', false);
 			d3.select(this).classed('selected', true);
 		})
 		.call(force
@@ -205,16 +205,17 @@ function zoomFit(paddingPercent, transitionDuration) {
 }
 
 var legendData = [
-	{ classes: 'skipped', title: 'SKIPPED' },
-	{ classes: 'failure', title: 'FAILED' },
+	{ classes: '', title: 'task' },
 	{ classes: 'success' },
 	{ classes: 'uptodate', title: 'UP-TO-DATE' },
-	{ classes: 'nowork' },
+	{ classes: 'failure', title: 'FAILED' },
+	{ classes: 'skipped', title: 'SKIPPED' },
 	{ classes: 'executing' },
-	{ classes: 'selected' },
 	{ classes: 'requested' },
+	{ classes: 'excluded', title: '--exclude-task' },
+	{ classes: 'nowork' },
 	{ classes: 'unknown' },
-	{ classes: 'excluded', title: '--exclude-task' }
+	{ classes: 'selected' }
 ];
 !function buildLegend() {
 	for(var i in legendData) {

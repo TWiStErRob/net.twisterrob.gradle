@@ -55,7 +55,6 @@ svg {
 /* Active on the UI, user clicked on it. */
 .node.selected > rect {
 	stroke-width: 8px;
-
 }
 .node.selected > text {
 	text-decoration: underline;

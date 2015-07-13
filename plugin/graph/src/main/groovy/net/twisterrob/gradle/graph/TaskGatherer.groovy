@@ -15,6 +15,7 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 	}
 
 	private final Map<Task, TaskData> all = new TreeMap<>();
+	@SuppressWarnings("GrFinalVariableAccess")
 	private final Project project
 
 	TaskGatherer(Project project) {
@@ -112,6 +113,7 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 		private final Set<TaskData> done = new TreeSet<>()
 		/** list of nodes to get from vertex0 to child0 */
 		private final Deque<TaskData> path = new LinkedList<>()
+
 		public void run(Collection<TaskData> graph) {
 			for (TaskData vertex0 in graph) {
 				vertex0.depsDirect.addAll(vertex0.deps);

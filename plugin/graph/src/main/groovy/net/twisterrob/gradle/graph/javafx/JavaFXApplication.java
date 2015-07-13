@@ -7,14 +7,14 @@ import org.gradle.api.Project;
 import javafx.application.*;
 import javafx.stage.Stage;
 
-public class HelloJavaFX2 extends Application {
+public class JavaFXApplication extends Application {
 	private static CountDownLatch initialized;
-	private static volatile HelloJavaFX2 app;
+	private static volatile JavaFXApplication app;
 
 	private final GradleJULFixer fixer = new GradleJULFixer();
-	private volatile GraphWindow ui;
+	private volatile D3GraphWindow ui;
 
-	public HelloJavaFX2() {
+	public JavaFXApplication() {
 		super();
 		app = this;
 	}
@@ -25,7 +25,7 @@ public class HelloJavaFX2 extends Application {
 	}
 
 	@Override public void start(Stage stage) throws Exception {
-		ui = new GraphWindow(stage);
+		ui = new D3GraphWindow(stage);
 		initialized.countDown();
 		//fixer.interrupt(); // from here on it doesn't really matter, because most of JavaFX is already up and running
 	}
@@ -36,12 +36,12 @@ public class HelloJavaFX2 extends Application {
 	}
 
 	public static void startLaunch() {
-		HelloJavaFX2.initialized = new CountDownLatch(1);
+		JavaFXApplication.initialized = new CountDownLatch(1);
 		if (app == null) {
 			new Thread() {
 				@Override public void run() {
 					Platform.setImplicitExit(false); // keep JavaFX alive
-					Application.launch(HelloJavaFX2.class);
+					Application.launch(JavaFXApplication.class);
 				}
 			}.start();
 		} else {
@@ -49,7 +49,7 @@ public class HelloJavaFX2 extends Application {
 		}
 	}
 
-	public static GraphWindow show(final Project project) {
+	public static D3GraphWindow show(final Project project) {
 		try {
 			initialized.await();
 		} catch (InterruptedException e) {
@@ -77,7 +77,10 @@ public class HelloJavaFX2 extends Application {
 		});
 	}
 
-	/** @see http://stackoverflow.com/a/31100941/253468 com.sun.webpane.platform.graphics.WCGPerfMeter */
+	/**
+	 * @see <a href="http://stackoverflow.com/a/31100941/253468">Background</a>
+	 * @see com.sun.webpane.sg.prism.FXGraphicsManager com.sun.webpane.platform.graphics.WCGPerfMeter
+	 */
 	private static class GradleJULFixer extends Thread {
 		private static final boolean DEBUG = false;
 		private static final String MISCHIEF_LOGGER = com.sun.webpane.sg.prism.WCGraphicsPrismContext.class.getName();
@@ -87,15 +90,6 @@ public class HelloJavaFX2 extends Application {
 			setDaemon(true);
 		}
 
-		public static boolean isFixed() {
-			return !java.util.logging.Logger.getLogger(MISCHIEF_LOGGER).isLoggable(java.util.logging.Level.FINE);
-		}
-		public static void fix() {
-			log("fixing");
-			java.util.logging.Logger.getLogger("com.sun.webpane.perf").setLevel(java.util.logging.Level.OFF);
-			java.util.logging.Logger.getLogger(MISCHIEF_LOGGER).setLevel(java.util.logging.Level.OFF);
-			//running.set(false); // once fixed, stop running, except it can go wrong 2-3 times
-		}
 		@Override public void run() {
 			try {
 				//noinspection InfiniteLoopStatement Thread should be interrupted when fixing is not needed any more
@@ -111,10 +105,34 @@ public class HelloJavaFX2 extends Application {
 			}
 		}
 
-		@Override public synchronized void start() {
+		public static boolean isFixed() {
+			return !enabled(MISCHIEF_LOGGER)
+					&& !enabled("com.sun.webpane.perf")
+					&& !enabled("com.sun.webpane.perf.WCFontPerfLogger")
+					&& !enabled("com.sun.webpane.perf.WCGraphicsPerfLogger")
+					&& !enabled("com.sun.webpane.perf.Locks")
+					&& !enabled("com.sun.webpane.perf.XXX")
+					;
+		}
+
+		public static void fix() {
+			log("fixing");
+			disable(MISCHIEF_LOGGER);
+			disable("com.sun.webpane.perf"); // should disable all children as well
+			//running.set(false); // once fixed, stop running, except it can go wrong 2-3 times
+		}
+
+		@Override public void start() {
 			log("starting");
 			fix(); // fix quickly
 			super.start();
+		}
+
+		private static boolean enabled(String name) {
+			return java.util.logging.Logger.getLogger(name).isLoggable(java.util.logging.Level.FINE);
+		}
+		private static void disable(String name) {
+			java.util.logging.Logger.getLogger(name).setLevel(java.util.logging.Level.OFF);
 		}
 
 		private static void log(String x) {

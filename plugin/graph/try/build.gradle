@@ -47,3 +47,11 @@ project.afterEvaluate {
 
 	newTask("onlyIf", {}).onlyIf { false }
 }
+
+project.afterEvaluate {
+	project.tasks.all { Task task ->
+		task.doLast {
+			sleep((int)(Math.random() * 500))
+		}
+	}
+}

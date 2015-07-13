@@ -13,34 +13,27 @@ public class GraphPlugin implements Plugin<Project> {
 	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>    */
 	@Override public void apply(Project project) {
 		this.project = project;
-		project.afterEvaluate {
-			project.tasks.all { Task task ->
-				task.doLast {
-					sleep((int)(Math.random() * 1000))
-				}
-			}
-		}
 
-		TaskVisualizer graph = createGraph()
+		TaskVisualizer vis = createGraph()
 
 		new TaskGatherer(project).setTaskGraphListener(new TaskGatherer.TaskGraphListener() {
 			@Override void graphPopulated(Map<Task, TaskData> tasks) {
-				graph.initModel(tasks)
-			}
-		})
-		//decorateListeners(project)
-		project.gradle.taskGraph.addTaskExecutionListener(new TaskExecutionListener() {
-			@Override void beforeExecute(Task task) {
-				graph.update(task, TaskResult.executing)
-			}
-			@Override void afterExecute(Task task, TaskState state) {
-				graph.update(task, getResult(task, state))
+				vis.initModel(tasks)
 			}
 		})
 
-		graph.showUI(project)
+		project.gradle.taskGraph.addTaskExecutionListener(new TaskExecutionListener() {
+			@Override void beforeExecute(Task task) {
+				vis.update(task, TaskResult.executing)
+			}
+			@Override void afterExecute(Task task, TaskState state) {
+				vis.update(task, getResult(task, state))
+			}
+		})
+
+		vis.showUI(project)
 		project.gradle.buildFinished {
-			graph.closeUI()
+			vis.closeUI()
 		}
 	}
 	private TaskVisualizer createGraph() {
@@ -78,7 +71,7 @@ buildscript {
 		}
 	}
 
-	private TaskResult getResult(Task task, TaskState state) {
+	private static TaskResult getResult(Task task, TaskState state) {
 		TaskResult result;
 		if (state.failure) {
 			result = TaskResult.failure
