@@ -1,20 +1,36 @@
 package net.twisterrob.gradle.graph
 import groovy.transform.CompileStatic
 import net.twisterrob.gradle.graph.graphstream.GraphStreamTaskVisualizer
-import net.twisterrob.gradle.graph.javafx.JavaFXD3TaskVisualizer
+import net.twisterrob.gradle.graph.javafx.JavaFXTaskVisualizer
 import org.gradle.api.*
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
+import org.gradle.cache.*
+import org.gradle.cache.internal.FileLockManager
+
+import javax.inject.Inject
+
+import static org.gradle.cache.internal.filelock.LockOptionsBuilder.*
 
 @CompileStatic
 public class GraphPlugin implements Plugin<Project> {
+	private final CacheRepository cacheRepository
 	private Project project
 
-	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>    */
+	@Inject public GraphPlugin(CacheRepository cacheRepository) {
+		this.cacheRepository = cacheRepository
+	}
+
+	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>        */
 	@Override public void apply(Project project) {
 		this.project = project;
+		PersistentCache cache = cacheRepository
+				.cache(project.gradle, "graphSettings")
+				.withDisplayName("graph visualization settings")
+				.withLockOptions(mode(FileLockManager.LockMode.None)) // Lock on demand
+				.open()
 
-		TaskVisualizer vis = createGraph()
+		TaskVisualizer vis = createGraph(cache)
 
 		new TaskGatherer(project).setTaskGraphListener(new TaskGatherer.TaskGraphListener() {
 			@Override void graphPopulated(Map<Task, TaskData> tasks) {
@@ -34,14 +50,16 @@ public class GraphPlugin implements Plugin<Project> {
 		vis.showUI(project)
 		project.gradle.buildFinished {
 			vis.closeUI()
+			cache.close();
 		}
 	}
-	private TaskVisualizer createGraph() {
+
+	private TaskVisualizer createGraph(PersistentCache cache) {
 		TaskVisualizer graph
 		if (hasJavaFX()) {
-			graph = new JavaFXD3TaskVisualizer()
+			graph = new JavaFXTaskVisualizer(cache)
 		} else {
-			graph = new GraphStreamTaskVisualizer()
+			graph = new GraphStreamTaskVisualizer(cache)
 		}
 		return graph;
 	}
