@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.graph.javafx;
+package net.twisterrob.gradle.graph.javafx.interop;
 
 import java.lang.reflect.Type;
 import java.util.EnumMap;
@@ -7,7 +7,7 @@ import com.google.gson.*;
 
 import net.twisterrob.gradle.graph.TaskResult;
 
-class TaskStateSerializer implements JsonSerializer<TaskResult> {
+public class TaskResultSerializer implements JsonSerializer<TaskResult> {
 	@Override public JsonElement serialize(TaskResult taskResult, Type type, JsonSerializationContext context) {
 		String stateString = getState(taskResult);
 		return stateString != null? new JsonPrimitive(stateString) : null;
