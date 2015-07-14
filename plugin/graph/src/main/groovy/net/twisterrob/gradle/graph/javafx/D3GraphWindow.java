@@ -8,6 +8,7 @@ import org.gradle.api.*;
 
 import com.google.gson.*;
 
+import javafx.application.Platform;
 import javafx.beans.value.*;
 import javafx.concurrent.Worker.State;
 import javafx.geometry.Rectangle2D;
@@ -34,9 +35,6 @@ public class D3GraphWindow implements TaskVisualizer {
 		WebView webView = new WebView();
 		border.setCenter(webView);
 		setupBrowser(webView.getEngine());
-
-		// http://stackoverflow.com/a/9405733/253468
-		//webView.getEngine().executeScript(FIREBUG_LITE);
 
 		stage.setTitle("Loading...");
 		stage.setScene(scene);
@@ -83,7 +81,14 @@ public class D3GraphWindow implements TaskVisualizer {
 
 	@Override public void showUI(Project project) {
 		window.setTitle(String.format("%s - Gradle Build Graph", project.getName()));
-		window.show();
+		if (bridge != null) {
+			initModel(new HashMap<Task, TaskData>()); // reset graph before displaying it again
+		}
+		Platform.runLater(new Runnable() {
+			@Override public void run() {
+				window.show(); // delay display so that bridge's runLater runs first
+			}
+		});
 	}
 
 	@Override public void initModel(Map<Task, TaskData> graph) {
@@ -99,7 +104,7 @@ public class D3GraphWindow implements TaskVisualizer {
 	}
 
 	@Override public void update(Task task, TaskResult result) {
-		bridge.update(task.getName(), TaskResultSerializer.getState(result));
+		bridge.update(TaskSerializer.getKey(task), TaskResultSerializer.getState(result));
 	}
 
 	@Override public void closeUI() {

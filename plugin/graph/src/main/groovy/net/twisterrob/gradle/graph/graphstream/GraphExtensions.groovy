@@ -2,6 +2,7 @@ package net.twisterrob.gradle.graph.graphstream
 
 import org.graphstream.graph.*
 
+// TODO consider @groovy.lang.Category
 class GraphExtensions {
 	static void addClass(final Iterable<? extends Element> self, String clazz) {
 		for (Element e : self) {

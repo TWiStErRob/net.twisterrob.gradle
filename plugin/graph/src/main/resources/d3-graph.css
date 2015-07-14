@@ -24,13 +24,20 @@ svg {
 	ry: 4px;
 	shape-rendering: crispEdges;
 }
-.node > text {
+.node > text.label {
 	fill: white;
 	text-anchor: middle;
-	alignment-baseline: middle;
+	alignment-baseline: central;
 	font-size: 13px;
 	font-family: sans-serif;
 	letter-spacing: -1px;
+}
+.node > text.project {
+	/*fill: black;*/
+	/*font-style: italic;*/
+	font-size: 7px;
+	text-anchor: end;
+	alignment-baseline: text-before-edge;
 }
 .link {
 	stroke: black;
@@ -51,6 +58,12 @@ svg {
 /* Node state styles */
 .node > rect {
 	stroke-width: 3px;
+}
+.node.leaf > text {
+	/*font-size: 10px;*/
+}
+.node.straight > text {
+	/*font-size: 10px;*/
 }
 /* Active on the UI, user clicked on it. */
 .node.selected > rect {
@@ -120,9 +133,9 @@ svg {
 .node.failure > text {
 	fill: #FFF;
 }
-.node.nowork:not(.uptodate):not(.skipped) > rect {
+.node.nowork > rect {
 	fill: #EB0;
 }
-.node.nowork:not(.uptodate):not(.skipped) > text {
+.node.nowork > text {
 	fill: #000;
 }

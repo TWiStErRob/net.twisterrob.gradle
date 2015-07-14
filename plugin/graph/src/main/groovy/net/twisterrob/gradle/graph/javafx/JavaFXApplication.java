@@ -36,8 +36,8 @@ public class JavaFXApplication extends Application {
 	}
 
 	public static void startLaunch() {
-		JavaFXApplication.initialized = new CountDownLatch(1);
-		if (app == null) {
+		if (initialized == null) {
+			initialized = new CountDownLatch(1);
 			new Thread() {
 				@Override public void run() {
 					Platform.setImplicitExit(false); // keep JavaFX alive

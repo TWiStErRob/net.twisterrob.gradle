@@ -23,8 +23,11 @@
 					0 0 0 1 0
 				" />
 			</filter>
-			<marker id="arrow" viewBox="0,0 10 10" refX="8" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
+			<marker id="arrow-out" viewBox="0,0 10 10" refX="8" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
 				<path d="M 0 0 L 10 5 L 0 10 z" />
+			</marker>
+			<marker id="arrow-in" viewBox="0,0 10 10" refX="2" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
+				<path d="M 10 0 L 0 5 L 10 10 z" />
 			</marker>
 		</defs>
 		<rect id="background" width="100%" height="100%" fill="url(#background-gradient)" pointer-events="all" />
@@ -39,7 +42,7 @@
 	</svg>
 	<div id="menu">
 		<button onclick="force.stop()">Freeze</button>
-		<button onclick="force.resume()">Melt</button>
+		<button onclick="force.resume()">Thaw</button>
 		<button onclick="force.stop(); zoomFit(0.95, 500)">Fit</button>
 	</div>
 	<script>//<![CDATA[
@@ -146,6 +149,7 @@ function resize() {
 
 function restart(first) {
 	link = link.data(links);
+	link.exit().remove();
 	uiLinks = link
 		.enter()
 		.append('line')
@@ -154,10 +158,12 @@ function restart(first) {
 			return d.linkId();
 		})
 		.attr('class', 'link')
-		.style('marker-end', 'url(#arrow)')
+		.style('marker-start', 'url(#arrow-in)')
+		//.style('marker-end', 'url(#arrow-out)')
 	;
 
 	node = node.data(nodes);
+	node.exit().remove();
 
 	uiNodes = createNodes(node);
 	uiNodes
@@ -218,9 +224,11 @@ var legendData = [
 	{ classes: 'selected' }
 ];
 !function buildLegend() {
-	for(var i in legendData) {
-		legendData[i].ui = {
-			data: legendData[i],
+	for(var i in legendData) { var legendDatum = legendData[i];
+		// TODO use nodify?
+		legendDatum.ui = {
+			data: legendDatum,
+			project: function() { return ""; },
 			label: function() {
 				return this.data.title || this.data.classes;
 			},
@@ -228,7 +236,9 @@ var legendData = [
 				return 'legend_' + this.data.id;
 			}
 		};
-		legendData[i].id = legendData[i].classes.replace(/ /, '-');
+		legendDatum.deps = [];
+		legendDatum.depsInverse = [];
+		legendDatum.id = legendData[i].classes.replace(/ /, '-');
 	}
 	var legend = svg
 		.select('#legend');
@@ -253,7 +263,12 @@ var legendData = [
 }(legendData);
 
 function nodeClasses(d) {
-	return 'node' + (d.type? ' ' + d.type : '') + (d.state? ' ' + d.state : '');
+	return 'node'
+		 + (d.type? ' ' + d.type : '')
+		 + (d.state? ' ' + d.state : '')
+		 + (d.deps.length === 0? ' leaf' : '')
+		 + (d.deps.length === 1 && d.depsInverse.length === 1? ' straight' : '')
+	;
 }
 function createNodes(nodeData) {
 	var uiNodes = nodeData
@@ -270,14 +285,24 @@ function createNodes(nodeData) {
 	;
 	var text = uiNodes.append('text')
 		.each(function(d) { d.ui.text = this; })
+		.classed('label', true)
 		.text(function(d) { return d.ui.label(); })
 	;
-	var padding = {x: 6, y: 5};
+	//uiNodes.append('circle').attr("cx", 0).attr("cy", 0).attr("r", 3).attr("fill", "red");
+	var padding = {x: 4, y: 4};
 
-	rect.attr('width', function(d) { return d.ui.text.clientWidth + 2 * padding.x; })
-		.attr('height', function(d) { return d.ui.text.clientHeight + 2 * padding.y; })
-		.attr('x', function(d) { return -d.ui.text.clientWidth / 2 - padding.x; })
-		.attr('y', function(d) { return -d.ui.text.clientHeight / 2 - padding.y; })
+	rect
+		.attr('width', function(d) { return d.ui.text.clientWidth + 2.0 * padding.x; })
+		.attr('height', function(d) { return d.ui.text.clientHeight + 2.0 * padding.y; })
+		.attr('x', function(d) { return +d3.select(this).attr('width') / -2.0; })
+		.attr('y', function(d) { return +d3.select(this).attr('height') / -2.0; })
+	;
+
+	uiNodes.append('text')
+		.classed('project', true)
+		.text(function(d) { return d.ui.project(); })
+		.attr('x', function(d) { return +d3.select(d.ui.bg).attr('x') + +d3.select(d.ui.bg).attr('width') - padding.x; })
+		.attr('y', function(d) { return +d3.select(d.ui.bg).attr('y'); })
 	;
 
 	uiNodes.each(function(d) {
@@ -307,6 +332,7 @@ var model = function() {
 				for(var depIndex in fromNode.deps) {
 					var toNode = graph[fromNode.deps[depIndex]];
 					if (filter(toNode)) continue;
+					toNode.depsInverse.push(fromNode.id);
 					var link = createLink(fromNode, toNode);
 					links.push(link);
 					fromNode.links.push(link);
@@ -337,7 +363,8 @@ var model = function() {
 	function nodify(id, node) {
 		var defaults = {
 			id: id,
-			deps: []
+			deps: [],
+			depsInverse: []
 		};
 		var viewModel = {
 			links: [],
@@ -346,8 +373,13 @@ var model = function() {
 				node: null,
 				text: null,
 				bg: null,
+				project: function() {
+					var label = this.data.label || this.data.id;
+					return label.replace(/^:?(.+):.+$|.*/, "$1");
+				},
 				label: function() {
-					return this.data.label || this.data.id;
+					var label = this.data.label || this.data.id;
+					return label.replace(/^:?(.*):/, "");
 				},
 				nodeId: function() {
 					return constructNodeId(this.data.id);
@@ -361,13 +393,17 @@ var model = function() {
 			}
 		};
 
+		node.toString = function() {
+			return this.id + " @ " + this.x + "," + this.y + " " + this.width + "x" + this.height;
+		};
+
 		for (var i in defaults) {
-			if(node[i] === undefined) {
+			if (node[i] === undefined) {
 				node[i] = defaults[i];
 			}
 		}
 		for (var i in viewModel) {
-			if(node[i] === undefined) {
+			if (node[i] === undefined) {
 				node[i] = viewModel[i];
 			} else {
 				console.error("Property " + i + " already exists", node, viewModel);
@@ -385,6 +421,9 @@ var model = function() {
 			},
 			linkId: function() {
 				return constructLinkId(this.source.id, this.target.id);
+			},
+			toString: function() {
+				return this.source + " -> " + this.target;
 			}
 		};
 	}
@@ -413,9 +452,9 @@ if (window.java) {
 
 function demo() {
 	var allDeps = {
-		onlyIf: { deps: []},
-		throwTask: { state: "failure", deps: []},
-		preBuild: { state: "skipped", deps: ['onlyIf', 'throwTask']},
+		':onlyIf': { deps: []},
+		':sub:proj:throwTask': { state: "failure", deps: []},
+		preBuild: { state: "skipped", deps: [':onlyIf', ':sub:proj:throwTask']},
 		preDebugBuild: { state: "success", deps: ['preBuild']},
 		checkDebugManifest: { state: "uptodate", deps: ['preDebugBuild']},
 		prepareDebugDependencies: { state: "success", deps: [/*'preDebugBuild',*/ 'checkDebugManifest']},
@@ -441,13 +480,13 @@ function demo() {
 		zipalignDebug: { deps: ['packageDebug']},
 		assembleDebug: { type: "requested", deps: ['zipalignDebug', 'compileDebugSources']},
 		assembleRelease: { type: "requested", deps: []},
-		assemble: { type: "requested", deps: ['assembleRelease', 'assembleDebug']},
+		':lib:assemble': { type: "requested", deps: ['assembleRelease', 'assembleDebug']},
 		_debugApk: { type: "unknown", deps: []},
 		_debugCompile: { type: "unknown", deps: []}
 	}
 
 	model.init(allDeps);
-	model.update("generateDebugResValues", "success");
+	model.update('generateDebugResValues', 'success');
 }
 
 //]]></script>

@@ -15,14 +15,16 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 	}
 
 	private final Map<Task, TaskData> all = new TreeMap<>();
-	@SuppressWarnings("GrFinalVariableAccess")
 	private final Project project
 
 	TaskGatherer(Project project) {
 		this.project = project
+		wire()
+	}
 
+	private void wire() {
 		// existing tasks (in case plugin is applied late)
-		for (Task task : project.tasks) {
+		for (Task task in project.tasks) {
 			data(task)
 		}
 
@@ -40,17 +42,17 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 	}
 
 	@Override void graphPopulated(TaskExecutionGraph teg) {
-		for (Task task : teg.allTasks) {
+		for (Task task in teg.allTasks) {
 			data(task).type = TaskType.normal
 		}
-		for (Task task : getRequestTasks()) {
+		for (Task task in requestedTasks) {
 			data(task).type = TaskType.requested
 		}
-		for (Task task : getExcludedTasks()) {
-			data(task).type = TaskType.excluded
+		for (Task task in excludedTasks) {
+			data(task).type = TaskType.excluded // wins over requested
 		}
-		buildDependencies()
-		calculateSimplification()
+		new ResolveDependencies(this.&data).run(new ArrayList(all.values()))
+		new TransitiveReduction().run(all.values())
 		if (listener != null) {
 			listener.graphPopulated(all)
 		}
@@ -65,61 +67,75 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 		return data;
 	}
 
-	private void buildDependencies() {
-		for (TaskData taskData : all.values()) {
-			for (Object dep : taskData.task.dependsOn) {
-				if (dep instanceof Task) {
-					taskData.deps.add(data((Task)dep));
-				}
-			}
-		}
-	}
-
-	private void calculateSimplification() {
-		new TransitiveReduction().run(all.values());
-	}
-
 	/** @see org.gradle.execution.ExcludedTaskFilteringBuildConfigurationAction */
 	private Collection<Task> getExcludedTasks() {
 		TaskSelector selector = ((GradleInternal)project.gradle).getServices().get(TaskSelector.class)
 
 		Set<Task> tasks = new HashSet<>()
-		for (String path : project.gradle.startParameter.excludedTaskNames) {
+		for (String path in project.gradle.startParameter.excludedTaskNames) {
 			TaskSelector.TaskSelection selection = selector.getSelection(path)
 			//println "-${path} -> ${selection.getTasks()*.getName()}"
-			tasks.addAll(selection.getTasks())
+			tasks.addAll selection.getTasks()
 		}
 		return tasks;
 	}
 
 	/** @see org.gradle.execution.TaskNameResolvingBuildConfigurationAction */
-	private Collection<Task> getRequestTasks() {
+	private Collection<Task> getRequestedTasks() {
 		TaskSelector selector = ((GradleInternal)project.gradle).getServices().get(TaskSelector.class)
 
 		Set<Task> tasks = new HashSet<>()
-		for (TaskExecutionRequest request : project.gradle.startParameter.taskRequests) {
-			for (String path : request.args) {
+		for (TaskExecutionRequest request in project.gradle.startParameter.taskRequests) {
+			for (String path in request.args) {
 				TaskSelector.TaskSelection selection = selector.getSelection(request.projectPath, path)
 				//println "${request.projectPath}:${path} -> ${selection.getTasks()*.getName()}"
-				tasks.addAll(selection.getTasks())
+				tasks.addAll selection.getTasks()
 			}
 		}
 		return tasks;
 	}
 
-	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>     */
+	private static class ResolveDependencies {
+		Closure<TaskData> data;
+
+		public ResolveDependencies(Closure<TaskData> data) {
+			this.data = data;
+		}
+
+		public void run(Collection<TaskData> graph) {
+			TaskData.resetVisited graph
+			for (TaskData taskData in graph) {
+				addResolvedDependencies taskData
+			}
+		}
+
+		private void addResolvedDependencies(TaskData taskData) {
+			if (taskData.visited) {
+				return // shortcut, because taskDependencies.getDependencies is really expensive
+			}
+			Set<Task> deps = taskData.task.taskDependencies.getDependencies(taskData.task) as Set<Task>
+			for (Task dep in deps) {
+				def data = data(dep)
+				taskData.deps.add(data)
+				addResolvedDependencies data
+			}
+			taskData.visited = true
+		}
+	}
+
+	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>         */
 	private static class TransitiveReduction {
-		/** nodes that are done */
-		private final Set<TaskData> done = new TreeSet<>()
 		/** list of nodes to get from vertex0 to child0 */
-		private final Deque<TaskData> path = new LinkedList<>()
+		private final List<TaskData> path = new ArrayList<>(10)
 
 		public void run(Collection<TaskData> graph) {
 			for (TaskData vertex0 in graph) {
 				vertex0.depsDirect.addAll(vertex0.deps);
 			}
 			for (TaskData vertex0 in graph) { // for vertex0 in vertices
-				depthFirstSearch(vertex0, vertex0);
+				TaskData.resetVisited graph
+				path.clear()
+				depthFirstSearch vertex0, vertex0
 			}
 		}
 
@@ -129,28 +145,35 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 		 * @param child0 current node during search
 		 */
 		void depthFirstSearch(TaskData vertex0, TaskData child0) {
-			if (done.contains(child0)) { // if child0 in done
+			if (child0.visited) {
 				return
 			}
 
-			path.push(child0)
-			for (TaskData child in child0.depsDirect) { // for child in child0.children
-				if (child0 != vertex0) {
-					if (vertex0.depsDirect.remove(child)) { // edges.discard((vertex0, child))
-						List<TaskData> alternatePath = new ArrayList<>(path)
-						alternatePath.add(child)
-						println "${vertex0.task.name}->${child.task.name}" +
-								"is replaced by ${alternatePath*.task*.name.join('->')}"
-						def old = vertex0.depsImplicit.put(child, alternatePath)
-						if (old != null) {
-							println "Path already existed: ${old*.task*.name.join('->')}"
-						}
-					}
+			path.add child0
+			for (TaskData child in new ArrayList<TaskData>(child0.depsDirect)) { // for child in child0.children
+				if (vertex0 != child0) {
+					tryReduce vertex0, child
+				} else {
+					// if vertex0 == child0 then child is surely a direct dependency of vertex0
+					// in that case take no action to avoid simplifying a->b to a->b
 				}
-				depthFirstSearch(vertex0, child) // depthFirstSearch(edges, vertex0, child, done)
+				depthFirstSearch vertex0, child // depthFirstSearch(edges, vertex0, child, done)
 			}
-			path.pop()
-			done.add(child0)
+			path.remove(path.size() - 1)
+
+			child0.visited = true
+		}
+
+		private void tryReduce(TaskData vertex0, TaskData child) {
+			if (vertex0.depsDirect.remove(child)) { // edges.discard((vertex0, child))
+				def alternatePath = path + child as List;
+				//println "${vertex0.task.name} -> ${child.task.name}" +
+				//		" is replaced by ${alternatePath*.task*.name.join(' -> ')}"
+				def old = vertex0.depsImplicit.put(child, alternatePath)
+				if (old != null) {
+					//println "Path already existed: ${old*.task*.name.join(' -> ')}"
+				}
+			}
 		}
 	}
 }

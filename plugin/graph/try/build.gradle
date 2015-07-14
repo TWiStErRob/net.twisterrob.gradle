@@ -1,4 +1,5 @@
 apply plugin: 'net.twisterrob.graph'
+
 buildscript {
 	repositories {
 		jcenter()
@@ -15,6 +16,11 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+
+dependencies {
+	compile project(':lib')
+}
+
 android {
 	buildToolsVersion "21.1.1"
 	compileSdkVersion 21
@@ -48,10 +54,14 @@ project.afterEvaluate {
 	newTask("onlyIf", {}).onlyIf { false }
 }
 
-project.afterEvaluate {
-	project.tasks.all { Task task ->
-		task.doLast {
-			sleep((int)(Math.random() * 500))
+if (!project.hasProperty('fast')) {
+	allprojects { p ->
+		p.afterEvaluate {
+			p.tasks.all { Task task ->
+				task.doLast {
+					sleep((int)(Math.random() * 500))
+				}
+			}
 		}
 	}
 }

@@ -1,4 +1,5 @@
 package net.twisterrob.gradle.graph
+
 import groovy.transform.CompileStatic
 import net.twisterrob.gradle.graph.graphstream.GraphStreamTaskVisualizer
 import net.twisterrob.gradle.graph.javafx.JavaFXTaskVisualizer
@@ -12,6 +13,7 @@ import javax.inject.Inject
 
 import static org.gradle.cache.internal.filelock.LockOptionsBuilder.*
 
+// TODO @groovy.util.logging.Slf4j
 @CompileStatic
 public class GraphPlugin implements Plugin<Project> {
 	private final CacheRepository cacheRepository
@@ -21,7 +23,7 @@ public class GraphPlugin implements Plugin<Project> {
 		this.cacheRepository = cacheRepository
 	}
 
-	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>        */
+	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a> */
 	@Override public void apply(Project project) {
 		this.project = project;
 		PersistentCache cache = cacheRepository

@@ -1,1 +1,1 @@
-gradle --stacktrace --continue --no-daemon -x lint assemble aR --exclude-task compileDNdk %* 
+gradle --stacktrace --continue --no-daemon -x lint :testR :aR --exclude-task compileDNdk %* 

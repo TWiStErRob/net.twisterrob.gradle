@@ -8,6 +8,10 @@ import com.google.gson.*;
 
 public class TaskSerializer implements JsonSerializer<Task> {
 	@Override public JsonElement serialize(Task task, Type type, JsonSerializationContext context) {
-		return new JsonPrimitive(task.getName());
+		return new JsonPrimitive(getKey(task));
+	}
+
+	public static String getKey(Task task) {
+		return task.getPath();
 	}
 }
