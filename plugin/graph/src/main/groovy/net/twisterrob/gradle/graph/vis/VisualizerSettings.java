@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.graph;
+package net.twisterrob.gradle.graph.vis;
 
 import java.io.*;
 import java.util.Properties;
@@ -8,7 +8,7 @@ import org.gradle.internal.Factory;
 
 import com.sun.javafx.beans.annotations.NonNull;
 
-public abstract class VisualizerSettings<Settings> {
+public abstract class VisualizerSettings<Settings> implements Closeable {
 	private final PersistentCache cache;
 
 	protected VisualizerSettings(PersistentCache cache) {
@@ -50,6 +50,10 @@ public abstract class VisualizerSettings<Settings> {
 	protected abstract Properties writeSettings(Settings settings);
 
 	protected String getSettingsFileName() {
-		return getClass().getSimpleName() + ".properties";
+		return getClass().getName() + ".properties";
+	}
+
+	public void close() {
+		cache.close();
 	}
 }

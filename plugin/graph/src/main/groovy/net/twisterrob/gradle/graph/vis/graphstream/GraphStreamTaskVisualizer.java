@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.graph.graphstream;
+package net.twisterrob.gradle.graph.vis.graphstream;
 
 import java.awt.Window;
 import java.awt.event.*;
@@ -17,18 +17,19 @@ import org.graphstream.ui.layout.springbox.implementations.LinLog;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
 
-import net.twisterrob.gradle.graph.*;
-import net.twisterrob.gradle.graph.graphstream.GraphStreamSettings.WindowLocation;
+import net.twisterrob.gradle.graph.tasks.*;
+import net.twisterrob.gradle.graph.vis.TaskVisualizer;
+import net.twisterrob.gradle.graph.vis.graphstream.Settings.WindowLocation;
 
-import static net.twisterrob.gradle.graph.graphstream.GraphExtensions.*;
+import static net.twisterrob.gradle.graph.vis.graphstream.GraphExtensions.*;
 
 public class GraphStreamTaskVisualizer implements TaskVisualizer {
 	private Graph graph;
 	private Viewer viewer;
-	private final GraphStreamSettings settings;
+	private final Settings settings;
 
 	public GraphStreamTaskVisualizer(PersistentCache cache) {
-		settings = new GraphStreamSettings(cache);
+		settings = new Settings(cache);
 	}
 
 	@Override public void showUI(Project project) {
@@ -50,6 +51,7 @@ public class GraphStreamTaskVisualizer implements TaskVisualizer {
 		window.addWindowListener(new WindowAdapter() {
 			@Override public void windowClosing(WindowEvent e) {
 				settings.setSettings(new WindowLocation(e.getWindow()));
+				settings.close();
 			}
 		});
 		settings.getSettings().applyTo(viewer);
@@ -58,7 +60,7 @@ public class GraphStreamTaskVisualizer implements TaskVisualizer {
 
 	private void createNode(TaskData data) {
 		Node node = graph.addNode(id(data.getTask()));
-		setLabel(node, data.getTask().getName());
+		setLabel(node, data.getTask().getPath());
 		addClass(node, classMappingType.get(data.getType()));
 	}
 
@@ -76,11 +78,16 @@ public class GraphStreamTaskVisualizer implements TaskVisualizer {
 	}
 
 	@Override public void closeUI() {
-		ViewPanel view = viewer.getDefaultView();
-		if(view != null) {
-			settings.setSettings(new WindowLocation(SwingUtilities.getWindowAncestor(view)));
-			viewer.removeView(view.getId());
-			viewer.close();
+		final ViewPanel view = viewer.getDefaultView();
+		if (view != null) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override public void run() {
+					settings.setSettings(new WindowLocation(SwingUtilities.getWindowAncestor(view)));
+					settings.close();
+					viewer.removeView(view.getId());
+					viewer.close();
+				}
+			});
 		}
 	}
 
@@ -110,7 +117,7 @@ public class GraphStreamTaskVisualizer implements TaskVisualizer {
 	}
 
 	private static String id(Task task) {
-		return task.getName();
+		return task.getPath();
 	}
 
 	private static String id(Task from, Task to) {

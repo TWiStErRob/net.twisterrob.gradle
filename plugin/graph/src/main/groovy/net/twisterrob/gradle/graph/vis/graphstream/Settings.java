@@ -1,15 +1,17 @@
-package net.twisterrob.gradle.graph.javafx;
+package net.twisterrob.gradle.graph.vis.graphstream;
 
+import java.awt.Component;
 import java.util.Properties;
 
+import javax.swing.*;
+
 import org.gradle.cache.PersistentCache;
+import org.graphstream.ui.view.Viewer;
 
-import javafx.stage.*;
+import net.twisterrob.gradle.graph.vis.VisualizerSettings;
 
-import net.twisterrob.gradle.graph.VisualizerSettings;
-
-class JavaFXD3Settings extends VisualizerSettings<JavaFXD3Settings.WindowLocation> {
-	JavaFXD3Settings(PersistentCache cache) {
+class Settings extends VisualizerSettings<Settings.WindowLocation> {
+	Settings(PersistentCache cache) {
 		super(cache);
 	}
 
@@ -31,9 +33,9 @@ class JavaFXD3Settings extends VisualizerSettings<JavaFXD3Settings.WindowLocatio
 		return props;
 	}
 
-	private static double parse(String value, double defaultValue) {
+	private static int parse(String value, int defaultValue) {
 		try {
-			return Double.parseDouble(value);
+			return Integer.parseInt(value);
 		} catch (NullPointerException | NumberFormatException ex) {
 			// ignore
 		}
@@ -41,16 +43,15 @@ class JavaFXD3Settings extends VisualizerSettings<JavaFXD3Settings.WindowLocatio
 	}
 
 	static class WindowLocation {
-		double x;
-		double y;
-		double width;
-		double height;
+		int x;
+		int y;
+		int width;
+		int height;
 
-		void applyTo(Window window) {
-			window.setWidth(width);
-			window.setHeight(height);
-			window.setX(x);
-			window.setY(y);
+		void applyTo(Viewer viewer) {
+			JFrame window = (JFrame)SwingUtilities.getWindowAncestor(viewer.getDefaultView());
+			window.setLocation(x, y);
+			window.setSize(width, height);
 		}
 
 		WindowLocation() {
@@ -60,11 +61,11 @@ class JavaFXD3Settings extends VisualizerSettings<JavaFXD3Settings.WindowLocatio
 			this.height = 600;
 		}
 
-		WindowLocation(Window window) {
-			this.x = window.getX();
-			this.y = window.getY();
-			this.width = window.getWidth();
-			this.height = window.getHeight();
+		WindowLocation(Component window) {
+			this.x = window.getLocation().x;
+			this.y = window.getLocation().y;
+			this.width = window.getSize().width;
+			this.height = window.getSize().height;
 		}
 	}
 }

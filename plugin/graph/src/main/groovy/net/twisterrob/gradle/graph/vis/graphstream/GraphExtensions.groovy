@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.graph.graphstream
+package net.twisterrob.gradle.graph.vis.graphstream
 
 import org.graphstream.graph.*
 

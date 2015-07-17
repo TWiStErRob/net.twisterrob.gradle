@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.graph
+package net.twisterrob.gradle.graph.tasks
 
 import org.gradle.api.Task
 

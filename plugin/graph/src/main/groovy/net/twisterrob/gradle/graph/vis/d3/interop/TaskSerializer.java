@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.graph.javafx.interop;
+package net.twisterrob.gradle.graph.vis.d3.interop;
 
 import java.lang.reflect.Type;
 

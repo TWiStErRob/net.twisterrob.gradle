@@ -1,11 +1,11 @@
-package net.twisterrob.gradle.graph.javafx.interop;
+package net.twisterrob.gradle.graph.vis.d3.interop;
 
 import java.lang.reflect.Type;
 import java.util.EnumMap;
 
 import com.google.gson.*;
 
-import net.twisterrob.gradle.graph.TaskResult;
+import net.twisterrob.gradle.graph.tasks.TaskResult;
 
 public class TaskResultSerializer implements JsonSerializer<TaskResult> {
 	@Override public JsonElement serialize(TaskResult taskResult, Type type, JsonSerializationContext context) {

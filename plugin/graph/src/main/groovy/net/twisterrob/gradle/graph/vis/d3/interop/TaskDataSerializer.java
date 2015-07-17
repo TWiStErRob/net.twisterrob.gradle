@@ -1,10 +1,10 @@
-package net.twisterrob.gradle.graph.javafx.interop;
+package net.twisterrob.gradle.graph.vis.d3.interop;
 
 import java.lang.reflect.Type;
 
 import com.google.gson.*;
 
-import net.twisterrob.gradle.graph.TaskData;
+import net.twisterrob.gradle.graph.tasks.TaskData;
 
 public class TaskDataSerializer implements JsonSerializer<TaskData> {
 	@Override public JsonElement serialize(TaskData data, Type type, JsonSerializationContext context) {

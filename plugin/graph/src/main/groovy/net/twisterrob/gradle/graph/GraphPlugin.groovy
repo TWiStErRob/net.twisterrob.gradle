@@ -1,8 +1,9 @@
 package net.twisterrob.gradle.graph
-
 import groovy.transform.CompileStatic
-import net.twisterrob.gradle.graph.graphstream.GraphStreamTaskVisualizer
-import net.twisterrob.gradle.graph.javafx.JavaFXTaskVisualizer
+import net.twisterrob.gradle.graph.tasks.*
+import net.twisterrob.gradle.graph.vis.TaskVisualizer
+import net.twisterrob.gradle.graph.vis.d3.javafx.D3JavaFXTaskVisualizer
+import net.twisterrob.gradle.graph.vis.graphstream.GraphStreamTaskVisualizer
 import org.gradle.api.*
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
@@ -12,7 +13,6 @@ import org.gradle.cache.internal.FileLockManager
 import javax.inject.Inject
 
 import static org.gradle.cache.internal.filelock.LockOptionsBuilder.*
-
 // TODO @groovy.util.logging.Slf4j
 @CompileStatic
 public class GraphPlugin implements Plugin<Project> {
@@ -23,7 +23,7 @@ public class GraphPlugin implements Plugin<Project> {
 		this.cacheRepository = cacheRepository
 	}
 
-	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a> */
+	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>  */
 	@Override public void apply(Project project) {
 		this.project = project;
 		PersistentCache cache = cacheRepository
@@ -52,14 +52,13 @@ public class GraphPlugin implements Plugin<Project> {
 		vis.showUI(project)
 		project.gradle.buildFinished {
 			vis.closeUI()
-			cache.close();
 		}
 	}
 
 	private TaskVisualizer createGraph(PersistentCache cache) {
 		TaskVisualizer graph
 		if (hasJavaFX()) {
-			graph = new JavaFXTaskVisualizer(cache)
+			graph = new D3JavaFXTaskVisualizer(cache)
 		} else {
 			graph = new GraphStreamTaskVisualizer(cache)
 		}

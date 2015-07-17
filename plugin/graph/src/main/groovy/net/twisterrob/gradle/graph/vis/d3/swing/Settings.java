@@ -1,17 +1,14 @@
-package net.twisterrob.gradle.graph.graphstream;
+package net.twisterrob.gradle.graph.vis.d3.swing;
 
 import java.awt.Component;
 import java.util.Properties;
 
-import javax.swing.*;
-
 import org.gradle.cache.PersistentCache;
-import org.graphstream.ui.view.Viewer;
 
-import net.twisterrob.gradle.graph.VisualizerSettings;
+import net.twisterrob.gradle.graph.vis.VisualizerSettings;
 
-class GraphStreamSettings extends VisualizerSettings<GraphStreamSettings.WindowLocation> {
-	GraphStreamSettings(PersistentCache cache) {
+class Settings extends VisualizerSettings<Settings.WindowLocation> {
+	Settings(PersistentCache cache) {
 		super(cache);
 	}
 
@@ -48,8 +45,7 @@ class GraphStreamSettings extends VisualizerSettings<GraphStreamSettings.WindowL
 		int width;
 		int height;
 
-		void applyTo(Viewer viewer) {
-			JFrame window = (JFrame)SwingUtilities.getWindowAncestor(viewer.getDefaultView());
+		void applyTo(Component window) {
 			window.setLocation(x, y);
 			window.setSize(width, height);
 		}

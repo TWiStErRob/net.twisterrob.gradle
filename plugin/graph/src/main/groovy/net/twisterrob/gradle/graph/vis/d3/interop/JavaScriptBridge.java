@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.graph.javafx.interop;
+package net.twisterrob.gradle.graph.vis.d3.interop;
 
 import java.util.Arrays;
 
@@ -9,6 +9,8 @@ import netscape.javascript.JSObject;
 public class JavaScriptBridge {
 	private final JSObject JSON;
 	private final JSObject model;
+
+	/** @thread JavaFX Application Thread */
 	public JavaScriptBridge(WebEngine engine) {
 		this.JSON = (JSObject)engine.executeScript("JSON");
 		this.model = (JSObject)engine.executeScript("model");
@@ -19,6 +21,7 @@ public class JavaScriptBridge {
 				: argsStr.substring(0, 50).replaceAll("\\s+", " ") + "...";
 		//message(methodName + "(" + argsShort + ")");
 		Platform.runLater(new Runnable() {
+			/** @thread JavaFX Application Thread */
 			@Override public void run() {
 				try {
 					model.call(methodName, args);
@@ -32,6 +35,7 @@ public class JavaScriptBridge {
 		System.err.println(message);
 	}
 
+	/** @thread JavaFX Application Thread */
 	@SuppressWarnings("unused")
 	public void log(JSObject args) {
 		for (int i = 0, len = (Integer)args.getMember("length"); i < len; i++) {

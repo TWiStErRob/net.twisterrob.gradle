@@ -1,8 +1,10 @@
-package net.twisterrob.gradle.graph;
+package net.twisterrob.gradle.graph.vis;
 
 import java.util.Map;
 
 import org.gradle.api.*;
+
+import net.twisterrob.gradle.graph.tasks.*;
 
 public class LoggingTaskVisualizer implements TaskVisualizer {
 	private final TaskVisualizer wrapped;
