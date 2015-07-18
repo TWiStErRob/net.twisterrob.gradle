@@ -72,7 +72,7 @@ svg {
 	position: absolute;
 	right: 1em;
 	top: 1em;
-	min-width: 300px;
+	width: 300px;
 	padding: 0.5em;
 	background-color: rgba(255,255,255,.7);
 	border-radius: 10px;
@@ -86,12 +86,14 @@ svg {
 	padding: 0;
 	margin: 0;
 }
-#detail-name { /* http://projects.lukehaas.me/css-loaders/ */
+#detail-name {
 	display: block;
 	text-align: center;
 	font-size: large;
 	font-weight: bold;
-	padding-bottom: 0.5em;
+	height: 24px;
+	padding: 0.5em;
+	padding-top: 0;
 	border-bottom: 2px solid black;
 	margin-left: -0.5em;
 	margin-right: -0.5em;
@@ -128,6 +130,7 @@ svg {
 	content: 'Successors: ';
 }
 
+/* http://projects.lukehaas.me/css-loaders/ */
 #detail-running {
   font-size: 3px;
   position: relative;
@@ -145,7 +148,7 @@ svg {
   position: absolute;
   /*left: -10em;*/
   right: 2em;
-  top: 15em;
+  top: 16em;
   border-radius: 50%;
   width: 5em;
   height: 5em;

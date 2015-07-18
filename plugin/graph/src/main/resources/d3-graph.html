@@ -152,7 +152,7 @@ var force = d3.layout
 var details = function() {
 	var det = d3.select('#details');
 	var progressUI = det.select('#detail-running');
-	var nameUI = det.select('#detail-name');
+	var nameUI = det.select('#detail-name').insert('span');
 	var projectUI = det.select('#detail-project');
 	var typeUI = det.select('#detail-type');
 	var stateUI = det.select('#detail-state');
@@ -190,6 +190,7 @@ var details = function() {
 
 		if (d) {
 			nameUI.text(d.ui.label());
+			autoSizeText(nameUI.node());
 			projectUI.text(d.ui.project() || 'root project');
 			typeUI.text(d.type || 'normal');
 			stateUI.text(d.state || 'scheduled');
@@ -449,7 +450,7 @@ function createNodes(nodeData) {
 		.classed('project', true)
 		.text(function(d) { return d.ui.project(); })
 		.attr('x', function(d) { return +d3.select(d.ui.bg).attr('x') + +d3.select(d.ui.bg).attr('width') - padding.x; })
-		.attr('y', function(d) { return +d3.select(d.ui.bg).attr('y'); })
+		.attr('y', function(d) { return +d3.select(d.ui.bg).attr('y') - 1; })
 	;
 
 	uiNodes.each(function(d) {
@@ -595,6 +596,53 @@ if (window.java) {
 		}
 		return model;
 	}(model);
+}
+
+
+function autoSizeText(elem, min, max, step, lastChange) {
+	min = min || 1;
+	max = max || Infinity;
+	step = step || 1;
+	lastChange = lastChange !== undefined? lastChange : 0;
+
+	function px(pixelStyle) {
+		return +pixelStyle.slice(0, -2);
+	}
+
+	var elemBounds = elem.getBoundingClientRect(),
+	    style = window.getComputedStyle(elem),
+	    parentStyle = window.getComputedStyle(elem.parentNode)
+	;
+	var elemSize = { width: elemBounds.width, height: elemBounds.height };
+	var parentSize = { width: px(parentStyle.width), height: px(parentStyle.height) };
+	var fontSize = px(style.fontSize);
+
+	console.debug("autoSizeText(" + elem.textContent + ", " + min + ", " + max + ")", fontSize, elemSize, parentSize);
+	var change, stop = false;
+	var needsSmaller = elemSize.width > parentSize.width || elemSize.height > parentSize.height;
+	var needsBigger = elemSize.width < parentSize.width && elemSize.height < parentSize.height;
+	var lastSmaller = lastChange <= 0;
+	var lastBigger = lastChange >= 0;
+	if (lastSmaller && needsSmaller) { console.debug('lastSmaller needsSmaller')
+		change = -step; // continue shrinking
+	} else if (lastBigger && needsBigger) { console.debug('lastBigger needsBigger')
+		change = +step; // continue growing
+	} else if (lastSmaller && needsBigger) { console.debug('lastSmaller needsBigger')
+		change = 0; // found the smallest fit
+		stop = true;
+	} else if (lastBigger && needsSmaller) { console.debug('lastBigger needsSmaller')
+		change = -lastChange; // just overstepped the limit, backtrack once
+		stop = true;
+	} else if (!needsBigger && !needsSmaller) {
+		console.debug("just right");
+	} else {
+		console.debug(lastSmaller, lastBigger, needsSmaller, needsBigger);
+	}
+	fontSize += change;
+	if (min <= fontSize && fontSize <= max) {
+		elem.style.setProperty('font-size', fontSize + 'px');
+		if (!stop) autoSizeText(elem, min, max, step, change);
+	}
 }
 
 function demo() {

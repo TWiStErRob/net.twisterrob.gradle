@@ -150,7 +150,7 @@ class GraphSettingsExtension {
 		TaskVisualizer graph;
 		if (cache != null) { // if we have a cache try cached ctor first
 			try {
-				graph = visualizer.newInstance([ cache ])
+				graph = visualizer.newInstance([ cache ] as Object[])
 			} catch (Exception ex) {
 				err = ex
 			}
