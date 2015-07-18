@@ -56,6 +56,7 @@ public abstract class GraphWindow implements TaskVisualizer {
 					JSObject jsWindow = (JSObject)webEngine.executeScript("window");
 					JavaScriptBridge bridge = new JavaScriptBridge(webEngine);
 					webEngine.executeScript("console.log = function() { java.log(arguments) };");
+					//webEngine.executeScript("console.debug = function() { java.log(arguments) };");
 					jsWindow.setMember("java", bridge);
 
 					GraphWindow.this.bridge = bridge;

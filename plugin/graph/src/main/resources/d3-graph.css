@@ -13,11 +13,7 @@ svg {
 	bottom: 1em;
 	left: 1em;
 }
-#legend-bg {
-	fill: rgba(255,255,255,.7);
-	rx: 10px;
-	ry: 10px;
-}
+
 .node > rect {
 	fill: rgba(0,0,0,.8);
 	rx: 4px;
@@ -55,9 +51,134 @@ svg {
 	pointer-events: none;
 }
 
+/* Legend */
+#legend-header {
+	cursor: pointer;
+	text-anchor: middle;
+	font-weight: bold;
+}
+#legend-bg {
+	cursor: pointer;
+	fill: rgba(255,255,255,.7);
+	rx: 10px;
+	ry: 10px;
+}
+#legend.collapsed .node {
+	display: none;
+}
+
+/* Detials */
+#details {
+	position: absolute;
+	right: 1em;
+	top: 1em;
+	min-width: 300px;
+	padding: 0.5em;
+	background-color: rgba(255,255,255,.7);
+	border-radius: 10px;
+}
+
+#details.collapsed > *:not(#detail-name) {
+	display: none;
+}
+#details.collapsed #detail-name {
+	border-bottom: 0;
+	padding: 0;
+	margin: 0;
+}
+#detail-name { /* http://projects.lukehaas.me/css-loaders/ */
+	display: block;
+	text-align: center;
+	font-size: large;
+	font-weight: bold;
+	padding-bottom: 0.5em;
+	border-bottom: 2px solid black;
+	margin-left: -0.5em;
+	margin-right: -0.5em;
+	margin-bottom: 0.5em;
+	cursor: pointer;
+}
+[id^='detail-']:before {
+	font-weight: bold;
+}
+#detail-project:before {
+	content: 'Project: ';
+}
+#detail-pos:before {
+	content: 'Position: ';
+}
+#detail-type:before {
+	content: 'Type: ';
+}
+#detail-state:before {
+	content: 'State: ';
+}
+#detail-depends {
+	margin: 0;
+}
+#detail-depends:before {
+	margin-left: -40px;
+	content: 'Depends on: ';
+}
+#detail-dependents {
+	margin: 0;
+}
+#detail-dependents:before {
+	margin-left: -40px;
+	content: 'Successors: ';
+}
+
+#detail-running {
+  font-size: 3px;
+  position: relative;
+  text-indent: -9999em;
+  border: 1.1em solid rgba(0, 0, 0, 0.2);
+  border-left: 1.1em solid #000000;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+#detail-running,
+#detail-running:after {
+  position: absolute;
+  /*left: -10em;*/
+  right: 2em;
+  top: 15em;
+  border-radius: 50%;
+  width: 5em;
+  height: 5em;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+
 /* Node state styles */
+.node {
+	cursor: pointer;
+}
 .node > rect {
 	stroke-width: 3px;
+	stroke: #000;
 }
 .node.leaf > text {
 	/*font-size: 10px;*/
@@ -65,47 +186,52 @@ svg {
 .node.straight > text {
 	/*font-size: 10px;*/
 }
-/* Active on the UI, user clicked on it. */
-.node.selected > rect {
-	stroke-width: 8px;
-}
-.node.selected > text {
-	text-decoration: underline;
-	underline-thickness: 4;
-}
-.node:hover {
-	filter: url(#negative);
-}
-.node:hover > text {
-	
-}
+
 /* Task that came from nowhere, we don't know its state yet. */
 .node.unknown > rect {
 	fill: #CCC;
+	stroke: #CCC;
 }
 .node.unknown > text {
 	fill: #999;
 }
+.node.unknown:hover > text {
+	fill: #CCC;
+}
 /* The user asked to run this task, all others are running because this depends on them. */
 .node.requested > rect {
-	fill: #FFF;
+	fill: #EB0;
+	stroke: #EB0;
 }
 .node.requested > text {
 	fill: #000;
 }
+.node.requested:hover > text {
+	fill: #EB0;
+}
 /* The user explicitly wanted to no run this task. */
 .node.excluded > rect {
 	fill: #F8C;
+	stroke: #F8C;
 }
 .node.excluded > text {
 	fill: #000;
 }
+.node.excluded:hover > text {
+	fill: #F8C;
+}
 /* Currently running task. */
 .node.executing > rect {
+	fill: #FF0;
 	stroke: #FF0;
 }
-.node.executing:not(.requested) > text {
+.node.executing > text {
+	fill: #000;
+}
+.node.executing:hover > text {
 	fill: #FF0;
+	stroke: #000;
+	stroke-width: 0.25;
 }
 /* Already finished with some kind of result. */
 .node.success > rect {
@@ -114,12 +240,19 @@ svg {
 .node.success > text {
 	fill: #8F8;
 }
+.node.success:hover > text {
+	fill: #6A0;
+}
 /* ---- Execution results ---- */
 .node.skipped > rect {
 	fill: #A4D;
+	stroke: #A4D;
 }
 .node.skipped > text {
 	fill: #FFF;
+}
+.node.skipped:hover > text {
+	fill: #A4D;
 }
 .node.uptodate > rect {
 	stroke: #4AD;
@@ -127,15 +260,49 @@ svg {
 .node.uptodate > text {
 	fill: #AFF;
 }
+.node.uptodate:hover > text {
+	fill: #4AD;
+}
 .node.failure > rect {
 	fill: #F23;
+	stroke: #F23;
 }
 .node.failure > text {
 	fill: #FFF;
 }
+.node.failure:hover > text {
+	fill: #F23;
+}
 .node.nowork > rect {
-	fill: #EB0;
+	fill: #00F;
+	stroke: #00F;
 }
 .node.nowork > text {
+	fill: #FFF;
+}
+.node.nowork:hover > text {
+	fill: #00F;
+}
+
+/* Active on the UI, user clicked on it. */
+.node.selected > rect {
+	fill: #FFF;
+	stroke-width: 6px;
+}
+.node.selected > text {
+	fill: #000;
+	text-decoration: underline;
+	underline-thickness: 4;
+}
+/*
+.node:hover > rect {
+	filter: url(#negative);
+}
+*/
+.node:hover > rect {
+	fill: #FFF;
+	stroke: #FFF;
+}
+.node:hover > text {
 	fill: #000;
 }

@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.graph
-import groovy.transform.CompileStatic
+
+import groovy.transform.*
 import net.twisterrob.gradle.graph.tasks.*
 import net.twisterrob.gradle.graph.vis.TaskVisualizer
 import net.twisterrob.gradle.graph.vis.d3.javafx.D3JavaFXTaskVisualizer
@@ -13,28 +14,34 @@ import org.gradle.cache.internal.FileLockManager
 import javax.inject.Inject
 
 import static org.gradle.cache.internal.filelock.LockOptionsBuilder.*
+
 // TODO @groovy.util.logging.Slf4j
 @CompileStatic
-public class GraphPlugin implements Plugin<Project> {
+class GraphPlugin implements Plugin<Project> {
 	private final CacheRepository cacheRepository
 	private Project project
+	private TaskVisualizer vis
+	private GraphSettingsExtension settings
 
-	@Inject public GraphPlugin(CacheRepository cacheRepository) {
+	@Inject GraphPlugin(CacheRepository cacheRepository) {
 		this.cacheRepository = cacheRepository
 	}
 
-	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>  */
-	@Override public void apply(Project project) {
+	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>               */
+	@Override void apply(Project project) {
 		this.project = project;
-		PersistentCache cache = cacheRepository
-				.cache(project.gradle, "graphSettings")
-				.withDisplayName("graph visualization settings")
-				.withLockOptions(mode(FileLockManager.LockMode.None)) // Lock on demand
-				.open()
 
-		TaskVisualizer vis = createGraph(cache)
+		settings = project.extensions.create("graphSettings", GraphSettingsExtension.class) as GraphSettingsExtension
 
-		new TaskGatherer(project).setTaskGraphListener(new TaskGatherer.TaskGraphListener() {
+		def gatherer = new TaskGatherer(project)
+
+		project.afterEvaluate {
+			vis = createGraph()
+			vis.showUI(project)
+			gatherer.setSimplify(settings.simplifyGraph)
+		}
+
+		gatherer.setTaskGraphListener(new TaskGatherer.TaskGraphListener() {
 			@Override void graphPopulated(Map<Task, TaskData> tasks) {
 				vis.initModel(tasks)
 			}
@@ -49,42 +56,47 @@ public class GraphPlugin implements Plugin<Project> {
 			}
 		})
 
-		vis.showUI(project)
 		project.gradle.buildFinished {
-			vis.closeUI()
+			if (!settings.dontClose) {
+				vis.closeUI()
+			}
 		}
 	}
 
-	private TaskVisualizer createGraph(PersistentCache cache) {
-		TaskVisualizer graph
-		if (hasJavaFX()) {
-			graph = new D3JavaFXTaskVisualizer(cache)
-		} else {
-			graph = new GraphStreamTaskVisualizer(cache)
-		}
-		return graph;
+	private TaskVisualizer createGraph() {
+		PersistentCache cache = cacheRepository
+				.cache(project.gradle, "graphSettings")
+				.withDisplayName("graph visualization settings")
+				.withLockOptions(mode(FileLockManager.LockMode.None)) // Lock on demand
+				.open()
+
+		return settings.newVisualizer(cache)
 	}
 
-	boolean hasJavaFX() {
+	@PackageScope static boolean hasJavaFX() {
 		try {
 			javafx.application.Platform
 			return true;
 		} catch (NoClassDefFoundError ignore) {
 			def jvm = org.gradle.internal.jvm.Jvm.current()
 			if (jvm.javaVersion.java7Compatible && new File("${jvm.jre.homeDir}/lib/jfxrt.jar").exists()) {
-				def dependency = '''
+				def dependency = """
 No JavaFX Runtime found on buildscript classpath, falling back to primitive GraphStream visualization
 You can add JavaFX like this:
 buildscript {
 	dependencies {
-		def jvm = org.gradle.internal.jvm.Jvm.current()
+		def jvm = ${org.gradle.internal.jvm.Jvm.name}.current()
 		if (jvm.javaVersion.java7Compatible) {
-			classpath files("${jvm.jre.homeDir}/lib/jfxrt.jar")
+			classpath files("\${jvm.jre.homeDir}/lib/jfxrt.jar")
 		}
 	}
 }
-				'''
-				project.logger.warn dependency.trim()
+or ask for GraphStream explicitly:
+graphSettings {
+	visualizer = ${GraphStreamTaskVisualizer.name}
+}
+				"""
+				System.err.println(dependency.trim());
 			}
 			return false;
 		}
@@ -112,5 +124,48 @@ buildscript {
 			)
 		}
 		return result;
+	}
+}
+
+class GraphSettingsExtension {
+	boolean dontClose = false
+	/** a TaskVisualizer implementation class, null means automatic */
+	Class<TaskVisualizer> visualizer = null
+	boolean simplifyGraph = true
+
+	@PackageScope TaskVisualizer newVisualizer(PersistentCache cache) {
+		if (visualizer == null) {
+			if (GraphPlugin.hasJavaFX()) {
+				visualizer = D3JavaFXTaskVisualizer
+			} else {
+				visualizer = GraphStreamTaskVisualizer
+			}
+		}
+
+		Throwable err = null;
+		if (!TaskVisualizer.isAssignableFrom(visualizer)) {
+			err = new IllegalArgumentException("visualizer must implement ${TaskVisualizer}").fillInStackTrace();
+		}
+
+		TaskVisualizer graph;
+		if (cache != null) { // if we have a cache try cached ctor first
+			try {
+				graph = visualizer.newInstance([ cache ])
+			} catch (Exception ex) {
+				err = ex
+			}
+		}
+		if (graph == null) {
+			try {
+				graph = visualizer.newInstance()
+			} catch (Exception ex) {
+				err = ex
+			}
+		}
+		if (graph == null) {
+			throw new IllegalArgumentException("Invalid value for visualizer: ${visualizer}," +
+					"make sure the class has a default or a ${PersistentCache} constructor", err);
+		}
+		return graph;
 	}
 }

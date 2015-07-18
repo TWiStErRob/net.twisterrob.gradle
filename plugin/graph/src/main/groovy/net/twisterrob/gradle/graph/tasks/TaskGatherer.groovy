@@ -8,8 +8,10 @@ import org.gradle.api.internal.GradleInternal
 import org.gradle.execution.TaskSelector
 
 @CompileStatic
-public class TaskGatherer implements TaskExecutionGraphListener {
-	private TaskGraphListener listener
+class TaskGatherer implements TaskExecutionGraphListener {
+	TaskGraphListener taskGraphListener
+	boolean simplify;
+
 	interface TaskGraphListener {
 		void graphPopulated(Map<Task, TaskData> graph)
 	}
@@ -37,10 +39,6 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 		project.gradle.taskGraph.addTaskExecutionGraphListener(this)
 	}
 
-	void setTaskGraphListener(TaskGraphListener listener) {
-		this.listener = listener
-	}
-
 	@Override void graphPopulated(TaskExecutionGraph teg) {
 		for (Task task in teg.allTasks) {
 			data(task).type = TaskType.normal
@@ -52,9 +50,11 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 			data(task).type = TaskType.excluded // wins over requested
 		}
 		new ResolveDependencies(this.&data).run(new ArrayList(all.values()))
-		new TransitiveReduction().run(all.values())
-		if (listener != null) {
-			listener.graphPopulated(all)
+		if (simplify) {
+			new TransitiveReduction().run(all.values())
+		}
+		if (taskGraphListener != null) {
+			taskGraphListener.graphPopulated(all)
 		}
 	}
 
@@ -75,7 +75,7 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 		for (String path in project.gradle.startParameter.excludedTaskNames) {
 			TaskSelector.TaskSelection selection = selector.getSelection(path)
 			//println "-${path} -> ${selection.getTasks()*.getName()}"
-			tasks.addAll selection.getTasks()
+			tasks.addAll selection.tasks
 		}
 		return tasks;
 	}
@@ -89,20 +89,20 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 			for (String path in request.args) {
 				TaskSelector.TaskSelection selection = selector.getSelection(request.projectPath, path)
 				//println "${request.projectPath}:${path} -> ${selection.getTasks()*.getName()}"
-				tasks.addAll selection.getTasks()
+				tasks.addAll selection.tasks
 			}
 		}
 		return tasks;
 	}
 
 	private static class ResolveDependencies {
-		Closure<TaskData> data;
+		Closure<TaskData> dataForTask;
 
-		public ResolveDependencies(Closure<TaskData> data) {
-			this.data = data;
+		ResolveDependencies(Closure<TaskData> dataForTask) {
+			this.dataForTask = dataForTask;
 		}
 
-		public void run(Collection<TaskData> graph) {
+		void run(Collection<TaskData> graph) {
 			TaskData.resetVisited graph
 			for (TaskData taskData in graph) {
 				addResolvedDependencies taskData
@@ -115,20 +115,20 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 			}
 			Set<Task> deps = taskData.task.taskDependencies.getDependencies(taskData.task) as Set<Task>
 			for (Task dep in deps) {
-				def data = data(dep)
-				taskData.deps.add(data)
+				def data = dataForTask(dep)
+				taskData.deps.add data
 				addResolvedDependencies data
 			}
 			taskData.visited = true
 		}
 	}
 
-	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>         */
+	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>          */
 	private static class TransitiveReduction {
 		/** list of nodes to get from vertex0 to child0 */
 		private final List<TaskData> path = new ArrayList<>(10)
 
-		public void run(Collection<TaskData> graph) {
+		void run(Collection<TaskData> graph) {
 			for (TaskData vertex0 in graph) {
 				vertex0.depsDirect.addAll(vertex0.deps);
 			}
@@ -144,7 +144,7 @@ public class TaskGatherer implements TaskExecutionGraphListener {
 		 * @param vertex0 root of DFS search
 		 * @param child0 current node during search
 		 */
-		void depthFirstSearch(TaskData vertex0, TaskData child0) {
+		private void depthFirstSearch(TaskData vertex0, TaskData child0) {
 			if (child0.visited) {
 				return
 			}
