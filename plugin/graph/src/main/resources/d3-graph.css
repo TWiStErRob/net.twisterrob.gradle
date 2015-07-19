@@ -67,9 +67,12 @@ svg {
 	display: none;
 }
 
-/* Detials */
+/* Details */
 #details {
 	position: absolute;
+	/*overflow: auto;*/	/* overflow blurs text: http://stackoverflow.com/q/31501526/253468 */
+	/* workaround is to break excessively */
+	word-break: break-all;
 	right: 1em;
 	top: 1em;
 	width: 300px;
@@ -81,6 +84,10 @@ svg {
 #details.collapsed > *:not(#detail-name) {
 	display: none;
 }
+#details.collapsed > #detail-running {
+	left: -10em;
+	top: 3em;
+}
 #details.collapsed #detail-name {
 	border-bottom: 0;
 	padding: 0;
@@ -89,12 +96,12 @@ svg {
 #detail-name {
 	display: block;
 	text-align: center;
-	font-size: large;
 	font-weight: bold;
 	height: 24px;
 	padding: 0.5em;
 	padding-top: 0;
 	border-bottom: 2px solid black;
+	/* stretch border as wide as parent (see #details::padding) */
 	margin-left: -0.5em;
 	margin-right: -0.5em;
 	margin-bottom: 0.5em;
@@ -128,6 +135,10 @@ svg {
 #detail-dependents:before {
 	margin-left: -40px;
 	content: 'Successors: ';
+}
+#detail-depends > li, #detail-dependents > li {
+	cursor: pointer;
+	text-decoration: underline;
 }
 
 /* http://projects.lukehaas.me/css-loaders/ */

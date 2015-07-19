@@ -94,7 +94,7 @@ var svg = d3
 var demoIdCounter = 0;
 svg.select('#background')
 	.on('click', function() {
-		select(null);
+		selectNode(null);
 	})
 	.on('mousedown', function () {
 		if(d3.event.which != 2) return;
@@ -159,8 +159,12 @@ var details = function() {
 	var posUI = det.select('#detail-pos');
 	var dependsUI = det.select('#detail-depends');
 	var dependentsUI = det.select('#detail-dependents');
+	// Workaround for: https://github.com/mbostock/d3/issues/94,
+	// keep reference to #text and update it later, dependsUI.text("") would clear <li>s too
+	var dependsUILabel = d3.select(document.createTextNode("")); dependsUI.node().appendChild(dependsUILabel.node());
+	var dependentsUILabel = d3.select(document.createTextNode("")); dependentsUI.node().appendChild(dependentsUILabel.node());
 
-	det.on('click', function() {
+	nameUI.on('click', function() {
 		det.classed('collapsed', !det.classed('collapsed'));
 	});
 	var currentNode = null;
@@ -168,16 +172,18 @@ var details = function() {
 	var currentNodeIsActive = false;
 
 
-	function bindDeps(/* d3.selection<ul> */ ui, /* Array<String> */ deps) {
-		if (deps.length !== 0) {
-			ui.text(null);
-			var dependsData = ui.selectAll('li').data(deps);
-			dependsData.exit().remove();
-			dependsData.enter().append('li');
-			dependsData.text(function(d) { return d; });
-		} else {
-			ui.text("nothing")
-		}
+	function bindDeps(/* d3.selection<ul> */ ui, label, /* Array<String> */ deps) {
+		var dependsData = ui.selectAll('li').data(deps, function(d) { return d; });
+		dependsData.exit().remove();
+
+		dependsData.enter()
+			.append('li')
+			.text(function(d) { return d; })
+			.on('click', function(d) {
+				selectNode(graph[d]);
+			})
+		;
+		label.text(deps.length === 0? "nothing" : "")
 	}
 
 	function display(d) {
@@ -197,8 +203,8 @@ var details = function() {
 			progressUI.style('display', d.state === 'executing'? 'block' : 'none');
 			posUI.text(d.x.toFixed(2) + ", " + d.y.toFixed(2));
 
-			bindDeps(dependsUI, d.deps);
-			bindDeps(dependentsUI, d.depsInverse);
+			bindDeps(dependsUI, dependsUILabel, d.deps);
+			bindDeps(dependentsUI, dependentsUILabel, d.depsInverse);
 		}
 
 		currentNode = d;
@@ -242,6 +248,7 @@ var details = function() {
 	};
 }();
 
+var graph = {};
 var nodes = force.nodes();
 var links = force.links();
 var node = node_group.selectAll('.node');
@@ -278,7 +285,7 @@ function restart(first) {
 	uiNodes = createNodes(node);
 	uiNodes
 		.on('click', function(d) {
-			select(d);
+			selectNode(d);
 		})
 		.on('mousedown', function(d) {
 			details.lockNode(d);
@@ -305,7 +312,7 @@ function restart(first) {
 	}
 }
 
-function select(d) {
+function selectNode(d) { // TODO use #task-id for backnav support
 	uiNodes.filter('.selected').classed('selected', false);
 	if (d) d3.select(d.ui.node).classed('selected', true);
 	details.lockNode(d);
@@ -466,6 +473,7 @@ var model = function() {
 		init: function(graph) {
 			function filter(d) { return d.type == 'unknown'; }
 			if (typeof graph === 'string') graph = JSON.parse(graph);
+			window.graph = graph;
 
 			nodes.length = 0;
 			for (var dataIndex in graph) { var data = graph[dataIndex];
@@ -617,32 +625,41 @@ function autoSizeText(elem, min, max, step, lastChange) {
 	var parentSize = { width: px(parentStyle.width), height: px(parentStyle.height) };
 	var fontSize = px(style.fontSize);
 
-	console.debug("autoSizeText(" + elem.textContent + ", " + min + ", " + max + ")", fontSize, elemSize, parentSize);
-	var change, stop = false;
+	//console.debug("autoSizeText(" + elem.textContent + ", " + min + ", " + max + ")", fontSize, elemSize, parentSize);
+	var change = 0, stop = false;
 	var needsSmaller = elemSize.width > parentSize.width || elemSize.height > parentSize.height;
 	var needsBigger = elemSize.width < parentSize.width && elemSize.height < parentSize.height;
 	var lastSmaller = lastChange <= 0;
 	var lastBigger = lastChange >= 0;
-	if (lastSmaller && needsSmaller) { console.debug('lastSmaller needsSmaller')
+	if (lastSmaller && needsSmaller) { //console.debug('lastSmaller needsSmaller')
 		change = -step; // continue shrinking
-	} else if (lastBigger && needsBigger) { console.debug('lastBigger needsBigger')
+	} else if (lastBigger && needsBigger) { //console.debug('lastBigger needsBigger')
 		change = +step; // continue growing
-	} else if (lastSmaller && needsBigger) { console.debug('lastSmaller needsBigger')
+	} else if (lastSmaller && needsBigger) { //console.debug('lastSmaller needsBigger')
 		change = 0; // found the smallest fit
-		stop = true;
-	} else if (lastBigger && needsSmaller) { console.debug('lastBigger needsSmaller')
+	} else if (lastBigger && needsSmaller) { //console.debug('lastBigger needsSmaller')
 		change = -lastChange; // just overstepped the limit, backtrack once
 		stop = true;
-	} else if (!needsBigger && !needsSmaller) {
-		console.debug("just right");
+	} else if (!needsBigger && !needsSmaller) { //console.debug("just right");
+		change = 0; // doesn't need to be any different
 	} else {
-		console.debug(lastSmaller, lastBigger, needsSmaller, needsBigger);
+		throw "Invalid state"
+		    + ": lastSmaller="  + lastSmaller
+		    + ", lastBigger="   + lastBigger
+		    + ", needsSmaller=" + needsSmaller
+		    + ", needsBigger="  + needsBigger
+		;
 	}
-	fontSize += change;
-	if (min <= fontSize && fontSize <= max) {
-		elem.style.setProperty('font-size', fontSize + 'px');
-		if (!stop) autoSizeText(elem, min, max, step, change);
+
+	if (change !== 0) {
+		fontSize += change;
+		if (min <= fontSize && fontSize <= max) {
+			elem.style.setProperty('font-size', fontSize + 'px');
+		}
+	} else {
+		stop = true;
 	}
+	if (!stop) autoSizeText(elem, min, max, step, change);
 }
 
 function demo() {
