@@ -1,13 +1,11 @@
 package net.twisterrob.gradle.graph.tasks
 
-import groovy.transform.CompileStatic
 import org.gradle.TaskExecutionRequest
 import org.gradle.api.*
 import org.gradle.api.execution.*
 import org.gradle.api.internal.GradleInternal
 import org.gradle.execution.TaskSelector
 
-@CompileStatic
 class TaskGatherer implements TaskExecutionGraphListener {
 	TaskGraphListener taskGraphListener
 	boolean simplify;
@@ -123,7 +121,7 @@ class TaskGatherer implements TaskExecutionGraphListener {
 		}
 	}
 
-	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>          */
+	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>           */
 	private static class TransitiveReduction {
 		/** list of nodes to get from vertex0 to child0 */
 		private final List<TaskData> path = new ArrayList<>(10)

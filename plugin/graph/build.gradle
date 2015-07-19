@@ -18,6 +18,10 @@ project.with {
 	targetCompatibility = 1.7
 }
 
+compileGroovy {
+	groovyOptions.configurationScript = file("gradle/compileGroovy.groovy")
+}
+
 jar {
 	manifest {
 		attributes(

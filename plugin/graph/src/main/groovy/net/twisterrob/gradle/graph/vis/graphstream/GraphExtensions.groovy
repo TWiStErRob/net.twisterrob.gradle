@@ -22,7 +22,7 @@ class GraphExtensions {
 		ArrayList<String> classes = getClasses(self)
 		classes.add(clazz)
 		self.setAttribute("ui.class", classes.join(","))
-		return classes;
+		return classes as String[];
 	}
 	static void setLabel(final Element self, String label) {
 		self.setAttribute("ui.label", label)
@@ -41,13 +41,13 @@ class GraphExtensions {
 		} else {
 			self.setAttribute("ui.class", classes.join(","))
 		}
-		return classes;
+		return classes as String[];
 	}
 	static ArrayList<String> getClasses(final Element self) {
 		String classesString = self.getAttribute("ui.class")
 		if (classesString == null || classesString.empty) {
 			return new ArrayList()
 		}
-		new ArrayList(Arrays.asList(classesString.split(",")))
+		return new ArrayList(Arrays.asList(classesString.split(",")))
 	}
 }

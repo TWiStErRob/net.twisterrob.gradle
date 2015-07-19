@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.graph.tasks;
 
-public enum TaskResult {
+enum TaskResult {
 	/**
 	 * @see org.gradle.api.execution.TaskExecutionListener#beforeExecute(org.gradle.api.Task)
 	 * @see org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter#execute

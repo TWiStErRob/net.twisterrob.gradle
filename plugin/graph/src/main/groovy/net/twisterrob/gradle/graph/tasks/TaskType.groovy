@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.graph.tasks;
 
-public enum TaskType {
+enum TaskType {
 	unknown,
 	normal,
 	requested,

@@ -12,6 +12,9 @@ public abstract class VisualizerSettings<Settings> implements Closeable {
 	private final PersistentCache cache;
 
 	protected VisualizerSettings(PersistentCache cache) {
+		if (cache == null) {
+			throw new NullPointerException("cache cannot be null");
+		}
 		this.cache = cache;
 	}
 

@@ -33,7 +33,7 @@ class TaskData implements Comparable<TaskData> {
 	/**
 	 * @see #visited
 	 */
-	public static void resetVisited(Iterable<TaskData> all, boolean value = false) {
+	static void resetVisited(Iterable<TaskData> all, boolean value = false) {
 		for(TaskData data in all) {
 			data.visited = value
 		}

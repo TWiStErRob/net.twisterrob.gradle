@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.graph
 
-import groovy.transform.*
+import groovy.transform.PackageScope
 import net.twisterrob.gradle.graph.tasks.*
 import net.twisterrob.gradle.graph.vis.TaskVisualizer
 import net.twisterrob.gradle.graph.vis.d3.javafx.D3JavaFXTaskVisualizer
@@ -16,7 +16,6 @@ import javax.inject.Inject
 import static org.gradle.cache.internal.filelock.LockOptionsBuilder.*
 
 // TODO @groovy.util.logging.Slf4j
-@CompileStatic
 class GraphPlugin implements Plugin<Project> {
 	private final CacheRepository cacheRepository
 	private Project project
@@ -27,7 +26,7 @@ class GraphPlugin implements Plugin<Project> {
 		this.cacheRepository = cacheRepository
 	}
 
-	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>               */
+	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>                 */
 	@Override void apply(Project project) {
 		this.project = project;
 
@@ -125,47 +124,47 @@ graphSettings {
 		}
 		return result;
 	}
-}
 
-class GraphSettingsExtension {
-	boolean dontClose = false
-	/** a TaskVisualizer implementation class, null means automatic */
-	Class<TaskVisualizer> visualizer = null
-	boolean simplifyGraph = true
+	static class GraphSettingsExtension {
+		boolean dontClose = false
+		/** a TaskVisualizer implementation class, null means automatic */
+		Class<TaskVisualizer> visualizer = null
+		boolean simplifyGraph = true
 
-	@PackageScope TaskVisualizer newVisualizer(PersistentCache cache) {
-		if (visualizer == null) {
-			if (GraphPlugin.hasJavaFX()) {
-				visualizer = D3JavaFXTaskVisualizer
-			} else {
-				visualizer = GraphStreamTaskVisualizer
+		@PackageScope TaskVisualizer newVisualizer(PersistentCache cache) {
+			if (visualizer == null) {
+				if (GraphPlugin.hasJavaFX()) {
+					visualizer = D3JavaFXTaskVisualizer
+				} else {
+					visualizer = GraphStreamTaskVisualizer
+				}
 			}
-		}
 
-		Throwable err = null;
-		if (!TaskVisualizer.isAssignableFrom(visualizer)) {
-			err = new IllegalArgumentException("visualizer must implement ${TaskVisualizer}").fillInStackTrace();
-		}
+			Throwable err = null;
+			if (!TaskVisualizer.isAssignableFrom(visualizer)) {
+				err = new IllegalArgumentException("visualizer must implement ${TaskVisualizer}").fillInStackTrace();
+			}
 
-		TaskVisualizer graph;
-		if (cache != null) { // if we have a cache try cached ctor first
-			try {
-				graph = visualizer.newInstance([ cache ] as Object[])
-			} catch (Exception ex) {
-				err = ex
+			TaskVisualizer graph;
+			if (cache != null) { // if we have a cache try cached ctor first
+				try {
+					graph = visualizer.newInstance([ cache ] as Object[])
+				} catch (Exception ex) {
+					err = ex
+				}
 			}
-		}
-		if (graph == null) {
-			try {
-				graph = visualizer.newInstance()
-			} catch (Exception ex) {
-				err = ex
+			if (graph == null) {
+				try {
+					graph = visualizer.newInstance()
+				} catch (Exception ex) {
+					err = ex
+				}
 			}
+			if (graph == null) {
+				throw new IllegalArgumentException("Invalid value for visualizer: ${visualizer}," +
+						"make sure the class has a default or a ${PersistentCache} constructor", err);
+			}
+			return graph;
 		}
-		if (graph == null) {
-			throw new IllegalArgumentException("Invalid value for visualizer: ${visualizer}," +
-					"make sure the class has a default or a ${PersistentCache} constructor", err);
-		}
-		return graph;
 	}
 }
