@@ -42,6 +42,7 @@ public class GradleJULFixer extends Thread {
 		log("fixing");
 		disable(MISCHIEF_LOGGER);
 		disable("com.sun.webpane.perf"); // should disable all children as well
+		disable("com.sun.webpane"); // should disable all children as well
 		//running.set(false); // once fixed, stop running, except it can go wrong 2-3 times
 	}
 

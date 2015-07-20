@@ -20,7 +20,7 @@ public class D3SwingTaskVisualizer extends net.twisterrob.gradle.graph.vis.d3.Gr
 
 	private final Settings settings;
 	public JFrame window;
-	private final GradleJULFixer fixer = new GradleJULFixer();
+	//private final GradleJULFixer fixer = new GradleJULFixer();
 
 	public D3SwingTaskVisualizer(PersistentCache cache) {
 		settings = new Settings(cache);
@@ -49,6 +49,7 @@ public class D3SwingTaskVisualizer extends net.twisterrob.gradle.graph.vis.d3.Gr
 		});
 		WindowLocation settings = this.settings.getSettings();
 		settings.applyTo(window);
+		GradleJULFixer.fix();
 		JFXPanel fxPanel = initFX(settings);
 		if (fxPanel == null) {
 			window.dispose();
@@ -91,7 +92,7 @@ public class D3SwingTaskVisualizer extends net.twisterrob.gradle.graph.vis.d3.Gr
 
 	@Override public void showUI(final Project project) {
 		super.showUI(project);
-		fixer.start();
+		//fixer.start();
 		SwingUtilities.invokeLater(new Runnable() {
 			/** @thread Swing Event Dispatch Thread */
 			@Override public void run() {
@@ -120,7 +121,7 @@ public class D3SwingTaskVisualizer extends net.twisterrob.gradle.graph.vis.d3.Gr
 
 	@Override public void closeUI() {
 		super.closeUI();
-		fixer.interrupt();
+		//fixer.interrupt();
 		if (windowInitFailed()) {
 			settings.close();
 		}

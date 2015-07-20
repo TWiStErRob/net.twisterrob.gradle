@@ -33,6 +33,9 @@ class Settings extends VisualizerSettings<Settings.WindowLocation> {
 		return props;
 	}
 
+	@Override protected WindowLocation createDefault() {
+		return new WindowLocation();
+	}
 	private static int parse(String value, int defaultValue) {
 		try {
 			return Integer.parseInt(value);

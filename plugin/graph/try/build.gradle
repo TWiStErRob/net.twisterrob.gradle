@@ -1,5 +1,7 @@
 apply plugin: 'net.twisterrob.graph'
-
+graphSettings {
+	dontClose = true
+}
 buildscript {
 	repositories {
 		jcenter()
