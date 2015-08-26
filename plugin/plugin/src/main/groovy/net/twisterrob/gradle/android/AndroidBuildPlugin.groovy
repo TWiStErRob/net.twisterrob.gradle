@@ -31,7 +31,7 @@ public class AndroidBuildPlugin extends BasePlugin {
 				checkAllWarnings = true
 				disable 'Assert'
 			}
-			buildToolsVersion "22.0.1" // latest Android SDK Build-tools
+			buildToolsVersion "23.0.0" // latest Android SDK Build-tools
 			compileSdkVersion "android-22" // Android 5.1/SDK Platform
 
 			defaultConfig.with {
