@@ -19,7 +19,7 @@ class GITPluginExtension implements VCSExtension {
 	Project project
 
 	private Grgit open() {
-		return Grgit.open(project.rootDir)
+		return Grgit.open(dir: project.rootDir)
 	}
 
 	boolean isAvailableQuick() {

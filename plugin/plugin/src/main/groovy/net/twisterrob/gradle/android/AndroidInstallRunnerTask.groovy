@@ -41,4 +41,15 @@ public class AndroidInstallRunnerTask extends Exec {
 			return isMain && isLauncher
 		}
 	}
+
+	// Unchecked warning without these, so let's just put it here
+	@Override Map<String, Object> getEnvironment() {
+		return super.getEnvironment()
+	}
+	@Override List<String> getArgs() {
+		return super.getArgs()
+	}
+	@Override List<String> getCommandLine() {
+		return super.getCommandLine()
+	}
 }

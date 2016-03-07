@@ -127,7 +127,7 @@ class AndroidEclipsePlugin extends BaseExposedPlugin {
 	}
 
 	private Task createExplodeAARTask(File aarFile, File targetFolder) {
-		def baseFilename = aarFile.name.lastIndexOf('.').with { it != -1 ? aarFile.name[0..<it] : aarFile.name }
+		String baseFilename = aarFile.name.lastIndexOf('.').with { it != -1 ? aarFile.name[0..<it] : aarFile.name }
 		// based on http://www.nodeclipse.org/projects/gradle/android
 		return project.task("eclipseExplodeAAR${baseFilename}", type: Copy) { Copy task ->
 			task.description = 'Explodes AAR dependency ${baseFilename} to the libs directory.'

@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.common
 
 import org.gradle.api.*
-import org.gradle.buildinit.plugins.BuildInitPlugin
 import org.gradle.buildinit.tasks.internal.TaskConfiguration
 
 class GradlePlugin extends BasePlugin {

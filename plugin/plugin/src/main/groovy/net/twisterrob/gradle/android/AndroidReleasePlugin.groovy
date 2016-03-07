@@ -18,7 +18,7 @@ public class AndroidReleasePlugin extends BasePlugin {
 		android = project.android
 
 		project.afterEvaluate {
-			createReleaseTasks(android.buildTypes['release'])
+			createReleaseTasks((BuildType)android.buildTypes['release'])
 		}
 	}
 

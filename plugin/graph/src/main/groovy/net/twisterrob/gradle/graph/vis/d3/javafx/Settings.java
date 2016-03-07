@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.gradle.cache.PersistentCache;
 
-import javafx.stage.*;
+import javafx.stage.Window;
 
 import net.twisterrob.gradle.graph.vis.VisualizerSettings;
 

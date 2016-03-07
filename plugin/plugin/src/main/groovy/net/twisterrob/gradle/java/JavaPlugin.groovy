@@ -30,6 +30,26 @@ class JavaPlugin extends BaseExposedPlugin {
 			if (!compiler.name.contains('Test')) {
 				compiler.options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
 			}
+			if (DEFAULT_JAVA_VERSION.compareTo(JavaVersion.current())) {
+				// prevent :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
+				def envVar = "JAVA${DEFAULT_JAVA_VERSION.majorVersion}_HOME"
+				def root = System.env[envVar]
+				def rt = project.file("$root/jre/lib/rt.jar")
+				if (!rt.exists()) {
+					rt = project.file("$root/lib/rt.jar")
+				}
+				if (!rt.exists()) {
+					compiler.doFirst {
+						logger.warn("Java Compatibility: javac needs a bootclasspath, " +
+								"but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root).");
+					}
+					return;
+				}
+				compiler.doFirst {
+					logger.info("Java Compatiblity: using rt.jar from $rt");
+				}
+				compiler.options.bootClasspath = rt;
+			}
 		}
 	}
 }
