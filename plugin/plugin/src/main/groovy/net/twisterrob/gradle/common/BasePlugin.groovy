@@ -17,7 +17,8 @@ class BasePlugin implements Plugin<Project> {
 		LOG.debug "Applying to ${target}"
 		project = target
 
-		if (!(project.gradle.gradleVersion ==~ /2\.[4].*/)) {
+		def match = (project.gradle.gradleVersion =~ /(\d+)\.(\d+).*/);
+		if (!match.find() || match.group(1) != '2' || (match.group(2) as int) < 4) {
 			File file = new File("gradle" + File.separator + "wrapper" + File.separator + "gradle-wrapper.properties");
 			def required = "2.4+"
 			throw new BuildException(

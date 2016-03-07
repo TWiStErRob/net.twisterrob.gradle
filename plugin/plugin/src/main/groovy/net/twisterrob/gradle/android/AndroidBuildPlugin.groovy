@@ -29,10 +29,10 @@ public class AndroidBuildPlugin extends BasePlugin {
 			lintOptions.with {
 				xmlReport = false
 				checkAllWarnings = true
-				disable 'Assert'
+				disable 'Assert', 'GoogleAppIndexingWarning'
 			}
-			buildToolsVersion "23.0.0" // latest Android SDK Build-tools
-			compileSdkVersion "android-22" // Android 5.1/SDK Platform
+			buildToolsVersion "23.0.2" // latest Android SDK Build-tools
+			compileSdkVersion "android-23" // Android 6.0/SDK Platform
 
 			defaultConfig.with {
 				setMinSdkVersion(new DefaultApiVersion(10)) // 2.3.3 Gingerbread MR1
