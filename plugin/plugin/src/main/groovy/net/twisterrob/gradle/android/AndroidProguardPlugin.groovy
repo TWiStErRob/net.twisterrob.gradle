@@ -2,12 +2,13 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.pipeline.TransformTask
+import com.android.build.gradle.internal.transforms.ProGuardTransform
 import com.android.builder.core.DefaultBuildType
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
-import proguard.gradle.ProGuardTask
 
 import static org.gradle.api.tasks.SourceSet.*
 
@@ -18,43 +19,54 @@ class AndroidProguardPlugin extends BasePlugin {
 
 		BaseExtension android = project.android
 		File proguardBase = new File("${project.buildDir}/${AndroidProject.FD_INTERMEDIATES}/proguard-rules")
-		File defaultAndroidRules = new File(proguardBase, "android-project-mod.txt")
+		File defaultAndroidRules = new File(proguardBase, "android.pro")
 		File myProguardRules = new File(proguardBase, "twisterrob.pro")
+		File myDebugProguardRules = new File(proguardBase, "twisterrob-debug.pro")
+		File myReleaseProguardRules = new File(proguardBase, "twisterrob-release.pro")
 		android.with {
 			defaultConfig.proguardFiles.add defaultAndroidRules
 			defaultConfig.proguardFiles.add myProguardRules
 
-			DefaultBuildType release = buildTypes.release
+			DefaultBuildType release = buildTypes['release'] as DefaultBuildType
 			release.setMinifyEnabled(true)
+
+			project.afterEvaluate {
+				buildTypes.each { buildType ->
+					if (buildType.debuggable) {
+						buildType.proguardFiles.add myDebugProguardRules
+					} else {
+						buildType.proguardFiles.add myReleaseProguardRules
+					}
+				}
+			}
 		}
 
 		def extractProguardRules = project.task('extractProguardRules') {
 			description = "Extract proguard file from 'net.twisterrob.android' plugin"
 			outputs.files defaultAndroidRules, myProguardRules
 			outputs.upToDateWhen {
-				defaultAndroidRules.lastModified() == this.builtDate.time && myProguardRules.lastModified() == this.builtDate.time
+				defaultAndroidRules.lastModified() == this.builtDate.time \
+				  && myProguardRules.lastModified() == this.builtDate.time \
+				  && myDebugProguardRules.lastModified() == this.builtDate.time \
+				  && myReleaseProguardRules.lastModified() == this.builtDate.time
 			}
 			doLast {
 				copy("android.pro", defaultAndroidRules)
 				copy("twisterrob.pro", myProguardRules)
+				copy("twisterrob-debug.pro", myDebugProguardRules)
 			}
 		}
 
-//		project.afterEvaluate {
-//			tasks.proguardRelease.doFirst {
-//				project.android.buildTypes.release.proguardFiles.each { println "Proguard configuration file: $it" }
-//			}
-//		}
-
 		project.afterEvaluate {
 			Utils.getVariants(android).all { BaseVariant variant ->
-				ProGuardTask obfuscation = variant.obfuscation as ProGuardTask
+				def obfuscation = variant.variantData.mappingFileProviderTask
 				if (obfuscation) {
-					obfuscation.dependsOn extractProguardRules
-					obfuscation.printconfiguration(new File(variant.mappingFile.parentFile, 'configuration.pro'))
-					if (!variant.buildType.debuggable) {
-						obfuscation.renamesourcefileattribute("SourceFile") // better stacktraces
-						obfuscation.keepattributes("LocalVariableTable,LocalVariableTypeTable") // debugger support
+					def task = obfuscation.task as TransformTask;
+					def proguard = task.transform as ProGuardTransform
+					task.dependsOn extractProguardRules
+					proguard.printconfiguration(new File(variant.mappingFile.parentFile, 'configuration.pro'))
+					task.doFirst {
+						proguard.secondaryFileInputs.each { println "ProGuard configuration file: $it" }
 					}
 				}
 			}

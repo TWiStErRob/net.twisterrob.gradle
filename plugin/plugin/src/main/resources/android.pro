@@ -1,4 +1,5 @@
 ### -- twister-plugin-gradle/android.pro -- ###
+### MODIFICATION: based on <SDK>/tools/proguard/proguard-android-optimize.txt ###
 
 # This is a configuration file for ProGuard.
 # http://proguard.sourceforge.net/index.html#manual/usage.html
@@ -13,7 +14,7 @@
 # used if you are only targeting Android 2.0 or later.)  Make sure you
 # test thoroughly if you go this route.
 # MODIFICATION: removed !code/simplification/arithmetic
--optimizations !code/simplification/cast,!field/marking/private,!field/propagation/value,field/removal/writeonly,!class/merging/*
+-optimizations !code/simplification/cast,!field/*,!class/merging/*
 -optimizationpasses 5
 -allowaccessmodification
 -dontpreverify
@@ -50,12 +51,8 @@
 # This will result in a note, but need to keep those of ObjectAnimator.ofObject to work:
 # Note: the configuration keeps the entry point '... { void setP(C); }', but not the descriptor class 'C'
 -keepclassmembers public class * extends android.view.View {
-   % get*();
-   void set*(%);
-   %[] get*();
-   void set*(%[]);
-   java.lang.String get*();
-   void set*(java.lang.String);
+   void set*(***);
+   *** get*();
 }
 
 # We want to keep methods in Activity that could be used in the XML attribute onClick
@@ -71,7 +68,7 @@
 
 # MODIFICATION: added allowshrinking to still strip unused Parcelables, -200 classes in an empty project having v4
 -keep,allowshrinking class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator *;
+  public static final android.os.Parcelable$Creator CREATOR;
 }
 
 -keepclassmembers class **.R$* {
@@ -82,6 +79,7 @@
 # Don't warn about those in case this app is linking against an older
 # platform version.  We know about them, and they are safe.
 -dontwarn android.support.**
+
 # MODIFICATION: add -dontnote for
 # Note: the configuration keeps the entry point '...', but not the descriptor class '...'
 -dontnote android.support.**

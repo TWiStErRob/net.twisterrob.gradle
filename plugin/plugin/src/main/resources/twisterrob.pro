@@ -5,9 +5,6 @@
 #   http://omgitsmgp.com/2013/09/09/a-conservative-guide-to-proguard-for-android/
 
 -keepattributes SourceFile,LineNumberTable
-# Conditionally added when releasing (depending on buildType.debuggable)
-#-renamesourcefileattribute SourceFile
-
 
 # Classes that extend from the framework, may be used from Manifest, layout, or xml resources
 #-keep public class * extends android.app.Activity
@@ -74,6 +71,3 @@
 # http://viewpagerindicator.com/
 #-keep class com.viewpagerindicator.** { *; }
 #-keep interface com.viewpagerindicator.** { *; }
-
-# Debug helper options
-#-dontobfuscate # to keep long class/method names
