@@ -60,10 +60,12 @@ public class AndroidReleasePlugin extends BasePlugin {
 					rename '(.*)', 'proguard_$1'
 				}
 			}
-			if (outputs.files.singleFile.exists()) {
-				throw new StopExecutionException(String.format(Locale.ROOT,
-						"Target zip file already exists, did you run 'svn update'?\nRelease archive: %s",
-						outputs.files.singleFile));
+			doFirst {
+				if (outputs.files.singleFile.exists()) {
+					throw new StopExecutionException(String.format(Locale.ROOT,
+							"Target zip file already exists, did you run 'svn update'?\nRelease archive: %s",
+							outputs.files.singleFile));
+				}
 			}
 		}
 		releaseVariantTask.dependsOn variant.assemble

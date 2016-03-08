@@ -48,6 +48,19 @@
 	@android.webkit.JavascriptInterface public <methods>;
 }
 
+# https://code.google.com/p/android/issues/detail?id=194513
+# Reading library jar [P:\tools\android-sdk-windows\platforms\android-23\optional\org.apache.http.legacy.jar]
+# Note: duplicate definition of library class [...]
+# Note: there were 7 duplicate class definitions.
+#       (http://proguard.sourceforge.net/manual/troubleshooting.html#duplicateclass)
+-dontnote android.net.http.SslError
+-dontnote android.net.http.SslCertificate
+-dontnote android.net.http.SslCertificate$DName
+-dontnote org.apache.http.conn.scheme.HostNameResolver
+-dontnote org.apache.http.conn.scheme.SocketFactory
+-dontnote org.apache.http.conn.ConnectTimeoutException
+-dontnote org.apache.http.params.HttpParams
+
 #-libraryjars libs
 
 # The official support library.

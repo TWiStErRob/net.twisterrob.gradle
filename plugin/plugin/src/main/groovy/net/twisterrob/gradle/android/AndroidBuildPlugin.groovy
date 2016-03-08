@@ -29,6 +29,7 @@ public class AndroidBuildPlugin extends BasePlugin {
 			lintOptions.with {
 				xmlReport = false
 				checkAllWarnings = true
+				abortOnError = false
 				disable 'Assert', 'GoogleAppIndexingWarning'
 			}
 			buildToolsVersion "23.0.2" // latest Android SDK Build-tools

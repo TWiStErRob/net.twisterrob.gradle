@@ -54,6 +54,7 @@ class AndroidProguardPlugin extends BasePlugin {
 				copy("android.pro", defaultAndroidRules)
 				copy("twisterrob.pro", myProguardRules)
 				copy("twisterrob-debug.pro", myDebugProguardRules)
+				copy("twisterrob-release.pro", myReleaseProguardRules)
 			}
 		}
 
