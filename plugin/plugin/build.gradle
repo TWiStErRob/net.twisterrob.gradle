@@ -1,6 +1,6 @@
 apply plugin: 'groovy'
 
-version = '0.6.0.0'
+version = '0.6.1'
 
 dependencies {
 	compile gradleApi()
@@ -11,8 +11,8 @@ dependencies {
 }
 
 project.with {
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
 }
 
 jar {

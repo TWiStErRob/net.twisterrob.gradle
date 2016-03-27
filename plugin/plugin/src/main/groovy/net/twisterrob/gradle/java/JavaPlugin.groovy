@@ -7,14 +7,19 @@ import org.gradle.api.tasks.compile.JavaCompile
 
 class JavaPlugin extends BaseExposedPlugin {
 	public static final JavaVersion DEFAULT_JAVA_VERSION = JavaVersion.VERSION_1_7
+	public static final JavaVersion DEFAULT_JAVA_TEST_VERSION = JavaVersion.VERSION_1_8
+	public static final String DEFAULT_ENCODING = 'UTF-8'
 
 	@Override
 	void apply(Project target) {
 		super.apply(target)
 
 		if (project.plugins.hasPlugin(AppPlugin) || project.plugins.hasPlugin(LibraryPlugin)) {
-			project.android.compileOptions.sourceCompatibility = DEFAULT_JAVA_VERSION
-			project.android.compileOptions.targetCompatibility = DEFAULT_JAVA_VERSION
+			TestedExtension android = project.android
+			android.compileOptions.encoding = DEFAULT_ENCODING
+			android.compileOptions.defaultJavaVersion = DEFAULT_JAVA_VERSION
+			android.compileOptions.sourceCompatibility = DEFAULT_JAVA_VERSION
+			android.compileOptions.targetCompatibility = DEFAULT_JAVA_VERSION
 		} else {
 			project.apply plugin: 'java'
 		}
@@ -27,10 +32,18 @@ class JavaPlugin extends BaseExposedPlugin {
 		}
 
 		project.tasks.withType(JavaCompile) { compiler ->
-			if (!compiler.name.contains('Test')) {
+			compiler.options.encoding = DEFAULT_ENCODING
+			def isTestTask = compiler.name.contains('Test')
+			def isAndroidTask = false // TODO figure this out if it causes a problem
+			if (!isTestTask) {
 				compiler.options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
 			}
-			if (DEFAULT_JAVA_VERSION.compareTo(JavaVersion.current())) {
+			if (isTestTask && !isAndroidTask) {
+				compiler.sourceCompatibility = DEFAULT_JAVA_TEST_VERSION
+				compiler.targetCompatibility = DEFAULT_JAVA_TEST_VERSION
+			}
+
+			if (DEFAULT_JAVA_VERSION.compareTo(JavaVersion.current()) < 0) {
 				// prevent :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
 				def envVar = "JAVA${DEFAULT_JAVA_VERSION.majorVersion}_HOME"
 				def root = System.env[envVar]
