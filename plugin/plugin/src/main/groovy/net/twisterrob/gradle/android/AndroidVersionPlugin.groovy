@@ -20,10 +20,12 @@ class AndroidVersionExtension {
 	int build = 0 // B 0..999
 	int buildMagnitude = 1000
 
+	/** VCS versionCode pattern is MMMNPBBBBB (what fits into 2147483648) */
 	void versionByVCS(vcs) {
-		minorMagnitude = 10
-		patchMagnitude = 10
-		buildMagnitude = 100000
+		// major magnitude is the rest // M 0..213
+		minorMagnitude = 10 // N 0..9
+		patchMagnitude = 10 // P 0..9
+		buildMagnitude = 100000 // B 0..99999
 		build = vcs.revisionNumber
 	}
 

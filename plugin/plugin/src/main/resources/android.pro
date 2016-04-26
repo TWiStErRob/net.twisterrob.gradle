@@ -15,7 +15,8 @@
 # test thoroughly if you go this route.
 # MODIFICATION: removed !code/simplification/arithmetic
 -optimizations !code/simplification/cast,!field/*,!class/merging/*
--optimizationpasses 5
+# MODIFICATION: disable passes, it's overridden in twisterrob-buildType.pro
+#-optimizationpasses 5
 -allowaccessmodification
 -dontpreverify
 
@@ -37,7 +38,7 @@
 -keep,allowshrinking public class com.android.vending.licensing.ILicensingService
 -dontnote com.android.vending.licensing.ILicensingService
 
-# MODIFICATION: add IInAppBillingService
+# MODIFICATION: add IInAppBillingService similar to the above
 -keep,allowshrinking public class com.android.vending.billing.IInAppBillingService
 -dontnote com.android.vending.billing.IInAppBillingService
 
@@ -50,9 +51,11 @@
 # see http://proguard.sourceforge.net/manual/examples.html#beans
 # This will result in a note, but need to keep those of ObjectAnimator.ofObject to work:
 # Note: the configuration keeps the entry point '... { void setP(C); }', but not the descriptor class 'C'
+# MODIFICATION: change *** to % to include only primitive types
+# animating complex types is not a good idea, and likely doesn't happen often, when it does a specific keep is better
 -keepclassmembers public class * extends android.view.View {
-   void set*(***);
-   *** get*();
+   void set*(%);
+   % get*();
 }
 
 # We want to keep methods in Activity that could be used in the XML attribute onClick
@@ -66,8 +69,8 @@
     public static ** valueOf(java.lang.String);
 }
 
-# MODIFICATION: added allowshrinking to still strip unused Parcelables, -200 classes in an empty project having v4
--keep,allowshrinking class * implements android.os.Parcelable {
+# Keep CREATOR fields, but not force keeping the class, as fixed in https://code.google.com/p/android/issues/detail?id=175464
+-keepclassmembers class * implements android.os.Parcelable {
   public static final android.os.Parcelable$Creator CREATOR;
 }
 
@@ -80,6 +83,23 @@
 # platform version.  We know about them, and they are safe.
 -dontwarn android.support.**
 
-# MODIFICATION: add -dontnote for
+# MODIFICATION: add -dontnote for support libs
 # Note: the configuration keeps the entry point '...', but not the descriptor class '...'
 -dontnote android.support.**
+
+# Understand the @Keep support annotation.
+-keep class android.support.annotation.Keep
+
+-keep @android.support.annotation.Keep class * {*;}
+
+-keepclasseswithmembers class * {
+    @android.support.annotation.Keep <methods>;
+}
+
+-keepclasseswithmembers class * {
+    @android.support.annotation.Keep <fields>;
+}
+
+-keepclasseswithmembers class * {
+    @android.support.annotation.Keep <init>(...);
+}
