@@ -1,13 +1,13 @@
 apply plugin: 'groovy'
 
-version = '0.6.2'
+version = '0.7.0'
 
 dependencies {
 	compile gradleApi()
-	compile 'org.tmatesoft.svnkit:svnkit:1.8.11'
-	compile 'org.tmatesoft.svnkit:svnkit-cli:1.8.11'
+	compile 'org.tmatesoft.svnkit:svnkit:1.8.12'
+	compile 'org.tmatesoft.svnkit:svnkit-cli:1.8.12'
 	compile 'org.ajoberstar:gradle-git:1.4.2'
-	compile 'com.android.tools.build:gradle:1.5.0'
+	compile 'com.android.tools.build:gradle:2.1.0'
 }
 
 project.with {

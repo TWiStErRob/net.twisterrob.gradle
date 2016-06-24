@@ -33,12 +33,13 @@ public class AndroidBuildPlugin extends BasePlugin {
 				disable 'Assert', 'GoogleAppIndexingWarning'
 				fatal 'StopShip' // http://stackoverflow.com/q/33504186/253468
 			}
-			buildToolsVersion "23.0.2" // latest Android SDK Build-tools
-			compileSdkVersion "android-23" // Android 6.0/SDK Platform
+			buildToolsVersion "24.0.0" // latest Android SDK Build-tools
+			compileSdkVersion "android-24" // Android 6.0/SDK Platform
 
 			defaultConfig.with {
 				setMinSdkVersion(new DefaultApiVersion(10)) // 2.3.3 Gingerbread MR1
 				setTargetSdkVersion(new DefaultApiVersion(19)) // 4.4 KitKat
+				vectorDrawables.useSupportLibrary = true
 				addBuildConfigField createClassField("String", "EMAIL", "\"feedback@twisterrob.net\"")
 			}
 
