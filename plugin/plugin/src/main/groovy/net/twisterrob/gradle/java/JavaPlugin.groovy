@@ -43,7 +43,7 @@ class JavaPlugin extends BaseExposedPlugin {
 				compiler.targetCompatibility = DEFAULT_JAVA_TEST_VERSION
 			}
 
-			if (DEFAULT_JAVA_VERSION.compareTo(JavaVersion.current()) < 0) {
+			if (DEFAULT_JAVA_VERSION < JavaVersion.current()) {
 				// prevent :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
 				def envVar = "JAVA${DEFAULT_JAVA_VERSION.majorVersion}_HOME"
 				def root = System.env[envVar]

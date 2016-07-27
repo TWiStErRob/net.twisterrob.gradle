@@ -151,12 +151,12 @@ class AndroidEclipsePlugin extends BaseExposedPlugin {
 		generatedCode.java.srcDir 'gen'
 
 		SourceSet syntheticMain = sourceSets.create('syntheticMain')
-		AndroidSourceSet androidMain = android.sourceSets.getAt("main")
+		AndroidSourceSet androidMain = android.sourceSets["main"]
 		syntheticMain.java.srcDirs(androidMain.java.srcDirs.toArray())
 		syntheticMain.resources.srcDirs(androidMain.resources.srcDirs.toArray())
 
 		SourceSet syntheticTest = sourceSets.create('syntheticTest')
-		AndroidSourceSet androidTest = android.sourceSets.getAt("androidTest")
+		AndroidSourceSet androidTest = android.sourceSets["androidTest"]
 		syntheticTest.java.srcDirs(androidTest.java.srcDirs.toArray())
 		syntheticTest.resources.srcDirs(androidTest.resources.srcDirs.toArray())
 		return [ generatedCode, syntheticMain, syntheticTest ]

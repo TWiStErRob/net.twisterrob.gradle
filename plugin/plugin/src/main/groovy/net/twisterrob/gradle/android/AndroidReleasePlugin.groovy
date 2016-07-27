@@ -61,10 +61,11 @@ public class AndroidReleasePlugin extends BasePlugin {
 				}
 			}
 			doFirst {
-				if (outputs.files.singleFile.exists()) {
+				File outFile = outputs.files.singleFile
+				if (outFile.exists()) {
 					throw new StopExecutionException(String.format(Locale.ROOT,
 							"Target zip file already exists, did you run 'svn update'?\nRelease archive: %s",
-							outputs.files.singleFile));
+							outFile));
 				}
 			}
 		}
