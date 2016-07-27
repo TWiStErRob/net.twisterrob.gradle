@@ -61,6 +61,15 @@
 -dontnote org.apache.http.conn.ConnectTimeoutException
 -dontnote org.apache.http.params.HttpParams
 
+# Reading library jar [P:\tools\sdk\android\platforms\android-24\optional\org.apache.http.legacy.jar]
+# Note: duplicate definition of library class [...]
+# Note: there were 4 duplicate class definitions.
+#       (http://proguard.sourceforge.net/manual/troubleshooting.html#duplicateclass)
+-dontnote android.net.http.HttpResponseCache
+-dontnote org.apache.http.conn.scheme.LayeredSocketFactory
+-dontnote org.apache.http.params.CoreConnectionPNames
+-dontnote org.apache.http.params.HttpConnectionParams
+
 #-libraryjars libs
 
 # The official support library.
