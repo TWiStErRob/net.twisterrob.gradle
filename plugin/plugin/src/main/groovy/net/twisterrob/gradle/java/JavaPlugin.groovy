@@ -39,8 +39,8 @@ class JavaPlugin extends BaseExposedPlugin {
 				compiler.options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
 			}
 			if (isTestTask && !isAndroidTask) {
-				compiler.sourceCompatibility = DEFAULT_JAVA_TEST_VERSION
-				compiler.targetCompatibility = DEFAULT_JAVA_TEST_VERSION
+				compiler.sourceCompatibility = DEFAULT_JAVA_TEST_VERSION.toString()
+				compiler.targetCompatibility = DEFAULT_JAVA_TEST_VERSION.toString()
 			}
 
 			if (DEFAULT_JAVA_VERSION < JavaVersion.current()) {
@@ -61,7 +61,7 @@ class JavaPlugin extends BaseExposedPlugin {
 				compiler.doFirst {
 					logger.info("Java Compatiblity: using rt.jar from $rt");
 				}
-				compiler.options.bootClasspath = rt;
+				compiler.options.bootClasspath = rt.absolutePath;
 			}
 		}
 	}

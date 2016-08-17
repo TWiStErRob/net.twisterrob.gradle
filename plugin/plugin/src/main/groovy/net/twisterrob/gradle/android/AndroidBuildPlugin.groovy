@@ -33,7 +33,7 @@ public class AndroidBuildPlugin extends BasePlugin {
 				disable 'Assert', 'GoogleAppIndexingWarning'
 				fatal 'StopShip' // http://stackoverflow.com/q/33504186/253468
 			}
-			buildToolsVersion "24.0.0" // latest Android SDK Build-tools
+			buildToolsVersion "24.0.1" // latest Android SDK Build-tools
 			compileSdkVersion "android-24" // Android 6.0/SDK Platform
 
 			defaultConfig.with {
