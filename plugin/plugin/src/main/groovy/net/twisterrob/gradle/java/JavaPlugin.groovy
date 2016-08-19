@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.java
 
 import com.android.build.gradle.*
+import com.android.builder.core.VariantType
 import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.*
 import org.gradle.api.tasks.compile.JavaCompile
@@ -34,35 +35,50 @@ class JavaPlugin extends BaseExposedPlugin {
 		project.tasks.withType(JavaCompile) { compiler ->
 			compiler.options.encoding = DEFAULT_ENCODING
 			def isTestTask = compiler.name.contains('Test')
-			def isAndroidTask = false // TODO figure this out if it causes a problem
+			def isAndroidTest = compiler.name.endsWith(VariantType.ANDROID_TEST.suffix + 'JavaWithJavac')
+			def isAndroidUnitTest = compiler.name.endsWith(VariantType.UNIT_TEST.suffix + 'JavaWithJavac')
 			if (!isTestTask) {
 				compiler.options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
 			}
-			if (isTestTask && !isAndroidTask) {
-				compiler.sourceCompatibility = DEFAULT_JAVA_TEST_VERSION.toString()
-				compiler.targetCompatibility = DEFAULT_JAVA_TEST_VERSION.toString()
+			if (isTestTask && !isAndroidTest) {
+				changeCompatibility(compiler, DEFAULT_JAVA_TEST_VERSION)
 			}
 
-			if (DEFAULT_JAVA_VERSION < JavaVersion.current()) {
+			def compileVersion = JavaVersion.toVersion(compiler.sourceCompatibility);
+			if (compileVersion < JavaVersion.current()) {
 				// prevent :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
-				def envVar = "JAVA${DEFAULT_JAVA_VERSION.majorVersion}_HOME"
-				def root = System.env[envVar]
-				def rt = project.file("$root/jre/lib/rt.jar")
-				if (!rt.exists()) {
-					rt = project.file("$root/lib/rt.jar")
-				}
-				if (!rt.exists()) {
-					compiler.doFirst {
-						logger.warn("Java Compatibility: javac needs a bootclasspath, " +
-								"but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root).");
-					}
-					return;
-				}
+				fixClasspath(compiler, compileVersion)
+			}
+			if (isTestTask && isAndroidUnitTest) {
 				compiler.doFirst {
-					logger.info("Java Compatiblity: using rt.jar from $rt");
+					// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
+					changeCompatibility(compiler, DEFAULT_JAVA_TEST_VERSION)
+					compiler.classpath += project.files(compiler.options.bootClasspath)
+					fixClasspath(compiler, JavaVersion.toVersion(compiler.sourceCompatibility))
 				}
-				compiler.options.bootClasspath = rt.absolutePath;
 			}
 		}
+	}
+	private void fixClasspath(JavaCompile compiler, JavaVersion compileVersion) {
+		def envVar = "JAVA${compileVersion.majorVersion}_HOME"
+		def root = System.env[envVar]
+		def rt = project.file("$root/jre/lib/rt.jar")
+		if (!rt.exists()) {
+			rt = project.file("$root/lib/rt.jar")
+		}
+		if (!rt.exists()) {
+			compiler.logger.warn("Java Compatibility: javac needs a bootclasspath, " +
+					"but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root).");
+			return;
+		}
+		compiler.logger.info("Java Compatiblity: using rt.jar from $rt");
+		compiler.options.bootClasspath = rt.absolutePath;
+	}
+	private static void changeCompatibility(JavaCompile task, JavaVersion ver) {
+		def origS = task.sourceCompatibility
+		def origT = task.targetCompatibility
+		task.sourceCompatibility = ver.toString()
+		task.targetCompatibility = ver.toString()
+		task.logger.info("Changed compatibility ${origS}/${origT} to ${ver}/${ver}")
 	}
 }
