@@ -1,6 +1,6 @@
 apply plugin: 'groovy'
 
-version = '0.8.1'
+version = '0.8.2'
 
 dependencies { // last checked 2016-06-27 (all latest)
 	compile gradleApi()

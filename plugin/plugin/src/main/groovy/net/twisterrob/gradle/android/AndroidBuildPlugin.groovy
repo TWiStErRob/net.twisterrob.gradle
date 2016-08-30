@@ -59,12 +59,14 @@ public class AndroidBuildPlugin extends BasePlugin {
 			}
 		}
 
+		if (twisterrob.decorateBuildConfig) {
+			decorateBuildConfig()
+		}
 		project.afterEvaluate {
 			project.plugins.withType(AppPlugin) {
 				//android.applicationVariants.all this.&fixVariantTaskGroups
 
 				if (twisterrob.decorateBuildConfig) {
-					decorateBuildConfig()
 					android.applicationVariants.all this.&addPackageName
 				}
 
