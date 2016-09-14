@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.android
+package net.twisterrob.gradle.android.tasks
 
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.internal.TaskManager

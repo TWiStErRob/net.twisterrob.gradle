@@ -4,6 +4,7 @@ import com.android.build.gradle.*
 import com.android.build.gradle.api.*
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
+import net.twisterrob.gradle.android.tasks.*
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.internal.DefaultDomainObjectSet
