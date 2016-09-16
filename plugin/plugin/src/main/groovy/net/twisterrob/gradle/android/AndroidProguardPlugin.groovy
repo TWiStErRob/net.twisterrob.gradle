@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.*
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.transforms.ProGuardTransform
@@ -8,7 +8,9 @@ import com.android.builder.core.DefaultBuildType
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.common.BasePlugin
-import org.gradle.api.Project
+import org.gradle.api.*
+import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.tasks.SourceSet
 
 import static org.gradle.api.tasks.SourceSet.*
 
@@ -69,21 +71,21 @@ class AndroidProguardPlugin extends BasePlugin {
 					task.doFirst {
 						proguard.secondaryFileInputs.each { println "ProGuard configuration file: $it" }
 					}
-				}
-			}
-
-			project.rootProject.allprojects.each { Project subProject ->
-				subProject.plugins.withType(com.android.build.gradle.AppPlugin) {
-					subProject.android.sourceSets[MAIN_SOURCE_SET_NAME]
-					          .java.srcDirs.each { File srcDir -> tryAdd(srcDir) }
-				}
-				subProject.plugins.withType(com.android.build.gradle.LibraryPlugin) {
-					subProject.android.sourceSets[MAIN_SOURCE_SET_NAME]
-					          .java.srcDirs.each { File srcDir -> tryAdd(srcDir) }
-				}
-				subProject.plugins.withType(org.gradle.api.plugins.JavaPlugin) {
-					subProject.sourceSets[MAIN_SOURCE_SET_NAME]
-					          .java.srcDirs.each { File srcDir -> tryAdd(srcDir) }
+					proguard.configurationFiles = {
+						// TODO variant.sourceSets.collect { it.java } (main, release)
+						// TODO variant.javaCompiler.source (main, release, generated)
+						// TODO dependencies or that userProguard or something property?
+						Set<Project> all = project.rootProject.allprojects
+						def java = all.grep { it.plugins.hasPlugin(JavaPlugin) }.collect { it.sourceSets }
+						def lib = all.grep { it.plugins.hasPlugin(LibraryPlugin) }.collect { it.android.sourceSets }
+						def and = all.grep { it.plugins.hasPlugin(AppPlugin) }.collect { it.android.sourceSets }
+						Collection<NamedDomainObjectContainer<SourceSet>> ss = java + lib + and
+						return ss
+								.grep { it.findByName(MAIN_SOURCE_SET_NAME) != null }
+								.collectMany { it[MAIN_SOURCE_SET_NAME].java.srcDirs }
+								.collect { new File(it, 'proguard.pro') }
+								.grep { it.exists() }
+					}
 				}
 			}
 		}
@@ -97,11 +99,5 @@ class AndroidProguardPlugin extends BasePlugin {
 			}
 		}
 		targetFile.setLastModified(this.builtDate.time)
-	}
-	def tryAdd(File srcDir) {
-		File proguardFile = new File(srcDir, 'proguard.pro');
-		if (proguardFile.exists()) {
-			project.android.defaultConfig.proguardFiles.add proguardFile
-		}
 	}
 }
