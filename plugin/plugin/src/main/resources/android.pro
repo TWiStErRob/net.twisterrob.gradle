@@ -1,5 +1,6 @@
 ### -- twister-plugin-gradle/android.pro -- ###
 ### MODIFICATION: based on <SDK>/tools/proguard/proguard-android-optimize.txt ###
+### Last diff to pull changes: 2016-09-17 ###
 
 # This is a configuration file for ProGuard.
 # http://proguard.sourceforge.net/index.html#manual/usage.html
@@ -14,7 +15,8 @@
 # used if you are only targeting Android 2.0 or later.)  Make sure you
 # test thoroughly if you go this route.
 # MODIFICATION: removed !code/simplification/arithmetic
--optimizations !code/simplification/cast,!field/*,!class/merging/*
+# MODIFICATION: removed !field/* to enable field/removal/writeonly for logging removal (the others seem useful too)
+-optimizations !code/simplification/cast,!class/merging/*
 # MODIFICATION: disable passes, it's overridden in twisterrob-buildType.pro
 #-optimizationpasses 5
 -allowaccessmodification
