@@ -2,14 +2,13 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.*
 import com.android.build.gradle.api.*
+import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.android.tasks.*
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.internal.DefaultDomainObjectSet
-
-import static com.android.builder.core.AndroidBuilder.*
 
 class AndroidBuildPluginExtension {
 	boolean decorateBuildConfig = true
@@ -34,29 +33,29 @@ public class AndroidBuildPlugin extends BasePlugin {
 				disable 'Assert', 'GoogleAppIndexingWarning'
 				fatal 'StopShip' // http://stackoverflow.com/q/33504186/253468
 			}
-			buildToolsVersion "24.0.1" // latest Android SDK Build-tools
-			compileSdkVersion "android-24" // Android 6.0/SDK Platform
+			buildToolsVersion "25.0.2" // latest Android SDK Build-tools
+			compileSdkVersion "android-25" // Android 6.0/SDK Platform
 
 			defaultConfig.with {
 				setMinSdkVersion(new DefaultApiVersion(10)) // 2.3.3 Gingerbread MR1
 				setTargetSdkVersion(new DefaultApiVersion(19)) // 4.4 KitKat
 				vectorDrawables.useSupportLibrary = true
-				addBuildConfigField createClassField("String", "EMAIL", "\"feedback@twisterrob.net\"")
+				buildConfigField "String", "EMAIL", "\"feedback@twisterrob.net\""
 			}
 
-			buildTypes['debug'].with {
+			buildTypes['debug'].with { BuildType buildType ->
 				project.plugins.withType(AppPlugin) {
-					// TODO make debug buildtypes configurable, use name of buildtype as suffix
-					setApplicationIdSuffix(".debug")
+					// TODO make debug buildTypes configurable, use name of buildType as suffix
+					buildType.setApplicationIdSuffix(".${buildType.name}")
 				}
-				setVersionNameSuffix("d")
-				addBuildConfigField createClassField("String", "EMAIL", "\"papp.robert.s@gmail.com\"");
-				addResValue createClassField("bool", "in_test", "true");
-				addResValue createClassField("bool", "in_prod", "false");
+				buildType.setVersionNameSuffix("d")
+				buildType.buildConfigField "String", "EMAIL", "\"papp.robert.s@gmail.com\""
+				buildType.resValue "bool", "in_test", "true"
+				buildType.resValue "bool", "in_prod", "false"
 			}
-			buildTypes['release'].with {
-				addResValue createClassField("bool", "in_test", "false")
-				addResValue createClassField("bool", "in_prod", "true")
+			buildTypes['release'].with { BuildType buildType ->
+				buildType.resValue "bool", "in_test", "false"
+				buildType.resValue "bool", "in_prod", "true"
 			}
 		}
 

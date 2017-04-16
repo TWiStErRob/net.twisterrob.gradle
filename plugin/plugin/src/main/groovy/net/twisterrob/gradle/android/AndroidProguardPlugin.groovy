@@ -71,24 +71,26 @@ class AndroidProguardPlugin extends BasePlugin {
 					task.doFirst {
 						proguard.secondaryFileInputs.each { println "ProGuard configuration file: $it" }
 					}
-					proguard.configurationFiles = {
-						// TODO variant.sourceSets.collect { it.java } (main, release)
-						// TODO variant.javaCompiler.source (main, release, generated)
-						// TODO dependencies or that userProguard or something property?
-						Set<Project> all = project.rootProject.allprojects
-						def java = all.grep { it.plugins.hasPlugin(JavaPlugin) }.collect { it.sourceSets }
-						def lib = all.grep { it.plugins.hasPlugin(LibraryPlugin) }.collect { it.android.sourceSets }
-						def and = all.grep { it.plugins.hasPlugin(AppPlugin) }.collect { it.android.sourceSets }
-						Collection<NamedDomainObjectContainer<SourceSet>> ss = java + lib + and
-						return ss
-								.grep { it.findByName(MAIN_SOURCE_SET_NAME) != null }
-								.collectMany { it[MAIN_SOURCE_SET_NAME].java.srcDirs }
-								.collect { new File(it, 'proguard.pro') }
-								.grep { it.exists() }
-					}
+					proguard.setConfigurationFiles this.&collectProguardFiles
 				}
 			}
 		}
+	}
+
+	private Collection<File> collectProguardFiles() {
+		// TODO variant.sourceSets.collect { it.java } (main, release)
+		// TODO variant.javaCompiler.source (main, release, generated)
+		// TODO dependencies or that userProguard or something property?
+		Set<Project> all = project.rootProject.allprojects
+		def java = all.grep { it.plugins.hasPlugin(JavaPlugin) }.collect { it.sourceSets }
+		def lib = all.grep { it.plugins.hasPlugin(LibraryPlugin) }.collect { it.android.sourceSets }
+		def and = all.grep { it.plugins.hasPlugin(AppPlugin) }.collect { it.android.sourceSets }
+		Collection<NamedDomainObjectContainer<SourceSet>> ss = java + lib + and
+		return ss
+				.grep { NamedDomainObjectContainer<SourceSet> it -> it.findByName(MAIN_SOURCE_SET_NAME) != null }
+				.collectMany { it[MAIN_SOURCE_SET_NAME].java.srcDirs }
+				.collect { File it -> new File(it, 'proguard.pro') }
+				.grep { File it -> it.exists() }
 	}
 
 	private void copy(String internalName, File targetFile) {

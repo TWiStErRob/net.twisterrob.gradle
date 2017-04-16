@@ -30,12 +30,12 @@ public class AndroidReleasePlugin extends BasePlugin {
 		}
 		def createReleaseTask = this.&createReleaseTask.curry(allTask)
 		project.plugins.withType(AppPlugin) {
-			def matching = android.applicationVariants.matching { it.buildType.name == buildType.name }
+			def matching = ((AppExtension)android).applicationVariants.matching { it.buildType.name == buildType.name }
 			LOG.debug("Found android app, variants with {}: {}", buildType.name, matching)
 			matching.all createReleaseTask
 		}
 		project.plugins.withType(LibraryPlugin) {
-			def matching = android.libraryVariants.matching { it.buildType.name == buildType.name }
+			def matching = ((LibraryExtension)android).libraryVariants.matching { it.buildType.name == buildType.name }
 			LOG.debug("Found android lib, variants with {}: {}", buildType.name, matching)
 			matching.all createReleaseTask
 		}

@@ -14,7 +14,7 @@ public class TestReportGenerator extends DefaultTask {
 
 	@TaskAction
 	public void generate() {
-		FileUtils.emptyFolder(output);
+		FileUtils.cleanOutputDir(output);
 		ResilientTestReport report = new ResilientTestReport(type, input, output);
 		report.generateReport();
 	}

@@ -26,7 +26,7 @@ class AndroidSigningPlugin extends BasePlugin {
 					keyPassword = project.properties['RELEASE_KEY_PASSWORD']
 				}
 				//signingConfigs.add(sign)
-				buildTypes.release.signingConfig = sign
+				buildTypes['release'].setSigningConfig sign
 			}
 		} else if (project.hasProperty('RELEASE_STORE_FILE')) {
 			LOG.error('Keystore file "{}" is not valid.', keyStoreFile.absolutePath)

@@ -2,6 +2,7 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.*
+import com.android.builder.core.DefaultProductFlavor
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.*
@@ -93,8 +94,8 @@ public class AndroidVersionPlugin extends BasePlugin {
 	}
 
 	void autoVersion(BaseVariant variant) {
-		variant.mergedFlavor.setVersionName(calculateVersionName())
-		variant.mergedFlavor.setVersionCode(calculateVersionCode())
+		((DefaultProductFlavor)variant.mergedFlavor).setVersionName(calculateVersionName())
+		((DefaultProductFlavor)variant.mergedFlavor).setVersionCode(calculateVersionCode())
 	}
 
 	String calculateVersionName() {
