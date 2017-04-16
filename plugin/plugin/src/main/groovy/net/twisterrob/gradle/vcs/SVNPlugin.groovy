@@ -22,14 +22,14 @@ class SVNPluginExtension implements VCSExtension {
 	Project project
 
 	private SVNStatus open() {
-		ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
-		SVNClientManager clientManager = SVNClientManager.newInstance(options);
-		SVNStatusClient statusClient = clientManager.getStatusClient();
-		return statusClient.doStatus(project.rootDir, false);
+		ISVNOptions options = SVNWCUtil.createDefaultOptions(true)
+		SVNClientManager clientManager = SVNClientManager.newInstance(options)
+		SVNStatusClient statusClient = clientManager.getStatusClient()
+		return statusClient.doStatus(project.rootDir, false)
 	}
 
 	String getRevision() {
-		return String.valueOf(getRevisionNumber());
+		return String.valueOf(getRevisionNumber())
 	}
 
 	// Same as: new XmlSlurper().parseText(SVN.cli('info', '--xml')).entry.commit.@revision
@@ -38,7 +38,7 @@ class SVNPluginExtension implements VCSExtension {
 	}
 
 	boolean isAvailableQuick() {
-		return new File(project.rootDir, SVNFileUtil.getAdminDirectoryName()).exists();
+		return new File(project.rootDir, SVNFileUtil.getAdminDirectoryName()).exists()
 	}
 
 	// Same as 'svn info'.execute([], project.rootDir).waitFor() == 0
@@ -62,19 +62,19 @@ class SVNPluginExtension implements VCSExtension {
 			return baos.toString()
 		} finally {
 			System.setOut(oldSystemOut)
-			System.setSecurityManager(null);
+			System.setSecurityManager(null)
 		}
-	};
+	}
 
 	class NonExitingSecurityManager extends SecurityManager {
 		@Override
-		public void checkPermission(Permission perm) {
+		void checkPermission(Permission perm) {
 			// do nothing
 		}
 
 		@Override
-		public void checkExit(int status) {
-			throw new SecurityException();
+		void checkExit(int status) {
+			throw new SecurityException()
 		}
 	}
 }

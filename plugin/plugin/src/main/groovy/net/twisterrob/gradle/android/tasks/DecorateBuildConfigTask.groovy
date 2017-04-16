@@ -5,8 +5,8 @@ import org.gradle.api.tasks.TaskAction
 
 import java.util.concurrent.TimeUnit
 
-public class DecorateBuildConfigTask extends DefaultTask {
-	private static final long HALF_HOUR = TimeUnit.MINUTES.toMillis(30);
+class DecorateBuildConfigTask extends DefaultTask {
+	private static final long HALF_HOUR = TimeUnit.MINUTES.toMillis(30)
 	def buildConfigField/*(String type, String name, String value)*/
 	boolean enableVCS = true
 	boolean enableBuild = true

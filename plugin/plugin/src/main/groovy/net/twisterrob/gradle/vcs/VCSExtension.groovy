@@ -1,8 +1,8 @@
-package net.twisterrob.gradle.vcs;
+package net.twisterrob.gradle.vcs
 
 interface VCSExtension {
-	boolean isAvailable();
-	boolean isAvailableQuick();
-	String getRevision();
-	int getRevisionNumber();
+	boolean isAvailable()
+	boolean isAvailableQuick()
+	String getRevision()
+	int getRevisionNumber()
 }

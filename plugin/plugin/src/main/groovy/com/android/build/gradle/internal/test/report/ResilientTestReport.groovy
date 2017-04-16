@@ -1,15 +1,15 @@
 package com.android.build.gradle.internal.test.report
 
-public class ResilientTestReport extends TestReport {
+class ResilientTestReport extends TestReport {
 	ResilientTestReport(ReportType reportType, File resultDir, File reportDir) {
 		super(reportType, resultDir, reportDir)
 	}
 	@SuppressWarnings("GroovyAccessibility")
-	@Override public void generateReport() {
-		AllTestResults model = super.loadModel();
+	@Override void generateReport() {
+		AllTestResults model = super.loadModel()
 		for (PackageTestResults packageResults : model.getPackages()) {
 			for (ClassTestResults classResults : packageResults.getClasses()) {
-				Map<String, Map<String, TestResult>> results = classResults.getTestResultsMap();
+				Map<String, Map<String, TestResult>> results = classResults.getTestResultsMap()
 				def template = results.values().first().values().first()
 				for (String testName : results.collectMany { it.value.keySet() }) {
 					for (String device : results.keySet()) {
@@ -22,6 +22,6 @@ public class ResilientTestReport extends TestReport {
 				}
 			}
 		}
-		super.generateFiles(model);
+		super.generateFiles(model)
 	}
 }

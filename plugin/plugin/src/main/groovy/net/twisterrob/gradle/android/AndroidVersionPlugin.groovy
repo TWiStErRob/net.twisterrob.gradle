@@ -37,7 +37,7 @@ class AndroidVersionExtension {
 	}
 }
 
-public class AndroidVersionPlugin extends BasePlugin {
+class AndroidVersionPlugin extends BasePlugin {
 	private AndroidVersionExtension version
 
 	@Override

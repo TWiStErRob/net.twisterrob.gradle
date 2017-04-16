@@ -5,11 +5,11 @@ import com.android.build.gradle.api.*
 import org.gradle.api.DomainObjectSet
 
 class Utils {
-	public static String toString(ApplicationVariant variant) {
+	static String toString(ApplicationVariant variant) {
 		return "${variant.class}, name=${variant.name}, desc=${variant.description}, base=${variant.baseName}, dir=${variant.dirName}, pkg=${variant.applicationId}, flav=${variant.flavorName}, ver=${variant.versionName}, code=${variant.versionCode}"
 	}
 
-	public static DomainObjectSet<? extends BaseVariant> getVariants(BaseExtension android) {
+	static DomainObjectSet<? extends BaseVariant> getVariants(BaseExtension android) {
 		if (android instanceof AppExtension) {
 			return android.applicationVariants
 		} else if (android instanceof LibraryExtension) {

@@ -51,7 +51,7 @@ class AndroidEclipsePlugin extends BaseExposedPlugin {
 
 		eclipse.project.with {
 			natures 'com.android.ide.eclipse.adt.AndroidNature'
-			buildCommands.clear();
+			buildCommands.clear()
 			buildCommand "com.android.ide.eclipse.adt.ResourceManagerBuilder"
 			buildCommand "com.android.ide.eclipse.adt.PreCompilerBuilder"
 			buildCommand "org.eclipse.jdt.core.javabuilder"
@@ -111,19 +111,19 @@ class AndroidEclipsePlugin extends BaseExposedPlugin {
 		}
 	}
 
-	public void addChildTask(Task parent, Task child) {
+	void addChildTask(Task parent, Task child) {
 		Task cleanParent = getCleanTask(parent)
-		Delete cleanChild = project.tasks.create(cleanName(child.name), Delete.class);
+		Delete cleanChild = project.tasks.create(cleanName(child.name), Delete.class)
 		cleanChild.delete(child.outputs.files)
 
 		parent.dependsOn child
 		cleanParent.dependsOn cleanChild
 	}
-	public Task getCleanTask(Task worker) {
-		return project.tasks[cleanName(worker.getName())];
+	Task getCleanTask(Task worker) {
+		return project.tasks[cleanName(worker.getName())]
 	}
 	protected static String cleanName(String taskName) {
-		return String.format("clean%s", taskName.capitalize());
+		return String.format("clean%s", taskName.capitalize())
 	}
 
 	private Task createExplodeAARTask(File aarFile, File targetFolder) {

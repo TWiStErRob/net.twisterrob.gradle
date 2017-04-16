@@ -64,7 +64,7 @@ class AndroidProguardPlugin extends BasePlugin {
 			Utils.getVariants(android).all { BaseVariant variant ->
 				def obfuscation = variant.variantData.mappingFileProviderTask
 				if (obfuscation) {
-					def task = obfuscation.task as TransformTask;
+					def task = obfuscation.task as TransformTask
 					def proguard = task.transform as ProGuardTransform
 					task.dependsOn extractProguardRules
 					proguard.printconfiguration(new File(variant.mappingFile.parentFile, 'configuration.pro'))
@@ -94,7 +94,7 @@ class AndroidProguardPlugin extends BasePlugin {
 	}
 
 	private void copy(String internalName, File targetFile) {
-		targetFile.getParentFile().mkdirs();
+		targetFile.getParentFile().mkdirs()
 		new FileOutputStream(targetFile).withStream { outFile ->
 			AndroidProguardPlugin.classLoader.getResourceAsStream(internalName).withStream { inFile ->
 				outFile << inFile

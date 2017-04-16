@@ -17,7 +17,7 @@ project.with {
 
 jar {
 	manifest {
-		attributes(
+		it.attributes(
 				"Implementation-Vendor": project.group,
 				"Implementation-Title": project.name,
 				"Implementation-Version": project.version,

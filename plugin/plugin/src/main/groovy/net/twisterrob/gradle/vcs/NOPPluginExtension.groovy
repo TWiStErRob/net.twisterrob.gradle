@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.vcs;
+package net.twisterrob.gradle.vcs
 
 class NOPPluginExtension implements VCSExtension {
 	boolean isAvailableQuick() {

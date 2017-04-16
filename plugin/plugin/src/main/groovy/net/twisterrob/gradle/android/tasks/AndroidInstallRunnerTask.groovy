@@ -5,10 +5,10 @@ import com.android.build.gradle.internal.TaskManager
 import groovy.util.slurpersupport.GPathResult
 import org.gradle.api.tasks.Exec
 
-public class AndroidInstallRunnerTask extends Exec {
-	private ApplicationVariant variant;
+class AndroidInstallRunnerTask extends Exec {
+	private ApplicationVariant variant
 
-	public void setVariant(ApplicationVariant variant) {
+	void setVariant(ApplicationVariant variant) {
 		this.variant = variant
 		group = TaskManager.INSTALL_GROUP
 		description = "Installs the APK for ${variant.description}, and then runs the main launcher activity."
@@ -21,7 +21,7 @@ public class AndroidInstallRunnerTask extends Exec {
 		// doesn't work: commandLine "${android.adbExe}", 'shell', 'am', 'start', '-a', 'android.intent.action.MAIN', '-c', 'android.intent.category.LAUNCHER', "${variant.applicationId}"
 		commandLine project.android.adbExe, 'shell', 'am', 'start', '-n', "${variant.applicationId}/${activityClass}"
 		// or commandLine android.adbExe, 'shell', 'monkey', '-p', "${variant.applicationId}", '1'
-		super.exec();
+		super.exec()
 	}
 
 	static String getMainActivity(File file) {

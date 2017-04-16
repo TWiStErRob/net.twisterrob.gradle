@@ -36,7 +36,7 @@ class VCSPlugin extends BaseExposedPlugin {
 		} else if (container.git.isAvailable()) {
 			return container.git
 		}
-		return new NOPPluginExtension();
+		return new NOPPluginExtension()
 	}
 
 	void apply(Project target) {

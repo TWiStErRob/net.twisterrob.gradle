@@ -44,7 +44,7 @@ class JavaPlugin extends BaseExposedPlugin {
 				changeCompatibility(compiler, DEFAULT_JAVA_TEST_VERSION)
 			}
 
-			def compileVersion = JavaVersion.toVersion(compiler.sourceCompatibility);
+			def compileVersion = JavaVersion.toVersion(compiler.sourceCompatibility)
 			if (compileVersion < JavaVersion.current()) {
 				// prevent :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
 				fixClasspath(compiler, compileVersion)
@@ -68,11 +68,11 @@ class JavaPlugin extends BaseExposedPlugin {
 		}
 		if (!rt.exists()) {
 			compiler.logger.warn("Java Compatibility: javac needs a bootclasspath, " +
-					"but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root).");
-			return;
+					"but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root).")
+			return
 		}
-		compiler.logger.info("Java Compatiblity: using rt.jar from $rt");
-		compiler.options.bootClasspath = rt.absolutePath;
+		compiler.logger.info("Java Compatiblity: using rt.jar from $rt")
+		compiler.options.bootClasspath = rt.absolutePath
 	}
 	private static void changeCompatibility(JavaCompile task, JavaVersion ver) {
 		def origS = task.sourceCompatibility

@@ -23,7 +23,7 @@ class GITPluginExtension implements VCSExtension {
 	}
 
 	boolean isAvailableQuick() {
-		return new File(project.rootDir, ".git").exists();
+		return new File(project.rootDir, ".git").exists()
 	}
 
 	// 'git describe --always'.execute([], project.rootDir).waitFor() == 0
@@ -52,7 +52,7 @@ class GITPluginExtension implements VCSExtension {
 			def walk = new RevWalk(repository)
 			try {
 				walk.retainBody = false
-				walk.markStart(walk.parseCommit(repository.resolve("HEAD")));
+				walk.markStart(walk.parseCommit(repository.resolve("HEAD")))
 				return walk.iterator().size()
 			} finally {
 				walk.dispose()

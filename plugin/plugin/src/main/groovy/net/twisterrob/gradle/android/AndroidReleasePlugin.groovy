@@ -8,7 +8,7 @@ import org.gradle.api.*
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.bundling.Zip
 
-public class AndroidReleasePlugin extends BasePlugin {
+class AndroidReleasePlugin extends BasePlugin {
 	BaseExtension android
 
 	@Override
@@ -65,7 +65,7 @@ public class AndroidReleasePlugin extends BasePlugin {
 				if (outFile.exists()) {
 					throw new StopExecutionException(String.format(Locale.ROOT,
 							"Target zip file already exists, did you run 'svn update'?\nRelease archive: %s",
-							outFile));
+							outFile))
 				}
 			}
 		}

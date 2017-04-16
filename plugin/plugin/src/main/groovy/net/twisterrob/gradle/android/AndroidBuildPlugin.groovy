@@ -15,7 +15,7 @@ class AndroidBuildPluginExtension {
 	boolean addRunTasks = true
 }
 
-public class AndroidBuildPlugin extends BasePlugin {
+class AndroidBuildPlugin extends BasePlugin {
 	private BaseExtension android
 
 	@Override
