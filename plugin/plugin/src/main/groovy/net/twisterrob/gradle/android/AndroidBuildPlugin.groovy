@@ -5,6 +5,7 @@ import com.android.build.gradle.api.*
 import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
+import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.android.tasks.*
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
@@ -64,19 +65,19 @@ class AndroidBuildPlugin extends BasePlugin {
 		}
 		project.afterEvaluate {
 			project.plugins.withType(AppPlugin) {
-				//android.applicationVariants.all this.&fixVariantTaskGroups
+				//Utils.getVariants(android).all this.&fixVariantTaskGroups
 
 				if (twisterrob.decorateBuildConfig) {
-					android.applicationVariants.all this.&addPackageName
+					Utils.getVariants(android).all this.&addPackageName
 				}
 
 				if (twisterrob.addRunTasks) {
-					android.applicationVariants.all this.&createRunTask
+					Utils.getVariants(android).all this.&createRunTask
 				}
 			}
 
 			project.plugins.withType(LibraryPlugin) {
-				//android.libraryVariants.all this.&fixVariantTaskGroups
+				//Utils.getVariants(android).all this.&fixVariantTaskGroups
 			}
 		}
 	}
@@ -87,13 +88,14 @@ class AndroidBuildPlugin extends BasePlugin {
 		}
 	}
 
-	static void createRunTask(ApkVariant variant) {
+	static void createRunTask(ApplicationVariant variant) {
 		if (variant.install) {
-			variant.install.project.tasks.create(
+			AndroidInstallRunnerTask task = (AndroidInstallRunnerTask)variant.install.project.tasks.create(
 					name: "run${variant.name.capitalize()}",
 					type: AndroidInstallRunnerTask,
 					dependsOn: variant.install
-			).variant = variant
+			)
+			task.variant = variant
 		}
 	}
 

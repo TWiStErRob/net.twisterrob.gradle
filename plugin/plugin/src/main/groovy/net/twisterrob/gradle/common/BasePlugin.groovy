@@ -17,10 +17,10 @@ class BasePlugin implements Plugin<Project> {
 		LOG.debug "Applying to ${target}"
 		project = target
 
-		def match = (project.gradle.gradleVersion =~ /(\d+)\.(\d+).*/)
-		if (!match.find() || match.group(1) != '2' || (match.group(2) as int) < 4) {
+		def match = (project.gradle.gradleVersion =~ /(?<major>\d+)\.(?<minor>\d+).*/)
+		if (!match.find() || !(match.group('major') == '3' && 3 <= (match.group('minor') as int))) {
 			File file = new File("gradle" + File.separator + "wrapper" + File.separator + "gradle-wrapper.properties")
-			def required = "2.4+"
+			def required = "3.3+"
 			throw new BuildException(
 					"Gradle version ${required} is required; the current version is ${project.gradle.gradleVersion}."
 							+ " Edit the distributionUrl in ${file.absolutePath}."

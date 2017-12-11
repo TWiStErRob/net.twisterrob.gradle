@@ -2,6 +2,7 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.*
+import com.android.build.gradle.internal.api.TestedVariant
 import com.android.builder.core.DefaultProductFlavor
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.vcs.VCSPluginExtension
@@ -76,15 +77,18 @@ class AndroidVersionPlugin extends BasePlugin {
 		}*/
 	}
 
-	void appendVersionNameVersionCode(ApplicationVariant variant) {
+	void appendVersionNameVersionCode(ApkVariant variant) {
 		//noinspection GroovyAssignabilityCheck
 		for (ApkVariantOutput output : variant.outputs) {
 			updateOutput(variant, output.zipAlign)
 			updateOutput(variant, output.packageApplication)
 		}
+		if (variant instanceof TestedVariant && variant.testVariant) {
+			appendVersionNameVersionCode(variant.testVariant)
+		}
 	}
 
-	private void updateOutput(ApplicationVariant variant, DefaultTask task) {
+	private void updateOutput(ApkVariant variant, DefaultTask task) {
 		if (task) {
 			File original = task.outputFile
 			String name = original.name

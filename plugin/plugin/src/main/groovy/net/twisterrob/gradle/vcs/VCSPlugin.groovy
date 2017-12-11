@@ -5,6 +5,8 @@ import org.gradle.api.Project
 
 class VCSPluginExtension implements VCSExtension {
 	VCSExtension current //= new NOPPluginExtension();
+//	SVNPlugin svn
+//	GITPlugin git
 
 	boolean isAvailableQuick() {
 		return current.isAvailableQuick()
@@ -24,7 +26,7 @@ class VCSPluginExtension implements VCSExtension {
 }
 
 class VCSPlugin extends BaseExposedPlugin {
-	static VCSExtension whichVCS(container) {
+	static VCSExtension whichVCS(VCSPluginExtension container) {
 		if (container.current) {
 			return container.current
 		} else if (container.svn.isAvailableQuick()) {
