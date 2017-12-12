@@ -26,6 +26,9 @@ class AndroidBuildPlugin extends BasePlugin {
 
 		def twisterrob = android.extensions.create('twisterrob', AndroidBuildPluginExtension)
 
+		// TODEL google() from Gradle 4.1
+		project.repositories.maven { name 'google'; url 'https://maven.google.com' }
+
 		android.with {
 			lintOptions.with {
 				xmlReport = false
@@ -34,8 +37,9 @@ class AndroidBuildPlugin extends BasePlugin {
 				disable 'Assert', 'GoogleAppIndexingWarning'
 				fatal 'StopShip' // http://stackoverflow.com/q/33504186/253468
 			}
-			buildToolsVersion "25.0.2" // latest Android SDK Build-tools
-			compileSdkVersion "android-25" // Android 6.0/SDK Platform
+			// TODO intentionally mismatching the versions to get latest features, but still have sources available for compiled version.
+			buildToolsVersion "27.0.2" // latest Android SDK Build-tools
+			compileSdkVersion "android-26" // Android 7.0/SDK Platform
 
 			defaultConfig.with {
 				setMinSdkVersion(new DefaultApiVersion(10)) // 2.3.3 Gingerbread MR1
