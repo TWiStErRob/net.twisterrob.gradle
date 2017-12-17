@@ -17,7 +17,8 @@ class AndroidInstallRunnerTask extends Exec {
 
 	@Override
 	protected void exec() {
-		def activityClass = getMainActivity(variant.outputs[0].processManifest.manifestOutputFile)
+		def manifestFileName = "${variant.outputs[0].processManifest.manifestOutputDirectory}/AndroidManifest.xml"
+		def activityClass = getMainActivity(project.file(manifestFileName))
 		// doesn't work: commandLine "${android.adbExe}", 'shell', 'am', 'start', '-a', 'android.intent.action.MAIN', '-c', 'android.intent.category.LAUNCHER', "${variant.applicationId}"
 		commandLine project.android.adbExe, 'shell', 'am', 'start', '-n', "${variant.applicationId}/${activityClass}"
 		// or commandLine android.adbExe, 'shell', 'monkey', '-p', "${variant.applicationId}", '1'

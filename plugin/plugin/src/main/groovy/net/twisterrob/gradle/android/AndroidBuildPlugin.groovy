@@ -26,8 +26,7 @@ class AndroidBuildPlugin extends BasePlugin {
 
 		def twisterrob = android.extensions.create('twisterrob', AndroidBuildPluginExtension)
 
-		// TODEL google() from Gradle 4.1
-		project.repositories.maven { name 'google'; url 'https://maven.google.com' }
+		project.repositories.google() // https://maven.google.com
 
 		android.with {
 			lintOptions.with {

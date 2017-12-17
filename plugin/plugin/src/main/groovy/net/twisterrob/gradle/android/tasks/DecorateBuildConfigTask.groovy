@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.android.tasks
 
+import com.android.build.gradle.BaseExtension
+import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -22,14 +24,16 @@ class DecorateBuildConfigTask extends DefaultTask {
 	def getBuildTime = { System.currentTimeMillis().intdiv(HALF_HOUR) * HALF_HOUR }
 
 	DecorateBuildConfigTask() {
-		buildConfigField = project.android.defaultConfig.&buildConfigField
+		BaseExtension android = project.android
+		buildConfigField = android.defaultConfig.&buildConfigField
 	}
 
 	@TaskAction
 	void addVCSInformation() {
 		if (enableVCS) {
-			buildConfigField "String", "REVISION", "\"${project.VCS.current.revision}\""
-			buildConfigField "int", "REVISION_NUMBER", "${project.VCS.current.revisionNumber}"
+			def vcs = project.VCS as VCSPluginExtension
+			buildConfigField "String", "REVISION", "\"${vcs.current.revision}\""
+			buildConfigField "int", "REVISION_NUMBER", "${vcs.current.revisionNumber}"
 		}
 	}
 
@@ -38,7 +42,7 @@ class DecorateBuildConfigTask extends DefaultTask {
 		if (enableBuild) {
 			long buildTime = getBuildTime()
 			buildConfigField "java.util.Date", "BUILD_TIME",
-					"new java.util.Date(${buildTime}L) /* ${dateFormat(buildTime)} *" + "/"
+					"new java.util.Date(${buildTime}L) /* ${dateFormat(buildTime)} */"
 		}
 	}
 

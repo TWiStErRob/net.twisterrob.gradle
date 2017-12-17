@@ -47,6 +47,6 @@ class VCSPlugin extends BaseExposedPlugin {
 		project.extensions.create("VCS", VCSPluginExtension)
 		project.apply plugin: SVNPlugin
 		project.apply plugin: GITPlugin
-		project.VCS.current = whichVCS(target.VCS)
+		project.VCS.current = whichVCS((VCSPluginExtension)target.VCS)
 	}
 }

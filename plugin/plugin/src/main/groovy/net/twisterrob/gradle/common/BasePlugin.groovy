@@ -18,9 +18,9 @@ class BasePlugin implements Plugin<Project> {
 		project = target
 
 		def match = (project.gradle.gradleVersion =~ /(?<major>\d+)\.(?<minor>\d+).*/)
-		if (!match.find() || !(match.group('major') == '3' && 3 <= (match.group('minor') as int))) {
+		if (!match.find() || !(match.group('major') == '4' && 1 <= (match.group('minor') as int))) {
 			File file = new File("gradle" + File.separator + "wrapper" + File.separator + "gradle-wrapper.properties")
-			def required = "3.3+"
+			def required = "4.1+"
 			throw new BuildException(
 					"Gradle version ${required} is required; the current version is ${project.gradle.gradleVersion}."
 							+ " Edit the distributionUrl in ${file.absolutePath}."

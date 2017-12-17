@@ -3,6 +3,7 @@ group = rootProject.name
 subprojects {
 	repositories {
 		jcenter()
+		google()
 	}
 
 	group = rootProject.group
@@ -12,10 +13,10 @@ subprojects {
 allprojects {
 	gradle.projectsEvaluated {
 		tasks.withType(JavaCompile) {
-			it.options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+			it.options.compilerArgs << "-Xlint:all" << "-Werror"
 		}
 		tasks.withType(GroovyCompile) {
-			it.options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+			it.options.compilerArgs << "-Xlint:all" << "-Werror"
 		}
 	}
 }

@@ -6,7 +6,7 @@ import com.android.build.gradle.internal.api.TestedVariant
 import com.android.builder.core.DefaultProductFlavor
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.vcs.VCSPluginExtension
-import org.gradle.api.*
+import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
 
 class AndroidVersionExtension {
@@ -57,6 +57,12 @@ class AndroidVersionPlugin extends BasePlugin {
 			version.versionByVCS(vcs.current)
 		}
 
+		if (version.autoVersion) {
+			android.defaultConfig.with {
+				setVersionName calculateVersionName()
+				setVersionCode calculateVersionCode()
+			}
+		}
 		project.afterEvaluate {
 			android.applicationVariants.all { variant ->
 				if (version.autoVersion) {
@@ -67,39 +73,29 @@ class AndroidVersionPlugin extends BasePlugin {
 				}
 			}
 		}
-
-		/*// Not sure if needed to overwrite by default
-		if (version.autoVersion) {
-			android.defaultConfig.with {
-				versionName = calculateVersionName()
-				versionCode = calculateVersionCode()
-			}
-		}*/
 	}
 
 	void appendVersionNameVersionCode(ApkVariant variant) {
-		//noinspection GroovyAssignabilityCheck
+		//noinspection GroovyAssignabilityCheck only called for applicationVariants and their testVariants
 		for (ApkVariantOutput output : variant.outputs) {
-			updateOutput(variant, output.zipAlign)
-			updateOutput(variant, output.packageApplication)
+			updateOutput(output, variant)
 		}
 		if (variant instanceof TestedVariant && variant.testVariant) {
 			appendVersionNameVersionCode(variant.testVariant)
 		}
 	}
 
-	private void updateOutput(ApkVariant variant, DefaultTask task) {
-		if (task) {
-			File original = task.outputFile
-			String name = original.name
-			def artifact = name.endsWith(".apk") ? name.substring(0, name.length() - ".apk".length()) : name
-			task.outputFile = new File(original.parent, version.formatArtifactName(project, variant, artifact) + ".apk")
-		}
+	private updateOutput(ApkVariantOutput output, ApkVariant variant) {
+		output.setOutputFileName(version.formatArtifactName(project, variant, output.baseName) + ".apk")
 	}
 
 	void autoVersion(BaseVariant variant) {
 		((DefaultProductFlavor)variant.mergedFlavor).setVersionName(calculateVersionName())
 		((DefaultProductFlavor)variant.mergedFlavor).setVersionCode(calculateVersionCode())
+		if (variant instanceof TestedVariant && variant.testVariant) {
+			// need to version the test variant, so the androidTest APK gets the same version its AndroidManifest
+			autoVersion(variant.testVariant)
+		}
 	}
 
 	String calculateVersionName() {

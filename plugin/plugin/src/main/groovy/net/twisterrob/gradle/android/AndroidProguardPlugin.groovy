@@ -1,7 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.gradle.*
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.api.BaseVariantImpl
 import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.transforms.ProGuardTransform
 import com.android.builder.core.DefaultBuildType
@@ -61,17 +61,17 @@ class AndroidProguardPlugin extends BasePlugin {
 		}
 
 		project.afterEvaluate {
-			Utils.getVariants(android).all { BaseVariant variant ->
-				def obfuscation = variant.variantData.mappingFileProviderTask
+			Utils.getVariants(android).all { BaseVariantImpl variant ->
+				def obfuscation = variant.variantData.obfuscationTask
 				if (obfuscation) {
 					def task = obfuscation.task as TransformTask
 					def proguard = task.transform as ProGuardTransform
 					task.dependsOn extractProguardRules
 					proguard.printconfiguration(new File(variant.mappingFile.parentFile, 'configuration.pro'))
 					task.doFirst {
-						proguard.secondaryFileInputs.each { println "ProGuard configuration file: $it" }
+						proguard.secondaryFiles.each { println "ProGuard configuration file: $it" }
 					}
-					proguard.setConfigurationFiles this.&collectProguardFiles
+					proguard.setConfigurationFiles project.files(collectProguardFiles())
 				}
 			}
 		}

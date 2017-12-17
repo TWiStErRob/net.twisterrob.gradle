@@ -1,13 +1,14 @@
 apply plugin: 'groovy'
 
-version = '2.3.3.10-19-26.1'
+version = '3.0.1.10-19-26.0'
 
 dependencies { // last checked 2017-04-14 (all latest)
-	compile gradleApi()
-	compile 'org.tmatesoft.svnkit:svnkit:1.8.14' // https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
-	compile 'org.tmatesoft.svnkit:svnkit-cli:1.8.14'
-	compile 'org.ajoberstar:gradle-git:1.7.1' // https://github.com/ajoberstar/gradle-git/releases
-	compile 'com.android.tools.build:gradle:2.3.3' // https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
+	implementation gradleApi()
+	implementation 'org.tmatesoft.svnkit:svnkit:1.8.14' // https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
+	implementation 'org.tmatesoft.svnkit:svnkit-cli:1.8.14'
+	implementation 'org.ajoberstar:gradle-git:1.7.1' // https://github.com/ajoberstar/gradle-git/releases
+	// FIXME when updating to 3.1.x fix 4.2->4.3 bootClasspath->bootstrapClassPath deprecation
+	implementation 'com.android.tools.build:gradle:3.0.1' // https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
 }
 
 project.with {
@@ -21,7 +22,7 @@ jar {
 				"Implementation-Vendor": project.group,
 				"Implementation-Title": project.name,
 				"Implementation-Version": project.version,
-				"Built-Date": new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(new Date())
+				"Built-Date": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 		)
 	}
 }
