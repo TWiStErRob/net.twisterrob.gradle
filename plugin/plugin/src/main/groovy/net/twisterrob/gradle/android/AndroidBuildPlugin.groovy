@@ -9,7 +9,6 @@ import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.android.tasks.*
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
-import org.gradle.api.internal.DefaultDomainObjectSet
 
 class AndroidBuildPluginExtension {
 	boolean decorateBuildConfig = true
@@ -110,16 +109,6 @@ class AndroidBuildPlugin extends BasePlugin {
 		if (testVariantData) {
 			testVariantData.compileTask.group = "Build"
 			testVariantData.compileTask.description = "Compiles test sources for ${variant.description}"
-		}
-	}
-
-	DefaultDomainObjectSet<? extends BaseVariant> getVariants() {
-		if (android instanceof LibraryExtension) {
-			return android.libraryVariants
-		} else if (android instanceof AppExtension) {
-			return android.applicationVariants
-		} else {
-			throw new IllegalArgumentException("Cannot find variants on " + android)
 		}
 	}
 
