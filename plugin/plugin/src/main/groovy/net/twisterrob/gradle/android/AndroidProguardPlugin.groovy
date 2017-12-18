@@ -62,15 +62,16 @@ class AndroidProguardPlugin extends BasePlugin {
 
 		project.afterEvaluate {
 			Utils.getVariants(android).all { BaseVariantImpl variant ->
-				def obfuscation = variant.variantData.obfuscationTask
-				if (obfuscation) {
-					def task = obfuscation.task as TransformTask
-					def proguard = task.transform as ProGuardTransform
-					task.dependsOn extractProguardRules
+				TransformTask obfuscationTask = project.tasks.matching {
+					it instanceof TransformTask \
+					  && it.variantName == variant.name \
+					  && it.transform instanceof ProGuardTransform
+				}.find() as TransformTask
+				if (obfuscationTask) {
+					obfuscationTask.dependsOn extractProguardRules
+					def proguard = obfuscationTask.transform as ProGuardTransform
 					proguard.printconfiguration(new File(variant.mappingFile.parentFile, 'configuration.pro'))
-					task.doFirst {
-						proguard.secondaryFiles.each { println "ProGuard configuration file: $it" }
-					}
+					// TODO this should depend on the variant, why is it here?
 					proguard.setConfigurationFiles project.files(collectProguardFiles())
 				}
 			}

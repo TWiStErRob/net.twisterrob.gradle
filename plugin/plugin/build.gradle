@@ -22,6 +22,7 @@ jar {
 				"Implementation-Vendor": project.group,
 				"Implementation-Title": project.name,
 				"Implementation-Version": project.version,
+				// parsed in net.twisterrob.gradle.common.BasePlugin.getBuiltDate
 				"Built-Date": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 		)
 	}
