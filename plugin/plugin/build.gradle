@@ -1,6 +1,6 @@
 apply plugin: 'groovy'
 
-version = '3.0.1.10-19-26.1'
+version = '3.0.1.10-19-26.2'
 
 dependencies { // last checked 2017-04-14 (all latest)
 	implementation gradleApi()
