@@ -2,6 +2,7 @@ package net.twisterrob.gradle.java
 
 import com.android.build.gradle.*
 import com.android.builder.core.VariantType
+import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.*
 import org.gradle.api.tasks.compile.JavaCompile
@@ -15,8 +16,8 @@ class JavaPlugin extends BaseExposedPlugin {
 	void apply(Project target) {
 		super.apply(target)
 
-		if (project.plugins.hasPlugin(AppPlugin) || project.plugins.hasPlugin(LibraryPlugin)) {
-			TestedExtension android = project.android
+		if (Utils.hasAndroid(project)) {
+			BaseExtension android = project.android
 			android.compileOptions.encoding = DEFAULT_ENCODING
 			android.compileOptions.defaultJavaVersion = DEFAULT_JAVA_VERSION
 			android.compileOptions.sourceCompatibility = DEFAULT_JAVA_VERSION

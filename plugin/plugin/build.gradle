@@ -1,6 +1,6 @@
 apply plugin: 'groovy'
 
-version = '3.0.1.10-19-26.2'
+version = '3.0.1.10-19-26.3'
 
 dependencies { // last checked 2017-04-14 (all latest)
 	implementation gradleApi()
@@ -9,6 +9,7 @@ dependencies { // last checked 2017-04-14 (all latest)
 	implementation 'org.ajoberstar:gradle-git:1.7.1' // https://github.com/ajoberstar/gradle-git/releases
 	// FIXME when updating to 3.1.x fix 4.2->4.3 bootClasspath->bootstrapClassPath deprecation
 	implementation 'com.android.tools.build:gradle:3.0.1' // https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
+	implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.10'
 }
 
 project.with {
