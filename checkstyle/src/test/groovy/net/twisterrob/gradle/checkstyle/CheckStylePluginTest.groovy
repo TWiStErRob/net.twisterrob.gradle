@@ -4,7 +4,6 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
