@@ -27,6 +27,7 @@ allprojects {
 	plugins.withId('java') {
 		sourceCompatibility = VERSION_JAVA as JavaVersion
 		targetCompatibility = VERSION_JAVA as JavaVersion
+		tasks.test.testLogging.events "passed", "skipped", "failed"
 		jar {
 			manifest {
 				afterEvaluate {

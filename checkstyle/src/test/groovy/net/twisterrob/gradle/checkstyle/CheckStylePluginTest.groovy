@@ -30,7 +30,6 @@ class CheckStylePluginTest {
 		assert result.failReason() =~ /^Task 'checkstyle' not found/
 	}
 
-	@Ignore
 	@Test void "applies without a hitch to a Java project"() {
 		given:
 		@Language('gradle')
@@ -43,8 +42,7 @@ class CheckStylePluginTest {
 		def result = gradle.run(script, 'checkstyle').buildAndFail()
 
 		then:
-		assert result.failReason() =~
-				/^Task 'checkstyle' is ambiguous in root project '.*?'. Candidates are: 'checkstyleMain', 'checkstyleTest'.$/
+		assert result.failReason() =~ /^Task 'checkstyle' not found/
 	}
 
 	@Test void "applies without a hitch to an Android project"() {
