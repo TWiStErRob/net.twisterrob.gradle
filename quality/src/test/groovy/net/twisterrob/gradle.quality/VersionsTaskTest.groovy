@@ -14,7 +14,7 @@ class VersionsTaskTest {
 	@Test void "print missing versions"() {
 		given:
 		@Language('gradle')
-		def script = """
+		def script = """\
 			task('qualityVersions', type: ${VersionsTask.name})
 		""".stripIndent()
 
@@ -34,7 +34,7 @@ class VersionsTaskTest {
 		gradle.setGradleVersion("4.2.1")
 
 		@Language('gradle')
-		def script = """
+		def script = """\
 			apply plugin: 'checkstyle'
 			task('qualityVersions', type: ${VersionsTask.name})
 		""".stripIndent()

@@ -19,7 +19,7 @@ class CheckStylePluginTest {
 	@Test void "applies without a hitch to an empty project"() {
 		given:
 		@Language('gradle')
-		def script = """
+		def script = """\
 			apply plugin: 'net.twisterrob.checkstyle'
 		""".stripIndent()
 
@@ -33,7 +33,7 @@ class CheckStylePluginTest {
 	@Test void "applies without a hitch to a Java project"() {
 		given:
 		@Language('gradle')
-		def script = """
+		def script = """\
 			apply plugin: 'java'
 			apply plugin: 'net.twisterrob.checkstyle'
 		""".stripIndent()
@@ -48,7 +48,7 @@ class CheckStylePluginTest {
 	@Test void "applies without a hitch to an Android project"() {
 		given:
 		@Language('gradle')
-		def script = """
+		def script = """\
 			// it's all in the template
 		""".stripIndent()
 

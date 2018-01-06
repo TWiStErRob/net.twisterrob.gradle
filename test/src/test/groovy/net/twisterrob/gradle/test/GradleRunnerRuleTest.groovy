@@ -12,7 +12,7 @@ class GradleRunnerRuleTest {
 	@Test void "gradle script test"() {
 		given:
 		@Language('gradle')
-		def script = """
+		def script = """\
 			println 'Hello World'
 		""".stripIndent()
 
@@ -26,7 +26,7 @@ class GradleRunnerRuleTest {
 	@Test void "gradle task test"() {
 		given:
 		@Language('gradle')
-		def script = """
+		def script = """\
 			task test {
 				doLast {
 				    println 'Hello World'
@@ -45,7 +45,7 @@ class GradleRunnerRuleTest {
 	@Test void "test with file"() {
 		given:
 		@Language('xml')
-		def configFileContents = """
+		def configFileContents = """\
 			<root>
 				<element attr="value" />
 			</root>
@@ -53,7 +53,7 @@ class GradleRunnerRuleTest {
 		gradle.file(configFileContents, 'config/file.xml')
 
 		@Language('gradle')
-		def script = """
+		def script = """\
 			task printConfigFile {
 				def configFile = rootProject.file('config/file.xml')
 				inputs.file configFile

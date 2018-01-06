@@ -24,7 +24,7 @@ class MyTest {
 	@Test void "gradle test"() {
 		given:
 		@Language('gradle')
-		def script = """
+		def script = """\
 		task test {
 			doLast {
 			    println 'Hello World'

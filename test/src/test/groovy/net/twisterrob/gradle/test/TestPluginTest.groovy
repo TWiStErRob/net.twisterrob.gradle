@@ -24,7 +24,7 @@ class TestPluginTest {
 		given:
 		//noinspection GrPackage it will be written to the right folder
 		@Language('groovy')
-		def testFileContents = '''
+		def testFileContents = '''\
 			package net.twisterrob.gradle.test
 
 			import org.junit.Rule
@@ -36,7 +36,7 @@ class TestPluginTest {
 
 				@Test void "gradle script test"() {
 					given:
-					def script = """
+					def script = """\\
 						println 'Hello World'
 					""".stripIndent()
 
@@ -53,7 +53,7 @@ class TestPluginTest {
 
 		def artifactPath = System.properties['net.twisterrob.gradle.test.artifactPath'].toString()
 		@Language('gradle')
-		def script = """
+		def script = """\
 			apply plugin: 'groovy'
 			apply plugin: 'net.twisterrob.gradle.test'
 

@@ -71,7 +71,7 @@ ${buildFile.text.trim().split('\n').collect {'\t\t\t\t\t' + it}.join('\n')}
 				.collect {"\t\t\t\t\tclasspath files('${it.absolutePath.replace('\\', '\\\\')}')"}
 				.join('\n')
 		@Language("gradle")
-		def buildscript = """
+		def buildscript = """\
 			buildscript {
 				dependencies {
 ${classPaths}
