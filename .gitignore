@@ -1,9 +1,14 @@
+# Build outputs
 .gradle/
-.idea/
 build/
 out/
-/temp/
-/local.properties
+
+# IDEA Project files
+.idea/
 *.iml
 *.ipr
 *.iws
+
+# Other
+/temp/
+/local.properties
