@@ -8,6 +8,7 @@ import org.gradle.api.Task
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.reporting.CustomizableHtmlReport
+import org.gradle.api.reporting.ReportingExtension
 
 class CheckStyleTaskCreator {
 
@@ -41,6 +42,9 @@ class CheckStyleTaskCreator {
 			task.description = "Run checkstyle on ${variant.name} variant"
 			checkstyleAll.dependsOn task
 
+			if (!task.configFile.exists()) {
+				task.configFile = project.rootProject.file('config/checkstyle/checkstyle.xml')
+			}
 			task.configDir = project.provider {task.configFile.parentFile}
 			task.configProperties += [
 					checked_project_dir: project.projectDir, // TODO or rootDir?
@@ -53,12 +57,14 @@ class CheckStyleTaskCreator {
 			task.showViolations = true
 
 			task.reports.with {
+				def reportsDir = project.extensions.findByType(ReportingExtension).baseDir
 				xml.with {
 					enabled = true
+					setDestination(new File(reportsDir, 'checkstyle.xml'))
 				}
 				((CustomizableHtmlReport)html).with {
 					enabled = true
-					setDestination(new File(project.buildDir, 'reports/checkstyle.html'))
+					setDestination(new File(reportsDir, 'checkstyle.html'))
 					def xsl = project.rootProject.file('config/checkstyle/checkstyle-html.xsl')
 					if (xsl.exists()) {
 						stylesheet = project.resources.text.fromFile(xsl)

@@ -1,0 +1,19 @@
+buildscript {
+	repositories {
+		jcenter()
+		google()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:3.0.1'
+	}
+}
+allprojects {
+	repositories {
+		jcenter() // checkstyle plugin needs to be downloaded
+	}
+	plugins.withType(com.android.build.gradle.api.AndroidBasePlugin) {
+		afterEvaluate { // need to delay setting this, because AndroidBasePlugin is the first plugin to apply
+			android.compileSdkVersion 27
+		}
+	}
+}

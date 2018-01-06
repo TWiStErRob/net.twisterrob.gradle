@@ -45,6 +45,7 @@ class GradleRunnerRule implements TestRule {
 				.forwardOutput()
 				.withProjectDir(temp.root)
 				.withPluginClasspath()
+		assert this.buildFile == this.getBuildFile()
 		fixClassPath(runner)
 	}
 
@@ -64,8 +65,8 @@ ${buildFile.text.trim().split('\n').collect {'\t\t\t\t\t' + it}.join('\n')}
 	/**
 	 * This is a workaround because runner.withPluginClasspath() doesn't seem to work.
 	 */
-	private static void fixClassPath(GradleRunner runner) {
-		def buildFile = new File(runner.projectDir, 'build.gradle')
+	private void fixClassPath(GradleRunner runner) {
+		def buildFile = getBuildFile()
 		def classPaths = runner
 				.pluginClasspath
 				.collect {"\t\t\t\t\tclasspath files('${it.absolutePath.replace('\\', '\\\\')}')"}
@@ -83,6 +84,15 @@ ${classPaths}
 	//endregion
 
 	//region Helper methods
+
+	File getBuildFile() {
+		return new File(runner.projectDir, 'build.gradle')
+	}
+
+	File settingsFile() {
+		return new File(runner.projectDir, 'settings.gradle')
+	}
+
 	//@Test:given/@Before
 	void setGradleVersion(String version) {
 		def distributionUrl = URI.create("https://services.gradle.org/distributions/gradle-${version}-all.zip")
@@ -97,16 +107,27 @@ ${classPaths}
 	}
 
 	//@Test:given/@Before
+	void file(String contents, Collection<String> path) {
+		file(contents, path as String[])
+	}
 	void file(String contents, String... path) {
+		if (path.length == 1 && path[0] == 'build.gradle') {
+			buildFile << contents
+			return
+		}
 		temp.newFolder(path[0..path.length - 2] as String[])
 		temp.newFile(path.join(File.separator)) << contents
 	}
 
 	//@Test:given/@Before
-	GradleRunnerRule basedOn(String folder, Object relativeTo) {
-		def path = relativeTo != null? "/${relativeTo.class.package.name}" : ""
-		def template = new File(this.class.getResource("${path}/${folder}/").file)
-		return basedOn(template)
+	GradleRunnerRule basedOn(String folder, Object relativeTo = null) {
+		return basedOn(templateFile(folder, relativeTo))
+	}
+
+	File templateFile(String path, Object relativeTo = null) {
+		def container = relativeTo != null? "/${relativeTo.class.package.name}" : ""
+		def resource = this.class.getResource("${container}/${path}")
+		return new File(resource.file)
 	}
 
 	//@Test:given/@Before
