@@ -1,0 +1,12 @@
+apply plugin: 'groovy'
+apply plugin: 'java-gradle-plugin'
+
+dependencies {
+    implementation project(':common')
+    implementation project(':checkstyle')
+    
+    testImplementation gradleTestKit()
+    testImplementation project(':test')
+    testImplementation "junit:junit:${VERSION_JUNIT}"
+    testImplementation "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
+}

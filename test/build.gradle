@@ -1,0 +1,32 @@
+apply plugin: 'groovy'
+apply plugin: 'java-gradle-plugin'
+
+dependencies {
+	compileOnly localGroovy()
+	compileOnly gradleApi()
+	compileOnly gradleTestKit()
+
+	implementation project(':common')
+	compileOnly "junit:junit:${VERSION_JUNIT}"
+	compileOnly "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
+
+	testImplementation localGroovy()
+	testImplementation gradleApi()
+	testImplementation gradleTestKit()
+	testImplementation "junit:junit:${VERSION_JUNIT}"
+	testImplementation "org.mockito:mockito-core:${VERSION_MOCKITO}"
+	testImplementation "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
+}
+
+// Need to depend on the real artifact so TestPluginTest can work
+tasks.test.doFirst {
+	it.jvmArgs "-Dnet.twisterrob.gradle.test.artifactPath=${tasks.jar.outputs.files.singleFile.parentFile}"
+}
+tasks.test.dependsOn tasks.jar
+afterEvaluate {
+	def metaTask = tasks.pluginUnderTestMetadata as org.gradle.plugin.devel.tasks.PluginUnderTestMetadata
+	metaTask.pluginClasspath = files(
+			configurations.runtimeClasspath - configurations.compileOnly,
+			tasks.jar.outputs.files.singleFile
+	)
+}

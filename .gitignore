@@ -1,0 +1,8 @@
+.gradle/
+.idea/
+build/
+/temp/
+/local.properties
+*.iml
+*.ipr
+*.iws

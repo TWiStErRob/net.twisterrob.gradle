@@ -1,0 +1,4 @@
+moduleName=net.twisterrob.gradle.test
+moduleVersion=1.0
+extensionClasses=net.twisterrob.gradle.test.BuildResultExtensions
+staticExtensionClasses=

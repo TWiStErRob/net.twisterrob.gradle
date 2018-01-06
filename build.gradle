@@ -1,0 +1,43 @@
+group = rootProject.name
+
+subprojects {
+	group = rootProject.group
+	version = VERSION
+
+	repositories {
+		jcenter()
+		google()
+	}
+
+	//apply from: 'http://localhost/maven/configure.gradle'
+}
+
+allprojects {
+
+	gradle.projectsEvaluated {
+		tasks.withType(JavaCompile) {
+			it.options.compilerArgs << "-Xlint:all" << "-Werror"
+		}
+		tasks.withType(GroovyCompile) {
+			it.options.compilerArgs << "-Xlint:all" << "-Werror"
+			it.groovyOptions.configurationScript = rootProject.file("gradle/compileGroovy.groovy")
+		}
+	}
+
+	plugins.withId('java') {
+		sourceCompatibility = VERSION_JAVA as JavaVersion
+		targetCompatibility = VERSION_JAVA as JavaVersion
+		jar {
+			manifest {
+				afterEvaluate {
+					attributes(
+							"Implementation-Vendor": project.group,
+							"Implementation-Title": project.name,
+							"Implementation-Version": project.version,
+							"Built-Date": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+					)
+				}
+			}
+		}
+	}
+}

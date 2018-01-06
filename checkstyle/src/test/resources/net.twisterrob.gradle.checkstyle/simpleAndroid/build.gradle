@@ -1,0 +1,19 @@
+buildscript {
+	repositories {
+		jcenter()
+		google()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:3.0.1'
+	}
+}
+repositories {
+	jcenter() // checkstyle plugin needs to be downloaded
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'net.twisterrob.checkstyle'
+
+android {
+	compileSdkVersion 27
+}
