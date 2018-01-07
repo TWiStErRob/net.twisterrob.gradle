@@ -1,0 +1,5 @@
+apply plugin: 'com.android.test'
+
+android {
+	targetProjectPath ':app'
+}

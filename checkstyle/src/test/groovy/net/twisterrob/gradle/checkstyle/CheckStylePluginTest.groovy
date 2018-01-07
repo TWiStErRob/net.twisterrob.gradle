@@ -50,7 +50,7 @@ class CheckStylePluginTest {
 		given:
 		@Language('gradle')
 		def script = """\
-			// it's all in the template
+			apply plugin: 'net.twisterrob.checkstyle'
 		""".stripIndent()
 
 		when:
@@ -62,6 +62,35 @@ class CheckStylePluginTest {
 		assert result.task(':checkstyleAll').outcome == TaskOutcome.UP_TO_DATE
 		assert result.task(':checkstyleDebug').outcome == TaskOutcome.NO_SOURCE
 		assert result.task(':checkstyleRelease').outcome == TaskOutcome.NO_SOURCE
+	}
+
+	@Test void "applies to all types of subprojects"() {
+		given:
+		gradle.file(gradle.templateFile('checkstyle-empty.xml').text, 'config', 'checkstyle', 'checkstyle.xml')
+		def script = gradle.templateFile('android-multiproject-root.gradle').text
+		script += """
+			allprojects {
+				apply plugin: 'net.twisterrob.checkstyle'
+			}
+		""".stripIndent()
+		// ':instant' is not supported yet 
+		def modules = [ ':app', ':feature', ':base', ':library', ':library:nested', ':test' ]
+
+		when:
+		def result = gradle.basedOn('allKindsOfSubProjects', this)
+		                   .run(script, 'checkstyleAll')
+		                   .build()
+
+		then:
+		// these tasks are not generated because their modules are special
+		def exceptions = [ ':test:checkstyleRelease' ]
+		assert result.taskPaths(TaskOutcome.NO_SOURCE)
+		             .containsAll(tasksIn(modules, 'checkstyleRelease', 'checkstyleDebug') - exceptions)
+		assert result.taskPaths(TaskOutcome.UP_TO_DATE)
+		             .containsAll(tasksIn(modules, 'checkstyleAll'))
+		def allTasks = result.tasks.collect {it.path}
+		def tasks = tasksIn(modules, 'checkstyleAll', 'checkstyleRelease', 'checkstyleDebug') - exceptions
+		assert !(allTasks - tasks).any {it.toLowerCase().contains('checkstyle')}
 	}
 
 	@Test void "applies to subprojects from root"() {
@@ -79,7 +108,6 @@ class CheckStylePluginTest {
 
 			@Language('gradle')
 			def subProject = """\
-				apply plugin: 'net.twisterrob.checkstyle'
 				apply plugin: 'com.android.library'
 			""".stripIndent()
 
@@ -93,6 +121,11 @@ class CheckStylePluginTest {
 
 		gradle.file(gradle.templateFile('checkstyle-empty.xml').text, 'config', 'checkstyle', 'checkstyle.xml')
 		def rootProject = gradle.templateFile('android-multiproject-root.gradle').text
+		rootProject += """
+			allprojects {
+				apply plugin: 'net.twisterrob.checkstyle'
+			}
+		""".stripIndent()
 
 		when:
 		def result = gradle.run(rootProject, 'checkstyleAll').build()
@@ -102,6 +135,9 @@ class CheckStylePluginTest {
 		             .containsAll(tasksIn(modules, 'checkstyleRelease', 'checkstyleDebug'))
 		assert result.taskPaths(TaskOutcome.UP_TO_DATE)
 		             .containsAll(tasksIn(modules, 'checkstyleAll'))
+		def allTasks = result.tasks.collect {it.path}
+		def tasks = tasksIn(modules, 'checkstyleAll', 'checkstyleRelease', 'checkstyleDebug')
+		assert !(allTasks - tasks).any {it.toLowerCase().contains('checkstyle')}
 	}
 
 	@Test void "applies to individual subprojects"() {

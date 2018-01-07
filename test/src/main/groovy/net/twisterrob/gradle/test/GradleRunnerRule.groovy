@@ -28,7 +28,11 @@ class GradleRunnerRule implements TestRule {
 			@Override
 			void evaluate() {
 				setUp()
-				base.evaluate()
+				try {
+					base.evaluate()
+				} finally {
+					tearDown()
+				}
 			}
 		}
 		// by applying this other rule around our statement we get the temp folder before our code is called
@@ -47,6 +51,10 @@ class GradleRunnerRule implements TestRule {
 				.withPluginClasspath()
 		assert this.buildFile == this.getBuildFile()
 		fixClassPath(runner)
+	}
+
+	private void tearDown() {
+		// not used yet, but useful for debugging
 	}
 
 	//@Test:when
@@ -110,6 +118,7 @@ ${classPaths}
 	void file(String contents, Collection<String> path) {
 		file(contents, path as String[])
 	}
+
 	void file(String contents, String... path) {
 		if (path.length == 1 && path[0] == 'build.gradle') {
 			buildFile << contents
@@ -132,14 +141,15 @@ ${classPaths}
 
 	//@Test:given/@Before
 	GradleRunnerRule basedOn(File folder) {
-		FileUtils.copyDirectory(folder, temp.root, new FileFilter() {
-
-			@Override
-			boolean accept(File pathname) {
-				return pathname.getName() != "build.gradle"
-			}
-		})
-		buildFile << new File(folder, "build.gradle").text
+		def originalBuildFile = buildFile.text
+		println "Deploying ${folder} into ${temp.root}"
+		FileUtils.copyDirectory(folder, temp.root)
+		if (buildFile.exists()) {
+			// merge two files
+			def newBuildFile = buildFile.text
+			buildFile.delete()
+			buildFile << originalBuildFile + System.lineSeparator() + newBuildFile
+		}
 		return this
 	}
 	//endregion

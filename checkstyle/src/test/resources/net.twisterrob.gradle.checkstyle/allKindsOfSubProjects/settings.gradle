@@ -1,0 +1,7 @@
+include ':library'
+include ':library:nested'
+include ':base'
+include ':feature'
+include ':app'
+include ':instant'
+include ':test'

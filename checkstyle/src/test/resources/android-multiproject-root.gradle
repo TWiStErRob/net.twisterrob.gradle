@@ -7,9 +7,10 @@ buildscript {
 		classpath 'com.android.tools.build:gradle:3.0.1'
 	}
 }
+
 allprojects {
 	repositories {
-		jcenter() // checkstyle plugin needs to be downloaded
+		jcenter() // quality plugin needs to be downloaded in test
 	}
 	plugins.withType(com.android.build.gradle.api.AndroidBasePlugin) {
 		afterEvaluate { // need to delay setting this, because AndroidBasePlugin is the first plugin to apply
