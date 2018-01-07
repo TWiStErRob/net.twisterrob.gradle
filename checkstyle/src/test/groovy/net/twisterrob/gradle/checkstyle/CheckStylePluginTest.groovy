@@ -165,7 +165,9 @@ class CheckStylePluginTest {
 
 			def subProject = it in applyTo? subProjectApplied : subProjectNotApplied
 			@Language('xml')
-			def manifest = """<manifest package="project${it.replace(':', '.')}" />"""
+			def manifest = """\
+				<manifest package="project${it.replace(':', '.')}" />
+			""".stripIndent()
 
 			def subPath = it.split(':')
 			gradle.file(subProject, subPath + [ 'build.gradle' ])
