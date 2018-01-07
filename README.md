@@ -45,6 +45,8 @@ def result = gradle.run(/*...*/).withDebug(true).build()
 ```
 Running a test in embedded mode allows us to put breakpoints inside the tasks and plugins that are in this project. Without it only the test classes and their utilities (i.e. test project setup) would be available without visibility to the internals of the build the test is running.
 
+**Beware** (`ClassNotFoundException: groovy.util.AntBuilder`): https://github.com/gradle/gradle/issues/3995
+
 #### `Plugins`
 ```groovy
 gradle.buildFile << """\
