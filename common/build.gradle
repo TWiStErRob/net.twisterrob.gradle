@@ -3,4 +3,6 @@ apply plugin: 'groovy'
 dependencies {
 	implementation localGroovy()
 	implementation gradleApi()
+
+	compileOnly "com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}"
 }
