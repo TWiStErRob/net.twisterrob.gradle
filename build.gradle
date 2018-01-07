@@ -9,7 +9,9 @@ subprojects {
 		google()
 	}
 
-	//apply from: 'http://localhost/maven/configure.gradle'
+	if ('MVN_LOCALHOST_REPO' in System.env) {
+		apply from: 'http://localhost/maven/configure.gradle'
+	}
 }
 
 allprojects {
