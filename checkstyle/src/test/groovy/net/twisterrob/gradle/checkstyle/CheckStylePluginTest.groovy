@@ -59,9 +59,9 @@ class CheckStylePluginTest {
 		                   .build()
 
 		then:
-		assert result.task(':checkstyleAll').outcome == TaskOutcome.SUCCESS
-		assert result.task(':checkstyleDebug').outcome == TaskOutcome.SUCCESS
-		assert result.task(':checkstyleRelease').outcome == TaskOutcome.SUCCESS
+		assert result.task(':checkstyleAll').outcome == TaskOutcome.UP_TO_DATE
+		assert result.task(':checkstyleDebug').outcome == TaskOutcome.NO_SOURCE
+		assert result.task(':checkstyleRelease').outcome == TaskOutcome.NO_SOURCE
 	}
 
 	@Test void "applies to subprojects from root"() {
@@ -98,9 +98,10 @@ class CheckStylePluginTest {
 		def result = gradle.run(rootProject, 'checkstyleAll').build()
 
 		then:
-		def tasksNames = [ 'checkstyleAll', 'checkstyleRelease', 'checkstyleDebug' ]
-		List<String> tasks = ([ modules, tasksNames ].combinations() as List<List<String>>).collect {it.join(':')}
-		assert result.taskPaths(TaskOutcome.SUCCESS).containsAll(tasks)
+		assert result.taskPaths(TaskOutcome.NO_SOURCE)
+		             .containsAll(tasksIn(modules, 'checkstyleRelease', 'checkstyleDebug'))
+		assert result.taskPaths(TaskOutcome.UP_TO_DATE)
+		             .containsAll(tasksIn(modules, 'checkstyleAll'))
 	}
 
 	@Test void "applies to individual subprojects"() {
@@ -142,10 +143,21 @@ class CheckStylePluginTest {
 		def result = gradle.run(rootProject, 'checkstyleAll').build()
 
 		then:
-		def tasksNames = [ 'checkstyleAll', 'checkstyleRelease', 'checkstyleDebug' ]
-		List<String> tasks = ([ applyTo, tasksNames ].combinations() as List<List<String>>).collect {it.join(':')}
-		def successfulTasks = result.taskPaths(TaskOutcome.SUCCESS)
-		assert successfulTasks.containsAll(tasks)
-		assert !(successfulTasks - tasks).any {it.toLowerCase().contains('checkstyle')}
+		def allTasks = result.tasks.collect {it.path}
+		def tasks = tasksIn(applyTo, 'checkstyleAll', 'checkstyleRelease', 'checkstyleDebug')
+		assert !(allTasks - tasks).any {it.toLowerCase().contains('checkstyle')}
+
+		assert result.taskPaths(TaskOutcome.NO_SOURCE)
+		             .containsAll(tasksIn(applyTo, 'checkstyleRelease', 'checkstyleDebug'))
+		assert result.taskPaths(TaskOutcome.UP_TO_DATE)
+		             .containsAll(tasksIn(applyTo, 'checkstyleAll'))
+	}
+
+	private static List<String> tasksIn(List<String> modules, String... taskNames) {
+		List<List<String>> moduleTaskPairs = [ modules, taskNames ].combinations()
+		return moduleTaskPairs.collect {
+			// build task from [module, taskName] as "module:taskName"
+			it.join(':')
+		}
 	}
 }
