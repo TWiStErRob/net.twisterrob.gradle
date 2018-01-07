@@ -44,7 +44,7 @@ class TestPluginTest {
 					def result = gradle.run(script).build()
 
 					then:
-					assert result.output =~ /(?m)^Hello World$/
+					result.assertHasOutputLine(/Hello World/)
 				}
 			}
 		'''.stripIndent()
@@ -80,6 +80,6 @@ class TestPluginTest {
 
 		then:
 		assert result.task(':test').outcome == TaskOutcome.SUCCESS
-		assert result.output =~ /(?m)^net.twisterrob.gradle.test.Testception > gradle script test: SUCCESS$/
+		result.assertHasOutputLine(/net.twisterrob.gradle.test.Testception > gradle script test: SUCCESS/)
 	}
 }

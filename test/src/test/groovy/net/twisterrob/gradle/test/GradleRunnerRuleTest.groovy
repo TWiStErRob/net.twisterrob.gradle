@@ -20,7 +20,7 @@ class GradleRunnerRuleTest {
 		def result = gradle.run(script).build()
 
 		then:
-		assert result.output =~ /(?m)^Hello World$/
+		result.assertHasOutputLine(/Hello World/)
 	}
 
 	@Test void "gradle task test"() {
@@ -39,7 +39,7 @@ class GradleRunnerRuleTest {
 
 		then:
 		assert result.task(':test').outcome == TaskOutcome.SUCCESS
-		assert result.output =~ /(?m)^Hello World$/
+		result.assertHasOutputLine(/Hello World/)
 	}
 
 	@Test void "test with file"() {

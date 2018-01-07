@@ -4,8 +4,13 @@ import org.gradle.testkit.runner.BuildResult
 import org.jetbrains.annotations.Nullable
 
 import javax.annotation.Nonnull
+import javax.annotation.RegEx
 
 class BuildResultExtensions {
+
+	static void assertHasOutputLine(final @Nonnull BuildResult self, @RegEx String expectedLineRegex) {
+		assert self.output =~ /(?m)^${expectedLineRegex}$/
+	}
 
 	static @Nullable String failReason(final @Nonnull BuildResult self) {
 		return failureBlock('What went wrong', self)

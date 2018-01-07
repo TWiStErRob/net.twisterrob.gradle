@@ -37,7 +37,7 @@ class MyTest {
 	
 		then:
 		assert result.task(':test').outcome == TaskOutcome.SUCCESS
-		assert result.output =~ /(?m)^Hello World$/
+		result.assertHasOutputLine(/Hello World/)
 	}
 }
 ```

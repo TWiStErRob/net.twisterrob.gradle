@@ -3,7 +3,6 @@ package net.twisterrob.gradle.quality
 import net.twisterrob.gradle.test.GradleRunnerRule
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
-import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 
@@ -23,10 +22,10 @@ class VersionsTaskTest {
 
 		then:
 		assert result.task(':qualityVersions').outcome == TaskOutcome.SUCCESS
-		assert result.output =~ /(?m)^Gradle version: .+$/
-		assert result.output =~ /(?m)^Checkstyle version: 'checkstyle' plugin not applied$/
-		assert result.output =~ /(?m)^PMD version: 'pmd' plugin not applied$/
-		assert result.output =~ /(?m)^FindBugs version: 'findbugs' plugin not applied$/
+		result.assertHasOutputLine(/Gradle version: .+/)
+		result.assertHasOutputLine(/Checkstyle version: 'checkstyle' plugin not applied/)
+		result.assertHasOutputLine(/PMD version: 'pmd' plugin not applied/)
+		result.assertHasOutputLine(/FindBugs version: 'findbugs' plugin not applied/)
 	}
 
 	@Test void "print checkstyle version"() {
@@ -44,7 +43,7 @@ class VersionsTaskTest {
 
 		then:
 		assert result.task(':qualityVersions').outcome == TaskOutcome.SUCCESS
-		assert result.output =~ /(?m)^Gradle version: 4.2.1$/
-		assert result.output =~ /(?m)^Checkstyle version: 6.19$/
+		result.assertHasOutputLine(/Gradle version: 4\.2\.1/)
+		result.assertHasOutputLine(/Checkstyle version: 6\.19/)
 	}
 }

@@ -86,6 +86,6 @@ class CheckStyleTaskTest_ConfigLocation {
 		// otherwise it's BUILD SUCCESSFUL or CheckstyleException: Unable to find: ...xml
 		assert result.task(':module:checkstyleDebug').outcome == TaskOutcome.FAILED
 		assert result.failReason() =~ /Checkstyle rule violations were found/
-		assert result.output =~ /(?m)^.*src.main.java.file:1: .*? \[Header]$/
+		result.assertHasOutputLine(/.*src.main.java.file:1: .*? \[Header]/)
 	}
 }
