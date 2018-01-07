@@ -96,9 +96,6 @@ class CheckStyleTaskCreator {
 		// single-star represents r|buildConfig|aidl|rs|etc.
 		// double-star is the package name
 		task.exclude "${relativeBuildPath}/${FD_GENERATED}/source/*/${variant.name}/**/*.java"
-		task.doFirst {
-			println task.getSource().files.join("\n")
-		}
 	}
 
 	static def setupReports(Checkstyle task) {
