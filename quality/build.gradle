@@ -5,8 +5,15 @@ dependencies {
 	implementation project(':common')
 	implementation project(':checkstyle')
 
+	implementation "se.bjurr.violations:violations-lib:${VERSION_VIOLATIONS}"
+
 	testImplementation gradleTestKit()
 	testImplementation project(':test')
+
 	testImplementation "junit:junit:${VERSION_JUNIT}"
 	testImplementation "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
 }
+
+// pull in resources from :checkstyle/src/test/resources
+sourceSets.test.resources.srcDirs project(':checkstyle')
+		.convention.getPlugin(JavaPluginConvention).sourceSets.test.resources.srcDirs
