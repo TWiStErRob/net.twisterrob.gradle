@@ -88,6 +88,9 @@ class CheckStyleTask extends Checkstyle {
 		}
 
 		static def setupReports(CheckStyleTask task) {
+			// don't stop the build, so we have all the results at once for reporting
+			// if this is the only task being requested by the user, fail the build on failures
+			task.ignoreFailures = task.project.gradle.startParameter.taskNames != [ task.path ]
 			// TODO too soon?
 			def reportsDir = task.project.extensions.findByType(ReportingExtension).baseDir
 			task.reports.with {

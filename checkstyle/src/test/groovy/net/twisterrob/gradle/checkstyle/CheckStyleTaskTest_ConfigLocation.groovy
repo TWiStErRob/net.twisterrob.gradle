@@ -79,7 +79,7 @@ class CheckStyleTaskTest_ConfigLocation {
 		def rootProject = gradle.templateFile('android-multiproject-root.gradle').text
 
 		when:
-		def result = gradle.run(rootProject, 'checkstyleDebug').buildAndFail()
+		def result = gradle.run(rootProject, ':module:checkstyleDebug').buildAndFail()
 
 		then:
 		// build should only fail if checkstyle-mandatory-header-content.xml wins the preference,
