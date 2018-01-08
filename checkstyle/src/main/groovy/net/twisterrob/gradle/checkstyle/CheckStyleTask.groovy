@@ -17,12 +17,12 @@ class CheckStyleTask extends Checkstyle {
 		classpath = project.files()
 		setConfigDir project.provider {configFile.parentFile}
 
-		doFirst this.&setupProperties
+		setupProperties()
 	}
 
 	def setupProperties() {
 		configProperties += [
-				checked_project_dir: project.projectDir, // TODO or rootDir?
+				basedir: project.projectDir, // TODO or rootDir?
 		] as Map<String, Object>
 	}
 
