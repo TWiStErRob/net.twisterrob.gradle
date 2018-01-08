@@ -124,7 +124,9 @@ ${classPaths}
 			buildFile << contents
 			return
 		}
-		temp.newFolder(path[0..path.length - 2] as String[])
+		if (1 < path.length) {
+			temp.newFolder(path[0..path.length - 2] as String[])
+		}
 		temp.newFile(path.join(File.separator)) << contents
 	}
 
