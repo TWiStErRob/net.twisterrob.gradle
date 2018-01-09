@@ -17,15 +17,20 @@ class CheckStyleTask extends Checkstyle {
 	CheckStyleTask() {
 		group = JavaBasePlugin.VERIFICATION_GROUP
 		classpath = project.files()
-		setConfigDir project.provider {configFile.parentFile}
 
 		setupProperties()
 	}
 
 	def setupProperties() {
+		// partially based on https://github.com/jshiell/checkstyle-idea#eclipse-cs-variable-support
 		configProperties += [
-				basedir: project.projectDir, // TODO or rootDir?
+				basedir      : project.projectDir, // TODO or rootDir?
+				project_loc  : project.rootDir,
+				workspace_loc: project.rootDir,
+				//config_loc: configFile.parentFile // set via setConfigDir
+				//samedir: use config_loc instead (until I figure out how to do doFirst properly)
 		] as Map<String, Object>
+		setConfigDir project.provider {configFile.parentFile}
 	}
 
 	Object getVariant() {
