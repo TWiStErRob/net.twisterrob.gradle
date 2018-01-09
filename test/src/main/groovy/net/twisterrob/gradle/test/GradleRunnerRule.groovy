@@ -59,7 +59,9 @@ class GradleRunnerRule implements TestRule {
 
 	//@Test:when
 	GradleRunner run(@Language("gradle") String script, String... tasks) {
-		buildFile << script
+		if (script != null) {
+			buildFile << script
+		}
 		def args = tasks + [ '--stacktrace' ]
 		println """
 				Running `gradle ${args}` on ${buildFile.absolutePath}:

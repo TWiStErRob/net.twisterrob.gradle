@@ -13,39 +13,24 @@ class ValidateViolationsTaskTest {
 
 	@Test void "get total violation counts"() {
 		given:
-		@Language('gradle')
-		def settings = """\
-			include ':module'
-		""".stripIndent()
-		gradle.settingsFile() << settings
-
-		@Language('gradle')
-		def module = """\
-			apply plugin: 'net.twisterrob.checkstyle'
-			apply plugin: 'com.android.library'
-		""".stripIndent()
-		gradle.file(module, 'module', 'build.gradle')
-
-		@Language('xml')
-		def manifest = """\
-			<manifest package="module" />
-		"""
-		gradle.file(manifest, 'module', 'src', 'main', 'AndroidManifest.xml')
-
 		@Language('text')
 		def empty = ''
 		gradle.file(empty, 'module', 'src', 'main', 'java', 'file')
 
 		gradle.file(gradle.templateFile('checkstyle-mandatory-header-content.xml').text, CONFIG_PATH)
 
-		def rootProject = gradle.templateFile('android-multiproject-root.gradle').text
-		rootProject += """
+		@Language('gradle')
+		def script = """\
+			subprojects { // i.e. :module
+				apply plugin: 'net.twisterrob.checkstyle'
+			}
 			task('printViolationCount', type: ${ValidateViolationsTask.name})
 		""".stripIndent()
 
-
 		when:
-		def result = gradle.run(rootProject, 'checkstyleAll', 'printViolationCount').build()
+		def result = gradle.basedOn('android-single_module')
+		                   .run(script, 'checkstyleAll', 'printViolationCount')
+		                   .build()
 
 		then:
 		result.assertHasOutputLine(/Violations: 2/)

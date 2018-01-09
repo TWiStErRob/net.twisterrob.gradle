@@ -15,5 +15,9 @@ dependencies {
 }
 
 // pull in resources from :checkstyle/src/test/resources
-sourceSets.test.resources.srcDirs project(':checkstyle')
+sourceSets.test.resources.srcDirs evaluationDependsOn(':checkstyle')
+		.convention.getPlugin(JavaPluginConvention).sourceSets.test.resources.srcDirs
+
+// pull in resources from :test/src/test/resources
+sourceSets.test.resources.srcDirs evaluationDependsOn(':test')
 		.convention.getPlugin(JavaPluginConvention).sourceSets.test.resources.srcDirs

@@ -13,43 +13,23 @@ class CheckStyleTaskTest_ConfigLocation {
 
 	@Rule public final GradleRunnerRule gradle = new GradleRunnerRule()
 
+	private String noChecksConfig
+	private String headerValidatorConfig
+
 	@Before void setUp() {
-		@Language('gradle')
-		def settings = """\
-			include ':module'
-		""".stripIndent()
-		gradle.settingsFile() << settings
-
-		@Language('gradle')
-		def module = """\
-			apply plugin: 'net.twisterrob.checkstyle'
-			apply plugin: 'com.android.library'
-			tasks.withType(org.gradle.api.plugins.quality.Checkstyle) {
-				// output all violations to the console so that we can parse the results
-				showViolations = true
-			}
-		""".stripIndent()
-		gradle.file(module, 'module', 'build.gradle')
-
-		@Language('xml')
-		def manifest = """\
-			<manifest package="module" />
-		"""
-		gradle.file(manifest, 'module', 'src', 'main', 'AndroidManifest.xml')
-
-		@Language('text')
-		def empty = ''
-		gradle.file(empty, 'module', 'src', 'main', 'java', 'file')
+		noChecksConfig = gradle.templateFile('checkstyle-empty.xml').text
+		headerValidatorConfig = gradle.templateFile('checkstyle-mandatory-header-content.xml').text
 	}
 
 	@Test void "uses rootProject checkstyle config as a fallback"() {
 		given:
-		gradle.file(gradle.templateFile('checkstyle-mandatory-header-content.xml').text, CONFIG_PATH)
+		gradle.file(headerValidatorConfig, CONFIG_PATH)
 		//noinspection GroovyConstantIfStatement do not set up, we want it to use rootProject's
 		if (false) {
-			gradle.file(gradle.templateFile('checkstyle-empty.xml').text, [ 'module' ] + CONFIG_PATH)
+			gradle.file(noChecksConfig, [ 'module' ] + CONFIG_PATH)
 		}
 
+		test:
 		executeBuildAndVerifyMissingContentCheckWasRun()
 	}
 
@@ -57,29 +37,45 @@ class CheckStyleTaskTest_ConfigLocation {
 		given:
 		//noinspection GroovyConstantIfStatement do not set up rootProject's, we want to see if works without as well
 		if (false) {
-			gradle.file(gradle.templateFile('checkstyle-empty.xml').text, CONFIG_PATH)
+			gradle.file(noChecksConfig, CONFIG_PATH)
 		}
-		gradle.file(gradle.templateFile('checkstyle-mandatory-header-content.xml').text, [ 'module' ] + CONFIG_PATH)
+		gradle.file(headerValidatorConfig, [ 'module' ] + CONFIG_PATH)
 
+		test:
 		executeBuildAndVerifyMissingContentCheckWasRun()
 	}
 
 	@Test void "uses local module checkstyle config over rootProject checkstyle config"() {
 		given:
-		gradle.file(gradle.templateFile('checkstyle-empty.xml').text, CONFIG_PATH)
-		gradle.file(gradle.templateFile('checkstyle-mandatory-header-content.xml').text, [ 'module' ] + CONFIG_PATH)
+		gradle.file(noChecksConfig, CONFIG_PATH)
+		gradle.file(headerValidatorConfig, [ 'module' ] + CONFIG_PATH)
 
+		test:
 		executeBuildAndVerifyMissingContentCheckWasRun()
 	}
 
 	private void executeBuildAndVerifyMissingContentCheckWasRun() {
 		given:
-		// see also @Before for basic project setup
-		// see also @Test/given for test setup
-		def rootProject = gradle.templateFile('android-multiproject-root.gradle').text
+		@Language('gradle')
+		def script = """\
+			subprojects { // i.e. :module
+				apply plugin: 'net.twisterrob.checkstyle'
+				tasks.withType(org.gradle.api.plugins.quality.Checkstyle) {
+					// output all violations to the console so that we can parse the results
+					showViolations = true
+				}
+			}
+		""".stripIndent()
+
+		@Language('text')
+		def empty = ''
+		gradle.file(empty, 'module', 'src', 'main', 'java', 'file')
+		// see also @Test/given for configuration file location setup
 
 		when:
-		def result = gradle.run(rootProject, ':module:checkstyleDebug').buildAndFail()
+		def result = gradle.basedOn('android-single_module')
+		                   .run(script, ':module:checkstyleDebug')
+		                   .buildAndFail()
 
 		then:
 		// build should only fail if checkstyle-mandatory-header-content.xml wins the preference,

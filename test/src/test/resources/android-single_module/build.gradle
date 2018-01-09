@@ -1,0 +1,25 @@
+buildscript {
+	repositories {
+		jcenter()
+		google()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:3.0.1'
+	}
+}
+
+allprojects {
+	repositories {
+		jcenter() // checkstyle plugin needs to be downloaded
+	}
+}
+
+apply plugin: 'com.android.application'
+
+android {
+	compileSdkVersion 27
+}
+
+dependencies {
+	implementation project(':module')
+}
