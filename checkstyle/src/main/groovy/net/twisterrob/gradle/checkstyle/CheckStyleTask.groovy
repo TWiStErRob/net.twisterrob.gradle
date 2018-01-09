@@ -12,6 +12,8 @@ import static com.android.builder.model.AndroidProject.FD_GENERATED
 
 class CheckStyleTask extends Checkstyle {
 
+	private Object variant
+
 	CheckStyleTask() {
 		group = JavaBasePlugin.VERIFICATION_GROUP
 		classpath = project.files()
@@ -26,6 +28,14 @@ class CheckStyleTask extends Checkstyle {
 		] as Map<String, Object>
 	}
 
+	Object getVariant() {
+		return variant as BaseVariant
+	}
+
+	private void setVariant(Object variant) {
+		this.variant = variant
+	}
+
 	static class TaskConfig implements Action<CheckStyleTask> {
 
 		private final BaseVariant variant
@@ -37,6 +47,7 @@ class CheckStyleTask extends Checkstyle {
 		@Override
 		void execute(CheckStyleTask task) {
 			task.description = "Run checkstyle on ${variant.name} variant"
+			task.variant = variant
 			setupConfigLocations(task)
 			setupSources(task, variant)
 			setupReports(task)

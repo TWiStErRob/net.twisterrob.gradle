@@ -24,7 +24,14 @@ class ValidateViolationsTaskTest {
 			subprojects { // i.e. :module
 				apply plugin: 'net.twisterrob.checkstyle'
 			}
-			task('printViolationCount', type: ${ValidateViolationsTask.name})
+			task('printViolationCount', type: ${ValidateViolationsTask.name}) {
+				action = {Map<String, Map<String, List<se.bjurr.violations.lib.model.Violation>>> results ->
+					def count = results.values().sum { map ->
+						 map.values().sum { list -> list.size() }
+					}
+					println "Violations: \${count}"
+				}
+			}
 		""".stripIndent()
 
 		when:
