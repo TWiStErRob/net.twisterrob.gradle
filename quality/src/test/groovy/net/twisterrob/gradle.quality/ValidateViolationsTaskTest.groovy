@@ -78,7 +78,7 @@ class ValidateViolationsTaskTest {
 			}
 			task('printViolationCounts', type: ${ValidateViolationsTask.name}) {
 				action = {Map<String, Map<String, List<se.bjurr.violations.lib.model.Violation>>> results ->
-					results.each {module, byVariant ->
+					results['checkstyle'].each {module, byVariant ->
 						println "\\t\${module}:"
 						byVariant.each {variant, violations ->
 							println "\\t\\t\${variant}: \${violations.size()}"

@@ -5,6 +5,8 @@ dependencies {
 	implementation project(':common')
 	implementation project(':checkstyle')
 
+	compileOnly "com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}"
+//	compileOnly "de.aaschmid:gradle-cpd-plugin:1.0"
 	implementation "se.bjurr.violations:violations-lib:${VERSION_VIOLATIONS}"
 
 	testImplementation gradleTestKit()

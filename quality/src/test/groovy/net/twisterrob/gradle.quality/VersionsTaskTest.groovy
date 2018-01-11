@@ -46,4 +46,42 @@ class VersionsTaskTest {
 		result.assertHasOutputLine(/Gradle version: 4\.2\.1/)
 		result.assertHasOutputLine(/Checkstyle version: 6\.19/)
 	}
+
+	@Test void "print pmd version"() {
+		given:
+		gradle.setGradleVersion("4.2.1")
+
+		@Language('gradle')
+		def script = """\
+			apply plugin: 'pmd'
+			task('qualityVersions', type: ${VersionsTask.name})
+		""".stripIndent()
+
+		when:
+		def result = gradle.run(script, 'qualityVersions').build()
+
+		then:
+		assert result.task(':qualityVersions').outcome == TaskOutcome.SUCCESS
+		result.assertHasOutputLine(/Gradle version: 4\.2\.1/)
+		result.assertHasOutputLine(/PMD version: 5\.6\.1/)
+	}
+
+	@Test void "print findbugs version"() {
+		given:
+		gradle.setGradleVersion("4.2.1")
+
+		@Language('gradle')
+		def script = """\
+			apply plugin: 'findbugs'
+			task('qualityVersions', type: ${VersionsTask.name})
+		""".stripIndent()
+
+		when:
+		def result = gradle.run(script, 'qualityVersions').build()
+
+		then:
+		assert result.task(':qualityVersions').outcome == TaskOutcome.SUCCESS
+		result.assertHasOutputLine(/Gradle version: 4\.2\.1/)
+		result.assertHasOutputLine(/FindBugs version: 3\.0\.1/)
+	}
 }
