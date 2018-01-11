@@ -140,6 +140,9 @@ ${classPaths}
 	File templateFile(String path, Object relativeTo = null) {
 		def container = relativeTo != null? "/${relativeTo.class.package.name}" : ""
 		def resource = this.class.getResource("${container}/${path}")
+		if (resource == null) {
+			throw new IllegalArgumentException("Cannot find ${path} relative to {$relativeTo}")
+		}
 		return new File(resource.file)
 	}
 

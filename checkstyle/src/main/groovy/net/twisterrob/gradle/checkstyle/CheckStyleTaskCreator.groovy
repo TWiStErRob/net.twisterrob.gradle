@@ -10,7 +10,7 @@ class CheckStyleTaskCreator {
 
 	private final Project project
 
-	private Task checkstyleAll
+	private Task checkstyleEach
 
 	CheckStyleTaskCreator(Project project) {
 		this.project = project
@@ -19,22 +19,26 @@ class CheckStyleTaskCreator {
 	def applyTo(DomainObjectSet<? extends BaseVariant> variants) {
 		createGlobalTask()
 		variants.all this.&configureCheckStyle
+		project.afterEvaluate {
+			project.tasks.create('checkstyleAll', CheckStyleTask,
+					new CheckStyleVariantsTaskConfig(variants))
+		}
 	}
 
 	def createGlobalTask() {
-		if (project.tasks.findByName('checkStyleAll') != null) {
+		if (project.tasks.findByName('checkstyleEach') != null) {
 			return
 		}
 		project.apply plugin: 'checkstyle'
-		checkstyleAll = project.tasks.create('checkstyleAll') {Task task ->
+		checkstyleEach = project.tasks.create('checkstyleEach') {Task task ->
 			task.group = JavaBasePlugin.VERIFICATION_GROUP
-			task.description = 'Run checkstyle on all variants'
+			task.description = 'Run checkstyle on each variant separately'
 		}
 	}
 
 	def configureCheckStyle(BaseVariant variant) {
 		def checkstyleName = "checkstyle${variant.name.capitalize()}"
-		checkstyleAll.dependsOn project.tasks.create(checkstyleName,
-				CheckStyleTask, new CheckStyleTask.TaskConfig(variant))
+		checkstyleEach.dependsOn project.tasks.create(checkstyleName, CheckStyleTask,
+				new CheckStyleVariantTaskConfig(variant))
 	}
 }

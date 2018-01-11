@@ -13,11 +13,16 @@ class ValidateViolationsTask extends DefaultTask {
 
 	@SuppressWarnings("GroovyUnusedDeclaration")
 	@TaskAction
-	printViolationCounts() {
+	validateViolations() {
 		Map<String, Map<String, List<Violation>>> results = project.subprojects.collectEntries {
 			[ (it.path): it.tasks.withType(CheckStyleTask).collectEntries {
-				def inputs = Collections.singletonList(it.reports.xml.destination)
-				[ (it.variant.getAt('name')): Parser.CHECKSTYLE.findViolations(inputs) ]
+				def report = it.reports.xml.destination
+				if (report.exists()) {
+					def inputs = Collections.singletonList(report)
+					return [ (it.checkTargetName): Parser.CHECKSTYLE.findViolations(inputs) ]
+				} else {
+					return Collections.emptyMap()
+				}
 			} ]
 		}
 		action.execute(results)

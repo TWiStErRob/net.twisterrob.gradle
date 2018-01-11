@@ -55,11 +55,11 @@ class CheckStylePluginTest {
 
 		when:
 		def result = gradle.basedOn('android-root_app')
-		                   .run(script, 'checkstyleAll')
+		                   .run(script, 'checkstyleEach')
 		                   .build()
 
 		then:
-		assert result.task(':checkstyleAll').outcome == TaskOutcome.UP_TO_DATE
+		assert result.task(':checkstyleEach').outcome == TaskOutcome.UP_TO_DATE
 		assert result.task(':checkstyleDebug').outcome == TaskOutcome.NO_SOURCE
 		assert result.task(':checkstyleRelease').outcome == TaskOutcome.NO_SOURCE
 	}
@@ -78,7 +78,7 @@ class CheckStylePluginTest {
 
 		when:
 		def result = gradle.basedOn('android-all_kinds')
-		                   .run(script, 'checkstyleAll')
+		                   .run(script, 'checkstyleEach')
 		                   .build()
 
 		then:
@@ -87,9 +87,9 @@ class CheckStylePluginTest {
 		assert result.taskPaths(TaskOutcome.NO_SOURCE)
 		             .containsAll(tasksIn(modules, 'checkstyleRelease', 'checkstyleDebug') - exceptions)
 		assert result.taskPaths(TaskOutcome.UP_TO_DATE)
-		             .containsAll(tasksIn(modules, 'checkstyleAll'))
+		             .containsAll(tasksIn(modules, 'checkstyleEach'))
 		def allTasks = result.tasks.collect {it.path}
-		def tasks = tasksIn(modules, 'checkstyleAll', 'checkstyleRelease', 'checkstyleDebug') - exceptions
+		def tasks = tasksIn(modules, 'checkstyleEach', 'checkstyleRelease', 'checkstyleDebug') - exceptions
 		assert !(allTasks - tasks).any {it.toLowerCase().contains('checkstyle')}
 	}
 
@@ -132,16 +132,16 @@ class CheckStylePluginTest {
 
 		when:
 		def result = gradle.basedOn('android-multi_module')
-		                   .run(rootProject, 'checkstyleAll')
+		                   .run(rootProject, 'checkstyleEach')
 		                   .build()
 
 		then:
 		assert result.taskPaths(TaskOutcome.NO_SOURCE)
 		             .containsAll(tasksIn(modules, 'checkstyleRelease', 'checkstyleDebug'))
 		assert result.taskPaths(TaskOutcome.UP_TO_DATE)
-		             .containsAll(tasksIn(modules, 'checkstyleAll'))
+		             .containsAll(tasksIn(modules, 'checkstyleEach'))
 		def allTasks = result.tasks.collect {it.path}
-		def tasks = tasksIn(modules, 'checkstyleAll', 'checkstyleRelease', 'checkstyleDebug')
+		def tasks = tasksIn(modules, 'checkstyleEach', 'checkstyleRelease', 'checkstyleDebug')
 		assert !(allTasks - tasks).any {it.toLowerCase().contains('checkstyle')}
 	}
 
@@ -184,18 +184,18 @@ class CheckStylePluginTest {
 
 		when:
 		def result = gradle.basedOn('android-multi_module')
-		                   .run(null, 'checkstyleAll')
+		                   .run(null, 'checkstyleEach')
 		                   .build()
 
 		then:
 		def allTasks = result.tasks.collect {it.path}
-		def tasks = tasksIn(applyTo, 'checkstyleAll', 'checkstyleRelease', 'checkstyleDebug')
+		def tasks = tasksIn(applyTo, 'checkstyleEach', 'checkstyleRelease', 'checkstyleDebug')
 		assert !(allTasks - tasks).any {it.toLowerCase().contains('checkstyle')}
 
 		assert result.taskPaths(TaskOutcome.NO_SOURCE)
 		             .containsAll(tasksIn(applyTo, 'checkstyleRelease', 'checkstyleDebug'))
 		assert result.taskPaths(TaskOutcome.UP_TO_DATE)
-		             .containsAll(tasksIn(applyTo, 'checkstyleAll'))
+		             .containsAll(tasksIn(applyTo, 'checkstyleEach'))
 	}
 
 	private static List<String> tasksIn(List<String> modules, String... taskNames) {
