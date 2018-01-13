@@ -17,6 +17,15 @@ Gradle: 4.2.1, Android Gradle Plugin 3.0.1
 
 ## Development
 
+### Structure
+
+| Module  | Location | Distributed as | Package |
+| --- | --- | --- | --- |
+| quality  | /quality | 'net.twisterrob.gradle:quality' | `net.twisterrob.gradle.quality`
+| common  | /common | 'net.twisterrob.gradle:common' | `net.twisterrob.gradle.common`
+| test  | /test | 'net.twisterrob.gradle:test' | `net.twisterrob.gradle.test`
+| checkstyle | /checkers/checkstyle | 'net.twisterrob.gradle:checkstyle' | `net.twisterrob.gradle.checkstyle`
+
 ### Project
 
 1. Make sure it runs successfully from terminal with `./gradlew test`  
