@@ -27,6 +27,13 @@ allprojects {
 			// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project
 			it.groovyOptions.optimizationOptions.indy = true
 		}
+		tasks.withType(Test) {
+			if (System.properties.keySet().contains('idea.paths.selector')) {
+				it.logger.debug('Keeping folder contents after failed test running from IDEA')
+				// see net.twisterrob.gradle.test.GradleRunnerRule
+				it.jvmArgs '-Dnet.twisterrob.gradle.runner.clearAfterFailure=false'
+			}
+		}
 	}
 
 	plugins.withId('java') {

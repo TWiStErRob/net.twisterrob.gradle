@@ -17,32 +17,45 @@ class GradleRunnerRule implements TestRule {
 
 	private final TemporaryFolder temp = new TemporaryFolder()
 	private File buildFile
+	private boolean clearAfterFailure
 
 	GradleRunner runner
+
+	GradleRunnerRule(Boolean clearAfterFailure = null) {
+		this.clearAfterFailure = [
+				clearAfterFailure,
+				System.properties['net.twisterrob.gradle.runner.clearAfterFailure']?.equals("true"),
+				true
+		].find {it != null}
+	}
 
 	//region TestRule
 	@Override
 	Statement apply(Statement base, Description description) {
-		def setUpTestProject = new Statement() {
+		return new Statement() {
 
 			@Override
 			void evaluate() {
-				setUp()
+				boolean success = false
 				try {
+					temp.create()
+					setUp()
 					base.evaluate()
+					success = true
 				} finally {
 					tearDown()
+					if (success || clearAfterFailure) {
+						temp.delete()
+					}
 				}
 			}
 		}
-		// by applying this other rule around our statement we get the temp folder before our code is called
-		return temp.apply(setUpTestProject, description)
 	}
 	//endregion
 
 	//region GradleRunner wrapper
 	//@Before(automatic with @Rule)
-	private void setUp() {
+	protected void setUp() {
 		buildFile = temp.newFile('build.gradle')
 		runner = GradleRunner
 				.create()
@@ -53,7 +66,7 @@ class GradleRunnerRule implements TestRule {
 		fixClassPath(runner)
 	}
 
-	private void tearDown() {
+	protected void tearDown() {
 		// not used yet, but useful for debugging
 	}
 
