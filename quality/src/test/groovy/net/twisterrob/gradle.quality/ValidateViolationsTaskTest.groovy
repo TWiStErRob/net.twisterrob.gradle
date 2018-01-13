@@ -11,6 +11,7 @@ import java.util.regex.Pattern
 class ValidateViolationsTaskTest {
 
 	private static final List<String> CONFIG_PATH_CS = [ 'config', 'checkstyle', 'checkstyle.xml' ]
+	private static final List<String> CONFIG_PATH_PMD = [ 'config', 'pmd', 'pmd.xml' ]
 	private static final List<String> MANIFEST_PATH = [ 'src', 'main', 'AndroidManifest.xml' ]
 	private static final List<String> SOURCE_PATH = [ 'src', 'main', 'java' ]
 
@@ -22,11 +23,14 @@ class ValidateViolationsTaskTest {
 		given:
 		gradle.file(gradle.templateFile('checkstyle-simple_failure.java').text, ['module'] + SOURCE_PATH + 'Checkstyle.java')
 		gradle.file(gradle.templateFile('checkstyle-simple_failure.xml').text, CONFIG_PATH_CS)
+		gradle.file(gradle.templateFile('pmd-simple_failure.java').text, ['module'] + SOURCE_PATH + ['Pmd.java'])
+		gradle.file(gradle.templateFile('pmd-simple_failure.xml').text, CONFIG_PATH_PMD)
 
 		@Language('gradle')
 		def script = """\
 			subprojects { // i.e. :module
 				apply plugin: 'net.twisterrob.checkstyle'
+				apply plugin: 'net.twisterrob.pmd'
 			}
 			task('printViolationCount', type: ${ValidateViolationsTask.name}) {
 				action = {/*${Grouper.Start.name}<${Violations.name}>*/ results ->
@@ -38,11 +42,12 @@ class ValidateViolationsTaskTest {
 
 		when:
 		def result = gradle.basedOn('android-single_module')
-		                   .run(script, 'checkstyleAll', 'printViolationCount')
+		                   .run(script, 'checkstyleAll', 'pmdAll', 'printViolationCount')
 		                   .build()
 
 		then:
-		result.assertHasOutputLine(/Violations: 1/)
+		// TODO find another CheckStyle violation that's more specific
+		result.assertHasOutputLine(/Violations: 3/)
 	}
 
 	@Test void "get per module violation counts"() {

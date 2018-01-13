@@ -25,6 +25,7 @@ Gradle: 4.2.1, Android Gradle Plugin 3.0.1
 | common  | /common | 'net.twisterrob.gradle:common' | `net.twisterrob.gradle.common`
 | test  | /test | 'net.twisterrob.gradle:test' | `net.twisterrob.gradle.test`
 | checkstyle | /checkers/checkstyle | 'net.twisterrob.gradle:checkstyle' | `net.twisterrob.gradle.checkstyle`
+| pmd | /checkers/pmd | 'net.twisterrob.gradle:pmd' | `net.twisterrob.gradle.pmd`
 
 ### Project
 

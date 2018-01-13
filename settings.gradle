@@ -4,7 +4,7 @@ include ':quality'
 include ':common'
 include ':test'
 
-[ 'checkstyle' ].each {
+[ 'checkstyle', 'pmd' ].each {
 	include ":${it}"
 	project(":${it}").projectDir = file("checkers/${it}")
 }

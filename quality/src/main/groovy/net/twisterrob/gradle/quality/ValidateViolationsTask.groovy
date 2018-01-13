@@ -4,6 +4,7 @@ import com.android.build.gradle.tasks.LintGlobalTask
 import com.android.build.gradle.tasks.LintPerVariantTask
 import net.twisterrob.gradle.checkstyle.CheckStyleTask
 import net.twisterrob.gradle.common.grouper.Grouper
+import net.twisterrob.gradle.pmd.PmdTask
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -39,8 +40,8 @@ class ValidateViolationsTask extends DefaultTask {
 		List<Violations> results = new ArrayList<>()
 		results.addAll(gatherResults("checkstyle", Parser.CHECKSTYLE, CheckStyleTask,
 				{it.checkTargetName}, {it.reports.xml.destination}))
-		results.addAll(gatherResults("pmd", Parser.PMD, Pmd,
-				{'TODO'}, {it.reports.xml.destination}))
+		results.addAll(gatherResults("pmd", Parser.PMD, PmdTask,
+				{it.checkTargetName}, {it.reports.xml.destination}))
 //		results.addAll(gatherResults("cpd", Parser.CPD, Cpd,
 //				{'TODO'}, {it.reports.xml.destination}))
 		results.addAll(gatherResults("findbugs", Parser.FINDBUGS, FindBugs,

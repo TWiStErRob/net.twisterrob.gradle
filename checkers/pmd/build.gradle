@@ -1,0 +1,16 @@
+apply plugin: 'groovy'
+apply plugin: 'java-gradle-plugin'
+
+dependencies {
+	implementation project(':common')
+
+	compileOnly "com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}"
+
+	testImplementation project(':test')
+	testImplementation "junit:junit:${VERSION_JUNIT}"
+	testImplementation "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
+}
+
+// pull in resources from :test/src/test/resources
+sourceSets.test.resources.srcDirs evaluationDependsOn(':test')
+		.convention.getPlugin(JavaPluginConvention).sourceSets.test.resources.srcDirs

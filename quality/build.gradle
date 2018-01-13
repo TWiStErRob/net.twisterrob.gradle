@@ -4,6 +4,7 @@ apply plugin: 'java-gradle-plugin'
 dependencies {
 	implementation project(':common')
 	implementation project(':checkstyle')
+	implementation project(':pmd')
 
 	compileOnly "com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}"
 //	compileOnly "de.aaschmid:gradle-cpd-plugin:1.0"
@@ -16,10 +17,8 @@ dependencies {
 	testImplementation "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
 }
 
-// pull in resources from :checkstyle/src/test/resources
-sourceSets.test.resources.srcDirs evaluationDependsOn(':checkstyle')
-		.convention.getPlugin(JavaPluginConvention).sourceSets.test.resources.srcDirs
-
-// pull in resources from :test/src/test/resources
-sourceSets.test.resources.srcDirs evaluationDependsOn(':test')
-		.convention.getPlugin(JavaPluginConvention).sourceSets.test.resources.srcDirs
+// pull in resources from other modules' src/test/resources
+[ ':test', ':checkstyle', ':pmd' ].each {
+	sourceSets.test.resources.srcDirs evaluationDependsOn(it)
+			.convention.getPlugin(JavaPluginConvention).sourceSets.test.resources.srcDirs
+}
