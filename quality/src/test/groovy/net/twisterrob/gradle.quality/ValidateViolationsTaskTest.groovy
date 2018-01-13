@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.quality
 
-import net.twisterrob.gradle.common.grouper.GrouperByer
+import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.test.GradleRunnerRule
 import org.intellij.lang.annotations.Language
 import org.junit.Rule
@@ -32,8 +32,8 @@ class ValidateViolationsTaskTest {
 				apply plugin: 'net.twisterrob.checkstyle'
 			}
 			task('printViolationCount', type: ${ValidateViolationsTask.name}) {
-				action = {/*${GrouperByer.Chain.name}<${Violations.name}>*/ results ->
-					def count = results.build().sum { /*${Violations.name}*/ result -> result.violations.size() }
+				action = {/*${Grouper.Start.name}<${Violations.name}>*/ results ->
+					def count = results.list.sum { /*${Violations.name}*/ result -> result.violations?.size() ?: 0 }
 					println "Violations: \${count}"
 				}
 			}
@@ -76,8 +76,8 @@ class ValidateViolationsTaskTest {
 				apply plugin: 'net.twisterrob.checkstyle'
 			}
 			task('printViolationCounts', type: ${ValidateViolationsTask.name}) {
-				action = {${GrouperByer.Chain.name}<${Violations.name}> results ->
-					results['parser']['module']['variant'].build()['checkstyle'].each {module, byVariant ->
+				action = {${Grouper.Start.name}<${Violations.name}> results ->
+					results.grouper['parser']['module']['variant'].group()['checkstyle'].each {module, byVariant ->
 						println "\\t\${module}:"
 						byVariant.each {variant, resultList ->
 							def result = resultList[0]

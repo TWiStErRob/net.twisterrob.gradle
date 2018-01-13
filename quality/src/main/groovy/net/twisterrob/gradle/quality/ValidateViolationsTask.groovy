@@ -3,7 +3,7 @@ package net.twisterrob.gradle.quality
 import com.android.build.gradle.tasks.LintGlobalTask
 import com.android.build.gradle.tasks.LintPerVariantTask
 import net.twisterrob.gradle.checkstyle.CheckStyleTask
-import net.twisterrob.gradle.common.grouper.GrouperByer
+import net.twisterrob.gradle.common.grouper.Grouper
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -20,7 +20,7 @@ import java.util.function.Function
 
 class ValidateViolationsTask extends DefaultTask {
 
-	Action<GrouperByer.Chain<Violations>> action = Closure.IDENTITY as Action
+	Action<Grouper.Start<Violations>> action = Closure.IDENTITY as Action
 
 	ValidateViolationsTask() {
 		def that = this
@@ -49,7 +49,7 @@ class ValidateViolationsTask extends DefaultTask {
 				{it.variantName}, {new File(it.reportsDir, "lint-results-${it.variantName}.xml")}))
 		results.addAll(gatherResults("lint", Parser.ANDROIDLINT, LintGlobalTask,
 				{it.name}, {new File(it.reportsDir, "lint-results.xml")}))
-		action.execute(GrouperByer.group(results))
+		action.execute(Grouper.create(results))
 	}
 
 	private <T extends Task> List<Violations> gatherResults(
@@ -77,11 +77,11 @@ class ValidateViolationsTask extends DefaultTask {
 		}
 	}
 
-	Action<GrouperByer.Chain<Violations>> getAction() {
+	Action<Grouper.Start<Violations>> getAction() {
 		return action
 	}
 
-	void setAction(Action<GrouperByer.Chain<Violations>> action) {
+	void setAction(Action<Grouper.Start<Violations>> action) {
 		this.action = action
 	}
 }

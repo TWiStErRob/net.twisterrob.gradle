@@ -16,33 +16,33 @@ import net.twisterrob.gradle.common.grouper.TFO.F;
 import net.twisterrob.gradle.common.grouper.TFO.G;
 
 @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
-public class GrouperByerTest_Java {
+public class GrouperTest_Java {
 
 	@Test
 	public void groupOn1Level() {
-		GrouperByer.Chain<TFO> byer = GrouperByer.group(list(
+		Grouper.Chain<TFO> grouper = Grouper.create(list(
 				TFO.E1F1G1,
 				TFO.E1F2G1,
 				TFO.E2F1G2,
 				TFO.E2F2G2
-		));
-		GrouperByer<?, List<TFO>> e = byer.<E>getAt("e");
+		)).getGrouper();
+		Grouper<?, List<TFO>> e = grouper.<E>by("e");
 		assertEquals(map()
 				.put(E.E1, list(TFO.E1F1G1, TFO.E1F2G1))
 				.put(E.E2, list(TFO.E2F1G2, TFO.E2F2G2))
-				.build(), e.build());
+				.build(), e.group());
 	}
 
 	@Test
 	public void groupOn2Levels() {
-		GrouperByer.Chain<TFO> byer = GrouperByer.group(list(
+		Grouper.Chain<TFO> grouper = Grouper.create(list(
 				TFO.E1F1G1,
 				TFO.E1F2G1,
 				TFO.E2F1G2,
 				TFO.E2F2G2
-		));
-		GrouperByer<?, List<TFO>> e = byer.<E>getAt("e");
-		GrouperByer<?, Map<?, List<TFO>>> f = e.<F>getAt("f");
+		)).getGrouper();
+		Grouper<?, List<TFO>> e = grouper.<E>by("e");
+		Grouper<?, Map<?, List<TFO>>> f = e.<F>by("f");
 		assertEquals(map()
 				.put(E.E1, map()
 						.put(F.F1, list(TFO.E1F1G1))
@@ -54,21 +54,21 @@ public class GrouperByerTest_Java {
 						.put(F.F2, list(TFO.E2F2G2))
 						.build()
 				)
-				.build(), f.build());
+				.build(), f.group());
 	}
 
 	@Test
 	public void groupOn3Levels() {
-		GrouperByer.Chain<TFO> byer = GrouperByer.group(list(
+		Grouper.Chain<TFO> grouper = Grouper.create(list(
 				TFO.E1F1G1,
 				TFO.E1F2G1,
 				TFO.E2F1G2,
 				TFO.E2F2G2
-		));
-		GrouperByer<?, List<TFO>> e = byer.<E>getAt("e");
-		GrouperByer<?, Map<?, List<TFO>>> f = e.<F>getAt("f");
-		GrouperByer<?, Map<?, Map<?, List<TFO>>>> g = f.<G>getAt("g");
-		assertEquals(threeLevelGrouping(), g.build());
+		)).getGrouper();
+		Grouper<?, List<TFO>> e = grouper.<E>by("e");
+		Grouper<?, Map<?, List<TFO>>> f = e.<F>by("f");
+		Grouper<?, Map<?, Map<?, List<TFO>>>> g = f.<G>by("g");
+		assertEquals(threeLevelGrouping(), g.group());
 	}
 
 	private ImmutableMap<Object, Object> threeLevelGrouping() {
@@ -100,15 +100,14 @@ public class GrouperByerTest_Java {
 
 	@Test
 	public void groupOn3LevelsDirect() {
-		GrouperByer.Chain<TFO> byer = GrouperByer.group(list(
+		Grouper.Chain<TFO> grouper = Grouper.create(list(
 				TFO.E1F1G1,
 				TFO.E1F2G1,
 				TFO.E2F1G2,
 				TFO.E2F2G2
-		));
-		;
-		GrouperByer<?, Map<?, Map<?, List<TFO>>>> g = byer.<E>getAt("e").<F>getAt("f").<G>getAt("g");
-		assertEquals(threeLevelGrouping(), g.build());
+		)).getGrouper();
+		Grouper<?, Map<?, Map<?, List<TFO>>>> g = grouper.<E>by("e").<F>by("f").<G>by("g");
+		assertEquals(threeLevelGrouping(), g.group());
 	}
 
 	@SuppressWarnings("varargs")
