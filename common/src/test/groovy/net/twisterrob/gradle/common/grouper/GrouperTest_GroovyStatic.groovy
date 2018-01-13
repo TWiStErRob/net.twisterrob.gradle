@@ -11,7 +11,7 @@ class GrouperTest_GroovyStatic {
 
 	@Test void groupOn1Level() {
 		def result = Grouper.create([ TFO.E1F1G1, TFO.E1F2G1, TFO.E2F1G2, TFO.E2F2G2])
-		assert result.grouper['e'].group() == [
+		assert result['e'].group() == [
 				(E.E1): [ TFO.E1F1G1, TFO.E1F2G1 ],
 				(E.E2): [ TFO.E2F1G2, TFO.E2F2G2 ]
 		]
@@ -19,7 +19,7 @@ class GrouperTest_GroovyStatic {
 
 	@Test void groupOn2Levels() {
 		def result = Grouper.create([ TFO.E1F1G1, TFO.E1F2G1, TFO.E2F1G2, TFO.E2F2G2])
-		assert result.grouper['e']['f'].group() == [
+		assert result['e']['f'].group() == [
 				(E.E1): [
 						(F.F1): [ TFO.E1F1G1 ],
 						(F.F2): [ TFO.E1F2G1 ]
@@ -34,7 +34,7 @@ class GrouperTest_GroovyStatic {
 	@Test void groupOn3Levels() {
 		def result = Grouper.create([ TFO.E1F1G1, TFO.E1F2G1, TFO.E2F1G2, TFO.E2F2G2])
 		assert result.list == [TFO.E1F1G1, TFO.E1F2G1, TFO.E2F1G2, TFO.E2F2G2]
-		assert result.grouper['e']['f']['g'].group() == [
+		assert result['e']['f']['g'].group() == [
 				(E.E1): [
 						(F.F1): [
 								(G.G1): [ TFO.E1F1G1 ]

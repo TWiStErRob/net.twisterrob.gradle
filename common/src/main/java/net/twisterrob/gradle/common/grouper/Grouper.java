@@ -71,19 +71,6 @@ public class Grouper<K, V> {
 			return obj;
 		}
 
-		public Grouper.Chain<T> getGrouper() {
-			return new Chain<>(obj);
-		}
-	}
-
-	public static class Chain<T> {
-
-		private final List<T> obj;
-
-		private Chain(List<T> obj) {
-			this.obj = obj;
-		}
-
 		public Grouper<?, List<T>> by(String fieldName) {
 			return new Grouper<>(obj, Collections.singletonList(fieldName));
 		}
@@ -91,10 +78,6 @@ public class Grouper<K, V> {
 		@SuppressWarnings("unused")
 		public Grouper<?, List<T>> getAt(String fieldName) {
 			return by(fieldName);
-		}
-
-		public List<T> build() {
-			return obj;
 		}
 	}
 }

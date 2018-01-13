@@ -20,12 +20,12 @@ public class GrouperTest_Java {
 
 	@Test
 	public void groupOn1Level() {
-		Grouper.Chain<TFO> grouper = Grouper.create(list(
+		Grouper.Start<TFO> grouper = Grouper.create(list(
 				TFO.E1F1G1,
 				TFO.E1F2G1,
 				TFO.E2F1G2,
 				TFO.E2F2G2
-		)).getGrouper();
+		));
 		Grouper<?, List<TFO>> e = grouper.<E>by("e");
 		assertEquals(map()
 				.put(E.E1, list(TFO.E1F1G1, TFO.E1F2G1))
@@ -35,12 +35,12 @@ public class GrouperTest_Java {
 
 	@Test
 	public void groupOn2Levels() {
-		Grouper.Chain<TFO> grouper = Grouper.create(list(
+		Grouper.Start<TFO> grouper = Grouper.create(list(
 				TFO.E1F1G1,
 				TFO.E1F2G1,
 				TFO.E2F1G2,
 				TFO.E2F2G2
-		)).getGrouper();
+		));
 		Grouper<?, List<TFO>> e = grouper.<E>by("e");
 		Grouper<?, Map<?, List<TFO>>> f = e.<F>by("f");
 		assertEquals(map()
@@ -59,12 +59,12 @@ public class GrouperTest_Java {
 
 	@Test
 	public void groupOn3Levels() {
-		Grouper.Chain<TFO> grouper = Grouper.create(list(
+		Grouper.Start<TFO> grouper = Grouper.create(list(
 				TFO.E1F1G1,
 				TFO.E1F2G1,
 				TFO.E2F1G2,
 				TFO.E2F2G2
-		)).getGrouper();
+		));
 		Grouper<?, List<TFO>> e = grouper.<E>by("e");
 		Grouper<?, Map<?, List<TFO>>> f = e.<F>by("f");
 		Grouper<?, Map<?, Map<?, List<TFO>>>> g = f.<G>by("g");
@@ -100,12 +100,12 @@ public class GrouperTest_Java {
 
 	@Test
 	public void groupOn3LevelsDirect() {
-		Grouper.Chain<TFO> grouper = Grouper.create(list(
+		Grouper.Start<TFO> grouper = Grouper.create(list(
 				TFO.E1F1G1,
 				TFO.E1F2G1,
 				TFO.E2F1G2,
 				TFO.E2F2G2
-		)).getGrouper();
+		));
 		Grouper<?, Map<?, Map<?, List<TFO>>>> g = grouper.<E>by("e").<F>by("f").<G>by("g");
 		assertEquals(threeLevelGrouping(), g.group());
 	}
