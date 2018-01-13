@@ -17,6 +17,7 @@ class CheckStyleTask extends Checkstyle implements TargetChecker {
 	CheckStyleTask() {
 		group = JavaBasePlugin.VERIFICATION_GROUP
 		classpath = project.files()
+		showViolations = false
 
 		setupProperties()
 	}
