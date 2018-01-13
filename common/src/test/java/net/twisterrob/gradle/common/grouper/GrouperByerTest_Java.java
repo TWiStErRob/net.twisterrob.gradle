@@ -26,7 +26,7 @@ public class GrouperByerTest_Java {
 				TFO.E2F1G2,
 				TFO.E2F2G2
 		));
-		GrouperByer<Map<?, List<TFO>>> e = byer.getAt("e");
+		GrouperByer<?, List<TFO>> e = byer.<E>getAt("e");
 		assertEquals(map()
 				.put(E.E1, list(TFO.E1F1G1, TFO.E1F2G1))
 				.put(E.E2, list(TFO.E2F1G2, TFO.E2F2G2))
@@ -41,8 +41,8 @@ public class GrouperByerTest_Java {
 				TFO.E2F1G2,
 				TFO.E2F2G2
 		));
-		GrouperByer<Map<?, List<TFO>>> e = byer.getAt("e");
-		GrouperByer<Map<?, Map<?, List<TFO>>>> f = e.getAt("f");
+		GrouperByer<?, List<TFO>> e = byer.<E>getAt("e");
+		GrouperByer<?, Map<?, List<TFO>>> f = e.<F>getAt("f");
 		assertEquals(map()
 				.put(E.E1, map()
 						.put(F.F1, list(TFO.E1F1G1))
@@ -65,10 +65,14 @@ public class GrouperByerTest_Java {
 				TFO.E2F1G2,
 				TFO.E2F2G2
 		));
-		GrouperByer<Map<?, List<TFO>>> e = byer.getAt("e");
-		GrouperByer<Map<?, Map<?, List<TFO>>>> f = e.getAt("f");
-		GrouperByer<Map<?, Map<?, Map<?, List<TFO>>>>> g = f.getAt("g");
-		assertEquals(map()
+		GrouperByer<?, List<TFO>> e = byer.<E>getAt("e");
+		GrouperByer<?, Map<?, List<TFO>>> f = e.<F>getAt("f");
+		GrouperByer<?, Map<?, Map<?, List<TFO>>>> g = f.<G>getAt("g");
+		assertEquals(threeLevelGrouping(), g.build());
+	}
+
+	private ImmutableMap<Object, Object> threeLevelGrouping() {
+		return map()
 				.put(E.E1, map()
 						.put(F.F1, map()
 								.put(G.G1, list(TFO.E1F1G1))
@@ -91,7 +95,20 @@ public class GrouperByerTest_Java {
 						)
 						.build()
 				)
-				.build(), g.build());
+				.build();
+	}
+
+	@Test
+	public void groupOn3LevelsDirect() {
+		GrouperByer.Chain<TFO> byer = GrouperByer.group(list(
+				TFO.E1F1G1,
+				TFO.E1F2G1,
+				TFO.E2F1G2,
+				TFO.E2F2G2
+		));
+		;
+		GrouperByer<?, Map<?, Map<?, List<TFO>>>> g = byer.<E>getAt("e").<F>getAt("f").<G>getAt("g");
+		assertEquals(threeLevelGrouping(), g.build());
 	}
 
 	@SuppressWarnings("varargs")

@@ -12,11 +12,11 @@ import static org.codehaus.groovy.runtime.DefaultGroovyMethods.plus;
 
 import groovy.lang.Closure;
 
-public interface GrouperByer<T extends Map<?, ?>> {
+public interface GrouperByer<K, V> {
 
-	GrouperByer<Map<?, T>> getAt(String fieldName);
+	GrouperByer<K, Map<?, V>> getAt(String fieldName);
 
-	T build();
+	Map<K, V> build();
 
 	static <T> Chain<T> group(List<T> obj) {
 		return new GrouperByerImpls.Chain<T>(obj);
@@ -24,7 +24,7 @@ public interface GrouperByer<T extends Map<?, ?>> {
 
 	interface Chain<T> {
 
-		GrouperByer<Map<?, List<T>>> getAt(String fieldName);
+		GrouperByer<?, List<T>> getAt(String fieldName);
 
 		List<T> build();
 	}
@@ -41,7 +41,7 @@ public interface GrouperByer<T extends Map<?, ?>> {
 		}
 
 		@Override
-		public GrouperByer<Map<?, List<T>>> getAt(String fieldName) {
+		public GrouperByer<?, List<T>> getAt(String fieldName) {
 			return new Grouped<>(obj, Collections.singletonList(fieldName));
 		}
 
@@ -50,7 +50,7 @@ public interface GrouperByer<T extends Map<?, ?>> {
 		}
 	}
 
-	static class Grouped<T extends Map<?, ?>> implements GrouperByer<T> {
+	static class Grouped<K, V> implements GrouperByer<K, V> {
 
 		private final List<?> obj;
 		private final List<String> fields;
@@ -61,13 +61,13 @@ public interface GrouperByer<T extends Map<?, ?>> {
 		}
 
 		@Override
-		public GrouperByer<Map<?, T>> getAt(String fieldName) {
+		public GrouperByer<K, Map<?, V>> getAt(String fieldName) {
 			return new Grouped<>(obj, plus(fields, fieldName));
 		}
 
 		@Override
 		@SuppressWarnings({"unchecked", "rawtypes"})
-		public T build() {
+		public Map<K, V> build() {
 			// return obj.groupBy(fields.collect { field -> { obj -> obj[field] } })
 			List<Closure<Object>> closures = collect(fields, new Closure<Closure<Object>>(this) {
 				@Override public Closure<Object> call(Object field) {
@@ -79,7 +79,7 @@ public interface GrouperByer<T extends Map<?, ?>> {
 				}
 			});
 			// help overload resolution, if type doesn't match exactly Object... variant is picked up
-			return (T)groupBy((Iterable<T>)obj, (List<Closure>)(List<?>)closures);
+			return (Map<K, V>)groupBy((Iterable<V>)obj, (List<Closure>)(List<?>)closures);
 		}
 	}
 }
