@@ -6,7 +6,6 @@ import net.twisterrob.gradle.common.grouper.TFO.E
 import net.twisterrob.gradle.common.grouper.TFO.F
 import net.twisterrob.gradle.common.grouper.TFO.G
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 
 class GrouperTest_Groovy {
@@ -17,18 +16,24 @@ class GrouperTest_Groovy {
 		sut = Grouper.create([ TFO.E1F1G1, TFO.E1F2G1, TFO.E2F1G2, TFO.E2F2G2 ])
 	}
 
-	@Test void list() {
+	@Test void getsOriginalList() {
 		assert sut.list == [ TFO.E1F1G1, TFO.E1F2G1, TFO.E2F1G2, TFO.E2F2G2 ]
 	}
 
-	@Ignore("Why doesn't it work, what other than getAt do I need?")
+	@CompileDynamic
+	@Test void groupOn1Level_dynamic_by() {
+		//noinspection GroovyAssignabilityCheck should be the same as the static version
+		assertGroupedOn1Level(sut.by.e)
+	}
+
 	@CompileDynamic
 	@Test void groupOn1Level_dynamic() {
+		//noinspection GroovyAssignabilityCheck should be the same as the static version
 		assertGroupedOn1Level(sut.e)
 	}
 
 	@CompileStatic
-	@Test void groupOn1Level() {
+	@Test void groupOn1Level_static() {
 		assertGroupedOn1Level(sut['e'])
 	}
 
@@ -39,14 +44,20 @@ class GrouperTest_Groovy {
 		]
 	}
 
-	@Ignore("Why doesn't it work, what other than getAt do I need?")
+	@CompileDynamic
+	@Test void groupOn2Levels_dynamic_by() {
+		//noinspection GroovyAssignabilityCheck should be the same as the static version
+		assertGroupedOn2Level(sut.by.e.by.f)
+	}
+
 	@CompileDynamic
 	@Test void groupOn2Levels_dynamic() {
+		//noinspection GroovyAssignabilityCheck should be the same as the static version
 		assertGroupedOn2Level(sut.e.f)
 	}
 
 	@CompileStatic
-	@Test void groupOn2Levels() {
+	@Test void groupOn2Levels_static() {
 		def grouper = sut['e']['f']
 		assertGroupedOn2Level(grouper)
 	}
@@ -64,14 +75,20 @@ class GrouperTest_Groovy {
 		]
 	}
 
-	@Ignore("Why doesn't it work, what other than getAt do I need?")
+	@CompileDynamic
+	@Test void groupOn3Levels_dynamic_by() {
+		//noinspection GroovyAssignabilityCheck should be the same as the static version
+		assertGroupedOn3Levels(sut.by.e.by.f.by.g)
+	}
+
 	@CompileDynamic
 	@Test void groupOn3Levels_dynamic() {
+		//noinspection GroovyAssignabilityCheck should be the same as the static version
 		assertGroupedOn3Levels(sut.e.f.g)
 	}
 
 	@CompileStatic
-	@Test void groupOn3Levels() {
+	@Test void groupOn3Levels_static() {
 		assertGroupedOn3Levels(sut['e']['f']['g'])
 	}
 
@@ -94,5 +111,11 @@ class GrouperTest_Groovy {
 						]
 				],
 		]
+	}
+
+	@CompileDynamic
+	@Test void groupOn3Levels_mixed() {
+		//noinspection GrUnresolvedAccess,GroovyAssignabilityCheck should be the same as the static version
+		assertGroupedOn3Levels(sut.by.e.by.by.by['f'].by.by('g'))
 	}
 }

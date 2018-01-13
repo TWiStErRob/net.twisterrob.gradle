@@ -79,7 +79,7 @@ class ValidateViolationsTaskTest {
 			}
 			task('printViolationCounts', type: ${ValidateViolationsTask.name}) {
 				action = {${Grouper.Start.name}<${Violations.name}> results ->
-					results['parser']['module']['variant'].group()['checkstyle'].each {module, byVariant ->
+					results.by.parser.by.module.by.variant.group()['checkstyle'].each {module, byVariant ->
 						println "\\t\${module}:"
 						byVariant.each {variant, resultList ->
 							def result = resultList[0]

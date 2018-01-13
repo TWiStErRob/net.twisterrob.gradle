@@ -13,13 +13,14 @@ import static org.codehaus.groovy.runtime.DefaultGroovyMethods.groupBy;
 import static org.codehaus.groovy.runtime.DefaultGroovyMethods.plus;
 
 import groovy.lang.Closure;
+import groovy.lang.GroovyObjectSupport;
 
 /**
  * Usage from Java: {@code Grouper.create(asList(a,b,c)).getGrouper().by("f1").by("f2").group()}
  * <br/>
  * Usage from Groovy: {@code Grouper.create([a,b,c]).grouper['f1']['f2'].group()}
  */
-public class Grouper<K, V> {
+public class Grouper<K, V> extends GroovyObjectSupport {
 
 	public static @Nonnull <T> Start<T> create(@Nonnull List<T> obj) {
 		return new Start<>(obj);
@@ -45,6 +46,17 @@ public class Grouper<K, V> {
 		return by(fieldName);
 	}
 
+	/**
+	 * for Groovy to have . operator
+	 */
+	@Override
+	public Object getProperty(String fieldName) {
+		if ("by".equals(fieldName)) {
+			return this;
+		}
+		return by(fieldName);
+	}
+
 	@SuppressWarnings({"unchecked", "rawtypes", "serial"})
 	public @Nonnull Map<K, V> group() {
 		// return obj.groupBy(fields.collect { field -> { obj -> obj[field] } })
@@ -61,7 +73,7 @@ public class Grouper<K, V> {
 		return (Map<K, V>)groupBy((Iterable<V>)obj, (List<Closure>)(List<?>)closures);
 	}
 
-	public static class Start<T> {
+	public static class Start<T> extends GroovyObjectSupport {
 
 		private final @Nonnull List<T> obj;
 
@@ -77,8 +89,22 @@ public class Grouper<K, V> {
 			return new Grouper<>(obj, Collections.singletonList(fieldName));
 		}
 
+		/**
+		 * for Groovy to have [] operator
+		 */
 		@SuppressWarnings("unused")
 		public @Nonnull Grouper<?, List<T>> getAt(@Nonnull String fieldName) {
+			return by(fieldName);
+		}
+
+		/**
+		 * for Groovy to have . operator
+		 */
+		@Override
+		public Object getProperty(String fieldName) {
+			if ("by".equals(fieldName)) {
+				return this;
+			}
 			return by(fieldName);
 		}
 	}
