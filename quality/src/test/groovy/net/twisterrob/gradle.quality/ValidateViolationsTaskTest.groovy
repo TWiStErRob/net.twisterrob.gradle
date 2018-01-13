@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality
 
+import net.twisterrob.gradle.common.grouper.GrouperByer
 import net.twisterrob.gradle.test.GradleRunnerRule
 import org.intellij.lang.annotations.Language
 import org.junit.Rule
@@ -31,10 +32,8 @@ class ValidateViolationsTaskTest {
 				apply plugin: 'net.twisterrob.checkstyle'
 			}
 			task('printViolationCount', type: ${ValidateViolationsTask.name}) {
-				action = {Map<String, Map<String, List<se.bjurr.violations.lib.model.Violation>>> results ->
-					def count = results.values().sum { map ->
-						 map.values().sum { list -> list.size() }
-					}
+				action = {/*${GrouperByer.Chain.name}<${Violations.name}>*/ results ->
+					def count = results.build().sum { /*${Violations.name}*/ result -> result.violations.size() }
 					println "Violations: \${count}"
 				}
 			}
@@ -77,11 +76,16 @@ class ValidateViolationsTaskTest {
 				apply plugin: 'net.twisterrob.checkstyle'
 			}
 			task('printViolationCounts', type: ${ValidateViolationsTask.name}) {
-				action = {Map<String, Map<String, List<se.bjurr.violations.lib.model.Violation>>> results ->
-					results['checkstyle'].each {module, byVariant ->
+				action = {${GrouperByer.Chain.name}<${Violations.name}> results ->
+					results['parser']['module']['variant'].build()['checkstyle'].each {module, byVariant ->
 						println "\\t\${module}:"
-						byVariant.each {variant, violations ->
-							println "\\t\\t\${variant}: \${violations.size()}"
+						byVariant.each {variant, resultList ->
+							def result = resultList[0]
+							if (result.violations != null) {
+								println "\\t\\t\${variant}: \${result.violations.size()}"
+							} else {
+								//logger.warn "\${result.parser} report: '\${result.report}' does not exist"
+							}
 						}
 					}
 				}
