@@ -2,6 +2,7 @@ package net.twisterrob.gradle.checkstyle
 
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.SourceKind
+import net.twisterrob.gradle.common.TargetChecker
 import org.gradle.api.Action
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.plugins.JavaBasePlugin

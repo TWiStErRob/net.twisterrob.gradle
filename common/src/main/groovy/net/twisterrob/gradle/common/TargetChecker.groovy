@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.checkstyle
+package net.twisterrob.gradle.common
 
 trait TargetChecker {
 	String checkTargetName
