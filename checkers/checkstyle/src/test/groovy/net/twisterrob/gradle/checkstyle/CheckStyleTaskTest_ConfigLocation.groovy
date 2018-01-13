@@ -14,16 +14,18 @@ class CheckStyleTaskTest_ConfigLocation {
 	@Rule public final GradleRunnerRule gradle = new GradleRunnerRule()
 
 	private String noChecksConfig
-	private String headerValidatorConfig
+	private String failingConfig
+	private String failingContent
 
 	@Before void setUp() {
 		noChecksConfig = gradle.templateFile('checkstyle-empty.xml').text
-		headerValidatorConfig = gradle.templateFile('checkstyle-mandatory-header-content.xml').text
+		failingConfig = gradle.templateFile('checkstyle-simple_failure.xml').text
+		failingContent = gradle.templateFile('checkstyle-simple_failure.xml').text
 	}
 
 	@Test void "uses rootProject checkstyle config as a fallback"() {
 		given:
-		gradle.file(headerValidatorConfig, CONFIG_PATH)
+		gradle.file(failingConfig, CONFIG_PATH)
 		//noinspection GroovyConstantIfStatement do not set up, we want it to use rootProject's
 		if (false) {
 			gradle.file(noChecksConfig, [ 'module' ] + CONFIG_PATH)
@@ -39,7 +41,7 @@ class CheckStyleTaskTest_ConfigLocation {
 		if (false) {
 			gradle.file(noChecksConfig, CONFIG_PATH)
 		}
-		gradle.file(headerValidatorConfig, [ 'module' ] + CONFIG_PATH)
+		gradle.file(failingConfig, [ 'module' ] + CONFIG_PATH)
 
 		test:
 		executeBuildAndVerifyMissingContentCheckWasRun()
@@ -48,7 +50,7 @@ class CheckStyleTaskTest_ConfigLocation {
 	@Test void "uses local module checkstyle config over rootProject checkstyle config"() {
 		given:
 		gradle.file(noChecksConfig, CONFIG_PATH)
-		gradle.file(headerValidatorConfig, [ 'module' ] + CONFIG_PATH)
+		gradle.file(failingConfig, [ 'module' ] + CONFIG_PATH)
 
 		test:
 		executeBuildAndVerifyMissingContentCheckWasRun()
@@ -67,9 +69,7 @@ class CheckStyleTaskTest_ConfigLocation {
 			}
 		""".stripIndent()
 
-		@Language('text')
-		def empty = ''
-		gradle.file(empty, 'module', 'src', 'main', 'java', 'file')
+		gradle.file(failingContent, 'module', 'src', 'main', 'java', 'Checkstyle.java')
 		// see also @Test/given for configuration file location setup
 
 		when:
@@ -78,10 +78,10 @@ class CheckStyleTaskTest_ConfigLocation {
 		                   .buildAndFail()
 
 		then:
-		// build should only fail if checkstyle-mandatory-header-content.xml wins the preference,
+		// build should only fail if failing config wins the preference,
 		// otherwise it's BUILD SUCCESSFUL or CheckstyleException: Unable to find: ...xml
 		assert result.task(':module:checkstyleDebug').outcome == TaskOutcome.FAILED
 		assert result.failReason() =~ /Checkstyle rule violations were found/
-		result.assertHasOutputLine(/.*src.main.java.file:1: .*? \[Header]/)
+		result.assertHasOutputLine(/.*src.main.java.Checkstyle\.java:1: .*? \[Header]/)
 	}
 }

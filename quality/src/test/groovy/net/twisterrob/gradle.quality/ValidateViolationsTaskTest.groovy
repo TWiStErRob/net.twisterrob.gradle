@@ -10,7 +10,7 @@ import java.util.regex.Pattern
 
 class ValidateViolationsTaskTest {
 
-	private static final List<String> CONFIG_PATH = [ 'config', 'checkstyle', 'checkstyle.xml' ]
+	private static final List<String> CONFIG_PATH_CS = [ 'config', 'checkstyle', 'checkstyle.xml' ]
 	private static final List<String> MANIFEST_PATH = [ 'src', 'main', 'AndroidManifest.xml' ]
 	private static final List<String> SOURCE_PATH = [ 'src', 'main', 'java' ]
 
@@ -20,11 +20,8 @@ class ValidateViolationsTaskTest {
 
 	@Test void "get total violation counts"() {
 		given:
-		@Language('text')
-		def empty = ''
-		gradle.file(empty, 'module', 'src', 'main', 'java', 'file')
-
-		gradle.file(gradle.templateFile('checkstyle-mandatory-header-content.xml').text, CONFIG_PATH)
+		gradle.file(gradle.templateFile('checkstyle-simple_failure.java').text, ['module'] + SOURCE_PATH + 'Checkstyle.java')
+		gradle.file(gradle.templateFile('checkstyle-simple_failure.xml').text, CONFIG_PATH_CS)
 
 		@Language('gradle')
 		def script = """\
@@ -60,7 +57,7 @@ class ValidateViolationsTaskTest {
 				def checkName = match.group(1) as String
 				totalViolations += match.group(2) as int
 				def checkstyleXmlContents = template.replace('${CheckName}', checkName)
-				gradle.file(checkstyleXmlContents, [ checkName ] + CONFIG_PATH)
+				gradle.file(checkstyleXmlContents, [ checkName ] + CONFIG_PATH_CS)
 				gradle.file("""<manifest package="checkstyle.${checkName}" />""", [ checkName ] + MANIFEST_PATH)
 				gradle.file(file.text, [ checkName ] + SOURCE_PATH + [ file.name ])
 				gradle.settingsFile() << "include ':${checkName}'${System.lineSeparator()}"
