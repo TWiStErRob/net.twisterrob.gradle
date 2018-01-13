@@ -8,6 +8,7 @@ dependencies {
 
 	implementation project(':common')
 	compileOnly "junit:junit:${VERSION_JUNIT}"
+	compileOnly "com.google.code.findbugs:jsr305:${VERSION_JSR305_ANNOTATIONS}"
 	compileOnly "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
 
 	testImplementation localGroovy()

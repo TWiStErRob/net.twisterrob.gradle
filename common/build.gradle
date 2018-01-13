@@ -5,6 +5,7 @@ dependencies {
 	implementation gradleApi()
 
 	compileOnly "com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}"
+	compileOnly "com.google.code.findbugs:jsr305:${VERSION_JSR305_ANNOTATIONS}"
 
 	testImplementation "junit:junit:${VERSION_JUNIT}"
 	testImplementation "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"

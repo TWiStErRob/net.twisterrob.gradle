@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import static org.codehaus.groovy.runtime.DefaultGroovyMethods.collect;
@@ -19,19 +21,19 @@ import groovy.lang.Closure;
  */
 public class Grouper<K, V> {
 
-	public static <T> Start<T> create(List<T> obj) {
+	public static @Nonnull <T> Start<T> create(@Nonnull List<T> obj) {
 		return new Start<>(obj);
 	}
 
-	private final List<?> obj;
-	private final List<String> fields;
+	private final @Nonnull List<?> obj;
+	private final @Nonnull List<String> fields;
 
-	private Grouper(List<?> obj, List<String> fields) {
+	private Grouper(@Nonnull List<?> obj, @Nonnull List<String> fields) {
 		this.obj = obj;
 		this.fields = fields;
 	}
 
-	public Grouper<K, Map<?, V>> by(String fieldName) {
+	public @Nonnull Grouper<K, Map<?, V>> by(@Nonnull String fieldName) {
 		return new Grouper<>(obj, plus(fields, fieldName));
 	}
 
@@ -39,12 +41,12 @@ public class Grouper<K, V> {
 	 * for Groovy to have [] operator
 	 */
 	@SuppressWarnings("unused")
-	public Grouper<K, Map<?, V>> getAt(String fieldName) {
+	public @Nonnull Grouper<K, Map<?, V>> getAt(@Nonnull String fieldName) {
 		return by(fieldName);
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes", "serial"})
-	public Map<K, V> group() {
+	public @Nonnull Map<K, V> group() {
 		// return obj.groupBy(fields.collect { field -> { obj -> obj[field] } })
 		List<Closure<Object>> closures = collect(fields, new Closure<Closure<Object>>(this) {
 			@Override public Closure<Object> call(Object field) {
@@ -61,22 +63,22 @@ public class Grouper<K, V> {
 
 	public static class Start<T> {
 
-		private final List<T> obj;
+		private final @Nonnull List<T> obj;
 
-		private Start(List<T> obj) {
+		private Start(@Nonnull List<T> obj) {
 			this.obj = obj;
 		}
 
-		public List<T> getList() {
+		public @Nonnull List<T> getList() {
 			return obj;
 		}
 
-		public Grouper<?, List<T>> by(String fieldName) {
+		public @Nonnull Grouper<?, List<T>> by(@Nonnull String fieldName) {
 			return new Grouper<>(obj, Collections.singletonList(fieldName));
 		}
 
 		@SuppressWarnings("unused")
-		public Grouper<?, List<T>> getAt(String fieldName) {
+		public @Nonnull Grouper<?, List<T>> getAt(@Nonnull String fieldName) {
 			return by(fieldName);
 		}
 	}
