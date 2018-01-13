@@ -140,7 +140,10 @@ ${classPaths}
 			return
 		}
 		if (1 < path.length) {
-			temp.newFolder(path[0..path.length - 2] as String[])
+			def folders = path[0..path.length - 2] as String[]
+			if (!new File(temp.getRoot(), folders.join(File.separator)).exists()) {
+				temp.newFolder(folders)
+			}
 		}
 		temp.newFile(path.join(File.separator)) << contents
 	}
