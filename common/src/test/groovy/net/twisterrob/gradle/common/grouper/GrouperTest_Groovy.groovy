@@ -21,6 +21,16 @@ class GrouperTest_Groovy {
 	}
 
 	@CompileDynamic
+	@Test void byReturnsSelf() {
+		assert sut.by == sut
+	}
+
+	@CompileDynamic
+	@Test(expected = MissingPropertyException) void missingPropertyFails() {
+		sut.aMissingName
+	}
+
+	@CompileDynamic
 	@Test void groupOn1Level_dynamic_by() {
 		//noinspection GroovyAssignabilityCheck should be the same as the static version
 		assertGroupedOn1Level(sut.by.e)
