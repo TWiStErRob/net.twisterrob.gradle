@@ -1,6 +1,7 @@
-package net.twisterrob.gradle.quality
+package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.common.grouper.Grouper
+import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.test.GradleRunnerRule
 import org.intellij.lang.annotations.Language
 import org.junit.Rule

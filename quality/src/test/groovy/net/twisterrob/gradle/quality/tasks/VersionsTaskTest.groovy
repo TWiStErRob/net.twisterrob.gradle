@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.quality
+package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.test.GradleRunnerRule
 import org.gradle.testkit.runner.TaskOutcome

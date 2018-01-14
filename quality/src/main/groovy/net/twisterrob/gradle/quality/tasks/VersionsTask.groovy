@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.quality
+package net.twisterrob.gradle.quality.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.plugins.quality.CheckstyleExtension
