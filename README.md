@@ -8,6 +8,26 @@ above includes (but you can cherry-pick them):
 apply plugin: 'net.twisterrob:checkstyle'
 ```
 
+Example to use all plugins and print results:
+```groovy
+allprojects {
+	apply plugin: 'net.twisterrob.quality'
+}
+
+task('printViolationCounts', type: net.twisterrob.gradle.quality.ValidateViolationsTask) {
+	action = {net.twisterrob.gradle.common.grouper.Grouper.Start<se.bjurr.violations.lib.model.Violation> results ->
+		results.by.parser.module.variant.group().each { checker, byModule -> 
+			println "\t${checker}"
+			byModule.each {module, byVariant ->
+				println "\t\t${module}:"
+				byVariant.each {variant, violations ->
+					println "\t\t\t${variant}: ${violations.size()}"
+				}
+			}
+		}
+	}
+}
+```
 
 ## Versions
 
@@ -67,6 +87,38 @@ gradle.buildFile << """\
 	}
 """
 ```
+
+### Using the SNAPSHOT from a local build
+
+Add in root `build.gradle`:
+```groovy
+buildscript {
+	repositories {
+		def repoRoot = file($/P:\projects\workspace\net.twisterrob.gradle-quality/$).toURI()
+		ivy {
+			url = repoRoot
+			layout('pattern') {
+				artifact '[artifact]/build/libs/[artifact]-[revision](-[classifier]).[ext]'
+			}
+		}
+		ivy {
+			url = repoRoot
+			layout('pattern') {
+				artifact 'checkers/[artifact]/build/libs/[artifact]-[revision](-[classifier]).[ext]'
+			}
+		}
+	}
+	dependencies {
+		configurations.classpath.resolutionStrategy.cacheChangingModulesFor 0, 'seconds' // -SNAPSHOT
+		classpath "net.twisterrob.gradle:quality:0.1-SNAPSHOT"
+		classpath "net.twisterrob.gradle:common:0.1-SNAPSHOT"
+		classpath "net.twisterrob.gradle:checkstyle:0.1-SNAPSHOT"
+		classpath "net.twisterrob.gradle:pm1sd:0.1-SNAPSHOT"
+		classpath "se.bjurr.violations:violations-lib:1.50"
+	}
+}
+```
+Add `printViolationCounts` from above and run `gradlew checkstyleEach :printViolationCounts`.
 
 ## Useful articles
  * https://proandroiddev.com/configuring-android-project-static-code-analysis-tools-b6dd83282921
