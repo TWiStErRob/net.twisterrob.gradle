@@ -33,7 +33,15 @@ class PmdTask extends Pmd implements TargetChecker {
 			File rootConfig = task.project.rootProject.file('config/pmd/pmd.xml')
 			File subConfig = task.project.file('config/pmd/pmd.xml')
 			File config = [ subConfig, rootConfig ].grep {File file -> file.exists()}.find()
-			task.ruleSetFiles += task.project.files(config)
+			if (config != null) {
+				task.ruleSetFiles += task.project.files(config)
+			} else if (task.ruleSetFiles.files.isEmpty()) {
+				task.logger.warn """\
+					While configuring ${task} no configuration found at:
+						${rootConfig}
+						${subConfig}
+				""".stripIndent()
+			}
 		}
 
 		/**

@@ -39,7 +39,15 @@ class CheckStyleTask extends Checkstyle implements TargetChecker {
 
 		static def setupConfigLocations(CheckStyleTask task) {
 			if (!task.configFile.exists()) {
-				task.configFile = task.project.rootProject.file('config/checkstyle/checkstyle.xml')
+				def rootConfig = task.project.rootProject.file('config/checkstyle/checkstyle.xml')
+				if (!rootConfig.exists()) {
+					task.logger.warn """\
+						While configuring ${task} no configuration found at:
+							${rootConfig}
+							${task.configFile}
+					""".stripIndent()
+				}
+				task.configFile = rootConfig
 			}
 		}
 
