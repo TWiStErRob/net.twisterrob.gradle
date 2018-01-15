@@ -13,10 +13,6 @@ class CheckStylePluginTest {
 
 	@Rule public final GradleRunnerRule gradle = new GradleRunnerRule()
 
-	@BeforeClass static void setUp() {
-//		System.properties['java.io.tmpdir'] = $/P:\temp/$
-	}
-
 	@Test void "does not apply to empty project"() {
 		given:
 		@Language('gradle')
