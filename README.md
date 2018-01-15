@@ -29,6 +29,12 @@ task('printViolationCounts', type: net.twisterrob.gradle.quality.ValidateViolati
 }
 ```
 
+### Root project test report:
+Gathers results from submodules and fails if there were errors.
+```groovy
+task('tests', type: net.twisterrob.gradle.quality.tasks.GlobalTestTask)
+```
+
 ## Versions
 
 ### 0.1: 2018-01-xx
