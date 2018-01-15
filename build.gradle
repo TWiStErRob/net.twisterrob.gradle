@@ -40,7 +40,6 @@ allprojects {
 		sourceCompatibility = VERSION_JAVA as JavaVersion
 		targetCompatibility = VERSION_JAVA as JavaVersion
 		tasks.test.testLogging.events "passed", "skipped", "failed"
-		tasks.test.ignoreFailures true
 		jar {
 			manifest {
 				afterEvaluate {
@@ -52,6 +51,24 @@ allprojects {
 					)
 				}
 			}
+		}
+	}
+}
+
+task('tests', type: TestReport) {
+	destinationDir = file("$buildDir/reports/tests/all")
+	project.evaluationDependsOnChildren()
+	reportOn allprojects.collectMany {Project subproject ->
+		subproject.tasks.withType(Test) {Test testTask ->
+			testTask.ignoreFailures = true
+			testTask.reports.junitXml.enabled = true
+		}
+	}
+	doLast {
+		def reportFile = new File(destinationDir, 'index.html')
+		if (!(reportFile.text ==~
+				/(?s).*<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>.*/)) {
+			throw new GradleException("There were failing tests. See the report at: ${reportFile.toURI()}")
 		}
 	}
 }
