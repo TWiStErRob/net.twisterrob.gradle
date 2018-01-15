@@ -47,7 +47,9 @@ allprojects {
 							"Implementation-Vendor": project.group,
 							"Implementation-Title": project.name,
 							"Implementation-Version": project.version,
-							"Built-Date": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+							// TODO Make sure it doesn't change often (skip for SNAPSHOT)
+							// otherwise :jar always re-packages and compilations cascade
+							"Built-Date": new Date().format("yyyy-MM-dd'T'00:00:00Z")
 					)
 				}
 			}
