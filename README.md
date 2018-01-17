@@ -1,4 +1,4 @@
-# Twister's Gradle Quality plugins
+# Gradle Quality plugins
 Plugins that configure the built-in plugins with saner defaults.
 
 ```gradle

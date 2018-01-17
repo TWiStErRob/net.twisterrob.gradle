@@ -1,4 +1,4 @@
-# Twister's Gradle test plugin
+# Gradle test plugin
 Helps
 
 ## Usage
