@@ -45,13 +45,13 @@ task('tests', type: net.twisterrob.gradle.quality.tasks.GlobalTestTask)
 
 ### Structure
 
-| Module \\<br>Location | Distributed as Artifact \\<br>Java/Groovy Package | Summary |
-| --- | --- | --- |
-| quality<br>[`/quality`](quality) |`'net.twisterrob.gradle:twister‑quality'`<br>`net.twisterrob.gradle.quality` | All quality plugins bundled in one. |
-| common<br>[`/common`](common) | `'net.twisterrob.gradle:twister‑quality‑common'`<br>`net.twisterrob.gradle.common` | Shared classes between checkers.<br>_Not to be consumed directly._ |
-| checkstyle<br>[`/checkers/checkstyle`](checkers/checkstyle) | `'net.twisterrob.gradle:twister-quality-checkstyle'`<br>`net.twisterrob.gradle.checkstyle` | Checkstyle setup plugin for Gradle. |
-| pmd<br>[`/checkers/pmd`](checkers/pmd) | `'net.twisterrob.gradle:twister-quality-pmd'`<br>`net.twisterrob.gradle.pmd` | PMD setup plugin for Gradle. |
-| test<br>[`/test`](test) | `'net.twisterrob.gradle:twister-gradle-test'`<br>`net.twisterrob.gradle.test` | [Gradle test plugin and resources.](test/README.md) |
+| Module (location): summary | Distributed Artifact,<br>Gradle Plugin ID,<br>Java/Groovy Package |
+| --- | --- |
+| **quality** ([`/quality`](quality)):<br>All quality plugins bundled in one.<br> |`classpath 'net.twisterrob.gradle:twister-quality:+'`<br>`apply plugin: 'net.twisterrob.quality'`<br>`import net.twisterrob.gradle.quality;` |
+| **common** ([`/common`](common)):<br>Shared classes between checkers.<br>_Not to be consumed directly._ | `classpath 'net.twisterrob.gradle:twister-quality-common:+'`<br>`// apply plugin: N/A`<br>`import net.twisterrob.gradle.common;` |
+| **checkstyle** ([`/checkers/checkstyle`](checkers/checkstyle)):<br>Checkstyle setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-checkstyle:+'`<br>`apply plugin: 'net.twisterrob.checkstyle'`<br>`import net.twisterrob.gradle.checkstyle;` |
+| **pmd** ([`/checkers/pmd`](checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-pmd:+'`<br>`apply plugin: 'net.twisterrob.pmd'`<br>`import net.twisterrob.gradle.pmd;` |
+| **test** ([`/test`](test)):<br>[Gradle test plugin and resources.](test/README.md) | `classpath 'net.twisterrob.gradle:twister-gradle-test:+'`<br>`apply plugin: 'net.twisterrob.gradle.test'`<br>`import net.twisterrob.gradle.test;` |
 
 ### Project
 
