@@ -48,10 +48,10 @@ task('tests', type: net.twisterrob.gradle.quality.tasks.GlobalTestTask)
 | Module \\<br>Location | Distributed as Artifact \\<br>Java/Groovy Package | Summary |
 | --- | --- | --- |
 | quality<br>[`/quality`](quality) |`'net.twisterrob.gradle:twister‑quality'`<br>`net.twisterrob.gradle.quality` | All quality plugins bundled in one. |
-| common<br>`/common` | `'net.twisterrob.gradle:twister‑quality‑common'`<br>`net.twisterrob.gradle.common` | Shared classes between checkers.<br>_Not to be consumed directly._ |
-| checkstyle<br>`/checkers/checkstyle` | `'net.twisterrob.gradle:twister-quality-checkstyle'`<br>`net.twisterrob.gradle.checkstyle` | Checkstyle setup plugin for Gradle. |
-| pmd<br>`/checkers/pmd` | `'net.twisterrob.gradle:twister-quality-pmd'`<br>`net.twisterrob.gradle.pmd` | PMD setup plugin for Gradle. |
-| test<br>`/test` | `'net.twisterrob.gradle:twister-gradle-test'`<br>`net.twisterrob.gradle.test` | Gradle test plugin and resources. |
+| common<br>[`/common`](common) | `'net.twisterrob.gradle:twister‑quality‑common'`<br>`net.twisterrob.gradle.common` | Shared classes between checkers.<br>_Not to be consumed directly._ |
+| checkstyle<br>[`/checkers/checkstyle`](checkers/checkstyle) | `'net.twisterrob.gradle:twister-quality-checkstyle'`<br>`net.twisterrob.gradle.checkstyle` | Checkstyle setup plugin for Gradle. |
+| pmd<br>[`/checkers/pmd`](checkers/pmd) | `'net.twisterrob.gradle:twister-quality-pmd'`<br>`net.twisterrob.gradle.pmd` | PMD setup plugin for Gradle. |
+| test<br>[`/test`](test) | `'net.twisterrob.gradle:twister-gradle-test'`<br>`net.twisterrob.gradle.test` | [Gradle test plugin and resources.](test/README.md) |
 
 ### Project
 
