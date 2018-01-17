@@ -3,6 +3,7 @@ package net.twisterrob.gradle.test
 import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.Project
 
+import java.util.jar.Attributes
 import java.util.jar.Manifest
 
 class TestPlugin extends BaseExposedPlugin {
@@ -17,14 +18,20 @@ class TestPlugin extends BaseExposedPlugin {
 			add('implementation', gradleApi())
 
 			add('testImplementation', gradleTestKit())
-			add('testImplementation', "net.twisterrob.gradle:test:${getVersion()}")
+
+			def myManifest = getManifest()
+			add('testImplementation', [
+					group  : myManifest.getValue('Implementation-Vendor'),
+					name   : myManifest.getValue('Implementation-Title'),
+					version: myManifest.getValue('Implementation-Version')
+			])
 		}
 	}
 
-	String getVersion() {
-		URL res = getClass().getResource(getClass().getSimpleName() + ".class")
+	Attributes getManifest() {
+		URL res = getClass().getResource("${getClass().simpleName}.class")
 		JarURLConnection conn = res.openConnection() as JarURLConnection
 		Manifest mf = conn.getManifest()
-		return mf.getMainAttributes().getValue("Implementation-Version")
+		return mf.getMainAttributes()
 	}
 }

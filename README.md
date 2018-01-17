@@ -1,11 +1,17 @@
-# Gradle Quality plugins
+# Twister's Gradle Quality plugins
+Plugins that configure the built-in plugins with saner defaults.
 
 ```gradle
-apply plugin: 'net.twisterrob:quality'
-```
-above includes (but you can cherry-pick them):
-```gradle
-apply plugin: 'net.twisterrob:checkstyle'
+buildscript {
+	dependencies {
+		classpath 'net.twisterrob.gradle:twister-quality'
+	}
+}
+apply plugin: 'net.twisterrob.quality'
+// above includes the following:
+// (but you can cherry-pick them one by one if you don't apply all)
+//apply plugin: 'net.twisterrob.checkstyle'
+//apply plugin: 'net.twisterrob.pmd'
 ```
 
 Example to use all plugins and print results:
@@ -35,71 +41,32 @@ Gathers results from submodules and fails if there were errors.
 task('tests', type: net.twisterrob.gradle.quality.tasks.GlobalTestTask)
 ```
 
-## Versions
-
-### 0.1: 2018-01-xx
-Gradle: 4.2.1, Android Gradle Plugin 3.0.1
-
-
 ## Development
 
 ### Structure
 
-| Module  | Location | Distributed as | Package |
-| --- | --- | --- | --- |
-| quality  | /quality | 'net.twisterrob.gradle:quality' | `net.twisterrob.gradle.quality`
-| common  | /common | 'net.twisterrob.gradle:common' | `net.twisterrob.gradle.common`
-| test  | /test | 'net.twisterrob.gradle:test' | `net.twisterrob.gradle.test`
-| checkstyle | /checkers/checkstyle | 'net.twisterrob.gradle:checkstyle' | `net.twisterrob.gradle.checkstyle`
-| pmd | /checkers/pmd | 'net.twisterrob.gradle:pmd' | `net.twisterrob.gradle.pmd`
+| Module \\<br>Location | Distributed as Artifact \\<br>Java/Groovy Package | Summary |
+| --- | --- | --- |
+| quality<br>[`/quality`](quality) |`'net.twisterrob.gradle:twister‑quality'`<br>`net.twisterrob.gradle.quality` | All quality plugins bundled in one. |
+| common<br>`/common` | `'net.twisterrob.gradle:twister‑quality‑common'`<br>`net.twisterrob.gradle.common` | Shared classes between checkers.<br>_Not to be consumed directly._ |
+| checkstyle<br>`/checkers/checkstyle` | `'net.twisterrob.gradle:twister-quality-checkstyle'`<br>`net.twisterrob.gradle.checkstyle` | Checkstyle setup plugin for Gradle. |
+| pmd<br>`/checkers/pmd` | `'net.twisterrob.gradle:twister-quality-pmd'`<br>`net.twisterrob.gradle.pmd` | PMD setup plugin for Gradle. |
+| test<br>`/test` | `'net.twisterrob.gradle:twister-gradle-test'`<br>`net.twisterrob.gradle.test` | Gradle test plugin and resources. |
 
 ### Project
 
-1. Make sure it runs successfully from terminal with `./gradlew test`  
-   Check failure reason (JUnit report) for things to fix
-2. After this it's ok to import the root `build.gradle` into IntelliJ IDEA/Android Studio
+1. Make sure it runs successfully from terminal with `./gradlew test`.  
+   Check failure reason (JUnit report) for things to fix.
+2. After it builds successfully it's ok to import the root `build.gradle` into IntelliJ IDEA/Android Studio.
+3. For running and debugging info see [test/README.md](test/README.md)
 
-### Tests
-To run tests from Android Studio, run it as usual, but edit the "Gradle-aware Make" to run `classes testClasses` tasks or `:module:classes :module:testClasses`.
-If this doesn't work, try to `gradlew build` the whole project and then run it again from AS.
-
-To run this test from IntelliJ IDEA, run it as usual, but first set: *Build, Execution, Deployment > Build Tools > Gradle > Runner > Run tests using:* in Settings to **Gradle Test Runner**
-
-#### Potential test failure reasons:
- * `ANDROID_HOME` is missing from the system:  
-   `export ANDROID_HOME=.../android/sdk`
- * `build/pluginUnderTestMetadata/plugin-under-test-metadata.properties` is missing  
-   run `./gradlew test` from the command line once to generate the files
-
-
-### Debugging
-
-#### `withDebug`
-By default `gradleTestKit()` runs in a separate daemon process, so it's not possible to attach to it. To change this `withDebug` was provided, which will make the test build run in embedded mode.
-```groovy
-def result = gradle.run(/*...*/).withDebug(true).build()
-```
-Running a test in embedded mode allows us to put breakpoints inside the tasks and plugins that are in this project. Without it only the test classes and their utilities (i.e. test project setup) would be available without visibility to the internals of the build the test is running.
-
-**Beware** (`ClassNotFoundException: groovy.util.AntBuilder`): https://github.com/gradle/gradle/issues/3995
-
-#### `Plugins`
-```groovy
-gradle.buildFile << """\
-	allprojects {
-		project.plugins.whenPluginAdded { Plugin plugin ->
-			println "${project.path} (${plugin.class.name}): ${plugin}"
-		}
-	}
-"""
-```
-
-### Using the SNAPSHOT from a local build
+### Using the `-SNAPSHOT` from a local build
 
 Add in root `build.gradle`:
 ```groovy
 buildscript {
 	repositories {
+		jcenter()
 		def repoRoot = file($/P:\projects\workspace\net.twisterrob.gradle-quality/$).toURI()
 		ivy {
 			url = repoRoot
@@ -116,10 +83,11 @@ buildscript {
 	}
 	dependencies {
 		configurations.classpath.resolutionStrategy.cacheChangingModulesFor 0, 'seconds' // -SNAPSHOT
-		classpath "net.twisterrob.gradle:quality:0.1-SNAPSHOT"
-		classpath "net.twisterrob.gradle:common:0.1-SNAPSHOT"
-		classpath "net.twisterrob.gradle:checkstyle:0.1-SNAPSHOT"
-		classpath "net.twisterrob.gradle:pm1sd:0.1-SNAPSHOT"
+		def VERSION_QUALITY='0.2-SNAPSHOT'
+		classpath "net.twisterrob.gradle:twister-quality:${VERSION_QUALITY}"
+		classpath "net.twisterrob.gradle:twister-quality-common:${VERSION_QUALITY}"
+		classpath "net.twisterrob.gradle:twister-quality-checkstyle:${VERSION_QUALITY}"
+		classpath "net.twisterrob.gradle:twister-quality-pmd:${VERSION_QUALITY}"
 		classpath "se.bjurr.violations:violations-lib:1.50"
 	}
 }

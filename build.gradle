@@ -44,12 +44,13 @@ allprojects {
 			manifest {
 				afterEvaluate {
 					attributes(
-							"Implementation-Vendor": project.group,
-							"Implementation-Title": project.name,
-							"Implementation-Version": project.version,
+							// Implementation-* used by TestPlugin
+							'Implementation-Vendor': project.group,
+							'Implementation-Title': project.archivesBaseName,
+							'Implementation-Version': project.version,
 							// TODO Make sure it doesn't change often (skip for SNAPSHOT)
 							// otherwise :jar always re-packages and compilations cascade
-							"Built-Date": new Date().format("yyyy-MM-dd'T'00:00:00Z")
+							'Built-Date': new Date().format($/yyyy-MM-dd'T'00:00:00Z/$)
 					)
 				}
 			}

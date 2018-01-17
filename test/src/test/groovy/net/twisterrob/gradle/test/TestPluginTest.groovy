@@ -59,7 +59,7 @@ class TestPluginTest {
 
 			repositories {
 				ivy {
-					// make /test/build/libs/test-1.0.jar available as 'net.twisterrob.gradle:test:1.0'
+					// make /test/build/libs/X-0.0.jar available as 'net.twisterrob.gradle:X:0.0'
 					url '${artifactPath.replace('\\', '\\\\')}'
 					layout('pattern') {
 						artifact '[artifact]-[revision].[ext]'

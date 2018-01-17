@@ -1,3 +1,5 @@
+archivesBaseName = 'twister-quality-common'
+
 apply plugin: 'groovy'
 
 dependencies {
