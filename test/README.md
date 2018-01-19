@@ -74,7 +74,7 @@ To run this test from IntelliJ IDEA, run it as usual, but first set: *Build, Exe
 
 ### Debugging
 
-#### `withDebug`
+#### Gradle Test Kit's `.withDebug(true)`
 By default `gradleTestKit()` runs in a separate daemon process, so it's not possible to attach to it. To change this `withDebug` was provided, which will make the test build run in embedded mode.
 ```groovy
 def result = gradle.run(/*...*/).withDebug(true).build()
@@ -82,6 +82,10 @@ def result = gradle.run(/*...*/).withDebug(true).build()
 Running a test in embedded mode allows us to put breakpoints inside the tasks and plugins that are in this project. Without it only the test classes and their utilities (i.e. test project setup) would be available without visibility to the internals of the build the test is running.
 
 **Beware** (`ClassNotFoundException: groovy.util.AntBuilder`): https://github.com/gradle/gradle/issues/3995
+
+#### Debug external Gradle execution
+ * Terminal: run as `gradlew --no-daemon -Dorg.gradle.debug=true <tasks...>`
+ * IDEA: attach Remote debugger (from Run configurations) with socket on `localhost:5005`
 
 #### Dump applied `plugins`
 ```groovy

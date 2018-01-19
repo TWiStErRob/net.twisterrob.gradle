@@ -80,14 +80,11 @@ class ValidateViolationsTaskTest {
 			}
 			task('printViolationCounts', type: ${ValidateViolationsTask.name}) {
 				action = {${Grouper.Start.name}<${Violations.name}> results ->
-					results.by.parser.by.module.by.variant.group()['checkstyle'].each {module, byVariant ->
+					results.count().by.parser.by.module.by.variant.group()['checkstyle'].each {module, byVariant ->
 						println "\\t\${module}:"
-						byVariant.each {variant, resultList ->
-							def result = resultList[0]
-							if (result.violations != null) {
-								println "\\t\\t\${variant}: \${result.violations.size()}"
-							} else {
-								//logger.warn "\${result.parser} report: '\${result.report}' does not exist"
+						byVariant.each {variant, resultCount ->
+							if (resultCount != null) {
+								println "\\t\\t\${variant}: \${resultCount}"
 							}
 						}
 					}

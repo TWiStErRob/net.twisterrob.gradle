@@ -17,6 +17,8 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.reports.Parser
 
+import java.util.stream.Collectors
+
 class ValidateViolationsTask extends DefaultTask {
 
 	Action<Grouper.Start<Violations>> action = Closure.IDENTITY as Action
@@ -63,14 +65,31 @@ class ValidateViolationsTask extends DefaultTask {
 				}
 			}
 		}
-		action.execute(Grouper.create(results))
+		def countingReducer = Collectors.
+				reducing(null, {Violations it -> it.violations?.size()}, ValidateViolationsTask.&safeAdd)
+		action.execute(Grouper.create(results, countingReducer))
 	}
 
+	@SuppressWarnings("GroovyUnusedDeclaration") // DSL
 	Action<Grouper.Start<Violations>> getAction() {
 		return action
 	}
 
+	@SuppressWarnings("GroovyUnusedDeclaration") // DSL
 	void setAction(Action<Grouper.Start<Violations>> action) {
 		this.action = action
+	}
+
+	@CompileDynamic
+	private static <T> T safeAdd(T a, T b) {
+		if (a != null && b != null) {
+			return a + b
+		} else if (a != null && b == null) {
+			return a
+		} else if (a == null && b != null) {
+			return b
+		} else /* (a == null && b == null) */ {
+			return null
+		}
 	}
 }

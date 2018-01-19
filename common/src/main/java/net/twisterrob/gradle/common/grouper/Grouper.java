@@ -1,20 +1,22 @@
 package net.twisterrob.gradle.common.grouper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.NullObject;
 
-import static org.codehaus.groovy.runtime.DefaultGroovyMethods.collect;
-import static org.codehaus.groovy.runtime.DefaultGroovyMethods.groupBy;
 import static org.codehaus.groovy.runtime.DefaultGroovyMethods.plus;
 
-import groovy.lang.Closure;
 import groovy.lang.GroovyObjectSupport;
 import groovy.lang.MissingPropertyException;
 
@@ -30,19 +32,27 @@ import groovy.lang.MissingPropertyException;
 public class Grouper<K, V> extends AbstractGrouper {
 
 	public static @Nonnull <T> Start<T> create(@Nonnull List<T> list) {
-		return new Start<>(Collections.unmodifiableList(list), findRepresentative(list));
+		return create(list, Collectors.reducing(0, e -> 1, Integer::sum));
+	}
+
+	public static @Nonnull <T> Start<T> create(@Nonnull List<T> list, @Nonnull Collector<T, ?, ?> finalCollector) {
+		return new Start<>(Collections.unmodifiableList(list), findRepresentative(list), finalCollector);
 	}
 
 	private final @Nonnull List<String> fields;
 
-	private Grouper(@Nonnull List<?> list, @Nonnull Object representative, @Nonnull List<String> fields) {
-		super(list, representative);
+	private Grouper(
+			@Nonnull List<?> list,
+			@Nonnull Object representative,
+			@Nonnull List<String> fields,
+			@Nonnull Collector<?, ?, ?> finalCollector) {
+		super(list, representative, finalCollector);
 		this.fields = fields;
 	}
 
 	@Override
 	public @Nonnull Grouper<K, Map<?, V>> by(@Nonnull String fieldName) {
-		return new Grouper<>(list, representative, plus(fields, fieldName));
+		return new Grouper<>(list, representative, plus(fields, fieldName), finalCollector);
 	}
 
 	@Override
@@ -56,20 +66,17 @@ public class Grouper<K, V> extends AbstractGrouper {
 		return super.getProperty(fieldName);
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes", "serial"})
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public @Nonnull Map<K, V> group() {
-		// return list.groupBy(fields.collect { field -> { obj -> obj[field] } })
-		List<Closure<Object>> closures = collect(fields, new Closure<Closure<Object>>(this) {
-			@Override public Closure<Object> call(Object field) {
-				return new Closure<Object>(this) {
-					@Override public Object call(Object obj) {
-						return DefaultGroovyMethods.getAt(obj, (String)field);
-					}
-				};
-			}
-		});
-		// help overload resolution, if type doesn't match exactly Object... variant is picked up
-		return (Map<K, V>)groupBy((Iterable<V>)list, (List<Closure>)(List<?>)closures);
+		List<String> reversed = new ArrayList<>(fields);
+		Collections.reverse(reversed);
+
+		Collector collectors = finalCollector;
+		for (String field : reversed) {
+			Function access = obj -> DefaultGroovyMethods.getAt(obj, field);
+			collectors = Collectors.groupingBy(access, LinkedHashMap::new, collectors);
+		}
+		return (Map)list.stream().collect(collectors);
 	}
 
 	@Override
@@ -88,8 +95,11 @@ public class Grouper<K, V> extends AbstractGrouper {
 
 	public static class Start<T> extends AbstractGrouper {
 
-		private Start(@Nonnull List<T> list, @Nonnull Object representative) {
-			super(list, representative);
+		private Start(
+				@Nonnull List<T> list,
+				@Nonnull Object representative,
+				@Nonnull Collector<T, ?, ?> finalCollector) {
+			super(list, representative, finalCollector);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -99,7 +109,12 @@ public class Grouper<K, V> extends AbstractGrouper {
 
 		@Override
 		public @Nonnull Grouper<?, List<T>> by(@Nonnull String fieldName) {
-			return new Grouper<>(list, representative, Collections.singletonList(fieldName));
+			return new Grouper<>(list, representative, Collections.singletonList(fieldName), Collectors.toList());
+		}
+
+		@SuppressWarnings("unchecked")
+		public @Nonnull <R> Counter<T, R> count() {
+			return new Counter<>(getList(), representative, (Collector<T, ?, R>)finalCollector);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -113,16 +128,52 @@ public class Grouper<K, V> extends AbstractGrouper {
 			return super.getProperty(fieldName);
 		}
 	}
+
+	public static class Counter<T, R> extends AbstractGrouper {
+
+		private Counter(
+				@Nonnull List<T> list,
+				@Nonnull Object representative,
+				@Nonnull Collector<T, ?, R> finalCollector) {
+			super(list, representative, finalCollector);
+		}
+
+		@SuppressWarnings("unchecked")
+		public @Nonnull List<T> getList() {
+			return (List<T>)list;
+		}
+
+		@Override
+		public @Nonnull Grouper<?, R> by(@Nonnull String fieldName) {
+			return new Grouper<>(list, representative, Collections.singletonList(fieldName), finalCollector);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public @Nonnull Grouper<?, R> getAt(@Nonnull String fieldName) {
+			return (Grouper<?, R>)super.getAt(fieldName);
+		}
+
+		@Override
+		public Object getProperty(String fieldName) {
+			return super.getProperty(fieldName);
+		}
+	}
 }
 
 abstract class AbstractGrouper extends GroovyObjectSupport {
 
 	protected final @Nonnull List<?> list;
 	protected final @Nonnull Object representative;
+	protected final @Nonnull Collector<?, ?, ?> finalCollector;
 
-	protected AbstractGrouper(@Nonnull List<?> list, @Nonnull Object representative) {
+	protected AbstractGrouper(
+			@Nonnull List<?> list,
+			@Nonnull Object representative,
+			@Nonnull Collector<?, ?, ?> finalCollector) {
 		this.list = list;
 		this.representative = representative;
+		this.finalCollector = finalCollector;
 	}
 
 	/**
