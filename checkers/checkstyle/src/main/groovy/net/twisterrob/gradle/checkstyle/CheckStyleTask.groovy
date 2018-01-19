@@ -3,6 +3,7 @@ package net.twisterrob.gradle.checkstyle
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.SourceKind
 import net.twisterrob.gradle.common.TargetChecker
+import net.twisterrob.gradle.common.Utils
 import org.gradle.api.Action
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.plugins.JavaBasePlugin
@@ -96,9 +97,8 @@ class CheckStyleTask extends Checkstyle implements TargetChecker {
 
 		static def setupReports(CheckStyleTask task, String suffix = null) {
 			suffix = suffix != null? "-" + suffix : ""
-			// don't stop the build, so we have all the results at once for reporting
-			// if this is the only task being requested by the user, fail the build on failures
-			task.ignoreFailures = task.project.gradle.startParameter.taskNames != [ task.path ]
+			// stop the build only if user wanted this task, otherwise we'll gather the results at once for reporting
+			task.ignoreFailures = Utils.wasExplicitlyLaunched(task)
 			// TODO too soon?
 			// Groovy static compilation can't figure it out, so help with a cast
 			def reporting = task.project.extensions.findByType(ReportingExtension) as ReportingExtension

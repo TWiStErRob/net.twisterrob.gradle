@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.common
 
 import groovy.transform.CompileDynamic
+import org.gradle.api.Task
 
 import java.util.function.BinaryOperator
 import java.util.function.Function
@@ -34,5 +35,9 @@ final class Utils {
 	 */
 	static <T> Collector<T, ?, Integer> nullSafeSum(Function<T, Integer> mapper) {
 		Collectors.reducing((Integer)null, mapper, Utils.&safeAdd as BinaryOperator<Integer>)
+	}
+
+	static boolean wasExplicitlyLaunched(Task task) {
+		return task.project.gradle.startParameter.taskNames != [ task.path ]
 	}
 }

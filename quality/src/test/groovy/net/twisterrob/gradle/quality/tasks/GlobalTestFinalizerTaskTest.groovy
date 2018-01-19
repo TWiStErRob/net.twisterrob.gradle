@@ -6,7 +6,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.Rule
 import org.junit.Test
 
-class GlobalTestTaskTest {
+class GlobalTestFinalizerTaskTest {
 
 	@Rule public final GradleRunnerRule gradle = new GradleRunnerRule()
 
@@ -36,7 +36,7 @@ class GlobalTestTaskTest {
 			dependencies {
 				testImplementation 'junit:junit:4.12'
 			}
-			task('tests', type: ${GlobalTestTask.name})
+			task('tests', type: ${GlobalTestFinalizerTask.name})
 		""".stripIndent()
 
 		when:
