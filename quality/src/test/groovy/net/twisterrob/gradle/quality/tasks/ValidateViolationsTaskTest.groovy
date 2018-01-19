@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
+import net.twisterrob.gradle.common.Constants
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -101,11 +102,11 @@ class ValidateViolationsTaskTest {
 		assert result.output.contains("""\
 		:printViolationCounts
 			:EmptyBlock:
-				debug+release: 3
+				${Constants.ALL_VARIANTS_NAME}: 3
 			:MemberName:
-				debug+release: 2
+				${Constants.ALL_VARIANTS_NAME}: 2
 			:UnusedImports:
-				debug+release: 4
+				${Constants.ALL_VARIANTS_NAME}: 4
 		""".stripIndent().replaceAll("\r?\n", System.lineSeparator()))
 	}
 }

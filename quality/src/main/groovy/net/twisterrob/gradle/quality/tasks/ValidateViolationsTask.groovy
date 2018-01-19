@@ -4,24 +4,25 @@ import com.android.build.gradle.tasks.LintGlobalTask
 import com.android.build.gradle.tasks.LintPerVariantTask
 import groovy.transform.CompileDynamic
 import net.twisterrob.gradle.checkstyle.CheckStyleTask
+import net.twisterrob.gradle.common.Utils
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.pmd.PmdTask
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
+import net.twisterrob.gradle.quality.report.TableGenerator
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskAction
+import se.bjurr.violations.lib.model.Violation
 import se.bjurr.violations.lib.reports.Parser
-
-import java.util.stream.Collectors
 
 class ValidateViolationsTask extends DefaultTask {
 
-	Action<Grouper.Start<Violations>> action = Closure.IDENTITY as Action
+	Action<Grouper.Start<Violations>> action = ValidateViolationsTask.&defaultAction as Action
 
 	private static final TaskReportGatherer[] GATHERERS = [
 			new QualityTaskReportGatherer(displayName: "checkstyle", taskType: CheckStyleTask,
@@ -65,8 +66,7 @@ class ValidateViolationsTask extends DefaultTask {
 				}
 			}
 		}
-		def countingReducer = Collectors.
-				reducing(null, {Violations it -> it.violations?.size()}, ValidateViolationsTask.&safeAdd)
+		def countingReducer = Utils.nullSafeSum({Violations v -> v.violations?.size()})
 		action.execute(Grouper.create(results, countingReducer))
 	}
 
@@ -81,15 +81,34 @@ class ValidateViolationsTask extends DefaultTask {
 	}
 
 	@CompileDynamic
-	private static <T> T safeAdd(T a, T b) {
-		if (a != null && b != null) {
-			return a + b
-		} else if (a != null && b == null) {
-			return a
-		} else if (a == null && b != null) {
-			return b
-		} else /* (a == null && b == null) */ {
-			return null
-		}
+	static defaultAction(Grouper.Start<Violations> violations) {
+		def grouped = violations.count().by.module.variant.parser.group()
+		def table = new TableGenerator(
+				zeroCount: '.' /*TODO ✓*/,
+				missingCount: '',
+				printEmptyRows: false,
+				printEmptyColumns: false,
+		).build(grouped as Map)
+		def result = violations.list
+		                       .collectMany {v -> (v.violations?: [ ]).collect {[ v, it ]}}
+		                       .collect {pair ->
+			Violations group; Violation violation; (group, violation) = pair
+			def message = violation.message.replaceAll(/(\r?\n)+/, System.lineSeparator())
+			"""\
+${group.module}/${group.variant} ${violation.file}:${violation.startLine}
+	${violation.reporter}/${violation.rule | "Unknown"}
+${message.replaceAll(/(?m)^/, '\t')}\
+"""
+		} as List<String>
+		def reportLocations = violations
+				.list
+				.grep {Violations v -> (v.violations?.size()?: 0) > 0}
+				.collect {"${it.module}:${it.parser}@${it.variant} (${it.violations.size()}): ${it.report}"}
+
+		println result.join(System.lineSeparator() + System.lineSeparator())
+		println()
+		println reportLocations.join(System.lineSeparator())
+		println()
+		println table
 	}
 }

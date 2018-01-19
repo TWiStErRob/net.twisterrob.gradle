@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.pmd
 
 import com.android.build.gradle.api.BaseVariant
+import net.twisterrob.gradle.common.Constants
 
 class PmdVariantsTaskConfig extends PmdTask.TaskConfig {
 
@@ -13,7 +14,7 @@ class PmdVariantsTaskConfig extends PmdTask.TaskConfig {
 	@Override
 	void execute(PmdTask task) {
 		task.description = "Run pmd batched on variants: ${variants*.name.join(', ')}"
-		task.checkTargetName = variants*.name.join('+')
+		task.checkTargetName = Constants.ALL_VARIANTS_NAME
 		setupConfigLocations(task)
 		setupSources(task, variants)
 		setupReports(task)
