@@ -92,7 +92,7 @@ class PmdTask extends Pmd implements TargetChecker {
 		static def setupReports(PmdTask task, String suffix = null) {
 			suffix = suffix != null? "-" + suffix : ""
 			// stop the build only if user wanted this task, otherwise we'll gather the results at once for reporting
-			task.ignoreFailures = Utils.wasExplicitlyLaunched(task)
+			task.ignoreFailures = !Utils.wasExplicitlyLaunched(task)
 			// TODO too soon?
 			// Groovy static compilation can't figure it out, so help with a cast
 			def reporting = task.project.extensions.findByType(ReportingExtension) as ReportingExtension

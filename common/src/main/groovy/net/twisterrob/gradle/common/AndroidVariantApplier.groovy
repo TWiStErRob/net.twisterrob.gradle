@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.common
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.BasePlugin
 import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
@@ -15,6 +16,21 @@ class AndroidVariantApplier {
 
 	AndroidVariantApplier(Project project) {
 		this.project = project
+	}
+
+	void applyAfterPluginConfigured(Action<BasePlugin> pluginClosure) {
+		def callback = {BasePlugin plugin ->
+			// withId ensures we have BasePlugin
+			project.afterEvaluate {
+				// afterEvaluate ensures that all tasks, variants, etc are already configured
+				pluginClosure.execute(plugin)
+			}
+		}
+		project.plugins.withId('com.android.application', callback)
+		project.plugins.withId('com.android.library', callback)
+		project.plugins.withId('com.android.feature', callback)
+		project.plugins.withId('com.android.test', callback)
+		project.plugins.withId('com.android.instantapp', callback)
 	}
 
 	void apply(Action<DomainObjectSet<? extends BaseVariant>> variantsClosure) {
