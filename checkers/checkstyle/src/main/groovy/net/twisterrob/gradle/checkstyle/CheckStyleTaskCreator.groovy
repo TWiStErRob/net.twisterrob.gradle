@@ -1,12 +1,13 @@
 package net.twisterrob.gradle.checkstyle
 
 import com.android.build.gradle.api.BaseVariant
+import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaBasePlugin
 
-class CheckStyleTaskCreator {
+class CheckStyleTaskCreator implements VariantTaskCreator {
 
 	private final Project project
 
@@ -16,7 +17,8 @@ class CheckStyleTaskCreator {
 		this.project = project
 	}
 
-	def applyTo(DomainObjectSet<? extends BaseVariant> variants) {
+	@Override
+	void applyTo(DomainObjectSet<? extends BaseVariant> variants) {
 		createGlobalTask()
 		variants.all this.&configureCheckStyle
 		project.afterEvaluate {

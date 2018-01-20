@@ -15,6 +15,8 @@ import static com.android.builder.model.AndroidProject.FD_GENERATED
 
 class PmdTask extends Pmd implements TargetChecker {
 
+	String checkTargetName
+
 	PmdTask() {
 		group = JavaBasePlugin.VERIFICATION_GROUP
 		classpath = project.files()

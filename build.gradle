@@ -1,5 +1,15 @@
 group = rootProject.name
 
+buildscript {
+	repositories {
+		jcenter()
+	}
+
+	dependencies {
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${VERSION_KOTLIN}"
+	}
+}
+
 subprojects {
 	group = rootProject.group
 	version = VERSION
@@ -7,6 +17,8 @@ subprojects {
 	repositories {
 		jcenter()
 		google()
+		// for Kotlin-DSL
+		maven { url 'https://repo.gradle.org/gradle/libs-releases-local/' }
 	}
 
 	if ('MVN_LOCALHOST_REPO' in System.env) {
@@ -15,6 +27,16 @@ subprojects {
 }
 
 allprojects {
+
+	configurations.all {
+		resolutionStrategy {
+			// make sure we don't have many versions of Kotlin lying around
+			force "org.jetbrains.kotlin:kotlin-stdlib:${VERSION_KOTLIN}"
+			force "org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}"
+			force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${VERSION_KOTLIN}"
+			force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${VERSION_KOTLIN}"
+		}
+	}
 
 	gradle.projectsEvaluated {
 		tasks.withType(JavaCompile) {
@@ -26,6 +48,11 @@ allprojects {
 			// enable Java 7 invokeDynamic, since Java target is > 7 (Android requires Java 8 at least)
 			// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project
 			it.groovyOptions.optimizationOptions.indy = true
+		}
+		tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+			it.kotlinOptions.verbose = true
+			it.kotlinOptions.jvmTarget = (VERSION_JAVA as JavaVersion).toString()
+			it.kotlinOptions.allWarningsAsErrors = true
 		}
 		tasks.withType(Test) {
 			if (System.properties.keySet().contains('idea.paths.selector')) {

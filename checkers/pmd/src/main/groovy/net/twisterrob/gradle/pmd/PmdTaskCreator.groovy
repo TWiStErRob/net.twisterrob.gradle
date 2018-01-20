@@ -1,13 +1,14 @@
 package net.twisterrob.gradle.pmd
 
 import com.android.build.gradle.api.BaseVariant
+import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaBasePlugin
 
 // TODO dedupe these classes
-class PmdTaskCreator {
+class PmdTaskCreator implements VariantTaskCreator {
 
 	private final Project project
 
@@ -17,7 +18,8 @@ class PmdTaskCreator {
 		this.project = project
 	}
 
-	def applyTo(DomainObjectSet<? extends BaseVariant> variants) {
+	@Override
+	void applyTo(DomainObjectSet<? extends BaseVariant> variants) {
 		createGlobalTask()
 		variants.all this.&configureCheckStyle
 		project.afterEvaluate {

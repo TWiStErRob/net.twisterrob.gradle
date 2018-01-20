@@ -15,6 +15,8 @@ import static com.android.builder.model.AndroidProject.FD_GENERATED
 
 class CheckStyleTask extends Checkstyle implements TargetChecker {
 
+	String checkTargetName
+
 	CheckStyleTask() {
 		group = JavaBasePlugin.VERIFICATION_GROUP
 		classpath = project.files()

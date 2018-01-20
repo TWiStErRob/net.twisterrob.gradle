@@ -1,15 +1,26 @@
 archivesBaseName = 'twister-quality-common'
 
 apply plugin: 'groovy'
+apply plugin: 'kotlin'
 
 dependencies {
-	implementation localGroovy()
 	implementation gradleApi()
+	implementation "org.gradle:gradle-kotlin-dsl:${VERSION_KOTLIN_DSL}"
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${VERSION_KOTLIN}"
+	implementation "org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}"
 
 	compileOnly "com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}"
 	compileOnly "com.google.code.findbugs:jsr305:${VERSION_JSR305_ANNOTATIONS}"
 
-	testImplementation "junit:junit:${VERSION_JUNIT}"
+	testImplementation "org.jetbrains.kotlin:kotlin-test:${VERSION_KOTLIN}"
+	testImplementation "org.jetbrains.kotlin:kotlin-test-junit:${VERSION_KOTLIN}"
 	testImplementation "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
+	testImplementation "junit:junit:${VERSION_JUNIT}"
 	testImplementation "com.google.guava:guava:22.0"
 }
+
+// don't double-compile Java classes
+sourceSets.all {it.kotlin.srcDirs -= it.java.srcDirs}
+// make TFO visible to Groovy
+tasks.compileTestGroovy.dependsOn tasks.compileTestKotlin
+tasks.compileTestGroovy.classpath += files(tasks.compileTestKotlin.destinationDir)

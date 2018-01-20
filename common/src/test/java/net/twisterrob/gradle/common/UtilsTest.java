@@ -60,55 +60,6 @@ public class UtilsTest {
 				assertEquals((Integer)(VALUE + VALUE2), result);
 			}
 		}
-
-		public static class Strings {
-
-			private static final String VALUE = "5";
-			private static final String VALUE2 = "6";
-			private static final String NULL = null;
-
-			@Test public void addNullValues() {
-				String result = Utils.safeAdd(NULL, NULL);
-
-				assertNull(result);
-			}
-
-			@Test public void addValueToNullBuiltIn() {
-				String result = VALUE + NULL;
-
-				assertEquals("5null", result);
-			}
-
-			@Test public void addValueToNull() {
-				String result = Utils.safeAdd(VALUE, NULL);
-
-				assertEquals(VALUE, result);
-			}
-
-			@Test public void addNullToValueBuiltIn() {
-				String result = NULL + VALUE;
-
-				assertEquals("null5", result);
-			}
-
-			@Test public void addNullToValue() {
-				String result = Utils.safeAdd(NULL, VALUE);
-
-				assertEquals(VALUE, result);
-			}
-
-			@Test public void addValueToValueBuiltIn() {
-				String result = VALUE + VALUE2;
-
-				assertEquals("56", result);
-			}
-
-			@Test public void addValueToValue() {
-				String result = Utils.safeAdd(VALUE, VALUE2);
-
-				assertEquals(VALUE + VALUE2, result);
-			}
-		}
 	}
 
 	public static class nullSafeSum {

@@ -53,6 +53,11 @@ task('tests', type: net.twisterrob.gradle.quality.tasks.GlobalTestFinalizerTask)
 | **pmd** ([`/checkers/pmd`](checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-pmd:+'`<br>`apply plugin: 'net.twisterrob.pmd'`<br>`import net.twisterrob.gradle.pmd;` |
 | **test** ([`/test`](test)):<br>[Gradle test plugin and resources.](test/README.md) | `classpath 'net.twisterrob.gradle:twister-gradle-test:+'`<br>`apply plugin: 'net.twisterrob.gradle.test'`<br>`import net.twisterrob.gradle.test;` |
 
+### Languages
+Most of the code is written in Kotlin, some in Groovy to test the integration with traditional Gradle, and some in Java to test interop (mostly Generics).
+ 
+> Originally Groovy was the main language with `@CompileStatic` enabled so there's some type checking during compilation. Still after a successful `groovyc` compilation it was possible to get unrunnable invalid class files, and the amount of time spent on finding workarounds and helping the static compiler to infer the types was more than the ease and fun of converting everything to Kotlin.
+
 ### Project
 
 1. Make sure it runs successfully from terminal with `./gradlew test`.  
