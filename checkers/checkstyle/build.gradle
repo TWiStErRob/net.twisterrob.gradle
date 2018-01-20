@@ -1,6 +1,7 @@
 archivesBaseName = 'twister-quality-checkstyle'
 
 apply plugin: 'groovy'
+apply plugin: 'kotlin'
 apply plugin: 'java-gradle-plugin'
 
 dependencies {

@@ -63,6 +63,18 @@ allprojects {
 		}
 	}
 
+	plugins.withId('kotlin') {
+		dependencies {
+			//implementation 'org.funktionale:funktionale-partials:1.2'
+			implementation "org.gradle:gradle-kotlin-dsl:${VERSION_KOTLIN_DSL}"
+			implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${VERSION_KOTLIN}"
+			implementation "org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}"
+
+			testImplementation "org.jetbrains.kotlin:kotlin-test:${VERSION_KOTLIN}"
+			testImplementation "org.jetbrains.kotlin:kotlin-test-junit:${VERSION_KOTLIN}"
+		}
+	}
+
 	plugins.withId('java') {
 		sourceCompatibility = VERSION_JAVA as JavaVersion
 		targetCompatibility = VERSION_JAVA as JavaVersion

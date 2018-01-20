@@ -5,7 +5,7 @@ import org.gradle.api.Action
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 
-open class BaseQualityPlugin(private val taskCreator: Class<out VariantTaskCreator>) : BaseExposedPlugin() {
+open class BaseQualityPlugin(private val taskCreator: Class<out VariantTaskCreator<*>>) : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

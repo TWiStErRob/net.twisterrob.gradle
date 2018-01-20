@@ -5,15 +5,10 @@ apply plugin: 'kotlin'
 
 dependencies {
 	implementation gradleApi()
-	implementation "org.gradle:gradle-kotlin-dsl:${VERSION_KOTLIN_DSL}"
-	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${VERSION_KOTLIN}"
-	implementation "org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}"
 
 	compileOnly "com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}"
 	compileOnly "com.google.code.findbugs:jsr305:${VERSION_JSR305_ANNOTATIONS}"
 
-	testImplementation "org.jetbrains.kotlin:kotlin-test:${VERSION_KOTLIN}"
-	testImplementation "org.jetbrains.kotlin:kotlin-test-junit:${VERSION_KOTLIN}"
 	testImplementation "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
 	testImplementation "junit:junit:${VERSION_JUNIT}"
 	testImplementation "com.google.guava:guava:22.0"
