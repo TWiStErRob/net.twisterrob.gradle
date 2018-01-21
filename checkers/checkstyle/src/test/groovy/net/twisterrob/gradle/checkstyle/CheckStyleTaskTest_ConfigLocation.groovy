@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.checkstyle
 
 import net.twisterrob.gradle.test.GradleRunnerRule
+import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.Before
@@ -62,7 +63,7 @@ class CheckStyleTaskTest_ConfigLocation {
 		def script = """\
 			subprojects { // i.e. :module
 				apply plugin: 'net.twisterrob.checkstyle'
-				tasks.withType(org.gradle.api.plugins.quality.Checkstyle) {
+				tasks.withType(${Checkstyle.name}) {
 					// output all violations to the console so that we can parse the results
 					showViolations = true
 				}

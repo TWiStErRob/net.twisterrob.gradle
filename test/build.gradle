@@ -28,6 +28,7 @@ tasks.test.doFirst {
 }
 tasks.test.dependsOn tasks.jar
 afterEvaluate {
+	//noinspection UnnecessaryQualifiedReference keep it explicitly together with code
 	def metaTask = tasks.pluginUnderTestMetadata as org.gradle.plugin.devel.tasks.PluginUnderTestMetadata
 	metaTask.pluginClasspath = files(
 			configurations.runtimeClasspath - configurations.compileOnly,

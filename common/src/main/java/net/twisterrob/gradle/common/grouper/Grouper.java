@@ -61,6 +61,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 		return (Grouper<K, Map<?, V>>)super.getAt(fieldName);
 	}
 
+	@SuppressWarnings("EmptyMethod") // Groovy needs this
 	@Override
 	public Object getProperty(String fieldName) {
 		return super.getProperty(fieldName);
@@ -123,6 +124,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 			return (Grouper<?, List<T>>)super.getAt(fieldName);
 		}
 
+		@SuppressWarnings("EmptyMethod") // Groovy needs this
 		@Override
 		public Object getProperty(String fieldName) {
 			return super.getProperty(fieldName);
@@ -138,11 +140,6 @@ public class Grouper<K, V> extends AbstractGrouper {
 			super(list, representative, finalCollector);
 		}
 
-		@SuppressWarnings("unchecked")
-		public @Nonnull List<T> getList() {
-			return (List<T>)list;
-		}
-
 		@Override
 		public @Nonnull Grouper<?, R> by(@Nonnull String fieldName) {
 			return new Grouper<>(list, representative, Collections.singletonList(fieldName), finalCollector);
@@ -154,6 +151,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 			return (Grouper<?, R>)super.getAt(fieldName);
 		}
 
+		@SuppressWarnings("EmptyMethod") // Groovy needs this
 		@Override
 		public Object getProperty(String fieldName) {
 			return super.getProperty(fieldName);

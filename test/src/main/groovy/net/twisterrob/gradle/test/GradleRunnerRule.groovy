@@ -79,7 +79,7 @@ class GradleRunnerRule implements TestRule {
 		println """
 				Running `gradle ${args}` on ${buildFile.absolutePath}:
 				```gradle
-${buildFile.text.trim().split('\n').collect {'\t\t\t\t\t' + it}.join('\n')}
+${buildFile.text.trim().split('\n').collect {String line -> '\t\t\t\t\t' + line}.join('\n')}
 				```
 			""".stripIndent()
 		return runner.withArguments(args)

@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.pmd
 
 import net.twisterrob.gradle.test.GradleRunnerRule
+import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.Before
@@ -62,7 +63,7 @@ class PmdTaskTest_ConfigLocation {
 		def script = """\
 			subprojects { // i.e. :module
 				apply plugin: 'net.twisterrob.pmd'
-				tasks.withType(org.gradle.api.plugins.quality.Pmd) {
+				tasks.withType(${Pmd.name}) {
 					// output all violations to the console so that we can parse the results
 					consoleOutput = true
 				}

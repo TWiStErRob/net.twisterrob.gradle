@@ -17,7 +17,6 @@ import net.twisterrob.gradle.common.grouper.TFO.E;
 import net.twisterrob.gradle.common.grouper.TFO.F;
 import net.twisterrob.gradle.common.grouper.TFO.G;
 
-@SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
 public class GrouperTest_Java {
 
 	@Test public void groupOn1Level() {
