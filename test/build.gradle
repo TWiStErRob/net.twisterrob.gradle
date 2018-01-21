@@ -1,6 +1,7 @@
 archivesBaseName = 'twister-gradle-test'
 
 apply plugin: 'groovy'
+apply plugin: 'kotlin'
 apply plugin: 'java-gradle-plugin'
 
 dependencies {
