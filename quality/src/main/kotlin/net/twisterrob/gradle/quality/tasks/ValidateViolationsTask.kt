@@ -20,6 +20,7 @@ import se.bjurr.violations.lib.reports.Parser
 
 open class ValidateViolationsTask : DefaultTask() {
 
+	@Suppress("MemberVisibilityCanBePrivate") // DSL
 	var action: Action<Grouper.Start<Violations>> = Action(::defaultAction)
 
 	companion object {
@@ -51,9 +52,9 @@ open class ValidateViolationsTask : DefaultTask() {
 	@Suppress("unused")
 	@TaskAction
 	fun validateViolations() {
-		val results = project.subprojects.flatMap { subproject: Project ->
+		val results = project.subprojects.flatMap { subproject ->
 			GATHERERS.flatMap { gatherer ->
-				subproject.tasks.withType(gatherer.taskType).map { task: Task ->
+				subproject.tasks.withType(gatherer.taskType).map { task ->
 					Violations(
 							parser = gatherer.displayName,
 							module = subproject.path,
@@ -82,12 +83,12 @@ private fun defaultAction(violations: Grouper.Start<Violations>) {
 	val result: List<String> = violations.list
 			.flatMap { v -> (v.violations ?: listOf()).map { Pair(v, it) } }
 			.map { (group, violation) ->
-				val message = violation.message.replace("(\r?\n)+".toRegex(), System.lineSeparator())
-				"""\
-${group.module}/${group.variant} ${violation.file}:${violation.startLine}
-	${violation.reporter}/${violation.rule.or("Unknown")}
-${message.replace("(?m)^".toRegex(), "\t")}\
-"""
+				val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
+				"""
+					${group.module}/${group.variant} ${violation.file}:${violation.startLine}
+						${violation.reporter}/${violation.rule.or("Unknown")}
+					${message.replace("""(?m)^""".toRegex(), "\t")}\
+				""".trimIndent()
 			}
 	val reportLocations = violations
 			.list

@@ -13,7 +13,7 @@ abstract class TaskReportGatherer<T>(
 
 	abstract fun getName(task: T): String
 
-	open fun getViolations(task: T): List<Violation>? {
+	fun getViolations(task: T): List<Violation>? {
 		val report = getReportLocation(task)
 		return if (report.exists()) {
 			findViolations(report)

@@ -37,11 +37,14 @@ T : VerificationTask {
 		}
 	}
 
-	open fun variantsConfig(variants: Collection<BaseVariant>) = DefaultVariantsTaskConfig(taskConfigurator(), variants)
+	open fun variantsConfig(variants: Collection<BaseVariant>) =
+			DefaultVariantsTaskConfig(taskConfigurator(), variants)
 
-	open fun variantConfig(variant: BaseVariant) = DefaultVariantTaskConfig(taskConfigurator(), variant)
+	open fun variantConfig(variant: BaseVariant) =
+			DefaultVariantTaskConfig(taskConfigurator(), variant)
 
-	open fun taskConfigurator() = DefaultTaskConfig()
+	open fun taskConfigurator() =
+			DefaultTaskConfig()
 
 	private fun createGlobalTask() {
 		val globalTaskName = "${baseName}Each"
@@ -57,7 +60,8 @@ T : VerificationTask {
 
 	private fun createTaskForVariant(variant: BaseVariant) {
 		val taskName = "${baseName}${variant.name.capitalize()}"
-		eachTask.dependsOn(project.tasks.create(taskName, taskClass, variantConfig(variant)))
+		val variantTask = project.tasks.create(taskName, taskClass, variantConfig(variant))
+		eachTask.dependsOn(variantTask)
 	}
 
 	open inner class DefaultVariantsTaskConfig(
@@ -66,7 +70,8 @@ T : VerificationTask {
 	) : Action<T> {
 
 		override fun execute(task: T) {
-			task.description = "Run ${baseName} batched on variants: ${variants.joinToString(", ", transform = BaseVariant::getName)}"
+			val variantNames = variants.joinToString(", ", transform = BaseVariant::getName)
+			task.description = "Run ${baseName} batched on variants: ${variantNames}"
 			task.checkTargetName = ALL_VARIANTS_NAME
 			configurator.setupConfigLocations(task)
 			configurator.setupSources(task, variants)
@@ -128,7 +133,7 @@ T : VerificationTask {
 			// TODO want this? Checkstyle config can filter if wants to, otherwise XMLs can be checked as well
 			//task.include '**/*.java' 
 
-			variants.onEach { variant ->
+			variants.forEach { variant ->
 				// exclude generated code
 				// "source" is hard-coded in VariantScopeImpl, e.g. getAidlSourceOutputDir
 				// single-star represents r|buildConfig|aidl|rs|etc.

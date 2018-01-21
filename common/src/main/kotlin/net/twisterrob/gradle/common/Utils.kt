@@ -3,7 +3,9 @@
 package net.twisterrob.gradle.common
 
 import com.android.SdkConstants
+import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.tasks.LintBaseTask
+import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
 import java.io.File
@@ -12,29 +14,24 @@ import java.util.function.Function
 import java.util.stream.Collector
 import java.util.stream.Collectors
 
-fun safeAdd(a: Int?, b: Int?): Int? {
-	if (a != null && b != null) {
-		return a + b
-	} else if (a != null && b == null) {
-		return a
-	} else if (a == null && b != null) {
-		return b
-	} else /* (a == null && b == null) */ {
-		return null
-	}
+typealias Variants = DomainObjectSet<out BaseVariant>
+
+fun safeAdd(a: Int?, b: Int?): Int? = when {
+	a != null && b != null -> a + b
+	a != null && b == null -> a
+	a == null && b != null -> b
+	a == null && b == null -> null
+	else -> throw InternalError("No other possibility")
 }
 
-fun nullSafeSum(): Collector<Int?, *, Int?> {
-	return nullSafeSum(Function.identity())
-}
+fun nullSafeSum(): Collector<Int?, *, Int?> = nullSafeSum(Function.identity())
 
 fun <T> nullSafeSum(mapper: Function<T?, Int?>): Collector<T?, *, Int?> {
 	return Collectors.reducing(null, mapper, BinaryOperator(::safeAdd))
 }
 
-fun wasExplicitlyLaunched(task: Task): Boolean {
-	return task.project.gradle.startParameter.taskNames == listOf(task.path)
-}
+fun wasExplicitlyLaunched(task: Task): Boolean =
+		task.project.gradle.startParameter.taskNames == listOf(task.path)
 
 fun getXmlOutput(task: LintBaseTask): File {
 	val xmlOutput = task.lintOptions.xmlOutput

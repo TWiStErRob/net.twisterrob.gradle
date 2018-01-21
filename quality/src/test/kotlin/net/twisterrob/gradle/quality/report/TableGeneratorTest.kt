@@ -88,4 +88,4 @@ class TableGeneratorTest {
 	}
 }
 
-private fun String.prepare() = this.trimIndent().replace("\r?\n".toRegex(), System.lineSeparator())
+private fun String.prepare() = this.trimIndent().replace("""\r?\n""".toRegex(), System.lineSeparator())

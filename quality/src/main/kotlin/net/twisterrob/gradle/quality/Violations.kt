@@ -14,6 +14,5 @@ class Violations(
 		@JvmField val violations: List<Violation>?
 ) {
 
-	@Override
 	override fun toString() = "${module}:${parser}@${variant} (${report}): ${violations}"
 }

@@ -14,14 +14,20 @@ class JUnitParser : ViolationsParser {
 
 	override fun parseReportOutput(reportContent: String): List<Violation> {
 		val violations = mutableListOf<Violation>()
-		val tests = getChunks(reportContent, "<testcase", "</testcase>")
+		val tests: List<String> = getChunks(reportContent, "<testcase", "</testcase>")
 		for (testChunk in tests) {
-			val className = getAttribute(testChunk, "classname")
-			val methodName = getAttribute(testChunk, "name")
-			val skips = getChunks(testChunk, "<skipped", "/>")
-			for (skippedChunk in skips) {
+			val className = getAttribute(testChunk, "classname")!!
+			val methodName = getAttribute(testChunk, "name")!!
+			violations += parseSkips(testChunk, className, methodName)
+			violations += parseFailures(testChunk, className, methodName)
+		}
+		return violations
+	}
+
+	private fun parseSkips(testChunk: String, className: String, methodName: String): List<Violation> =
+			getChunks(testChunk, "<skipped", "/>").map { skippedChunk ->
 				val message = getAttribute(skippedChunk, "message")
-				violations += violationBuilder()
+				violationBuilder()
 						.setParser(Parser.PITEST)
 						.setReporter("JUnit")
 						.setFile(className)
@@ -31,11 +37,12 @@ class JUnitParser : ViolationsParser {
 						.setMessage(message)
 						.build()
 			}
-			val fails = getChunks(testChunk, "<failure", "</failure>")
-			for (failureChunk in fails) {
+
+	private fun parseFailures(testChunk: String, className: String, methodName: String): List<Violation> =
+			getChunks(testChunk, "<failure", "</failure>").map { failureChunk ->
 				val message = getAttribute(failureChunk, "message")
 				val stack = getContent(failureChunk, "failure")
-				violations += violationBuilder()
+				violationBuilder()
 						.setParser(Parser.PITEST)
 						.setReporter("JUnit")
 						.setFile(className)
@@ -46,7 +53,4 @@ class JUnitParser : ViolationsParser {
 						.setSpecifics(Collections.singletonMap("stacktrace", stack))
 						.build()
 			}
-		}
-		return violations
-	}
 }
