@@ -1,10 +1,7 @@
 plugins {
-	`groovy`
+//	kotlin("jvm")
 	`java-gradle-plugin`
-}
-
-apply {
-	plugin("kotlin")
+	`groovy`
 }
 
 base.archivesBaseName = "twister-quality-checkstyle"

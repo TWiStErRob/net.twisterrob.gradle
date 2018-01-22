@@ -1,34 +1,25 @@
-import org.gradle.api.tasks.bundling.Jar
 import java.io.File
 import java.util.Date
 import java.text.SimpleDateFormat
+import org.gradle.api.tasks.bundling.Jar
 
 plugins {
 	`base` // just to get some support for subproject stuff, for example access to project.base
+//	kotlin("jvm") apply false
 }
+
+group = rootProject.name
 
 val VERSION by project
 val VERSION_JAVA by project
 val VERSION_KOTLIN by project
 val VERSION_KOTLIN_DSL by project
 
-buildscript {
-	repositories {
-		jcenter()
-	}
-
-	dependencies {
-		// TODO https://github.com/gradle/kotlin-dsl/issues/535
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.20")
-//		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${VERSION_KOTLIN}")
-	}
-}
-
-group = rootProject.name
-
 subprojects {
 	group = rootProject.group
 	version = VERSION!!
+
+	apply { plugin("kotlin") }
 
 	repositories {
 		jcenter()

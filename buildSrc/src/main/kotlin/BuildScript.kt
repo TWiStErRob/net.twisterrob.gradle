@@ -1,4 +1,5 @@
-@file:Suppress("unused") // it's used from project's build.gradle.kts files
+// it's used from project's build.gradle.kts files
+@file:Suppress("unused")
 
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
@@ -30,6 +31,7 @@ fun SourceSet.kotlin(action: SourceDirectorySet.() -> Unit) =
  * Pull in resources from other modules' `src/test/resources` folders.
  */
 fun Project.pullTestResourcesFrom(projectPath: String) = pullTestResourcesFrom(evaluationDependsOn(projectPath))
+
 private fun Project.pullTestResourcesFrom(project: Project) {
 	val myResources = this.java.sourceSets["test"].resources
 	val otherResources = project.java.sourceSets["test"].resources

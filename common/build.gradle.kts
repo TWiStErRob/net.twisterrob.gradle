@@ -1,9 +1,6 @@
 plugins {
-	`java`
+//	kotlin("jvm")
 	`groovy`
-}
-apply {
-	plugin("kotlin")
 }
 
 base.archivesBaseName = "twister-quality-common"
