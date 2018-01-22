@@ -1,10 +1,11 @@
-rootProject.name = 'net.twisterrob.gradle'
+// Cannot convert to kts yet for some reason, IDEA doesn't recognize it
+rootProject.name = "net.twisterrob.gradle"
 
-include ':quality'
-include ':common'
-include ':test'
+include(":quality")
+include(":common")
+include(":test")
 
-[ 'checkstyle', 'pmd' ].each {
-	include ":${it}"
+[ "checkstyle", "pmd" ].each {
+	include(":${it}")
 	project(":${it}").projectDir = file("checkers/${it}")
 }

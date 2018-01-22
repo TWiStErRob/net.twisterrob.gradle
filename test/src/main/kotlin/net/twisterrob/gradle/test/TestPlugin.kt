@@ -20,10 +20,11 @@ class TestPlugin : BaseExposedPlugin() {
 			val myManifest = getManifest()
 
 			add("testImplementation", mapOf(
-					"group" to myManifest.getValue("Implementation-Vendor"),
-					"name" to myManifest.getValue("Implementation-Title"),
-					"version" to myManifest.getValue("Implementation-Version")
+					"group" to myManifest.getValue("Implementation-Vendor")!!,
+					"name" to myManifest.getValue("Implementation-Title")!!,
+					"version" to myManifest.getValue("Implementation-Version")!!
 			))
+			return@with
 		}
 	}
 
