@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.3-SNAPSHOT *(2018-01-20 --- 2018-01-)*
+ * Convert most of the plugin to Kotlin
+
 ## 0.2-SNAPSHOT *(2018-01-16 --- 2018-01-20)*
 _Never published to a public repository._
 
