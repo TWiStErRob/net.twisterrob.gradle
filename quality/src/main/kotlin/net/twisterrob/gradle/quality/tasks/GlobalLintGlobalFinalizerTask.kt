@@ -10,7 +10,6 @@ import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
-import org.jetbrains.kotlin.utils.keysToMap
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
 
@@ -35,7 +34,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	@TaskAction
 	fun failOnFailures() {
 		val gatherer = LintReportGatherer("lint", LintGlobalTask::class.java)
-		val violationsByFile = xmlReports.keysToMap { gatherer.findViolations(it) }
+		val violationsByFile = xmlReports.associateBy({it}) { gatherer.findViolations(it) }
 		val totalCount = violationsByFile.values.sumBy { violations: List<Violation> -> violations.size }
 		if (totalCount > 0) {
 			val reportsWithCounts = violationsByFile.map { (report, violations) -> "${report} (${violations.size})" }

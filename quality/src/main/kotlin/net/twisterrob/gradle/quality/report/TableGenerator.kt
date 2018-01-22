@@ -1,8 +1,6 @@
 package net.twisterrob.gradle.quality.report
 
 import net.twisterrob.gradle.common.safeAdd
-import org.jetbrains.kotlin.utils.identity
-import org.jetbrains.kotlin.utils.keysToMap
 
 private typealias Module = String
 private typealias Variant = String
@@ -28,7 +26,7 @@ class TableGenerator(
 		val modules = byModuleByVariantByParserCounts.keys
 		val variants = byModuleByVariantByParserCounts.flatMap { it.value.keys }.distinct()
 		var parsers = byModuleByVariantByParserCounts.flatMap { it.value.values }.flatMap { it.keys }.distinct()
-		val summary: Map<Parser, MaybeCount> = parsers.associateBy(identity()) { parser ->
+		val summary: Map<Parser, MaybeCount> = parsers.associateBy({ it }) { parser ->
 			byModuleByVariantByParserCounts
 					.values
 					.flatMap({ it.values })

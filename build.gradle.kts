@@ -84,7 +84,9 @@ allprojects {
 	plugins.withId("kotlin") {
 		dependencies {
 			//add("implementation", "org.funktionale:funktionale-partials:1.2")
-			add("compileOnly", "org.gradle:gradle-kotlin-dsl:${VERSION_KOTLIN_DSL}")
+			add("compileOnly", "org.gradle:gradle-kotlin-dsl:${VERSION_KOTLIN_DSL}") {
+				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
+			}
 			add("implementation", "org.jetbrains.kotlin:kotlin-stdlib:${VERSION_KOTLIN}")
 			add("implementation", "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${VERSION_KOTLIN}")
 			add("implementation", "org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}")
