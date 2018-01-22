@@ -1,8 +1,12 @@
 # Change Log
 
-## 0.2-SNAPSHOT *(2018-01-16 --- )*
+## 0.2-SNAPSHOT *(2018-01-16 --- 2018-01-20)*
+_Never published to a public repository._
 
  * Change artifact names to include `twister-` prefix.
+ * Violation count withing Grouping
+ * Summary table for violations
+ * Global lint to rule them all
 
 
 ## 0.1-SNAPSHOT *(2018-01-04 --- 2018-01-15)*
