@@ -145,7 +145,7 @@ T : VerificationTask {
 		open fun setupReports(task: T, suffix: String? = null) {
 			val fullSuffix = if (suffix != null) "-" + suffix else ""
 			// stop the build only if user wanted this task, otherwise we'll gather the results at once for reporting
-			task.ignoreFailures = !wasExplicitlyLaunched(task)
+			task.ignoreFailures = !task.wasExplicitlyLaunched
 			// TODO too soon?
 			// Groovy static compilation can't figure it out, so help with a cast
 			val reporting = task.project.extensions.findByType(ReportingExtension::class.java)

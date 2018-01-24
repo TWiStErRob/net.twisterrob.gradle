@@ -12,8 +12,11 @@ class TestReportGatherer<T>(
 
 	private val parser: ViolationsParser = JUnitParser()
 
-	override fun getReportLocation(task: T): File =
+	override fun getParsableReportLocation(task: T): File =
 			task.reports.junitXml.destination
+
+	override fun getHumanReportLocation(task: T): File =
+			task.reports.html.destination
 
 	override fun getName(task: T): String =
 			task.path

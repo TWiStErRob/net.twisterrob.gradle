@@ -59,7 +59,8 @@ open class ValidateViolationsTask : DefaultTask() {
 							parser = gatherer.displayName,
 							module = subproject.path,
 							variant = gatherer.getName(task),
-							report = gatherer.getReportLocation(task),
+							result = gatherer.getParsableReportLocation(task),
+							report = gatherer.getHumanReportLocation(task),
 							violations = gatherer.getViolations(task)
 					)
 				}
@@ -84,10 +85,10 @@ private fun defaultAction(violations: Grouper.Start<Violations>) {
 			.flatMap { v -> (v.violations ?: listOf()).map { Pair(v, it) } }
 			.map { (group, violation) ->
 				val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
-				"""
+				return@map """
 					${group.module}/${group.variant} ${violation.file}:${violation.startLine}
 						${violation.reporter}/${violation.rule.or("Unknown")}
-					${message.replace("""(?m)^""".toRegex(), "\t")}\
+${message.replace("""(?m)^""".toRegex(), "\t\t\t\t\t\t")}
 				""".trimIndent()
 			}
 	val reportLocations = violations

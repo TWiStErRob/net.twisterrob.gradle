@@ -7,6 +7,13 @@ class Violations(
 		@JvmField val parser: String,
 		@JvmField val module: String,
 		@JvmField val variant: String,
+		/**
+		 * Parseable result.
+		 */
+		@JvmField val result: File,
+		/**
+		 * Human-consumable report.
+		 */
 		@JvmField val report: File,
 		/**
 		 * Report file missing, or error during read.
@@ -14,5 +21,5 @@ class Violations(
 		@JvmField val violations: List<Violation>?
 ) {
 
-	override fun toString() = "${module}:${parser}@${variant} (${report}): ${violations}"
+	override fun toString() = "${module}:${parser}@${variant} (${result}): ${violations}"
 }

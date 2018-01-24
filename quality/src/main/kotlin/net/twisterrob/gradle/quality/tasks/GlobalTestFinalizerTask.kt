@@ -17,7 +17,7 @@ open class GlobalTestFinalizerTask : TestReport() {
 			reportOn(project.allprojects.flatMap { subproject ->
 				subproject.tasks.withType(Test::class.java) { subTask ->
 					// let the build finish running all tests
-					subTask.ignoreFailures = !wasExplicitlyLaunched(subTask)
+					subTask.ignoreFailures = !subTask.wasExplicitlyLaunched
 					// make sure we have xml output, otherwise can't figure out if test failed
 					subTask.reports.junitXml.isEnabled = true
 				}

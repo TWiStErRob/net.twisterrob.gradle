@@ -19,8 +19,11 @@ T : TargetChecker,
 T : Reporting<out ReportContainer<out SingleFileReport>> {
 
 
-	override fun getReportLocation(task: T): File =
+	override fun getParsableReportLocation(task: T): File =
 			task.reports.getByName("xml").destination
+
+	override fun getHumanReportLocation(task: T): File =
+			task.reports.getByName("html").destination
 
 	override fun getName(task: T) =
 			task.checkTargetName

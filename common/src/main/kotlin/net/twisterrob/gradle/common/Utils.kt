@@ -30,24 +30,20 @@ fun <T> nullSafeSum(mapper: Function<T?, Int?>): Collector<T?, *, Int?> {
 	return Collectors.reducing(null, mapper, BinaryOperator(::safeAdd))
 }
 
-fun wasExplicitlyLaunched(task: Task): Boolean =
-		task.project.gradle.startParameter.taskNames == listOf(task.path)
+val Task.wasExplicitlyLaunched: Boolean
+	get() = project.gradle.startParameter.taskNames == listOf(path)
 
-fun getXmlOutput(task: LintBaseTask): File {
-	val xmlOutput = task.lintOptions.xmlOutput
-	if (xmlOutput != null) {
-		return xmlOutput
-	}
+val LintBaseTask.xmlOutput: File
+	get() = lintOptions.xmlOutput ?: LintOptions_createOutputPath(
+			project, variantName, SdkConstants.DOT_XML, reportsDir, isFatalOnly)
 
-	return LintOptions_createOutputPath(
-			task.project,
-			task.variantName,
-			SdkConstants.DOT_XML,
-			task.reportsDir,
-			task.isFatalOnly
-	)
-}
+val LintBaseTask.htmlOutput: File
+	get() = lintOptions.htmlOutput ?: LintOptions_createOutputPath(
+			project, variantName, ".html", reportsDir, isFatalOnly)
 
+/**
+ * @see com.android.build.gradle.internal.dsl.LintOptions.createOutputPath
+ */
 @Suppress("FunctionName")
 private fun LintOptions_createOutputPath(
 		project: Project?, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean): File {

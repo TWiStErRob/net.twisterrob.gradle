@@ -9,12 +9,14 @@ abstract class TaskReportGatherer<T>(
 		var taskType: Class<T>
 ) where T : Task {
 
-	abstract fun getReportLocation(task: T): File
+	abstract fun getParsableReportLocation(task: T): File
+
+	abstract fun getHumanReportLocation(task: T): File
 
 	abstract fun getName(task: T): String
 
 	fun getViolations(task: T): List<Violation>? {
-		val report = getReportLocation(task)
+		val report = getParsableReportLocation(task)
 		return if (report.exists()) {
 			findViolations(report)
 		} else {
