@@ -13,7 +13,7 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 			if (!task.configFile.exists()) {
 				val rootConfig = task.project.rootProject.file("config/checkstyle/checkstyle.xml")
 				if (!rootConfig.exists()) {
-					task.logger.warn("""\
+					task.logger.warn("""
 						While configuring ${task} no configuration found at:
 							${rootConfig}
 							${task.configFile}

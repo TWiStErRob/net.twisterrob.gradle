@@ -18,7 +18,7 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 			if (config != null) {
 				task.ruleSetFiles += task.project.files(config)
 			} else if (task.ruleSetFiles.files.isEmpty()) {
-				task.logger.warn("""\
+				task.logger.warn("""
 					While configuring ${task} no configuration found at:
 						${rootConfig}
 						${subConfig}

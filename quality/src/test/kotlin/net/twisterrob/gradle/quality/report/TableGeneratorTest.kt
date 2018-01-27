@@ -32,7 +32,9 @@ class TableGeneratorTest {
 	}
 
 	@Test fun printSummary() {
-		val result = TableGenerator().build(INPUT)
+		val sut = TableGenerator()
+
+		val result = sut.build(INPUT)
 
 		val expected = """
 			module 	variant  	checkstyle	pmd	unchecked
@@ -47,7 +49,9 @@ class TableGeneratorTest {
 	}
 
 	@Test fun doesNotPrintEmptyRows() {
-		val result = TableGenerator(printEmptyRows = false).build(INPUT)
+		val sut = TableGenerator(printEmptyRows = false)
+
+		val result = sut.build(INPUT)
 
 		val expected = """
 			module 	variant  	checkstyle	pmd	unchecked
@@ -60,7 +64,9 @@ class TableGeneratorTest {
 	}
 
 	@Test fun doesNotPrintEmptyColumns() {
-		val result = TableGenerator(printEmptyColumns = false).build(INPUT)
+		val sut = TableGenerator(printEmptyColumns = false)
+
+		val result = sut.build(INPUT)
 
 		val expected = """
 			module 	variant  	checkstyle	pmd
@@ -75,7 +81,9 @@ class TableGeneratorTest {
 	}
 
 	@Test fun doesNotPrintEmptyRowsAndColumns() {
-		val result = TableGenerator(printEmptyRows = false, printEmptyColumns = false).build(INPUT)
+		val sut = TableGenerator(printEmptyRows = false, printEmptyColumns = false)
+
+		val result = sut.build(INPUT)
 
 		val expected = """
 			module 	variant  	checkstyle	pmd

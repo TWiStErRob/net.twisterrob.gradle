@@ -1,13 +1,15 @@
 package net.twisterrob.gradle.test
 
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
 class TestPluginTest {
 
-	@Rule public final GradleRunnerRule gradle = new GradleRunnerRule()
+	@Rule @JvmField val gradle = GradleRunnerRule()
 
 	/**
 	 * Set up a full Gradle project in a test that has a test to test the plugin that helps testing Gradle.
@@ -20,11 +22,12 @@ class TestPluginTest {
 	 * <li>{@code Testception} sets up a simple Gradle build and checks its output.
 	 * <li>{@code Testception} is being run from {@code :test} task in the project that's set up in this test method.
 	 */
-	@Test void "gradle test plugin test"() {
-		given:
-		//noinspection GrPackage it will be written to the right folder
-		@Language('groovy')
-		def testFileContents = '''\
+	@Test fun `gradle test plugin test`() {
+		val triplet = "\"\"\""
+		`given`@
+		@Language("groovy")
+		val testFileContents = """
+			//noinspection GrPackage it will be written to the right folder
 			package net.twisterrob.gradle.test
 
 			import org.junit.Rule
@@ -36,9 +39,10 @@ class TestPluginTest {
 
 				@Test void "gradle script test"() {
 					given:
-					def script = """\\
+					//@Language("gradle")
+					def script = ${triplet}\
 						println 'Hello World'
-					""".stripIndent()
+					${triplet}.stripIndent()
 
 					when:
 					def result = gradle.run(script).build()
@@ -47,20 +51,20 @@ class TestPluginTest {
 					result.assertHasOutputLine(/Hello World/)
 				}
 			}
-		'''.stripIndent()
+		""".trimIndent()
 		gradle.file(testFileContents,
-				'src/test/groovy/net/twisterrob/gradle/test/Testception.groovy')
+				"src/test/groovy/net/twisterrob/gradle/test/Testception.groovy")
 
-		def artifactPath = System.properties['net.twisterrob.gradle.test.artifactPath'].toString()
-		@Language('gradle')
-		def script = """\
+		val artifactPath = System.getProperties()["net.twisterrob.gradle.test.artifactPath"].toString()
+		@Language("gradle")
+		val script = """
 			apply plugin: 'groovy'
 			apply plugin: 'net.twisterrob.gradle.test'
 
 			repositories {
 				ivy {
 					// make /test/build/libs/X-0.0.jar available as 'net.twisterrob.gradle:X:0.0'
-					url '${artifactPath.replace('\\', '\\\\')}'
+					url '${artifactPath.replace("\\", "\\\\")}'
 					layout('pattern') {
 						artifact '[artifact]-[revision].[ext]'
 						m2compatible = true
@@ -69,17 +73,21 @@ class TestPluginTest {
 				mavenCentral()
 			}
 			dependencies {
+				testImplementation 'org.jetbrains.kotlin:kotlin-stdlib:${KotlinVersion.CURRENT}'
 				testImplementation 'junit:junit:4.12'
 			}
 			// output test execution result so we can verify it actually ran
-			test.afterTest { desc, result -> logger.quiet "\${desc.className} > \${desc.name}: \${result.resultType}" }
-		""".stripIndent()
+			test.afterTest { desc, result ->
+				logger.quiet "${'$'}{desc.className} > ${'$'}{desc.name}: ${'$'}{result.resultType}"
+			}
+		""".trimIndent()
 
-		when:
-		def result = gradle.run(script, 'test').build()
+		val result: BuildResult
+		`when`@
+		result = gradle.run(script, "test").build()
 
-		then:
-		assert result.task(':test').outcome == TaskOutcome.SUCCESS
-		result.assertHasOutputLine(/net.twisterrob.gradle.test.Testception > gradle script test: SUCCESS/)
+		`then`@
+		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
+		result.assertHasOutputLine("net.twisterrob.gradle.test.Testception > gradle script test: SUCCESS")
 	}
 }

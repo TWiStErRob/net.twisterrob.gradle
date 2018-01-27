@@ -8,6 +8,7 @@ base.archivesBaseName = "twister-gradle-test"
 
 val VERSION_JUNIT by project
 val VERSION_MOCKITO by project
+val VERSION_HAMCREST by project
 val VERSION_JSR305_ANNOTATIONS by project
 val VERSION_JETBRAINS_ANNOTATIONS by project
 
@@ -25,6 +26,7 @@ dependencies {
 	testImplementation(gradleApi())
 	testImplementation(gradleTestKit())
 	testImplementation("junit:junit:${VERSION_JUNIT}")
+	testImplementation("org.hamcrest:hamcrest-all:${VERSION_HAMCREST}")
 	testImplementation("org.mockito:mockito-core:${VERSION_MOCKITO}")
 	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
 }

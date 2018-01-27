@@ -1,13 +1,13 @@
 plugins {
 //	kotlin("jvm")
 	`java-gradle-plugin`
-	`groovy`
 }
 
 base.archivesBaseName = "twister-quality-pmd"
 
 val VERSION_ANDROID_PLUGIN by project
 val VERSION_JUNIT by project
+val VERSION_HAMCREST by project
 val VERSION_JETBRAINS_ANNOTATIONS by project
 
 dependencies {
@@ -17,6 +17,7 @@ dependencies {
 
 	testImplementation(project(":test"))
 	testImplementation("junit:junit:${VERSION_JUNIT}")
+	testImplementation("org.hamcrest:hamcrest-all:${VERSION_HAMCREST}")
 	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
 }
 
