@@ -1,7 +1,13 @@
 # Change Log
 
-## 0.3-SNAPSHOT *(2018-01-20 --- 2018-01-)*
- * Convert most of the plugin to Kotlin
+## 0.3-SNAPSHOT *(2018-01-20 --- 2018-01-28)*
+_Never published to a public repository._
+
+ * Komplete Konversion: Converted most of the plugin to Kotlin.  
+   *Only a single Groovy test remains which tests an interface is nicely consumable in Groovy.*
+ * Merged PMD and Checkstyle classes to remove duplication
+ * Support XML (parsed) and HTML (for people) reports side-by-side
+
 
 ## 0.2-SNAPSHOT *(2018-01-16 --- 2018-01-20)*
 _Never published to a public repository._
