@@ -36,7 +36,7 @@ class PmdTaskTest_ConfigLocation {
 	@Test fun `uses rootProject pmd config as a fallback`() {
 		`given`@
 		gradle.file(failingConfig, *CONFIG_PATH)
-		@Suppress("ConstantConditionIf") // do not set up, we want it to use rootProject"s
+		@Suppress("ConstantConditionIf") // do not set up, we want it to use rootProject's
 		if (false) {
 			gradle.file(noChecksConfig, "module", * CONFIG_PATH)
 		}
@@ -91,7 +91,7 @@ class PmdTaskTest_ConfigLocation {
 
 		`then`@
 		// build should only fail if failing config wins the preference,
-		// otherwise it"s BUILD SUCCESSFUL or RuleSetNotFoundException: Can"t find resource "....xml" for rule "null".
+		// otherwise it's BUILD SUCCESSFUL or RuleSetNotFoundException: Can't find resource "....xml" for rule "null".
 		assertEquals(TaskOutcome.FAILED, result.task(":module:pmdDebug")!!.outcome)
 		assertThat(result.failReason, containsString("1 PMD rule violations were found."))
 		result.assertHasOutputLine(

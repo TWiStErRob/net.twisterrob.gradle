@@ -47,7 +47,7 @@ class AndroidVariantApplier(val project: Project) {
 		}
 		project.plugins.withId("com.android.instantapp") {
 			//val android = project.extensions["android"] as InstantAppExtension
-			// has no variants, but don"t call back, because there"s no way to tell if this happened
+			// has no variants, but don't call back, because there's no way to tell if this happened
 			//variantsClosure.execute(new DefaultDomainObjectSet<>(BaseVariant))
 		}
 	}

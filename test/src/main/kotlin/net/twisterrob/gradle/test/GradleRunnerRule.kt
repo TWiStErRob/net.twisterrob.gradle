@@ -13,7 +13,9 @@ import java.net.URI
 /**
  * Simplified {@link org.junit.Rule} around {@link GradleRunner} to reduce code repetition.
  */
-open class GradleRunnerRule @JvmOverloads constructor(clearAfterFailure: Boolean? = null) : TestRule {
+open class GradleRunnerRule @JvmOverloads constructor(
+		clearAfterFailure: Boolean? = null
+) : TestRule {
 
 	private val temp = TemporaryFolder()
 	private val clearAfterFailure: Boolean = listOfNotNull(
@@ -73,7 +75,7 @@ open class GradleRunnerRule @JvmOverloads constructor(clearAfterFailure: Boolean
 		}
 		val args = arrayOf(*tasks, "--stacktrace")
 		println("""
-			Running `gradle ${args}` on ${buildFile.absolutePath}:
+			Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
 			```gradle
 ${buildFile.readText().prependIndent("\t\t\t")}
 			```
