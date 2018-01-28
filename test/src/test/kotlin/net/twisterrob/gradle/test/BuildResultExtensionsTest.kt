@@ -8,7 +8,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
-class BuildResultExtensionsKtTest {
+class BuildResultExtensionsTest {
 
 	companion object {
 

@@ -1,3 +1,7 @@
+// Named so that Groovy code can consume it as extension methods as well
+// (see ExtensionModule in META-INF)
+@file:JvmName("BuildResultExtensions")
+
 package net.twisterrob.gradle.test
 
 import org.gradle.testkit.runner.BuildResult
