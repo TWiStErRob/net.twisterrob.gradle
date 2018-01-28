@@ -12,7 +12,6 @@ class TestPlugin : BaseExposedPlugin() {
 		project.plugins.apply("java-gradle-plugin")
 
 		with(project.dependencies) {
-			add("implementation", localGroovy())
 			add("implementation", gradleApi())
 
 			add("testImplementation", gradleTestKit())

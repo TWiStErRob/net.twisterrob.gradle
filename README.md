@@ -45,7 +45,7 @@ task('tests', type: net.twisterrob.gradle.quality.tasks.GlobalTestFinalizerTask)
 
 ### Structure
 
-| Module (location): summary | Distributed Artifact,<br>Gradle Plugin ID,<br>Java/Groovy Package |
+| Module (location): summary | Distributed Artifact,<br>Gradle Plugin ID,<br>JVM Package |
 | --- | --- |
 | **quality** ([`/quality`](quality)):<br>All quality plugins bundled in one.<br> |`classpath 'net.twisterrob.gradle:twister-quality:+'`<br>`apply plugin: 'net.twisterrob.quality'`<br>`import net.twisterrob.gradle.quality;` |
 | **common** ([`/common`](common)):<br>Shared classes between checkers.<br>_Not to be consumed directly._ | `classpath 'net.twisterrob.gradle:twister-quality-common:+'`<br>`// apply plugin: N/A`<br>`import net.twisterrob.gradle.common;` |

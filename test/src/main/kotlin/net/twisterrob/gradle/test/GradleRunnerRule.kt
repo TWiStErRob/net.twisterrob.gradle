@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.test
 
-import groovy.transform.CompileStatic
 import org.gradle.internal.impldep.org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
 import org.intellij.lang.annotations.Language
@@ -14,24 +13,17 @@ import java.net.URI
 /**
  * Simplified {@link org.junit.Rule} around {@link GradleRunner} to reduce code repetition.
  */
-@CompileStatic
-open class GradleRunnerRule : TestRule {
+open class GradleRunnerRule @JvmOverloads constructor(clearAfterFailure: Boolean? = null) : TestRule {
 
 	private val temp = TemporaryFolder()
+	private val clearAfterFailure: Boolean = listOfNotNull(
+			clearAfterFailure,
+			System.getProperty("net.twisterrob.gradle.runner.clearAfterFailure")?.toBoolean(),
+			true
+	).first()
+
 	private lateinit var buildFile: File
-	private val clearAfterFailure: Boolean
-
 	lateinit var runner: GradleRunner private set
-
-	@Suppress("ConvertSecondaryConstructorToPrimary")
-	@JvmOverloads
-	constructor(clearAfterFailure: Boolean? = null) {
-		this.clearAfterFailure = listOf(
-				clearAfterFailure,
-				System.getProperties()["net.twisterrob.gradle.runner.clearAfterFailure"]?.equals("true"),
-				true
-		).find { it != null }!!
-	}
 
 	//region TestRule
 	override fun apply(base: Statement, description: Description): Statement {

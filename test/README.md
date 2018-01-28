@@ -20,7 +20,6 @@ apply plugin: 'java-gradle-plugin'
 
 dependencies {
 	// assuming the plugin being tested is in this module
-	implementation localGroovy()
 	implementation gradleApi()
 
 	testImplementation gradleTestKit()

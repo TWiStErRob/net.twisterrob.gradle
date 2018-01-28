@@ -147,7 +147,6 @@ T : VerificationTask {
 			// stop the build only if user wanted this task, otherwise we'll gather the results at once for reporting
 			task.ignoreFailures = !task.wasExplicitlyLaunched
 			// TODO too soon?
-			// Groovy static compilation can't figure it out, so help with a cast
 			val reporting = task.project.extensions.findByType(ReportingExtension::class.java)
 			val reportsDir = reporting!!.baseDir
 			with(task.reports) {
