@@ -1,7 +1,9 @@
 package net.twisterrob.gradle.pmd
 
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.failReason
+import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.Matchers.containsString
@@ -213,6 +215,39 @@ class PmdPluginTest {
 				hasItems(*tasksIn(applyTo, "pmdRelease", "pmdDebug")))
 		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
 				hasItems(*tasksIn(applyTo, "pmdEach")))
+	}
+
+	@Test fun `allows ruleset inclusion from all sources`() {
+		`given`@
+		gradle
+				.basedOn("android-root_app")
+				.basedOn("pmd-multi_file_config")
+
+		@Language("gradle")
+		val applyPmd = """
+			apply plugin: 'net.twisterrob.pmd'
+			tasks.withType(${Pmd::class.java.name}) {
+				// output all violations to the console so that we can parse the results
+				consoleOutput = true
+			}
+		""".trimIndent()
+
+		val result: BuildResult
+		`when`@
+		result = gradle.run(applyPmd, ":pmdDebug").buildAndFail()
+
+		`then`@
+		assertEquals(TaskOutcome.FAILED, result.task(":pmdDebug")!!.outcome)
+		result.assertHasOutputLine("Inline rule violation",
+				""".*src.main.java.Pmd\.java:2:\s+Inline custom message""".toRegex())
+		result.assertHasOutputLine("Inline rule reference violation",
+				""".*src.main.java.Pmd\.java:3:\s+Avoid using short method names""".toRegex())
+		result.assertHasOutputLine("Included ruleset from the same folder violation",
+				""".*src.main.java.Pmd\.java:4:\s+Avoid variables with short names like i""".toRegex())
+		result.assertHasOutputLine("Included ruleset from a sub-folder violation",
+				""".*src.main.java.Pmd\.java:2:\s+All classes and interfaces must belong to a named package""".toRegex())
+		assertThat("Validate count to allow no more violations",
+				result.failReason, containsString("4 PMD rule violations were found."))
 	}
 }
 

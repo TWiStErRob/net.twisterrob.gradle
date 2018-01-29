@@ -7,16 +7,25 @@ package net.twisterrob.gradle.test
 import org.gradle.testkit.runner.BuildResult
 
 fun BuildResult.assertHasOutputLine(expectedLineRegex: Regex) {
-	assertRegex("""(?m)^${expectedLineRegex.pattern}$""".toRegex())
+	assertHasOutputLine(null, expectedLineRegex)
 }
 
-fun BuildResult.assertHasOutputLine(expectedLineRegex: String) {
-	assertRegex("""(?m)^${Regex.escape(expectedLineRegex)}$""".toRegex())
+fun BuildResult.assertHasOutputLine(expectedLine: String) {
+	assertHasOutputLine(null, expectedLine)
 }
 
-private fun BuildResult.assertRegex(regex: Regex) {
+fun BuildResult.assertHasOutputLine(reason: String?, expectedLineRegex: Regex) {
+	assertRegex(reason, """(?m)^${expectedLineRegex.pattern}$""".toRegex())
+}
+
+fun BuildResult.assertHasOutputLine(reason: String?, expectedLine: String) {
+	assertRegex(reason, """(?m)^${Regex.escape(expectedLine)}$""".toRegex())
+}
+
+private fun BuildResult.assertRegex(reason: String?, regex: Regex) {
 	assert(regex.containsMatchIn(output), {
 		"""
+			${reason ?: ""}
 			Expected:
 			${regex}
 			Actual:

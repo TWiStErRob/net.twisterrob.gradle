@@ -14,7 +14,7 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 			task.ruleSets = listOf() // default is java-basic
 			val rootConfig = task.project.rootProject.file("config/pmd/pmd.xml")
 			val subConfig = task.project.file("config/pmd/pmd.xml")
-			val config : File? = listOf(subConfig, rootConfig).firstOrNull { it.exists() }
+			val config: File? = listOf(subConfig, rootConfig).firstOrNull { it.exists() }
 			if (config != null) {
 				task.ruleSetFiles += task.project.files(config)
 			} else if (task.ruleSetFiles.files.isEmpty()) {
@@ -22,7 +22,13 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 					While configuring ${task} no configuration found at:
 						${rootConfig}
 						${subConfig}
+						and there's no configuration location set in Gradle build files either.
 				""".trimIndent())
+			}
+
+			// put configuration files of classpath of PMD so it's possible to reference own rulesets with relative path
+			task.ruleSetFiles.forEach {
+				task.classpath += task.project.files(it.parentFile)
 			}
 		}
 	}
