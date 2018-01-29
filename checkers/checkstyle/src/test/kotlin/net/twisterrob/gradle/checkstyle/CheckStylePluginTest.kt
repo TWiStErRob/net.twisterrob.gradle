@@ -1,7 +1,9 @@
 package net.twisterrob.gradle.checkstyle
 
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.failReason
+import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.Matchers.containsString
@@ -214,6 +216,52 @@ class CheckStylePluginTest {
 				hasItems(*tasksIn(applyTo, "checkstyleRelease", "checkstyleDebug")))
 		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
 				hasItems(*tasksIn(applyTo, "checkstyleEach")))
+	}
+
+	// TODO add more tests for modules
+	@Test fun `basedir truncates folder names`() {
+		`given`@
+		gradle
+				.basedOn("android-root_app")
+				.basedOn("checkstyle-basedir")
+
+		@Language("gradle")
+		val applyCheckstyle = """
+			apply plugin: 'net.twisterrob.checkstyle'
+			tasks.withType(${Checkstyle::class.java.name}) {
+				// output all violations to the console so that we can parse the results
+				showViolations = true
+			}
+		""".trimIndent()
+
+		val result: BuildResult
+		`when`@
+		result = gradle.run(applyCheckstyle, ":checkstyleDebug").buildAndFail()
+
+		`then`@
+		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
+		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
+		result.assertHasOutputLine(""".*\[ERROR] src.main.java.Checkstyle\.java:1: .*? \[Header]""".toRegex())
+	}
+
+	// TODO test other properties
+	@Test fun `config_loc allows to use local files`() {
+		`given`@
+		gradle
+				.basedOn("android-root_app")
+				.basedOn("checkstyle-config_loc")
+
+		@Language("gradle")
+		val applyCheckstyle = """
+			apply plugin: 'net.twisterrob.checkstyle'
+		""".trimIndent()
+
+		val result: BuildResult
+		`when`@
+		result = gradle.run(applyCheckstyle, ":checkstyleDebug").build()
+
+		`then`@
+		assertEquals(TaskOutcome.SUCCESS, result.task(":checkstyleDebug")!!.outcome)
 	}
 }
 

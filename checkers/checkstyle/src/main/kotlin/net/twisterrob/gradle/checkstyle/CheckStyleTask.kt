@@ -26,6 +26,5 @@ open class CheckStyleTask : Checkstyle(), TargetChecker {
 				//"config_loc" to configFile.parentFile // set via setConfigDir
 				//"samedir" to /*use config_loc instead (until I figure out how to do doFirst properly)*/
 		)
-		setConfigDir(project.provider { configFile.parentFile })
 	}
 }

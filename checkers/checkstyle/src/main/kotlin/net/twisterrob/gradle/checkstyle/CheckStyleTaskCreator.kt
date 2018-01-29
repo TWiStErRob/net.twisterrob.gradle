@@ -7,6 +7,7 @@ import org.gradle.api.reporting.CustomizableHtmlReport
 class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTask>(
 		project, "checkstyle", "checkstyle", CheckStyleTask::class.java
 ) {
+
 	override fun taskConfigurator() = object : VariantTaskCreator<CheckStyleTask>.DefaultTaskConfig() {
 
 		override fun setupConfigLocations(task: CheckStyleTask) {
@@ -17,10 +18,12 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 						While configuring ${task} no configuration found at:
 							${rootConfig}
 							${task.configFile}
+							and there's no valid location set in Gradle build files either.
 					""".trimIndent())
 				}
 				task.configFile = rootConfig
 			}
+			task.setConfigDir(task.project.provider { task.configFile.parentFile })
 		}
 
 		override fun setupReports(task: CheckStyleTask, suffix: String?) {
