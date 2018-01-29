@@ -59,6 +59,7 @@ class PmdPluginTest {
 
 	@Test fun `applies without a hitch to an Android project`() {
 		`given`@
+		gradle.file(gradle.templateFile("pmd-empty.xml").readText(), "config", "pmd", "pmd.xml")
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.pmd'
@@ -72,9 +73,9 @@ class PmdPluginTest {
 				.build()
 
 		`then`@
-		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":pmdEach")!!.outcome)
-		assertEquals(TaskOutcome.NO_SOURCE, result.task(":pmdDebug")!!.outcome)
-		assertEquals(TaskOutcome.NO_SOURCE, result.task(":pmdRelease")!!.outcome)
+		assertEquals(TaskOutcome.SUCCESS, result.task(":pmdEach")!!.outcome)
+		assertEquals(TaskOutcome.SUCCESS, result.task(":pmdDebug")!!.outcome)
+		assertEquals(TaskOutcome.SUCCESS, result.task(":pmdRelease")!!.outcome)
 	}
 
 	@Test fun `applies to all types of subprojects`() {
@@ -99,9 +100,9 @@ class PmdPluginTest {
 		// these tasks are not generated because their modules are special
 		val exceptions = arrayOf(":test:pmdRelease")
 		`then`@
-		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
+		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
 				hasItems(*(tasksIn(modules, "pmdRelease", "pmdDebug") - exceptions)))
-		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
+		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
 				hasItems(*tasksIn(modules, "pmdEach")))
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "pmdEach", "pmdRelease", "pmdDebug") - exceptions
@@ -153,9 +154,9 @@ class PmdPluginTest {
 				.build()
 
 		`then`@
-		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
+		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
 				hasItems(*tasksIn(modules, "pmdRelease", "pmdDebug")))
-		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
+		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
 				hasItems(*tasksIn(modules, "pmdEach")))
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "pmdEach", "pmdRelease", "pmdDebug")
@@ -211,9 +212,9 @@ class PmdPluginTest {
 		`then`@
 		assertThat(allTasks - tasks, not(hasItem(containsString("pmd"))))
 
-		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
+		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
 				hasItems(*tasksIn(applyTo, "pmdRelease", "pmdDebug")))
-		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
+		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
 				hasItems(*tasksIn(applyTo, "pmdEach")))
 	}
 

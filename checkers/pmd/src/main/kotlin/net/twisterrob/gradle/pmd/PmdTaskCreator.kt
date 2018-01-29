@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.pmd
 
+import com.android.build.gradle.api.BaseVariant
 import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.Project
 import java.io.File
@@ -30,6 +31,38 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 			task.ruleSetFiles.forEach {
 				task.classpath += task.project.files(it.parentFile)
 			}
+		}
+
+		override fun setupSources(task: PmdTask, variants: Collection<BaseVariant>) {
+			super.setupSources(task, variants)
+
+			val buildPath = task.project.buildDir.toPath()
+			val projectPath = task.project.projectDir.toPath()
+			if (!buildPath.startsWith(projectPath)) {
+				task.logger.warn("""
+					Cannot set up ${task} source folders,
+						because the build directory ${buildPath}
+						needs to be inside the project directory ${projectPath}.
+				""".trimIndent().replace("""\r?\n\t*""".toRegex(), " "))
+				return@setupSources
+			}
+
+			task.include(variants
+					.flatMap { it.sourceSets }
+					.flatMap { it.resDirectories }
+					.map { dir ->
+						// build relative path (e.g. src/main/res) and
+						// append a trailing "/" for include to treat it as recursive
+						projectPath.relativize(dir.toPath()).toString() + File.separator
+					})
+
+			task.include(variants
+					.flatMap { it.sourceSets }
+					.map { it.manifestFile }
+					.map { file ->
+						// build relative path (e.g. src/main/AndroidManifest.xml)
+						projectPath.relativize(file.toPath()).toString()
+					})
 		}
 	}
 }

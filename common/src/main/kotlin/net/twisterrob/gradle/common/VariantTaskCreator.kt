@@ -111,9 +111,11 @@ T : VerificationTask {
 			val buildPath = task.project.buildDir.toPath()
 			val projectPath = task.project.projectDir.toPath()
 			if (!buildPath.startsWith(projectPath)) {
-				task.logger.warn("Cannot set up ${baseName} source folders," +
-						" because the build directory ${buildPath}" +
-						" needs to be inside the project directory ${projectPath}.")
+				task.logger.warn("""
+					Cannot set up ${baseName} source folders,
+						because the build directory ${buildPath}
+						needs to be inside the project directory ${projectPath}.
+				""".trimIndent().replace("""\r?\n\t*""".toRegex(), " "))
 				return@setupSources
 			}
 			val relativeBuildPath = projectPath.relativize(buildPath)

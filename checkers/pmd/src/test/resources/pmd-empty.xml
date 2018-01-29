@@ -6,6 +6,13 @@
 	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 	<description>Empty ruleset to make PMD happy.</description>
 
-	<!--<rule />-->
+	<rule name="NeverMatching"
+	      class="net.sourceforge.pmd.lang.rule.XPathRule"
+	      language="java"
+	      message="This will never be shown">
+		<properties>
+			<property name="xpath" value="/[0 = 1]" />
+		</properties>
+	</rule>
 
 </ruleset>
