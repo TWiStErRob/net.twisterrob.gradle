@@ -244,6 +244,32 @@ class CheckStylePluginTest {
 		result.assertHasOutputLine(""".*\[ERROR] src.main.java.Checkstyle\.java:1: .*? \[Header]""".toRegex())
 	}
 
+	@Test fun `custom source sets folders are picked up`() {
+		`given`@
+		gradle.basedOn("android-root_app")
+		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), "config", "checkstyle", "checkstyle.xml")
+		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), "custom", "Checkstyle.java")
+
+		@Language("gradle")
+		val build = """
+			apply plugin: 'net.twisterrob.checkstyle'
+			tasks.withType(${Checkstyle::class.java.name}) {
+				// output all violations to the console so that we can parse the results
+				showViolations = true
+			}
+			android.sourceSets.main.java.srcDir 'custom'
+		""".trimIndent()
+
+		val result: BuildResult
+		`when`@
+		result = gradle.run(build, ":checkstyleDebug").buildAndFail()
+
+		`then`@
+		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
+		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
+		result.assertHasOutputLine(""".*custom.Checkstyle\.java:1: .*? \[Header]""".toRegex())
+	}
+
 	// TODO test other properties
 	@Test fun `config_loc allows to use local files`() {
 		`given`@

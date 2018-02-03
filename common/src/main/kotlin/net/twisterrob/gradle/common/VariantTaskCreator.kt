@@ -123,7 +123,6 @@ T : VerificationTask {
 			// start with the whole project
 			task.source(projectPath)
 
-			// TODO too soon? ( android { sourceSets { main { srcDir 'blah' } } } }; test it
 			// include whatever needs to be included
 			task.include(variants
 					.flatMap { it.getSourceFolders(SourceKind.JAVA) }
@@ -132,8 +131,6 @@ T : VerificationTask {
 						// append a trailing "/" for include to treat it as recursive
 						projectPath.relativize(tree.dir.toPath()).toString() + File.separator
 					})
-			// TODO want this? Checkstyle config can filter if wants to, otherwise XMLs can be checked as well
-			//task.include '**/*.java' 
 
 			variants.forEach { variant ->
 				// exclude generated code
