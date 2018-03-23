@@ -26,6 +26,7 @@ subprojects {
 		google()
 		// for Kotlin-DSL
 		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
+		maven { setUrl("https://dl.bintray.com/mockito/maven") }
 	}
 
 	if (System.getenv("MVN_LOCALHOST_REPO") != null) {
