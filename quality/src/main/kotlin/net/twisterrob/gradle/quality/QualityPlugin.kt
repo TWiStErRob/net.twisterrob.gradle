@@ -11,6 +11,7 @@ class QualityPlugin : BaseExposedPlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
+		project.extensions.create("quality", QualityExtension::class.java, project)
 		project.apply<CheckStylePlugin>()
 		project.apply<PmdPlugin>()
 	}

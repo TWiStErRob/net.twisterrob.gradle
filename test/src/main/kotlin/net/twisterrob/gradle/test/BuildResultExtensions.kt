@@ -22,12 +22,28 @@ fun BuildResult.assertHasOutputLine(reason: String?, expectedLine: String) {
 	assertRegex(reason, """(?m)^${Regex.escape(expectedLine)}$""".toRegex())
 }
 
-private fun BuildResult.assertRegex(reason: String?, regex: Regex) {
-	assert(regex.containsMatchIn(output), {
+fun BuildResult.assertNoOutputLine(unexpectedLineRegex: Regex) {
+	assertNoOutputLine(null, unexpectedLineRegex)
+}
+
+fun BuildResult.assertNoOutputLine(unexpectedLine: String) {
+	assertNoOutputLine(null, unexpectedLine)
+}
+
+fun BuildResult.assertNoOutputLine(reason: String?, unexpectedLineRegex: Regex) {
+	assertRegex(reason, """(?m)^${unexpectedLineRegex.pattern}$""".toRegex(), false)
+}
+
+fun BuildResult.assertNoOutputLine(reason: String?, unexpectedLine: String) {
+	assertRegex(reason, """(?m)^${Regex.escape(unexpectedLine)}$""".toRegex(), false)
+}
+
+private fun BuildResult.assertRegex(reason: String?, regex: Regex, positive: Boolean = true) {
+	assert(positive == regex.containsMatchIn(output), {
 		"""
 			${reason ?: ""}
 			Expected:
-			${regex}
+			${if (positive) "" else "No match for "}${regex}
 			Actual:
 ${output.prependIndent("\t\t\t")}
 		""".trimIndent()

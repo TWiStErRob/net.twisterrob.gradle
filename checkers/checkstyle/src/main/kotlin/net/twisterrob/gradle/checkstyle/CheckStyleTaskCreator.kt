@@ -5,7 +5,11 @@ import org.gradle.api.Project
 import org.gradle.api.reporting.CustomizableHtmlReport
 
 class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTask>(
-		project, "checkstyle", "checkstyle", CheckStyleTask::class.java
+		project,
+		"checkstyle",
+		"checkstyle",
+		CheckStyleTask::class.java,
+		CheckStyleExtension::class.java
 ) {
 
 	override fun taskConfigurator() = object : VariantTaskCreator<CheckStyleTask>.DefaultTaskConfig() {

@@ -1,7 +1,9 @@
 package net.twisterrob.gradle.checkstyle
 
+import net.twisterrob.gradle.common.TaskConfigurator
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.BuildResult
@@ -24,7 +26,7 @@ class CheckStylePluginTest {
 		private val endl = System.lineSeparator()
 	}
 
-	@Rule @JvmField val gradle = GradleRunnerRule()
+	@Rule @JvmField val gradle = GradleRunnerRule(false)
 
 	@Test fun `does not apply to empty project`() {
 		`given`@
@@ -268,6 +270,45 @@ class CheckStylePluginTest {
 		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
 		result.assertHasOutputLine(""".*custom.Checkstyle\.java:1: .*? \[Header]""".toRegex())
+	}
+
+	@Test fun `exclusions are configurable per variant`() {
+		`given`@
+		gradle.basedOn("android-root_app")
+		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), "config", "checkstyle", "checkstyle.xml")
+		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(),
+				"src", "main", "java", "com", "example", "foo", "Checkstyle.java")
+		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(),
+				"src", "main", "java", "com", "example", "bar", "Checkstyle.java")
+		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(),
+				"src", "main", "java", "com", "example", "bar", "baz", "Checkstyle.java")
+
+		@Language("gradle")
+		val build = """
+			apply plugin: 'net.twisterrob.checkstyle'
+			tasks.withType(${Checkstyle::class.java.name}) {
+				// output all violations to the console so that we can parse the results
+				showViolations = true
+			}
+			quality {
+				checkstyle { // this : ${CheckStyleExtension::class}
+					taskConfigurator { // this : ${TaskConfigurator::class}
+						excludeExcept '**/com/example', 'foo'
+					}
+				}
+			}
+		""".trimIndent()
+
+		val result: BuildResult
+		`when`@
+		result = gradle.run(build, ":checkstyleDebug").buildAndFail()
+
+		`then`@
+		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
+		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
+		result.assertHasOutputLine(""".*com.example.foo.Checkstyle\.java:1: .*? \[Header]""".toRegex())
+		result.assertNoOutputLine(""".*com.example.bar.Checkstyle\.java.*""".toRegex())
+		result.assertNoOutputLine(""".*com.example.bar.baz.Checkstyle\.java.*""".toRegex())
 	}
 
 	// TODO test other properties

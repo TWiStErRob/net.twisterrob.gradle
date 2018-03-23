@@ -6,7 +6,11 @@ import org.gradle.api.Project
 import java.io.File
 
 class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
-		project, "pmd", "pmd", PmdTask::class.java
+		project,
+		"pmd",
+		"pmd",
+		PmdTask::class.java,
+		PmdExtension::class.java
 ) {
 
 	override fun taskConfigurator() = object : VariantTaskCreator<PmdTask>.DefaultTaskConfig() {

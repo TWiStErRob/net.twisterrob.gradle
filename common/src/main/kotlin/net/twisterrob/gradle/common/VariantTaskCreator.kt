@@ -7,6 +7,7 @@ import org.gradle.api.Action
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.reporting.ConfigurableReport
 import org.gradle.api.reporting.ReportContainer
@@ -20,7 +21,8 @@ open class VariantTaskCreator<T>(
 		private val project: Project,
 		private val baseName: String,
 		private val pluginName: String,
-		private val taskClass: Class<T>
+		private val taskClass: Class<T>,
+		private val extensionClass: Class<out BaseQualityExtension<T>>
 ) where
 T : SourceTask,
 T : Reporting<out ReportContainer<out ConfigurableReport>>,
@@ -30,6 +32,7 @@ T : VerificationTask {
 	private lateinit var eachTask: Task
 
 	fun applyTo(variants: DomainObjectSet<out BaseVariant>) {
+		project.plugins.apply(pluginName)
 		createGlobalTask()
 		variants.all(this::createTaskForVariant)
 		project.afterEvaluate {
@@ -51,7 +54,6 @@ T : VerificationTask {
 		if (project.tasks.findByName(globalTaskName) != null) {
 			return@createGlobalTask
 		}
-		project.plugins.apply(pluginName)
 		eachTask = project.tasks.create(globalTaskName) { task: Task ->
 			task.group = JavaBasePlugin.VERIFICATION_GROUP
 			task.description = "Run ${baseName} on each variant separately"
@@ -76,6 +78,9 @@ T : VerificationTask {
 			configurator.setupConfigLocations(task)
 			configurator.setupSources(task, variants)
 			configurator.setupReports(task)
+			val quality = project.extensions.getByName("quality") as ExtensionAware
+			val checkerExtension = quality.extensions.getByType(extensionClass)
+			checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
 		}
 	}
 
@@ -90,6 +95,9 @@ T : VerificationTask {
 			configurator.setupConfigLocations(task)
 			configurator.setupSources(task, listOf(variant))
 			configurator.setupReports(task, variant.name)
+			val quality = project.extensions.getByName("quality") as ExtensionAware
+			val checkerExtension = quality.extensions.getByType(extensionClass)
+			checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
 		}
 	}
 
