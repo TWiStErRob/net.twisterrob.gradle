@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.4-SNAPSHOT *(2018-01-20 --- ...)*
+ * Minor fixes and more tests
+ * [Checkstyle] Fix `config_dir` setup
+ * [PMD] Use Android res folder
+ * [PMD] Add configuration folder to classpath for `<rule ref=`
+ * Experimental exclusion support
+ * Version bumps
+
 ## 0.3-SNAPSHOT *(2018-01-20 --- 2018-01-28)*
 _Never published to a public repository._
 
