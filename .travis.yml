@@ -18,8 +18,9 @@ cache:
   directories:
     # Prevent Downloading https://services.gradle.org/distributions/gradle-4.2.1-all.zip
     # TODO Prevent? Unzipping /home/travis/.gradle/wrapper/dists/gradle-4.2.1-all/domrskppdhf3wtn5mziw0c2zr/gradle-4.2.1-all.zip
-    # TODO Prevent? Generating JAR file 'gradle-api-4.2.1.jar'
     - $HOME/.gradle/wrapper/
+    # Prevent Generating JAR file 'gradle-api-4.2.1.jar'
+    - $HOME/.gradle/caches/4.2.1/generated-gradle-jars/
     # Prevent Download https://jcenter.bintray.com/ during compilation
     - $HOME/.gradle/caches/modules-2/
     # Prevent Download https://jcenter.bintray.com/ during test runs
