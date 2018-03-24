@@ -2,6 +2,9 @@ import java.io.File
 import java.util.Date
 import java.text.SimpleDateFormat
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 
 plugins {
 	`base` // just to get some support for subproject stuff, for example access to project.base
@@ -106,6 +109,18 @@ allprojects {
 							"Built-Date" to SimpleDateFormat("yyyy-MM-dd'T'00:00:00Z").format(Date())
 					))
 				}
+			}
+		}
+	}
+
+	if (project.hasProperty("verboseReports")) {
+		tasks.withType<Test> {
+			testLogging {
+				events = TestLogEvent.values().toSet() - STARTED
+				exceptionFormat = TestExceptionFormat.FULL
+				showExceptions = true
+				showCauses = true
+				showStackTraces = true
 			}
 		}
 	}

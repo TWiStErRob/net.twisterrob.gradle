@@ -1,0 +1,27 @@
+#!docker build -f Dockerfile.travis-local-build -t travis-local-build . && docker run -v P:/temp/docker/:/x -ti travis-local-build
+
+FROM travis-local
+
+WORKDIR /home/travis/build
+RUN sudo mkdir -p TWiStErRob/net.twisterrob.gradle.quality/
+RUN sudo chown travis ./TWiStErRob/
+RUN sudo chown travis ./TWiStErRob/net.twisterrob.gradle.quality/
+
+USER travis
+RUN bash -lc "git clone https://github.com/TWiStErRob/net.twisterrob.gradle.quality.git TWiStErRob/net.twisterrob.gradle.quality"
+WORKDIR TWiStErRob/net.twisterrob.gradle.quality
+RUN chmod +x gradlew
+# Own version of caching: run it once and cache in docker image for faster iterations
+RUN bash -lc "JAVA_HOME=/usr/lib/jvm/java-8-oracle ./gradlew classes testClasses"
+
+ADD --chown=travis . .
+# Alias not recognized, but in interactive mode `travis compile` works without path.
+RUN bash -lc "~/.travis/travis-build/bin/travis compile --no-interactive > build.sh"
+RUN sed -re 's/^.*travis_wait_for_network '\''.*$/echo DISABLED &/mg' build.sh --in-place
+RUN sed -re 's/^.*apt-get update.*$/echo DISABLED &/mg' build.sh --in-place
+RUN sed -re 's/^.*travis_cmd git.*(fetch|reset|checkout).*$/echo DISABLED &/mg' build.sh --in-place
+RUN chmod +x build.sh
+
+WORKDIR /home/travis/build
+RUN sudo ln -s TWiStErRob/net.twisterrob.gradle.quality/build.sh build.sh
+CMD ["bash"]

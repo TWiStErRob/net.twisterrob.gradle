@@ -4,9 +4,11 @@ import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.TargetChecker
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.quality.Checkstyle
+import org.gradle.api.tasks.Input
 
 open class CheckStyleTask : Checkstyle(), TargetChecker {
 
+	@Input
 	override var checkTargetName: String = ALL_VARIANTS_NAME
 
 	init {
