@@ -55,7 +55,9 @@ open class GradleRunnerRule @JvmOverloads constructor(
 		buildFile = temp.newFile("build.gradle")
 		runner = GradleRunner
 				.create()
-				.forwardOutput()
+				//.forwardOutput() // need to customize forwarding because of test output
+				.forwardStdOutput(WriteOnlyWhenLineCompleteWriter(System.out.writer()))
+				.forwardStdError(WriteOnlyWhenLineCompleteWriter(System.err.writer()))
 				.withProjectDir(temp.root)
 				.withPluginClasspath()
 		kotlin.assert(this.buildFile == this.getBuildFile()) {
