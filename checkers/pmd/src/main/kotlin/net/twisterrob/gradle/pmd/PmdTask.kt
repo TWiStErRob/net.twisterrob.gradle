@@ -4,8 +4,11 @@ import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.TargetChecker
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.quality.Pmd
+import org.gradle.api.tasks.Input
 
-open class PmdTask: Pmd(), TargetChecker {
+open class PmdTask : Pmd(), TargetChecker {
+
+	@Input
 	override var checkTargetName: String = ALL_VARIANTS_NAME
 
 	init {
