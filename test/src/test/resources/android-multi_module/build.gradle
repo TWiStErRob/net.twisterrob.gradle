@@ -14,7 +14,7 @@ allprojects {
 	}
 	plugins.withType(com.android.build.gradle.api.AndroidBasePlugin) {
 		afterEvaluate { // need to delay setting this, because AndroidBasePlugin is the first plugin to apply
-			android.compileSdkVersion 27
+			android.compileSdkVersion 26
 		}
 	}
 }
