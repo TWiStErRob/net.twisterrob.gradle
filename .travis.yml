@@ -16,6 +16,12 @@ before_cache:
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.gradle/caches/modules-2/
+    # Prevent Downloading https://services.gradle.org/distributions/gradle-4.2.1-all.zip
+    # TODO Prevent? Unzipping /home/travis/.gradle/wrapper/dists/gradle-4.2.1-all/domrskppdhf3wtn5mziw0c2zr/gradle-4.2.1-all.zip
+    # TODO Prevent? Generating JAR file 'gradle-api-4.2.1.jar'
     - $HOME/.gradle/wrapper/
+    # Prevent Download https://jcenter.bintray.com/ during compilation
+    - $HOME/.gradle/caches/modules-2/
+    # Prevent Download https://jcenter.bintray.com/ during test runs
+    - /tmp/.gradle-test-kit-travis/caches/modules-2/
 #    - $ANDROID_HOME
