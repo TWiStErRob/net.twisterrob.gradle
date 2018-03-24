@@ -12,8 +12,8 @@ allprojects {
 	repositories {
 		jcenter() // quality plugin needs to be downloaded in test
 	}
-	plugins.withType(com.android.build.gradle.api.AndroidBasePlugin) {
-		afterEvaluate { // need to delay setting this, because AndroidBasePlugin is the first plugin to apply
+	plugins.all {
+		if (it instanceof com.android.build.gradle.BasePlugin) {
 			android.compileSdkVersion 27
 		}
 	}
