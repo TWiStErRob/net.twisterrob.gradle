@@ -13,6 +13,7 @@ android:
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -f  /tmp/.gradle-test-kit-travis/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
@@ -22,9 +23,9 @@ cache:
     # Prevent Download https://jcenter.bintray.com/ during compilation
     - $HOME/.gradle/caches/modules-2/
     # Prevent Generating JAR file 'gradle-api-4.2.1.jar' during compilation
-    - $HOME/.gradle/caches/4.2.1/generated-gradle-jars/
+    - $HOME/.gradle/caches/*/generated-gradle-jars/
     # Prevent Download https://jcenter.bintray.com/ during test runs
     - /tmp/.gradle-test-kit-travis/caches/modules-2/
     # Prevent Generating JAR file 'gradle-api-4.2.1.jar' during test runs
-    - /tmp/.gradle-test-kit-travis/caches/4.2.1/generated-gradle-jars/
+    - /tmp/.gradle-test-kit-travis/caches/*/generated-gradle-jars/
 #    - $ANDROID_HOME
