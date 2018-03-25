@@ -12,20 +12,26 @@ android:
     - android-26
 
 before_cache:
+  # Don't cache lock files to prevent breaking future builds
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -f  /tmp/.gradle-test-kit-travis/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f  /tmp/.gradle-test-kit-travis/caches/modules-2/modules-2.lock
+  - rm -fr /tmp/.gradle-test-kit-travis/caches/*/plugin-resolution/
+  # Make cache smaller
+  - rm -f  $HOME/.gradle/wrapper/dists/gradle-*/*/gradle-*.zip
+  - rm -fr $HOME/.gradle/wrapper/dists/gradle-*/*/gradle-*/samples
+  - rm -fr $HOME/.gradle/wrapper/dists/gradle-*/*/gradle-*/docs
+  - rm -fr $HOME/.gradle/wrapper/dists/gradle-*/*/gradle-*/src
 cache:
   directories:
-    # Prevent Downloading https://services.gradle.org/distributions/gradle-4.2.1-all.zip
-    # TODO Prevent? Unzipping /home/travis/.gradle/wrapper/dists/gradle-4.2.1-all/domrskppdhf3wtn5mziw0c2zr/gradle-4.2.1-all.zip
-    - $HOME/.gradle/wrapper/dists/gradle-*-*/*/gradle-*/
-    # Prevent Download https://jcenter.bintray.com/ during compilation
+    # Prevent "Downloading https://services.gradle.org/distributions/gradle-4.2.1-all.zip"
+    # Prevent "Unzipping /home/travis/.gradle/wrapper/dists/gradle-4.2.1-all/domrskppdhf3wtn5mziw0c2zr/gradle-4.2.1-all.zip"
+    - $HOME/.gradle/wrapper/dists/gradle-4.2.1-all/
+    # Prevent "Download https://jcenter.bintray.com/"" during compilation
     - $HOME/.gradle/caches/modules-2/
-    # Prevent Generating JAR file 'gradle-api-4.2.1.jar' during compilation
-    - $HOME/.gradle/caches/*/generated-gradle-jars/
-    # Prevent Download https://jcenter.bintray.com/ during test runs
+    # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during compilation
+    - $HOME/.gradle/caches/4.2.1/generated-gradle-jars/
+    # Prevent "Download https://jcenter.bintray.com/" during test runs
     - /tmp/.gradle-test-kit-travis/caches/modules-2/
-    # Prevent Generating JAR file 'gradle-api-4.2.1.jar' during test runs
-    - /tmp/.gradle-test-kit-travis/caches/*/generated-gradle-jars/
-#    - $ANDROID_HOME
+    # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during test runs
+    - /tmp/.gradle-test-kit-travis/caches/4.2.1/generated-gradle-jars/
