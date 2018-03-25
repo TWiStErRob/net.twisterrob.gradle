@@ -6,6 +6,7 @@
  * [PMD] Use Android res folder
  * [PMD] Add configuration folder to classpath for `<rule ref=`
  * Experimental exclusion support
+ * Travis CI
  * Version bumps
 
 ## 0.3-SNAPSHOT *(2018-01-20 --- 2018-01-28)*
