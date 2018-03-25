@@ -1,3 +1,9 @@
+import com.jfrog.bintray.gradle.BintrayPlugin
+import org.jetbrains.kotlin.gradle.dsl.Coroutines
+import org.gradle.api.publish.maven.MavenPom
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.jfrog.bintray.gradle.BintrayExtension
 import java.io.File
 import java.util.Date
 import java.text.SimpleDateFormat
@@ -9,14 +15,18 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 plugins {
 	`base` // just to get some support for subproject stuff, for example access to project.base
 //	kotlin("jvm") apply false
+	`maven-publish`
+	id("com.jfrog.bintray") version "1.8.0"
 }
-
-group = rootProject.name
 
 val VERSION by project
 val VERSION_JAVA by project
 val VERSION_KOTLIN by project
 val VERSION_KOTLIN_DSL by project
+
+group = rootProject.name
+description = "Quality plugin for Gradle that supports Android flavors."
+//version = not set here, because the root project has no an artifact
 
 subprojects {
 	group = rootProject.group
@@ -143,4 +153,50 @@ project.tasks.create("tests", TestReport::class.java) {
 			throw GradleException("There were failing tests. See the report at: ${reportFile.toURI()}")
 		}
 	}
+}
+//fun MavenPom.addDependencies() = withXml {
+//	asNode().appendNode("dependencies").let { depNode ->
+//		configurations.compile.allDependencies.forEach {
+//			depNode.appendNode("dependency").apply {
+//				appendNode("groupId", it.group)
+//				appendNode("artifactId", it.name)
+//				appendNode("version", it.version)
+//			}
+//		}
+//	}
+//}
+//uploadArchives.repositories.mavenDeployer {
+//	configuration = configurations.create("deployerJars")
+//	configuration.dependencies.add dependencies.create("org.apache.maven.wagon:wagon-ftp:2.2")
+//	repository(url= "ftp://localhost/maven") {
+//	authentication(userName= "maven", password="")
+//}
+//}
+publishing {
+	publications.invoke {
+//		publicationName(MavenPublication::class) {
+//			artifactId = artifactID
+//			artifact(shadowJar)
+//			pom.addDependencies()
+//		}
+	}
+}
+fun findProperty(s: String) = project.findProperty(s) as String?
+bintray {
+	user = findProperty("bintrayUser")
+	key = findProperty("bintrayApiKey")
+	publish = true
+//	setPublications(publicationName)
+	pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
+		userOrg = "twisterrob"
+		repo = "maven"
+		name = rootProject.name
+		desc = rootProject.description
+		websiteUrl = "http://www.twisterrob.net"
+		vcsUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle"
+		issueTrackerUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle/issues"
+//		githubRepo = "TWiStErRob/net.twisterrob.gradle"
+//		githubReleaseNotesFile = "CHANGELOG.md"
+		setLicenses("MIT")
+	})
 }
