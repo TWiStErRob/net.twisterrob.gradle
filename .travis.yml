@@ -22,13 +22,12 @@ before_cache:
   - rm -fr $HOME/.gradle/wrapper/dists/gradle-*/*/gradle-*/samples
   - rm -fr $HOME/.gradle/wrapper/dists/gradle-*/*/gradle-*/docs
   - rm -fr $HOME/.gradle/wrapper/dists/gradle-*/*/gradle-*/src
-  - find $ANDROID_HOME -maxdepth 3 -type d
 cache:
   directories:
     # Prevent "Downloading https://services.gradle.org/distributions/gradle-4.2.1-all.zip"
     # Prevent "Unzipping /home/travis/.gradle/wrapper/dists/gradle-4.2.1-all/domrskppdhf3wtn5mziw0c2zr/gradle-4.2.1-all.zip"
     - $HOME/.gradle/wrapper/dists/gradle-4.2.1-all/
-    # Prevent "Download https://jcenter.bintray.com/"" during compilation
+    # Prevent "Download https://jcenter.bintray.com/" during compilation
     - $HOME/.gradle/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during compilation
     - $HOME/.gradle/caches/4.2.1/generated-gradle-jars/
@@ -36,5 +35,5 @@ cache:
     - /tmp/.gradle-test-kit-travis/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during test runs
     - /tmp/.gradle-test-kit-travis/caches/4.2.1/generated-gradle-jars/
-    # TODO Keep installed SDK?
+    # Do not cache Android SDK, caching is done after SDK components are installed
     #- $ANDROID_HOME
