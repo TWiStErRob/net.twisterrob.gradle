@@ -12,9 +12,10 @@ allprojects {
 	repositories {
 		jcenter() // quality plugin needs to be downloaded in test
 	}
-	plugins.withType(com.android.build.gradle.api.AndroidBasePlugin) {
-		afterEvaluate { // need to delay setting this, because AndroidBasePlugin is the first plugin to apply
-			android.compileSdkVersion 27
+	plugins.all {
+		if (it instanceof com.android.build.gradle.BasePlugin) {
+			// BEWARE: in 3.0.1 InstantAppExtension overrides compileSdkVersion and hard-codes it to 26
+			android.compileSdkVersion 26
 		}
 	}
 }
