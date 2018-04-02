@@ -198,33 +198,41 @@ publishing {
 	}
 }
 
-bintray {
-	user = findProperty("bintrayUser") as String
-	key = findProperty("bintrayApiKey") as String
-	publish = true
-	override = false
-	dryRun = false
-	setPublications(*publishing.publications.names.toTypedArray())
+if (hasProperty("bintrayApiKey")) {
+	bintray {
+		user = "twisterrob"
+		key = findProperty("bintrayApiKey") as String
+		publish = true
+		override = false
+		dryRun = false
+		setPublications(*publishing.publications.names.toTypedArray())
 
-	pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
-		userOrg = "twisterrob"
-		repo = "maven"
-		name = rootProject.name
-		desc = rootProject.description
-		websiteUrl = "http://www.twisterrob.net"
-		vcsUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle"
-		issueTrackerUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle/issues"
-		githubRepo = "TWiStErRob/net.twisterrob.gradle"
-		githubReleaseNotesFile = "CHANGELOG.md"
-		//githubReadmeFile = "README.md" // Gradle plugin doesn't support this
-		setLicenses("MIT")
-
-		version(delegateClosureOf<BintrayExtension.VersionConfig> {
-			name = VERSION as String
+		pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
+			userOrg = "twisterrob"
+			repo = "maven"
+			name = rootProject.name
 			desc = rootProject.description
-			released = Date().toString()
-			vcsTag = "v${VERSION}"
-			attributes = mapOf<String, String>()
+			websiteUrl = "http://www.twisterrob.net"
+			vcsUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle"
+			issueTrackerUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle/issues"
+			githubRepo = "TWiStErRob/net.twisterrob.gradle"
+			githubReleaseNotesFile = "CHANGELOG.md"
+			//githubReadmeFile = "README.md" // Gradle plugin doesn't support this
+			setLicenses("MIT")
+
+			version(delegateClosureOf<BintrayExtension.VersionConfig> {
+				name = VERSION as String
+				desc = rootProject.description
+				released = Date().toString()
+				vcsTag = "v${VERSION}"
+				attributes = mapOf<String, String>()
+			})
 		})
-	})
+	}
+} else {
+	gradle.taskGraph.whenReady {
+		if (hasTask(":bintrayUpload")) {
+			throw GradleException("Bintray publication is not configured, use `gradlew -PbintrayApiKey=...`!")
+		}
+	}
 }
