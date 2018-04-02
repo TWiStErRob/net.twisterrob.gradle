@@ -4,6 +4,9 @@ import org.gradle.api.publish.maven.MavenPom
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.jfrog.bintray.gradle.BintrayExtension
+import groovy.util.Node
+import groovy.util.NodeList
+import groovy.xml.QName
 import java.io.File
 import java.util.Date
 import java.text.SimpleDateFormat
@@ -39,11 +42,8 @@ subprojects {
 		google()
 		// for Kotlin-DSL
 		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
+		// for Mockito minor versions (only major versions are synced to jcenter)
 		maven { setUrl("https://dl.bintray.com/mockito/maven") }
-	}
-
-	if (System.getenv("MVN_LOCALHOST_REPO") != null) {
-		apply { from("http://localhost/maven/configure.gradle") }
 	}
 }
 
@@ -154,39 +154,58 @@ project.tasks.create("tests", TestReport::class.java) {
 		}
 	}
 }
-//fun MavenPom.addDependencies() = withXml {
-//	asNode().appendNode("dependencies").let { depNode ->
-//		configurations.compile.allDependencies.forEach {
-//			depNode.appendNode("dependency").apply {
-//				appendNode("groupId", it.group)
-//				appendNode("artifactId", it.name)
-//				appendNode("version", it.version)
-//			}
-//		}
-//	}
-//}
-//uploadArchives.repositories.mavenDeployer {
-//	configuration = configurations.create("deployerJars")
-//	configuration.dependencies.add dependencies.create("org.apache.maven.wagon:wagon-ftp:2.2")
-//	repository(url= "ftp://localhost/maven") {
-//	authentication(userName= "maven", password="")
-//}
-//}
+
 publishing {
 	publications.invoke {
-//		publicationName(MavenPublication::class) {
-//			artifactId = artifactID
-//			artifact(shadowJar)
-//			pom.addDependencies()
-//		}
+		subprojects {
+			val project = this
+			project.name(MavenPublication::class) {
+				from(components["java"])
+				artifactId = project.base.archivesBaseName
+				version = project.version as String
+
+				pom.withXml {
+					fun Node.getChildren(localName: String) = get(localName) as NodeList
+					fun NodeList.nodes() = filterIsInstance<Node>()
+					fun Node.getChild(localName: String) = getChildren(localName).nodes().single()
+					// declare `implementation` dependencies as `compile` instead of `runtime`
+					asNode()
+							.getChild("dependencies")
+							.getChildren("*").nodes()
+							.filter { depNode -> depNode.getChild("scope").text() == "runtime" }
+							.filter { depNode ->
+								project.configurations["implementation"].allDependencies.any {
+									it.group == depNode.getChild("groupId").text()
+											&& it.name == depNode.getChild("artifactId").text()
+								}
+							}
+							.forEach { depNode -> depNode.getChild("scope").setValue("compile") }
+					// use internal `project("...")` dependencies' artifact name, not subproject name
+					asNode()
+							.getChild("dependencies")
+							.getChildren("*").nodes()
+							.filter { depNode -> depNode.getChild("groupId").text() == project.group as String }
+							.forEach { depNode ->
+								val depProject = project
+										.rootProject
+										.allprojects
+										.single { it.name == depNode.getChild("artifactId").text() }
+								depNode.getChild("artifactId").setValue(depProject.base.archivesBaseName)
+							}
+				}
+			}
+		}
 	}
 }
-fun findProperty(s: String) = project.findProperty(s) as String?
+
 bintray {
-	user = findProperty("bintrayUser")
-	key = findProperty("bintrayApiKey")
+	user = findProperty("bintrayUser") as String
+	key = findProperty("bintrayApiKey") as String
 	publish = true
-//	setPublications(publicationName)
+	override = false
+	dryRun = false
+	setPublications(*publishing.publications.names.toTypedArray())
+
 	pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
 		userOrg = "twisterrob"
 		repo = "maven"
@@ -195,8 +214,17 @@ bintray {
 		websiteUrl = "http://www.twisterrob.net"
 		vcsUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle"
 		issueTrackerUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle/issues"
-//		githubRepo = "TWiStErRob/net.twisterrob.gradle"
-//		githubReleaseNotesFile = "CHANGELOG.md"
+		githubRepo = "TWiStErRob/net.twisterrob.gradle"
+		githubReleaseNotesFile = "CHANGELOG.md"
+		//githubReadmeFile = "README.md" // Gradle plugin doesn't support this
 		setLicenses("MIT")
+
+		version(delegateClosureOf<BintrayExtension.VersionConfig> {
+			name = VERSION as String
+			desc = rootProject.description
+			released = Date().toString()
+			vcsTag = "v${VERSION}"
+			attributes = mapOf<String, String>()
+		})
 	})
 }
