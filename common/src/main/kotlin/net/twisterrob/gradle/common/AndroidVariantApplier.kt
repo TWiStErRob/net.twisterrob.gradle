@@ -13,12 +13,12 @@ import org.gradle.api.plugins.ExtensionContainer
 
 class AndroidVariantApplier(val project: Project) {
 
-	fun applyAfterPluginConfigured(pluginClosure: Action<BasePlugin>) {
+	fun applyAfterPluginConfigured(pluginClosure: Action<BasePlugin<*>>) {
 		val callback = Action { plugin: Plugin<*> ->
 			// afterEvaluate ensures that all tasks, variants, etc. are already configured
 			project.afterEvaluate {
 				// withId ensures we have BasePlugin
-				pluginClosure.execute(plugin as BasePlugin)
+				pluginClosure.execute(plugin as BasePlugin<*>)
 			}
 		}
 		project.plugins.withId("com.android.application", callback)

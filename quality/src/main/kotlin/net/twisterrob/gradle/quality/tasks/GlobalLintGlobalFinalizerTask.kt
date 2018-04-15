@@ -19,7 +19,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	init {
 		project.allprojects.forEach { subproject ->
-			AndroidVariantApplier(subproject).applyAfterPluginConfigured(Action { _: BasePlugin ->
+			AndroidVariantApplier(subproject).applyAfterPluginConfigured(Action { _: BasePlugin<*> ->
 				mustRunAfter(subproject.tasks.withType(LintGlobalTask::class.java) { subTask ->
 					subTask.lintOptions.isAbortOnError = subTask.wasExplicitlyLaunched
 					// make sure we have xml output, otherwise can't figure out if it failed
