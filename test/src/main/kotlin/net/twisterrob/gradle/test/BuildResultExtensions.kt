@@ -6,10 +6,17 @@ package net.twisterrob.gradle.test
 
 import org.gradle.testkit.runner.BuildResult
 
+/**
+ * Matches a full line containing the regex.
+ * [expectedLineRegex] needs to include `.*` if the line beginning/end doesn't matter.
+ */
 fun BuildResult.assertHasOutputLine(expectedLineRegex: Regex) {
 	assertHasOutputLine(null, expectedLineRegex)
 }
 
+/**
+ * Matches a full line containing the text. An exact match will be performed against [expectedLine].
+ */
 fun BuildResult.assertHasOutputLine(expectedLine: String) {
 	assertHasOutputLine(null, expectedLine)
 }
