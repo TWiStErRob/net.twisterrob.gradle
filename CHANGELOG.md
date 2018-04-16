@@ -1,5 +1,7 @@
 # Change Log
 
+## 0.5 *(2018-04-02 --- ...)*
+
 ## 0.4 *(2018-01-28 --- 2018-04-02)*
  * Minor fixes and more tests
  * [Checkstyle] Fix `config_dir` setup
