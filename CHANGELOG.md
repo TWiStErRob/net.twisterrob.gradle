@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.5 *(2018-04-02 --- ...)*
+## 0.5 *(2018-04-02 --- 2018-04-16)*
  * Gradle: 4.4.1
  * Android Gradle Plugin 3.1.1
  * more test coverage
