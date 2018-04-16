@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.4-SNAPSHOT *(2018-01-20 --- ...)*
+## 0.4 *(2018-01-28 --- 2018-04-02)*
  * Minor fixes and more tests
  * [Checkstyle] Fix `config_dir` setup
  * [PMD] Use Android res folder
