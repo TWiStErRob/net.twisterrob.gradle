@@ -63,10 +63,17 @@ allprojects {
 
 	gradle.projectsEvaluated {
 		tasks.withType<JavaCompile> {
-			options.compilerArgs.addAll(listOf("-Xlint:all", "-Werror"))
+			options.compilerArgs.addAll(listOf(
+					"-Werror", // fail on warnings
+					"-Xlint:all", // enable all possible checks
+					"-Xlint:-processing" // except "No processor claimed any of these annotations"
+			))
 		}
 		tasks.withType<GroovyCompile> {
-			options.compilerArgs.addAll(listOf("-Xlint:all", "-Werror"))
+			options.compilerArgs.addAll(listOf(
+					"-Werror", // fail on warnings
+					"-Xlint:all" // enable all possible checks
+			))
 			groovyOptions.configurationScript = rootProject.file("gradle/compileGroovy.groovy")
 			// enable Java 7 invokeDynamic, since Java target is > 7 (Android requires Java 8 at least)
 			// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project

@@ -6,10 +6,17 @@ package net.twisterrob.gradle.test
 
 import org.gradle.testkit.runner.BuildResult
 
+/**
+ * Matches a full line containing the regex.
+ * [expectedLineRegex] needs to include `.*` if the line beginning/end doesn't matter.
+ */
 fun BuildResult.assertHasOutputLine(expectedLineRegex: Regex) {
 	assertHasOutputLine(null, expectedLineRegex)
 }
 
+/**
+ * Matches a full line containing the text. An exact match will be performed against [expectedLine].
+ */
 fun BuildResult.assertHasOutputLine(expectedLine: String) {
 	assertHasOutputLine(null, expectedLine)
 }
@@ -22,10 +29,18 @@ fun BuildResult.assertHasOutputLine(reason: String?, expectedLine: String) {
 	assertRegex(reason, """(?m)^${Regex.escape(expectedLine)}$""".toRegex())
 }
 
+/**
+ * Matches a full line not containing the regex.
+ * [expectedLineRegex] needs to include `.*` if the line beginning/end doesn't matter.
+ */
 fun BuildResult.assertNoOutputLine(unexpectedLineRegex: Regex) {
 	assertNoOutputLine(null, unexpectedLineRegex)
 }
 
+/**
+ * Matches a full line containing the text. An exact match will be performed against [expectedLine].
+ * Use [#assertNoOutputLine(Regex)] with heading/trailing `.*` if parts don't matter.
+ */
 fun BuildResult.assertNoOutputLine(unexpectedLine: String) {
 	assertNoOutputLine(null, unexpectedLine)
 }

@@ -33,6 +33,12 @@ fun <T> nullSafeSum(mapper: Function<T?, Int?>): Collector<T?, *, Int?> {
 val Task.wasExplicitlyLaunched: Boolean
 	get() = project.gradle.startParameter.taskNames == listOf(path)
 
+// TODO find globalScope.reportsDir and task.isFatalOnly
+private val LintBaseTask.reportsDir get() = project.buildDir.resolve("reports")
+@Suppress("unused")
+private val LintBaseTask.isFatalOnly
+	get() = false
+
 val LintBaseTask.xmlOutput: File
 	get() = lintOptions.xmlOutput ?: LintOptions_createOutputPath(
 			project, variantName, SdkConstants.DOT_XML, reportsDir, isFatalOnly)
@@ -41,20 +47,27 @@ val LintBaseTask.htmlOutput: File
 	get() = lintOptions.htmlOutput ?: LintOptions_createOutputPath(
 			project, variantName, ".html", reportsDir, isFatalOnly)
 
-/**
- * @see com.android.build.gradle.internal.dsl.LintOptions.createOutputPath
- */
+// TODO figure out where to find com.android.tools.lint.gradle.SyncOptions#createOutputPath
 @Suppress("FunctionName")
-private fun LintOptions_createOutputPath(
-		project: Project?, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean): File {
-	val createOutputPath = com.android.build.gradle.internal.dsl.LintOptions::class.java.getDeclaredMethod(
-			"createOutputPath",
-			Project::class.java,
-			String::class.java,
-			String::class.java,
-			File::class.java,
-			Boolean::class.javaPrimitiveType
-	)
-	createOutputPath.isAccessible = true
-	return createOutputPath.invoke(null, project, variantName, extension, reportsDir, fatalOnly) as File
+fun LintOptions_createOutputPath(
+		project: Project?, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean
+): File {
+	val base = StringBuilder().apply {
+		append("lint-results")
+		if (!variantName.isNullOrEmpty()) {
+			append("-")
+			append(variantName)
+		}
+
+		if (fatalOnly) {
+			append("-fatal")
+		}
+
+		append(extension)
+	}.toString()
+	return when {
+		reportsDir != null -> File(reportsDir, base)
+		project == null -> File(base)
+		else -> File(project.buildDir, "reports" + File.separator + base)
+	}
 }
