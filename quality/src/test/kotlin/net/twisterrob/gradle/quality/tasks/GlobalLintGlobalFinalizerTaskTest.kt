@@ -2,6 +2,7 @@ package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoOutputLine
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.Matchers.equalTo
@@ -66,7 +67,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine("> Ran lint on subprojects: ${1 + 1 + 1} issues found".toRegex())
+		result.assertNoOutputLine(".*Ran lint on subprojects.*".toRegex())
 	}
 
 	@Test fun `gathers results from submodules`() {
