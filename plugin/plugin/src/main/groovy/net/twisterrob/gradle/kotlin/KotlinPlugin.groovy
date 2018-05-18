@@ -11,11 +11,11 @@ class KotlinPlugin extends BasePlugin {
 	void apply(Project target) {
 		super.apply(target)
 
-		// TODO https://github.com/griffio/dagger2-kotlin/blob/master/README.md
-		//project.apply plugin: 'kotlin-kapt'
 		if (Utils.hasAndroid(project)) {
+			// CONSIDER https://github.com/griffio/dagger2-kotlin/blob/master/README.md
 			project.apply plugin: 'kotlin-android'
-			project.dependencies.implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.10"
+			project.apply plugin: 'kotlin-kapt'
+			project.dependencies.implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.41"
 
 			BaseExtension android = project.android
 			android.sourceSets.all {
@@ -23,6 +23,7 @@ class KotlinPlugin extends BasePlugin {
 			}
 		} else {
 			project.apply plugin: 'kotlin'
+			project.dependencies.implementation "org.jetbrains.kotlin:kotlin-stdlib:1.2.41"
 		}
 	}
 }
