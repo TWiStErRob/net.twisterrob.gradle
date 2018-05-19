@@ -3,7 +3,7 @@ package net.twisterrob.gradle.android
 import net.twisterrob.gradle.android.AndroidBuildPlugin.VERSION_BUILD_TOOLS
 import net.twisterrob.gradle.test.GradleRunnerRule
 import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.io.FileMatchers
 import org.junit.Assert
 import java.io.File
@@ -22,9 +22,14 @@ internal val GradleRunnerRule.root get () = this.getBuildFile().parentFile!!
  * Assert that the task exists and that it ran to completion with success.
  * Note: this means that UP-TO-DATE and NO-SOURCE will fail!
  */
-internal fun BuildResult.assertSuccess(taskPath: String) {
+internal fun BuildResult.assertSuccess(taskPath: String) = assertOutcome(taskPath, TaskOutcome.SUCCESS)
+
+internal fun BuildResult.assertFailed(taskPath: String) = assertOutcome(taskPath, TaskOutcome.FAILED)
+
+internal fun BuildResult.assertOutcome(taskPath: String, outcome: TaskOutcome) {
 	val task = task(taskPath)
-	assertEquals(SUCCESS, assertNotNull(task, taskPath).outcome)
+		.let { assertNotNull(it, "${taskPath} task not found") }
+	assertEquals(outcome, task.outcome)
 }
 
 internal fun String.normalize() = trim().replace("\r?\n".toRegex(), System.lineSeparator())

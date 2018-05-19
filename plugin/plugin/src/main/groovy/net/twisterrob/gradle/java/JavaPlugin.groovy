@@ -1,10 +1,11 @@
 package net.twisterrob.gradle.java
 
-import com.android.build.gradle.*
+import com.android.build.gradle.BaseExtension
 import com.android.builder.core.VariantType
 import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.common.BaseExposedPlugin
-import org.gradle.api.*
+import org.gradle.api.JavaVersion
+import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
 
 class JavaPlugin extends BaseExposedPlugin {
@@ -52,8 +53,10 @@ class JavaPlugin extends BaseExposedPlugin {
 			}
 			if (isTestTask && isAndroidUnitTest) {
 				compiler.doFirst {
-					// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
-					changeCompatibility(compiler, DEFAULT_JAVA_TEST_VERSION)
+					if (isTestTask && !isAndroidTest) {
+						// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
+						changeCompatibility(compiler, DEFAULT_JAVA_TEST_VERSION)
+					}
 					compiler.classpath += project.files(compiler.options.bootClasspath)
 					//Gradle 4.3+: compiler.classpath += project.files(compiler.options.bootstrapClasspath)
 					fixClasspath(compiler, JavaVersion.toVersion(compiler.sourceCompatibility))
