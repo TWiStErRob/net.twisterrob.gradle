@@ -20,6 +20,7 @@ abstract class BaseAndroidIntgTest {
 
 		@Language("properties")
 		val gradleProperties = """
+			# suppress inspection "UnusedProperty"
 			android.enableAapt2=false
 		""".trimIndent()
 		gradle.file(gradleProperties, "gradle.properties")

@@ -19,6 +19,7 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.util.*
 
+@Suppress("MemberVisibilityCanBePrivate")
 open class AndroidVersionExtension {
 
 	/** Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648) */

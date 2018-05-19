@@ -49,6 +49,10 @@ class AndroidBuildPlugin extends BasePlugin {
 
 		def twisterrob = android.extensions.create('twisterrob', AndroidBuildPluginExtension)
 
+		// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
+		// otherwise default maven repo that's a superset of mavenCentral(), so prefer this
+		project.repositories.jcenter() // http://jcenter.bintray.com/
+		// most of Android's stuff is distributed here, so add by default
 		project.repositories.google() // https://maven.google.com
 
 		android.with {

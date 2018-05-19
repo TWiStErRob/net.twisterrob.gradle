@@ -57,8 +57,7 @@ class JavaPlugin extends BaseExposedPlugin {
 						// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
 						changeCompatibility(compiler, DEFAULT_JAVA_TEST_VERSION)
 					}
-					compiler.classpath += project.files(compiler.options.bootClasspath)
-					//Gradle 4.3+: compiler.classpath += project.files(compiler.options.bootstrapClasspath)
+					compiler.classpath += project.files(compiler.options.bootstrapClasspath)
 					fixClasspath(compiler, JavaVersion.toVersion(compiler.sourceCompatibility))
 				}
 			}
@@ -77,8 +76,7 @@ class JavaPlugin extends BaseExposedPlugin {
 			return
 		}
 		compiler.logger.info("Java Compatiblity: using rt.jar from $rt")
-		compiler.options.bootClasspath = rt.absolutePath
-		//Gradle 4.3+: compiler.options.bootstrapClasspath = project.files(rt.absolutePath)
+		compiler.options.bootstrapClasspath = project.files(rt.absolutePath)
 	}
 	private static void changeCompatibility(JavaCompile task, JavaVersion ver) {
 		def origS = task.sourceCompatibility

@@ -32,9 +32,6 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			repositories {
-				jcenter()
-			}
 			dependencies {
 				testImplementation "junit:junit:4.12"
 			}

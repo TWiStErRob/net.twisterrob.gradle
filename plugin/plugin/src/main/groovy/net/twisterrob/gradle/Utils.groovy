@@ -41,7 +41,7 @@ class Utils {
 		} else if (android instanceof TestedExtension) {
 			return android.testVariants
 		} else {
-			return Collections.emptyList()
+			throw new IllegalArgumentException("Unknown extension: $android")
 		}
 	}
 

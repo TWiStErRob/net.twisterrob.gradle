@@ -28,7 +28,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.android-app'
 		""".trimIndent()
 
-		val result = gradle.run(script, "assembleRelease", "--info").build()
+		val result = gradle.run(script, "assembleRelease").build()
 
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
