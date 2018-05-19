@@ -1,9 +1,9 @@
 package net.twisterrob.gradle.kotlin
 
 import com.android.build.gradle.BaseExtension
-import get
 import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.common.BasePluginForKotlin
+import net.twisterrob.gradle.get
 import org.gradle.api.Project
 
 const val VERSION_KOTLIN = "1.2.41"
