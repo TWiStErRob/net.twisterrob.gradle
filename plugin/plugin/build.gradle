@@ -26,6 +26,14 @@ project.with {
 	targetCompatibility = 1.7
 }
 
+// TODEL remove when everything is Kotlin
+afterEvaluate {
+	compileGroovy.dependsOn.remove('compileJava')
+	compileJava.dependsOn.remove(compileKotlin)
+	compileKotlin.dependsOn(compileGroovy)
+	compileKotlin.classpath += files(compileGroovy.destinationDir)
+}
+
 jar {
 	manifest {
 		it.attributes(

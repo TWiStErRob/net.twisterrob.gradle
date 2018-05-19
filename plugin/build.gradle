@@ -25,10 +25,10 @@ subprojects {
 allprojects {
 	gradle.projectsEvaluated {
 		tasks.withType(JavaCompile) {
-			it.options.compilerArgs << "-Xlint:all" << "-Werror"
+			it.options.compilerArgs << "-Xlint:all" << "-Werror" << "-Xlint:-options"
 		}
 		tasks.withType(GroovyCompile) {
-			it.options.compilerArgs << "-Xlint:all" << "-Werror"
+			it.options.compilerArgs << "-Xlint:all" << "-Werror" << "-Xlint:-options" << "-implicit:class"
 		}
 	}
 }

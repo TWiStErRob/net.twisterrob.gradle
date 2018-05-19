@@ -6,34 +6,33 @@ import org.junit.Rule
 import org.junit.rules.TestName
 import kotlin.test.BeforeTest
 
-open class BaseAndroidIntgTest {
+abstract class BaseAndroidIntgTest {
 
 	@Rule @JvmField val gradle = GradleRunnerRule()
 	@Rule @JvmField val testName = TestName()
 
 	@BeforeTest fun setUp() {
 		@Language("xml")
-		val manifest = """
+		val androidManifest = """
 			<manifest package="${packageName}" />
 		""".trimIndent()
-		gradle.file(manifest, "src/main/AndroidManifest.xml")
+		gradle.file(androidManifest, "src/main/AndroidManifest.xml")
 
 		@Language("properties")
-		val gradle_properties = """
+		val gradleProperties = """
 			android.enableAapt2=false
 		""".trimIndent()
-		gradle.file(gradle_properties, "gradle.properties")
+		gradle.file(gradleProperties, "gradle.properties")
 
 		if (testName.methodName.endsWith(" (release)")) {
 			@Language("java")
-			val custom_view = """
+			val apkContentForProguard = """
 				package ${packageName};
 				class AClassToSatisfyProguard {
 					@android.webkit.JavascriptInterface public void f() {}
 				}
 			""".trimIndent()
-			val packageFolder = packageName.replace('.', '/')
-			gradle.file(custom_view, "src/main/java/${packageFolder}/AClassToSatisfyProguard.java")
+			gradle.file(apkContentForProguard, "src/main/java/${packageFolder}/AClassToSatisfyProguard.java")
 		}
 	}
 }
