@@ -9,7 +9,7 @@ import org.junit.Test
  */
 class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
-	@Test fun `can use version block`() {
+	@Test fun `can use version block (debug) and (release)`() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
