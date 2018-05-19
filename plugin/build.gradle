@@ -1,9 +1,21 @@
 group = rootProject.name
 
+buildscript {
+	repositories {
+		jcenter()
+		maven { name = "TWiStErRob Bintray"; url = "https://dl.bintray.com/twisterrob/maven" }
+	}
+	dependencies {
+		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.41'
+		classpath 'net.twisterrob.gradle:twister-gradle-test:0.5'
+	}
+}
+
 subprojects {
 	repositories {
 		jcenter()
 		google()
+		maven { name = "TWiStErRob Bintray"; url = "https://dl.bintray.com/twisterrob/maven" }
 	}
 
 	group = rootProject.group

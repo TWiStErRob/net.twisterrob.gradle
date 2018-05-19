@@ -1,21 +1,45 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.*
-import com.android.build.gradle.api.*
+import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.LibraryPlugin
+import com.android.build.gradle.api.ApplicationVariant
+import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.Utils
-import net.twisterrob.gradle.android.tasks.*
+import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
+import net.twisterrob.gradle.android.tasks.DecorateBuildConfigTask
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 
 class AndroidBuildPluginExtension {
+
 	boolean decorateBuildConfig = true
 	boolean addRunTasks = true
 }
 
 class AndroidBuildPlugin extends BasePlugin {
+
+	/**
+	 * Keep it in sync with AppCompat's minimum.
+	 */
+	public static final int VERSION_SDK_MINIMUM = 14
+	/**
+	 * Latest SDK version available, Google Play Store has stringent rules, so keep up to date.
+	 */
+	public static final int VERSION_SDK_TARGET = 27
+	/**
+	 * Latest SDK version available, useful for discovering deprecated methods and getting new features like `.findViewById<T>()`.
+	 */
+	public static final int VERSION_SDK_COMPILE = VERSION_SDK_TARGET
+	public static final String VERSION_SDK_COMPILE_NAME = "8.1.0" // Oreo
+	/**
+	 * Latest build tools version available, there's no reason to hold back.
+	 */
+	public static final String VERSION_BUILD_TOOLS = "27.0.3"
+
 	private BaseExtension android
 
 	@Override
@@ -36,12 +60,12 @@ class AndroidBuildPlugin extends BasePlugin {
 				fatal 'StopShip' // http://stackoverflow.com/q/33504186/253468
 			}
 			// TODO intentionally mismatching the versions to get latest features, but still have sources available for compiled version.
-			buildToolsVersion "27.0.2" // latest Android SDK Build-tools
-			compileSdkVersion "android-26" // Android 7.0/SDK Platform
+			buildToolsVersion VERSION_BUILD_TOOLS
+			compileSdkVersion "android-$VERSION_SDK_COMPILE"
 
 			defaultConfig.with {
-				setMinSdkVersion(new DefaultApiVersion(10)) // 2.3.3 Gingerbread MR1
-				setTargetSdkVersion(new DefaultApiVersion(19)) // 4.4 KitKat
+				setMinSdkVersion(new DefaultApiVersion(VERSION_SDK_MINIMUM))
+				setTargetSdkVersion(new DefaultApiVersion(VERSION_SDK_TARGET))
 				vectorDrawables.useSupportLibrary = true
 				buildConfigField "String", "EMAIL", "\"feedback@twisterrob.net\""
 			}
@@ -83,6 +107,7 @@ class AndroidBuildPlugin extends BasePlugin {
 			}
 		}
 	}
+
 	void decorateBuildConfig() {
 		project.tasks.create('decorateBuildConfig', DecorateBuildConfigTask) {
 			description 'Add more information about build to BuildConfig.java'
