@@ -77,14 +77,18 @@ class AndroidVersionPlugin : BasePluginForKotlin() {
 			version.versionByVCS(vcs.current)
 		}
 
+		// set up defaults to use, before afterEvaluate so the user has a chance to override
+		version.versionFile?.let { readVersionFromFile(it) }
 		if (version.autoVersion) {
 			android.defaultConfig.apply {
 				versionName = calculateVersionName()
 				versionCode = calculateVersionCode()
 			}
 		}
+		// later, read the user's setup (if any) and act accordingly
 		project.afterEvaluate {
 			android.applicationVariants.all { variant ->
+				version.versionFile?.let { readVersionFromFile(it) }
 				if (version.autoVersion) {
 					autoVersion(variant)
 				}
@@ -110,10 +114,20 @@ class AndroidVersionPlugin : BasePluginForKotlin() {
 		output.outputFileName = "${artifactName}.apk"
 	}
 
+	/**
+	 * Late-initialize version related fields in the variant,
+	 * all places where it was cached must be updated, because we delayed ourselves into afterEvaluate.
+	 */
 	private fun autoVersion(variant: BaseVariant) {
-		readFromFileIfNeeded()
 		(variant.mergedFlavor as DefaultProductFlavor).versionName = calculateVersionName()
 		(variant.mergedFlavor as DefaultProductFlavor).versionCode = calculateVersionCode()
+		for (output in variant.outputs) {
+			if (output is ApkVariantOutput && variant is ApkVariant) {
+				// update the APK's AndroidManifest.xml data to match the outside world
+				output.versionCodeOverride = variant.versionCode
+				output.versionNameOverride = variant.versionName
+			}
+		}
 		if (variant is TestedVariant && variant.testVariant != null) {
 			// need to version the test variant, so the androidTest APK gets the same version its AndroidManifest
 			autoVersion(variant.testVariant)
@@ -132,14 +146,13 @@ class AndroidVersionPlugin : BasePluginForKotlin() {
 				* version.patchMagnitude + version.patch)
 				* version.buildMagnitude + version.build)
 
-	private fun readFromFileIfNeeded() = version.versionFile?.let { file ->
+	private fun readVersionFromFile(file: File) =
 		readVersion(file).apply {
 			getProperty("major")?.let { version.major = it.toInt() }
 			getProperty("minor")?.let { version.minor = it.toInt() }
 			getProperty("patch")?.let { version.patch = it.toInt() }
 			getProperty("build")?.let { version.build = it.toInt() }
 		}
-	}
 
 	private fun readVersion(file: File) = java.util.Properties().apply {
 		try {
