@@ -11,6 +11,9 @@ dependencies { // last checked 2017-04-14 (all latest)
 	// FIXME when updating to 3.1.x fix 4.2->4.3 bootClasspath->bootstrapClassPath deprecation
 	implementation 'com.android.tools.build:gradle:3.0.1' // https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
 	implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.41'
+	implementation ('org.gradle:gradle-kotlin-dsl:0.17.4') {
+		transitive = false // make sure to not pull in kotlin-compiler-embeddable
+	}
 }
 
 dependencies { // test

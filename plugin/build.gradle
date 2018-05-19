@@ -16,6 +16,7 @@ subprojects {
 		jcenter()
 		google()
 		maven { name = "TWiStErRob Bintray"; url = "https://dl.bintray.com/twisterrob/maven" }
+		maven { name = "Gradle libs (for Kotlin-DSL)"; url = "https://repo.gradle.org/gradle/libs-releases-local/" }
 	}
 
 	group = rootProject.group

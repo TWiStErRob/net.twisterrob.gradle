@@ -3,8 +3,8 @@ package net.twisterrob.gradle.kotlin
 import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.common.BasePluginForKotlin
-import net.twisterrob.gradle.get
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.get
 
 const val VERSION_KOTLIN = "1.2.41"
 
@@ -20,7 +20,7 @@ class KotlinPlugin : BasePluginForKotlin() {
 			project.repositories.jcenter()
 			project.dependencies.add("implementation", "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$VERSION_KOTLIN")
 			project.dependencies.add("testImplementation", "org.jetbrains.kotlin:kotlin-test:$VERSION_KOTLIN")
-			val android: BaseExtension = project.extensions["android"]
+			val android: BaseExtension = project.extensions["android"] as BaseExtension
 			android.sourceSets.all {
 				it.java.srcDir("src/${it.name}/kotlin")
 			}
