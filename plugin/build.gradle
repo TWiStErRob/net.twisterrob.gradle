@@ -24,11 +24,26 @@ subprojects {
 
 allprojects {
 	gradle.projectsEvaluated {
+		def java_opts = [
+				// check everything
+				"-Xlint:all",
+				// fail on any warning
+				"-Werror",
+				//warning: [options] bootstrap class path not set in conjunction with -source 1.7
+				"-Xlint:-options",
+				//warning: No processor claimed any of these annotations: javax.annotation.Nonnull
+				"-Xlint:-processing"
+		]
 		tasks.withType(JavaCompile) {
-			it.options.compilerArgs << "-Xlint:all" << "-Werror" << "-Xlint:-options"
+			it.options.compilerArgs += java_opts
 		}
 		tasks.withType(GroovyCompile) {
-			it.options.compilerArgs << "-Xlint:all" << "-Werror" << "-Xlint:-options" << "-implicit:class"
+			it.options.compilerArgs += java_opts
+			it.options.compilerArgs += [
+					//warning: Implicitly compiled files were not subject to annotation processing.
+					//Use -implicit to specify a policy for implicit compilation.
+					"-implicit:class"
+			]
 		}
 	}
 }
