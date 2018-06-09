@@ -1,16 +1,16 @@
 apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply plugin: 'net.twisterrob.gradle.test'
-version = '3.1.2.14-27-27.0'
+version = '3.1.3.14-27-27.0'
 
-dependencies { // last checked 2017-04-14 (all latest)
+dependencies { // last checked 2018-06-09 (all latest)
 	implementation gradleApi()
-	implementation 'org.tmatesoft.svnkit:svnkit:1.8.14' // https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
-	implementation 'org.tmatesoft.svnkit:svnkit-cli:1.8.14'
-	implementation 'org.ajoberstar:gradle-git:1.7.1' // https://github.com/ajoberstar/gradle-git/releases
-	implementation 'com.android.tools.build:gradle:3.1.2' // https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
+	implementation 'org.tmatesoft.svnkit:svnkit:1.9.3' // https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
+	implementation 'org.tmatesoft.svnkit:svnkit-cli:1.9.3'
+	implementation 'org.ajoberstar:gradle-git:1.7.2' // https://github.com/ajoberstar/gradle-git/releases
+	implementation 'com.android.tools.build:gradle:3.1.3' // https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
 	implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.41'
-	implementation ('org.gradle:gradle-kotlin-dsl:0.17.4') {
+	implementation ('org.gradle:gradle-kotlin-dsl:0.17.5') {
 		transitive = false // make sure to not pull in kotlin-compiler-embeddable
 	}
 }
