@@ -4,8 +4,8 @@ import net.twisterrob.gradle.android.AndroidBuildPlugin.VERSION_BUILD_TOOLS
 import net.twisterrob.gradle.test.GradleRunnerRule
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
-import org.hamcrest.io.FileMatchers
-import org.junit.Assert
+import org.hamcrest.io.FileMatchers.anExistingFile
+import org.junit.Assert.assertThat
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
@@ -14,7 +14,14 @@ import kotlin.test.assertNotNull
 internal const val packageName = "net.twisterrob.gradle.test_app"
 internal val packageFolder get() = packageName.replace('.', '/')
 
-internal fun File.apk(variant: String, fileName: String) =
+internal fun File.apk(
+	variant: String,
+	fileName: String = {
+		val variantSuffix = if (variant != "release") ".${variant}" else ""
+		val variantVersionSuffix = if (variant == "debug") "d" else ""
+		"${packageName}${variantSuffix}@0-v0.0.0#0${variantVersionSuffix}+${variant}.apk"
+	}()
+) =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
 
 internal val GradleRunnerRule.root get () = this.getBuildFile().parentFile!!
@@ -94,10 +101,12 @@ internal fun assertDefaultBadging(
 	minSdkVersion: Int = AndroidBuildPlugin.VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = AndroidBuildPlugin.VERSION_SDK_TARGET
 ) {
-	if (!apk.exists()) {
-		apk.parentFile.listFiles().forEach(::println)
-	}
-	Assert.assertThat(apk, FileMatchers.anExistingFile())
+	val fileNamesMessage =
+		"Wanted: ${apk.absolutePath}${System.lineSeparator()}list: ${apk.parentFile.listFiles().joinToString(
+			prefix = System.lineSeparator(),
+			separator = System.lineSeparator()
+		)}"
+	assertThat(fileNamesMessage, apk, anExistingFile())
 	assertOutput(
 		buildToolsDir,
 		listOf(buildToolsDir.resolve("aapt.exe"), "dump", "badging", apk),

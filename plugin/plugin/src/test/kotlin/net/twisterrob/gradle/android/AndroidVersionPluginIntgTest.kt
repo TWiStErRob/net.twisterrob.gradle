@@ -22,10 +22,10 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		result.assertHasOutputLine("version block!")
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", "${packageName}.debug@0-v0.0.0#0d+debug.apk")
+			apk = gradle.root.apk("debug")
 		)
 		assertDefaultReleaseBadging(
-			apk = gradle.root.apk("release", "${packageName}@0-v0.0.0#0+release.apk")
+			apk = gradle.root.apk("release")
 		)
 	}
 

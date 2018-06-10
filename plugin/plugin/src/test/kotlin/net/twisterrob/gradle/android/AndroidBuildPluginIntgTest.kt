@@ -18,7 +18,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", "${packageName}.debug@0-v0.0.0#0d+debug.apk")
+			apk = gradle.root.apk("debug")
 		)
 	}
 
@@ -32,7 +32,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
-			apk = gradle.root.apk("release", "${packageName}@0-v0.0.0#0+release.apk")
+			apk = gradle.root.apk("release")
 		)
 	}
 
@@ -47,7 +47,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", "${packageName}.debug@0-v0.0.0#0d+debug.apk"),
+			apk = gradle.root.apk("debug"),
 			minSdkVersion = 10
 		)
 	}
@@ -63,7 +63,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
-			apk = gradle.root.apk("release", "${packageName}@0-v0.0.0#0+release.apk"),
+			apk = gradle.root.apk("release"),
 			minSdkVersion = 10
 		)
 	}
@@ -79,7 +79,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", "${packageName}.debug@0-v0.0.0#0d+debug.apk"),
+			apk = gradle.root.apk("debug"),
 			targetSdkVersion = 19
 		)
 	}
@@ -95,7 +95,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
-			apk = gradle.root.apk("release", "${packageName}@0-v0.0.0#0+release.apk"),
+			apk = gradle.root.apk("release"),
 			targetSdkVersion = 19
 		)
 	}
@@ -111,7 +111,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", "${packageName}.debug@0-v0.0.0#0d+debug.apk"),
+			apk = gradle.root.apk("debug"),
 			compileSdkVersionName = "6.0-2704002"
 		)
 	}
@@ -127,7 +127,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
-			apk = gradle.root.apk("release", "${packageName}@0-v0.0.0#0+release.apk"),
+			apk = gradle.root.apk("release"),
 			compileSdkVersionName = "6.0-2704002"
 		)
 	}
