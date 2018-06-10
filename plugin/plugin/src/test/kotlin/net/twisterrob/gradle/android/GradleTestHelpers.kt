@@ -1,9 +1,13 @@
 package net.twisterrob.gradle.android
 
+import com.jakewharton.dex.DexMethod
 import net.twisterrob.gradle.android.AndroidBuildPlugin.VERSION_BUILD_TOOLS
 import net.twisterrob.gradle.test.GradleRunnerRule
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.junit.Assert.assertThat
 import java.io.File
@@ -128,3 +132,15 @@ internal fun assertDefaultBadging(
 				""".trimIndent()
 	)
 }
+
+fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =
+	object : TypeSafeMatcher<DexMethod>() {
+		override fun describeTo(description: Description): Unit = with(description) {
+			appendText("method ").appendValue(methodName)
+			appendText(" ")
+			appendText("in class ").appendValue(className)
+		}
+
+		override fun matchesSafely(item: DexMethod) =
+			className == item.declaringType && methodName == item.name
+	}

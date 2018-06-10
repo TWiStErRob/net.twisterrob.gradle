@@ -1,19 +1,15 @@
 package net.twisterrob.gradle.android
 
-import com.jakewharton.dex.DexMethod
 import com.jakewharton.dex.DexParser
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import org.gradle.testkit.runner.BuildResult
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.hamcrest.junit.MatcherAssume.assumeThat
 import org.intellij.lang.annotations.Language
@@ -163,15 +159,3 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		assertThat(gradle.root.resolve("build/intermediates/proguard-rules/twisterrob-release.pro"), anExistingFile())
 	}
 }
-
-fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =
-	object : TypeSafeMatcher<DexMethod>() {
-		override fun describeTo(description: Description): Unit = with(description) {
-			appendText("method ").appendValue(methodName)
-			appendText(" ")
-			appendText("in class ").appendValue(className)
-		}
-
-		override fun matchesSafely(item: DexMethod) =
-			className == item.declaringType && methodName == item.name
-	}
