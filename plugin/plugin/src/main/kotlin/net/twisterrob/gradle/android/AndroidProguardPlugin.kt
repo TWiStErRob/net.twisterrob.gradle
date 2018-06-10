@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.transforms.ProGuardTransform
 import com.android.builder.core.DefaultBuildType
@@ -12,6 +14,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.task
+import org.gradle.kotlin.dsl.withType
 import java.io.File
 
 class AndroidProguardPlugin : BasePluginForKotlin() {
@@ -32,8 +35,10 @@ class AndroidProguardPlugin : BasePluginForKotlin() {
 			defaultConfig.proguardFiles.add(defaultAndroidRules)
 			defaultConfig.proguardFiles.add(myProguardRules)
 
-			val release = buildTypes["release"] as DefaultBuildType
-			release.isMinifyEnabled = true
+			project.plugins.withType<AppPlugin> {
+				val release = buildTypes["release"] as DefaultBuildType
+				release.isMinifyEnabled = true
+			}
 
 			project.afterEvaluate {
 				buildTypes.forEach { buildType ->
@@ -42,6 +47,21 @@ class AndroidProguardPlugin : BasePluginForKotlin() {
 					} else {
 						buildType.proguardFiles.add(myReleaseProguardRules)
 					}
+				}
+			}
+
+			val autoProguardFile = project.file("src/main/proguard.pro")
+			if (autoProguardFile.exists() && autoProguardFile.isFile) {
+				android.defaultConfig.proguardFiles.add(autoProguardFile)
+			}
+			val autoDexMainFile = project.file("src/main/multidex.pro")
+			if (autoDexMainFile.exists() && autoDexMainFile.isFile) {
+				android.defaultConfig.multiDexKeepProguard = autoDexMainFile
+			}
+			project.plugins.withType<LibraryPlugin> {
+				val autoConsumerFile = project.file("src/main/consumer.pro")
+				if (autoConsumerFile.exists() && autoConsumerFile.isFile) {
+					android.defaultConfig.consumerProguardFiles(autoConsumerFile)
 				}
 			}
 		}

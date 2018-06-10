@@ -17,6 +17,6 @@ class AndroidFeaturePlugin : BaseExposedPluginForKotlin() {
 		project.apply<AndroidBuildPlugin>()
 		//project.apply<AndroidVersionPlugin>()
 		//project.apply<AndroidSigningPlugin>()
-		//project.apply<AndroidProguardPlugin>()
+		project.apply<AndroidProguardPlugin>()
 	}
 }
