@@ -50,17 +50,39 @@ internal fun BuildResult.assertOutcome(taskPath: String, outcome: TaskOutcome) {
 internal fun String.normalize() = trim().replace("\r?\n".toRegex(), System.lineSeparator())
 internal val buildToolsDir get () = File(System.getenv("ANDROID_HOME"), "build-tools/${VERSION_BUILD_TOOLS}")
 
-internal fun Iterable<String>.runCommand(workingDir: File) =
+internal fun resolveFromAndroidSDK(command: String) = resolveFromFolders(command, buildToolsDir)
+
+internal fun resolveFromJDK(command: String): File {
+	val jre = File(System.getProperty("java.home"))
+	val dirs = arrayOf(
+		jre.resolve("bin"),
+		jre.parentFile.resolve("bin")
+	)
+	return resolveFromFolders(command, *dirs)
+}
+
+private fun resolveFromFolders(command: String, vararg dirs: File): File {
+	val variants = listOf(command, "${command}.sh", "${command}.exe", "${command}.bat")
+	return variants
+		.flatMap { variant -> dirs.map { it.resolve(variant) } }
+		.firstOrNull { it.exists() && it.isFile }
+			?: error("Cannot find any of ${variants} in any of these folders:\n${dirs.joinToString("\n")}")
+}
+
+internal fun Iterable<String>.runCommand(
+	workingDir: File = File("."),
+	timeout: Long = TimeUnit.MINUTES.toMillis(60)
+) =
 	ProcessBuilder(this.toList())
 		.directory(workingDir)
 		.redirectOutput(ProcessBuilder.Redirect.PIPE)
 		.redirectError(ProcessBuilder.Redirect.PIPE)
 		.start()
-		.apply { waitFor(60, TimeUnit.MINUTES) }
+		.apply { waitFor(timeout, TimeUnit.MILLISECONDS) }
 		.run { inputStream.bufferedReader().readText() }
 
-private fun assertOutput(pwd: File, command: List<Any>, expected: String) {
-	val output = command.map(Any?::toString).runCommand(pwd)
+private fun assertOutput(command: List<Any>, expected: String) {
+	val output = command.map(Any?::toString).runCommand()
 	assertEquals(expected.normalize(), output.normalize())
 }
 
@@ -116,8 +138,7 @@ internal fun assertDefaultBadging(
 		)}"
 	assertThat(fileNamesMessage, apk, anExistingFile())
 	assertOutput(
-		buildToolsDir,
-		listOf(buildToolsDir.resolve("aapt.exe"), "dump", "badging", apk),
+		listOf(resolveFromAndroidSDK("aapt"), "dump", "badging", apk),
 		"""
 					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' platformBuildVersionName='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
