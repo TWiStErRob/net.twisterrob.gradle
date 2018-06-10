@@ -8,12 +8,13 @@ import org.gradle.api.tasks.TaskAction
 import java.util.concurrent.TimeUnit
 
 class DecorateBuildConfigTask extends DefaultTask {
-	private static final long HALF_HOUR = TimeUnit.MINUTES.toMillis(30)
+
+	private static final long DAY = TimeUnit.DAYS.toMillis(1)
 	def buildConfigField/*(String type, String name, String value)*/
 	boolean enableVCS = true
 	boolean enableBuild = true
 	/**
-	 * Default implementation returns a half hour precision time
+	 * Default implementation returns a one-day precise time
 	 * to minimize {@code compile*JavaWithJavac} rebuilds due to a single number change in BuildConfig.java.
 	 *
 	 * It can be overridden like this:
@@ -21,7 +22,7 @@ class DecorateBuildConfigTask extends DefaultTask {
 	 *
 	 * @returns a long representing the UTC time of the build.
 	 */
-	def getBuildTime = { System.currentTimeMillis().intdiv(HALF_HOUR) * HALF_HOUR }
+	def getBuildTime = { System.currentTimeMillis().intdiv(DAY) * DAY }
 
 	DecorateBuildConfigTask() {
 		BaseExtension android = project.android
