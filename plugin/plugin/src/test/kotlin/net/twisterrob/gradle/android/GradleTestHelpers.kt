@@ -10,6 +10,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 internal const val packageName = "net.twisterrob.gradle.test_app"
 internal val packageFolder get() = packageName.replace('.', '/')
@@ -25,6 +26,9 @@ internal fun File.apk(
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
 
 internal val GradleRunnerRule.root get () = this.getBuildFile().parentFile!!
+
+internal fun BuildResult.assertNoTask(taskPath: String) = assertNull(task(taskPath))
+
 /**
  * Assert that the task exists and that it ran to completion with success.
  * Note: this means that UP-TO-DATE and NO-SOURCE will fail!

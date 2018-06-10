@@ -30,9 +30,11 @@ configurations.all {
 dependencies { // test
 	testImplementation "junit:junit:4.12"
 	testImplementation "org.hamcrest:java-hamcrest:2.0.0.0"
+	testImplementation "org.hamcrest:hamcrest-junit:2.0.0.0"
 	testImplementation "org.jetbrains:annotations:16.0.2"
 	testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.41"
 	testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.2.41"
+	testImplementation "com.jakewharton.dex:dex-method-list:3.1.0"
 }
 
 project.with {

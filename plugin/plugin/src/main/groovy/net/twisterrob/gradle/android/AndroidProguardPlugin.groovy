@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.*
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.api.BaseVariantImpl
 import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.transforms.ProGuardTransform
@@ -8,18 +8,18 @@ import com.android.builder.core.DefaultBuildType
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.common.BasePlugin
-import org.gradle.api.*
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.tasks.SourceSet
-
-import static org.gradle.api.tasks.SourceSet.*
+import org.gradle.api.Project
 
 class AndroidProguardPlugin extends BasePlugin {
+
 	@Override
 	void apply(Project target) {
 		super.apply(target)
 
 		BaseExtension android = project.android
+		/**
+		 * @see com.android.build.gradle.ProguardFiles#getDefaultProguardFile
+		 */
 		File proguardBase = new File("${project.buildDir}/${AndroidProject.FD_INTERMEDIATES}/proguard-rules")
 		File defaultAndroidRules = new File(proguardBase, "android.pro")
 		File myProguardRules = new File(proguardBase, "twisterrob.pro")
@@ -71,27 +71,9 @@ class AndroidProguardPlugin extends BasePlugin {
 					obfuscationTask.dependsOn extractProguardRules
 					def proguard = obfuscationTask.transform as ProGuardTransform
 					proguard.printconfiguration(new File(variant.mappingFile.parentFile, 'configuration.pro'))
-					// TODO this should depend on the variant, why is it here?
-					proguard.setConfigurationFiles project.files(collectProguardFiles())
 				}
 			}
 		}
-	}
-
-	private Collection<File> collectProguardFiles() {
-		// TODO variant.sourceSets.collect { it.java } (main, release)
-		// TODO variant.javaCompiler.source (main, release, generated)
-		// TODO dependencies or that userProguard or something property?
-		Set<Project> all = project.rootProject.allprojects
-		def java = all.grep { it.plugins.hasPlugin(JavaPlugin) }.collect { it.sourceSets }
-		def lib = all.grep { it.plugins.hasPlugin(LibraryPlugin) }.collect { it.android.sourceSets }
-		def and = all.grep { it.plugins.hasPlugin(AppPlugin) }.collect { it.android.sourceSets }
-		Collection<NamedDomainObjectContainer<SourceSet>> ss = java + lib + and
-		return ss
-				.grep { NamedDomainObjectContainer<SourceSet> it -> it.findByName(MAIN_SOURCE_SET_NAME) != null }
-				.collectMany { it[MAIN_SOURCE_SET_NAME].java.srcDirs }
-				.collect { File it -> new File(it, 'proguard.pro') }
-				.grep { File it -> it.exists() }
 	}
 
 	private void copy(String internalName, File targetFile) {
