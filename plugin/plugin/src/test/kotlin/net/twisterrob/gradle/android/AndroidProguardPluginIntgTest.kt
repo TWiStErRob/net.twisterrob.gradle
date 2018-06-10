@@ -140,7 +140,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		""".trimIndent()
 		gradle.file(libProguardFile, "lib", "proguard.pro")
 
-		val result = gradle.run(script, "assembleRelease", "--info").withDebug(true).build()
+		val result = gradle.run(script, "assembleRelease", "--info").build()
 
 		// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
 		result.assertHasOutputLine("Applying ProGuard configuration file .*android.pro".toRegex())
