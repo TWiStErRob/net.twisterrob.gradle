@@ -6,7 +6,7 @@ buildscript {
 		maven { name = "TWiStErRob Bintray"; url = "https://dl.bintray.com/twisterrob/maven" }
 	}
 	dependencies {
-		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.41'
+		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.51'
 		classpath 'net.twisterrob.gradle:twister-gradle-test:0.5'
 	}
 }
