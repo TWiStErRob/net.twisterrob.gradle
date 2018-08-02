@@ -6,7 +6,7 @@ import net.twisterrob.gradle.common.BasePluginForKotlin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
 
-const val VERSION_KOTLIN = "1.2.51"
+const val VERSION_KOTLIN = "1.2.60"
 
 class KotlinPlugin : BasePluginForKotlin() {
 
