@@ -42,6 +42,7 @@ internal fun BuildResult.assertSuccess(taskPath: String) = assertOutcome(taskPat
 internal fun BuildResult.assertFailed(taskPath: String) = assertOutcome(taskPath, TaskOutcome.FAILED)
 
 internal fun BuildResult.assertOutcome(taskPath: String, outcome: TaskOutcome) {
+	@Suppress("ReplaceSingleLineLet")
 	val task = task(taskPath)
 		.let { assertNotNull(it, "${taskPath} task not found") }
 	assertEquals(outcome, task.outcome)
@@ -66,7 +67,7 @@ private fun resolveFromFolders(command: String, vararg dirs: File): File {
 	return variants
 		.flatMap { variant -> dirs.map { it.resolve(variant) } }
 		.firstOrNull { it.exists() && it.isFile }
-			?: error("Cannot find any of ${variants} in any of these folders:\n${dirs.joinToString("\n")}")
+		?: error("Cannot find any of ${variants} in any of these folders:\n${dirs.joinToString("\n")}")
 }
 
 internal fun Iterable<String>.runCommand(

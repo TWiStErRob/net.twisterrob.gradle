@@ -1,12 +1,14 @@
 package net.twisterrob.gradle.java
 
 import com.android.build.gradle.BaseExtension
-import com.android.builder.core.VariantType
 import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
+
+import static com.android.builder.core.VariantType.ANDROID_TEST
+import static com.android.builder.core.VariantType.UNIT_TEST
 
 class JavaPlugin extends BaseExposedPlugin {
 	public static final JavaVersion DEFAULT_JAVA_VERSION = JavaVersion.VERSION_1_7
@@ -34,11 +36,11 @@ class JavaPlugin extends BaseExposedPlugin {
 			project.sourceSets['main'].compileClasspath += project.configurations.maybeCreate('provided')
 		}
 
-		project.tasks.withType(JavaCompile) { compiler ->
+		project.tasks.withType(JavaCompile) { JavaCompile compiler ->
 			compiler.options.encoding = DEFAULT_ENCODING
 			def isTestTask = compiler.name.contains('Test')
-			def isAndroidTest = compiler.name.endsWith(VariantType.ANDROID_TEST.suffix + 'JavaWithJavac')
-			def isAndroidUnitTest = compiler.name.endsWith(VariantType.UNIT_TEST.suffix + 'JavaWithJavac')
+			def isAndroidTest = compiler.name.endsWith(ANDROID_TEST.suffix + 'JavaWithJavac')
+			def isAndroidUnitTest = compiler.name.endsWith(UNIT_TEST.suffix + 'JavaWithJavac')
 			if (!isTestTask) {
 				compiler.options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
 			}
