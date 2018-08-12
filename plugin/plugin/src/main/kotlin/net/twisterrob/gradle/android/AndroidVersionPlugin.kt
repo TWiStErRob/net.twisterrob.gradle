@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.BaseVariant
@@ -9,15 +11,17 @@ import com.android.builder.core.DefaultProductFlavor
 import net.twisterrob.gradle.common.BasePluginForKotlin
 import net.twisterrob.gradle.kotlin.dsl.base
 import net.twisterrob.gradle.kotlin.dsl.extensions
+import net.twisterrob.gradle.kotlin.dsl.withId
 import net.twisterrob.gradle.vcs.VCSExtension
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.withType
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
-import java.util.*
+import java.util.Locale
 
 @Suppress("MemberVisibilityCanBePrivate")
 open class AndroidVersionExtension {
@@ -60,16 +64,60 @@ open class AndroidVersionExtension {
 
 class AndroidVersionPlugin : BasePluginForKotlin() {
 
-	private lateinit var version: AndroidVersionExtension
-
-	override fun apply(target: Project) {
-		super.apply(target)
-
+	private val android: AppExtension by lazy {
 		if (!project.plugins.hasPlugin("com.android.application")) {
 			throw PluginInstantiationException("Can only use versioning with Android applications")
 		}
-		val android = project.extensions["android"] as AppExtension
-		version = android.defaultConfig.extensions.create("version", AndroidVersionExtension::class.java)
+		project.extensions["android"] as AppExtension
+	}
+
+	private val version: AndroidVersionExtension by lazy {
+		android.defaultConfig.extensions.create("version", AndroidVersionExtension::class.java)
+	}
+
+	/**
+	 * There's a tricky execution order required for this plugin to work:
+	 *  * It has to be applied before any Android plugin.
+	 *  * It has to hook into the right lifecycle to make sure data is propagated where it's needed.
+	 *  * Default [version] extension info has to be initialized before [android] DSL is accessed from `build.gradle`.
+	 *  * [version] extension has to be ready by the time it is used in [configure].
+	 *
+	 * 0. The [DefaultProductFlavor.getVersionName] is used by the Android plugin to propagate the version information.
+	 * 0. This happens deep inside [com.android.build.gradle.BasePlugin.createAndroidTasks] (since 3.?, last check 3.2-beta05):
+	 *  * [com.android.build.gradle.internal.VariantManager.createAndroidTasks]
+	 *  * [com.android.build.gradle.internal.VariantManager.populateVariantDataList]
+	 *  * [com.android.build.gradle.internal.VariantManager.createVariantDataForProductFlavors]
+	 *  * [com.android.build.gradle.internal.VariantManager.createVariantDataForProductFlavorsAndVariantType]
+	 *  * [com.android.build.gradle.internal.VariantManager.createVariantDataForVariantType]
+	 *  * [com.android.build.gradle.internal.core.GradleVariantConfiguration.VariantConfigurationBuilder.create]
+	 *  * [com.android.build.gradle.internal.core.GradleVariantConfiguration] constructor
+	 *  * [com.android.build.gradle.internal.core.VariantConfiguration] constructor
+	 *  * that merges in DefaultConfig
+	 *  * in [com.android.builder.core.DefaultProductFlavor._initWith]: `this.mVersionName = thatProductFlavor.versionName`
+	 * 0. So the `versionName` has to be set before the tasks are created in `afterEvaluate`.
+	 */
+	override fun apply(target: Project) {
+		super.apply(target)
+		// Order of execution denoted with /*[C#]*/ for Configuration Phase, and /*[A#]*/ for afterEvaluate
+		// This method body is /*[C0]*/
+		if (project.plugins.hasPlugin("com.android.base")) {
+			throw PluginInstantiationException("This plugin must be applied before the android plugins")
+		}
+		// just to make sure we're in the right module (see lazy initializer of android)
+		project.afterEvaluate { android }
+		// when we detect that an Android plugin is going to be applied
+		project.plugins.withType<AndroidBasePlugin> {
+			// enqueue afterEvaluate, so it runs before BasePlugin.createAndroidTasks /*[A5]*/
+			// see BasePlugin.createTasks /*[C2]*/ as to how createAndroidTasks is called
+			project.afterEvaluate { configure() /*[A4]*/ } /*[C1]*/
+		}
+		// when the Android application plugin is applied, we can set up the defaults and the DSL
+		project.plugins.withId<AppPlugin>("com.android.application") {
+			init() /*[C3]*/
+		}
+	}
+
+	private fun init() {
 		// resolve default version file against project
 		version.versionFile = project.file(version.versionFile!!.name)
 
@@ -77,69 +125,64 @@ class AndroidVersionPlugin : BasePluginForKotlin() {
 		if (vcs != null && vcs.current.isAvailable) {
 			version.versionByVCS(vcs.current)
 		}
-
-		// set up defaults to use, before afterEvaluate so the user has a chance to override
-		version.versionFile?.let { readVersionFromFile(it) }
-		if (version.autoVersion) {
-			android.defaultConfig.apply {
-				versionName = calculateVersionName()
-				versionCode = calculateVersionCode()
-			}
-		}
-		// later, read the user's setup (if any) and act accordingly
-		project.afterEvaluate {
-			android.applicationVariants.all { variant ->
-				version.versionFile?.let { readVersionFromFile(it) }
-				if (version.autoVersion) {
-					autoVersion(variant)
-				}
-				if (version.renameAPK) {
-					appendVersionNameVersionCode(variant)
-				}
-			}
-		}
-	}
-
-	private fun appendVersionNameVersionCode(variant: ApkVariant) {
-		for (output in variant.outputs) {
-			// only called for applicationVariants and their testVariants so cast should be safe
-			updateOutput(output as ApkVariantOutput, variant)
-		}
-		if (variant is TestedVariant && variant.testVariant != null) {
-			appendVersionNameVersionCode(variant.testVariant)
-		}
-	}
-
-	private fun updateOutput(output: ApkVariantOutput, variant: ApkVariant) {
-		val artifactName = version.formatArtifactName(project, variant, output.baseName)
-		output.outputFileName = "${artifactName}.apk"
 	}
 
 	/**
-	 * Late-initialize version related fields in the variant,
-	 * all places where it was cached must be updated, because we delayed ourselves into afterEvaluate.
+	 * This method is called after the DSL has been parsed ([version] is ready),
+	 * but before any of AGP's [Project.afterEvaluate] is executed.
 	 */
-	private fun autoVersion(variant: BaseVariant) {
-		(variant.mergedFlavor as DefaultProductFlavor).versionName = calculateVersionName()
-		(variant.mergedFlavor as DefaultProductFlavor).versionCode = calculateVersionCode()
-		for (output in variant.outputs) {
-			if (output is ApkVariantOutput && variant is ApkVariant) {
-				// update the APK's AndroidManifest.xml data to match the outside world
-				output.versionCodeOverride = variant.versionCode
-				output.versionNameOverride = variant.versionName
-			}
+	private fun configure() {
+		version.versionFile?.run(::readVersionFromFile)
+		if (version.autoVersion) {
+			android.defaultConfig.versionCode = calculateVersionCode()
+			android.defaultConfig.versionName = calculateVersionName(null)
 		}
-		if (variant is TestedVariant && variant.testVariant != null) {
-			// need to version the test variant, so the androidTest APK gets the same version its AndroidManifest
-			autoVersion(variant.testVariant)
+		if (version.renameAPK) {
+			android.applicationVariants.all(::renameAPK)
 		}
 	}
 
-	private fun calculateVersionName() = String.format(
-		Locale.ROOT,
-		version.versionNameFormat,
-		version.major, version.minor, version.patch, version.build
-	)
+	private fun renameAPK(variant: ApkVariant) {
+		// only called for applicationVariants and their testVariants so filter should be safe
+		variant.outputs.filterIsInstance<ApkVariantOutput>().forEach { output ->
+			output.outputFileName = calculateOutputFileName(variant)
+		}
+		if (variant is TestedVariant) {
+			variant.testVariant?.run(::renameAPK)
+		}
+	}
+
+	private fun calculateOutputFileName(variant: ApkVariant): String {
+		val artifactName = version.formatArtifactName(project, variant, variant.baseName)
+		return "${artifactName}.apk"
+	}
+
+	@Suppress("DEPRECATION")
+	@Deprecated("new method is using defaultConfig")
+	private fun autoVersion(variant: ApkVariant) {
+		variant.outputs.filterIsInstance<ApkVariantOutput>().forEach { output ->
+			output.versionNameOverride = calculateVersionName(variant)
+			output.versionCodeOverride = calculateVersionCode()
+		}
+		// need to version the test variant, so the androidTest APK gets the same version its AndroidManifest
+		if (variant is TestedVariant) {
+			variant.testVariant?.run(::autoVersion)
+		}
+	}
+
+	private fun calculateVersionName(variant: BaseVariant?): String {
+		val suffix = variant?.let {
+			DefaultProductFlavor.mergeVersionNameSuffix(
+				variant.buildType.versionNameSuffix,
+				variant.mergedFlavor.versionNameSuffix
+			)!!
+		} ?: ""
+		val versionName = version.versionNameFormat.format(
+			Locale.ROOT,
+			version.major, version.minor, version.patch, version.build
+		)
+		return versionName + suffix
+	}
 
 	private fun calculateVersionCode(): Int =
 		(((version.major

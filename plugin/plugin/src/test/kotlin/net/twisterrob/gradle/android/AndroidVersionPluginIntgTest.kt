@@ -41,8 +41,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", "${packageName}.debug@1234-v0.0.0#0d+debug.apk"),
-			versionCode = "1234"
+			apk = gradle.root.apk("debug", "${packageName}.debug@1234-vd+debug.apk"),
+			versionCode = "1234",
+			versionName = "d"
 		)
 	}
 
@@ -58,8 +59,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
-			apk = gradle.root.apk("release", "${packageName}@1234-v0.0.0#0+release.apk"),
-			versionCode = "1234"
+			apk = gradle.root.apk("release", "${packageName}@1234-vnull+release.apk"),
+			versionCode = "1234",
+			versionName = ""
 		)
 	}
 
@@ -75,7 +77,8 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", "${packageName}.debug@0-v_custom_d+debug.apk"),
+			apk = gradle.root.apk("debug", "${packageName}.debug@-1-v_custom_d+debug.apk"),
+			versionCode = "",
 			versionName = "_custom_d"
 		)
 	}
@@ -92,7 +95,8 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
-			apk = gradle.root.apk("release", "${packageName}@0-v_custom_+release.apk"),
+			apk = gradle.root.apk("release", "${packageName}@-1-v_custom_+release.apk"),
+			versionCode = "",
 			versionName = "_custom_"
 		)
 	}

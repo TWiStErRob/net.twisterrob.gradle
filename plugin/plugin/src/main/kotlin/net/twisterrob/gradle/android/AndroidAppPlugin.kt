@@ -10,6 +10,7 @@ class AndroidAppPlugin : BaseExposedPluginForKotlin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
+		project.apply<AndroidVersionPlugin>()
 		project.plugins.apply("com.android.application")
 
 		project.apply<VCSPlugin>()
@@ -17,7 +18,6 @@ class AndroidAppPlugin : BaseExposedPluginForKotlin() {
 		project.apply<AndroidBuildPlugin>()
 		project.apply<AndroidSigningPlugin>()
 		project.apply<AndroidProguardPlugin>()
-		project.apply<AndroidVersionPlugin>()
 		project.apply<AndroidReleasePlugin>() // after build, version
 	}
 }

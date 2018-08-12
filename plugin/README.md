@@ -6,9 +6,7 @@
 
 Future: 3.1.0.* Gradle 4.3-4.4
 
-3.1.2.14-27-27.0 Gradle 4.3, 4.4, 4.4.1, 4.5, 4.5.1 (works with 4.6+, but warns)
-
-3.1.3.14-27-27.0 Gradle 4.3, 4.4, 4.4.1, 4.5, 4.5.1 (works with 4.6+, but warns)
+3.1.\[2-4].14-27-27.0 Gradle 4.3, 4.4, 4.4.1, 4.5, 4.5.1 (works with 4.6+, but warns)
 
 ## Release
 ### Testing
