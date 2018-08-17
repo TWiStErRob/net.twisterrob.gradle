@@ -89,7 +89,7 @@ private fun defaultAction(violations: Grouper.Start<Violations>) {
 				val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
 				return@map """
 					${group.module}/${group.variant} ${violation.file}:${violation.startLine}
-						${violation.reporter}/${violation.rule.or("Unknown")}
+						${violation.reporter}/${violation.rule ?: "Unknown"}
 ${message.replace("""(?m)^""".toRegex(), "\t\t\t\t\t\t")}
 				""".trimIndent()
 			}
