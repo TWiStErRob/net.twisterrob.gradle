@@ -9,7 +9,7 @@ import com.android.builder.core.DefaultBuildType
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.builtDate
-import net.twisterrob.gradle.common.BasePluginForKotlin
+import net.twisterrob.gradle.base.BasePluginForKotlin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.get

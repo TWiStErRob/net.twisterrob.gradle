@@ -11,7 +11,7 @@ import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.DecorateBuildConfigTask
-import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.base.BasePlugin
 import org.gradle.api.Project
 
 class AndroidBuildPluginExtension {

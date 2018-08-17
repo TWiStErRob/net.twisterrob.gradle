@@ -1,6 +1,6 @@
 package net.twisterrob.gradle
 
-import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.base.BasePlugin
 import sun.net.www.protocol.file.FileURLConnection
 import java.net.JarURLConnection
 import java.text.SimpleDateFormat

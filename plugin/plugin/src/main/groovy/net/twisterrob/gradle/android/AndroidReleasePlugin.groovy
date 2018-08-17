@@ -5,7 +5,7 @@ import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.internal.api.TestedVariant
 import com.android.builder.model.BuildType
 import net.twisterrob.gradle.Utils
-import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.base.BasePlugin
 import org.gradle.api.*
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.bundling.Zip

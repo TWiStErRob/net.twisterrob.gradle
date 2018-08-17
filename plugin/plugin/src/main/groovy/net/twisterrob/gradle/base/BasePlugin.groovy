@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.common
+package net.twisterrob.gradle.base
 
 import org.apache.tools.ant.BuildException
 import org.gradle.api.Plugin

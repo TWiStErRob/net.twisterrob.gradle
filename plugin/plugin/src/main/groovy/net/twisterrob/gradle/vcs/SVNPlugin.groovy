@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.vcs
 
-import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.base.BasePlugin
 import org.gradle.api.Project
 import org.tmatesoft.svn.cli.SVN
 import org.tmatesoft.svn.core.SVNException

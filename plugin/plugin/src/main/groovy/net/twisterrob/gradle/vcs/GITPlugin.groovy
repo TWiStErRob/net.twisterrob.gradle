@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.vcs
 
-import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.base.BasePlugin
 import org.ajoberstar.grgit.Grgit
 import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.eclipse.jgit.revwalk.RevWalk

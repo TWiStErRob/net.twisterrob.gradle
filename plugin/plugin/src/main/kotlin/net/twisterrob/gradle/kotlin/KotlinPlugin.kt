@@ -2,7 +2,7 @@ package net.twisterrob.gradle.kotlin
 
 import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.Utils
-import net.twisterrob.gradle.common.BasePluginForKotlin
+import net.twisterrob.gradle.base.BasePluginForKotlin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
 

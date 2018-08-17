@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.common;
+package net.twisterrob.gradle.base;
 
 import javax.annotation.Nonnull;
 

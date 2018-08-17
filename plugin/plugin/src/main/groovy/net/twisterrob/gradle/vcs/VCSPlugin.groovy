@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.vcs
 
-import net.twisterrob.gradle.common.BaseExposedPlugin
+import net.twisterrob.gradle.base.BaseExposedPlugin
 import org.gradle.api.Project
 
 class VCSPluginExtension implements VCSExtension {
