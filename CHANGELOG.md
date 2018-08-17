@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.6 *(2018-08-17 --- )*
+ * Android Gradle Plugin 3.1.4
+ * Kotlin 1.2.60
+
 ## 0.5 *(2018-04-02 --- 2018-04-16)*
  * Gradle: 4.4.1
  * Android Gradle Plugin 3.1.1
