@@ -1,24 +1,10 @@
 package net.twisterrob.gradle.android
 
-import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.BaseIntgTest
 import org.intellij.lang.annotations.Language
-import org.junit.BeforeClass
-import org.junit.Rule
-import org.junit.rules.TestName
 import kotlin.test.BeforeTest
 
-abstract class BaseAndroidIntgTest {
-
-	@Rule @JvmField val gradle = GradleRunnerRule()
-	@Rule @JvmField val testName = TestName()
-
-	companion object {
-		// TODEL once the GradleRunnerRule is updated to not use assert()
-		@BeforeClass @JvmStatic fun enableAssertions() {
-			val kotlinClassLoader = Class.forName("kotlin._Assertions").classLoader!!
-			kotlinClassLoader.setClassAssertionStatus("kotlin._Assertions", true)
-		}
-	}
+abstract class BaseAndroidIntgTest : BaseIntgTest() {
 
 	@BeforeTest fun setUp() {
 		@Language("xml")

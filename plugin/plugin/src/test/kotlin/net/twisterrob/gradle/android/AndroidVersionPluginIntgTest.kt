@@ -1,6 +1,11 @@
 package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.createTestFileToCommit
+import net.twisterrob.gradle.vcs.doCheckout
+import net.twisterrob.gradle.vcs.doCommitSingleFile
+import net.twisterrob.gradle.vcs.doCreateRepository
+import net.twisterrob.gradle.vcs.svn
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
@@ -169,6 +174,33 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release", "${projectName}-release-unsigned.apk"),
 			versionCode = "10203004",
+			versionName = "1.2.3#4"
+		)
+	}
+
+	@Test fun `build version is used from SVN revision number (release)`() {
+		svn {
+			val root = gradle.settingsFile().parentFile
+			val repoUrl = doCreateRepository(root.resolve(".repo"))
+			doCheckout(repoUrl, root)
+			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 1")
+			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 2")
+			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 3")
+			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 4")
+		}
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3/*; build = 4*/ }
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleRelease").build()
+
+		result.assertSuccess(":assembleRelease")
+		assertDefaultReleaseBadging(
+			apk = gradle.root.apk("release", "${packageName}@12300004-v1.2.3#4+release.apk"),
+			versionCode = "12300004",
 			versionName = "1.2.3#4"
 		)
 	}
