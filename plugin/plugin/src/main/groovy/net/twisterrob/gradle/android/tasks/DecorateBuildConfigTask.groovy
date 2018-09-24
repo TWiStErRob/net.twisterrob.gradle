@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.android.tasks
 
 import com.android.build.gradle.BaseExtension
-import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -32,7 +31,7 @@ class DecorateBuildConfigTask extends DefaultTask {
 	@TaskAction
 	void addVCSInformation() {
 		if (enableVCS) {
-			def vcs = project.VCS as VCSPluginExtension
+			def vcs = project.VCS //as VCSPluginExtension // Kotlin, so type not visible currently
 			buildConfigField "String", "REVISION", "\"${vcs.current.revision}\""
 			buildConfigField "int", "REVISION_NUMBER", "${vcs.current.revisionNumber}"
 		}
