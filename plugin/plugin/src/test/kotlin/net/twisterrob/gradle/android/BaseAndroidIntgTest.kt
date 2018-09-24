@@ -2,9 +2,13 @@ package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.BaseIntgTest
 import org.intellij.lang.annotations.Language
+import org.junit.Rule
+import org.junit.rules.TestName
 import kotlin.test.BeforeTest
 
 abstract class BaseAndroidIntgTest : BaseIntgTest() {
+	@Suppress("PropertyName")
+	@Rule @JvmField val __testName = TestName()
 
 	@BeforeTest fun setUp() {
 		@Language("xml")
@@ -20,7 +24,7 @@ abstract class BaseAndroidIntgTest : BaseIntgTest() {
 		""".trimIndent()
 		gradle.file(gradleProperties, "gradle.properties")
 
-		if (testName.methodName.endsWith(" (release)")) {
+		if (__testName.methodName.endsWith(" (release)")) {
 			createFileToMakeSureProguardPasses()
 		}
 	}
