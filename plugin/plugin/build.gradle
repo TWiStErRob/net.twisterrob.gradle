@@ -52,12 +52,13 @@ afterEvaluate {
 
 jar {
 	manifest {
-		it.attributes(
+		//noinspection UnnecessaryQualifiedReference
+		attributes(
 				"Implementation-Vendor": project.group,
 				"Implementation-Title": project.name,
 				"Implementation-Version": project.version,
 				// parsed in net.twisterrob.gradle.builtDate (Global.kt)
-				"Built-Date": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+				"Built-Date": java.time.format.DateTimeFormatter.ISO_INSTANT.format(java.time.Instant.now())
 		)
 	}
 }

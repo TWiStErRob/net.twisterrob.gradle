@@ -69,10 +69,10 @@ class AndroidProguardPlugin : BasePlugin() {
 			description = "Extract proguard file from 'net.twisterrob.android' plugin"
 			outputs.files(defaultAndroidRules, myProguardRules)
 			outputs.upToDateWhen {
-				defaultAndroidRules.lastModified() == builtDate.time
-						&& myProguardRules.lastModified() == builtDate.time
-						&& myDebugProguardRules.lastModified() == builtDate.time
-						&& myReleaseProguardRules.lastModified() == builtDate.time
+				defaultAndroidRules.lastModified() == builtDate.toEpochMilli()
+						&& myProguardRules.lastModified() == builtDate.toEpochMilli()
+						&& myDebugProguardRules.lastModified() == builtDate.toEpochMilli()
+						&& myReleaseProguardRules.lastModified() == builtDate.toEpochMilli()
 			}
 			doLast {
 				copy("android.pro", defaultAndroidRules)
@@ -102,6 +102,6 @@ class AndroidProguardPlugin : BasePlugin() {
 		targetFile.parentFile.mkdirs()
 		val classLoader = this::class.java.classLoader!!
 		classLoader.getResourceAsStream(internalName).copyTo(targetFile.outputStream())
-		targetFile.setLastModified(builtDate.time)
+		targetFile.setLastModified(builtDate.toEpochMilli())
 	}
 }
