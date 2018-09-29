@@ -1,9 +1,9 @@
 package net.twisterrob.gradle.base
 
 import net.twisterrob.gradle.BaseIntgTest
-import net.twisterrob.gradle.android.assertOutcome
-import net.twisterrob.gradle.android.assertSuccess
-import net.twisterrob.gradle.android.root
+import net.twisterrob.gradle.test.assertOutcome
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.root
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile

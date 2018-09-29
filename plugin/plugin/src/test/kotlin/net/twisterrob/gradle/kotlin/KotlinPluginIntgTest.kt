@@ -1,9 +1,9 @@
 package net.twisterrob.gradle.kotlin
 
 import net.twisterrob.gradle.android.BaseAndroidIntgTest
-import net.twisterrob.gradle.android.assertSuccess
 import net.twisterrob.gradle.android.packageFolder
 import net.twisterrob.gradle.android.packageName
+import net.twisterrob.gradle.test.assertSuccess
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 

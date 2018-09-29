@@ -1,7 +1,9 @@
 package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.test.assertHasOutputLine
-import net.twisterrob.gradle.test.createTestFileToCommit
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.root
+import net.twisterrob.gradle.vcs.createTestFileToCommit
 import net.twisterrob.gradle.vcs.doCheckout
 import net.twisterrob.gradle.vcs.doCommitSingleFile
 import net.twisterrob.gradle.vcs.doCreateRepository

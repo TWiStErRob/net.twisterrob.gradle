@@ -1,6 +1,9 @@
 package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.root
+import net.twisterrob.test.process.runCommand
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.emptyString

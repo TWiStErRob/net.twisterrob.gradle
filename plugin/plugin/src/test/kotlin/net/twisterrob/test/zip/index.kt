@@ -1,5 +1,3 @@
-@file:Suppress("PackageDirectoryMismatch")
-
 package net.twisterrob.test.zip
 
 import org.hamcrest.Description

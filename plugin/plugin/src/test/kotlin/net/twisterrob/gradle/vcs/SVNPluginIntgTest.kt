@@ -1,9 +1,8 @@
 package net.twisterrob.gradle.vcs
 
 import net.twisterrob.gradle.BaseIntgTest
-import net.twisterrob.gradle.android.root
 import net.twisterrob.gradle.test.assertHasOutputLine
-import net.twisterrob.gradle.test.createTestFileToCommit
+import net.twisterrob.gradle.test.root
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 

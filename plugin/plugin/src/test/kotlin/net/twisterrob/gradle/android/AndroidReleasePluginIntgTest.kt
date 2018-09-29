@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.root
 import net.twisterrob.test.zip.hasZipEntry
 import net.twisterrob.test.zip.withSize
 import org.hamcrest.Matchers.greaterThan

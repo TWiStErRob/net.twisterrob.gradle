@@ -3,6 +3,9 @@ package net.twisterrob.gradle.android
 import com.jakewharton.dex.DexParser
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertNoTask
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.root
 import org.gradle.testkit.runner.BuildResult
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf

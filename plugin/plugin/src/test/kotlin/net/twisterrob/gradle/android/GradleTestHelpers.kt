@@ -2,19 +2,13 @@ package net.twisterrob.gradle.android
 
 import com.jakewharton.dex.DexMethod
 import net.twisterrob.gradle.android.AndroidBuildPlugin.Companion.VERSION_BUILD_TOOLS
-import net.twisterrob.gradle.test.GradleRunnerRule
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.TaskOutcome
+import net.twisterrob.test.process.assertOutput
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.junit.Assert.assertThat
 import java.io.File
-import java.util.concurrent.TimeUnit
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 internal const val packageName = "net.twisterrob.gradle.test_app"
 internal val packageFolder get() = packageName.replace('.', '/')
@@ -29,27 +23,6 @@ internal fun File.apk(
 ) =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
 
-// TODO many below are not Android related functions
-internal val GradleRunnerRule.root get () = this.settingsFile().parentFile!!
-
-internal fun BuildResult.assertNoTask(taskPath: String) = assertNull(task(taskPath))
-
-/**
- * Assert that the task exists and that it ran to completion with success.
- * Note: this means that UP-TO-DATE and NO-SOURCE will fail!
- */
-internal fun BuildResult.assertSuccess(taskPath: String) = assertOutcome(taskPath, TaskOutcome.SUCCESS)
-
-internal fun BuildResult.assertFailed(taskPath: String) = assertOutcome(taskPath, TaskOutcome.FAILED)
-
-internal fun BuildResult.assertOutcome(taskPath: String, outcome: TaskOutcome) {
-	@Suppress("ReplaceSingleLineLet")
-	val task = task(taskPath)
-		.let { assertNotNull(it, "${taskPath} task not found") }
-	assertEquals(outcome, task.outcome)
-}
-
-internal fun String.normalize() = trim().replace("\r?\n".toRegex(), System.lineSeparator())
 internal val buildToolsDir get () = File(System.getenv("ANDROID_HOME"), "build-tools/${VERSION_BUILD_TOOLS}")
 
 internal fun resolveFromAndroidSDK(command: String) = resolveFromFolders(command, buildToolsDir)
@@ -69,23 +42,6 @@ private fun resolveFromFolders(command: String, vararg dirs: File): File {
 		.flatMap { variant -> dirs.map { it.resolve(variant) } }
 		.firstOrNull { it.exists() && it.isFile }
 		?: error("Cannot find any of ${variants} in any of these folders:\n${dirs.joinToString("\n")}")
-}
-
-internal fun Iterable<String>.runCommand(
-	workingDir: File = File("."),
-	timeout: Long = TimeUnit.MINUTES.toMillis(60)
-) =
-	ProcessBuilder(this.toList())
-		.directory(workingDir)
-		.redirectOutput(ProcessBuilder.Redirect.PIPE)
-		.redirectError(ProcessBuilder.Redirect.PIPE)
-		.start()
-		.apply { waitFor(timeout, TimeUnit.MILLISECONDS) }
-		.run { inputStream.bufferedReader().readText() }
-
-private fun assertOutput(command: List<Any>, expected: String) {
-	val output = command.map(Any?::toString).runCommand()
-	assertEquals(expected.normalize(), output.normalize())
 }
 
 internal fun assertDefaultDebugBadging(

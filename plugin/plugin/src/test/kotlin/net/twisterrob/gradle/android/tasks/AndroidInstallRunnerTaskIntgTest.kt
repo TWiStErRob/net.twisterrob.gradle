@@ -2,11 +2,11 @@ package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.AndroidBuildPlugin
 import net.twisterrob.gradle.android.BaseAndroidIntgTest
-import net.twisterrob.gradle.android.assertFailed
-import net.twisterrob.gradle.android.assertNoTask
 import net.twisterrob.gradle.android.packageName
-import net.twisterrob.gradle.android.root
+import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoTask
+import net.twisterrob.gradle.test.root
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
