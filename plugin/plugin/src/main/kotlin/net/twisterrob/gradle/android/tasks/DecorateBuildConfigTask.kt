@@ -2,13 +2,12 @@ package net.twisterrob.gradle.android.tasks
 
 import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.vcs.VCSPluginExtension
-import org.codehaus.groovy.runtime.DateGroovyMethods
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.kotlin.dsl.getByName
-import java.util.Date
-import java.util.TimeZone
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 private val DAY = TimeUnit.DAYS.toMillis(1)
@@ -61,5 +60,5 @@ open class DecorateBuildConfigTask : DefaultTask() {
 	}
 
 	private fun dateFormat(date: Long): String =
-		DateGroovyMethods.format(Date(date), "yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
+		DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(date))
 }

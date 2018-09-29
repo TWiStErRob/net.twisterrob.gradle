@@ -205,7 +205,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
-					val res = org.robolectric.RuntimeEnvironment.application.resources
 					printProperty("BUILD_TIME=" + (BuildConfig.BUILD_TIME as java.util.Date).time)
 				}
 				private fun printProperty(prop: String) = println(BuildConfig.BUILD_TYPE + "." + prop)
