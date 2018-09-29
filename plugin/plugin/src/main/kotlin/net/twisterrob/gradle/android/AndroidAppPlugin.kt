@@ -1,12 +1,13 @@
 package net.twisterrob.gradle.android
 
-import net.twisterrob.gradle.base.BaseExposedPluginForKotlin
+import net.twisterrob.gradle.base.BaseExposedPlugin
 import net.twisterrob.gradle.java.JavaPlugin
 import net.twisterrob.gradle.vcs.VCSPlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 
-class AndroidAppPlugin : BaseExposedPluginForKotlin() {
+class AndroidAppPlugin : BaseExposedPlugin() {
+
 	override fun apply(target: Project) {
 		super.apply(target)
 

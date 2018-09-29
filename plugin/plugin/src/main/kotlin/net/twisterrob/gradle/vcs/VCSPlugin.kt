@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.vcs
 
-import net.twisterrob.gradle.base.BaseExposedPluginForKotlin
+import net.twisterrob.gradle.base.BaseExposedPlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -23,7 +23,8 @@ open class VCSPluginExtension : VCSExtension {
 	override val revisionNumber get() = current.revisionNumber
 }
 
-class VCSPlugin : BaseExposedPluginForKotlin() {
+class VCSPlugin : BaseExposedPlugin() {
+
 	companion object {
 		@JvmStatic
 		fun VCSPluginExtension.whichVCS(): VCSExtension = when {

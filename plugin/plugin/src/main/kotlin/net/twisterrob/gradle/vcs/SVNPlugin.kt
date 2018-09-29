@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.vcs
 
-import net.twisterrob.gradle.base.BasePluginForKotlin
+import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByName
@@ -15,7 +15,8 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.security.Permission
 
-class SVNPlugin : BasePluginForKotlin() {
+class SVNPlugin : BasePlugin() {
+
 	override fun apply(target: Project) {
 		super.apply(target)
 

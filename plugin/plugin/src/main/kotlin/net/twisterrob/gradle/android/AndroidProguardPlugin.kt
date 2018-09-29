@@ -8,8 +8,8 @@ import com.android.build.gradle.internal.transforms.ProGuardTransform
 import com.android.builder.core.DefaultBuildType
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.Utils
+import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.builtDate
-import net.twisterrob.gradle.base.BasePluginForKotlin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.get
@@ -17,7 +17,7 @@ import org.gradle.kotlin.dsl.task
 import org.gradle.kotlin.dsl.withType
 import java.io.File
 
-class AndroidProguardPlugin : BasePluginForKotlin() {
+class AndroidProguardPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

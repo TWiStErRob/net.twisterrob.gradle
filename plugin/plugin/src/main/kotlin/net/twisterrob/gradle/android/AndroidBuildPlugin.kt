@@ -11,7 +11,7 @@ import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.DecorateBuildConfigTask
-import net.twisterrob.gradle.base.BasePluginForKotlin
+import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
@@ -25,7 +25,7 @@ open class AndroidBuildPluginExtension {
 	var addRunTasks: Boolean = true
 }
 
-class AndroidBuildPlugin : BasePluginForKotlin() {
+class AndroidBuildPlugin : BasePlugin() {
 
 	companion object {
 

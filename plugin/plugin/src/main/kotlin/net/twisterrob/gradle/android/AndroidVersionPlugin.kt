@@ -8,7 +8,7 @@ import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.TestedVariant
 import com.android.builder.core.DefaultProductFlavor
-import net.twisterrob.gradle.base.BasePluginForKotlin
+import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.base
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId
@@ -62,7 +62,7 @@ open class AndroidVersionExtension {
 	}
 }
 
-class AndroidVersionPlugin : BasePluginForKotlin() {
+class AndroidVersionPlugin : BasePlugin() {
 
 	private val android: AppExtension by lazy {
 		if (!project.plugins.hasPlugin("com.android.application")) {

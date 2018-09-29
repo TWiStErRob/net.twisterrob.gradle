@@ -4,7 +4,7 @@ import com.android.build.gradle.BaseExtension
 import com.android.builder.core.VariantType.ANDROID_TEST
 import com.android.builder.core.VariantType.UNIT_TEST
 import net.twisterrob.gradle.Utils
-import net.twisterrob.gradle.base.BaseExposedPluginForKotlin
+import net.twisterrob.gradle.base.BaseExposedPlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
@@ -17,7 +17,7 @@ private val DEFAULT_JAVA_VERSION = JavaVersion.VERSION_1_7
 private val DEFAULT_JAVA_TEST_VERSION = JavaVersion.VERSION_1_8
 private const val DEFAULT_ENCODING = "UTF-8"
 
-class JavaPlugin : BaseExposedPluginForKotlin() {
+class JavaPlugin : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

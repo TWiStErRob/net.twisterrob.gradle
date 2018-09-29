@@ -2,13 +2,13 @@ package net.twisterrob.gradle.kotlin
 
 import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.Utils
-import net.twisterrob.gradle.base.BasePluginForKotlin
+import net.twisterrob.gradle.base.BasePlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
 
 const val VERSION_KOTLIN = "1.2.60"
 
-class KotlinPlugin : BasePluginForKotlin() {
+class KotlinPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

@@ -7,7 +7,7 @@ import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.internal.api.TestedVariant
 import com.android.builder.model.BuildType
 import net.twisterrob.gradle.Utils
-import net.twisterrob.gradle.base.BasePluginForKotlin
+import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
@@ -21,7 +21,8 @@ import java.io.File
 
 private const val envVarName = "RELEASE_HOME"
 
-class AndroidReleasePlugin : BasePluginForKotlin() {
+class AndroidReleasePlugin : BasePlugin() {
+
 	lateinit var android: BaseExtension
 
 	override fun apply(target: Project) {

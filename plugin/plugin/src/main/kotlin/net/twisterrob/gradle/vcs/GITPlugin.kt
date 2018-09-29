@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.vcs
 
-import net.twisterrob.gradle.base.BasePluginForKotlin
+import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.ajoberstar.grgit.Grgit
 import org.eclipse.jgit.errors.RepositoryNotFoundException
@@ -8,7 +8,8 @@ import org.eclipse.jgit.revwalk.RevWalk
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByName
 
-class GITPlugin : BasePluginForKotlin() {
+class GITPlugin : BasePlugin() {
+
 	override fun apply(target: Project) {
 		super.apply(target)
 
