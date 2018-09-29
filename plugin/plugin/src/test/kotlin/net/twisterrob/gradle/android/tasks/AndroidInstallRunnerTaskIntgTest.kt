@@ -4,6 +4,8 @@ import net.twisterrob.gradle.android.AndroidBuildPlugin
 import net.twisterrob.gradle.android.BaseAndroidIntgTest
 import net.twisterrob.gradle.android.assertFailed
 import net.twisterrob.gradle.android.assertNoTask
+import net.twisterrob.gradle.android.packageName
+import net.twisterrob.gradle.android.root
 import net.twisterrob.gradle.test.assertHasOutputLine
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -16,6 +18,22 @@ import org.junit.Test
 class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 
 	@Test fun `adds run tasks (debug)`() {
+		@Language("xml")
+		val androidManifest = """
+			<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="$packageName">
+				<application>
+					<activity android:name=".MainActivity">
+						<intent-filter>
+							<action android:name="android.intent.action.MAIN" />
+							<category android:name="android.intent.category.LAUNCHER" />
+						</intent-filter>
+					</activity>
+				</application>
+			</manifest>
+		""".trimIndent()
+		gradle.root.resolve("src/main/AndroidManifest.xml").delete()
+		gradle.file(androidManifest, "src/main/AndroidManifest.xml")
+
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
