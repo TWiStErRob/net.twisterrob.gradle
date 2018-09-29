@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.jakewharton.dex.DexMethod
+import net.twisterrob.gradle.android.AndroidBuildPlugin.Companion.VERSION_BUILD_TOOLS
 import net.twisterrob.gradle.test.GradleRunnerRule
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
