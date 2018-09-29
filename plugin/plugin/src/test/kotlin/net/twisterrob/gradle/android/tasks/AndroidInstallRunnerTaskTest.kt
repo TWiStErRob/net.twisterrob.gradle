@@ -10,7 +10,7 @@ class AndroidInstallRunnerTaskTest {
 
 	@Rule @JvmField val temp = TemporaryFolder()
 
-	@Test fun `single main activity with extra category`() {
+	@Test fun `one match in the middle`() {
 		val file = temp.newFile()
 		file.writeText(
 			"""
@@ -19,12 +19,36 @@ class AndroidInstallRunnerTaskTest {
 				<!-- Extra permission for more flexibility in test -->
 				<uses-permission android:name="android.permission.INTERNET" />
 				<application>
+					<activity android:name=".missing.filter" />
+					<activity android:name=".missing.action">
+						<intent-filter>
+							<category android:name="android.intent.category.LAUNCHER" />
+						</intent-filter>
+					</activity>
+					<activity android:name=".missing.category">
+						<intent-filter>
+							<action android:name="android.intent.action.MAIN" />
+						</intent-filter>
+					</activity>
 					<activity android:name=".activity.MainActivity">
 						<intent-filter>
 							<action android:name="android.intent.action.MAIN" />
 							<category android:name="android.intent.category.LAUNCHER" />
-							<!-- Extra permission for more flexibility in test -->
+							<!-- Extra category for more flexibility in test -->
 							<category android:name="android.intent.category.DEFAULT" />
+						</intent-filter>
+					</activity>
+					<activity android:name=".missing.contents">
+						<intent-filter>
+						</intent-filter>
+					</activity>
+					<activity android:name=".multiple.filters">
+						<intent-filter>
+							<action android:name="android.intent.action.MAIN" />
+						</intent-filter>
+						<intent-filter />
+						<intent-filter>
+							<category android:name="android.intent.category.LAUNCHER" />
 						</intent-filter>
 					</activity>
 				</application>
