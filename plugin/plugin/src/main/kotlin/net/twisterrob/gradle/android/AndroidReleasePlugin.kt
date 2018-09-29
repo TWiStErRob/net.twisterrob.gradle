@@ -6,7 +6,6 @@ import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.internal.api.TestedVariant
 import com.android.builder.model.BuildType
-import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.DomainObjectSet
@@ -53,8 +52,7 @@ class AndroidReleasePlugin : BasePlugin() {
 
 		@Suppress("UNCHECKED_CAST")
 		fun getVariantsForBuildType() =
-			Utils.getVariants(android).matching { it.buildType.name == buildType.name }
-					as DomainObjectSet<ApkVariant>
+			android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
 
 		project.plugins.withType<AppPlugin> {
 			val matching = getVariantsForBuildType()

@@ -8,7 +8,6 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.TestVariant
 import com.android.build.gradle.internal.api.InstallableVariantImpl
 import com.android.builder.core.DefaultApiVersion
-import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.DecorateBuildConfigTask
 import net.twisterrob.gradle.base.BasePlugin
@@ -105,13 +104,11 @@ class AndroidBuildPlugin : BasePlugin() {
 				//Utils.getVariants(android).all(::fixVariantTaskGroups)
 
 				if (twisterrob.decorateBuildConfig) {
-					Utils.getVariants(android).all(::addPackageName)
+					android.variants.all(::addPackageName)
 				}
 
 				if (twisterrob.addRunTasks) {
-					Utils.getVariants(android).all { variant ->
-						createRunTask(variant as ApkVariant)
-					}
+					android.variants.all { variant -> createRunTask(variant as ApkVariant) }
 				}
 			}
 

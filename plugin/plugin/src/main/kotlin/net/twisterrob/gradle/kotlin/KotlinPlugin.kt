@@ -1,7 +1,7 @@
 package net.twisterrob.gradle.kotlin
 
 import com.android.build.gradle.BaseExtension
-import net.twisterrob.gradle.Utils
+import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.base.BasePlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
@@ -13,7 +13,7 @@ class KotlinPlugin : BasePlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
-		if (Utils.hasAndroid(project)) {
+		if (project.plugins.hasAndroid()) {
 			// CONSIDER https://github.com/griffio/dagger2-kotlin/blob/master/README.md
 			project.plugins.apply("kotlin-android")
 			project.plugins.apply("kotlin-kapt")

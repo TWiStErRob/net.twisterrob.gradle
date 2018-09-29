@@ -7,7 +7,6 @@ import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.transforms.ProGuardTransform
 import com.android.builder.core.DefaultBuildType
 import com.android.builder.model.AndroidProject
-import net.twisterrob.gradle.Utils
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.builtDate
 import org.gradle.api.Project
@@ -84,11 +83,11 @@ class AndroidProguardPlugin : BasePlugin() {
 		}
 
 		project.afterEvaluate {
-			Utils.getVariants(android).all { variant ->
-				val obfuscationTask = project.tasks.matching {
-					it is TransformTask
-							&& it.variantName == variant.name
-							&& it.transform is ProGuardTransform
+			android.variants.all { variant ->
+				val obfuscationTask = project.tasks.matching { task ->
+					task is TransformTask
+							&& task.variantName == variant.name
+							&& task.transform is ProGuardTransform
 				}.singleOrNull() as TransformTask?
 				if (obfuscationTask != null) {
 					obfuscationTask.dependsOn(extractProguardRules)

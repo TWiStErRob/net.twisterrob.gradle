@@ -3,7 +3,7 @@ package net.twisterrob.gradle.java
 import com.android.build.gradle.BaseExtension
 import com.android.builder.core.VariantType.ANDROID_TEST
 import com.android.builder.core.VariantType.UNIT_TEST
-import net.twisterrob.gradle.Utils
+import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.base.BaseExposedPlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
@@ -22,7 +22,7 @@ class JavaPlugin : BaseExposedPlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
-		if (Utils.hasAndroid(project)) {
+		if (project.plugins.hasAndroid()) {
 			val android: BaseExtension = project.extensions["android"] as BaseExtension
 			with(android.compileOptions) {
 				encoding = DEFAULT_ENCODING

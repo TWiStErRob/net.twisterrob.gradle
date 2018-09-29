@@ -4,7 +4,7 @@ import net.twisterrob.gradle.base.BasePlugin
 import sun.net.www.protocol.file.FileURLConnection
 import java.net.JarURLConnection
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 val builtDate: Date by lazy {
 	val aClassInJar = BasePlugin::class.java
