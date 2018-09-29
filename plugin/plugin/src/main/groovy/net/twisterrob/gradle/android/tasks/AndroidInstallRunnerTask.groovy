@@ -31,7 +31,7 @@ class AndroidInstallRunnerTask extends Exec {
 		return launcherActivity['@android:name']
 	}
 
-	static boolean isAppLauncher(activity) {
+	private static boolean isAppLauncher(activity) {
 		return activity.'intent-filter'.find { intentFilter ->
 			def isMain = intentFilter.action.find {
 				it.'@android:name'.text() == 'android.intent.action.MAIN'

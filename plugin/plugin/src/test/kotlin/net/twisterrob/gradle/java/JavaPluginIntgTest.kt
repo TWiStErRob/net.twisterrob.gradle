@@ -36,10 +36,8 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 				testImplementation "junit:junit:4.12"
 			}
 			tasks.withType(Test) {
-				testLogging {
-					//noinspection UnnecessaryQualifiedReference
-					events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
-				}
+				//noinspection UnnecessaryQualifiedReference
+				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
 			}
 		""".trimIndent()
 
