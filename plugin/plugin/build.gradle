@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply plugin: 'net.twisterrob.gradle.test'
-version = '3.1.4.14-27-27.1'
+version = '3.1.4.14-27-27.2'
 
 dependencies { // last checked 2018-06-09 (all latest)
 	implementation gradleApi()
@@ -9,8 +9,8 @@ dependencies { // last checked 2018-06-09 (all latest)
 	implementation 'org.tmatesoft.svnkit:svnkit-cli:1.9.3'
 	implementation 'org.ajoberstar:gradle-git:1.7.2' // https://github.com/ajoberstar/gradle-git/releases
 	implementation 'com.android.tools.build:gradle:3.1.4' // https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
-	implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.60'
-	implementation ('org.gradle:gradle-kotlin-dsl:0.17.5') {
+	implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
+	implementation ('org.gradle:gradle-kotlin-dsl:1.0-rc-11') {
 		transitive = false // make sure to not pull in kotlin-compiler-embeddable
 	}
 }
@@ -32,9 +32,9 @@ dependencies { // test
 	testImplementation "org.hamcrest:java-hamcrest:2.0.0.0"
 	testImplementation "org.hamcrest:hamcrest-junit:2.0.0.0"
 	testImplementation "org.jetbrains:annotations:16.0.2"
-	testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60"
-	testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.2.60"
-	testImplementation "com.jakewharton.dex:dex-method-list:3.1.0"
+	testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71"
+	testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.2.71"
+	testImplementation "com.jakewharton.dex:dex-member-list:3.2.1"
 }
 
 project.with {
