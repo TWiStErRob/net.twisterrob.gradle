@@ -4,6 +4,7 @@ import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.codehaus.groovy.runtime.DateGroovyMethods
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.kotlin.dsl.getByName
 import java.util.Date
@@ -16,7 +17,9 @@ open class DecorateBuildConfigTask : DefaultTask() {
 
 	private val buildConfigField: (type: String, name: String, value: String) -> Unit
 
+	@Input
 	var enableVCS: Boolean = true
+	@Input
 	var enableBuild: Boolean = true
 
 	/**
@@ -28,6 +31,7 @@ open class DecorateBuildConfigTask : DefaultTask() {
 	 *
 	 * @returns a long representing the UTC time of the build.
 	 */
+	@Input
 	var getBuildTime = { System.currentTimeMillis() / DAY * DAY }
 
 	init {
