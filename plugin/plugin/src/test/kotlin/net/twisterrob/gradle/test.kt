@@ -5,8 +5,6 @@ package net.twisterrob.gradle.test
 import java.io.File
 import java.lang.Math.random
 
-val GradleRunnerRule.root: File get() = settingsFile().parentFile
-
 fun File.createTestFileToCommit() = createTestFileToCommit(random().toString())
 
 fun File.createTestFileToCommit(message: String): File {

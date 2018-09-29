@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.android
 
 import com.jakewharton.dex.DexMethod
-import net.twisterrob.gradle.android.AndroidBuildPlugin.VERSION_BUILD_TOOLS
 import net.twisterrob.gradle.test.GradleRunnerRule
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
@@ -29,7 +28,8 @@ internal fun File.apk(
 ) =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
 
-internal val GradleRunnerRule.root get () = this.getBuildFile().parentFile!!
+// TODO many below are not Android related functions
+internal val GradleRunnerRule.root get () = this.settingsFile().parentFile!!
 
 internal fun BuildResult.assertNoTask(taskPath: String) = assertNull(task(taskPath))
 
