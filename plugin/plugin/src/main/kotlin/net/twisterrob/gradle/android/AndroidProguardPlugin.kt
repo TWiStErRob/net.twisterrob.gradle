@@ -5,6 +5,7 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.transforms.ProGuardTransform
+import com.android.build.gradle.internal.transforms.configuration
 import com.android.builder.core.DefaultBuildType
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.base.BasePlugin
@@ -92,7 +93,8 @@ class AndroidProguardPlugin : BasePlugin() {
 				if (obfuscationTask != null) {
 					obfuscationTask.dependsOn(extractProguardRules)
 					val proguard = obfuscationTask.transform as ProGuardTransform
-					proguard.printconfiguration(File(variant.mappingFile.parentFile, "configuration.pro"))
+					proguard.configuration.printConfiguration =
+							File(variant.mappingFile.parentFile, "configuration.pro")
 				}
 			}
 		}
