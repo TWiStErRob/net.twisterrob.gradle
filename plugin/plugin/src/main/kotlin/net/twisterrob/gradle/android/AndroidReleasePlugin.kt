@@ -91,14 +91,14 @@ class AndroidReleasePlugin : BasePlugin() {
 					it.rename("(.*)", "proguard_$1")
 				}
 			}
-			val outFile = outputs.files.singleFile
 			doFirst {
+				val outFile = outputs.files.singleFile
 				if (outFile.exists()) {
 					throw StopExecutionException("Target zip file already exists, did you run 'svn update'?\nRelease archive: ${outFile}")
 				}
 			}
 			doLast {
-				println("Published release artifacts to ${outFile}")
+				println("Published release artifacts to ${outputs.files.singleFile}")
 			}
 		}
 		releaseVariantTask.dependsOn(variant.assemble)

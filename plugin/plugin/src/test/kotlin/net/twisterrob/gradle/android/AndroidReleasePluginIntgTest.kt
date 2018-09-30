@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
 import net.twisterrob.test.zip.hasZipEntry
@@ -9,6 +10,8 @@ import org.hamcrest.io.FileMatchers.anExistingFile
 import org.hamcrest.junit.MatcherAssert.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
+import java.time.Instant
+import java.util.zip.ZipFile
 
 /**
  * @see AndroidReleasePlugin
@@ -33,11 +36,25 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		val releasesDir = gradle.root.resolve("releases")
 		val archive = releasesDir.resolve("${packageName}@10203004-v1.2.3#4+archive.zip")
 		assertThat(archive, anExistingFile())
-		assertThat(archive, hasZipEntry("${packageName}@10203004-v1.2.3#4+release.apk", withSize(greaterThan(0L))))
-		assertThat(archive, hasZipEntry("proguard_configuration.pro", withSize(greaterThan(0L))))
-		assertThat(archive, hasZipEntry("proguard_dump.txt", withSize(greaterThan(0L))))
-		assertThat(archive, hasZipEntry("proguard_mapping.txt", withSize(greaterThan(0L))))
-		assertThat(archive, hasZipEntry("proguard_seeds.txt", withSize(greaterThan(0L))))
-		assertThat(archive, hasZipEntry("proguard_usage.txt", withSize(greaterThan(0L))))
+		try {
+			assertThat(archive, hasZipEntry("${packageName}@10203004-v1.2.3#4+release.apk", withSize(greaterThan(0L))))
+			assertThat(archive, hasZipEntry("proguard_configuration.pro", withSize(greaterThan(0L))))
+			assertThat(archive, hasZipEntry("proguard_dump.txt", withSize(greaterThan(0L))))
+			assertThat(archive, hasZipEntry("proguard_mapping.txt", withSize(greaterThan(0L))))
+			assertThat(archive, hasZipEntry("proguard_seeds.txt", withSize(greaterThan(0L))))
+			assertThat(archive, hasZipEntry("proguard_usage.txt", withSize(greaterThan(0L))))
+		} catch (ex: Throwable) {
+			println(ZipFile(archive)
+				.entries()
+				.asSequence()
+				.sortedBy { it.name }
+				.joinToString("\n") {
+					"${it.name} (${it.compressedSize}/${it.size} bytes) @ ${Instant.ofEpochMilli(
+						it.time
+					)}"
+				})
+			throw ex
+		}
+		result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
 	}
 }
