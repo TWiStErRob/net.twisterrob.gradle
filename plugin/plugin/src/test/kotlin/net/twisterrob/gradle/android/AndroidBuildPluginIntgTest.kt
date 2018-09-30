@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
 import org.intellij.lang.annotations.Language
@@ -232,7 +233,33 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		""".trimIndent()
 
 		val result = gradle.run(script, "testReleaseUnitTest").build()
+
 		result.assertSuccess(":testReleaseUnitTest")
 		result.assertHasOutputLine("    release.BUILD_TIME=1234567890")
+	}
+
+	/**
+	 * @see AndroidBuildPlugin.fixVariantTaskGroups
+	 */
+	@Test fun `metadata of compilation tasks is present`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+		""".trimIndent()
+
+		val result = gradle.run(script, "tasks").build()
+
+		result.assertHasOutputLine("""^compileDebugSources - (.+)""".toRegex())
+		result.assertHasOutputLine("""^compileReleaseSources - (.+)""".toRegex())
+		result.assertHasOutputLine("""^compileDebugJavaWithJavac - (.+)""".toRegex())
+		result.assertHasOutputLine("""^compileReleaseJavaWithJavac - (.+)""".toRegex())
+		result.assertHasOutputLine("""^compileDebugUnitTestSources - (.+)""".toRegex())
+		result.assertHasOutputLine("""^compileReleaseUnitTestSources - (.+)""".toRegex())
+		result.assertHasOutputLine("""^compileDebugUnitTestJavaWithJavac - (.+)""".toRegex())
+		result.assertHasOutputLine("""^compileReleaseUnitTestJavaWithJavac - (.+)""".toRegex())
+		result.assertHasOutputLine("""^compileDebugAndroidTestSources - (.+)""".toRegex())
+		result.assertNoOutputLine("""^compileReleaseAndroidTestSources -(.*)""".toRegex())
+		result.assertHasOutputLine("""^compileDebugAndroidTestJavaWithJavac - (.+)""".toRegex())
+		result.assertNoOutputLine("""^compileReleaseAndroidTestJavaWithJavac -(.*)""".toRegex())
 	}
 }

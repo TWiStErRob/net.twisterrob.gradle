@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.android
 
 import com.jakewharton.dex.DexMethod
-import net.twisterrob.gradle.android.AndroidBuildPlugin.Companion.VERSION_BUILD_TOOLS
 import net.twisterrob.test.process.assertOutput
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -49,9 +48,9 @@ internal fun assertDefaultDebugBadging(
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
 	versionName: String = "0.0.0#0d",
-	compileSdkVersionName: String = AndroidBuildPlugin.VERSION_SDK_COMPILE_NAME,
-	minSdkVersion: Int = AndroidBuildPlugin.VERSION_SDK_MINIMUM,
-	targetSdkVersion: Int = AndroidBuildPlugin.VERSION_SDK_TARGET
+	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	minSdkVersion: Int = VERSION_SDK_MINIMUM,
+	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) = assertDefaultBadging(
 	apk,
 	applicationId,
@@ -67,9 +66,9 @@ internal fun assertDefaultReleaseBadging(
 	applicationId: String = packageName,
 	versionCode: String = "",
 	versionName: String = "0.0.0#0",
-	compileSdkVersionName: String = AndroidBuildPlugin.VERSION_SDK_COMPILE_NAME,
-	minSdkVersion: Int = AndroidBuildPlugin.VERSION_SDK_MINIMUM,
-	targetSdkVersion: Int = AndroidBuildPlugin.VERSION_SDK_TARGET
+	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	minSdkVersion: Int = VERSION_SDK_MINIMUM,
+	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) = assertDefaultBadging(
 	apk,
 	applicationId,
@@ -85,9 +84,9 @@ internal fun assertDefaultBadging(
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
 	versionName: String = "0.0.0#0d",
-	compileSdkVersionName: String = AndroidBuildPlugin.VERSION_SDK_COMPILE_NAME,
-	minSdkVersion: Int = AndroidBuildPlugin.VERSION_SDK_MINIMUM,
-	targetSdkVersion: Int = AndroidBuildPlugin.VERSION_SDK_TARGET
+	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	minSdkVersion: Int = VERSION_SDK_MINIMUM,
+	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) {
 	val fileNamesMessage =
 		"Wanted: ${apk.absolutePath}${System.lineSeparator()}list: ${apk.parentFile.listFiles().joinToString(

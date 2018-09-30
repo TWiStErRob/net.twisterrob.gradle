@@ -2,11 +2,12 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.api.TestVariant
-import com.android.build.gradle.internal.api.InstallableVariantImpl
+import com.android.build.gradle.internal.api.androidTestVariantData
+import com.android.build.gradle.internal.api.unitTestVariantData
+import com.android.build.gradle.internal.api.variantData
+import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.DecorateBuildConfigTask
@@ -24,28 +25,28 @@ open class AndroidBuildPluginExtension {
 	var addRunTasks: Boolean = true
 }
 
+/**
+ * Keep it in sync with AppCompat's minimum.
+ */
+const val VERSION_SDK_MINIMUM = 14
+
+/**
+ * Latest SDK version available, Google Play Store has stringent rules, so keep up to date.
+ */
+const val VERSION_SDK_TARGET = 27
+
+/**
+ * Latest SDK version available, useful for discovering deprecated methods and getting new features like `.findViewById<T>()`.
+ */
+const val VERSION_SDK_COMPILE = VERSION_SDK_TARGET
+const val VERSION_SDK_COMPILE_NAME = "8.1.0" // Oreo
+
+/**
+ * Latest build tools version available, there's no reason to hold back.
+ */
+const val VERSION_BUILD_TOOLS = "27.0.3"
+
 class AndroidBuildPlugin : BasePlugin() {
-
-	companion object {
-
-		/**
-		 * Keep it in sync with AppCompat's minimum.
-		 */
-		const val VERSION_SDK_MINIMUM = 14
-		/**
-		 * Latest SDK version available, Google Play Store has stringent rules, so keep up to date.
-		 */
-		const val VERSION_SDK_TARGET = 27
-		/**
-		 * Latest SDK version available, useful for discovering deprecated methods and getting new features like `.findViewById<T>()`.
-		 */
-		const val VERSION_SDK_COMPILE = VERSION_SDK_TARGET
-		const val VERSION_SDK_COMPILE_NAME = "8.1.0" // Oreo
-		/**
-		 * Latest build tools version available, there's no reason to hold back.
-		 */
-		const val VERSION_BUILD_TOOLS = "27.0.3"
-	}
 
 	private lateinit var android: BaseExtension
 
@@ -100,9 +101,10 @@ class AndroidBuildPlugin : BasePlugin() {
 			decorateBuildConfig()
 		}
 		project.afterEvaluate {
+			if (project.plugins.hasAndroid()) {
+				android.variants.all(::fixVariantTaskGroups)
+			}
 			project.plugins.withType<AppPlugin> {
-				//Utils.getVariants(android).all(::fixVariantTaskGroups)
-
 				if (twisterrob.decorateBuildConfig) {
 					android.variants.all(::addPackageName)
 				}
@@ -111,45 +113,44 @@ class AndroidBuildPlugin : BasePlugin() {
 					android.variants.all { variant -> createRunTask(variant as ApkVariant) }
 				}
 			}
-
-			project.plugins.withType<LibraryPlugin> {
-				//Utils.getVariants(android).all(::fixVariantTaskGroups)
-			}
 		}
 	}
 
 	private fun decorateBuildConfig() {
 		project.tasks.create<DecorateBuildConfigTask>("decorateBuildConfig") {
-			description = "Add more information about build to BuildConfig.java"
+			description = "Adds more information about build to BuildConfig.java."
 			project.tasks["preBuild"].dependsOn(this)
 		}
 	}
-}
 
-private fun createRunTask(variant: ApkVariant) {
-	if (variant.install != null) {
-		val project = variant.install.project
-		val name = "run${variant.name.capitalize()}"
-		project.tasks.create<AndroidInstallRunnerTask>(name) {
-			dependsOn(variant.install)
-			this.setVariant(variant)
+	companion object {
+
+		private fun createRunTask(variant: ApkVariant) {
+			if (variant.install != null) {
+				val project = variant.install.project
+				val name = "run${variant.name.capitalize()}"
+				project.tasks.create<AndroidInstallRunnerTask>(name) {
+					dependsOn(variant.install)
+					this.setVariant(variant)
+				}
+			}
+		}
+
+		private fun fixVariantTaskGroups(variant: BaseVariant) {
+			fun BaseVariantData.fixTaskMetadata() {
+				compileTask.group = "Build"
+				compileTask.description = "Compiles sources for ${description}."
+				javacTask.group = "Build"
+				javacTask.description = "Compiles Java sources for ${description}."
+			}
+			variant.variantData?.fixTaskMetadata()
+			variant.androidTestVariantData?.fixTaskMetadata()
+			variant.unitTestVariantData?.fixTaskMetadata()
+		}
+
+		private fun addPackageName(variant: BaseVariant) {
+			// Package name for use e.g. in preferences to launch intent from the right package or for content providers
+			variant.resValue("string", "app_package", variant.applicationId)
 		}
 	}
-}
-
-private fun fixVariantTaskGroups(variant: BaseVariant) {
-	val variantDescription = variant.description
-	(variant as InstallableVariantImpl).variantData.apply {
-		compileTask.group = "Build"
-		compileTask.description = "Compiles sources for $variantDescription"
-	}
-	((variant as? TestVariant)?.testedVariant as? InstallableVariantImpl)?.variantData?.apply {
-		compileTask.group = "Build"
-		compileTask.description = "Compiles test sources for $variantDescription"
-	}
-}
-
-private fun addPackageName(variant: BaseVariant) {
-	// Package name for use e.g. in preferences to launch intent from the right package or for content providers
-	variant.resValue("string", "app_package", variant.applicationId)
 }
