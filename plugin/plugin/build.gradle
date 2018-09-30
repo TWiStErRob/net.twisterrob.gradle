@@ -1,7 +1,6 @@
-apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply plugin: 'net.twisterrob.gradle.test'
-version = '3.1.4.14-28-28.0'
+version = '3.1.4.14-28-28.1'
 
 dependencies { // last checked 2018-06-09 (all latest)
 	implementation gradleApi()
@@ -38,19 +37,6 @@ dependencies { // test
 	testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71"
 	testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.2.71"
 	testImplementation "com.jakewharton.dex:dex-member-list:3.2.1"
-}
-
-project.with {
-	sourceCompatibility = 1.7
-	targetCompatibility = 1.7
-}
-
-// TODEL remove when everything is Kotlin
-afterEvaluate {
-	compileGroovy.dependsOn.remove('compileJava')
-	compileJava.dependsOn.remove(compileKotlin)
-	compileKotlin.dependsOn(compileGroovy)
-	compileKotlin.classpath += files(compileGroovy.destinationDir)
 }
 
 jar {

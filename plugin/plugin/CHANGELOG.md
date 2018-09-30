@@ -1,5 +1,8 @@
 ## 3.1.x
 
+### 3.1.4.14-28-28.1
+ - No more Groovy in plugin code!
+
 ### 3.1.4.14-28-28.0
  - Default to Android 28 9.0 Pie
 
