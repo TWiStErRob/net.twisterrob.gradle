@@ -71,9 +71,11 @@ class AndroidReleasePlugin : BasePlugin() {
 		val releaseVariantTask = project.tasks.create<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
 			description = "Assembles and archives apk and its proguard mapping for ${variant.description}"
-			val releaseDir = System.getenv(envVarName)
-				?: throw IllegalArgumentException("Please set ${envVarName} environment variable to a directory.")
-			destinationDir = File(releaseDir, "android")
+			val releaseDir = File(
+				System.getenv(envVarName)
+					?: throw IllegalArgumentException("Please set ${envVarName} environment variable to a directory.")
+			)
+			destinationDir = releaseDir.resolve("android")
 			archiveName = android.defaultConfig
 				.extensions.getByName<AndroidVersionExtension>("version")
 				.formatArtifactName(project, variant, "archive") + ".zip"

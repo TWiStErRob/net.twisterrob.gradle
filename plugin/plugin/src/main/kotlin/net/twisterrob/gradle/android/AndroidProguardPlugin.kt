@@ -26,11 +26,11 @@ class AndroidProguardPlugin : BasePlugin() {
 		/**
 		 * @see com.android.build.gradle.ProguardFiles#getDefaultProguardFile
 		 */
-		val proguardBase = File("${project.buildDir}/${AndroidProject.FD_INTERMEDIATES}/proguard-rules")
-		val defaultAndroidRules = File(proguardBase, "android.pro")
-		val myProguardRules = File(proguardBase, "twisterrob.pro")
-		val myDebugProguardRules = File(proguardBase, "twisterrob-debug.pro")
-		val myReleaseProguardRules = File(proguardBase, "twisterrob-release.pro")
+		val proguardBase = project.buildDir.resolve(AndroidProject.FD_INTERMEDIATES).resolve("proguard-rules")
+		val defaultAndroidRules = proguardBase.resolve("android.pro")
+		val myProguardRules = proguardBase.resolve("twisterrob.pro")
+		val myDebugProguardRules = proguardBase.resolve("twisterrob-debug.pro")
+		val myReleaseProguardRules = proguardBase.resolve("twisterrob-release.pro")
 		android.apply {
 			defaultConfig.proguardFiles.add(defaultAndroidRules)
 			defaultConfig.proguardFiles.add(myProguardRules)
@@ -94,7 +94,7 @@ class AndroidProguardPlugin : BasePlugin() {
 					obfuscationTask.dependsOn(extractProguardRules)
 					val proguard = obfuscationTask.transform as ProGuardTransform
 					proguard.configuration.printConfiguration =
-							File(variant.mappingFile.parentFile, "configuration.pro")
+							variant.mappingFile.parentFile.resolve("configuration.pro")
 				}
 			}
 		}

@@ -2,6 +2,8 @@
 
 ### 3.1.4.14-27-27.4
  - Fix TestReportGenerator task
+ - Re-enable compile task metadata fixes
+ - minor fixes and internal refactors
 
 ### 3.1.4.14-27-27.3
  - Clean up old class usage after konversion (XmlSlurper, Date)

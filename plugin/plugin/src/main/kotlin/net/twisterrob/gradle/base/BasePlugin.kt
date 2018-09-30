@@ -31,7 +31,7 @@ open class BasePlugin : Plugin<Project> {
 			val pattern = """(?<major>\d+)\.(?<minor>\d+).*""".toRegex()
 			val match = pattern.matchEntire(version)
 			if (match == null || !(match.groups["major"]!!.value == "4" && 1 <= (match.groups["minor"]!!.value.toInt()))) {
-				val file = File("gradle" + File.separator + "wrapper" + File.separator + "gradle-wrapper.properties")
+				val file = File("gradle/wrapper/gradle-wrapper.properties")
 				val required = "4.1+"
 				@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 				throw ProjectConfigurationException(
