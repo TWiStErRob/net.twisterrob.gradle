@@ -48,6 +48,7 @@ internal fun assertDefaultDebugBadging(
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
 	versionName: String = "0.0.0#0d",
+	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
@@ -56,6 +57,7 @@ internal fun assertDefaultDebugBadging(
 	applicationId,
 	versionCode,
 	versionName,
+	compileSdkVersion,
 	compileSdkVersionName,
 	minSdkVersion,
 	targetSdkVersion
@@ -66,6 +68,7 @@ internal fun assertDefaultReleaseBadging(
 	applicationId: String = packageName,
 	versionCode: String = "",
 	versionName: String = "0.0.0#0",
+	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
@@ -74,6 +77,7 @@ internal fun assertDefaultReleaseBadging(
 	applicationId,
 	versionCode,
 	versionName,
+	compileSdkVersion,
 	compileSdkVersionName,
 	minSdkVersion,
 	targetSdkVersion
@@ -84,6 +88,7 @@ internal fun assertDefaultBadging(
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
 	versionName: String = "0.0.0#0d",
+	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
@@ -94,21 +99,35 @@ internal fun assertDefaultBadging(
 			separator = System.lineSeparator()
 		)}"
 	assertThat(fileNamesMessage, apk, anExistingFile())
-	assertOutput(
-		listOf(resolveFromAndroidSDK("aapt"), "dump", "badging", apk),
-		"""
-					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' platformBuildVersionName='$compileSdkVersionName'
-					sdkVersion:'$minSdkVersion'
-					targetSdkVersion:'$targetSdkVersion'
-					feature-group: label=''
-					  uses-feature: name='android.hardware.faketouch'
-					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
-					supports-screens: 'small' 'normal' 'large' 'xlarge'
-					supports-any-density: 'true'
-					locales: '--_--'
-					densities: '160'
-				""".trimIndent()
-	)
+	val expectedOutput =
+		if (compileSdkVersion < 28) {
+			"""
+				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' platformBuildVersionName='$compileSdkVersionName'
+				sdkVersion:'$minSdkVersion'
+				targetSdkVersion:'$targetSdkVersion'
+				feature-group: label=''
+				  uses-feature: name='android.hardware.faketouch'
+				  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+				supports-screens: 'small' 'normal' 'large' 'xlarge'
+				supports-any-density: 'true'
+				locales: '--_--'
+				densities: '160'
+			""".trimIndent()
+		} else {
+			"""
+				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
+				sdkVersion:'$minSdkVersion'
+				targetSdkVersion:'$targetSdkVersion'
+				feature-group: label=''
+				  uses-feature: name='android.hardware.faketouch'
+				  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+				supports-screens: 'small' 'normal' 'large' 'xlarge'
+				supports-any-density: 'true'
+				locales: '--_--'
+				densities: '160'
+			""".trimIndent()
+		}
+	assertOutput(listOf(resolveFromAndroidSDK("aapt"), "dump", "badging", apk), expectedOutput)
 }
 
 fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =

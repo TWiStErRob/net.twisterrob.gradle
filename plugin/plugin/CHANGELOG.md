@@ -1,5 +1,8 @@
 ## 3.1.x
 
+### 3.1.4.14-28-28.0
+ - Default to Android 28 9.0 Pie
+
 ### 3.1.4.14-27-27.4
  - Fix TestReportGenerator task
  - Re-enable compile task metadata fixes

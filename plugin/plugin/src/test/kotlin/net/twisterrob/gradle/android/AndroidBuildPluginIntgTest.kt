@@ -118,6 +118,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug"),
+			compileSdkVersion = 23,
 			compileSdkVersionName = "6.0-2704002"
 		)
 	}
@@ -134,6 +135,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
+			compileSdkVersion = 23,
 			compileSdkVersionName = "6.0-2704002"
 		)
 	}
@@ -145,6 +147,8 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			import ${packageName}.R
 
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
+			// TODEL Robolectric 3.9 or 4.0 https://stackoverflow.com/a/50968725/253468
+			@org.robolectric.annotation.Config(sdk = [android.os.Build.VERSION_CODES.O_MR1])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
@@ -205,6 +209,8 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			import ${packageName}.R
 
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
+			// TODEL Robolectric 3.9 or 4.0 https://stackoverflow.com/a/50968725/253468
+			@org.robolectric.annotation.Config(sdk = [android.os.Build.VERSION_CODES.O_MR1])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
