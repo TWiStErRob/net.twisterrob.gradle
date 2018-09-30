@@ -10,7 +10,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-class TestReportGenerator : DefaultTask() {
+open class TestReportGenerator : DefaultTask() {
 
 	@InputDirectory
 	lateinit var input: File
