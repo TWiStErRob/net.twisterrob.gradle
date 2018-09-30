@@ -65,3 +65,9 @@ jar {
 		)
 	}
 }
+
+// Enable verbose test logging, because sometimes AndroidBuildPluginIntgTest hangs, hopefully this will uncover it
+tasks.withType(Test) {
+	//noinspection UnnecessaryQualifiedReference
+	testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+}
