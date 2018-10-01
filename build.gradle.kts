@@ -77,7 +77,7 @@ allprojects {
 			groovyOptions.configurationScript = rootProject.file("gradle/compileGroovy.groovy")
 			// enable Java 7 invokeDynamic, since Java target is > 7 (Android requires Java 8 at least)
 			// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project
-			groovyOptions.optimizationOptions["indy"] = true
+			groovyOptions.optimizationOptions!!["indy"] = true
 		}
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions.verbose = true

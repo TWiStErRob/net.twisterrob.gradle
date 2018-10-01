@@ -27,14 +27,14 @@ cache:
   directories:
     # Prevent "Downloading https://services.gradle.org/distributions/gradle-4.2.1-all.zip"
     # Prevent "Unzipping /home/travis/.gradle/wrapper/dists/gradle-4.2.1-all/domrskppdhf3wtn5mziw0c2zr/gradle-4.2.1-all.zip"
-    - $HOME/.gradle/wrapper/dists/gradle-4.4.1-all/
+    - $HOME/.gradle/wrapper/dists/gradle-4.5.1-all/
     # Prevent "Download https://jcenter.bintray.com/" during compilation
     - $HOME/.gradle/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during compilation
-    - $HOME/.gradle/caches/4.4.1/generated-gradle-jars/
+    - $HOME/.gradle/caches/4.5.1/generated-gradle-jars/
     # Prevent "Download https://jcenter.bintray.com/" during test runs
     - /tmp/.gradle-test-kit-travis/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during test runs
-    - /tmp/.gradle-test-kit-travis/caches/4.4.1/generated-gradle-jars/
+    - /tmp/.gradle-test-kit-travis/caches/4.5.1/generated-gradle-jars/
     # Do not cache Android SDK, caching is done after SDK components are installed
     #- $ANDROID_HOME
