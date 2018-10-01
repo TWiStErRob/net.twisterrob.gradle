@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.6 *(2018-08-17 --- )*
+## 0.6 *(2018-08-17 --- 2018-10-01)*
  * Gradle: 4.5.1
  * Android Gradle Plugin 3.1.4
  * Kotlin 1.2.71 w/ DSL 1.0.RC11
