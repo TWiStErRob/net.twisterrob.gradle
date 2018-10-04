@@ -10,7 +10,7 @@ android:
     - platform-tools
     # com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
     - build-tools-27.0.3
-    - android-26
+    - android-28
 
 before_cache:
   # Don't cache lock files to prevent breaking future builds

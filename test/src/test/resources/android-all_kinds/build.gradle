@@ -14,7 +14,7 @@ allprojects {
 	}
 	plugins.all {
 		if (it instanceof com.android.build.gradle.BasePlugin) {
-			// BEWARE: in 3.0.1 InstantAppExtension overrides compileSdkVersion and hard-codes it to 26
+			// BEWARE: in 3.0.1-3.2.x InstantAppExtension overrides compileSdkVersion and hard-codes it to 26
 			android.compileSdkVersion 26
 		}
 	}

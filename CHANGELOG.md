@@ -1,6 +1,7 @@
 # Change Log
 
 ## 0.7 *(2018-10-01 --- )*
+ * Use Android 28 for testing
  * Plan: Update AGP 3.2.0
 
 ## 0.6 *(2018-08-17 --- 2018-10-01)*
