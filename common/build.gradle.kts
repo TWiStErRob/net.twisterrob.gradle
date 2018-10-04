@@ -21,8 +21,15 @@ dependencies {
 	testImplementation("com.google.guava:guava:22.0")
 }
 
+tasks.withType<JavaCompile> {
+	options.compilerArgs.addAll(listOf(
+		"-proc:none" // disable annotation processing (not used, hides auto-value processors being on classpath)
+	))
+}
+
 // don't double-compile Java classes
 java.sourceSets.all { kotlin.srcDirs -= java.srcDirs }
+
 // make TFO visible to Groovy
 val groovyTask = tasks["compileTestGroovy"] as org.gradle.api.tasks.compile.GroovyCompile
 val kotlinTask = tasks["compileTestKotlin"] as org.jetbrains.kotlin.gradle.tasks.KotlinCompile

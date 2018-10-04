@@ -51,6 +51,15 @@ allprojects {
 
 	configurations.all {
 		resolutionStrategy {
+			eachDependency {
+				if (requested.group == "org.jetbrains.kotlin") {
+					because("https://issuetracker.google.com/issues/72274424")
+					when (requested.name) {
+						"kotlin-stdlib-jre7" -> useTarget("${target.group}:kotlin-stdlib-jdk7:${target.version}")
+						"kotlin-stdlib-jre8" -> useTarget("${target.group}:kotlin-stdlib-jdk8:${target.version}")
+					}
+				}
+			}
 			// make sure we don't have many versions of Kotlin lying around
 			force("org.jetbrains.kotlin:kotlin-stdlib:${VERSION_KOTLIN}")
 			force("org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}")

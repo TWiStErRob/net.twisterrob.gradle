@@ -2,6 +2,18 @@
 
 ## 0.7 *(2018-10-01 --- )*
  * Use Android 28 for testing
+ * Gradle: 4.7 (AGP 3.2.0 needs 4.6+)
+   * 4.6 doesn't work with `val prop: String by project`
+   * 4.7 `val prop by project` -> `val prop: String by project`
+   * 4.7 made `Checkstyle.getConfigProperties` nullable
+   * 4.7 made `Pmd.getClasspath` nullable
+   * 4.7 deprecation warning:
+     > The following annotation processors were detected on the compile classpath: 'com.google.auto.value....'.
+   * 4.8 "Please use kotlin-stdlib-jdk7 instead", probably because of newer bundled Kotlin
+   * 4.8 deprecation warning:
+     > As part of making the publishing plugins stable, the 'deferred configurable' behavior of
+    the 'publishing {}' block is now deprecated
+    * 4.10.2 is GA, but breaks gradle.kts
  * Plan: Update AGP 3.2.0
 
 ## 0.6 *(2018-08-17 --- 2018-10-01)*
