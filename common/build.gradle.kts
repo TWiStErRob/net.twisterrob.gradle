@@ -5,10 +5,10 @@ plugins {
 
 base.archivesBaseName = "twister-quality-common"
 
-val VERSION_ANDROID_PLUGIN by project
-val VERSION_JSR305_ANNOTATIONS by project
-val VERSION_JETBRAINS_ANNOTATIONS by project
-val VERSION_JUNIT by project
+val VERSION_ANDROID_PLUGIN: String by project
+val VERSION_JSR305_ANNOTATIONS: String by project
+val VERSION_JETBRAINS_ANNOTATIONS: String by project
+val VERSION_JUNIT: String by project
 
 dependencies {
 	implementation(gradleApi())
