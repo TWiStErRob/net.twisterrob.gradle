@@ -1,6 +1,7 @@
 # Change Log
 
 ## 0.7 *(2018-10-01 --- )*
+ * Android Gradle Plugin 3.2.0
  * Use Android 28 for testing
  * Gradle: 4.7 (AGP 3.2.0 needs 4.6+)
    * 4.6 doesn't work with `val prop: String by project`
@@ -14,7 +15,6 @@
      > As part of making the publishing plugins stable, the 'deferred configurable' behavior of
     the 'publishing {}' block is now deprecated
     * 4.10.2 is GA, but breaks gradle.kts
- * Plan: Update AGP 3.2.0
 
 ## 0.6 *(2018-08-17 --- 2018-10-01)*
  * Gradle: 4.5.1
