@@ -3,9 +3,9 @@
 ## 0.7 *(2018-10-01 --- )*
  * Android Gradle Plugin 3.2.0
  * Use Android 28 for testing
- * Gradle: 4.8 (AGP 3.2.0 needs 4.6+)
-   * 4.6 doesn't work with `val prop: String by project`
-   * 4.7 `val prop by project` -> `val prop: String by project`
+ * Gradle: 4.9 (AGP 3.2.0 needs 4.6+)
+   * 4.7 `val prop by project` -> `val prop: String by project`  
+     (4.6 doesn't work with `val prop: String by project`)
    * 4.7 made `Checkstyle.getConfigProperties` nullable
    * 4.7 made `Pmd.getClasspath` nullable
    * 4.7 deprecation warning:
