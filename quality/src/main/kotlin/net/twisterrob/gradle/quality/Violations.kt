@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.quality
 
-import com.android.build.gradle.external.cmake.server.Project
+import org.gradle.api.Project
 import java.io.File
 
 class Violations(

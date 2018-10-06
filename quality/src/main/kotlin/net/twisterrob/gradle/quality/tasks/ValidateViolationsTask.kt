@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.quality.tasks
 
-import com.android.build.gradle.external.cmake.server.Project
 import com.android.build.gradle.tasks.LintGlobalTask
 import com.android.build.gradle.tasks.LintPerVariantTask
 import net.twisterrob.gradle.checkstyle.CheckStyleTask
@@ -13,8 +12,12 @@ import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.TableGenerator
+import org.gradle.api.Action
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
 
