@@ -14,7 +14,7 @@
    * 4.8 deprecation warning:
      > As part of making the publishing plugins stable, the 'deferred configurable' behavior of
     the 'publishing {}' block is now deprecated
-    * 4.10.2 is GA, but breaks gradle.kts
+   * 4.10.2 is GA, but has many breaking changes (e.g. kotlin-dsl and lazy task configuration)
 
 ## 0.6 *(2018-08-17 --- 2018-10-01)*
  * Gradle: 4.5.1
