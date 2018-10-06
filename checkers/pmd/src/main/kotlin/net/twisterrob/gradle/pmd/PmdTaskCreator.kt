@@ -31,10 +31,9 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 				""".trimIndent())
 			}
 
-			// put configuration files of classpath of PMD so it's possible to reference own rulesets with relative path
-			task.ruleSetFiles.forEach {
-				task.classpath += task.project.files(it.parentFile)
-			}
+			// put configuration files on classpath of PMD so it's possible to reference own rulesets with relative path
+			task.classpath = (task.classpath ?: task.project.files()) +
+					task.project.files(task.ruleSetFiles.map { it.parentFile })
 		}
 
 		override fun setupSources(task: PmdTask, variants: Collection<BaseVariant>) {

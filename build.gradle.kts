@@ -22,10 +22,10 @@ plugins {
 	id("com.jfrog.bintray") version "1.8.0"
 }
 
-val VERSION by project
-val VERSION_JAVA by project
-val VERSION_KOTLIN by project
-val VERSION_KOTLIN_DSL by project
+val VERSION: String by project
+val VERSION_JAVA: String by project
+val VERSION_KOTLIN: String by project
+val VERSION_KOTLIN_DSL: String by project
 
 group = rootProject.name
 description = "Quality plugin for Gradle that supports Android flavors."
@@ -33,7 +33,7 @@ description = "Quality plugin for Gradle that supports Android flavors."
 
 subprojects {
 	group = rootProject.group
-	version = VERSION!!
+	version = VERSION
 
 	apply { plugin("kotlin") }
 
@@ -51,6 +51,15 @@ allprojects {
 
 	configurations.all {
 		resolutionStrategy {
+			eachDependency {
+				if (requested.group == "org.jetbrains.kotlin") {
+					because("https://issuetracker.google.com/issues/72274424")
+					when (requested.name) {
+						"kotlin-stdlib-jre7" -> useTarget("${target.group}:kotlin-stdlib-jdk7:${target.version}")
+						"kotlin-stdlib-jre8" -> useTarget("${target.group}:kotlin-stdlib-jdk8:${target.version}")
+					}
+				}
+			}
 			// make sure we don't have many versions of Kotlin lying around
 			force("org.jetbrains.kotlin:kotlin-stdlib:${VERSION_KOTLIN}")
 			force("org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}")
@@ -81,7 +90,7 @@ allprojects {
 		}
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions.verbose = true
-			kotlinOptions.jvmTarget = JavaVersion.toVersion(VERSION_JAVA!!).toString()
+			kotlinOptions.jvmTarget = JavaVersion.toVersion(VERSION_JAVA).toString()
 //			kotlinOptions.allWarningsAsErrors = true
 		}
 		tasks.withType<Test> {
@@ -110,8 +119,8 @@ allprojects {
 
 	plugins.withId("java") {
 		val java = convention.getPluginByName<JavaPluginConvention>("java")
-		java.sourceCompatibility = JavaVersion.toVersion(VERSION_JAVA!!)
-		java.targetCompatibility = JavaVersion.toVersion(VERSION_JAVA!!)
+		java.sourceCompatibility = JavaVersion.toVersion(VERSION_JAVA)
+		java.targetCompatibility = JavaVersion.toVersion(VERSION_JAVA)
 		(tasks["test"] as Test).testLogging.events("passed", "skipped", "failed")
 		afterEvaluate {
 			with(tasks["jar"] as Jar) {
@@ -228,7 +237,7 @@ if (hasProperty("bintrayApiKey")) {
 			setLicenses("MIT")
 
 			version(delegateClosureOf<BintrayExtension.VersionConfig> {
-				name = VERSION as String
+				name = VERSION
 				desc = rootProject.description
 				released = Date().toString()
 				vcsTag = "v${VERSION}"
