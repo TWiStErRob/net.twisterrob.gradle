@@ -3,8 +3,11 @@ Plugins that configure the built-in plugins with saner defaults.
 
 ```gradle
 buildscript {
+	repositories {
+		maven { name = 'TWiStErRob'; url = 'https://dl.bintray.com/twisterrob/maven'}
+	}
 	dependencies {
-		classpath 'net.twisterrob.gradle:twister-quality'
+		classpath "net.twisterrob.gradle:twister-quality:${VERSION_TWISTER_QUALITY}"
 	}
 }
 apply plugin: 'net.twisterrob.quality'
@@ -20,8 +23,10 @@ allprojects {
 	apply plugin: 'net.twisterrob.quality'
 }
 
-task('printViolationCounts', type: net.twisterrob.gradle.quality.ValidateViolationsTask) {
-	action = {net.twisterrob.gradle.common.grouper.Grouper.Start<se.bjurr.violations.lib.model.Violation> results ->
+task('printViolationCounts', type: net.twisterrob.gradle.quality.tasks.ValidateViolationsTask) {
+
+	// optional override to have a different format
+	/*action = {net.twisterrob.gradle.common.grouper.Grouper.Start<se.bjurr.violations.lib.model.Violation> results ->
 		results.by.parser.module.variant.group().each { checker, byModule -> 
 			println "\t${checker}"
 			byModule.each {module, byVariant ->
@@ -31,7 +36,7 @@ task('printViolationCounts', type: net.twisterrob.gradle.quality.ValidateViolati
 				}
 			}
 		}
-	}
+	}*/
 }
 ```
 
@@ -64,6 +69,23 @@ Most of the code is written in Kotlin, some in Groovy to test the integration wi
    Check failure reason (JUnit report) for things to fix.
 2. After it builds successfully it's ok to import the root `build.gradle` into IntelliJ IDEA/Android Studio.
 3. For running and debugging info see [test/README.md](test/README.md)
+
+### Using the `-SNAPSHOT` from a local repo
+#### Publish
+Change `gradle.properties`: `VERSION=x.y-SNAPSHOT`
+```console
+gradlew publishToMavenLocal
+```
+
+#### Consume
+```
+buildscript {
+	repositories {
+		mavenLocal() // make sure it's first
+	}
+}
+```
+and then business as usual (`buildscript { dependencies { classpath "..."` etc.).
 
 ### Using the `-SNAPSHOT` from a local build
 
