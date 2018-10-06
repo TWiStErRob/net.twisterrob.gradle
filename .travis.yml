@@ -8,8 +8,11 @@ android:
   components:
     - tools
     - platform-tools
-    # com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
+    # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
     - build-tools-28.0.2
+    # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
+    - android-27
+    # compileSdkVersion for almost all tests
     - android-28
 
 before_cache:
