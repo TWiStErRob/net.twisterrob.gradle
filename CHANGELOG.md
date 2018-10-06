@@ -1,6 +1,7 @@
 # Change Log
 
 ## 0.7 *(2018-10-01 --- )*
+ * Publish `-sources.jar` files
  * Android Gradle Plugin 3.2.0
  * Use Android 28 for testing
  * Gradle: 4.9 (AGP 3.2.0 needs 4.6+)

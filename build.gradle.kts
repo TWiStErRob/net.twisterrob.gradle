@@ -45,6 +45,13 @@ subprojects {
 		// for Mockito minor versions (only major versions are synced to jcenter)
 		maven { setUrl("https://dl.bintray.com/mockito/maven") }
 	}
+
+	tasks {
+		"sourcesJar" (Jar::class) {
+			classifier = "sources"
+			from(java.sourceSets["main"].kotlin.sourceDirectories)
+		}
+	}
 }
 
 allprojects {
@@ -176,7 +183,11 @@ publishing {
 		subprojects {
 			val project = this
 			project.name(MavenPublication::class) {
+				// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
 				from(components["java"])
+				// source files
+				artifact(tasks["sourcesJar"]) { classifier = "sources" }
+
 				artifactId = project.base.archivesBaseName
 				version = project.version as String
 
