@@ -5,11 +5,11 @@ plugins {
 
 base.archivesBaseName = "twister-gradle-test"
 
-val VERSION_JUNIT by project
-val VERSION_MOCKITO by project
-val VERSION_HAMCREST by project
-val VERSION_JSR305_ANNOTATIONS by project
-val VERSION_JETBRAINS_ANNOTATIONS by project
+val VERSION_JUNIT: String by project
+val VERSION_MOCKITO: String by project
+val VERSION_HAMCREST: String by project
+val VERSION_JSR305_ANNOTATIONS: String by project
+val VERSION_JETBRAINS_ANNOTATIONS: String by project
 
 dependencies {
 	compileOnly(gradleApi())

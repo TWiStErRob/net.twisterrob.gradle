@@ -5,11 +5,11 @@ plugins {
 
 base.archivesBaseName = "twister-quality"
 
-val VERSION_ANDROID_PLUGIN by project
-val VERSION_VIOLATIONS by project
-val VERSION_JUNIT by project
-val VERSION_HAMCREST by project
-val VERSION_JETBRAINS_ANNOTATIONS by project
+val VERSION_ANDROID_PLUGIN: String by project
+val VERSION_VIOLATIONS: String by project
+val VERSION_JUNIT: String by project
+val VERSION_HAMCREST: String by project
+val VERSION_JETBRAINS_ANNOTATIONS: String by project
 
 dependencies {
 	implementation(project(":common"))

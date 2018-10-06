@@ -4,16 +4,17 @@ buildscript {
 		google()
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:3.1.1'
+		classpath 'com.android.tools.build:gradle:3.2.0'
 	}
 }
 
 repositories {
-	jcenter() // checkstyle plugin needs to be downloaded
+	google() // for aapt2 internal binary
+	jcenter()
 }
 
 apply plugin: 'com.android.application'
 
 android {
-	compileSdkVersion 26
+	compileSdkVersion 28
 }
