@@ -9,7 +9,8 @@ buildscript {
 }
 
 repositories {
-	jcenter() // checkstyle plugin needs to be downloaded
+	google() // for aapt2 internal binary
+	jcenter()
 }
 
 apply plugin: 'com.android.application'
