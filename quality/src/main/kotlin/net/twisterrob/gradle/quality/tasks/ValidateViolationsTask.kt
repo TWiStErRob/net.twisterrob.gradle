@@ -125,7 +125,7 @@ private fun defaultAction(violations: Grouper.Start<Violations>) {
 			return@map (""
 					+ "\n${loc.file.absolutePath}:${loc.startLine} in ${loc.module}/${loc.variant}"
 					+ "\n\t${violation.source.reporter}/${violation.rule}"
-					+ "\n${message.replace("""(?m)^""".toRegex(), "\t")}"
+					+ "\n${message.prependIndent("\t")}"
 					)
 		}
 	val reportLocations = violations
