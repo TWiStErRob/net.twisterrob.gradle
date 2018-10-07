@@ -12,6 +12,7 @@ class QualityPlugin : BaseExposedPlugin() {
 		super.apply(target)
 
 		project.extensions.create("quality", QualityExtension::class.java, project)
+		project.plugins.apply("org.gradle.reporting-base")
 		project.apply<CheckStylePlugin>()
 		project.apply<PmdPlugin>()
 	}
