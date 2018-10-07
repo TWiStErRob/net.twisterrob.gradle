@@ -17,14 +17,12 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaBasePlugin
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
 
 open class ValidateViolationsTask : DefaultTask() {
 
-	@Input
 	@Suppress("MemberVisibilityCanBePrivate") // DSL
 	var action: Action<Grouper.Start<Violations>> = Action(::defaultAction)
 
