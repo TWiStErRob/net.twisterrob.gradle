@@ -52,7 +52,6 @@ open class ValidateViolationsTask : DefaultTask() {
 		}
 	}
 
-	@Suppress("unused") // @TaskAction is entry point for DefaultTask
 	@TaskAction
 	fun validateViolations() {
 		val results = project.subprojects.flatMap { subproject ->
