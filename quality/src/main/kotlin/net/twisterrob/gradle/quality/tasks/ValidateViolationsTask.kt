@@ -16,6 +16,7 @@ import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.SEVERITY
@@ -41,6 +42,7 @@ open class ValidateViolationsTask : DefaultTask() {
 	}
 
 	init {
+		group = JavaBasePlugin.VERIFICATION_GROUP
 		project.rootProject.allprojects { subproject: Project ->
 			GATHERERS.forEach { gatherer ->
 				subproject.tasks.withType(gatherer.taskType).all { reportTask ->

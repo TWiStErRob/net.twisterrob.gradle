@@ -9,6 +9,7 @@ import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
@@ -18,6 +19,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	private val xmlReports = mutableListOf<File>()
 
 	init {
+		group = JavaBasePlugin.VERIFICATION_GROUP
 		project.allprojects.forEach { subproject ->
 			AndroidVariantApplier(subproject).applyAfterPluginConfigured(Action { _: BasePlugin<*> ->
 				mustRunAfter(subproject.tasks.withType(LintGlobalTask::class.java) { subTask ->
