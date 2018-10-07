@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--suppress CheckValidXmlInScriptTagBody -->
 <xsl:stylesheet
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	exclude-result-prefixes="xml xsi"
 	version="1.0"
@@ -18,7 +20,7 @@
 					— Violations Report
 				</title>
 				<xsl:copy-of select="$style" />
-				<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js" />
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" />
 				<link type="text/css" rel="stylesheet"
 				      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" />
@@ -27,60 +29,7 @@
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/kotlin.min.js" />
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/xml.min.js" />
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.4.2/markdown-it.min.js" />
-				<script><![CDATA[
-					var md = window.markdownit({
-						highlight: function (str, lang) {
-							if (lang && hljs.getLanguage(lang)) {
-								try {
-									return hljs.highlight(lang, str).value;
-								} catch (__) {}
-							}
-							return ''; // use external default escaping
-						}
-					});
-					function copyToClipboard(text) {
-						var $temp = $("<textarea>");
-						$("body").append($temp);
-						$temp.val(text).select();
-						document.execCommand("copy");
-						$temp.remove();
-					}
-					var render = {
-						markdown: function(text) {
-							var html = md.render(text);
-							document.write(html);
-						},
-						code: function(text, options) {
-							options = options || {};
-							var lang = options.language || 'text';
-							var html = hljs.highlight(lang, text).value;
-							html = addSourceLineNumbers(
-								html,
-								options.firstLine || 1,
-								options.highlightStart || -1,
-								options.highlightEnd || -1
-							);
-							document.write(html);
-						}
-					};
-					// based on http://bellido.us/blog/07-06-2014-Adding-LineNumbers-highlight-js.html
-					function addSourceLineNumbers(html, start, highlightStart, highlightEnd) {
-						var prefix = 'prefix'
-						var current = start
-						function line(number) {
-							var classes = 'line'
-							if (highlightStart == number) classes += ' start';
-							if (highlightEnd == number) classes += ' end';
-							if (highlightStart <= number && number <= highlightEnd) classes += ' highlight';
-							return '<a class="' + classes + '" name="' + prefix + number + '">' + number + '</a>'
-						}
-						var result = html.replace(/\n/g, function() {
-							return "\n" + line(++current);
-						});
-						
-						return line(start) + result;
-					}
-				]]></script>
+				<xsl:copy-of select="$script" />
 			</head>
 			<body>
 				<h1>Violations report for
@@ -148,7 +97,9 @@
 				</span>
 				×
 				<a href="#{$id}">
-					<xsl:value-of select="$rule" />
+					<code class="rule">
+						<xsl:value-of select="$rule" />
+					</code>
 				</a>
 				(
 				<xsl:for-each select="$sameRuleViolations[
@@ -194,7 +145,7 @@
 			<a name="{details/@category}-{source/@reporter}-{details/@rule}" />
 		</xsl:if>
 		<div class="violation" xml:space="preserve">
-			<b><code class="rule" title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!" onClick="copyToClipboard(`{details/@suppress}`)"><xsl:value-of select="details/@rule" /></code>: <xsl:value-of select="details/title" /></b><br />
+			<b><code class="rule copyable" title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!" onClick="copyToClipboard(`{details/@suppress}`)"><xsl:value-of select="details/@rule" /></code>: <xsl:value-of select="details/title" /></b><br />
 			<details class="location" open="open">
 				<xsl:if test="details/context/@type = 'code'">
 					<!--<xsl:attribute name="open">open</xsl:attribute>-->
@@ -243,82 +194,168 @@
 		</div>
 	</xsl:template>
 
+	<xsl:variable name="script" xml:space="preserve">
+	<!--suppress JSUnusedLocalSymbols -->
+	<script><![CDATA[/*&lt;![CDATA[*/
+	var md = window.markdownit({
+		highlight: function (str, lang) {
+			if (lang && hljs.getLanguage(lang)) {
+				try {
+					return hljs.highlight(lang, str).value;
+				} catch (__) {
+				}
+			}
+			return ''; // use external default escaping
+		}
+	});
+
+	function copyToClipboard(text) {
+		var $temp = $("<textarea>");
+		$("body").append($temp);
+		$temp.val(text).select();
+		document.execCommand("copy");
+		$temp.remove();
+	}
+
+	var render = {
+		markdown: function (text) {
+			var html = md.render(text);
+			document.write(html);
+		},
+		code: function (text, options) {
+			options = options || {};
+			var lang = options.language || 'text';
+			var html = hljs.highlight(lang, text).value;
+			html = addSourceLineNumbers(
+				html,
+				options.firstLine || 1,
+				options.highlightStart || -1,
+				options.highlightEnd || -1
+			);
+			document.write(html);
+		}
+	};
+
+	// based on http://bellido.us/blog/07-06-2014-Adding-LineNumbers-highlight-js.html
+	function addSourceLineNumbers(html, start, highlightStart, highlightEnd) {
+		var prefix = 'prefix';
+		var current = start;
+
+		function line(number) {
+			var classes = 'line';
+			if (highlightStart === number) classes += ' start';
+			if (highlightEnd === number) classes += ' end';
+			if (highlightStart <= number && number <= highlightEnd) classes += ' highlight';
+			return '<a class="' + classes + '" name="' + prefix + number + '">' + number + '</a>'
+		}
+
+		var result = html.replace(/\n/g, function () {
+			return "\n" + line(++current);
+		});
+
+		return line(start) + result;
+	}
+
+	/*]]&gt;*/]]></script>
+	</xsl:variable>
 	<xsl:variable name="style" xml:space="preserve">
-	<style type="text/css">/*&lt;![CDATA[*/
-		body {
-			background-color: #f5f5f5;
-			font-family: sans-serif;
-		}
-		code, pre {
-			padding: 0;
-			margin: 0;
-		}
-		a {
-			color: rgb(83,109,254);
-			text-decoration: none;
-		}
-		a:focus {
-			text-decoration: underline;
-		}
-		a:active {
-			color: rgb(83,109,254);
-			text-decoration: underline;
-		}
-		a.file {
-			font-size: smaller;
-		}
-		.violation {
-			padding: 8px;
-			margin-bottom: 8px;
-			background: #fff;
-			border-radius: 2px;
-			box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
-		}
-		.violation > details.description > section {
-			max-width: 900px;
-		}
-		.violation > details.description > summary > p {
-			display: inline;
-		}
-		details:first-of-type {
-			margin-top: 4px;
-		}
-		details + details {
-			margin-top: 8px;
-		}
-		details > summary:hover {
-			cursor: pointer;
-		}
-		details > summary:focus {
-			outline: 0;
-		}
-		details > summary + * {
-			margin-left: 16px;
-			border-left: 4px solid #ddd;
-			padding-left: 8px;
-		}
-		ul {
-			/* match start padding to balance backgrounds */
-			padding-inline-end: 40px;
-		}
-		.hljs {
-			/* space for .hljs .line */
-			padding-left: 40px !important;
-			position: relative;
-		}
-		.hljs .line {
-			display: inline-block;
-			position: absolute;
-			left: 0;
-			width: 30px;
-			text-align: right;
-		}
-		.hljs .line.highlight {
-			background: #ffdddd;
-			font-weight: bold;
-			color: red;
-		}
-	/*]]&gt;*/</style>
+	<style type="text/css"><![CDATA[/*&lt;![CDATA[*/
+	body {
+		background-color: #f5f5f5;
+		font-family: sans-serif;
+	}
+
+	code, pre {
+		padding: 0;
+		margin: 0;
+	}
+
+	a {
+		color: rgb(83, 109, 254);
+		text-decoration: none;
+	}
+
+	a:focus {
+		text-decoration: underline;
+	}
+
+	a:active {
+		color: rgb(83, 109, 254);
+		text-decoration: underline;
+	}
+
+	a.file {
+		font-size: smaller;
+	}
+
+	.violation {
+		padding: 8px;
+		margin-bottom: 8px;
+		background: #fff;
+		border-radius: 2px;
+		box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
+	}
+
+	.violation > details.description > section {
+		max-width: 900px;
+	}
+
+	.violation > details.description > summary > p {
+		display: inline;
+	}
+
+	code.rule.copyable {
+		cursor: pointer;
+	}
+
+	details:first-of-type {
+		margin-top: 4px;
+	}
+
+	details + details {
+		margin-top: 8px;
+	}
+
+	details > summary:hover {
+		cursor: pointer;
+	}
+
+	details > summary:focus {
+		outline: 0;
+	}
+
+	details > summary + * {
+		margin-left: 16px;
+		border-left: 4px solid #ddd;
+		padding-left: 8px;
+	}
+
+	ul {
+		/* match start padding to balance backgrounds */
+		padding-inline-end: 40px;
+	}
+
+	.hljs {
+		/* space for .hljs .line */
+		padding-left: 40px !important;
+		position: relative;
+	}
+
+	.hljs .line {
+		display: inline-block;
+		position: absolute;
+		left: 0;
+		width: 30px;
+		text-align: right;
+	}
+
+	.hljs .line.highlight {
+		background: #ffdddd;
+		font-weight: bold;
+		color: red;
+	}
+
+	/*]]&gt;*/]]></style>
 	</xsl:variable>
 
 </xsl:stylesheet>

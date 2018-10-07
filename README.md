@@ -23,10 +23,10 @@ allprojects {
 	apply plugin: 'net.twisterrob.quality'
 }
 
+// this is added by default as `violationReportConsole`, but can be used to customize
 task('printViolationCounts', type: net.twisterrob.gradle.quality.tasks.ValidateViolationsTask) {
 
-	// optional override to have a different format
-	/*action = {net.twisterrob.gradle.common.grouper.Grouper.Start<se.bjurr.violations.lib.model.Violation> results ->
+	action = {net.twisterrob.gradle.common.grouper.Grouper.Start<se.bjurr.violations.lib.model.Violation> results ->
 		results.by.parser.module.variant.group().each { checker, byModule -> 
 			println "\t${checker}"
 			byModule.each {module, byVariant ->
@@ -36,7 +36,7 @@ task('printViolationCounts', type: net.twisterrob.gradle.quality.tasks.ValidateV
 				}
 			}
 		}
-	}*/
+	}
 }
 ```
 

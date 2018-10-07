@@ -15,6 +15,7 @@ class QualityPlugin : BaseExposedPlugin() {
 		super.apply(target)
 
 		project.extensions.create("quality", QualityExtension::class.java, project)
+		// needed for accessing ReportingExtension to get `build/reporting` folder
 		project.plugins.apply("org.gradle.reporting-base")
 		project.apply<CheckStylePlugin>()
 		project.apply<PmdPlugin>()

@@ -34,6 +34,9 @@ class Violation(
 	val source: Source
 ) {
 
+	override fun toString() =
+		"Violation(rule='$rule', category=$category, severity=$severity, message='$message', specifics=$specifics, location=$location, source=$source)"
+
 	enum class Severity {
 		INFO,
 		WARNING,
@@ -48,7 +51,6 @@ class Violation(
 		val endLine: Int,
 		val column: Int
 	) {
-
 		override fun toString() =
 			"Location(module=$module, variant='$variant', file=$file, startLine=$startLine, endLine=$endLine, column=$column)"
 	}
@@ -61,11 +63,7 @@ class Violation(
 		val report: File,
 		val humanReport: File?
 	) {
-
 		override fun toString() =
 			"Source(parser='$parser', gatherer='$gatherer', reporter='$reporter', source='$source', report=$report, humanReport=$humanReport)"
 	}
-
-	override fun toString() =
-		"Violation(rule='$rule', category=$category, severity=$severity, message='$message', specifics=$specifics, location=$location, source=$source)"
 }
