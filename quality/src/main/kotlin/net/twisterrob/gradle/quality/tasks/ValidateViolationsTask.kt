@@ -41,7 +41,7 @@ open class ValidateViolationsTask : DefaultTask() {
 
 	init {
 		group = JavaBasePlugin.VERIFICATION_GROUP
-		project.rootProject.allprojects { subproject: Project ->
+		project.allprojects { subproject: Project ->
 			GATHERERS.forEach { gatherer ->
 				subproject.tasks.withType(gatherer.taskType).all { reportTask ->
 					this@ValidateViolationsTask.mustRunAfter(reportTask)
