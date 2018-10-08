@@ -5,6 +5,7 @@ out/
 
 # IDEA Project files
 .idea/
+!/.idea/misc.xml
 *.iml
 *.ipr
 *.iws

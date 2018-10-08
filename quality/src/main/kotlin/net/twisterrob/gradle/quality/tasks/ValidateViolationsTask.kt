@@ -6,6 +6,7 @@ import net.twisterrob.gradle.checkstyle.CheckStyleTask
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.common.nullSafeSum
 import net.twisterrob.gradle.pmd.PmdTask
+import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
@@ -15,34 +16,32 @@ import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.tasks.Input
+import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.TaskAction
+import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
 
 open class ValidateViolationsTask : DefaultTask() {
 
-	@Input
 	@Suppress("MemberVisibilityCanBePrivate") // DSL
 	var action: Action<Grouper.Start<Violations>> = Action(::defaultAction)
 
 	companion object {
 		@Suppress("UNCHECKED_CAST")
-		val GATHERERS = listOf(
-				QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
-				QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
-//		        ViolationChecker("cpd", Cpd::class.java, Parser.CPD,
-//				    {'TODO'}, {it.reports.xml.destination}))
-//				ViolationChecker("findbugs", FindBugs, ValidateViolationsTask.<FindBugs>
-//						parser(Parser.FINDBUGS, {it.reports.xml.destination}),
-//						{'TODO'}, {it.reports.xml.destination}),
-				LintReportGatherer("lintVariant", LintPerVariantTask::class.java),
-				LintReportGatherer("lint", LintGlobalTask::class.java)
+		private val GATHERERS = listOf(
+			QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
+			QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
+//			ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
+//			ViolationChecker("findbugs", FindBugs::class.java, Parser.FINDBUGS, {it.reports.xml.destination}),
+			LintReportGatherer("lintVariant", LintPerVariantTask::class.java),
+			LintReportGatherer("lint", LintGlobalTask::class.java)
 //			TestReportGatherer<>("test", Test)
 		) as List<TaskReportGatherer<Task>>
 	}
 
 	init {
-		project.rootProject.allprojects { subproject: Project ->
+		group = JavaBasePlugin.VERIFICATION_GROUP
+		project.allprojects { subproject: Project ->
 			GATHERERS.forEach { gatherer ->
 				subproject.tasks.withType(gatherer.taskType).all { reportTask ->
 					this@ValidateViolationsTask.mustRunAfter(reportTask)
@@ -51,52 +50,86 @@ open class ValidateViolationsTask : DefaultTask() {
 		}
 	}
 
-	@Suppress("unused")
 	@TaskAction
 	fun validateViolations() {
 		val results = project.subprojects.flatMap { subproject ->
 			GATHERERS.flatMap { gatherer ->
 				subproject.tasks.withType(gatherer.taskType).map { task ->
 					Violations(
-							parser = gatherer.displayName,
-							module = subproject.path,
-							variant = gatherer.getName(task),
-							result = gatherer.getParsableReportLocation(task),
-							report = gatherer.getHumanReportLocation(task),
-							violations = gatherer.getViolations(task)
+						parser = gatherer.displayName,
+						module = subproject.path,
+						variant = gatherer.getName(task),
+						result = gatherer.getParsableReportLocation(task),
+						report = gatherer.getHumanReportLocation(task),
+						violations = gatherer.getViolations(task)?.map {
+							Violation(
+								rule = it.rule,
+								category = it.category,
+								severity = when (it.severity!!) {
+									SEVERITY.INFO -> Violation.Severity.INFO
+									SEVERITY.WARN -> Violation.Severity.WARNING
+									SEVERITY.ERROR -> Violation.Severity.ERROR
+								},
+								message = it.message,
+								specifics = it.specifics ?: emptyMap(),
+								location = Violation.Location(
+									module = subproject,
+									variant = gatherer.getName(task),
+									file = subproject.file(it.file),
+									startLine = it.startLine,
+									endLine = it.endLine,
+									column = it.column
+								),
+								source = Violation.Source(
+									gatherer = gatherer.displayName,
+									parser = it.parser.name,
+									reporter = it.reporter,
+									source = it.source,
+									report = gatherer.getParsableReportLocation(task),
+									humanReport = gatherer.getHumanReportLocation(task)
+								)
+							)
+						}
 					)
 				}
 			}
 		}
-		val nullSafeSum = nullSafeSum(java.util.function.Function({ v: Violations? -> v?.violations?.size }))
+		val nullSafeSum = nullSafeSum(java.util.function.Function { v: Violations? -> v?.violations?.size })
 		@Suppress("UNCHECKED_CAST")
 		action.execute(Grouper.create(results, nullSafeSum) as Grouper.Start<Violations>)
 	}
 }
 
 private fun defaultAction(violations: Grouper.Start<Violations>) {
-	val grouped = violations.count<Int>().by("module").by("variant").by("parser").group()
 	@Suppress("UNCHECKED_CAST")
+	val grouped = violations
+		.count<Int>()
+		.by("module")
+		.by("variant")
+		.by("parser")
+		.group() as Map<String, Map<String, Map<String, Int?>>>
 	val table = TableGenerator(
-			zeroCount = "." /*TODO ✓*/,
-			missingCount = "",
-			printEmptyRows = false,
-			printEmptyColumns = false
-	).build(grouped as Map<String, Map<String, Map<String, Int?>>>)
-	val result: List<String> = violations.list
-			.flatMap { v -> (v.violations ?: listOf()).map { Pair(v, it) } }
-			.map { (group, violation) ->
-				val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
-				return@map """
-					${group.module}/${group.variant} ${violation.file}:${violation.startLine}
-						${violation.reporter}/${violation.rule ?: "Unknown"}
-${message.replace("""(?m)^""".toRegex(), "\t\t\t\t\t\t")}
-				""".trimIndent()
-			}
+		zeroCount = "." /*TODO ✓*/,
+		missingCount = "",
+		printEmptyRows = false,
+		printEmptyColumns = false
+	).build(grouped)
+	val result = violations
+		.list
+		.flatMap { it.violations ?: emptyList() }
+		.map { violation ->
+			val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
+			val loc = violation.location
+			return@map (""
+					+ "\n${loc.file.absolutePath}:${loc.startLine} in ${loc.module}/${loc.variant}"
+					+ "\n\t${violation.source.reporter}/${violation.rule}"
+					+ "\n${message.prependIndent("\t")}"
+					)
+		}
 	val reportLocations = violations
-			.list
-			.filter { v -> (v.violations?.size ?: 0) > 0 }
-			.map { "${it.module}:${it.parser}@${it.variant} (${it.violations!!.size}): ${it.report}" }
+		.list
+		.filter { (it.violations ?: emptyList()).isNotEmpty() }
+		.map { "${it.module}:${it.parser}@${it.variant} (${it.violations!!.size}): ${it.report}" }
 
 	println(result.joinToString(System.lineSeparator() + System.lineSeparator()))
 	println()
