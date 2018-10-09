@@ -23,10 +23,10 @@ class QualityPlugin : BaseExposedPlugin() {
 		if (project.rootProject == project) {
 			project.tasks.register("violationReportConsole", ValidateViolationsTask::class.java)
 			project.tasks.register("violationReportHtml", HtmlReportTask::class.java)
-		}
-		project.afterEvaluate {
-			if (project.tasks.findByName("lint") == null) {
-				project.tasks.register("lint", GlobalLintGlobalFinalizerTask::class.java)
+			project.afterEvaluate {
+				if (project.tasks.findByName("lint") == null) {
+					project.tasks.register("lint", GlobalLintGlobalFinalizerTask::class.java)
+				}
 			}
 		}
 	}
