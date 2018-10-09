@@ -20,8 +20,10 @@ class QualityPlugin : BaseExposedPlugin() {
 		project.apply<CheckStylePlugin>()
 		project.apply<PmdPlugin>()
 
-		project.tasks.register("violationReportConsole", ValidateViolationsTask::class.java)
-		project.tasks.register("violationReportHtml", HtmlReportTask::class.java)
+		if (project.rootProject == project) {
+			project.tasks.register("violationReportConsole", ValidateViolationsTask::class.java)
+			project.tasks.register("violationReportHtml", HtmlReportTask::class.java)
+		}
 		project.afterEvaluate {
 			if (project.tasks.findByName("lint") == null) {
 				project.tasks.register("lint", GlobalLintGlobalFinalizerTask::class.java)
