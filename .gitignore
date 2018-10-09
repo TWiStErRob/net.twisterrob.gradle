@@ -13,3 +13,5 @@ out/
 # Other
 /temp/
 /local.properties
+hs_err_pid*.log
+replay_pid*.log

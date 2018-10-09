@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.7 *(2018-10-01 --- )*
+## 0.7 *(2018-10-01 --- 2018-10-10)*
  * Publish `-sources.jar` files (#13)
  * Android Gradle Plugin 3.2.0 (#12)
  * Use Android 28 for testing (#12)

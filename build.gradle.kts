@@ -19,7 +19,7 @@ plugins {
 	`base` // just to get some support for subproject stuff, for example access to project.base
 //	kotlin("jvm") apply false
 	`maven-publish`
-	id("com.jfrog.bintray") version "1.8.0"
+	id("com.jfrog.bintray") version "1.8.4"
 }
 
 val VERSION: String by project
