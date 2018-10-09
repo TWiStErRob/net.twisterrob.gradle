@@ -19,6 +19,7 @@
  * New model for Violations, a grouped property approach
  * New task for HTML report with limited Lint support
  * Tasks are now automatically added when applying `quality` plugin
+ * Fixed empty data handling in TableGenerator (#16)
 
 ## 0.6 *(2018-08-17 --- 2018-10-01)*
  * Gradle: 4.5.1

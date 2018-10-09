@@ -37,15 +37,15 @@ class TableGenerator(
 		if (!printEmptyColumns) {
 			parsers = parsers.filter { summary[it] != null }
 		}
-		val format = parsers.map { Math.max(minWidth, it.length) }.joinToString(columnSeparator) { "%${it}s" }
+		val format = parsers.map { Math.max(minWidth, it.length) }.joinToString("") { "${columnSeparator}%${it}s" }
 		val longestModule = modules.maxBy { it.length }
 		val longestVariant = variants.maxBy { it.length }
 		val moduleWidth = Math.max(MIN_MODULE_LENGTH, longestModule?.length ?: 0)
 		val total = summary.values.sumBy { it ?: 0 }
-		val totalCountWidth = Math.log10(total.toDouble()).toInt()
+		val totalCountWidth = if (total == 0) 1 else Math.log10(total.toDouble()).toInt()
 		val variantWidth = Math.max(MIN_VARIANT_LENGTH + totalCountWidth, longestVariant?.length ?: 0)
 		val rowHeaderFormat = "%-${moduleWidth}s${columnSeparator}%-${variantWidth}s"
-		val rowFormat = "${rowHeaderFormat}${columnSeparator}${format}"
+		val rowFormat = "${rowHeaderFormat}${format}"
 		val header = String.format(rowFormat, *(listOf("module", "variant") + parsers).toTypedArray())
 		val rows = byModuleByVariantByParserCounts.flatMap { byModule ->
 			byModule.value.flatMap row@ { byVariant ->
@@ -65,7 +65,7 @@ class TableGenerator(
 			}
 		}
 		val footer = if (summaryRow) {
-			val summaryHeader = listOf("Summary", "(total ${total})")
+			val summaryHeader = listOf("Summary", "(total: ${total})")
 			val summaryData = parsers.map { summary[it]?.toString() ?: missingCount }
 			val summaryRow = String.format(rowFormat, *(summaryHeader + summaryData).toTypedArray())
 			listOf(summaryRow)
