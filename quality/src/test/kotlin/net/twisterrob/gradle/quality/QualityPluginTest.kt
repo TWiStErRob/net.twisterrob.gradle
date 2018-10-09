@@ -1,7 +1,9 @@
 package net.twisterrob.gradle.quality
 
+import net.twisterrob.gradle.quality.tasks.GlobalLintGlobalFinalizerTask
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoOutputLine
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.hamcrest.Matchers.containsString
@@ -17,7 +19,7 @@ class QualityPluginTest {
 
 	@Rule @JvmField val gradle = GradleRunnerRule()
 
-	@Test fun `apply report violationReportConsole only on root project`() {
+	@Test fun `apply violationReportConsole only on root project`() {
 		`given`@
 		@Language("gradle")
 		val script = """
@@ -44,7 +46,7 @@ class QualityPluginTest {
 		)
 	}
 
-	@Test fun `apply report violationReportHtml only on root project`() {
+	@Test fun `apply violationReportHtml only on root project`() {
 		`given`@
 		@Language("gradle")
 		val script = """
@@ -69,5 +71,54 @@ class QualityPluginTest {
 			"should be configurable without afterEvaluate",
 			"Configuring task ':violationReportHtml'"
 		)
+	}
+
+	@Test fun `apply lint only on root project`() {
+		`given`@
+		@Language("gradle")
+		val script = """
+			allprojects {
+				apply plugin: 'net.twisterrob.quality'
+				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}) {
+					println("Added " + it)
+				}
+			}
+		""".trimIndent()
+
+		val result: BuildResult
+		`when`@
+		result = gradle
+			.basedOn("android-all_kinds")
+			.run(script, "lint")
+			.build()
+
+		`then`@
+		assertEquals(SUCCESS, result.task(":lint")!!.outcome)
+		result.assertHasOutputLine("one task added for finalizer", "Added task ':lint'")
+		result.assertNoOutputLine("no other tasks added as finalizer", """Added task ':(.+?):lint'""".toRegex())
+	}
+
+	@Test fun `apply lint only when Android does not add lint task`() {
+		`given`@
+		@Language("gradle")
+		val script = """
+			allprojects {
+				apply plugin: 'net.twisterrob.quality'
+				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}) {
+					println("Added " + it)
+				}
+			}
+		""".trimIndent()
+
+		val result: BuildResult
+		`when`@
+		result = gradle
+			.basedOn("android-root_app")
+			.run(script, "lint")
+			.build()
+
+		`then`@
+		assertEquals(SUCCESS, result.task(":lint")!!.outcome)
+		result.assertNoOutputLine("no tasks added as finalizer", """Added task '(.*?):lint'""".toRegex())
 	}
 }
