@@ -15,10 +15,17 @@ class AndroidVariantApplier(val project: Project) {
 
 	fun applyAfterPluginConfigured(pluginClosure: Action<BasePlugin<*>>) {
 		val callback = Action { plugin: Plugin<*> ->
-			// afterEvaluate ensures that all tasks, variants, etc. are already configured
-			project.afterEvaluate {
-				// withId ensures we have BasePlugin
-				pluginClosure.execute(plugin as BasePlugin<*>)
+			// withId ensures we have BasePlugin, so let's smart cast for further usage
+			plugin as BasePlugin<*>
+			if (project.state.executed) {
+				// if state is executed the project has been evaluated so everything is already configured
+				// This is required because project.afterEvaluate is not executing Closure after this is true:
+				// Notice how org.gradle.configuration.project.LifecycleProjectEvaluator.EvaluateProject.run
+				// only runs LifecycleProjectEvaluator.NotifyAfterEvaluate.run once.
+				pluginClosure.execute(plugin)
+			} else {
+				// afterEvaluate ensures that all tasks, variants, etc. are already configured
+				project.afterEvaluate { pluginClosure.execute(plugin) }
 			}
 		}
 		project.plugins.withId("com.android.application", callback)
