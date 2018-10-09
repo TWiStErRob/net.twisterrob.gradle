@@ -10,6 +10,7 @@ val VERSION_MOCKITO: String by project
 val VERSION_HAMCREST: String by project
 val VERSION_JSR305_ANNOTATIONS: String by project
 val VERSION_JETBRAINS_ANNOTATIONS: String by project
+val VERSION_LINT: String by project
 
 dependencies {
 	compileOnly(gradleApi())
@@ -26,6 +27,13 @@ dependencies {
 	testImplementation("org.hamcrest:hamcrest-all:${VERSION_HAMCREST}")
 	testImplementation("org.mockito:mockito-core:${VERSION_MOCKITO}")
 	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
+	// only here so IDEA can browse the source files of this dependency when getting a stack trace or finding usages
+	testRuntimeOnly("com.android.tools.lint:lint:${VERSION_LINT}") { isTransitive = false }
+	testRuntimeOnly("com.android.tools.lint:lint-api:${VERSION_LINT}") { isTransitive = false }
+	testRuntimeOnly("com.android.tools.lint:lint-gradle:${VERSION_LINT}") { isTransitive = false }
+	testRuntimeOnly("com.android.tools.lint:lint-gradle-api:${VERSION_LINT}") { isTransitive = false }
+	testRuntimeOnly("com.android.tools.lint:lint-checks:${VERSION_LINT}") { isTransitive = false }
+	testRuntimeOnly("com.android.tools.lint:lint-kotlin:${VERSION_LINT}") { isTransitive = false }
 }
 
 // Need to depend on the real artifact so TestPluginTest can work
