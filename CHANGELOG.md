@@ -1,24 +1,14 @@
 # Change Log
 
 ## 0.7 *(2018-10-01 --- )*
- * Publish `-sources.jar` files
- * Android Gradle Plugin 3.2.0
- * Use Android 28 for testing
- * Gradle: 4.9 (AGP 3.2.0 needs 4.6+)
-   * 4.7 `val prop by project` -> `val prop: String by project`  
-     (4.6 doesn't work with `val prop: String by project`)
-   * 4.7 made `Checkstyle.getConfigProperties` nullable
-   * 4.7 made `Pmd.getClasspath` nullable
-   * 4.7 deprecation warning:
-     > The following annotation processors were detected on the compile classpath: 'com.google.auto.value....'.
-   * 4.8 "Please use kotlin-stdlib-jdk7 instead", probably because of newer bundled Kotlin
-   * 4.8 deprecation warning:
-     > As part of making the publishing plugins stable, the 'deferred configurable' behavior of
-    the 'publishing {}' block is now deprecated
+ * Publish `-sources.jar` files (#13)
+ * Android Gradle Plugin 3.2.0 (#12)
+ * Use Android 28 for testing (#12)
+ * Gradle: 4.9 (AGP 3.2.0 needs 4.6+) (#12)
    * 4.10.2 is GA, but has many breaking changes (e.g. kotlin-dsl and lazy task configuration)
- * New model for Violations, a grouped property approach
- * New task for HTML report with limited Lint support
- * Tasks are now automatically added when applying `quality` plugin
+ * New model for Violations, a grouped property approach (#14) 
+ * New task for HTML report with limited Lint support (#14)
+ * Tasks are now automatically added when applying `quality` plugin (#14, #18, #20, #21)
  * Fixed empty data handling in TableGenerator (#16)
 
 ## 0.6 *(2018-08-17 --- 2018-10-01)*
