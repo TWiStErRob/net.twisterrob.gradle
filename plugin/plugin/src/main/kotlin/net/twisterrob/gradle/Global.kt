@@ -14,7 +14,7 @@ val builtDate: Instant by lazy {
 		is JarURLConnection -> {
 			val mf = url.manifest!!
 			val date = mf.mainAttributes.getValue("Built-Date")!!
-			DateTimeFormatter.ISO_INSTANT.parse(date) as Instant
+			Instant.from(DateTimeFormatter.ISO_INSTANT.parse(date))
 		}
 
 		is FileURLConnection -> Instant.now() // e.g. when running tests and .class is in .../classes/
