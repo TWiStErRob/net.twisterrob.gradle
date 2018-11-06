@@ -158,10 +158,10 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		private fun fixVariantTaskGroups(variant: BaseVariant) {
 			fun BaseVariantData.fixTaskMetadata() {
-				compileTask.group = "Build"
-				compileTask.description = "Compiles sources for ${description}."
-				javacTask.group = "Build"
-				javacTask.description = "Compiles Java sources for ${description}."
+				taskContainer.compileTask.group = "Build"
+				taskContainer.compileTask.description = "Compiles sources for ${description}."
+				taskContainer.javacTask.group = "Build"
+				taskContainer.javacTask.description = "Compiles Java sources for ${description}."
 			}
 			variant.variantData?.fixTaskMetadata()
 			variant.androidTestVariantData?.fixTaskMetadata()

@@ -96,6 +96,11 @@ class AndroidProguardPlugin : BasePlugin() {
 					val proguard = obfuscationTask.transform as ProGuardTransform
 					proguard.configuration.printConfiguration =
 							variant.mappingFile.parentFile.resolve("configuration.pro")
+					// AGP 3.2 removed configuration.dump setup from
+					// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification
+					proguard.configuration.dump =
+							variant.mappingFile.parentFile.resolve("dump.txt")
+					// TODO dump and printConfiguration are not Gradle task outputs
 				}
 			}
 		}

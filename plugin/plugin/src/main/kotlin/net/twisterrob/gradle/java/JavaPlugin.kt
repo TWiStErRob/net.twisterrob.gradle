@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.java
 
 import com.android.build.gradle.BaseExtension
-import com.android.builder.core.VariantType.ANDROID_TEST
-import com.android.builder.core.VariantType.UNIT_TEST
+import com.android.builder.core.VariantTypeImpl.ANDROID_TEST
+import com.android.builder.core.VariantTypeImpl.UNIT_TEST
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.base.BaseExposedPlugin
 import org.gradle.api.JavaVersion
