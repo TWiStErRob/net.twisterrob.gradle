@@ -7,7 +7,7 @@ buildscript {
 	}
 	dependencies {
 		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
-		classpath 'net.twisterrob.gradle:twister-gradle-test:0.5'
+		classpath 'net.twisterrob.gradle:twister-gradle-test:0.7'
 	}
 }
 

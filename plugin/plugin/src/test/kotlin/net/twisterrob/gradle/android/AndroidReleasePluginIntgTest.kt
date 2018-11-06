@@ -4,12 +4,13 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
 import net.twisterrob.test.zip.hasZipEntry
-import net.twisterrob.test.zip.withSize
-import org.hamcrest.Matchers.greaterThan
+import org.gradle.testkit.runner.BuildResult
+import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.hamcrest.junit.MatcherAssert.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
+import java.io.File
 import java.time.Instant
 import java.util.zip.ZipFile
 
@@ -18,7 +19,7 @@ import java.util.zip.ZipFile
  */
 class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
-	@Test fun `test (release)`() {
+	companion object {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -26,35 +27,80 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			afterEvaluate {
 				// TODO workaround for testing until a Task input property is introduced instead of env.RELEASE_HOME
 				tasks.releaseRelease.destinationDir = file('releases')
+				tasks.releaseDebug.destinationDir = file('releases')
 			}
 		""".trimIndent()
+	}
 
+	@Test fun `test (release)`() {
 		val result = gradle.run(script, "releaseRelease").build()
 
 		result.assertSuccess(":assembleRelease")
 		result.assertSuccess(":releaseRelease")
+		assertReleaseArchive(result)
+	}
+
+	private fun assertReleaseArchive(result: BuildResult) {
 		val releasesDir = gradle.root.resolve("releases")
-		val archive = releasesDir.resolve("${packageName}@10203004-v1.2.3#4+archive.zip")
+		assertArchive(releasesDir.resolve("${packageName}@10203004-v1.2.3#4+archive.zip")) { archive ->
+			assertThat(archive, hasZipEntry("${packageName}@10203004-v1.2.3#4+release.apk"))
+			assertThat(archive, hasZipEntry("proguard_configuration.pro"))
+			assertThat(archive, hasZipEntry("proguard_dump.txt"))
+			assertThat(archive, hasZipEntry("proguard_mapping.txt"))
+			assertThat(archive, hasZipEntry("proguard_seeds.txt"))
+			assertThat(archive, hasZipEntry("proguard_usage.txt"))
+			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
+		}
+	}
+
+	@Test fun `test (debug)`() {
+		val result = gradle.run(script, "releaseDebug").build()
+
+		result.assertSuccess(":assembleDebug")
+		result.assertSuccess(":assembleDebugAndroidTest")
+		result.assertSuccess(":releaseDebug")
+		assertDebugArchive(result)
+	}
+
+	private fun assertDebugArchive(result: BuildResult) {
+		val releasesDir = gradle.root.resolve("releases")
+		assertArchive(releasesDir.resolve("${packageName}.debug@10203004-v1.2.3#4d+archive.zip")) { archive ->
+			assertThat(archive, hasZipEntry("${packageName}.debug@10203004-v1.2.3#4d+debug.apk"))
+			assertThat(archive, hasZipEntry("${packageName}.debug.test@10203004-v1.2.3#4d+debug-androidTest.apk"))
+			assertThat(archive, not(hasZipEntry("proguard_configuration.pro")))
+			assertThat(archive, not(hasZipEntry("proguard_dump.txt")))
+			assertThat(archive, not(hasZipEntry("proguard_mapping.txt")))
+			assertThat(archive, not(hasZipEntry("proguard_seeds.txt")))
+			assertThat(archive, not(hasZipEntry("proguard_usage.txt")))
+			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
+		}
+	}
+
+	@Test fun `test (debug) and (release)`() {
+		val result = gradle.run(script, "release").build()
+
+		result.assertSuccess(":assembleRelease")
+		result.assertSuccess(":assembleDebug")
+		result.assertSuccess(":assembleDebugAndroidTest")
+		result.assertSuccess(":releaseRelease")
+		result.assertSuccess(":releaseDebug")
+		assertReleaseArchive(result)
+		assertDebugArchive(result)
+	}
+
+	private inline fun assertArchive(archive: File, crossinline assertions: (File) -> Unit) {
 		assertThat(archive, anExistingFile())
 		try {
-			assertThat(archive, hasZipEntry("${packageName}@10203004-v1.2.3#4+release.apk", withSize(greaterThan(0L))))
-			assertThat(archive, hasZipEntry("proguard_configuration.pro", withSize(greaterThan(0L))))
-			assertThat(archive, hasZipEntry("proguard_dump.txt", withSize(greaterThan(0L))))
-			assertThat(archive, hasZipEntry("proguard_mapping.txt", withSize(greaterThan(0L))))
-			assertThat(archive, hasZipEntry("proguard_seeds.txt", withSize(greaterThan(0L))))
-			assertThat(archive, hasZipEntry("proguard_usage.txt", withSize(greaterThan(0L))))
+			assertions(archive)
 		} catch (ex: Throwable) {
 			println(ZipFile(archive)
 				.entries()
 				.asSequence()
 				.sortedBy { it.name }
 				.joinToString("\n") {
-					"${it.name} (${it.compressedSize}/${it.size} bytes) @ ${Instant.ofEpochMilli(
-						it.time
-					)}"
+					"${it.name} (${it.compressedSize}/${it.size} bytes) @ ${Instant.ofEpochMilli(it.time)}"
 				})
 			throw ex
 		}
-		result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
 	}
 }
