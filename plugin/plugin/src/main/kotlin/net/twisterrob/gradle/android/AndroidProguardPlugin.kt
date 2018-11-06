@@ -27,6 +27,7 @@ class AndroidProguardPlugin : BasePlugin() {
 		 * @see com.android.build.gradle.ProguardFiles#getDefaultProguardFile
 		 */
 		val proguardBase = project.buildDir.resolve(AndroidProject.FD_INTERMEDIATES).resolve("proguard-rules")
+		// TODO review ExtractProguardFiles task's files
 		val defaultAndroidRules = proguardBase.resolve("android.pro")
 		val myProguardRules = proguardBase.resolve("twisterrob.pro")
 		val myDebugProguardRules = proguardBase.resolve("twisterrob-debug.pro")

@@ -15,7 +15,7 @@
 # used if you are only targeting Android 2.0 or later.)  Make sure you
 # test thoroughly if you go this route.
 # MODIFICATION: split and explain -optimizations
-#Original: !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/* 
+#Original: !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
 # MODIFICATION: turn on arithmetic optimizations; it was fixed since 2.0 (API 5) http://b.android.com/28192
 #-optimizations !code/simplification/arithmetic
 # TODO no idea why
@@ -105,9 +105,19 @@
 # MODIFICATION: add -dontnote for support libs
 # Note: the configuration keeps the entry point '...', but not the descriptor class '...'
 -dontnote android.support.**
+# Note: the configuration keeps the entry point
+# androidx.core.graphics.drawable.IconCompatParcelizer {
+#     # but not the descriptor class 'androidx.versionedparcelable.VersionedParcel'
+#     android.support.v4.graphics.drawable.IconCompat read(androidx.versionedparcelable.VersionedParcel);
+#     void write(android.support.v4.graphics.drawable.IconCompat, androidx.versionedparcelable.VersionedParcel);
+# }
+-dontnote androidx.core.graphics.drawable.IconCompatParcelizer
 
 # Understand the @Keep support annotation.
--keep class android.support.annotation.Keep
+# Copied from support-annotations-28.0.0.jar/META-INF/proguard/androidx-annotations.pro
+
+# No need to keep the actual annotation
+#-keep class android.support.annotation.Keep
 
 -keep @android.support.annotation.Keep class * {*;}
 
