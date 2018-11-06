@@ -98,6 +98,23 @@ class AndroidBuildPlugin : BasePlugin() {
 				resValue("bool", "in_test", "false")
 				resValue("bool", "in_prod", "true")
 			}
+
+			// configure files we don't need in APKs
+			with(packagingOptions) {
+				// support-annotations-28.0.0.jar contains this file
+				// it's for Android Gradle Plugin at best, if at all used
+				exclude("META-INF/proguard/androidx-annotations.pro")
+
+				// Each Android Support Library component has a separate entry for storing version.
+				// Probably used by Google Play to do statistics, gracefully opt out of this.
+				exclude("META-INF/android.*.version")
+				exclude("META-INF/androidx.*.version")
+
+				// Kotlin builds these things in, found no docs so far about their necessity, so try to exclude
+				exclude("**/*.kotlin_metadata")
+				exclude("**/*.kotlin_module")
+				exclude("**/*.kotlin_builtins")
+			}
 		}
 
 		if (twisterrob.decorateBuildConfig) {
