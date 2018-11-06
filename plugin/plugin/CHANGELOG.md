@@ -1,5 +1,10 @@
 ## 3.1.x
 
+### 3.1.4.14-28-28.2
+ - Fix crash in ProGuard file extractions
+ - Update ProGuard rules to hide some new framework Notes
+ - Exclude some unused files from the final APK
+
 ### 3.1.4.14-28-28.1
  - No more Groovy in plugin code!
 
