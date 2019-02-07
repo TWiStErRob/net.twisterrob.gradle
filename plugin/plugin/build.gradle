@@ -56,4 +56,7 @@ jar {
 tasks.withType(Test) {
 	//noinspection UnnecessaryQualifiedReference
 	testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+	// More than 2 yields a ton of "Invalidating in-memory cache of .gradle-test-kit\caches\4.10.2\fileHashes\fileHashes.bin"
+	// but 2 as opposed to 1 makes build run more than twice as fast
+	maxParallelForks = 2
 }
