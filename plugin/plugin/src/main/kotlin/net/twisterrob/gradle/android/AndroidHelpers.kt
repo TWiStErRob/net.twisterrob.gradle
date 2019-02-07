@@ -21,7 +21,9 @@ fun PluginContainer.hasAndroid(): Boolean =
 	hasPlugin(AppPlugin::class.java) ||
 			hasPlugin(LibraryPlugin::class.java) ||
 			hasPlugin(FeaturePlugin::class.java) ||
-			hasPlugin(TestPlugin::class.java)
+			hasAndroidTest()
+
+fun PluginContainer.hasAndroidTest() = hasPlugin(TestPlugin::class.java)
 
 val BaseExtension.variants: DomainObjectSet<out BaseVariant>
 	get() =
