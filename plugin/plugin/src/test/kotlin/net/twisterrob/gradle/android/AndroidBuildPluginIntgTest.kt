@@ -147,8 +147,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			import ${packageName}.R
 
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
-			// TODEL Robolectric 3.9 or 4.0 https://stackoverflow.com/a/50968725/253468
-			@org.robolectric.annotation.Config(sdk = [android.os.Build.VERSION_CODES.O_MR1])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
@@ -173,8 +171,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
 				testImplementation 'junit:junit:4.12'
-				testImplementation 'org.robolectric:robolectric:3.8'
+				testImplementation 'org.robolectric:robolectric:4.1'
 			}
+			// TODO AGP 3.3+ android.enableUnitTestBinaryResources=true crashes: https://issuetracker.google.com/issues/120098460
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test) {
 				//noinspection UnnecessaryQualifiedReference
@@ -209,8 +208,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			import ${packageName}.R
 
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
-			// TODEL Robolectric 3.9 or 4.0 https://stackoverflow.com/a/50968725/253468
-			@org.robolectric.annotation.Config(sdk = [android.os.Build.VERSION_CODES.O_MR1])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
@@ -228,8 +225,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
 				testImplementation 'junit:junit:4.12'
-				testImplementation 'org.robolectric:robolectric:3.8'
+				testImplementation 'org.robolectric:robolectric:4.1'
 			}
+			// TODO AGP 3.3+ android.enableUnitTestBinaryResources=true crashes: https://issuetracker.google.com/issues/120098460
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test) {
 				//noinspection UnnecessaryQualifiedReference
