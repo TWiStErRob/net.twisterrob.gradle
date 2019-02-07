@@ -2,7 +2,6 @@
 
 ### 3.2.1.14-28-28.1-SNAPSHOT
  - Make tests run on Java 9-11
-   - except `applies signing config from properties (release)`
  - Use Robolectric 4.1 for testing
  - Support com.android.test modules for Kotlin
  - Gradle 4.10.2 (Gradle 4.6+)
