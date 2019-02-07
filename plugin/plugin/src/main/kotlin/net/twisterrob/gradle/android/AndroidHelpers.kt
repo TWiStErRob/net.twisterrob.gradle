@@ -12,6 +12,8 @@ import com.android.build.gradle.TestPlugin
 import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.VersionedVariant
+import com.android.build.gradle.internal.dsl.BuildType
+import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.plugins.PluginContainer
 
@@ -38,3 +40,9 @@ fun BaseVariant.toDebugString() = (
 				+ ", name=$name, desc=$description, base=$baseName, dir=$dirName, pkg=$applicationId, flav=$flavorName"
 				+ (if (this is VersionedVariant) ", ver=$versionName, code=$versionCode" else "")
 		)
+
+fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) =
+	configureEach {
+		if (it.name == name)
+			block(it)
+	}

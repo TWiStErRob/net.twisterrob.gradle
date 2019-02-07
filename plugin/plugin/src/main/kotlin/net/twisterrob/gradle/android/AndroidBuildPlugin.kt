@@ -84,19 +84,20 @@ class AndroidBuildPlugin : BasePlugin() {
 				buildConfigField("String", "EMAIL", "\"feedback@twisterrob.net\"")
 			}
 
-			with(buildTypes["debug"]) debug@{
+			buildTypes.configure("debug") {
 				project.plugins.withType<AppPlugin> {
 					// TODO make debug buildTypes configurable, use name of buildType as suffix
-					this@debug.applicationIdSuffix = ".${this@debug.name}"
+					it.applicationIdSuffix = ".${it.name}"
 				}
-				versionNameSuffix = "d"
-				buildConfigField("String", "EMAIL", "\"papp.robert.s@gmail.com\"")
-				resValue("bool", "in_test", "true")
-				resValue("bool", "in_prod", "false")
+				it.versionNameSuffix = "d"
+				it.buildConfigField("String", "EMAIL", "\"papp.robert.s@gmail.com\"")
+				it.resValue("bool", "in_test", "true")
+				it.resValue("bool", "in_prod", "false")
 			}
-			with(buildTypes["release"]) release@{
-				resValue("bool", "in_test", "false")
-				resValue("bool", "in_prod", "true")
+
+			buildTypes.configure("release") {
+				it.resValue("bool", "in_test", "false")
+				it.resValue("bool", "in_prod", "true")
 			}
 
 			// configure files we don't need in APKs
