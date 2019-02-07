@@ -69,7 +69,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 		val result = gradle.run(script, "assembleDebug").buildAndFail()
 
 		result.assertFailed(":compileDebugJavaWithJavac")
-		result.assertHasOutputLine(""".*error: lambda expressions are not supported in -source 1\.7""".toRegex())
+		result.assertHasOutputLine(""".*error: lambda expressions are not supported in -source (1\.)?7""".toRegex())
 		result.assertHasOutputLine("\t\tRunnable runnable = () -> { };")
 		result.assertHasOutputLine("  (use -source 8 or higher to enable lambda expressions)")
 	}
