@@ -47,6 +47,7 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 			"-alias" to "gradle.plugin.test",
 			"-keyalg" to "RSA",
 			"-keystore" to "gradle.plugin.test.jks",
+			"-storetype" to "JKS",
 			"-dname" to "CN=JUnit Test, O=net.twisterrob, L=Gradle",
 			"-storepass" to "testStorePassword",
 			"-keypass" to "testKeyPassword"
@@ -87,7 +88,12 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	private fun verifyWithApkSigner(apk: String) = listOf(
-		resolveFromAndroidSDK("apksigner").absolutePath,
+		// apksigner.bat doesn't work with Java 11, even though everything is set up correctly:
+		// it says "No suitable Java found.", "you can define the JAVA_HOME environment variable"
+		// so as an alternative launch the jar file directly
+		resolveFromJDK("java").absolutePath,
+		"-jar",
+		resolveFromAndroidSDK("apksigner").parentFile.resolve("lib/apksigner.jar").absolutePath,
 		"verify",
 		apk
 	).runCommand()
