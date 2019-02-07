@@ -30,7 +30,8 @@ open class BasePlugin : Plugin<Project> {
 		internal fun checkGradleVersion(version: String) {
 			val pattern = """(?<major>\d+)\.(?<minor>\d+).*""".toRegex()
 			val match = pattern.matchEntire(version)
-			if (match == null || !(match.groups["major"]!!.value == "4" && 1 <= (match.groups["minor"]!!.value.toInt()))) {
+			// using groups by number due to https://youtrack.jetbrains.com/issue/KT-29241 until Kotlin 1.3.20
+			if (match == null || !(match.groups[1]!!.value == "4" && 1 <= (match.groups[2]!!.value.toInt()))) {
 				val file = File("gradle/wrapper/gradle-wrapper.properties")
 				val required = "4.1+"
 				@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
