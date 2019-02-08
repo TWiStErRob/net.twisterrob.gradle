@@ -1,5 +1,8 @@
 ## 3.2.x
 
+### 3.2.1.14-28-28.2
+ - Exclude readmes from the final APK
+
 ### 3.2.1.14-28-28.1
  - Make tests run on Java 9-11
  - Use Robolectric 4.1 for testing

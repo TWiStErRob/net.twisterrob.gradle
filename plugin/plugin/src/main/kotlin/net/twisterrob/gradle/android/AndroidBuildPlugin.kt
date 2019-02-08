@@ -115,6 +115,11 @@ class AndroidBuildPlugin : BasePlugin() {
 				exclude("**/*.kotlin_metadata")
 				exclude("**/*.kotlin_module")
 				exclude("**/*.kotlin_builtins")
+
+				// Readmes
+				// (e.g. hamcrest-library-2.1.jar and hamcrest-core-2.1.jar both pack a readme to encourage upgrade)
+				exclude("**/README.txt")
+				exclude("**/README.md")
 			}
 		}
 
