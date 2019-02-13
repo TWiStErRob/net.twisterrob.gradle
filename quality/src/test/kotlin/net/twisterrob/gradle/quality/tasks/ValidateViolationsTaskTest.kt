@@ -6,9 +6,9 @@ import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import org.gradle.testkit.runner.BuildResult
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
-import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 import java.io.File

@@ -6,10 +6,10 @@ import net.twisterrob.gradle.test.failReason
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

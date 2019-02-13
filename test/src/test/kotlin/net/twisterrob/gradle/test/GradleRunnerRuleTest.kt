@@ -2,9 +2,9 @@ package net.twisterrob.gradle.test
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
-import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals

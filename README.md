@@ -4,7 +4,7 @@ Plugins that configure the built-in plugins with saner defaults.
 ```gradle
 buildscript {
 	repositories {
-		maven { name = 'TWiStErRob'; url = 'https://dl.bintray.com/twisterrob/maven'}
+		maven { name = 'TWiStErRob'; url = 'https://dl.bintray.com/twisterrob/maven' }
 	}
 	dependencies {
 		classpath "net.twisterrob.gradle:twister-quality:${VERSION_TWISTER_QUALITY}"

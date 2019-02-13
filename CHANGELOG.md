@@ -1,7 +1,8 @@
 # Change Log
 
 ## 0.8 *(2018-10-14 --- )*
- * ...
+ * Android Gradle Plugin 3.2.1 (#34)
+ * Other minor version bumps (#34)
 
 ## 0.7 *(2018-10-01 --- 2018-10-10)*
  * Publish `-sources.jar` files (#13)

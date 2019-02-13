@@ -8,6 +8,7 @@ import net.twisterrob.gradle.test.failReason
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasItems
@@ -15,7 +16,6 @@ import org.hamcrest.Matchers.not
 import org.hamcrest.Matchers.startsWith
 import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 
@@ -89,7 +89,7 @@ class CheckStylePluginTest {
 				apply plugin: 'net.twisterrob.checkstyle'
 			}
 		""".trimIndent()
-		// ":instant" is not supported yet 
+		// ":instant" is not supported yet
 		val modules = arrayOf(":app", ":feature", ":base", ":library", ":library:nested", ":test")
 
 		val result: BuildResult

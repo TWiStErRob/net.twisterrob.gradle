@@ -6,11 +6,11 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
 import org.intellij.lang.annotations.Language
-import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
