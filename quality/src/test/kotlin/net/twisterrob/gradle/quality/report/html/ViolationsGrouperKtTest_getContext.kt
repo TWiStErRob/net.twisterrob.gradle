@@ -12,7 +12,7 @@ import org.junit.rules.TemporaryFolder
 import org.mockito.Mockito.mock
 import java.io.File
 
-class ViolationsGrouperKtTest {
+class ViolationsGrouperKtTest_getContext {
 	@Rule @JvmField val temp = TemporaryFolder()
 
 	@Test
