@@ -13,14 +13,20 @@ import java.net.URI
  * Simplified {@link org.junit.Rule} around {@link GradleRunner} to reduce code repetition.
  */
 open class GradleRunnerRule @JvmOverloads constructor(
-		clearAfterFailure: Boolean? = null
+	clearAfterFailure: Boolean? = null,
+	clearAfterSuccess: Boolean? = null
 ) : TestRule {
 
 	private val temp = TemporaryFolder()
 	private val clearAfterFailure: Boolean = listOfNotNull(
-			clearAfterFailure,
-			System.getProperty("net.twisterrob.gradle.runner.clearAfterFailure")?.toBoolean(),
-			true
+		clearAfterFailure,
+		System.getProperty("net.twisterrob.gradle.runner.clearAfterFailure")?.toBoolean(),
+		true
+	).first()
+	private val clearAfterSuccess: Boolean = listOfNotNull(
+		clearAfterSuccess,
+		System.getProperty("net.twisterrob.gradle.runner.clearAfterSuccess")?.toBoolean(),
+		true
 	).first()
 
 	private lateinit var buildFile: File
@@ -39,7 +45,7 @@ open class GradleRunnerRule @JvmOverloads constructor(
 					success = true
 				} finally {
 					tearDown()
-					if (success || clearAfterFailure) {
+					if ((success && clearAfterSuccess) || clearAfterFailure) {
 						temp.delete()
 					}
 				}
