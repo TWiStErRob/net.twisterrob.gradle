@@ -40,7 +40,7 @@ class ValidateViolationsTaskTest {
 
 			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
 				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
-					def count = results.list.sum { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
+					def count = results.list.sum(0) { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
 					println "Violations: ${'$'}{count}"
 				}
 			}
@@ -73,7 +73,7 @@ class ValidateViolationsTaskTest {
 			}
 			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
 				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
-					def count = results.list.sum { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
+					def count = results.list.sum(0) { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
 					println "Violations: ${'$'}{count}"
 				}
 			}
