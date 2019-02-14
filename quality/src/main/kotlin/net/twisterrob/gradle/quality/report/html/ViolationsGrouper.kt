@@ -102,7 +102,16 @@ private fun Node.emitViolation(v: Violation) {
 			when (v.source.reporter) {
 				"ANDROIDLINT" -> {
 					"title" { cdata(v.message.lineSequence().first()) }
-					"message" { cdata(v.message.lineSequence().drop(1).first().escapeMarkdownForJSTemplate()) }
+					"message" {
+						var message = v.message.lineSequence().drop(1).first()
+						when {
+							v.rule == "IconMissingDensityFolder" -> message =
+								message.replace(Regex("""(?<=Missing density variation folders in `)(.*?)(?=`:)""")) {
+									it.value.replace("""\\""", """\""")
+								}
+						}
+						cdata(message.escapeMarkdownForJSTemplate())
+					}
 					"description" { cdata(v.message.lineSequence().drop(2).joinToString("\n").escapeMarkdownForJSTemplate()) }
 				}
 
