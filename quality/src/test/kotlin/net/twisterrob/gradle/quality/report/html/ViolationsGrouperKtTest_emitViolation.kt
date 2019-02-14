@@ -4,18 +4,20 @@ import com.flextrade.jfixture.JFixture
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import net.twisterrob.gradle.quality.Violation
-import net.twisterrob.gradle.quality.Violation.Location
-import net.twisterrob.gradle.quality.Violation.Severity.ERROR
-import net.twisterrob.gradle.quality.Violation.Source
 import org.gradle.api.Project
 import org.junit.Test
 import org.redundent.kotlin.xml.CDATAElement
 import org.redundent.kotlin.xml.Node
 import org.redundent.kotlin.xml.xml
-import java.io.File
 import kotlin.test.assertEquals
 
 class ViolationsGrouperKtTest_emitViolation {
+
+	private val fixture = JFixture().apply {
+		customise().lazyInstance(Project::class.java) {
+			project(":" + build())
+		}
+	}
 
 	@Test
 	fun `message with escapes goes through as is`() {
@@ -25,13 +27,12 @@ class ViolationsGrouperKtTest_emitViolation {
 		""".trimIndent()
 
 		val result = xml("root") {
-			emitViolation(
-				Violation(
-					"IconMissingDensityFolder", null, ERROR, lintMessage, emptyMap(),
-					Location(project(":foo"), "", File("build/test/violation"), 0, 0, 0),
-					Source("", "", "ANDROIDLINT", "", File("."), null)
-				)
-			)
+			emitViolation(fixture.build<Violation>().apply {
+				setField("message", lintMessage)
+				// make sure message goes through the transformation
+				source.setField("reporter", "ANDROIDLINT")
+				setField("rule", "IconMissingDensityFolder")
+			})
 		}
 
 		val message = result("violation", "details", "message").cdata.text
@@ -40,23 +41,22 @@ class ViolationsGrouperKtTest_emitViolation {
 
 	@Test
 	fun `IconMissingDensityFolder specific message escapes are removed`() {
-		val originalMessage = """
+		val lintMessage = """
 			Title
 			Missing density variation folders in `src\\main\\res`: drawable-hdpi
 		""".trimIndent()
 
 		val result = xml("root") {
-			emitViolation(
-				Violation(
-					"IconMissingDensityFolder", null, ERROR, originalMessage, emptyMap(),
-					Location(project(":foo"), "", File("build/test/violation"), 0, 0, 0),
-					Source("", "", "ANDROIDLINT", "", File("."), null)
-				)
-			)
+			emitViolation(fixture.build<Violation>().apply {
+				setField("message", lintMessage)
+				// make sure message goes through the transformation
+				source.setField("reporter", "ANDROIDLINT")
+				setField("rule", "IconMissingDensityFolder")
+			})
 		}
 
-		val lintMessage = result("violation", "details", "message").cdata.text
-		assertEquals("""Missing density variation folders in \`src\\main\\res\`: drawable-hdpi""", lintMessage)
+		val message = result("violation", "details", "message").cdata.text
+		assertEquals("""Missing density variation folders in \`src\\main\\res\`: drawable-hdpi""", message)
 	}
 
 	private fun project(path: String): Project = mock<Project>().also {
