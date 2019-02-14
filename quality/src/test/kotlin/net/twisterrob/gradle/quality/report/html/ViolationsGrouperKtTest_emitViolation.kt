@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.report.html
 
+import com.flextrade.jfixture.JFixture
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import net.twisterrob.gradle.quality.Violation
@@ -79,3 +80,12 @@ private operator fun Node.invoke(name: String): Node =
 
 private val Node.cdata: CDATAElement
 	get() = children.filterIsInstance<CDATAElement>().single()
+
+private fun Any.setField(name: String, value: Any?) {
+	val field = this::class.java.getDeclaredField(name).apply {
+		isAccessible = true
+	}
+	field.set(this, value)
+}
+
+private inline fun <reified T> JFixture.build(): T = this.create(T::class.java)
