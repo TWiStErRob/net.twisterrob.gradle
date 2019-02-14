@@ -26,6 +26,38 @@ class ValidateViolationsTaskTest {
 
 	@Rule @JvmField val gradle = GradleRunnerRule()
 
+	@Test fun `get total violation counts on root project`() {
+		`given`@
+		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), *SOURCE_PATH, "Checkstyle.java")
+		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), *CONFIG_PATH_CS)
+		gradle.file(gradle.templateFile("pmd-simple_failure.java").readText(), *SOURCE_PATH, "Pmd.java")
+		gradle.file(gradle.templateFile("pmd-simple_failure.xml").readText(), * CONFIG_PATH_PMD)
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.pmd'
+
+			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
+				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
+					def count = results.list.sum { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
+					println "Violations: ${'$'}{count}"
+				}
+			}
+		""".trimIndent()
+
+		val result: BuildResult
+		`when`@
+		result = gradle
+			.basedOn("android-root_app")
+			.run(script, "checkstyleAll", "pmdAll", "printViolationCount")
+			.build()
+
+		`then`@
+		// TODO find another CheckStyle violation that's more specific
+		result.assertHasOutputLine("Violations: 3")
+	}
+
 	@Test fun `get total violation counts`() {
 		`given`@
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), "module", *SOURCE_PATH, "Checkstyle.java")
