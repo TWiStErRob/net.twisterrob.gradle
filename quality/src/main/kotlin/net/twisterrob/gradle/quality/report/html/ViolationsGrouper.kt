@@ -76,8 +76,14 @@ internal fun Node.emitViolation(v: Violation) {
 		with(v.location) {
 			"location"{
 				attribute("module", module.path)
-				attribute("modulePrefix", module.path.substring(0, module.path.length - module.name.length - 1))
-				attribute("moduleName", module.name)
+				attribute("modulePrefix") += when {
+					module.path == ":" -> ""
+					else -> module.path.substring(0, module.path.length - module.name.length - 1)
+				}
+				attribute("moduleName") += when {
+					module.path == ":" -> ""
+					else -> module.name
+				}
 				attribute("variant", variant)
 				attribute("file", file.absolutePath)
 				attribute("fileName", file.name)
@@ -215,6 +221,16 @@ private val Location.language: String
 		"kt" -> "kotlin"
 		else -> file.extension
 	}
+
+/**
+ * nicer syntax for `attribute(name) { ... }`, allows to use `attribute(name) += ...` instead.
+ */
+private fun Node.attribute(name: String) = AttributeEmitter(this, name)
+private class AttributeEmitter(private val node: Node, private val name: String) {
+	operator fun plusAssign(obj: Any) {
+		node.attribute(name, obj)
+	}
+}
 
 private val Violation.locationRelativeToProject: String
 	get() = location.module.rootProject.relativePath(location.file.parentFile) + File.separator

@@ -192,7 +192,14 @@ abstract class AbstractGrouper extends GroovyObjectSupport {
 		if ("by".equals(fieldName)) {
 			return this;
 		}
-		if (hasField(representative, fieldName)) {
+		if (representative == NullObject.getNullObject()) {
+			try {
+				// TODO the order of these is reversed here when on empty list, which could lead to different behavior
+				return super.getProperty(fieldName);
+			} catch (MissingPropertyException ex) {
+				return by(fieldName);
+			}
+		} else if (hasField(representative, fieldName)) {
 			return by(fieldName);
 		} else {
 			return super.getProperty(fieldName);
