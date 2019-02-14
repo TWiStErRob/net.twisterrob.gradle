@@ -1,10 +1,19 @@
 buildscript {
+	val props by extra {
+		java.util.Properties().apply {
+			file("../gradle.properties").reader().use { load(it) }
+		}
+	}
+	val VERSION_ANDROID_PLUGIN by props
 	repositories {
+		google()
 		jcenter()
 	}
 
 	dependencies {
 		classpath(kotlin("gradle-plugin"))
+		// to be able to access com.android.builder.model.Version artifact
+		classpath("com.android.tools.build:builder-model:${VERSION_ANDROID_PLUGIN}")
 	}
 }
 
@@ -13,11 +22,18 @@ plugins {
 }
 
 repositories {
+	google()
 	jcenter()
 }
 
+// don't want to use this, just so IDEA puts it in the project for source browsing
+val sourcesOnly by configurations.creating
+// hack to actually make Gradle resolve and use this
+configurations.compileOnly.extendsFrom(sourcesOnly)
+
 dependencies {
 	implementation(kotlin("gradle-plugin"))
+	sourcesOnly("com.android.tools.lint:lint:${com.android.builder.model.Version.ANDROID_TOOLS_BASE_VERSION}")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
