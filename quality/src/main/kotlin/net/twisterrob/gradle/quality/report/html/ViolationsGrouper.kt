@@ -9,6 +9,7 @@ import org.gradle.api.Project
 import org.redundent.kotlin.xml.Node
 import org.redundent.kotlin.xml.xml
 import java.io.File
+import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.Base64
@@ -183,7 +184,12 @@ internal fun Node.emitViolation(v: Violation) {
 @VisibleForTesting
 internal fun getContext(v: Violation): Triple<String, Int, Int> {
 	val loc = v.location
-	val lines = loc.file.readLines()
+	val lines = try {
+		loc.file.readLines()
+	} catch (ex: IOException) {
+		// TODO ex.printStackTrace()?
+		return Triple("", 0, 0)
+	}
 	val numContextLines = 2
 	val contextStart = max(1, loc.startLine - numContextLines)
 	val contextEnd = min(lines.size, loc.endLine + numContextLines)
