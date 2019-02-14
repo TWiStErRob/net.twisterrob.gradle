@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.report.html
 
+import com.android.annotations.VisibleForTesting
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violation.Location
@@ -68,7 +69,8 @@ internal fun Project.produceXml(results: Grouper.Start<Violations>, xmlFile: Fil
 
 private val binaryTypes = setOf("png", "webp", "jpg", "gif", "jar", "zip", "apk")
 
-private fun Node.emitViolation(v: Violation) {
+@VisibleForTesting
+internal fun Node.emitViolation(v: Violation) {
 	"violation" {
 		with(v.location) {
 			"location"{
@@ -103,12 +105,13 @@ private fun Node.emitViolation(v: Violation) {
 				"ANDROIDLINT" -> {
 					"title" { cdata(v.message.lineSequence().first()) }
 					"message" {
-						var message = v.message.lineSequence().drop(1).first()
-						when {
-							v.rule == "IconMissingDensityFolder" -> message =
-								message.replace(Regex("""(?<=Missing density variation folders in `)(.*?)(?=`:)""")) {
+						val messageLine = v.message.lineSequence().drop(1).first()
+						val message = when {
+							v.rule == "IconMissingDensityFolder" ->
+								messageLine.replace(Regex("""(?<=Missing density variation folders in `)(.*?)(?=`:)""")) {
 									it.value.replace("""\\""", """\""")
 								}
+							else -> messageLine
 						}
 						cdata(message.escapeMarkdownForJSTemplate())
 					}
@@ -177,6 +180,7 @@ private fun Node.emitViolation(v: Violation) {
 	}
 }
 
+@VisibleForTesting
 internal fun getContext(v: Violation): Triple<String, Int, Int> {
 	val loc = v.location
 	val lines = loc.file.readLines()
