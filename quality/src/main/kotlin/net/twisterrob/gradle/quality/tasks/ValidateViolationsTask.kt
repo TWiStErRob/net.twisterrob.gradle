@@ -52,7 +52,7 @@ open class ValidateViolationsTask : DefaultTask() {
 
 	@TaskAction
 	fun validateViolations() {
-		val results = project.subprojects.flatMap { subproject ->
+		val results = project.allprojects.flatMap { subproject ->
 			GATHERERS.flatMap { gatherer ->
 				subproject.tasks.withType(gatherer.taskType).map { task ->
 					Violations(
