@@ -39,7 +39,7 @@ class QualityPluginTest {
 		`then`@
 		assertEquals(SUCCESS, result.task(":violationReportConsole")!!.outcome)
 		val allOtherTasks = result.tasks.map { it.path } - ":violationReportConsole"
-		assertThat(allOtherTasks, not(hasItems(matchesPattern(":violationReportConsole\b"))))
+		assertThat(allOtherTasks, not(hasItems(matchesPattern(""":violationReportConsole$"""))))
 		result.assertHasOutputLine(
 			"should be configurable without afterEvaluate",
 			"Configuring task ':violationReportConsole'"
@@ -66,7 +66,7 @@ class QualityPluginTest {
 		`then`@
 		assertEquals(SUCCESS, result.task(":violationReportHtml")!!.outcome)
 		val allOtherTasks = result.tasks.map { it.path } - ":violationReportHtml"
-		assertThat(allOtherTasks, not(hasItems(matchesPattern(""":violationReportHtml\b"""))))
+		assertThat(allOtherTasks, not(hasItems(matchesPattern(""":violationReportHtml$"""))))
 		result.assertHasOutputLine(
 			"should be configurable without afterEvaluate",
 			"Configuring task ':violationReportHtml'"
