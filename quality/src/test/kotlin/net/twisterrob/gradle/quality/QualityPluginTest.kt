@@ -7,8 +7,8 @@ import net.twisterrob.gradle.test.assertNoOutputLine
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.hasItems
+import org.hamcrest.Matchers.matchesPattern
 import org.hamcrest.Matchers.not
 import org.intellij.lang.annotations.Language
 import org.junit.Rule
@@ -39,7 +39,7 @@ class QualityPluginTest {
 		`then`@
 		assertEquals(SUCCESS, result.task(":violationReportConsole")!!.outcome)
 		val allOtherTasks = result.tasks.map { it.path } - ":violationReportConsole"
-		assertThat(allOtherTasks, not(hasItems(containsString("violationReportConsole"))))
+		assertThat(allOtherTasks, not(hasItems(matchesPattern(":violationReportConsole\b"))))
 		result.assertHasOutputLine(
 			"should be configurable without afterEvaluate",
 			"Configuring task ':violationReportConsole'"
@@ -66,7 +66,7 @@ class QualityPluginTest {
 		`then`@
 		assertEquals(SUCCESS, result.task(":violationReportHtml")!!.outcome)
 		val allOtherTasks = result.tasks.map { it.path } - ":violationReportHtml"
-		assertThat(allOtherTasks, not(hasItems(containsString("violationReportHtml"))))
+		assertThat(allOtherTasks, not(hasItems(matchesPattern(""":violationReportHtml\b"""))))
 		result.assertHasOutputLine(
 			"should be configurable without afterEvaluate",
 			"Configuring task ':violationReportHtml'"
