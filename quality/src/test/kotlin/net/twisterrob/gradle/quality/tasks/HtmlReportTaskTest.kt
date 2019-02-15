@@ -49,7 +49,7 @@ class HtmlReportTaskTest {
 			apply plugin: 'org.gradle.reporting-base'
 			task('htmlReport', type: ${HtmlReportTask::class.java.name})
 
-			android.lintOptions.check('IconMissingDensityFolder', 'IconXmlAndPng')
+			android.lintOptions.check('IconMissingDensityFolder', 'IconXmlAndPng', 'UnusedResources')
 		""".trimIndent()
 
 		val result: BuildResult

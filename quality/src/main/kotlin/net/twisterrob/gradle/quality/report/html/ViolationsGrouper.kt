@@ -110,7 +110,7 @@ internal fun Node.emitViolation(v: Violation) {
 			attribute("severity", v.severity)
 			when (v.source.reporter) {
 				"ANDROIDLINT" -> {
-					"title" { cdata(v.message.lineSequence().first()) }
+					"title" { cdataSafe(v.message.lineSequence().first()) }
 					"message" {
 						val messageLine = v.message.lineSequence().drop(1).first()
 						val message = when {
@@ -120,16 +120,16 @@ internal fun Node.emitViolation(v: Violation) {
 								}
 							else -> messageLine
 						}
-						cdata(message.escapeMarkdownForJSTemplate())
+						cdataSafe(message.escapeMarkdownForJSTemplate())
 					}
-					"description" { cdata(v.message.lineSequence().drop(2).joinToString("\n").escapeMarkdownForJSTemplate()) }
+					"description" { cdataSafe(v.message.lineSequence().drop(2).joinToString("\n").escapeMarkdownForJSTemplate()) }
 				}
 
 				else -> {
 					if (v.message.count { it == '\n' } >= 1) {
-						"description" { cdata(v.message) }
+						"description" { cdataSafe(v.message) }
 					} else {
-						"message" { cdata(v.message) }
+						"message" { cdataSafe(v.message) }
 					}
 				}
 			}
@@ -140,7 +140,7 @@ internal fun Node.emitViolation(v: Violation) {
 					attribute("language", v.location.language)
 					attribute("startLine", contextStart)
 					attribute("endLine", contextEnd)
-					cdata(context.escapeCodeForJSTemplate())
+					cdataSafe(context.escapeCodeForJSTemplate())
 				} else if (v.location.file.extension in binaryTypes) {
 					when (v.location.file.extension) {
 						"png", "gif", "jpg", "bmp", "webp" -> {
@@ -153,9 +153,9 @@ internal fun Node.emitViolation(v: Violation) {
 							attribute("type", "archive")
 							try {
 								val entries = ZipFile(v.location.file).entries().asSequence()
-								cdata(entries.map { it.name }.sorted().joinToString("\n"))
+								cdataSafe(entries.map { it.name }.sorted().joinToString("\n"))
 							} catch (ex: Throwable) {
-								cdata(PrintWriter(StringWriter()).apply { use { ex.printStackTrace(it) } }.toString())
+								cdataSafe(PrintWriter(StringWriter()).apply { use { ex.printStackTrace(it) } }.toString())
 							}
 						}
 					}
@@ -174,7 +174,7 @@ internal fun Node.emitViolation(v: Violation) {
 						.replace(dir.name, dirWithContents)
 						.joinToString("\n")
 						.prependIndent("\t")
-					cdata(dir.parentFile.name + ":\n" + relevantListing)
+					cdataSafe(dir.parentFile.name + ":\n" + relevantListing)
 				} else {
 					attribute("type", "none")
 				}
@@ -216,6 +216,17 @@ private fun String.escapeMarkdownForJSTemplate(): String = this
 	.replace("""`""", """\`""")
 	.replace("""&#xA;""", "\n")
 
+private fun String.escapeForCData(): String {
+	val cdataEnd = """]]>"""
+	val cdataStart = """<![CDATA["""
+	return this
+		// split cdataEnd into two pieces so XML parser doesn't recognize it
+		.replace(cdataEnd, """]]${cdataEnd}${cdataStart}>""")
+}
+
+//TODEL https://github.com/redundent/kotlin-xml-builder/pull/13
+private fun Node.cdataSafe(text: String) = cdata(text.escapeForCData())
+
 private val Location.language: String
 	get() = when (file.extension) {
 		"kt" -> "kotlin"
@@ -226,6 +237,7 @@ private val Location.language: String
  * nicer syntax for `attribute(name) { ... }`, allows to use `attribute(name) += ...` instead.
  */
 private fun Node.attribute(name: String) = AttributeEmitter(this, name)
+
 private class AttributeEmitter(private val node: Node, private val name: String) {
 	operator fun plusAssign(obj: Any) {
 		node.attribute(name, obj)

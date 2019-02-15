@@ -1,0 +1,5 @@
+<resources>
+
+	<string name="cdata_string"><![CDATA[nothing special, but definitely unused]]></string>
+
+</resources>
