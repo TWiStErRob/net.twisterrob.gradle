@@ -10,6 +10,8 @@ val VERSION_VIOLATIONS: String by project
 val VERSION_JUNIT: String by project
 val VERSION_HAMCREST: String by project
 val VERSION_MOCKITO: String by project
+val VERSION_MOCKITO_KOTLIN: String by project
+val VERSION_JFIXTURE: String by project
 val VERSION_JETBRAINS_ANNOTATIONS: String by project
 val VERSION_XML_BUILDER: String by project
 
@@ -29,7 +31,9 @@ dependencies {
 	testImplementation("junit:junit:${VERSION_JUNIT}")
 	testImplementation("org.hamcrest:hamcrest-all:${VERSION_HAMCREST}")
 	testImplementation("org.mockito:mockito-core:${VERSION_MOCKITO}")
+	testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:${VERSION_MOCKITO_KOTLIN}")
 	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
+	testImplementation("com.flextrade.jfixture:jfixture:${VERSION_JFIXTURE}")
 }
 
 listOf( ":test", ":checkstyle", ":pmd" ).forEach(project::pullTestResourcesFrom)

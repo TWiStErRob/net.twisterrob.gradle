@@ -9,12 +9,17 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
+/**
+ * @see HtmlReportTask
+ */
 class HtmlReportTaskTest {
 
 	@Rule @JvmField val gradle = GradleRunnerRule(false)
 
 	@Test fun `runs on empty project`() {
 		`given`@
+		gradle
+			.basedOn("android-root_app")
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
@@ -24,14 +29,45 @@ class HtmlReportTaskTest {
 		val result: BuildResult
 		`when`@
 		result = gradle
-			.basedOn("android-root_app")
 			.run(script, "htmlReport")
 			.build()
 
 		`then`@
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
-		assertTrue(gradle.runner.projectDir.resolve("build/reports/violations.xsl").exists())
-		assertTrue(gradle.runner.projectDir.resolve("build/reports/violations.xml").exists())
-		assertTrue(gradle.runner.projectDir.resolve("build/reports/violations.html").exists())
+		gradle.assertViolationsReportExists("xsl")
+		gradle.assertViolationsReportExists("xml")
+		gradle.assertViolationsReportExists("html")
 	}
+
+	@Test fun `runs on lints`() {
+		`given`@
+		gradle
+			.basedOn("android-root_app")
+			.basedOn("lint-many_violations")
+		@Language("gradle")
+		val script = """
+			apply plugin: 'org.gradle.reporting-base'
+			task('htmlReport', type: ${HtmlReportTask::class.java.name})
+
+			android.lintOptions.check('IconMissingDensityFolder', 'IconXmlAndPng')
+		""".trimIndent()
+
+		val result: BuildResult
+		`when`@
+		result = gradle
+			// TODO aapt2 use "lint" task
+			.run(script, "lintDebug", "htmlReport")
+			.withDebug(true)
+			.build()
+
+		`then`@
+		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		gradle.assertViolationsReportExists("xsl")
+		gradle.assertViolationsReportExists("xml")
+		gradle.assertViolationsReportExists("html")
+	}
+}
+
+private fun GradleRunnerRule.assertViolationsReportExists(extension: String) {
+	assertTrue(this.runner.projectDir.resolve("build/reports/violations.${extension}").exists())
 }
