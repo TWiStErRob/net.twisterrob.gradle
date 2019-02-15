@@ -59,7 +59,7 @@ open class GradleRunnerRule @JvmOverloads constructor(
 				.forwardStdError(WriteOnlyWhenLineCompleteWriter(System.err.writer()))
 				.withProjectDir(temp.root)
 				.withPluginClasspath()
-		kotlin.assert(this.buildFile == this.getBuildFile()) {
+		check(this.buildFile == this.getBuildFile()) {
 			"Mismatch between internal (${this.buildFile}) and published (${getBuildFile()}) buildFiles."
 		}
 		fixClassPath(runner)

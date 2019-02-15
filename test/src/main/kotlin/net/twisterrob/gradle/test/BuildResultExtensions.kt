@@ -5,6 +5,7 @@
 package net.twisterrob.gradle.test
 
 import org.gradle.testkit.runner.BuildResult
+import org.junit.Assert.assertTrue
 
 /**
  * Matches a full line containing the regex.
@@ -54,15 +55,14 @@ fun BuildResult.assertNoOutputLine(reason: String?, unexpectedLine: String) {
 }
 
 private fun BuildResult.assertRegex(reason: String?, regex: Regex, positive: Boolean = true) {
-	assert(positive == regex.containsMatchIn(output), {
-		"""
-			${reason ?: ""}
-			Expected:
-			${if (positive) "" else "No match for "}${regex}
-			Actual:
-${output.prependIndent("\t\t\t")}
-		""".trimIndent()
-	})
+	val message = """
+		${reason ?: ""}
+		Expected:
+		${if (positive) "" else "No match for "}${regex}
+		Actual:
+${output.prependIndent("\t\t")}
+	""".trimIndent()
+	assertTrue(message, positive == regex.containsMatchIn(output))
 }
 
 val BuildResult.failReason: String?
