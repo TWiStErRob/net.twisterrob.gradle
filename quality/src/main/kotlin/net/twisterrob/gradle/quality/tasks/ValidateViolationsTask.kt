@@ -54,7 +54,7 @@ open class ValidateViolationsTask : DefaultTask() {
 			task.doLast {
 				forAllReportTasks { gatherer, reportTask ->
 					// make sure external reports are involved in UP-TO-DATE checks
-					this@ValidateViolationsTask.inputs.file(gatherer.getParsableReportLocation(reportTask))
+					this.inputs.file(gatherer.getParsableReportLocation(reportTask))
 				}
 			}
 		}
