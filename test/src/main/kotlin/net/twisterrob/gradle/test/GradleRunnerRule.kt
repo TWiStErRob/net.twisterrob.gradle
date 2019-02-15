@@ -168,7 +168,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 		val originalBuildFile = buildFile.readText()
 		println("Deploying ${folder} into ${temp.root}")
 		FileUtils.copyDirectory(folder, temp.root)
-		if (buildFile.exists()) {
+		if (folder.resolve("build.gradle").exists()) {
 			// merge two files
 			val newBuildFile = buildFile.readText()
 			buildFile.delete()
