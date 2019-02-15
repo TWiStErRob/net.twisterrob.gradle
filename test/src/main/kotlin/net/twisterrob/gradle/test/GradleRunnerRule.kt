@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.test
 
-import org.gradle.internal.impldep.org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
 import org.intellij.lang.annotations.Language
 import org.junit.rules.TemporaryFolder
@@ -165,14 +164,18 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 
 	//@Test:given/@Before
 	fun basedOn(folder: File): GradleRunnerRule {
-		val originalBuildFile = buildFile.readText()
 		println("Deploying ${folder} into ${temp.root}")
-		FileUtils.copyDirectory(folder, temp.root)
-		if (buildFile.exists()) {
-			// merge two files
-			val newBuildFile = buildFile.readText()
-			buildFile.delete()
-			buildFile.writeText(originalBuildFile + System.lineSeparator() + newBuildFile)
+		folder.copyRecursively(temp.root, overwrite = false) { file, ex ->
+			when {
+				file == buildFile && ex is FileAlreadyExistsException -> {
+					val originalBuildFile = buildFile.readText()
+					val newBuildFile = folder.resolve(buildFile.name).readText()
+					buildFile.writeText(originalBuildFile + newBuildFile)
+					OnErrorAction.SKIP
+				}
+
+				else -> throw ex
+			}
 		}
 		return this
 	}
