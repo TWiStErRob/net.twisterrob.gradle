@@ -49,7 +49,18 @@ class HtmlReportTaskTest {
 			apply plugin: 'org.gradle.reporting-base'
 			task('htmlReport', type: ${HtmlReportTask::class.java.name})
 
-			android.lintOptions.check('IconMissingDensityFolder', 'IconXmlAndPng', 'UnusedResources')
+			android.defaultConfig.targetSdkVersion 28 // to trigger Autofill
+			android.lintOptions {
+				abortOnError = false
+				//checkAllWarnings = true
+				//noinspection GroovyAssignabilityCheck
+				check = [
+					'Autofill',
+					'IconMissingDensityFolder',
+					'IconXmlAndPng',
+					'UnusedResources',
+				]
+			}
 		""".trimIndent()
 
 		val result: BuildResult
@@ -57,7 +68,6 @@ class HtmlReportTaskTest {
 		result = gradle
 			// TODO aapt2 use "lint" task
 			.run(script, "lintDebug", "htmlReport")
-			.withDebug(true)
 			.build()
 
 		`then`@

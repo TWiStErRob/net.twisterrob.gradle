@@ -198,6 +198,7 @@
 	<!--suppress JSUnusedLocalSymbols -->
 	<script><![CDATA[/*&lt;![CDATA[*/
 	var md = window.markdownit({
+		linkify: true,
 		highlight: function (str, lang) {
 			if (lang && hljs.getLanguage(lang)) {
 				try {
