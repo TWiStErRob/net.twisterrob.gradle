@@ -41,38 +41,29 @@ open class ValidateViolationsTask : DefaultTask() {
 	}
 
 	init {
-		group = JavaBasePlugin.VERIFICATION_GROUP
-		project.allprojects { subproject: Project ->
-			GATHERERS.forEach { gatherer ->
-				subproject.tasks.withType(gatherer.taskType).configureEach { reportTask ->
-					val validateTask = this@ValidateViolationsTask
-					// make sure inputs are available if many tasks are executed
-					validateTask.mustRunAfter(reportTask)
-					// REPORT this is needed because configureEach runs before the tasks own configuration block from
-					// `tasks.create(..., configuration: Action)`.
-					// `afterEvaluate` is not enough either because it breaks submodules the same way
-					// same-module configuration breaks without `doFirst`.
-					// `doFirst` doesn't work here, because reportTask may be UP-TO-DATE
-					// `finalizedBy` doesn't work, because reportTask may be UP-TO-DATE
-					// Last debugged in AGP 3.2.1 / Gradle 4.9
-					val taskPath = reportTask.path.substring(1).replace(':', '_')
-					val addInputTaskName = "${validateTask.name}__addInputOf__${taskPath}"
-					val addInputTask = validateTask.project.tasks.register(addInputTaskName) {
-						it.mustRunAfter(reportTask)
-						it.doLast {
-							try {
-								// make sure external reports are involved in UP-TO-DATE checks
-								validateTask.inputs.file(gatherer.getParsableReportLocation(reportTask))
-							} catch (ex: RuntimeException) {
-								throw GradleException(
-									"Cannot configure $reportTask from $gatherer gatherer in $subproject", ex
-								)
-							}
-						}
-					}
-					validateTask.dependsOn(addInputTask)
+		this.group = JavaBasePlugin.VERIFICATION_GROUP
+		// REPORT this extra task is needed because configureEach runs before
+		// the tasks own configuration block from `tasks.create(..., configuration: Action)`.
+		// `afterEvaluate` is not enough either because it breaks submodules the same way
+		// same-module configuration breaks without `doFirst`.
+		// `doFirst` doesn't work here, because reportTask may be UP-TO-DATE
+		// `finalizedBy` doesn't work, because reportTask may be UP-TO-DATE
+		// Last debugged in AGP 3.2.1 / Gradle 4.9
+		val addInputTaskName = "${this.name}LateConfiguration"
+		val addInputTask = this.project.tasks.register(addInputTaskName) { task ->
+			task.doLast {
+				forAllReportTasks { gatherer, reportTask ->
+					// make sure external reports are involved in UP-TO-DATE checks
+					this@ValidateViolationsTask.inputs.file(gatherer.getParsableReportLocation(reportTask))
 				}
 			}
+		}
+		this.dependsOn(addInputTask)
+		forAllReportTasks { _, reportTask ->
+			// make sure inputs are collected after the report task executed
+			addInputTask.configure { it.mustRunAfter(reportTask) }
+			// make sure inputs are available when running validation, but don't execute (depend on) reports
+			this.mustRunAfter(reportTask)
 		}
 	}
 
@@ -123,6 +114,22 @@ open class ValidateViolationsTask : DefaultTask() {
 		val nullSafeSum = nullSafeSum(java.util.function.Function { v: Violations? -> v?.violations?.size })
 		@Suppress("UNCHECKED_CAST")
 		action.execute(Grouper.create(results, nullSafeSum) as Grouper.Start<Violations>)
+	}
+
+	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
+		project.allprojects { subproject: Project ->
+			GATHERERS.forEach { gatherer ->
+				subproject.tasks.withType(gatherer.taskType).configureEach { reportTask ->
+					try {
+						action(gatherer, reportTask)
+					} catch (ex: RuntimeException) {
+						throw GradleException(
+							"Cannot configure $reportTask from $gatherer gatherer in $subproject", ex
+						)
+					}
+				}
+			}
+		}
 	}
 }
 
