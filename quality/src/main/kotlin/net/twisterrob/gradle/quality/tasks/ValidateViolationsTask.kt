@@ -14,6 +14,7 @@ import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.TableGenerator
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaBasePlugin
@@ -42,9 +43,22 @@ open class ValidateViolationsTask : DefaultTask() {
 	init {
 		group = JavaBasePlugin.VERIFICATION_GROUP
 		project.allprojects { subproject: Project ->
-			GATHERERS.forEach { gatherer ->
-				subproject.tasks.withType(gatherer.taskType).all { reportTask ->
-					this@ValidateViolationsTask.mustRunAfter(reportTask)
+			// REPORT this is needed otherwise configureEach runs before the tasks own tasks.create(..., *configuration*)
+			// Last debugged in AGP 3.2.1 / Gradle 4.9
+			subproject.afterEvaluate {
+				GATHERERS.forEach { gatherer ->
+					subproject.tasks.withType(gatherer.taskType).configureEach { reportTask ->
+						try {
+							// make sure external reports are involved in UP-TO-DATE checks
+							this@ValidateViolationsTask.inputs.file(gatherer.getParsableReportLocation(reportTask))
+							// make sure inputs are available if many tasks are executed
+							this@ValidateViolationsTask.mustRunAfter(reportTask)
+						} catch (ex: RuntimeException) {
+							throw GradleException(
+								"Cannot configure $reportTask from $gatherer gatherer in $subproject", ex
+							)
+						}
+					}
 				}
 			}
 		}
