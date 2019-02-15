@@ -77,4 +77,28 @@ class GradleRunnerRuleTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":printConfigFile")!!.outcome)
 		assertThat(result.output, containsString(configFileContents))
 	}
+
+	@Test fun `buildFile from multiple basedOn merged into one`() {
+		`given`@
+		@Language("gradle")
+		val script = """
+			task test {
+				doLast {
+				    println 'Hello World'
+				}
+			}
+		""".trimIndent()
+
+		val result: BuildResult
+		`when`@
+		result = gradle
+			.basedOn("")
+			.basedOn("")
+			.basedOn("")
+			.run(script, "test").build()
+
+		`then`@
+		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
+		result.assertHasOutputLine("Hello World")
+	}
 }
