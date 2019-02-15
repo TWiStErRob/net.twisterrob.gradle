@@ -7,11 +7,14 @@ import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
+import java.io.File
 import kotlin.test.assertEquals
 
 class GradleRunnerRuleTest {
 
 	@Rule @JvmField val gradle = GradleRunnerRule()
+	@Rule @JvmField val temp = TemporaryFolder()
 
 	@Test fun `gradle script test`() {
 		`given`@
@@ -78,27 +81,26 @@ class GradleRunnerRuleTest {
 		assertThat(result.output, containsString(configFileContents))
 	}
 
-	@Test fun `buildFile from multiple basedOn merged into one`() {
-		`given`@
-		@Language("gradle")
-		val script = """
-			task test {
-				doLast {
-				    println 'Hello World'
-				}
-			}
-		""".trimIndent()
+	@Test fun `buildFile from multiple basedOn merged into one including script`() {
+		fun generateFolder(name: String): File {
+			val folder = temp.newFolder("base_$name")
+			folder
+				.resolve("build.gradle")
+				.writeText("""println("basedOn($name)")${System.lineSeparator()}""")
+			return folder
+		}
+
+		(1..3).forEach { gradle.basedOn(generateFolder(it.toString())) }
 
 		val result: BuildResult
 		`when`@
-		result = gradle
-			.basedOn("")
-			.basedOn("")
-			.basedOn("")
-			.run(script, "test").build()
+		result = gradle.run("""println("script()")""", ":help").build()
 
 		`then`@
-		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
-		result.assertHasOutputLine("Hello World")
+		assertEquals(TaskOutcome.SUCCESS, result.task(":help")!!.outcome)
+		result.assertHasOutputLine("""basedOn(1)""")
+		result.assertHasOutputLine("""basedOn(2)""")
+		result.assertHasOutputLine("""basedOn(3)""")
+		result.assertHasOutputLine("""script()""")
 	}
 }
