@@ -43,16 +43,19 @@ open class ValidateViolationsTask : DefaultTask() {
 	init {
 		group = JavaBasePlugin.VERIFICATION_GROUP
 		project.allprojects { subproject: Project ->
-			// REPORT this is needed otherwise configureEach runs before the tasks own tasks.create(..., *configuration*)
-			// Last debugged in AGP 3.2.1 / Gradle 4.9
-			subproject.afterEvaluate {
-				GATHERERS.forEach { gatherer ->
-					subproject.tasks.withType(gatherer.taskType).configureEach { reportTask ->
+			GATHERERS.forEach { gatherer ->
+				subproject.tasks.withType(gatherer.taskType).configureEach { reportTask ->
+					// make sure inputs are available if many tasks are executed
+					this@ValidateViolationsTask.mustRunAfter(reportTask)
+					// REPORT this is needed because configureEach runs before the tasks own configuration block from
+					// `tasks.create(..., configuration: Action)`.
+					// `afterEvaluate` is not enough either because it breaks submodules the same way
+					// same-module configuration breaks without `doFirst`.
+					// Last debugged in AGP 3.2.1 / Gradle 4.9
+					reportTask.doFirst {
 						try {
 							// make sure external reports are involved in UP-TO-DATE checks
 							this@ValidateViolationsTask.inputs.file(gatherer.getParsableReportLocation(reportTask))
-							// make sure inputs are available if many tasks are executed
-							this@ValidateViolationsTask.mustRunAfter(reportTask)
 						} catch (ex: RuntimeException) {
 							throw GradleException(
 								"Cannot configure $reportTask from $gatherer gatherer in $subproject", ex
