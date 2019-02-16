@@ -72,7 +72,7 @@ open class GradleRunnerRule : TestRule {
 					success = true
 				} finally {
 					tearDown()
-					if ((success && needClearAfterSuccess) || needClearAfterFailure) {
+					if ((success && needClearAfterSuccess) || (!success && needClearAfterFailure)) {
 						temp.delete()
 					}
 				}
