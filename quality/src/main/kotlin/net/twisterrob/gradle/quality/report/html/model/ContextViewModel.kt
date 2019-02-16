@@ -95,18 +95,10 @@ sealed class ContextViewModel {
 
 		fun create(v: Violation): ContextViewModel =
 			when {
-				v.location.file.extension in setOf("png", "gif", "jpg", "bmp", "webp") -> ImageContext(
-					v
-				)
-				v.location.file.extension in setOf("jar", "zip", "apk") -> ArchiveContext(
-					v
-				)
-				v.location.file.isDirectory -> DirectoryContext(
-					v
-				)
-				v.location.startLine != 0 -> CodeContext(
-					v
-				)
+				v.location.file.extension in setOf("png", "gif", "jpg", "bmp", "webp") -> ImageContext(v)
+				v.location.file.extension in setOf("jar", "zip", "apk") -> ArchiveContext(v)
+				v.location.file.isDirectory -> DirectoryContext(v)
+				v.location.startLine != 0 -> CodeContext(v)
 				else -> EmptyContext
 			}
 	}
