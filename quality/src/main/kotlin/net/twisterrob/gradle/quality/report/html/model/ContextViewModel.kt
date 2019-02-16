@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.quality.report.html.model
 
-import com.android.annotations.VisibleForTesting
 import net.twisterrob.gradle.quality.Violation
 import java.io.File
 import java.io.IOException
@@ -34,8 +33,7 @@ sealed class ContextViewModel {
 				.replace("""$""", """\$""")
 				.replace("""`""", """\`""")
 
-			@VisibleForTesting
-			internal fun getContext(v: Violation): Triple<String, Int, Int> {
+			private fun getContext(v: Violation): Triple<String, Int, Int> {
 				val loc = v.location
 				val lines = try {
 					loc.file.readLines()

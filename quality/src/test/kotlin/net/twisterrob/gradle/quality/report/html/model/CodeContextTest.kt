@@ -64,7 +64,7 @@ class CodeContextTest {
 	private fun runTest(input: String, requestedStart: Int, requestedEnd: Int, expectedStart: Int, expectedEnd: Int) {
 		val origin = temp.newFile().apply { writeText(input) }
 
-		val (context, start, end) = ContextViewModel.CodeContext.getContext(
+		val model = ContextViewModel.CodeContext(
 			fixture.build<Violation>().apply {
 				location.setField("file", origin)
 				location.setField("startLine", requestedStart)
@@ -72,8 +72,8 @@ class CodeContextTest {
 			}
 		)
 
-		assertEquals(lines(expectedStart, expectedEnd), context)
-		assertEquals(expectedStart, start)
-		assertEquals(expectedEnd, end)
+		assertEquals(lines(expectedStart, expectedEnd), model.data)
+		assertEquals(expectedStart, model.startLine)
+		assertEquals(expectedEnd, model.endLine)
 	}
 }
