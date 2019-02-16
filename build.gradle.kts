@@ -1,19 +1,13 @@
-import com.jfrog.bintray.gradle.BintrayPlugin
-import org.jetbrains.kotlin.gradle.dsl.Coroutines
-import org.gradle.api.publish.maven.MavenPom
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.jfrog.bintray.gradle.BintrayExtension
 import groovy.util.Node
 import groovy.util.NodeList
-import groovy.xml.QName
-import java.io.File
-import java.util.Date
-import java.text.SimpleDateFormat
-import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.testing.TestOutputEvent.Destination
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.api.tasks.testing.logging.TestLogEvent.*
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.EnumSet
+import kotlin.math.absoluteValue
 
 plugins {
 	`base` // just to get some support for subproject stuff, for example access to project.base
@@ -149,12 +143,50 @@ allprojects {
 	if (project.hasProperty("verboseReports")) {
 		tasks.withType<Test> {
 			testLogging {
-				events = TestLogEvent.values().toSet() - STARTED
+				events = EnumSet.noneOf(TestLogEvent::class.java) //TestLogEvent.values().toSet() - TestLogEvent.STARTED
 				exceptionFormat = TestExceptionFormat.FULL
 				showExceptions = true
 				showCauses = true
 				showStackTraces = true
 			}
+			class TestInfo(
+				 val descriptor:TestDescriptor,
+				 val stdOut :StringBuilder = StringBuilder(),
+			val stdErr:StringBuilder = StringBuilder()
+			)
+			val lookup = mutableMapOf<TestDescriptor, TestInfo>()
+			beforeTest(KotlinClosure1<TestDescriptor, Any>({
+				lookup.put(this, TestInfo(this))
+			}))
+			onOutput(KotlinClosure2({ descriptor: TestDescriptor, event: TestOutputEvent ->
+				val info = lookup.getValue(descriptor)
+				when (event.destination!!) {
+					Destination.StdOut -> info.stdOut.append(event.message)
+					Destination.StdErr -> info.stdErr.append(event.message)
+				}
+			}))
+			afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
+				val info = lookup.remove(descriptor)!!
+				val fold = "test_${descriptor.toString().hashCode().absoluteValue}"
+				println("${descriptor.className} > ${descriptor.name} ${result.resultType}")
+				if (result.exception != null) {
+					println("travis_fold:start:test_ex_$fold")
+					result.exception!!.printStackTrace()
+					println("travis_fold:end:test_ex_$fold")
+				}
+				if (info.stdOut.isNotEmpty()) {
+					println("travis_fold:start:test_out_$fold")
+					println("STANDARD_OUT")
+					println(info.stdOut)
+					println("travis_fold:end:test_out_$fold")
+				}
+				if (info.stdErr.isNotEmpty()) {
+					println("travis_fold:start:test_err_$fold")
+					println("STANDARD_ERR")
+					println(info.stdErr)
+					println("travis_fold:end:test_err_$fold")
+				}
+			}))
 		}
 	}
 }
