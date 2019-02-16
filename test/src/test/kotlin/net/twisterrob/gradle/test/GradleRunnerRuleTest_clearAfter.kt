@@ -14,12 +14,13 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.NullSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.junit.rules.TestRule
 import org.junit.runners.model.Statement
 import kotlin.test.assertTrue
 
-class GradleRunnerRuleTest {
+class GradleRunnerRuleTest_clearAfter {
 
 	class SimulatedTestFailure : AssertionError()
 
@@ -62,6 +63,14 @@ class GradleRunnerRuleTest {
 			assertProjectFolderMissing()
 		}
 
+		@Test fun `clearAfterSuccess triggers when null`() {
+			gradle.clearAfterSuccess = null
+
+			sut.evaluate()
+
+			assertProjectFolderMissing()
+		}
+
 		@Nested
 		inner class `clearAfterSuccess = false` {
 
@@ -76,7 +85,8 @@ class GradleRunnerRuleTest {
 			}
 
 			@ValueSource(strings = ["true", "false"])
-			@ParameterizedTest fun `even when clearAfterFailure = `(clearAfterFailure: Boolean) {
+			@NullSource
+			@ParameterizedTest fun `even when clearAfterFailure = `(clearAfterFailure: Boolean?) {
 				gradle.clearAfterFailure = clearAfterFailure
 
 				`keeps project folder`()
@@ -97,7 +107,8 @@ class GradleRunnerRuleTest {
 			}
 
 			@ValueSource(strings = ["true", "false"])
-			@ParameterizedTest fun `even when clearAfterFailure = `(clearAfterFailure: Boolean) {
+			@NullSource
+			@ParameterizedTest fun `even when clearAfterFailure = `(clearAfterFailure: Boolean?) {
 				gradle.clearAfterFailure = clearAfterFailure
 
 				`removes project folder`()
@@ -150,6 +161,16 @@ class GradleRunnerRuleTest {
 			assertProjectFolderMissing()
 		}
 
+		@Test fun `clearAfterFailure triggers when null`() {
+			gradle.clearAfterFailure = null
+
+			assertThrows<SimulatedTestFailure> {
+				sut.evaluate()
+			}
+
+			assertProjectFolderMissing()
+		}
+
 		@Nested
 		inner class `clearAfterFailure = false` {
 
@@ -167,7 +188,8 @@ class GradleRunnerRuleTest {
 			}
 
 			@ValueSource(strings = ["true", "false"])
-			@ParameterizedTest fun `even when clearAfterSuccess = `(clearAfterSuccess: Boolean) {
+			@NullSource
+			@ParameterizedTest fun `even when clearAfterSuccess = `(clearAfterSuccess: Boolean?) {
 				gradle.clearAfterSuccess = clearAfterSuccess
 
 				`keeps project folder`()
@@ -190,7 +212,8 @@ class GradleRunnerRuleTest {
 			}
 
 			@ValueSource(strings = ["true", "false"])
-			@ParameterizedTest fun `even when clearAfterSuccess = `(clearAfterSuccess: Boolean) {
+			@NullSource
+			@ParameterizedTest fun `even when clearAfterSuccess = `(clearAfterSuccess: Boolean?) {
 				// make sure clearAfterFailure is independent of clearAfterSuccess
 				gradle.clearAfterSuccess = clearAfterSuccess
 
