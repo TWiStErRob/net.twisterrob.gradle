@@ -48,6 +48,6 @@ class GlobalTestFinalizerTaskTest {
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
 		assertEquals(TaskOutcome.FAILED, result.task(":tests")!!.outcome)
-		result.assertHasOutputLine("> There were ${2 + 2} failing tests. See the report at: .*".toRegex())
+		result.assertHasOutputLine(Regex("""> There were ${2 + 2} failing tests. See the report at: .*"""))
 	}
 }

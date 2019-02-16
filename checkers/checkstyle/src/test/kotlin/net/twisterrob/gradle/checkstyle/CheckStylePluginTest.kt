@@ -233,7 +233,7 @@ class CheckStylePluginTest {
 
 		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
-		result.assertHasOutputLine(""".*\[ERROR] src.main.java.Checkstyle\.java:1: .*? \[Header]""".toRegex())
+		result.assertHasOutputLine(Regex(""".*\[ERROR] src.main.java.Checkstyle\.java:1: .*? \[Header]"""))
 	}
 
 	@Test fun `custom source sets folders are picked up`() {
@@ -262,7 +262,7 @@ class CheckStylePluginTest {
 
 		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
-		result.assertHasOutputLine(""".*custom.Checkstyle\.java:1: .*? \[Header]""".toRegex())
+		result.assertHasOutputLine(Regex(""".*custom.Checkstyle\.java:1: .*? \[Header]"""))
 	}
 
 	@Test fun `exclusions are configurable per variant`() {
@@ -308,9 +308,9 @@ class CheckStylePluginTest {
 
 		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
-		result.assertHasOutputLine(""".*com.example.foo.Checkstyle\.java:1: .*? \[Header]""".toRegex())
-		result.assertNoOutputLine(""".*com.example.bar.Checkstyle\.java.*""".toRegex())
-		result.assertNoOutputLine(""".*com.example.bar.baz.Checkstyle\.java.*""".toRegex())
+		result.assertHasOutputLine(Regex(""".*com.example.foo.Checkstyle\.java:1: .*? \[Header]"""))
+		result.assertNoOutputLine(Regex(""".*com.example.bar.Checkstyle\.java.*"""))
+		result.assertNoOutputLine(Regex(""".*com.example.bar.baz.Checkstyle\.java.*"""))
 	}
 
 	// TODO test other properties

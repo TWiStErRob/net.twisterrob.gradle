@@ -83,7 +83,7 @@ class QualityPluginTest {
 
 		assertEquals(SUCCESS, result.task(":lint")!!.outcome)
 		result.assertHasOutputLine("one task added for finalizer", "Added task ':lint'")
-		result.assertNoOutputLine("no other tasks added as finalizer", """Added task ':(.+?):lint'""".toRegex())
+		result.assertNoOutputLine("no other tasks added as finalizer", Regex("""Added task ':(.+?):lint'"""))
 	}
 
 	@Test fun `apply lint only when Android does not add lint task`() {
@@ -103,6 +103,6 @@ class QualityPluginTest {
 		}
 
 		assertEquals(SUCCESS, result.task(":lint")!!.outcome)
-		result.assertNoOutputLine("no tasks added as finalizer", """Added task '(.*?):lint'""".toRegex())
+		result.assertNoOutputLine("no tasks added as finalizer", Regex("""Added task '(.*?):lint'"""))
 	}
 }

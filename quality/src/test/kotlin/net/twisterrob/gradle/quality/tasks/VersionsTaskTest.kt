@@ -24,7 +24,7 @@ class VersionsTaskTest {
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
-		result.assertHasOutputLine("""Gradle version: .+""".toRegex())
+		result.assertHasOutputLine(Regex("""Gradle version: .+"""))
 		result.assertHasOutputLine("""Checkstyle version: 'checkstyle' plugin not applied""")
 		result.assertHasOutputLine("""PMD version: 'pmd' plugin not applied""")
 		result.assertHasOutputLine("""FindBugs version: 'findbugs' plugin not applied""")

@@ -23,7 +23,7 @@ class ValidateViolationsTaskTest {
 		val MANIFEST_PATH = arrayOf("src", "main", "AndroidManifest.xml")
 		val SOURCE_PATH = arrayOf("src", "main", "java")
 
-		val VIOLATION_PATTERN = """([A-Z][a-zA-Z0-9_]+?)_(\d).java""".toRegex()
+		val VIOLATION_PATTERN = Regex("""([A-Z][a-zA-Z0-9_]+?)_(\d).java""")
 	}
 
 	@Rule @JvmField val gradle = GradleRunnerRule()
@@ -137,7 +137,7 @@ class ValidateViolationsTaskTest {
 						${ALL_VARIANTS_NAME}: 2
 					:UnusedImports:
 						${ALL_VARIANTS_NAME}: 4
-				""".trimIndent().replace("""\r?\n""".toRegex(), System.lineSeparator())
+				""".trimIndent().replace(Regex("""\r?\n"""), System.lineSeparator())
 			)
 		)
 	}

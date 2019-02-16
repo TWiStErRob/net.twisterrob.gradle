@@ -232,19 +232,19 @@ class PmdPluginTest {
 		assertEquals(TaskOutcome.FAILED, result.task(":pmdDebug")!!.outcome)
 		result.assertHasOutputLine(
 			"Inline rule violation",
-			""".*src.main.java.Pmd\.java:2:\s+Inline custom message""".toRegex()
+			Regex(""".*src.main.java.Pmd\.java:2:\s+Inline custom message""")
 		)
 		result.assertHasOutputLine(
 			"Inline rule reference violation",
-			""".*src.main.java.Pmd\.java:3:\s+Avoid using short method names""".toRegex()
+			Regex(""".*src.main.java.Pmd\.java:3:\s+Avoid using short method names""")
 		)
 		result.assertHasOutputLine(
 			"Included ruleset from the same folder violation",
-			""".*src.main.java.Pmd\.java:4:\s+Avoid variables with short names like i""".toRegex()
+			Regex(""".*src.main.java.Pmd\.java:4:\s+Avoid variables with short names like i""")
 		)
 		result.assertHasOutputLine(
 			"Included ruleset from a sub-folder violation",
-			""".*src.main.java.Pmd\.java:2:\s+All classes and interfaces must belong to a named package""".toRegex()
+			Regex(""".*src.main.java.Pmd\.java:2:\s+All classes and interfaces must belong to a named package""")
 		)
 		assertThat(
 			"Validate count to allow no more violations",

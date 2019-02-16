@@ -64,7 +64,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
-		result.assertNoOutputLine(".*Ran lint on subprojects.*".toRegex())
+		result.assertNoOutputLine(Regex(""".*Ran lint on subprojects.*"""))
 	}
 
 	@Test fun `gathers results from submodules`() {
@@ -123,7 +123,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.FAILED, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine("> Ran lint on subprojects: ${1 + 1 + 1} issues found".toRegex())
+		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
 	}
 
 	@Test fun `gathers results from submodules (lazy init)`() {
@@ -182,7 +182,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.FAILED, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine("> Ran lint on subprojects: ${1 + 1 + 1} issues found".toRegex())
+		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
 	}
 
 	companion object {

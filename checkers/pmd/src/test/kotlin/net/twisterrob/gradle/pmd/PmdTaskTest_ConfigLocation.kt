@@ -85,7 +85,7 @@ class PmdTaskTest_ConfigLocation {
 		assertEquals(TaskOutcome.FAILED, result.task(":module:pmdDebug")!!.outcome)
 		assertThat(result.failReason, containsString("1 PMD rule violations were found."))
 		result.assertHasOutputLine(
-			""".*src.main.java.Pmd\.java:1:\s+All classes and interfaces must belong to a named package""".toRegex()
+			Regex(""".*src.main.java.Pmd\.java:1:\s+All classes and interfaces must belong to a named package""")
 		)
 	}
 }
