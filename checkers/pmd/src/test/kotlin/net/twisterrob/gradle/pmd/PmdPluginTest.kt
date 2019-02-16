@@ -3,6 +3,7 @@ package net.twisterrob.gradle.pmd
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.failReason
+import net.twisterrob.gradle.test.runBuild
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
@@ -27,59 +28,56 @@ class PmdPluginTest {
 	@Rule @JvmField val gradle = GradleRunnerRule()
 
 	@Test fun `does not apply to empty project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.pmd'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(script, "pmd").buildAndFail()
+		val result: BuildResult = runBuild {
+			gradle
+				.run(script, "pmd")
+				.buildAndFail()
+		}
 
-		`then`@
 		assertThat(result.failReason, startsWith("Task 'pmd' not found"))
 	}
 
 	@Test fun `does not apply to a Java project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			apply plugin: 'java'
 			apply plugin: 'net.twisterrob.pmd'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(script, "pmd").buildAndFail()
+		val result: BuildResult = runBuild {
+			gradle
+				.run(script, "pmd")
+				.buildAndFail()
+		}
 
-		`then`@
 		assertThat(result.failReason, startsWith("Task 'pmd' not found"))
 	}
 
 	@Test fun `applies without a hitch to an Android project`() {
-		`given`@
 		gradle.file(gradle.templateFile("pmd-empty.xml").readText(), "config", "pmd", "pmd.xml")
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.pmd'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
+		val result: BuildResult = runBuild {
+			gradle
 				.basedOn("android-root_app")
 				.run(script, "pmdEach")
 				.build()
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.SUCCESS, result.task(":pmdEach")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":pmdDebug")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":pmdRelease")!!.outcome)
 	}
 
 	@Test fun `applies to all types of subprojects`() {
-		`given`@
 		gradle.file(gradle.templateFile("pmd-empty.xml").readText(), "config", "pmd", "pmd.xml")
 		@Language("gradle")
 		val script = """
@@ -90,20 +88,23 @@ class PmdPluginTest {
 		// ":instant" is not supported yet
 		val modules = arrayOf(":app", ":feature", ":base", ":library", ":library:nested", ":test")
 
-		val result: BuildResult
-		`when`@
-		result = gradle
+		val result: BuildResult = runBuild {
+			gradle
 				.basedOn("android-all_kinds")
 				.run(script, "pmdEach")
 				.build()
+		}
 
 		// these tasks are not generated because their modules are special
 		val exceptions = arrayOf(":test:pmdRelease")
-		`then`@
-		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
-				hasItems(*(tasksIn(modules, "pmdRelease", "pmdDebug") - exceptions)))
-		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
-				hasItems(*tasksIn(modules, "pmdEach")))
+		assertThat(
+			result.taskPaths(TaskOutcome.SUCCESS),
+			hasItems(*(tasksIn(modules, "pmdRelease", "pmdDebug") - exceptions))
+		)
+		assertThat(
+			result.taskPaths(TaskOutcome.SUCCESS),
+			hasItems(*tasksIn(modules, "pmdEach"))
+		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "pmdEach", "pmdRelease", "pmdDebug") - exceptions
 		assertThat(allTasks - tasks, not(hasItem(containsString("pmd"))))
@@ -111,14 +112,13 @@ class PmdPluginTest {
 
 	@Test fun `applies to subprojects from root`() {
 		val modules = arrayOf(
-				":module1",
-				":module2",
-				":module2:sub1",
-				":module2:sub2",
-				":module3:sub1",
-				":module3:sub2"
+			":module1",
+			":module2",
+			":module2:sub1",
+			":module2:sub2",
+			":module3:sub1",
+			":module3:sub2"
 		)
-		`given`@
 		modules.forEach {
 			gradle.settingsFile().appendText("include '${it}'${endl}")
 
@@ -146,25 +146,27 @@ class PmdPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
+		val result: BuildResult = runBuild {
+			gradle
 				.basedOn("android-multi_module")
 				.run(rootProject, "pmdEach")
 				.build()
+		}
 
-		`then`@
-		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
-				hasItems(*tasksIn(modules, "pmdRelease", "pmdDebug")))
-		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
-				hasItems(*tasksIn(modules, "pmdEach")))
+		assertThat(
+			result.taskPaths(TaskOutcome.SUCCESS),
+			hasItems(*tasksIn(modules, "pmdRelease", "pmdDebug"))
+		)
+		assertThat(
+			result.taskPaths(TaskOutcome.SUCCESS),
+			hasItems(*tasksIn(modules, "pmdEach"))
+		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "pmdEach", "pmdRelease", "pmdDebug")
 		assertThat(allTasks - tasks, not(hasItem(containsString("pmd"))))
 	}
 
 	@Test fun `applies to individual subprojects`() {
-		`given`@
 		@Language("gradle")
 		val subProjectNotApplied = """
 			apply plugin: 'com.android.library'
@@ -176,12 +178,12 @@ class PmdPluginTest {
 		""".trimIndent()
 
 		val modules = arrayOf(
-				":module1",
-				":module2",
-				":module2:sub1",
-				":module2:sub2",
-				":module3:sub1",
-				":module3:sub2"
+			":module1",
+			":module2",
+			":module2:sub1",
+			":module2:sub2",
+			":module3:sub1",
+			":module3:sub2"
 		)
 		val applyTo = arrayOf(":module2", ":module2:sub1", ":module3:sub2")
 		modules.forEach {
@@ -200,29 +202,31 @@ class PmdPluginTest {
 
 		gradle.file(gradle.templateFile("pmd-empty.xml").readText(), "config", "pmd", "pmd.xml")
 
-		val result: BuildResult
-		`when`@
-		result = gradle
+		val result: BuildResult = runBuild {
+			gradle
 				.basedOn("android-multi_module")
 				.run(null, "pmdEach")
 				.build()
+		}
 
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(applyTo, "pmdEach", "pmdRelease", "pmdDebug")
-		`then`@
 		assertThat(allTasks - tasks, not(hasItem(containsString("pmd"))))
 
-		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
-				hasItems(*tasksIn(applyTo, "pmdRelease", "pmdDebug")))
-		assertThat(result.taskPaths(TaskOutcome.SUCCESS),
-				hasItems(*tasksIn(applyTo, "pmdEach")))
+		assertThat(
+			result.taskPaths(TaskOutcome.SUCCESS),
+			hasItems(*tasksIn(applyTo, "pmdRelease", "pmdDebug"))
+		)
+		assertThat(
+			result.taskPaths(TaskOutcome.SUCCESS),
+			hasItems(*tasksIn(applyTo, "pmdEach"))
+		)
 	}
 
 	@Test fun `allows ruleset inclusion from all sources`() {
-		`given`@
 		gradle
-				.basedOn("android-root_app")
-				.basedOn("pmd-multi_file_config")
+			.basedOn("android-root_app")
+			.basedOn("pmd-multi_file_config")
 
 		@Language("gradle")
 		val applyPmd = """
@@ -233,29 +237,40 @@ class PmdPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(applyPmd, ":pmdDebug").buildAndFail()
+		val result: BuildResult = runBuild {
+			gradle
+				.run(applyPmd, ":pmdDebug")
+				.buildAndFail()
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.FAILED, result.task(":pmdDebug")!!.outcome)
-		result.assertHasOutputLine("Inline rule violation",
-				""".*src.main.java.Pmd\.java:2:\s+Inline custom message""".toRegex())
-		result.assertHasOutputLine("Inline rule reference violation",
-				""".*src.main.java.Pmd\.java:3:\s+Avoid using short method names""".toRegex())
-		result.assertHasOutputLine("Included ruleset from the same folder violation",
-				""".*src.main.java.Pmd\.java:4:\s+Avoid variables with short names like i""".toRegex())
-		result.assertHasOutputLine("Included ruleset from a sub-folder violation",
-				""".*src.main.java.Pmd\.java:2:\s+All classes and interfaces must belong to a named package""".toRegex())
-		assertThat("Validate count to allow no more violations",
-				result.failReason, containsString("4 PMD rule violations were found."))
+		result.assertHasOutputLine(
+			"Inline rule violation",
+			""".*src.main.java.Pmd\.java:2:\s+Inline custom message""".toRegex()
+		)
+		result.assertHasOutputLine(
+			"Inline rule reference violation",
+			""".*src.main.java.Pmd\.java:3:\s+Avoid using short method names""".toRegex()
+		)
+		result.assertHasOutputLine(
+			"Included ruleset from the same folder violation",
+			""".*src.main.java.Pmd\.java:4:\s+Avoid variables with short names like i""".toRegex()
+		)
+		result.assertHasOutputLine(
+			"Included ruleset from a sub-folder violation",
+			""".*src.main.java.Pmd\.java:2:\s+All classes and interfaces must belong to a named package""".toRegex()
+		)
+		assertThat(
+			"Validate count to allow no more violations",
+			result.failReason, containsString("4 PMD rule violations were found.")
+		)
 	}
 }
 
 private fun tasksIn(modules: Array<String>, vararg taskNames: String): Array<String> =
-		modules
-				.flatMap { module -> taskNames.map { taskName -> "${module}:${taskName}" } }
-				.toTypedArray()
+	modules
+		.flatMap { module -> taskNames.map { taskName -> "${module}:${taskName}" } }
+		.toTypedArray()
 
 private inline operator fun <reified T> Array<T>.minus(others: Array<T>) =
-		(this.toList() - others).toTypedArray()
+	(this.toList() - others).toTypedArray()

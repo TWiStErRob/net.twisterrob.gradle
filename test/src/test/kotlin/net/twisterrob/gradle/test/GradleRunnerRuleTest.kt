@@ -17,22 +17,21 @@ class GradleRunnerRuleTest {
 	@Rule @JvmField val temp = TemporaryFolder()
 
 	@Test fun `gradle script test`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			println 'Hello World'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(script).build()
+		val result: BuildResult = runBuild {
+			gradle
+				.run(script)
+				.build()
+		}
 
-		`then`@
 		result.assertHasOutputLine("Hello World")
 	}
 
 	@Test fun `gradle task test`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			task test {
@@ -42,17 +41,17 @@ class GradleRunnerRuleTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(script, "test").build()
+		val result: BuildResult = runBuild {
+			gradle
+				.run(script, "test")
+				.build()
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
 		result.assertHasOutputLine("Hello World")
 	}
 
 	@Test fun `test with file`() {
-		`given`@
 		@Language("xml")
 		val configFileContents = """
 			<root>
@@ -72,11 +71,12 @@ class GradleRunnerRuleTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(script, "printConfigFile").build()
+		val result: BuildResult = runBuild {
+			gradle
+				.run(script, "printConfigFile")
+				.build()
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.SUCCESS, result.task(":printConfigFile")!!.outcome)
 		assertThat(result.output, containsString(configFileContents))
 	}
@@ -92,11 +92,12 @@ class GradleRunnerRuleTest {
 
 		(1..3).forEach { gradle.basedOn(generateFolder(it.toString())) }
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run("""println("script()")""", ":help").build()
+		val result: BuildResult = runBuild {
+			gradle
+				.run("""println("script()")""", ":help")
+				.build()
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.SUCCESS, result.task(":help")!!.outcome)
 		result.assertHasOutputLine("""basedOn(1)""")
 		result.assertHasOutputLine("""basedOn(2)""")
