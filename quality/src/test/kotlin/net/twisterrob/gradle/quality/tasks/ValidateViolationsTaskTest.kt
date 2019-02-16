@@ -5,6 +5,7 @@ import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.runBuild
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.hamcrest.MatcherAssert.assertThat
@@ -216,5 +217,33 @@ class ValidateViolationsTaskTest {
 
 		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
 		result.assertHasOutputLine("Violations: 1")
+	}
+
+	@Test fun `do not gather non-existent reports`() {
+		gradle.basedOn("android-root_app")
+
+		@Language("properties")
+		val props = """
+			org.gradle.warning.mode=all
+			org.gradle.deprecation.trace=true
+		""".trimIndent()
+		gradle.runner.projectDir.resolve("gradle.properties").appendText(props)
+
+		@Language("gradle")
+		val script = """
+			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "printViolationCount", "--info")
+		}
+
+		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
+		result.assertNoOutputLine(Regex("""Some problems were found with the configuration of task ':printViolationCount'\..*"""))
+		result.assertNoOutputLine(Regex(""" - File '(.*)' specified for property '.*' does not exist\."""))
+		result.assertHasOutputLine("Summary\t(total: 0)")
+		result.assertHasOutputLine(Regex("""Missing report for task ':lint'.*: .*\blint-results.xml"""))
+		result.assertHasOutputLine(Regex("""Missing report for task ':lintDebug'.*: .*\blint-results-debug.xml"""))
+		result.assertHasOutputLine(Regex("""Missing report for task ':lintRelease'.*: .*\blint-results-release.xml"""))
 	}
 }
