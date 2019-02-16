@@ -4,6 +4,7 @@ import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violation.Location
 import net.twisterrob.gradle.quality.Violation.Severity.ERROR
 import net.twisterrob.gradle.quality.Violation.Source
+import net.twisterrob.gradle.quality.report.html.model.ContextViewModel
 import org.gradle.api.Project
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -60,7 +61,7 @@ class ViolationsGrouperKtTest_getContext {
 	private fun runTest(input: String, requestedStart: Int, requestedEnd: Int, expectedStart: Int, expectedEnd: Int) {
 		val origin = temp.newFile().apply { writeText(input) }
 
-		val (context, start, end) = getContext(
+		val (context, start, end) = ContextViewModel.CodeContext.getContext(
 			Violation(
 				"", null, ERROR, "", emptyMap(),
 				Location(mock(Project::class.java), "", origin, requestedStart, requestedEnd, 0),

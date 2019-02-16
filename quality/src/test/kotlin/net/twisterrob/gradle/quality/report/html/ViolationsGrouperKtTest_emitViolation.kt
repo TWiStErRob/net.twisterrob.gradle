@@ -4,6 +4,7 @@ import com.flextrade.jfixture.JFixture
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import net.twisterrob.gradle.quality.Violation
+import net.twisterrob.gradle.quality.report.html.model.ViolationViewModel
 import org.gradle.api.Project
 import org.junit.Test
 import org.redundent.kotlin.xml.CDATAElement
@@ -27,12 +28,12 @@ class ViolationsGrouperKtTest_emitViolation {
 		""".trimIndent()
 
 		val result = xml("root") {
-			emitViolation(fixture.build<Violation>().apply {
+			emitViolation(ViolationViewModel.create(fixture.build<Violation>().apply {
 				setField("message", lintMessage)
 				// make sure message goes through the transformation
 				source.setField("reporter", "ANDROIDLINT")
 				setField("rule", "IconMissingDensityFolder")
-			})
+			}))
 		}
 
 		val message = result("violation", "details", "message").cdata.text
@@ -47,12 +48,12 @@ class ViolationsGrouperKtTest_emitViolation {
 		""".trimIndent()
 
 		val result = xml("root") {
-			emitViolation(fixture.build<Violation>().apply {
+			emitViolation(ViolationViewModel.create(fixture.build<Violation>().apply {
 				setField("message", lintMessage)
 				// make sure message goes through the transformation
 				source.setField("reporter", "ANDROIDLINT")
 				setField("rule", "IconMissingDensityFolder")
-			})
+			}))
 		}
 
 		val message = result("violation", "details", "message").cdata.text
