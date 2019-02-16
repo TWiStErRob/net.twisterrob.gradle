@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.quality.report.html.model
 
-import com.android.annotations.VisibleForTesting
 import net.twisterrob.gradle.quality.Violation
 import java.io.File
 import java.io.IOException
@@ -34,14 +33,13 @@ sealed class ContextViewModel {
 				.replace("""$""", """\$""")
 				.replace("""`""", """\`""")
 
-			@VisibleForTesting
-			internal fun getContext(v: Violation): Triple<String, Int, Int> {
+			private fun getContext(v: Violation): Triple<String, Int, Int> {
 				val loc = v.location
 				val lines = try {
-					loc.file.readLines()
+					loc.file.absoluteFile.readLines()
 				} catch (ex: IOException) {
-					// TODO ex.printStackTrace()?
-					return Triple("", 0, 0)
+					val exceptions = generateSequence<Throwable>(ex) { it.cause }
+					return Triple(exceptions.joinToString(System.lineSeparator()), 0, 0)
 				}
 				val numContextLines = 2
 				val contextStart = max(1, loc.startLine - numContextLines)
@@ -95,18 +93,10 @@ sealed class ContextViewModel {
 
 		fun create(v: Violation): ContextViewModel =
 			when {
-				v.location.file.extension in setOf("png", "gif", "jpg", "bmp", "webp") -> ImageContext(
-					v
-				)
-				v.location.file.extension in setOf("jar", "zip", "apk") -> ArchiveContext(
-					v
-				)
-				v.location.file.isDirectory -> DirectoryContext(
-					v
-				)
-				v.location.startLine != 0 -> CodeContext(
-					v
-				)
+				v.location.file.extension in setOf("png", "gif", "jpg", "bmp", "webp") -> ImageContext(v)
+				v.location.file.extension in setOf("jar", "zip", "apk") -> ArchiveContext(v)
+				v.location.file.isDirectory -> DirectoryContext(v)
+				v.location.startLine != 0 -> CodeContext(v)
 				else -> EmptyContext
 			}
 	}

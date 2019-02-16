@@ -3,10 +3,13 @@ package net.twisterrob.gradle.quality.report.html.model
 import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
 import org.gradle.api.Project
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.matchesPattern
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.io.File
 
 class CodeContextTest {
 
@@ -15,6 +18,42 @@ class CodeContextTest {
 	private val fixture = JFixture().apply {
 		customise().lazyInstance(Project::class.java) {
 			project(":" + build())
+		}
+	}
+
+	class MissingLocation {
+		private val fixture = JFixture().apply {
+			customise().lazyInstance(Project::class.java) {
+				project(":" + build())
+			}
+		}
+
+		private val model = ContextViewModel.CodeContext(
+			fixture.build<Violation>().apply {
+				location.setField("file", File("non-existent.file"))
+			}
+		)
+
+		@Test
+		fun `render exception when violation points to a missing location`() {
+			assertThat(
+				model.data,
+				matchesPattern("""java\.io\.FileNotFoundException: .*non-existent\.file.*""")
+			)
+		}
+
+		@Test
+		fun `render exception with full path when violation points to a missing location`() {
+			assertThat(
+				model.data,
+				matchesPattern("""java\.io\.FileNotFoundException: .+non-existent\.file.*""")
+			)
+		}
+
+		@Test
+		fun `send invalid start and end lines when violation points to a missing location`() {
+			assertEquals(0, model.startLine)
+			assertEquals(0, model.endLine)
 		}
 	}
 
@@ -64,7 +103,7 @@ class CodeContextTest {
 	private fun runTest(input: String, requestedStart: Int, requestedEnd: Int, expectedStart: Int, expectedEnd: Int) {
 		val origin = temp.newFile().apply { writeText(input) }
 
-		val (context, start, end) = ContextViewModel.CodeContext.getContext(
+		val model = ContextViewModel.CodeContext(
 			fixture.build<Violation>().apply {
 				location.setField("file", origin)
 				location.setField("startLine", requestedStart)
@@ -72,8 +111,8 @@ class CodeContextTest {
 			}
 		)
 
-		assertEquals(lines(expectedStart, expectedEnd), context)
-		assertEquals(expectedStart, start)
-		assertEquals(expectedEnd, end)
+		assertEquals(lines(expectedStart, expectedEnd), model.data)
+		assertEquals(expectedStart, model.startLine)
+		assertEquals(expectedEnd, model.endLine)
 	}
 }
