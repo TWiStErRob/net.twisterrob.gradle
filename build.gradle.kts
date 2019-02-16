@@ -143,17 +143,20 @@ allprojects {
 	if (project.hasProperty("verboseReports")) {
 		tasks.withType<Test> {
 			testLogging {
-				events = EnumSet.noneOf(TestLogEvent::class.java) //TestLogEvent.values().toSet() - TestLogEvent.STARTED
+				// disable all events, output handled by custom callbacks below
+				events = EnumSet.noneOf(TestLogEvent::class.java)
+				//events = TestLogEvent.values().toSet() - TestLogEvent.STARTED
 				exceptionFormat = TestExceptionFormat.FULL
 				showExceptions = true
 				showCauses = true
 				showStackTraces = true
 			}
 			class TestInfo(
-				 val descriptor:TestDescriptor,
-				 val stdOut :StringBuilder = StringBuilder(),
-			val stdErr:StringBuilder = StringBuilder()
+				val descriptor: TestDescriptor,
+				val stdOut: StringBuilder = StringBuilder(),
+				val stdErr: StringBuilder = StringBuilder()
 			)
+
 			val lookup = mutableMapOf<TestDescriptor, TestInfo>()
 			beforeTest(KotlinClosure1<TestDescriptor, Any>({
 				lookup.put(this, TestInfo(this))
@@ -167,24 +170,25 @@ allprojects {
 			}))
 			afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
 				val info = lookup.remove(descriptor)!!
-				val fold = "test_${descriptor.toString().hashCode().absoluteValue}"
-				println("${descriptor.className} > ${descriptor.name} ${result.resultType}")
-				if (result.exception != null) {
-					println("travis_fold:start:test_ex_$fold")
-					result.exception!!.printStackTrace()
-					println("travis_fold:end:test_ex_$fold")
+				fun fold(type: String, condition: Boolean, output: () -> Unit) {
+					val id = descriptor.toString().hashCode().absoluteValue
+					if (condition) {
+						println("travis_fold:start:test_${type}_${id}")
+						output()
+						println("travis_fold:end:test_${type}_${id}")
+					}
 				}
-				if (info.stdOut.isNotEmpty()) {
-					println("travis_fold:start:test_out_$fold")
+				println("${descriptor.className} > ${descriptor.name} ${result.resultType}")
+				fold("ex", result.exception != null) {
+					result.exception!!.printStackTrace()
+				}
+				fold("out", info.stdOut.isNotEmpty()) {
 					println("STANDARD_OUT")
 					println(info.stdOut)
-					println("travis_fold:end:test_out_$fold")
 				}
-				if (info.stdErr.isNotEmpty()) {
-					println("travis_fold:start:test_err_$fold")
+				fold("err", info.stdErr.isNotEmpty()) {
 					println("STANDARD_ERR")
 					println(info.stdErr)
-					println("travis_fold:end:test_err_$fold")
 				}
 			}))
 		}
