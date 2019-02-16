@@ -52,8 +52,12 @@ open class GradleRunnerRule : TestRule {
 			true
 		).first()
 
-	private lateinit var buildFile: File
 	lateinit var runner: GradleRunner private set
+
+	@Suppress("MemberVisibilityCanBePrivate") // API
+	lateinit var buildFile: File private set
+
+	val settingsFile get() = File(runner.projectDir, "settings.gradle")
 
 	//region TestRule
 	override fun apply(base: Statement, description: Description): Statement {
@@ -88,8 +92,8 @@ open class GradleRunnerRule : TestRule {
 				.forwardStdError(WriteOnlyWhenLineCompleteWriter(System.err.writer()))
 				.withProjectDir(temp.root)
 				.withPluginClasspath()
-		check(this.buildFile == this.getBuildFile()) {
-			"Mismatch between internal (${this.buildFile}) and published (${getBuildFile()}) buildFiles."
+		check(buildFile == File(runner.projectDir, "build.gradle")) {
+			"${buildFile} is not within ${runner.projectDir}."
 		}
 		fixClassPath(runner)
 	}
@@ -117,7 +121,6 @@ ${buildFile.readText().prependIndent("\t\t\t")}
 	 * This is a workaround because runner.withPluginClasspath() doesn't seem to work.
 	 */
 	private fun fixClassPath(runner: GradleRunner) {
-		val buildFile = getBuildFile()
 		val classPaths = runner
 				.pluginClasspath
 				.joinToString(System.lineSeparator()) {
@@ -136,10 +139,6 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	//endregion
 
 	//region Helper methods
-
-	fun getBuildFile() = File(runner.projectDir, "build.gradle")
-
-	fun settingsFile() = File(runner.projectDir, "settings.gradle")
 
 	//@Test:given/@Before
 	fun setGradleVersion(version: String) {

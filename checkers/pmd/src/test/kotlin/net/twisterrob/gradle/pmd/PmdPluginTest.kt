@@ -112,7 +112,7 @@ class PmdPluginTest {
 			":module3:sub2"
 		)
 		modules.forEach {
-			gradle.settingsFile().appendText("include '${it}'${endl}")
+			gradle.settingsFile.appendText("include '${it}'${endl}")
 
 			@Language("gradle")
 			val subProject = """
@@ -177,7 +177,7 @@ class PmdPluginTest {
 		)
 		val applyTo = arrayOf(":module2", ":module2:sub1", ":module3:sub2")
 		modules.forEach {
-			gradle.settingsFile().appendText("include '${it}'${endl}")
+			gradle.settingsFile.appendText("include '${it}'${endl}")
 
 			val subProject = if (it in applyTo) subProjectApplied else subProjectNotApplied
 			@Language("xml")
