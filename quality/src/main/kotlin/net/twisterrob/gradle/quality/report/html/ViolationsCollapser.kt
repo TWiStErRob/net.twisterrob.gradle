@@ -21,14 +21,14 @@ internal fun collapseUniform(violations: List<Violation>): List<Violation> =
 internal fun collapseFile(violations: List<Violation>): List<Violation> {
 	@Suppress("SimplifyBooleanWithConstants")
 	fun verySimilarProblem(v1: Violation, v2: Violation): Boolean =
-		true
+		true // help the autoformat
 				&& v1.rule == v2.rule
 				&& v1.category == v2.category
 				&& v1.severity == v2.severity
 				&& v1.specifics == v2.specifics
 				//&& v1.message == v2.message
 				&& v1.location.module == v2.location.module
-				&& v1.location.variant == v2.location.variant
+				//&& v1.location.variant == v2.location.variant
 				&& v1.location.file == v2.location.file
 				//&& v1.location.startLine == v2.location.startLine
 				//&& v1.location.endLine == v2.location.endLine
@@ -37,8 +37,9 @@ internal fun collapseFile(violations: List<Violation>): List<Violation> {
 				&& v1.source.gatherer == v2.source.gatherer
 				&& v1.source.reporter == v2.source.reporter
 				&& v1.source.source == v2.source.source
-				&& v1.source.report == v2.source.report
-				&& v1.source.humanReport == v2.source.humanReport
+				//&& v1.source.report == v2.source.report
+				//&& v1.source.humanReport == v2.source.humanReport
+				&& true // help the autoformat
 
 	fun merge(list: List<Violation>): Violation {
 		val first = list.first()
@@ -50,6 +51,7 @@ internal fun collapseFile(violations: List<Violation>): List<Violation> {
 			first.specifics,
 			Location(
 				first.location.module,
+				first.location.task,
 				first.location.variant,
 				first.location.file,
 				first.location.startLine,

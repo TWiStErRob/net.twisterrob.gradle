@@ -1,8 +1,10 @@
 package net.twisterrob.gradle.quality.report.html.model
 
 import com.flextrade.jfixture.JFixture
+import com.nhaarman.mockitokotlin2.mock
 import net.twisterrob.gradle.quality.Violation
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.junit.Test
@@ -95,6 +97,7 @@ class DetailsViewModelTest_ANDROIDLINT {
 				customise().lazyInstance(Project::class.java) {
 					project(":" + build())
 				}
+				customise().lazyInstance(Task::class.java) { mock() }
 				customise().intercept(Violation::class.java) {
 					it.source.setField("reporter", "ANDROIDLINT")
 				}

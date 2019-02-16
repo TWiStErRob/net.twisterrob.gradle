@@ -1,8 +1,10 @@
 package net.twisterrob.gradle.quality.report.html.model
 
 import com.flextrade.jfixture.JFixture
+import com.nhaarman.mockitokotlin2.mock
 import net.twisterrob.gradle.quality.Violation
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.matchesPattern
 import org.junit.Assert.assertEquals
@@ -19,6 +21,7 @@ class CodeContextTest {
 		customise().lazyInstance(Project::class.java) {
 			project(":" + build())
 		}
+		customise().lazyInstance(Task::class.java) { mock() }
 	}
 
 	class MissingLocation {
@@ -26,6 +29,7 @@ class CodeContextTest {
 			customise().lazyInstance(Project::class.java) {
 				project(":" + build())
 			}
+			customise().lazyInstance(Task::class.java) { mock() }
 		}
 
 		private val model = ContextViewModel.CodeContext(
