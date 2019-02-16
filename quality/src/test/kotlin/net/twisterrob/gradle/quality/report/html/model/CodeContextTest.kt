@@ -1,19 +1,22 @@
-package net.twisterrob.gradle.quality.report.html
+package net.twisterrob.gradle.quality.report.html.model
 
+import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
-import net.twisterrob.gradle.quality.Violation.Location
-import net.twisterrob.gradle.quality.Violation.Severity.ERROR
-import net.twisterrob.gradle.quality.Violation.Source
 import org.gradle.api.Project
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.mockito.Mockito.mock
-import java.io.File
 
-class ViolationsGrouperKtTest_getContext {
+class CodeContextTest {
+
 	@Rule @JvmField val temp = TemporaryFolder()
+
+	private val fixture = JFixture().apply {
+		customise().lazyInstance(Project::class.java) {
+			project(":" + build())
+		}
+	}
 
 	@Test
 	fun `grabs 3 lines as requested`() =
@@ -55,17 +58,18 @@ class ViolationsGrouperKtTest_getContext {
 	fun `upper bounded context by file size (direct)`() =
 		runTest(lines(1, 8), 8, 8, 6, 8)
 
-	private fun lines(start: Int, end: Int): String = (start..end).joinToString(System.lineSeparator()) { "line$it" }
+	private fun lines(start: Int, end: Int): String =
+		(start..end).joinToString(System.lineSeparator()) { "line$it" }
 
 	private fun runTest(input: String, requestedStart: Int, requestedEnd: Int, expectedStart: Int, expectedEnd: Int) {
 		val origin = temp.newFile().apply { writeText(input) }
 
-		val (context, start, end) = getContext(
-			Violation(
-				"", null, ERROR, "", emptyMap(),
-				Location(mock(Project::class.java), "", origin, requestedStart, requestedEnd, 0),
-				Source("", "", "", "", File("."), null)
-			)
+		val (context, start, end) = ContextViewModel.CodeContext.getContext(
+			fixture.build<Violation>().apply {
+				location.setField("file", origin)
+				location.setField("startLine", requestedStart)
+				location.setField("endLine", requestedEnd)
+			}
 		)
 
 		assertEquals(lines(expectedStart, expectedEnd), context)
