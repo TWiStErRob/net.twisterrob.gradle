@@ -34,16 +34,26 @@ sealed class ContextViewModel {
 				.replace("""`""", """\`""")
 
 			private fun getContext(v: Violation): Triple<String, Int, Int> {
+				fun invalid(message: String) = Triple(message, 0, 0)
 				val loc = v.location
+				val file = loc.file.absoluteFile
 				val lines = try {
-					loc.file.absoluteFile.readLines()
+					file.readLines()
 				} catch (ex: IOException) {
 					val exceptions = generateSequence<Throwable>(ex) { it.cause }
-					return Triple(exceptions.joinToString(System.lineSeparator()), 0, 0)
+					return invalid(exceptions.joinToString(System.lineSeparator()))
 				}
+				fun invalidLocation() = invalid(
+					"Invalid location in ${file}: requested ${loc.startLine} to ${loc.endLine}, " +
+							"but file only has lines 1 to ${lines.size}."
+				)
+				if (loc.endLine < loc.startLine) return invalidLocation()
 				val numContextLines = 2
 				val contextStart = max(1, loc.startLine - numContextLines)
 				val contextEnd = min(lines.size, loc.endLine + numContextLines)
+				if (lines.size < contextStart) return invalidLocation()
+				if (contextEnd < 0) return invalidLocation()
+				if (lines.size < contextEnd) return invalidLocation()
 				// Note: lines in list are counted from 0, but in file are counted from 1
 				val contextLines = lines.subList(contextStart - 1, contextEnd)
 				val context = contextLines.joinToString(System.lineSeparator())

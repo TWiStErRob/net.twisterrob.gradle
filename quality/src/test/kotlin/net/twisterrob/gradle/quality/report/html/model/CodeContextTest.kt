@@ -3,6 +3,7 @@ package net.twisterrob.gradle.quality.report.html.model
 import com.flextrade.jfixture.JFixture
 import com.nhaarman.mockitokotlin2.mock
 import net.twisterrob.gradle.quality.Violation
+import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.CodeContext
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.hamcrest.MatcherAssert.assertThat
@@ -66,6 +67,10 @@ class CodeContextTest {
 		runTest(lines(1, 9), 4, 6, 2, 8)
 
 	@Test
+	fun `grabs 3 lines as requested (reversed)`() =
+		runFailTest(lines(1, 9), 6, 4)
+
+	@Test
 	fun `grabs 4 lines as requested`() =
 		runTest(lines(1, 6), 2, 5, 1, 6)
 
@@ -94,6 +99,18 @@ class CodeContextTest {
 		runTest(lines(1, 8), 1, 1, 1, 3)
 
 	@Test
+	fun `lower bounded context by file size (underflow)`() =
+		runFailTest(lines(1, 6), -8, -8)
+
+	@Test
+	fun `lower bounded context by file size (underflow valid range)`() =
+		runFailTest(lines(1, 6), -8, -6)
+
+	@Test
+	fun `lower bounded context by file size (underflow invalid range)`() =
+		runFailTest(lines(1, 6), -4, -6)
+
+	@Test
 	fun `upper bounded context by file size (neighbor)`() =
 		runTest(lines(1, 8), 2, 2, 1, 4)
 
@@ -101,13 +118,23 @@ class CodeContextTest {
 	fun `upper bounded context by file size (direct)`() =
 		runTest(lines(1, 8), 8, 8, 6, 8)
 
+	@Test
+	fun `upper bounded context by file size (overflow)`() =
+		runFailTest(lines(1, 6), 12, 12)
+
+	@Test
+	fun `upper bounded context by file size (overflow valid range)`() =
+		runFailTest(lines(1, 6), 12, 15)
+
+	@Test
+	fun `upper bounded context by file size (overflow invalid range)`() =
+		runFailTest(lines(1, 6), 15, 12)
+
 	private fun lines(start: Int, end: Int): String =
 		(start..end).joinToString(System.lineSeparator()) { "line$it" }
 
-	private fun runTest(input: String, requestedStart: Int, requestedEnd: Int, expectedStart: Int, expectedEnd: Int) {
-		val origin = temp.newFile().apply { writeText(input) }
-
-		val model = ContextViewModel.CodeContext(
+	private fun createModel(origin: File, requestedStart: Int, requestedEnd: Int) =
+		CodeContext(
 			fixture.build<Violation>().apply {
 				location.setField("file", origin)
 				location.setField("startLine", requestedStart)
@@ -115,8 +142,27 @@ class CodeContextTest {
 			}
 		)
 
+	private fun runTest(input: String, requestedStart: Int, requestedEnd: Int, expectedStart: Int, expectedEnd: Int) {
+		val origin = temp.newFile().apply { writeText(input) }
+
+		val model = createModel(origin, requestedStart, requestedEnd)
+
 		assertEquals(lines(expectedStart, expectedEnd), model.data)
 		assertEquals(expectedStart, model.startLine)
 		assertEquals(expectedEnd, model.endLine)
+	}
+
+	private fun runFailTest(input: String, requestedStart: Int, requestedEnd: Int) {
+		val origin = temp.newFile().apply { writeText(input) }
+
+		val model = createModel(origin, requestedStart, requestedEnd)
+
+		val fileName = ".*${Regex.escape(origin.name)}"
+		assertThat(
+			model.data,
+			matchesPattern("""Invalid location in ${fileName}: requested ${requestedStart} to ${requestedEnd}\b.*""")
+		)
+		assertEquals(0, model.startLine)
+		assertEquals(0, model.endLine)
 	}
 }
