@@ -11,7 +11,7 @@ import java.util.zip.ZipFile
 import kotlin.math.max
 import kotlin.math.min
 
-sealed class ContextViewModel() {
+sealed class ContextViewModel {
 
 	object EmptyContext : ContextViewModel()
 
