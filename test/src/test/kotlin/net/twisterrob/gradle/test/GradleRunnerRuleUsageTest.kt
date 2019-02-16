@@ -10,7 +10,7 @@ import org.junit.rules.TemporaryFolder
 import java.io.File
 import kotlin.test.assertEquals
 
-class GradleRunnerRuleTest {
+class GradleRunnerRuleUsageTest {
 
 	@Rule @JvmField val gradle = GradleRunnerRule()
 	@Rule @JvmField val temp = TemporaryFolder()
