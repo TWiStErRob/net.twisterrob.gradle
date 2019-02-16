@@ -22,7 +22,6 @@ import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
-import java.io.File
 
 open class ValidateViolationsTask : DefaultTask() {
 
@@ -71,22 +70,16 @@ open class ValidateViolationsTask : DefaultTask() {
 
 	@TaskAction
 	fun validateViolations() {
-		val visited = mutableSetOf<File>()
 		val results = project.allprojects.flatMap { subproject ->
 			GATHERERS.flatMap { gatherer ->
 				subproject.tasks.withType(gatherer.taskType).map { task ->
-					val violations =
-//						if (visited.add(gatherer.getParsableReportLocation(task)))
-							gatherer.getViolations(task)
-//						else
-//							emptyList()
 					return@map Violations(
 						parser = gatherer.displayName,
 						module = subproject.path,
 						variant = gatherer.getName(task),
 						result = gatherer.getParsableReportLocation(task),
 						report = gatherer.getHumanReportLocation(task),
-						violations = violations?.map {
+						violations = gatherer.getViolations(task)?.map {
 							Violation(
 								rule = it.rule,
 								category = it.category,
