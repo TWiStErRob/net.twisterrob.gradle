@@ -12,22 +12,45 @@ import java.net.URI
 /**
  * Simplified {@link org.junit.Rule} around {@link GradleRunner} to reduce code repetition.
  */
-open class GradleRunnerRule @JvmOverloads constructor(
-	clearAfterFailure: Boolean? = null,
-	clearAfterSuccess: Boolean? = null
-) : TestRule {
+open class GradleRunnerRule : TestRule {
 
 	private val temp = TemporaryFolder()
-	private val clearAfterFailure: Boolean = listOfNotNull(
-		clearAfterFailure,
-		System.getProperty("net.twisterrob.gradle.runner.clearAfterFailure")?.toBoolean(),
-		true
-	).first()
-	private val clearAfterSuccess: Boolean = listOfNotNull(
-		clearAfterSuccess,
-		System.getProperty("net.twisterrob.gradle.runner.clearAfterSuccess")?.toBoolean(),
-		true
-	).first()
+
+	/**
+	 * Defines if a tests Gradle folder should be removed after a failed execution.
+	 * Precedence:
+	 *  * this property (`null` &rarr; next)
+	 *  * `net.twisterrob.gradle.runner.clearAfterFailure` system property (not set &rarr; next)
+	 *  * automatically clear (when none of the above are specified)
+	 *
+	 * @param value `null` = automatic, `true` clean, `false` keep
+	 * @see GradleRunner.getProjectDir `runner.projectDir`
+	 */
+	var clearAfterFailure: Boolean? = null
+	private val needClearAfterFailure: Boolean
+		get() = listOfNotNull(
+			clearAfterFailure,
+			System.getProperty("net.twisterrob.gradle.runner.clearAfterFailure")?.toBoolean(),
+			true
+		).first()
+
+	/**
+	 * Defines if a tests Gradle folder should be removed after a failed execution.
+	 * Precedence:
+	 *  * this property (`null` &rarr; next)
+	 *  * `net.twisterrob.gradle.runner.clearAfterFailure` system property (not set &rarr; next)
+	 *  * automatically clear (when none of the above are specified)
+	 *
+	 * @param value `null` = automatic, `true` clean, `false` keep
+	 * @see GradleRunner.getProjectDir `runner.projectDir`
+	 */
+	var clearAfterSuccess: Boolean? = null
+	private val needClearAfterSuccess: Boolean
+		get() = listOfNotNull(
+			clearAfterSuccess,
+			System.getProperty("net.twisterrob.gradle.runner.clearAfterSuccess")?.toBoolean(),
+			true
+		).first()
 
 	private lateinit var buildFile: File
 	lateinit var runner: GradleRunner private set
@@ -45,7 +68,7 @@ open class GradleRunnerRule @JvmOverloads constructor(
 					success = true
 				} finally {
 					tearDown()
-					if ((success && clearAfterSuccess) || clearAfterFailure) {
+					if ((success && needClearAfterSuccess) || needClearAfterFailure) {
 						temp.delete()
 					}
 				}

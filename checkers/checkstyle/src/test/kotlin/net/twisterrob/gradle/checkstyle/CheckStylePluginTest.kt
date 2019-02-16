@@ -27,7 +27,7 @@ class CheckStylePluginTest {
 		private val endl = System.lineSeparator()
 	}
 
-	@Rule @JvmField val gradle = GradleRunnerRule(false)
+	@Rule @JvmField val gradle = GradleRunnerRule()
 
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
