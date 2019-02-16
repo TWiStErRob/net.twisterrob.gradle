@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality
 
 import org.gradle.api.Project
+import org.gradle.api.Task
 import java.io.File
 
 class Violations(
@@ -45,6 +46,7 @@ class Violation(
 
 	class Location(
 		val module: Project,
+		val task: Task,
 		val variant: String,
 		val file: File,
 		val startLine: Int,
@@ -52,7 +54,7 @@ class Violation(
 		val column: Int
 	) {
 		override fun toString() =
-			"Location(module=$module, variant='$variant', file=$file, startLine=$startLine, endLine=$endLine, column=$column)"
+			"Location(module=$module, task=$task, variant='$variant', file=$file, startLine=$startLine, endLine=$endLine, column=$column)"
 	}
 
 	class Source(

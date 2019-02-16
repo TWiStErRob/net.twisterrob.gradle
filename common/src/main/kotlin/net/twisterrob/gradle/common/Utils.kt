@@ -50,7 +50,7 @@ val LintBaseTask.htmlOutput: File
 // TODO figure out where to find com.android.tools.lint.gradle.SyncOptions#createOutputPath
 @Suppress("FunctionName")
 fun LintOptions_createOutputPath(
-		project: Project?, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean
+		project: Project, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean
 ): File {
 	val base = StringBuilder().apply {
 		append("lint-results")
@@ -67,7 +67,6 @@ fun LintOptions_createOutputPath(
 	}.toString()
 	return when {
 		reportsDir != null -> File(reportsDir, base)
-		project == null -> File(base)
 		else -> File(project.buildDir, "reports" + File.separator + base)
 	}
 }

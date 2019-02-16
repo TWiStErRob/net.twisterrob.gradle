@@ -170,4 +170,51 @@ class ValidateViolationsTaskTest {
 
 		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
 	}
+
+	@Test fun `gather lint report when lintOptions-xmlOutput is set`() {
+		gradle.basedOn("android-root_app")
+		gradle.basedOn("lint-UnusedResources")
+
+		@Language("gradle")
+		val script = """
+			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
+				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
+					def count = results.list.sum(0) { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
+					println "Violations: ${'$'}{count}"
+				}
+			}
+			android.lintOptions.xmlOutput = new File(buildDir, "reports/my-lint/results.xml")
+			android.lintOptions.check = ['UnusedResources']
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "lint", "printViolationCount")
+		}
+
+		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
+		result.assertHasOutputLine("Violations: 1")
+	}
+
+	@Test fun `gather unique lint violations when multiple variants are linted`() {
+		gradle.basedOn("android-root_app")
+		gradle.basedOn("lint-UnusedResources")
+
+		@Language("gradle")
+		val script = """
+			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
+				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
+					def count = results.list.sum(0) { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
+					println "Violations: ${'$'}{count}"
+				}
+			}
+			android.lintOptions.check = ['UnusedResources']
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "lint", "lintDebug", "lintRelease", "lintVitalRelease", "printViolationCount")
+		}
+
+		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
+		result.assertHasOutputLine("Violations: 1")
+	}
 }

@@ -12,6 +12,7 @@ import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.TableGenerator
+import net.twisterrob.gradle.quality.report.html.deduplicate
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -21,6 +22,7 @@ import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
+import java.io.File
 
 open class ValidateViolationsTask : DefaultTask() {
 
@@ -69,16 +71,22 @@ open class ValidateViolationsTask : DefaultTask() {
 
 	@TaskAction
 	fun validateViolations() {
+		val visited = mutableSetOf<File>()
 		val results = project.allprojects.flatMap { subproject ->
 			GATHERERS.flatMap { gatherer ->
 				subproject.tasks.withType(gatherer.taskType).map { task ->
-					Violations(
+					val violations =
+//						if (visited.add(gatherer.getParsableReportLocation(task)))
+							gatherer.getViolations(task)
+//						else
+//							emptyList()
+					return@map Violations(
 						parser = gatherer.displayName,
 						module = subproject.path,
 						variant = gatherer.getName(task),
 						result = gatherer.getParsableReportLocation(task),
 						report = gatherer.getHumanReportLocation(task),
-						violations = gatherer.getViolations(task)?.map {
+						violations = violations?.map {
 							Violation(
 								rule = it.rule,
 								category = it.category,
@@ -91,6 +99,7 @@ open class ValidateViolationsTask : DefaultTask() {
 								specifics = it.specifics ?: emptyMap(),
 								location = Violation.Location(
 									module = subproject,
+									task = task,
 									variant = gatherer.getName(task),
 									file = subproject.file(it.file),
 									startLine = it.startLine,
@@ -113,7 +122,7 @@ open class ValidateViolationsTask : DefaultTask() {
 		}
 		val nullSafeSum = nullSafeSum(java.util.function.Function { v: Violations? -> v?.violations?.size })
 		@Suppress("UNCHECKED_CAST")
-		action.execute(Grouper.create(results, nullSafeSum) as Grouper.Start<Violations>)
+		action.execute(Grouper.create(deduplicate(results), nullSafeSum) as Grouper.Start<Violations>)
 	}
 
 	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
