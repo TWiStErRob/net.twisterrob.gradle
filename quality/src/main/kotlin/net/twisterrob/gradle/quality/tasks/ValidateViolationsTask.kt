@@ -55,7 +55,12 @@ open class ValidateViolationsTask : DefaultTask() {
 			task.doLast {
 				forAllReportTasks { gatherer, reportTask ->
 					// make sure external reports are involved in UP-TO-DATE checks
-					this.inputs.file(gatherer.getParsableReportLocation(reportTask))
+					val report = gatherer.getParsableReportLocation(reportTask)
+					if (report.exists()) {
+						this.inputs.file(report)
+					} else {
+						logger.info("Missing report for {} (probably wasn't executed yet after clean): {}", reportTask, report)
+					}
 				}
 			}
 		}
