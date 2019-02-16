@@ -2,7 +2,7 @@ package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
-import org.gradle.testkit.runner.BuildResult
+import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
@@ -14,7 +14,6 @@ class GlobalTestFinalizerTaskTest {
 	@Rule @JvmField val gradle = GradleRunnerRule()
 
 	@Test fun `gathers results from root app`() {
-		`given`@
 		@Language("java")
 		val testFile = """
 			import org.junit.*;
@@ -42,16 +41,13 @@ class GlobalTestFinalizerTaskTest {
 			task('tests', type: ${GlobalTestFinalizerTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-				.basedOn("android-root_app")
-				.run(script, "test", "tests")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			basedOn("android-root_app")
+			run(script, "test", "tests")
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
 		assertEquals(TaskOutcome.FAILED, result.task(":tests")!!.outcome)
-		result.assertHasOutputLine("> There were ${2 + 2} failing tests. See the report at: .*".toRegex())
+		result.assertHasOutputLine(Regex("""> There were ${2 + 2} failing tests. See the report at: .*"""))
 	}
 }

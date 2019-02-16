@@ -3,7 +3,8 @@ package net.twisterrob.gradle.quality.tasks
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
-import org.gradle.testkit.runner.BuildResult
+import net.twisterrob.gradle.test.runBuild
+import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -17,11 +18,10 @@ class GlobalLintGlobalFinalizerTaskTest {
 	@Rule @JvmField val gradle = GradleRunnerRule()
 
 	@Test fun `passes when no failures`() {
-		//`given`@
 		val modules: Array<String> = arrayOf(
-				"module1",
-				"module2",
-				"module3"
+			"module1",
+			"module2",
+			"module3"
 		)
 		modules.forEach { module ->
 			@Language("gradle")
@@ -52,14 +52,11 @@ class GlobalLintGlobalFinalizerTaskTest {
 			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-				.basedOn("android-multi_module")
-				.run(script, "lint")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(script, "lint")
+		}
 
-		//`then`@
 		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
 		assertThat(lintTasks, hasItems(":module1:lint", ":module2:lint", ":module3:lint"))
 		assertThat(lintTasks.last(), equalTo(":lint"))
@@ -67,11 +64,10 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
-		result.assertNoOutputLine(".*Ran lint on subprojects.*".toRegex())
+		result.assertNoOutputLine(Regex(""".*Ran lint on subprojects.*"""))
 	}
 
 	@Test fun `gathers results from submodules`() {
-		`given`@
 		@Language("java")
 		val lintViolation = """
 			class LintFailure {
@@ -81,9 +77,9 @@ class GlobalLintGlobalFinalizerTaskTest {
 			}
 		""".trimIndent()
 		val modules = arrayOf(
-				"module1",
-				"module2",
-				"module3"
+			"module1",
+			"module2",
+			"module3"
 		)
 		modules.forEach { module ->
 			@Language("gradle")
@@ -115,14 +111,11 @@ class GlobalLintGlobalFinalizerTaskTest {
 			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-				.basedOn("android-multi_module")
-				.run(script, "lint")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			basedOn("android-multi_module")
+			run(script, "lint")
+		}
 
-		//`then`@
 		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
 		assertThat(lintTasks, hasItems(":module1:lint", ":module2:lint", ":module3:lint"))
 		assertThat(lintTasks.last(), equalTo(":lint"))
@@ -130,12 +123,10 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.FAILED, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine("> Ran lint on subprojects: ${1 + 1 + 1} issues found".toRegex())
+		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
 	}
 
-
 	@Test fun `gathers results from submodules (lazy init)`() {
-		`given`@
 		@Language("java")
 		val lintViolation = """
 			class LintFailure {
@@ -179,14 +170,11 @@ class GlobalLintGlobalFinalizerTaskTest {
 			tasks.register('lint', ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-			.basedOn("android-multi_module")
-			.run(script, "lint")
-			.buildAndFail()
+		val result = gradle.runFailingBuild {
+			basedOn("android-multi_module")
+			run(script, "lint")
+		}
 
-		//`then`@
 		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
 		assertThat(lintTasks, hasItems(":module1:lint", ":module2:lint", ":module3:lint"))
 		assertThat(lintTasks.last(), equalTo(":lint"))
@@ -194,7 +182,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.FAILED, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine("> Ran lint on subprojects: ${1 + 1 + 1} issues found".toRegex())
+		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
 	}
 
 	companion object {

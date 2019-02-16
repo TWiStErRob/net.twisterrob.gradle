@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.test
 
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
@@ -24,7 +23,6 @@ class TestPluginTest {
 	 */
 	@Test fun `gradle test plugin test`() {
 		val triplet = "\"\"\""
-		`given`@
 		@Language("groovy")
 		val testFileContents = """
 			//noinspection GrPackage it will be written to the right folder
@@ -52,8 +50,7 @@ class TestPluginTest {
 				}
 			}
 		""".trimIndent()
-		gradle.file(testFileContents,
-				"src/test/groovy/net/twisterrob/gradle/test/Testception.groovy")
+		gradle.file(testFileContents, "src/test/groovy/net/twisterrob/gradle/test/Testception.groovy")
 
 		val artifactPath = System.getProperties()["net.twisterrob.gradle.test.artifactPath"].toString()
 		@Language("gradle")
@@ -82,11 +79,10 @@ class TestPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(script, "test").build()
+		val result = gradle.runBuild {
+			run(script, "test")
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
 		result.assertHasOutputLine("net.twisterrob.gradle.test.Testception > gradle script test: SUCCESS")
 	}

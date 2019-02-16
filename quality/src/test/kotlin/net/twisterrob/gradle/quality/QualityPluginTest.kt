@@ -4,7 +4,7 @@ import net.twisterrob.gradle.quality.tasks.GlobalLintGlobalFinalizerTask
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
-import org.gradle.testkit.runner.BuildResult
+import net.twisterrob.gradle.test.runBuild
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasItems
@@ -20,7 +20,6 @@ class QualityPluginTest {
 	@Rule @JvmField val gradle = GradleRunnerRule()
 
 	@Test fun `apply violationReportConsole only on root project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			allprojects {
@@ -29,14 +28,11 @@ class QualityPluginTest {
 			tasks.named('violationReportConsole').configure { println("Configuring " + it) }
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-			.basedOn("android-all_kinds")
-			.run(script, "violationReportConsole")
-			.build()
+		val result = gradle.runBuild {
+			basedOn("android-all_kinds")
+			run(script, "violationReportConsole")
+		}
 
-		`then`@
 		assertEquals(SUCCESS, result.task(":violationReportConsole")!!.outcome)
 		val allOtherTasks = result.tasks.map { it.path } - ":violationReportConsole"
 		assertThat(allOtherTasks, not(hasItems(matchesPattern(""":violationReportConsole$"""))))
@@ -47,7 +43,6 @@ class QualityPluginTest {
 	}
 
 	@Test fun `apply violationReportHtml only on root project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			allprojects {
@@ -56,14 +51,11 @@ class QualityPluginTest {
 			tasks.named('violationReportHtml').configure { println("Configuring " + it) }
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-			.basedOn("android-all_kinds")
-			.run(script, "violationReportHtml")
-			.build()
+		val result = gradle.runBuild {
+			basedOn("android-all_kinds")
+			run(script, "violationReportHtml")
+		}
 
-		`then`@
 		assertEquals(SUCCESS, result.task(":violationReportHtml")!!.outcome)
 		val allOtherTasks = result.tasks.map { it.path } - ":violationReportHtml"
 		assertThat(allOtherTasks, not(hasItems(matchesPattern(""":violationReportHtml$"""))))
@@ -74,7 +66,6 @@ class QualityPluginTest {
 	}
 
 	@Test fun `apply lint only on root project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			allprojects {
@@ -85,21 +76,17 @@ class QualityPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-			.basedOn("android-all_kinds")
-			.run(script, "lint")
-			.build()
+		val result = gradle.runBuild {
+			basedOn("android-all_kinds")
+			run(script, "lint")
+		}
 
-		`then`@
 		assertEquals(SUCCESS, result.task(":lint")!!.outcome)
 		result.assertHasOutputLine("one task added for finalizer", "Added task ':lint'")
-		result.assertNoOutputLine("no other tasks added as finalizer", """Added task ':(.+?):lint'""".toRegex())
+		result.assertNoOutputLine("no other tasks added as finalizer", Regex("""Added task ':(.+?):lint'"""))
 	}
 
 	@Test fun `apply lint only when Android does not add lint task`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			allprojects {
@@ -110,15 +97,12 @@ class QualityPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-			.basedOn("android-root_app")
-			.run(script, "lint")
-			.build()
+		val result = gradle.runBuild {
+			basedOn("android-root_app")
+			run(script, "lint")
+		}
 
-		`then`@
 		assertEquals(SUCCESS, result.task(":lint")!!.outcome)
-		result.assertNoOutputLine("no tasks added as finalizer", """Added task '(.*?):lint'""".toRegex())
+		result.assertNoOutputLine("no tasks added as finalizer", Regex("""Added task '(.*?):lint'"""))
 	}
 }
