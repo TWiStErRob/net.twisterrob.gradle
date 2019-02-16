@@ -56,6 +56,12 @@ class GradleRunnerRuleTest {
 			doNothing().whenever(innerStatement).evaluate()
 		}
 
+		@Test fun `clearAfterSuccess triggers by default`() {
+			sut.evaluate()
+
+			assertProjectFolderMissing()
+		}
+
 		@Nested
 		inner class `clearAfterSuccess = false keeps project folder` {
 
@@ -108,6 +114,14 @@ class GradleRunnerRuleTest {
 
 		@BeforeEach fun setUp() {
 			doThrow(SimulatedTestFailure()).whenever(innerStatement).evaluate()
+		}
+
+		@Test fun `clearAfterFailure triggers by default`() {
+			assertThrows<SimulatedTestFailure> {
+				sut.evaluate()
+			}
+
+			assertProjectFolderMissing()
 		}
 
 		@Nested
