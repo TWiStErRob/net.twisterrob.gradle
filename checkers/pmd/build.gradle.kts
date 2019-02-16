@@ -17,7 +17,7 @@ dependencies {
 
 	testImplementation(project(":test"))
 	testImplementation("junit:junit:${VERSION_JUNIT}")
-	testImplementation("org.hamcrest:hamcrest-all:${VERSION_HAMCREST}")
+	testImplementation("org.hamcrest:java-hamcrest:${VERSION_HAMCREST}")
 	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
 }
 

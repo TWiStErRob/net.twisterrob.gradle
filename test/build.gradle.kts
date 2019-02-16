@@ -24,7 +24,7 @@ dependencies {
 	testImplementation(gradleApi())
 	testImplementation(gradleTestKit())
 	testImplementation("junit:junit:${VERSION_JUNIT}")
-	testImplementation("org.hamcrest:hamcrest-all:${VERSION_HAMCREST}")
+	testImplementation("org.hamcrest:java-hamcrest:${VERSION_HAMCREST}")
 	testImplementation("org.mockito:mockito-core:${VERSION_MOCKITO}")
 	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
 	// only here so IDEA can browse the source files of this dependency when getting a stack trace or finding usages

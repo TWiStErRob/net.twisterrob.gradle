@@ -6,12 +6,14 @@ import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
+import kotlin.test.assertEquals
 
 class ValidateViolationsTaskTest {
 
@@ -31,7 +33,7 @@ class ValidateViolationsTaskTest {
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), *SOURCE_PATH, "Checkstyle.java")
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), *CONFIG_PATH_CS)
 		gradle.file(gradle.templateFile("pmd-simple_failure.java").readText(), *SOURCE_PATH, "Pmd.java")
-		gradle.file(gradle.templateFile("pmd-simple_failure.xml").readText(), * CONFIG_PATH_PMD)
+		gradle.file(gradle.templateFile("pmd-simple_failure.xml").readText(), *CONFIG_PATH_PMD)
 
 		@Language("gradle")
 		val script = """
@@ -63,7 +65,7 @@ class ValidateViolationsTaskTest {
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), "module", *SOURCE_PATH, "Checkstyle.java")
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), *CONFIG_PATH_CS)
 		gradle.file(gradle.templateFile("pmd-simple_failure.java").readText(), "module", *SOURCE_PATH, "Pmd.java")
-		gradle.file(gradle.templateFile("pmd-simple_failure.xml").readText(), * CONFIG_PATH_PMD)
+		gradle.file(gradle.templateFile("pmd-simple_failure.xml").readText(), *CONFIG_PATH_PMD)
 
 		@Language("gradle")
 		val script = """
@@ -103,7 +105,7 @@ class ValidateViolationsTaskTest {
 				val checkCount = groups[2]!!.value.toInt()
 				val checkstyleXmlContents = template.replace("\${CheckName}", checkName)
 				gradle.file(checkstyleXmlContents, checkName, *CONFIG_PATH_CS)
-				gradle.file("""<manifest package="checkstyle.${checkName}" />""", checkName, * MANIFEST_PATH)
+				gradle.file("""<manifest package="checkstyle.${checkName}" />""", checkName, *MANIFEST_PATH)
 				gradle.file(file.readText(), checkName, *SOURCE_PATH, file.name)
 				gradle.settingsFile().appendText("include ':${checkName}'${System.lineSeparator()}")
 			}
@@ -146,5 +148,38 @@ class ValidateViolationsTaskTest {
 			:UnusedImports:
 				${ALL_VARIANTS_NAME}: 4
 		""".trimIndent().replace("""\r?\n""".toRegex(), System.lineSeparator())))
+	}
+
+	@Test fun `task is re-executed when violation results are changed`() {
+		`given`@
+		gradle.basedOn("android-root_app")
+		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), *CONFIG_PATH_CS)
+		gradle.file(gradle.templateFile("pmd-simple_failure.xml").readText(), *CONFIG_PATH_PMD)
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.pmd'
+
+			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
+				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
+					def count = results.list.sum(0) { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
+					println "Violations: ${'$'}{count}"
+				}
+			}
+		""".trimIndent()
+
+		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), *SOURCE_PATH, "Checkstyle.java")
+		gradle.run(script, "checkstyleAll", "pmdAll", "printViolationCount").build()
+		gradle.file(gradle.templateFile("pmd-simple_failure.java").readText(), *SOURCE_PATH, "Pmd.java")
+
+		val result: BuildResult
+		`when`@
+		result = gradle
+			.run(null, "checkstyleAll", "pmdAll", "printViolationCount")
+			.build()
+
+		`then`@
+		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
 	}
 }
