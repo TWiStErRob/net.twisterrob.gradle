@@ -63,13 +63,13 @@ class GradleRunnerRuleTest {
 		}
 
 		@Nested
-		inner class `clearAfterSuccess = false keeps project folder` {
+		inner class `clearAfterSuccess = false` {
 
 			@BeforeEach fun setUp() {
 				gradle.clearAfterSuccess = false
 			}
 
-			@Test fun test() {
+			@Test fun `keeps project folder`() {
 				sut.evaluate()
 
 				assertProjectFolderValid()
@@ -86,13 +86,13 @@ class GradleRunnerRuleTest {
 		}
 
 		@Nested
-		inner class `clearAfterSuccess = true keeps project folder` {
+		inner class `clearAfterSuccess = true` {
 
 			@BeforeEach fun setUp() {
 				gradle.clearAfterSuccess = true
 			}
 
-			@Test fun test() {
+			@Test fun `removes project folder`() {
 				sut.evaluate()
 
 				assertProjectFolderMissing()
@@ -105,6 +105,36 @@ class GradleRunnerRuleTest {
 				sut.evaluate()
 
 				assertProjectFolderMissing()
+			}
+		}
+
+		@Nested
+		inner class `clearAfterSuccess set through System property` {
+
+			private var clearAfterSuccessProperty = SystemProperty("net.twisterrob.gradle.runner.clearAfterSuccess")
+
+			@BeforeEach fun setUp() {
+				clearAfterSuccessProperty.backup()
+			}
+
+			@AfterEach fun tearDown() {
+				clearAfterSuccessProperty.restore()
+			}
+
+			@Test fun `'true' removes project folder`() {
+				clearAfterSuccessProperty.set("true")
+
+				sut.evaluate()
+
+				assertProjectFolderMissing()
+			}
+
+			@Test fun `'false' keeps project folder`() {
+				clearAfterSuccessProperty.set("false")
+
+				sut.evaluate()
+
+				assertProjectFolderValid()
 			}
 		}
 	}
@@ -125,14 +155,14 @@ class GradleRunnerRuleTest {
 		}
 
 		@Nested
-		inner class `clearAfterFailure = false keeps project folder` {
+		inner class `clearAfterFailure = false` {
 
 			@BeforeEach fun setUp() {
 				gradle.clearAfterFailure = false
 			}
 
 			@Test
-			fun test() {
+			fun `keeps project folder`() {
 				assertThrows<SimulatedTestFailure> {
 					sut.evaluate()
 				}
@@ -153,13 +183,13 @@ class GradleRunnerRuleTest {
 		}
 
 		@Nested
-		inner class `clearAfterFailure = true keeps project folder` {
+		inner class `clearAfterFailure = true` {
 
 			@BeforeEach fun setUp() {
 				gradle.clearAfterFailure = true
 			}
 
-			@Test fun test() {
+			@Test fun `removes project folder`() {
 				assertThrows<SimulatedTestFailure> {
 					sut.evaluate()
 				}
@@ -179,6 +209,40 @@ class GradleRunnerRuleTest {
 				assertProjectFolderMissing()
 			}
 		}
+
+		@Nested
+		inner class `clearAfterFailure set through System property` {
+
+			private var clearAfterFailureProperty = SystemProperty("net.twisterrob.gradle.runner.clearAfterFailure")
+
+			@BeforeEach fun setUp() {
+				clearAfterFailureProperty.backup()
+			}
+
+			@AfterEach fun tearDown() {
+				clearAfterFailureProperty.restore()
+			}
+
+			@Test fun `'true' removes project folder`() {
+				clearAfterFailureProperty.set("true")
+
+				assertThrows<SimulatedTestFailure> {
+					sut.evaluate()
+				}
+
+				assertProjectFolderMissing()
+			}
+
+			@Test fun `'false' keeps project folder`() {
+				clearAfterFailureProperty.set("false")
+
+				assertThrows<SimulatedTestFailure> {
+					sut.evaluate()
+				}
+
+				assertProjectFolderValid()
+			}
+		}
 	}
 
 	private fun assertProjectFolderValid() {
@@ -189,5 +253,25 @@ class GradleRunnerRuleTest {
 	private fun assertProjectFolderMissing() {
 		assertThat(gradle.runner.projectDir, not(anExistingFileOrDirectory()))
 		assertThat(gradle.buildFile, not(anExistingFileOrDirectory()))
+	}
+
+	private class SystemProperty(private val key: String) {
+		private var backupValue: String? = null
+
+		fun set(value: String?) {
+			if (value == null) {
+				System.clearProperty(key)
+			} else {
+				System.setProperty(key, value)
+			}
+		}
+
+		fun backup() {
+			backupValue = System.getProperty(key)
+		}
+
+		fun restore() {
+			set(backupValue)
+		}
 	}
 }
