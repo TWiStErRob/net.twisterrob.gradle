@@ -79,9 +79,7 @@ class GradleRunnerRuleTest {
 			@ParameterizedTest fun `even when clearAfterFailure = `(clearAfterFailure: Boolean) {
 				gradle.clearAfterFailure = clearAfterFailure
 
-				sut.evaluate()
-
-				assertProjectFolderValid()
+				`keeps project folder`()
 			}
 		}
 
@@ -102,9 +100,7 @@ class GradleRunnerRuleTest {
 			@ParameterizedTest fun `even when clearAfterFailure = `(clearAfterFailure: Boolean) {
 				gradle.clearAfterFailure = clearAfterFailure
 
-				sut.evaluate()
-
-				assertProjectFolderMissing()
+				`removes project folder`()
 			}
 		}
 
@@ -174,11 +170,7 @@ class GradleRunnerRuleTest {
 			@ParameterizedTest fun `even when clearAfterSuccess = `(clearAfterSuccess: Boolean) {
 				gradle.clearAfterSuccess = clearAfterSuccess
 
-				assertThrows<SimulatedTestFailure> {
-					sut.evaluate()
-				}
-
-				assertProjectFolderValid()
+				`keeps project folder`()
 			}
 		}
 
@@ -202,11 +194,7 @@ class GradleRunnerRuleTest {
 				// make sure clearAfterFailure is independent of clearAfterSuccess
 				gradle.clearAfterSuccess = clearAfterSuccess
 
-				assertThrows<SimulatedTestFailure> {
-					sut.evaluate()
-				}
-
-				assertProjectFolderMissing()
+				`removes project folder`()
 			}
 		}
 
