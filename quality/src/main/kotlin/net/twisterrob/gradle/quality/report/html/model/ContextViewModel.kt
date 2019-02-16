@@ -36,10 +36,10 @@ sealed class ContextViewModel {
 			private fun getContext(v: Violation): Triple<String, Int, Int> {
 				val loc = v.location
 				val lines = try {
-					loc.file.readLines()
+					loc.file.absoluteFile.readLines()
 				} catch (ex: IOException) {
-					// TODO ex.printStackTrace()?
-					return Triple("", 0, 0)
+					val exceptions = generateSequence<Throwable>(ex) { it.cause }
+					return Triple(exceptions.joinToString(System.lineSeparator()), 0, 0)
 				}
 				val numContextLines = 2
 				val contextStart = max(1, loc.startLine - numContextLines)
