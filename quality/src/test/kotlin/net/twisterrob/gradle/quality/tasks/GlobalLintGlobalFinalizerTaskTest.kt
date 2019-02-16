@@ -40,7 +40,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")
-			gradle.settingsFile().appendText("include ':${module}'${endl}")
+			gradle.settingsFile.appendText("include ':${module}'${endl}")
 			gradle.file(manifest, module, "src", "main", "AndroidManifest.xml")
 		}
 
@@ -98,7 +98,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")
-			gradle.settingsFile().appendText("include ':${module}'${endl}")
+			gradle.settingsFile.appendText("include ':${module}'${endl}")
 			gradle.file(lintViolation, module, "src", "main", "java", "fail1.java")
 			gradle.file(manifest, module, "src", "main", "AndroidManifest.xml")
 		}
@@ -157,7 +157,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")
-			gradle.settingsFile().appendText("include ':${module}'${endl}")
+			gradle.settingsFile.appendText("include ':${module}'${endl}")
 			gradle.file(lintViolation, module, "src", "main", "java", "fail1.java")
 			gradle.file(manifest, module, "src", "main", "AndroidManifest.xml")
 		}

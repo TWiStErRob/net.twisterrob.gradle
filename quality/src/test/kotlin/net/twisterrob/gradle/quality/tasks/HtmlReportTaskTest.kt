@@ -17,7 +17,7 @@ import org.junit.Test
 // TODO aapt2 use "lint" task instead of "lintDebug" in these tests
 class HtmlReportTaskTest {
 
-	@Rule @JvmField val gradle = GradleRunnerRule(false)
+	@Rule @JvmField val gradle = GradleRunnerRule()
 
 	@Test fun `runs on empty project`() {
 		gradle.basedOn("android-root_app")

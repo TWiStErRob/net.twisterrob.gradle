@@ -12,19 +12,52 @@ import java.net.URI
 /**
  * Simplified {@link org.junit.Rule} around {@link GradleRunner} to reduce code repetition.
  */
-open class GradleRunnerRule @JvmOverloads constructor(
-		clearAfterFailure: Boolean? = null
-) : TestRule {
+open class GradleRunnerRule : TestRule {
 
 	private val temp = TemporaryFolder()
-	private val clearAfterFailure: Boolean = listOfNotNull(
+
+	/**
+	 * Defines if a tests Gradle folder should be removed after a failed execution.
+	 * Precedence:
+	 *  * this property (`null` &rarr; next)
+	 *  * `net.twisterrob.gradle.runner.clearAfterFailure` system property (not set &rarr; next)
+	 *  * automatically clear (when none of the above are specified)
+	 *
+	 * @param value `null` = automatic, `true` clean, `false` keep
+	 * @see GradleRunner.getProjectDir `runner.projectDir`
+	 */
+	var clearAfterFailure: Boolean? = null
+	private val needClearAfterFailure: Boolean
+		get() = listOfNotNull(
 			clearAfterFailure,
 			System.getProperty("net.twisterrob.gradle.runner.clearAfterFailure")?.toBoolean(),
 			true
-	).first()
+		).first()
 
-	private lateinit var buildFile: File
+	/**
+	 * Defines if a tests Gradle folder should be removed after a failed execution.
+	 * Precedence:
+	 *  * this property (`null` &rarr; next)
+	 *  * `net.twisterrob.gradle.runner.clearAfterFailure` system property (not set &rarr; next)
+	 *  * automatically clear (when none of the above are specified)
+	 *
+	 * @param value `null` = automatic, `true` clean, `false` keep
+	 * @see GradleRunner.getProjectDir `runner.projectDir`
+	 */
+	var clearAfterSuccess: Boolean? = null
+	private val needClearAfterSuccess: Boolean
+		get() = listOfNotNull(
+			clearAfterSuccess,
+			System.getProperty("net.twisterrob.gradle.runner.clearAfterSuccess")?.toBoolean(),
+			true
+		).first()
+
 	lateinit var runner: GradleRunner private set
+
+	@Suppress("MemberVisibilityCanBePrivate") // API
+	lateinit var buildFile: File private set
+
+	val settingsFile get() = File(runner.projectDir, "settings.gradle")
 
 	//region TestRule
 	override fun apply(base: Statement, description: Description): Statement {
@@ -39,7 +72,7 @@ open class GradleRunnerRule @JvmOverloads constructor(
 					success = true
 				} finally {
 					tearDown()
-					if (success || clearAfterFailure) {
+					if ((success && needClearAfterSuccess) || (!success && needClearAfterFailure)) {
 						temp.delete()
 					}
 				}
@@ -59,8 +92,8 @@ open class GradleRunnerRule @JvmOverloads constructor(
 				.forwardStdError(WriteOnlyWhenLineCompleteWriter(System.err.writer()))
 				.withProjectDir(temp.root)
 				.withPluginClasspath()
-		check(this.buildFile == this.getBuildFile()) {
-			"Mismatch between internal (${this.buildFile}) and published (${getBuildFile()}) buildFiles."
+		check(buildFile == File(runner.projectDir, "build.gradle")) {
+			"${buildFile} is not within ${runner.projectDir}."
 		}
 		fixClassPath(runner)
 	}
@@ -88,7 +121,6 @@ ${buildFile.readText().prependIndent("\t\t\t")}
 	 * This is a workaround because runner.withPluginClasspath() doesn't seem to work.
 	 */
 	private fun fixClassPath(runner: GradleRunner) {
-		val buildFile = getBuildFile()
 		val classPaths = runner
 				.pluginClasspath
 				.joinToString(System.lineSeparator()) {
@@ -107,10 +139,6 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	//endregion
 
 	//region Helper methods
-
-	fun getBuildFile() = File(runner.projectDir, "build.gradle")
-
-	fun settingsFile() = File(runner.projectDir, "settings.gradle")
 
 	//@Test:given/@Before
 	fun setGradleVersion(version: String) {

@@ -98,7 +98,7 @@ class ValidateViolationsTaskTest {
 				gradle.file(checkstyleXmlContents, checkName, *CONFIG_PATH_CS)
 				gradle.file("""<manifest package="checkstyle.${checkName}" />""", checkName, *MANIFEST_PATH)
 				gradle.file(file.readText(), checkName, *SOURCE_PATH, file.name)
-				gradle.settingsFile().appendText("include ':${checkName}'${System.lineSeparator()}")
+				gradle.settingsFile.appendText("include ':${checkName}'${System.lineSeparator()}")
 			}
 		}
 

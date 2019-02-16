@@ -27,7 +27,7 @@ class CheckStylePluginTest {
 		private val endl = System.lineSeparator()
 	}
 
-	@Rule @JvmField val gradle = GradleRunnerRule(false)
+	@Rule @JvmField val gradle = GradleRunnerRule()
 
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
@@ -113,7 +113,7 @@ class CheckStylePluginTest {
 			":module3:sub2"
 		)
 		modules.forEach {
-			gradle.settingsFile().appendText("include '${it}'${endl}")
+			gradle.settingsFile.appendText("include '${it}'${endl}")
 
 			@Language("gradle")
 			val subProject = """
@@ -178,7 +178,7 @@ class CheckStylePluginTest {
 		)
 		val applyTo = arrayOf(":module2", ":module2:sub1", ":module3:sub2")
 		modules.forEach { module ->
-			gradle.settingsFile().appendText("include '${module}'${endl}")
+			gradle.settingsFile.appendText("include '${module}'${endl}")
 
 			val subProject = if (module in applyTo) subProjectApplied else subProjectNotApplied
 			@Language("xml")
