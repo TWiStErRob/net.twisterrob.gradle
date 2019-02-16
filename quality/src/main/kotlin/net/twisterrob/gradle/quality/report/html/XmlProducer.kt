@@ -8,7 +8,9 @@ import java.io.File
 
 internal fun Project.produceXml(results: Grouper.Start<Violations>, xmlFile: File, xslFile: File) {
 	val group = group(results)
-	val xml = group.renderXml(rootProject.name)
+	val xml = renderXml(group).apply {
+		attribute("project", rootProject.name)
+	}
 	writeXml(xml, xmlFile, xslFile)
 }
 

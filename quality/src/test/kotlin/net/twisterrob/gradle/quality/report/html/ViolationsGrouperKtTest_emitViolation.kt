@@ -28,7 +28,7 @@ class ViolationsGrouperKtTest_emitViolation {
 		""".trimIndent()
 
 		val result = xml("root") {
-			emitViolation(ViolationViewModel.create(fixture.build<Violation>().apply {
+			renderViolation(ViolationViewModel.create(fixture.build<Violation>().apply {
 				setField("message", lintMessage)
 				// make sure message goes through the transformation
 				source.setField("reporter", "ANDROIDLINT")
@@ -48,7 +48,7 @@ class ViolationsGrouperKtTest_emitViolation {
 		""".trimIndent()
 
 		val result = xml("root") {
-			emitViolation(ViolationViewModel.create(fixture.build<Violation>().apply {
+			renderViolation(ViolationViewModel.create(fixture.build<Violation>().apply {
 				setField("message", lintMessage)
 				// make sure message goes through the transformation
 				source.setField("reporter", "ANDROIDLINT")

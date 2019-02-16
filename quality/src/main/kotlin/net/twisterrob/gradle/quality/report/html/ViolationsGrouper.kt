@@ -4,16 +4,20 @@ import net.twisterrob.gradle.common.grouper.Grouper.Start
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
 
-internal fun group(results: Start<Violations>): Map<String?, Map<String, List<Violation>>> {
+typealias Category = String?
+typealias Reporter = String
+
+@Suppress("USELESS_CAST") // casts are useful to convert String to typealias
+internal fun group(results: Start<Violations>): Map<Category, Map<Reporter, List<Violation>>> {
 	val allViolations = results.list.flatMap { (it.violations ?: emptyList()) }
 
-	// REPORT inlining this variable breaks code
+	@Suppress("UnnecessaryVariable") // REPORT broken refactor: inlining this variable breaks code
 	val group = allViolations
-		.groupBy { it.category }
+		.groupBy { it.category as Category }
 		.toSortedMap(nullsLast(compareBy { it }))
 		.mapValues { (_, violations) ->
 			violations
-				.groupBy { it.source.reporter }
+				.groupBy { it.source.reporter as Reporter }
 				.toSortedMap(compareBy { it })
 				.mapValues { (_, violations) ->
 					violations.sortedWith(

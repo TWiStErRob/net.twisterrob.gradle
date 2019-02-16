@@ -11,10 +11,9 @@ import net.twisterrob.gradle.quality.report.html.model.ViolationViewModel
 import org.redundent.kotlin.xml.Node
 import org.redundent.kotlin.xml.xml
 
-internal fun Map<String?, Map<String, List<Violation>>>.renderXml(projectName: String): Node {
-	return xml("violations") {
-		attribute("project", projectName)
-		forEach { (category, categoryViolations) ->
+internal fun renderXml(groups: Map<Category, Map<Reporter, List<Violation>>>): Node =
+	xml("violations") {
+		groups.forEach { (category, categoryViolations) ->
 			"category" {
 				attribute("name", category ?: "unknown")
 				categoryViolations.forEach { (reporter, reporterViolations) ->
@@ -22,7 +21,7 @@ internal fun Map<String?, Map<String, List<Violation>>>.renderXml(projectName: S
 						attribute("name", reporter)
 						reporterViolations.forEach {
 							try {
-								emitViolation(ViolationViewModel.create(it))
+								renderViolation(ViolationViewModel.create(it))
 							} catch (ex: Throwable) {
 								throw IllegalArgumentException(it.toString(), ex)
 							}
@@ -32,10 +31,9 @@ internal fun Map<String?, Map<String, List<Violation>>>.renderXml(projectName: S
 			}
 		}
 	}
-}
 
 @VisibleForTesting
-internal fun Node.emitViolation(vm: ViolationViewModel) {
+internal fun Node.renderViolation(vm: ViolationViewModel) {
 	"violation" {
 		with(vm.location) {
 			"location"{
