@@ -3,7 +3,6 @@ package net.twisterrob.gradle.quality.tasks
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.runBuild
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
@@ -20,8 +19,8 @@ class VersionsTaskTest {
 			task('qualityVersions', type: ${VersionsTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle.run(script, "qualityVersions").build()
+		val result = gradle.runBuild {
+			run(script, "qualityVersions")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
@@ -40,8 +39,8 @@ class VersionsTaskTest {
 			task('qualityVersions', type: ${VersionsTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle.run(script, "qualityVersions").build()
+		val result = gradle.runBuild {
+			run(script, "qualityVersions")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
@@ -58,8 +57,8 @@ class VersionsTaskTest {
 			task('qualityVersions', type: ${VersionsTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle.run(script, "qualityVersions").build()
+		val result = gradle.runBuild {
+			run(script, "qualityVersions")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
@@ -76,8 +75,8 @@ class VersionsTaskTest {
 			task('qualityVersions', type: ${VersionsTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle.run(script, "qualityVersions").build()
+		val result = gradle.runBuild {
+			run(script, "qualityVersions")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)

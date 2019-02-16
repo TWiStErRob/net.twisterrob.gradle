@@ -6,7 +6,6 @@ import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.runBuild
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
@@ -48,11 +47,9 @@ class ValidateViolationsTaskTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-root_app")
-				.run(script, "checkstyleAll", "pmdAll", "printViolationCount")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-root_app")
+			run(script, "checkstyleAll", "pmdAll", "printViolationCount")
 		}
 
 		// TODO find another CheckStyle violation that's more specific
@@ -79,11 +76,9 @@ class ValidateViolationsTaskTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-single_module")
-				.run(script, "checkstyleAll", "pmdAll", "printViolationCount")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-single_module")
+			run(script, "checkstyleAll", "pmdAll", "printViolationCount")
 		}
 
 		// TODO find another CheckStyle violation that's more specific
@@ -127,11 +122,9 @@ class ValidateViolationsTaskTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-multi_module")
-				.run(script, "checkstyleAll", "printViolationCounts")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(script, "checkstyleAll", "printViolationCounts")
 		}
 
 		assertThat(
@@ -171,10 +164,8 @@ class ValidateViolationsTaskTest {
 		gradle.run(script, "checkstyleAll", "pmdAll", "printViolationCount").build()
 		gradle.file(gradle.templateFile("pmd-simple_failure.java").readText(), *SOURCE_PATH, "Pmd.java")
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(null, "checkstyleAll", "pmdAll", "printViolationCount")
-				.build()
+		val result = gradle.runBuild {
+			run(null, "checkstyleAll", "pmdAll", "printViolationCount")
 		}
 
 		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)

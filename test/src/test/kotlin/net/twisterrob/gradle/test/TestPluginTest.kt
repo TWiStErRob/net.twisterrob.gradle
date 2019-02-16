@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.test
 
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
@@ -80,10 +79,8 @@ class TestPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(script, "test")
-				.build()
+		val result = gradle.runBuild {
+			run(script, "test")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)

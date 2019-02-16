@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.test
 
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
@@ -22,10 +21,8 @@ class GradleRunnerRuleTest {
 			println 'Hello World'
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(script)
-				.build()
+		val result = gradle.runBuild {
+			run(script)
 		}
 
 		result.assertHasOutputLine("Hello World")
@@ -41,10 +38,8 @@ class GradleRunnerRuleTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(script, "test")
-				.build()
+		val result = gradle.runBuild {
+			run(script, "test")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
@@ -71,10 +66,8 @@ class GradleRunnerRuleTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(script, "printConfigFile")
-				.build()
+		val result = gradle.runBuild {
+			run(script, "printConfigFile")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":printConfigFile")!!.outcome)
@@ -92,10 +85,8 @@ class GradleRunnerRuleTest {
 
 		(1..3).forEach { gradle.basedOn(generateFolder(it.toString())) }
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run("""println("script()")""", ":help")
-				.build()
+		val result = gradle.runBuild {
+			run("""println("script()")""", ":help")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":help")!!.outcome)

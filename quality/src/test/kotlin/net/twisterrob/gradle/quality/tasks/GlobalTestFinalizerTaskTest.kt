@@ -2,8 +2,7 @@ package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
-import net.twisterrob.gradle.test.runBuild
-import org.gradle.testkit.runner.BuildResult
+import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
@@ -42,11 +41,9 @@ class GlobalTestFinalizerTaskTest {
 			task('tests', type: ${GlobalTestFinalizerTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-root_app")
-				.run(script, "test", "tests")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			basedOn("android-root_app")
+			run(script, "test", "tests")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)

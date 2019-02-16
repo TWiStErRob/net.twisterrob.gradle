@@ -2,7 +2,6 @@ package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.runBuild
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
@@ -28,10 +27,8 @@ class HtmlReportTaskTest {
 			task('htmlReport', type: ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(script, "htmlReport")
-				.build()
+		val result = gradle.runBuild {
+			run(script, "htmlReport")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
@@ -62,10 +59,8 @@ class HtmlReportTaskTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(script, "lintDebug", "htmlReport")
-				.build()
+		val result = gradle.runBuild {
+			run(script, "lintDebug", "htmlReport")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
@@ -90,10 +85,8 @@ class HtmlReportTaskTest {
 		""".trimIndent()
 		gradle.run(script, "lintDebug", "htmlReport").build()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(null, "htmlReport")
-				.build()
+		val result = gradle.runBuild {
+			run(null, "htmlReport")
 		}
 
 		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":htmlReport")!!.outcome)
@@ -115,10 +108,8 @@ class HtmlReportTaskTest {
 		gradle.run(script, "lintDebug", "htmlReport").build()
 		gradle.basedOn("lint-IconMissingDensityFolder")
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(null, "lintDebug", "htmlReport")
-				.build()
+		val result = gradle.runBuild {
+			run(null, "lintDebug", "htmlReport")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
@@ -139,10 +130,8 @@ class HtmlReportTaskTest {
 		""".trimIndent()
 		gradle.run(script, "lintDebug", "htmlReport").build()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(null, "cleanHtmlReport", "htmlReport")
-				.build()
+		val result = gradle.runBuild {
+			run(null, "cleanHtmlReport", "htmlReport")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":cleanHtmlReport")!!.outcome)
@@ -164,10 +153,8 @@ class HtmlReportTaskTest {
 		""".trimIndent()
 		gradle.run(script, "lintDebug", "htmlReport").build()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(null, "cleanHtmlReport")
-				.build()
+		val result = gradle.runBuild {
+			run(null, "cleanHtmlReport")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":cleanHtmlReport")!!.outcome)

@@ -5,7 +5,6 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.runBuild
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasItems
@@ -29,11 +28,9 @@ class QualityPluginTest {
 			tasks.named('violationReportConsole').configure { println("Configuring " + it) }
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-all_kinds")
-				.run(script, "violationReportConsole")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-all_kinds")
+			run(script, "violationReportConsole")
 		}
 
 		assertEquals(SUCCESS, result.task(":violationReportConsole")!!.outcome)
@@ -54,11 +51,9 @@ class QualityPluginTest {
 			tasks.named('violationReportHtml').configure { println("Configuring " + it) }
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-all_kinds")
-				.run(script, "violationReportHtml")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-all_kinds")
+			run(script, "violationReportHtml")
 		}
 
 		assertEquals(SUCCESS, result.task(":violationReportHtml")!!.outcome)
@@ -81,11 +76,9 @@ class QualityPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-all_kinds")
-				.run(script, "lint")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-all_kinds")
+			run(script, "lint")
 		}
 
 		assertEquals(SUCCESS, result.task(":lint")!!.outcome)
@@ -104,11 +97,9 @@ class QualityPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-root_app")
-				.run(script, "lint")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-root_app")
+			run(script, "lint")
 		}
 
 		assertEquals(SUCCESS, result.task(":lint")!!.outcome)

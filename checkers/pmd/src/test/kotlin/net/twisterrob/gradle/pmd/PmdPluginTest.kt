@@ -4,8 +4,8 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.runBuild
+import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Pmd
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
@@ -33,10 +33,8 @@ class PmdPluginTest {
 			apply plugin: 'net.twisterrob.pmd'
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(script, "pmd")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(script, "pmd")
 		}
 
 		assertThat(result.failReason, startsWith("Task 'pmd' not found"))
@@ -49,10 +47,8 @@ class PmdPluginTest {
 			apply plugin: 'net.twisterrob.pmd'
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(script, "pmd")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(script, "pmd")
 		}
 
 		assertThat(result.failReason, startsWith("Task 'pmd' not found"))
@@ -65,11 +61,9 @@ class PmdPluginTest {
 			apply plugin: 'net.twisterrob.pmd'
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-root_app")
-				.run(script, "pmdEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-root_app")
+			run(script, "pmdEach")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":pmdEach")!!.outcome)
@@ -88,11 +82,9 @@ class PmdPluginTest {
 		// ":instant" is not supported yet
 		val modules = arrayOf(":app", ":feature", ":base", ":library", ":library:nested", ":test")
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-all_kinds")
-				.run(script, "pmdEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-all_kinds")
+			run(script, "pmdEach")
 		}
 
 		// these tasks are not generated because their modules are special
@@ -146,11 +138,9 @@ class PmdPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-multi_module")
-				.run(rootProject, "pmdEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(rootProject, "pmdEach")
 		}
 
 		assertThat(
@@ -202,11 +192,9 @@ class PmdPluginTest {
 
 		gradle.file(gradle.templateFile("pmd-empty.xml").readText(), "config", "pmd", "pmd.xml")
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-multi_module")
-				.run(null, "pmdEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(null, "pmdEach")
 		}
 
 		val allTasks = result.tasks.map { it.path }
@@ -237,10 +225,8 @@ class PmdPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(applyPmd, ":pmdDebug")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(applyPmd, ":pmdDebug")
 		}
 
 		assertEquals(TaskOutcome.FAILED, result.task(":pmdDebug")!!.outcome)

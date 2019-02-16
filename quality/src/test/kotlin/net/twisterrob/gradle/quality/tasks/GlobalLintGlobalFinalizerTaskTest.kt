@@ -4,7 +4,7 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.runBuild
-import org.gradle.testkit.runner.BuildResult
+import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -52,11 +52,9 @@ class GlobalLintGlobalFinalizerTaskTest {
 			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-multi_module")
-				.run(script, "lint")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(script, "lint")
 		}
 
 		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
@@ -113,11 +111,9 @@ class GlobalLintGlobalFinalizerTaskTest {
 			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-multi_module")
-				.run(script, "lint")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			basedOn("android-multi_module")
+			run(script, "lint")
 		}
 
 		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
@@ -174,11 +170,9 @@ class GlobalLintGlobalFinalizerTaskTest {
 			tasks.register('lint', ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-multi_module")
-				.run(script, "lint")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			basedOn("android-multi_module")
+			run(script, "lint")
 		}
 
 		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }

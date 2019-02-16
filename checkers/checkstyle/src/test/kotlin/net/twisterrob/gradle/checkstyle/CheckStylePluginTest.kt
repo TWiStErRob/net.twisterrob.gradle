@@ -6,8 +6,8 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.runBuild
+import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Checkstyle
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
@@ -35,10 +35,8 @@ class CheckStylePluginTest {
 			apply plugin: 'net.twisterrob.checkstyle'
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(script, "checkstyle")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(script, "checkstyle")
 		}
 
 		assertThat(result.failReason, startsWith("Task 'checkstyle' not found"))
@@ -51,10 +49,8 @@ class CheckStylePluginTest {
 			apply plugin: 'net.twisterrob.checkstyle'
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(script, "checkstyle")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(script, "checkstyle")
 		}
 
 		assertThat(result.failReason, startsWith("Task 'checkstyle' not found"))
@@ -66,11 +62,9 @@ class CheckStylePluginTest {
 			apply plugin: 'net.twisterrob.checkstyle'
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-root_app")
-				.run(script, "checkstyleEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-root_app")
+			run(script, "checkstyleEach")
 		}
 
 		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":checkstyleEach")!!.outcome)
@@ -89,11 +83,9 @@ class CheckStylePluginTest {
 		// ":instant" is not supported yet
 		val modules = arrayOf(":app", ":feature", ":base", ":library", ":library:nested", ":test")
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-all_kinds")
-				.run(script, "checkstyleEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-all_kinds")
+			run(script, "checkstyleEach")
 		}
 
 		// these tasks are not generated because their modules are special
@@ -147,11 +139,9 @@ class CheckStylePluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-multi_module")
-				.run(rootProject, "checkstyleEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(rootProject, "checkstyleEach")
 		}
 
 		assertThat(
@@ -203,11 +193,9 @@ class CheckStylePluginTest {
 
 		gradle.file(gradle.templateFile("checkstyle-empty.xml").readText(), "config", "checkstyle", "checkstyle.xml")
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-multi_module")
-				.run(null, "checkstyleEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(null, "checkstyleEach")
 		}
 
 		val allTasks = result.tasks.map { it.path }
@@ -239,10 +227,8 @@ class CheckStylePluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(applyCheckstyle, ":checkstyleDebug")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(applyCheckstyle, ":checkstyleDebug")
 		}
 
 		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
@@ -270,10 +256,8 @@ class CheckStylePluginTest {
 			android.sourceSets.main.java.srcDir 'custom'
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(build, ":checkstyleDebug")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(build, ":checkstyleDebug")
 		}
 
 		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
@@ -318,10 +302,8 @@ class CheckStylePluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(build, ":checkstyleDebug")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(build, ":checkstyleDebug")
 		}
 
 		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
@@ -342,10 +324,8 @@ class CheckStylePluginTest {
 			apply plugin: 'net.twisterrob.checkstyle'
 		""".trimIndent()
 
-		val result: BuildResult = runBuild {
-			gradle
-				.run(applyCheckstyle, ":checkstyleDebug")
-				.build()
+		val result = gradle.runBuild {
+			run(applyCheckstyle, ":checkstyleDebug")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":checkstyleDebug")!!.outcome)

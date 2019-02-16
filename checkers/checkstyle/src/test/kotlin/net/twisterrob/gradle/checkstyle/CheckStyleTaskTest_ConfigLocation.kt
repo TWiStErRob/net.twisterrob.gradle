@@ -3,9 +3,8 @@ package net.twisterrob.gradle.checkstyle
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.failReason
-import net.twisterrob.gradle.test.runBuild
+import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Checkstyle
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
@@ -75,11 +74,9 @@ class CheckStyleTaskTest_ConfigLocation {
 		gradle.file(failingContent, "module", "src", "main", "java", "Checkstyle.java")
 		// see also @Test/given for configuration file location setup
 
-		val result: BuildResult = runBuild {
-			gradle
-				.basedOn("android-single_module")
-				.run(script, ":module:checkstyleDebug")
-				.buildAndFail()
+		val result = gradle.runFailingBuild {
+			basedOn("android-single_module")
+			run(script, ":module:checkstyleDebug")
 		}
 
 		// build should only fail if failing config wins the preference,
