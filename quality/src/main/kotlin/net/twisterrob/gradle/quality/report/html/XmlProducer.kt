@@ -14,11 +14,7 @@ internal fun Project.produceXml(results: Grouper.Start<Violations>, xmlFile: Fil
 	writeXml(xml, xmlFile, xslFile)
 }
 
-private fun writeXml(
-	xml: Node,
-	xmlFile: File,
-	xslFile: File
-) {
+private fun writeXml(xml: Node, xmlFile: File, xslFile: File) {
 	xmlFile.parentFile.mkdirs()
 	xmlFile.delete()
 	xmlFile.writeText(
