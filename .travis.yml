@@ -7,22 +7,20 @@ env:
     - ANDROID_BUILD_TOOLS_VERSION=unset
     - ANDROID_INSTANT_API_LEVEL=unset
 script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=$ANDROID_PLUGIN_VERSION -Pnet.twisterrob.gradle.runner.gradleVersion=$TEST_GRADLE_VERSION
+name: "Android Gradle Plugin $ANDROID_PLUGIN_VERSION, Gradle $TEST_GRADLE_VERSION"
 jobs:
   include:
-    - name: "Android Gradle Plugin 3.1, Gradle 4.9"
-      env:
+    - env:
         - TEST_GRADLE_VERSION=4.9
         - ANDROID_PLUGIN_VERSION=3.1.4
         - ANDROID_BUILD_TOOLS_VERSION=27.0.3
         - ANDROID_INSTANT_API_LEVEL=26
-    - name: "Android Gradle Plugin 3.2, Gradle 4.9"
-      env:
+    - env:
         - TEST_GRADLE_VERSION=4.9
         - ANDROID_PLUGIN_VERSION=3.2.1
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=27
-    - name: "Android Gradle Plugin 3.3, Gradle 4.10.3"
-      env:
+    - env:
         - TEST_GRADLE_VERSION=4.10.3
         - ANDROID_PLUGIN_VERSION=3.3.1
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
