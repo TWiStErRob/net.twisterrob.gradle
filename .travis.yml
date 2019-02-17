@@ -58,7 +58,6 @@ cache:
     # Prevent "Download https://jcenter.bintray.com/" during test runs
     - /tmp/.gradle-test-kit-travis/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during test runs
-    - /tmp/.gradle-test-kit-travis/caches/4.6/generated-gradle-jars/
     - /tmp/.gradle-test-kit-travis/caches/4.9/generated-gradle-jars/
     - /tmp/.gradle-test-kit-travis/caches/4.10.3/generated-gradle-jars/
     # Do not cache Android SDK, caching is done after SDK components are installed
