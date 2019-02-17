@@ -33,6 +33,12 @@ sealed class ContextViewModel {
 				.replace("""$""", """\$""")
 				.replace("""`""", """\`""")
 
+			/**
+			 * Get the code context of the lines that are flagged as failed.
+			 *
+			 * Tries to return the lines as requested + 2 lines before and after if possible.
+			 * Invalid lines and missing file flagged will result in an error message with 0 to 0 resulting context.
+			 */
 			private fun getContext(v: Violation): Triple<String, Int, Int> {
 				fun invalid(message: String) = Triple(message, 0, 0)
 				val loc = v.location
@@ -49,11 +55,11 @@ sealed class ContextViewModel {
 				)
 				if (loc.endLine < loc.startLine) return invalidLocation()
 				val numContextLines = 2
+				if (lines.size < loc.startLine) return invalidLocation()
+				if (loc.endLine < 0 || lines.size < loc.endLine) return invalidLocation()
+				if (lines.size < loc.endLine) return invalidLocation()
 				val contextStart = max(1, loc.startLine - numContextLines)
 				val contextEnd = min(lines.size, loc.endLine + numContextLines)
-				if (lines.size < contextStart) return invalidLocation()
-				if (contextEnd < 0) return invalidLocation()
-				if (lines.size < contextEnd) return invalidLocation()
 				// Note: lines in list are counted from 0, but in file are counted from 1
 				val contextLines = lines.subList(contextStart - 1, contextEnd)
 				val context = contextLines.joinToString(System.lineSeparator())

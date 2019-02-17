@@ -63,6 +63,14 @@ class CodeContextTest {
 	}
 
 	@Test
+	fun `grabs all 1 lines as requested`() =
+		runTest(lines(1, 1), 1, 1, 1, 1)
+
+	@Test
+	fun `grabs all 2 lines as requested`() =
+		runTest(lines(1, 2), 1, 2, 1, 2)
+
+	@Test
 	fun `grabs 3 lines as requested`() =
 		runTest(lines(1, 9), 4, 6, 2, 8)
 
@@ -73,6 +81,14 @@ class CodeContextTest {
 	@Test
 	fun `grabs 4 lines as requested`() =
 		runTest(lines(1, 6), 2, 5, 1, 6)
+
+	@Test
+	fun `grabs all 6 lines as requested`() =
+		runTest(lines(1, 6), 1, 6, 1, 6)
+
+	@Test
+	fun `grabs all 10 lines as requested`() =
+		runTest(lines(1, 10), 1, 10, 1, 10)
 
 	@Test
 	fun `grabs 1 line with 2 lines of context`() =
@@ -99,6 +115,10 @@ class CodeContextTest {
 		runTest(lines(1, 8), 1, 1, 1, 3)
 
 	@Test
+	fun `lower bounded context by file size (windows peek in)`() =
+		runFailTest(lines(1, 6), -1, -1)
+
+	@Test
 	fun `lower bounded context by file size (underflow)`() =
 		runFailTest(lines(1, 6), -8, -8)
 
@@ -119,6 +139,10 @@ class CodeContextTest {
 		runTest(lines(1, 8), 8, 8, 6, 8)
 
 	@Test
+	fun `upper bounded context by file size (windows peek in)`() =
+		runFailTest(lines(1, 6), 8, 8)
+
+	@Test
 	fun `upper bounded context by file size (overflow)`() =
 		runFailTest(lines(1, 6), 12, 12)
 
@@ -129,6 +153,14 @@ class CodeContextTest {
 	@Test
 	fun `upper bounded context by file size (overflow invalid range)`() =
 		runFailTest(lines(1, 6), 15, 12)
+
+	@Test
+	fun `bounded context by file size (neighbor valid range)`() =
+		runFailTest(lines(1, 6), 0, 7)
+
+	@Test
+	fun `bounded context by file size (neighbor invalid range)`() =
+		runFailTest(lines(1, 6), 7, 0)
 
 	private fun lines(start: Int, end: Int): String =
 		(start..end).joinToString(System.lineSeparator()) { "line$it" }
