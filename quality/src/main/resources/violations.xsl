@@ -113,7 +113,7 @@
 					<code class="module">
 						<xsl:value-of select="." />
 					</code>
-					<xsl:if test="position() != last()">,</xsl:if>
+					<xsl:if test="position() != last()">, </xsl:if>
 				</xsl:for-each>
 				)
 			</li>
@@ -269,6 +269,7 @@
 	code, pre {
 		padding: 0;
 		margin: 0;
+		white-space: pre-wrap;
 	}
 
 	a {
@@ -329,6 +330,10 @@
 		margin-left: 16px;
 		border-left: 4px solid #ddd;
 		padding-left: 8px;
+	}
+
+	details > summary > pre {
+		display: inline-block;
 	}
 
 	ul {
