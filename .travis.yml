@@ -5,9 +5,8 @@ jobs:
   include:
 #    - stage: prepare cache
 #      script: true
-    - stage: "Run checks of different versions"
-    - script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.1.4 -Pnet.twisterrob.gradle.runner.gradleVersion=4.6
-      name: "Android Gradle Plugin 3.1, Gradle 4.6"
+    - script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.1.4 -Pnet.twisterrob.gradle.runner.gradleVersion=4.9
+      name: "Android Gradle Plugin 3.1, Gradle 4.9"
     - script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.2.1 -Pnet.twisterrob.gradle.runner.gradleVersion=4.9
       name: "Android Gradle Plugin 3.2, Gradle 4.9"
     - script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.3.1 -Pnet.twisterrob.gradle.runner.gradleVersion=4.10.3
