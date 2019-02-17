@@ -20,7 +20,7 @@ android:
     - tools
     - platform-tools
     # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
-    - build-tools-28.0.2
+    - build-tools-28.0.3
     # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
     - android-27
     # compileSdkVersion for almost all tests
