@@ -5,15 +5,13 @@ jobs:
   include:
 #    - stage: prepare cache
 #      script: true
-    - stage: "AGP 3.1"
-      script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.1.4 -Pnet.twisterrob.
-        gradle.runner.gradleVersion=4.6
-    - stage: "AGP 3.2"
-      script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.2.1 -Pnet.twisterrob.
-        gradle.runner.gradleVersion=4.9
-    - stage: "AGP 3.3"
-      script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.3.1 -Pnet.twisterrob.
-        gradle.runner.gradleVersion=4.10.3
+    - stage: "Run checks of different versions"
+    - script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.1.4 -Pnet.twisterrob.gradle.runner.gradleVersion=4.6
+      name: "Android Gradle Plugin 3.1, Gradle 4.6"
+    - script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.2.1 -Pnet.twisterrob.gradle.runner.gradleVersion=4.9
+      name: "Android Gradle Plugin 3.2, Gradle 4.9"
+    - script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.3.1 -Pnet.twisterrob.gradle.runner.gradleVersion=4.10.3
+      name: "Android Gradle Plugin 3.3, Gradle 4.10.3"
 
 android:
   licenses:
@@ -51,6 +49,8 @@ cache:
     # Prevent "Download https://jcenter.bintray.com/" during test runs
     - /tmp/.gradle-test-kit-travis/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during test runs
+    - /tmp/.gradle-test-kit-travis/caches/4.6/generated-gradle-jars/
     - /tmp/.gradle-test-kit-travis/caches/4.9/generated-gradle-jars/
+    - /tmp/.gradle-test-kit-travis/caches/4.10.3/generated-gradle-jars/
     # Do not cache Android SDK, caching is done after SDK components are installed
     #- $ANDROID_HOME
