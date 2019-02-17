@@ -1,8 +1,26 @@
 # Change Log
 
-## 0.8 *(2018-10-14 --- )*
+## 0.8 *(2018-10-14 --- 2019-02-??)*
+
+### Breaking
+ * `GradleRunnerRule.buildFile`/`settingsFile` are now properties, not functions
+
+### New
  * Android Gradle Plugin 3.2.1 (#34)
+ * Android Gradle Plugin 3.3 and 3.1 compatible (#55, #57)
+ * `net.twisterrob.gradle.runner.gradleVersion` property to allow running on different version with ease (#57)
+ * `net.twisterrob.gradle.runner.clearAfterSuccess` property to allow keeping files after runs (#46)
+
+### Fixes
+ * Better error handling and display (#55, #52/#54, #31/#50, #29/#38, #32/#36)
+ * Remove duplication from HTML report with multiple variants (#51/#53)
+ * Better up-to-date handling and Gradle lifecycle handling (#25/#43, #35/#37, #58)
+ * Automatic linking of URLs in lint markdown descriptions (#39)
+
+### Internal
  * Other minor version bumps (#34)
+ * Lot of internal cleanup and tests (#45, #47, #10/#22/#42, #40/#41)
+ * Better travis JUnit output: folded stdout/exception blocks (#44)
 
 ## 0.7 *(2018-10-01 --- 2018-10-10)*
  * Publish `-sources.jar` files (#13)
