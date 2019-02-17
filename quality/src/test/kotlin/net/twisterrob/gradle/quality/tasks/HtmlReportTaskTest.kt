@@ -14,7 +14,6 @@ import org.junit.Test
 /**
  * @see HtmlReportTask
  */
-// TODO aapt2 use "lint" task instead of "lintDebug" in these tests
 class HtmlReportTaskTest {
 
 	@Rule @JvmField val gradle = GradleRunnerRule()
@@ -60,7 +59,7 @@ class HtmlReportTaskTest {
 		""".trimIndent()
 
 		val result = gradle.runBuild {
-			run(script, "lintDebug", "htmlReport")
+			run(script, "lint", "htmlReport")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
@@ -83,7 +82,7 @@ class HtmlReportTaskTest {
 				check = ['IconXmlAndPng','UnusedResources']
 			}
 		""".trimIndent()
-		gradle.run(script, "lintDebug", "htmlReport").build()
+		gradle.run(script, "lint", "htmlReport").build()
 
 		val result = gradle.runBuild {
 			run(null, "htmlReport")
@@ -105,11 +104,11 @@ class HtmlReportTaskTest {
 				check = ['IconMissingDensityFolder','UnusedResources']
 			}
 		""".trimIndent()
-		gradle.run(script, "lintDebug", "htmlReport").build()
+		gradle.run(script, "lint", "htmlReport").build()
 		gradle.basedOn("lint-IconMissingDensityFolder")
 
 		val result = gradle.runBuild {
-			run(null, "lintDebug", "htmlReport")
+			run(null, "lint", "htmlReport")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
@@ -128,7 +127,7 @@ class HtmlReportTaskTest {
 				check = ['UnusedResources']
 			}
 		""".trimIndent()
-		gradle.run(script, "lintDebug", "htmlReport").build()
+		gradle.run(script, "lint", "htmlReport").build()
 
 		val result = gradle.runBuild {
 			run(null, "cleanHtmlReport", "htmlReport")
@@ -151,7 +150,7 @@ class HtmlReportTaskTest {
 				check = ['UnusedResources']
 			}
 		""".trimIndent()
-		gradle.run(script, "lintDebug", "htmlReport").build()
+		gradle.run(script, "lint", "htmlReport").build()
 
 		val result = gradle.runBuild {
 			run(null, "cleanHtmlReport")
