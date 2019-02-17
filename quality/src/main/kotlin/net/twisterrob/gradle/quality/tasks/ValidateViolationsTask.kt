@@ -126,7 +126,8 @@ open class ValidateViolationsTask : DefaultTask() {
 	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
 		project.allprojects { subproject: Project ->
 			GATHERERS.forEach { gatherer ->
-				subproject.tasks.withType(gatherer.taskType).configureEach { reportTask ->
+				// FIXME this should be configureEach or other lazy approach, but doesn't work on 3.3 then
+				subproject.tasks.withType(gatherer.taskType).forEach { reportTask ->
 					try {
 						action(gatherer, reportTask)
 					} catch (ex: RuntimeException) {

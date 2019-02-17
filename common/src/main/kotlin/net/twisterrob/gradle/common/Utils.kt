@@ -5,6 +5,9 @@ package net.twisterrob.gradle.common
 import com.android.SdkConstants
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.tasks.LintBaseTask
+import com.android.build.gradle.tasks.LintFixTask
+import com.android.build.gradle.tasks.LintGlobalTask
+import com.android.build.gradle.tasks.LintPerVariantTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -35,22 +38,40 @@ val Task.wasExplicitlyLaunched: Boolean
 
 // TODO find globalScope.reportsDir and task.isFatalOnly
 private val LintBaseTask.reportsDir get() = project.buildDir.resolve("reports")
+
 @Suppress("unused")
 private val LintBaseTask.isFatalOnly
 	get() = false
 
+/**
+ * Workaround for 3.2 vs 3.3: [LintBaseTask] extended [AndroidVariantTask] in 3.2,
+ * but not in 3.3 and the `variantName` property was moved to [LintPerVariantTask].
+ * Due to Kotlin limitations, cannot polyfill `variantName` (extension methods are compile time bound),
+ * so introducing a separate property is a good compromise.
+ * This only calls [LintPerVariantTask.variantName] when it actually exists.
+ */
+val LintBaseTask.androidVariantName: String?
+	get() = when (this) {
+		is LintPerVariantTask -> variantName
+		is LintGlobalTask -> null
+		is LintFixTask -> null
+		else -> null
+	}
+
 val LintBaseTask.xmlOutput: File
 	get() = lintOptions.xmlOutput ?: LintOptions_createOutputPath(
-			project, variantName, SdkConstants.DOT_XML, reportsDir, isFatalOnly)
+		project, androidVariantName, SdkConstants.DOT_XML, reportsDir, isFatalOnly
+	)
 
 val LintBaseTask.htmlOutput: File
 	get() = lintOptions.htmlOutput ?: LintOptions_createOutputPath(
-			project, variantName, ".html", reportsDir, isFatalOnly)
+		project, androidVariantName, ".html", reportsDir, isFatalOnly
+	)
 
 // TODO figure out where to find com.android.tools.lint.gradle.SyncOptions#createOutputPath
 @Suppress("FunctionName")
 fun LintOptions_createOutputPath(
-		project: Project, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean
+	project: Project, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean
 ): File {
 	val base = StringBuilder().apply {
 		append("lint-results")

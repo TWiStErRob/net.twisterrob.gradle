@@ -113,7 +113,7 @@
 					<code class="module">
 						<xsl:value-of select="." />
 					</code>
-					<xsl:if test="position() != last()">,</xsl:if>
+					<xsl:if test="position() != last()">, </xsl:if>
 				</xsl:for-each>
 				)
 			</li>
@@ -181,6 +181,14 @@
 				</xsl:if>
 				<xsl:if test="details/context/@type = 'image'">
 					<p><img src="{details/context/text()}" /></p>
+				</xsl:if>
+				<xsl:if test="details/context/@type = 'error'">
+					<details class="description">
+						<summary>
+							<pre><code><xsl:value-of select="details/context/@message" /></code></pre>
+						</summary>
+						<pre><code><xsl:value-of select="details/context" /></code></pre>
+					</details>
 				</xsl:if>
 			</details>
 			<details class="description">
@@ -269,6 +277,7 @@
 	code, pre {
 		padding: 0;
 		margin: 0;
+		white-space: pre-wrap;
 	}
 
 	a {
@@ -329,6 +338,10 @@
 		margin-left: 16px;
 		border-left: 4px solid #ddd;
 		padding-left: 8px;
+	}
+
+	details > summary > pre {
+		display: inline-block;
 	}
 
 	ul {

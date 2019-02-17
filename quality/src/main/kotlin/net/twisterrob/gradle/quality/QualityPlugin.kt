@@ -24,6 +24,8 @@ class QualityPlugin : BaseExposedPlugin() {
 			project.tasks.register("violationReportConsole", ValidateViolationsTask::class.java)
 			project.tasks.register("violationReportHtml", HtmlReportTask::class.java)
 			project.afterEvaluate {
+				// TODO only when lint is on classpath? what about normal Java projects?
+				// TODO move to LintPlugin?
 				if (project.tasks.findByName("lint") == null) {
 					project.tasks.register("lint", GlobalLintGlobalFinalizerTask::class.java)
 				}

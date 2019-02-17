@@ -17,7 +17,7 @@ import org.junit.Test
 class GlobalLintGlobalFinalizerTaskTest {
 	@Rule @JvmField val gradle = GradleRunnerRule()
 
-	@Test fun `passes when no failures`() {
+	@Test fun `passes when no lint violations found`() {
 		val modules: Array<String> = arrayOf(
 			"module1",
 			"module2",
