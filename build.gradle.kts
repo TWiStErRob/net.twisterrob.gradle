@@ -101,6 +101,15 @@ allprojects {
 				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterFailure=false")
 			}
 		}
+		tasks.withType<ProcessResources> {
+			val replacements = mapOf(
+				"net.twisterrob.test.android.pluginVersion" to
+						project.property("net.twisterrob.test.android.pluginVersion"),
+				"net.twisterrob.test.android.compileSdkVersion" to
+						project.property("net.twisterrob.test.android.compileSdkVersion")
+			)
+			filter(mapOf("tokens" to replacements), org.apache.tools.ant.filters.ReplaceTokens::class.java)
+		}
 	}
 
 	plugins.withId("kotlin") {
