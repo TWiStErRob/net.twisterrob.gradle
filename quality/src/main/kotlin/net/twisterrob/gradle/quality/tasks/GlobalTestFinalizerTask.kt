@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
-import net.twisterrob.gradle.common.wasExplicitlyLaunched
+import net.twisterrob.gradle.common.wasLaunchedOnly
 import net.twisterrob.gradle.quality.gather.TestReportGatherer
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
@@ -17,7 +17,7 @@ open class GlobalTestFinalizerTask : TestReport() {
 			reportOn(project.allprojects.flatMap { subproject ->
 				subproject.tasks.withType(Test::class.java) { subTask ->
 					// let the build finish running all tests
-					subTask.ignoreFailures = !subTask.wasExplicitlyLaunched
+					subTask.ignoreFailures = !subTask.wasLaunchedOnly
 					// make sure we have xml output, otherwise can't figure out if test failed
 					subTask.reports.junitXml.isEnabled = true
 				}
