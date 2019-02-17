@@ -96,6 +96,9 @@ open class GradleRunnerRule : TestRule {
 			"${buildFile} is not within ${runner.projectDir}."
 		}
 		fixClassPath(runner)
+		System.getProperty("net.twisterrob.gradle.runner.gradleVersion", null)?.let {
+			setGradleVersion(it)
+		}
 	}
 
 	protected fun tearDown() {

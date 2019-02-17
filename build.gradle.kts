@@ -94,11 +94,28 @@ allprojects {
 			kotlinOptions.jvmTarget = JavaVersion.toVersion(VERSION_JAVA).toString()
 //			kotlinOptions.allWarningsAsErrors = true
 		}
+
 		tasks.withType<Test> {
 			if (System.getProperties().containsKey("idea.paths.selector")) {
-				logger.debug("Keeping folder contents after failed test running from IDEA")
+				logger.debug("Keeping folder contents after test run from IDEA")
 				// see net.twisterrob.gradle.test.GradleRunnerRule
+				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterSuccess=false")
 				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterFailure=false")
+			}
+			project.findProperty("net.twisterrob.gradle.runner.gradleVersion")?.let {
+				jvmArgs("-Dnet.twisterrob.gradle.runner.gradleVersion=${it}")
+			}
+		}
+
+		tasks.withType<ProcessResources> {
+			filesMatching("**/build.gradle") {
+				val replacements = mapOf(
+					"net.twisterrob.test.android.pluginVersion" to
+							project.property("net.twisterrob.test.android.pluginVersion"),
+					"net.twisterrob.test.android.compileSdkVersion" to
+							project.property("net.twisterrob.test.android.compileSdkVersion")
+				)
+				filter(mapOf("tokens" to replacements), org.apache.tools.ant.filters.ReplaceTokens::class.java)
 			}
 		}
 	}
