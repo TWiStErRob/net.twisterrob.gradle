@@ -10,6 +10,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
+import java.util.Base64
 
 /**
  * @see HtmlReportTask
@@ -45,6 +46,9 @@ class HtmlReportTaskTest {
 		)
 		gradle.basedOn("android-root_app")
 		checks.forEach { check -> gradle.basedOn("lint-$check") }
+		val image = gradle.runner.projectDir.resolve("src/main/res/drawable/xml_and_png.png")
+		val bytes = Base64.getEncoder().encodeToString(image.readBytes())
+		println("Image: $image\nBytes: $bytes")
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
