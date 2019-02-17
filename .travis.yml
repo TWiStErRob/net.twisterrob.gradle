@@ -1,13 +1,21 @@
 language: android
 jdk: oraclejdk8
+
+script: ./gradlew
+  --stacktrace
+  check tests
+  -PverboseReports
+  -Pnet.twisterrob.test.android.pluginVersion=$ANDROID_PLUGIN_VERSION
+  -Pnet.twisterrob.gradle.runner.gradleVersion=$TEST_GRADLE_VERSION
+
 env:
   global:
-    # set them here just so if it fails/missing for whatever reason it's not substituted to "", but a searchable value
+    # set them here just so if it fails/missing for whatever reason: it's not substituted to "", but a searchable value
     - TEST_GRADLE_VERSION=unset
     - ANDROID_PLUGIN_VERSION=unset
     - ANDROID_BUILD_TOOLS_VERSION=unset
     - ANDROID_INSTANT_API_LEVEL=unset
-script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=$ANDROID_PLUGIN_VERSION -Pnet.twisterrob.gradle.runner.gradleVersion=$TEST_GRADLE_VERSION
+
 jobs:
   include:
     - name: "Android Gradle Plugin 3.1.x, Gradle 4.9"
