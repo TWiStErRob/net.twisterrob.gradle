@@ -213,7 +213,7 @@ project.tasks.create("tests", TestReport::class.java) {
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->
 		subproject.tasks.withType<Test> {
-			ignoreFailures = true
+			ignoreFailures = false
 			reports.junitXml.isEnabled = true
 			this@create.reportOn(this@withType)
 		}
