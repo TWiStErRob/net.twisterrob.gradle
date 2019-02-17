@@ -94,6 +94,7 @@ allprojects {
 			kotlinOptions.jvmTarget = JavaVersion.toVersion(VERSION_JAVA).toString()
 //			kotlinOptions.allWarningsAsErrors = true
 		}
+
 		tasks.withType<Test> {
 			if (System.getProperties().containsKey("idea.paths.selector")) {
 				logger.debug("Keeping folder contents after test run from IDEA")
@@ -105,6 +106,7 @@ allprojects {
 				jvmArgs("-Dnet.twisterrob.gradle.runner.gradleVersion=${it}")
 			}
 		}
+
 		tasks.withType<ProcessResources> {
 			val replacements = mapOf(
 				"net.twisterrob.test.android.pluginVersion" to
@@ -213,7 +215,7 @@ project.tasks.create("tests", TestReport::class.java) {
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->
 		subproject.tasks.withType<Test> {
-			ignoreFailures = false
+			ignoreFailures = true
 			reports.junitXml.isEnabled = true
 			this@create.reportOn(this@withType)
 		}
