@@ -1,10 +1,10 @@
 language: android
 jdk: oraclejdk8
 
+# To run specific test, replace `check tests` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
 script: ./gradlew
   --stacktrace
   check tests
-  #:quality:test --tests '*.HtmlReportTaskTest.runs on lints'
   -PverboseReports
   -Pnet.twisterrob.test.android.pluginVersion=$ANDROID_PLUGIN_VERSION
   -Pnet.twisterrob.gradle.runner.gradleVersion=$TEST_GRADLE_VERSION
