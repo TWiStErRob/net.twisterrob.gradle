@@ -14,6 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
+import java.io.FileNotFoundException
 
 class CodeContextTest {
 
@@ -42,28 +43,28 @@ class CodeContextTest {
 
 		@Test
 		fun `render exception when violation points to a missing location`() {
-			val ex = assertThrows(IllegalStateException::class.java) { model.data }
+			val ex = assertThrows(FileNotFoundException::class.java) { model.data }
 
 			assertThat(
 				ex.message,
-				matchesPattern("""java\.io\.FileNotFoundException: .*non-existent\.file.*""")
+				matchesPattern(""".*non-existent\.file.*""")
 			)
 		}
 
 		@Test
 		fun `render exception with full path when violation points to a missing location`() {
-			val ex = assertThrows(IllegalStateException::class.java) { model.data }
+			val ex = assertThrows(FileNotFoundException::class.java) { model.data }
 
 			assertThat(
 				ex.message,
-				matchesPattern("""java\.io\.FileNotFoundException: .+non-existent\.file.*""")
+				matchesPattern(""".+non-existent\.file.*""")
 			)
 		}
 
 		@Test
 		fun `send invalid start and end lines when violation points to a missing location`() {
-			assertThrows(IllegalStateException::class.java) { model.startLine }
-			assertThrows(IllegalStateException::class.java) { model.endLine }
+			assertThrows(FileNotFoundException::class.java) { model.startLine }
+			assertThrows(FileNotFoundException::class.java) { model.endLine }
 		}
 	}
 
