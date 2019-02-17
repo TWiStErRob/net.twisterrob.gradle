@@ -2,6 +2,7 @@ language: android
 jdk: oraclejdk8
 env:
   global:
+    # set them here just so if it fails/missing for whatever reason it's not substituted to "", but a searchable value
     - TEST_GRADLE_VERSION=unset
     - ANDROID_PLUGIN_VERSION=unset
     - ANDROID_BUILD_TOOLS_VERSION=unset
