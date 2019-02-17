@@ -1,6 +1,19 @@
 language: android
-script: ./gradlew --stacktrace check tests -PverboseReports
 jdk: oraclejdk8
+
+jobs:
+  include:
+#    - stage: prepare cache
+#      script: true
+    - stage: "AGP 3.1"
+      script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.1.4 -Pnet.twisterrob.
+        gradle.runner.gradleVersion=4.6
+    - stage: "AGP 3.2"
+      script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.2.1 -Pnet.twisterrob.
+        gradle.runner.gradleVersion=4.9
+    - stage: "AGP 3.3"
+      script: ./gradlew --stacktrace check tests -PverboseReports -Pnet.twisterrob.test.android.pluginVersion=3.3.1 -Pnet.twisterrob.
+        gradle.runner.gradleVersion=4.10.3
 
 android:
   licenses:
