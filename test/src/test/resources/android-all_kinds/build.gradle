@@ -14,7 +14,7 @@ allprojects {
 		jcenter() // quality plugin needs to be downloaded in test
 	}
 	plugins.withType(com.android.build.gradle.BasePlugin) {
-		// BEWARE: InstantAppExtension overrides compileSdkVersion and hard-codes it (3.[0-1] to 26, 3.[2-3] to 27)
+		// BEWARE: InstantAppExtension overrides compileSdkVersion and hard-codes it (3.0/3.1 to 26, 3.2/3.3 to 27)
 		android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
 	}
 }
