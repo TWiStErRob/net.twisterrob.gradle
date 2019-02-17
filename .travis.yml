@@ -55,6 +55,9 @@ cache:
     - $HOME/.gradle/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during compilation
     - $HOME/.gradle/caches/4.9/generated-gradle-jars/
+    # Prevent "Welcome to Gradle 4.9! Here are the highlights of this release:" in build log
+    - $HOME/.gradle/notifications/4.9/release-features.rendered
+    - $HOME/.gradle/notifications/4.10.3/release-features.rendered
     # Prevent "Download https://jcenter.bintray.com/" during test runs
     - /tmp/.gradle-test-kit-travis/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during test runs
