@@ -42,24 +42,28 @@ class CodeContextTest {
 
 		@Test
 		fun `render exception when violation points to a missing location`() {
+			val ex = assertThrows(IllegalStateException::class.java) { model.data }
+
 			assertThat(
-				model.data,
+				ex.message,
 				matchesPattern("""java\.io\.FileNotFoundException: .*non-existent\.file.*""")
 			)
 		}
 
 		@Test
 		fun `render exception with full path when violation points to a missing location`() {
+			val ex = assertThrows(IllegalStateException::class.java) { model.data }
+
 			assertThat(
-				model.data,
+				ex.message,
 				matchesPattern("""java\.io\.FileNotFoundException: .+non-existent\.file.*""")
 			)
 		}
 
 		@Test
 		fun `send invalid start and end lines when violation points to a missing location`() {
-			assertEquals(0, model.startLine)
-			assertEquals(0, model.endLine)
+			assertThrows(IllegalStateException::class.java) { model.startLine }
+			assertThrows(IllegalStateException::class.java) { model.endLine }
 		}
 	}
 
