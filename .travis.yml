@@ -3,7 +3,8 @@ jdk: oraclejdk8
 
 script: ./gradlew
   --stacktrace
-  :quality:test --tests '*.HtmlReportTaskTest.runs on lints'
+  check tests
+  #:quality:test --tests '*.HtmlReportTaskTest.runs on lints'
   -PverboseReports
   -Pnet.twisterrob.test.android.pluginVersion=$ANDROID_PLUGIN_VERSION
   -Pnet.twisterrob.gradle.runner.gradleVersion=$TEST_GRADLE_VERSION
