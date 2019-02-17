@@ -9,6 +9,7 @@ import org.gradle.api.Task
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.matchesPattern
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -188,13 +189,14 @@ class CodeContextTest {
 		val origin = temp.newFile().apply { writeText(input) }
 
 		val model = createModel(origin, requestedStart, requestedEnd)
+		val ex = assertThrows(IllegalStateException::class.java) { model.data }
 
 		val fileName = ".*${Regex.escape(origin.name)}"
 		assertThat(
-			model.data,
+			ex.message,
 			matchesPattern("""Invalid location in ${fileName}: requested ${requestedStart} to ${requestedEnd}\b.*""")
 		)
-		assertEquals(0, model.startLine)
-		assertEquals(0, model.endLine)
+		assertThrows(IllegalStateException::class.java) { model.startLine }
+		assertThrows(IllegalStateException::class.java) { model.endLine }
 	}
 }

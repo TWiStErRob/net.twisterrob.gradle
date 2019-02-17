@@ -182,6 +182,14 @@
 				<xsl:if test="details/context/@type = 'image'">
 					<p><img src="{details/context/text()}" /></p>
 				</xsl:if>
+				<xsl:if test="details/context/@type = 'error'">
+					<details class="description">
+						<summary>
+							<pre><code><xsl:value-of select="details/context/@message" /></code></pre>
+						</summary>
+						<pre><code><xsl:value-of select="details/context" /></code></pre>
+					</details>
+				</xsl:if>
 			</details>
 			<details class="description">
 				<summary>

@@ -2,10 +2,12 @@ package net.twisterrob.gradle.quality.report.html
 
 import com.android.annotations.VisibleForTesting
 import net.twisterrob.gradle.quality.Violation
+import net.twisterrob.gradle.quality.report.html.model.ContextViewModel
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.ArchiveContext
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.CodeContext
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.DirectoryContext
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.EmptyContext
+import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.ErrorContext
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.ImageContext
 import net.twisterrob.gradle.quality.report.html.model.ViolationViewModel
 import org.redundent.kotlin.xml.Node
@@ -69,34 +71,12 @@ internal fun Node.renderViolation(vm: ViolationViewModel) {
 				messaging.message?.let { "message" { cdataSafe(it) } }
 				messaging.description?.let { "description" { cdataSafe(it) } }
 				"context" {
-					val context = context
-					when (context) {
-						is EmptyContext -> {
-							attribute("type", "none")
-						}
-
-						is CodeContext -> {
-							attribute("type", "code")
-							attribute("language", context.language)
-							attribute("startLine", context.startLine)
-							attribute("endLine", context.endLine)
-							cdataSafe(context.data)
-						}
-
-						is DirectoryContext -> {
-							attribute("type", "archive")
-							cdataSafe(context.listing)
-						}
-
-						is ArchiveContext -> {
-							attribute("type", "archive")
-							cdataSafe(context.listing)
-						}
-
-						is ImageContext -> {
-							attribute("type", "image")
-							cdata(context.embeddedPixels)
-						}
+					try {
+						render(context)
+					} catch (ex: Throwable) {
+						this.attributes.clear()
+						this.children.filterIsInstance<Node>().forEach { removeNode(it) }
+						render(ErrorContext(context, ex))
 					}
 				}
 			}
@@ -106,6 +86,43 @@ internal fun Node.renderViolation(vm: ViolationViewModel) {
 				attribute("key", k)
 				attribute("value", v)
 			}
+		}
+	}
+}
+
+private fun Node.render(context: ContextViewModel) {
+	when (context) {
+		is EmptyContext -> {
+			attribute("type", "none")
+		}
+
+		is ErrorContext -> {
+			attribute("type", "error")
+			attribute("message", context.message)
+			cdataSafe(context.fullStackTrace)
+		}
+
+		is CodeContext -> {
+			attribute("type", "code")
+			attribute("language", context.language)
+			attribute("startLine", context.startLine)
+			attribute("endLine", context.endLine)
+			cdataSafe(context.data)
+		}
+
+		is DirectoryContext -> {
+			attribute("type", "archive")
+			cdataSafe(context.listing)
+		}
+
+		is ArchiveContext -> {
+			attribute("type", "archive")
+			cdataSafe(context.listing)
+		}
+
+		is ImageContext -> {
+			attribute("type", "image")
+			cdata(context.embeddedPixels)
 		}
 	}
 }

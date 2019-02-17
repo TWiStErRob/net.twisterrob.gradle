@@ -2,7 +2,6 @@ package net.twisterrob.gradle.quality.report.html.model
 
 import net.twisterrob.gradle.quality.Violation
 import java.io.File
-import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.Base64
@@ -13,6 +12,22 @@ import kotlin.math.min
 sealed class ContextViewModel {
 
 	object EmptyContext : ContextViewModel()
+
+	class ErrorContext(
+		@Suppress("UNUSED_PARAMETER") context: ContextViewModel,
+		private val ex: Throwable
+	) : ContextViewModel() {
+
+		private val data by lazy {
+			val exceptions = generateSequence(ex) { it.cause }
+			val messages = exceptions.joinToString(System.lineSeparator())
+			val fullTrace = StringWriter().apply { PrintWriter(this).use { ex.printStackTrace(it) } }.toString()
+			Pair(messages, fullTrace)
+		}
+
+		val message: String get() = data.first
+		val fullStackTrace: String get() = data.second
+	}
 
 	class CodeContext(private val v: Violation) : ContextViewModel() {
 		private val context by lazy { getContext(v) }
@@ -37,27 +52,21 @@ sealed class ContextViewModel {
 			 * Get the code context of the lines that are flagged as failed.
 			 *
 			 * Tries to return the lines as requested + 2 lines before and after if possible.
-			 * Invalid lines and missing file flagged will result in an error message with 0 to 0 resulting context.
+			 * Invalid lines flagged will result in an error message with 0 to 0 resulting context.
 			 */
 			private fun getContext(v: Violation): Triple<String, Int, Int> {
-				fun invalid(message: String) = Triple(message, 0, 0)
 				val loc = v.location
 				val file = loc.file.absoluteFile
-				val lines = try {
-					file.readLines()
-				} catch (ex: IOException) {
-					val exceptions = generateSequence<Throwable>(ex) { it.cause }
-					return invalid(exceptions.joinToString(System.lineSeparator()))
-				}
-				fun invalidLocation() = invalid(
+				val lines = file.readLines()
+				fun invalidLocation(): Nothing = error(
 					"Invalid location in ${file}: requested ${loc.startLine} to ${loc.endLine}, " +
 							"but file only has lines 1 to ${lines.size}."
 				)
-				if (loc.endLine < loc.startLine) return invalidLocation()
+				if (loc.endLine < loc.startLine) invalidLocation()
 				val numContextLines = 2
-				if (lines.size < loc.startLine) return invalidLocation()
-				if (loc.endLine < 0 || lines.size < loc.endLine) return invalidLocation()
-				if (lines.size < loc.endLine) return invalidLocation()
+				if (lines.size < loc.startLine) invalidLocation()
+				if (loc.endLine < 0 || lines.size < loc.endLine) invalidLocation()
+				if (lines.size < loc.endLine) invalidLocation()
 				val contextStart = max(1, loc.startLine - numContextLines)
 				val contextEnd = min(lines.size, loc.endLine + numContextLines)
 				// Note: lines in list are counted from 0, but in file are counted from 1
@@ -96,12 +105,8 @@ sealed class ContextViewModel {
 
 	class ArchiveContext(private val v: Violation) : ContextViewModel() {
 		val listing by lazy {
-			try {
-				val entries = ZipFile(v.location.file).entries().asSequence()
-				entries.map { it.name }.sorted().joinToString("\n")
-			} catch (ex: Throwable) {
-				PrintWriter(StringWriter()).apply { use { ex.printStackTrace(it) } }.toString()
-			}
+			val entries = ZipFile(v.location.file).entries().asSequence()
+			entries.map { it.name }.sorted().joinToString("\n")
 		}
 	}
 
