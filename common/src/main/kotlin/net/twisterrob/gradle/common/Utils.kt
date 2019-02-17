@@ -33,8 +33,11 @@ fun <T> nullSafeSum(mapper: Function<T?, Int?>): Collector<T?, *, Int?> {
 	return Collectors.reducing(null, mapper, BinaryOperator(::safeAdd))
 }
 
-val Task.wasExplicitlyLaunched: Boolean
+val Task.wasLaunchedOnly: Boolean
 	get() = project.gradle.startParameter.taskNames == listOf(path)
+
+val Task.wasLaunchedExplicitly: Boolean
+	get() = path in project.gradle.startParameter.taskNames
 
 // TODO find globalScope.reportsDir and task.isFatalOnly
 private val LintBaseTask.reportsDir get() = project.buildDir.resolve("reports")

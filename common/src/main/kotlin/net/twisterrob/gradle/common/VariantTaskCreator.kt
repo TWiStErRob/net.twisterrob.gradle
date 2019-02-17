@@ -152,7 +152,7 @@ T : VerificationTask {
 		open fun setupReports(task: T, suffix: String? = null) {
 			val fullSuffix = if (suffix != null) "-" + suffix else ""
 			// stop the build only if user wanted this task, otherwise we'll gather the results at once for reporting
-			task.ignoreFailures = !task.wasExplicitlyLaunched
+			task.ignoreFailures = !task.wasLaunchedOnly
 			// TODO too soon?
 			val reporting = task.project.extensions.findByType(ReportingExtension::class.java)
 			val reportsDir = reporting!!.baseDir

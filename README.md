@@ -40,10 +40,21 @@ task('printViolationCounts', type: net.twisterrob.gradle.quality.tasks.ValidateV
 }
 ```
 
-### Root project test report:
+## Features
+
+### Root project test report
 Gathers results from submodules and fails if there were errors.
 ```groovy
 task('tests', type: net.twisterrob.gradle.quality.tasks.GlobalTestFinalizerTask)
+```
+
+### Global finalizer `:lint` task
+Depends on all the other lints and shows a summary of failures to reduce the need to scroll/scan the build logs.
+If invoked explicitly as `gradlew :lint` it'll fail, otherwise (e.g. `gradlew lint`) it just silently adds itself to the list of `lint` tasks along with the others and prints the summary at the end.
+
+To disable:
+```gradle
+afterEvaluate { tasks.named("lint").configure { it.enabled = false } }
 ```
 
 ## Development
