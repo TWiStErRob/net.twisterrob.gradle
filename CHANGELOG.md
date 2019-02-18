@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.8 *(2018-10-14 --- 2019-02-??)*
+## 0.8 *(2018-10-14 --- 2019-02-18)*
 
 ### Breaking
  * `GradleRunnerRule.buildFile`/`settingsFile` are now properties, not functions
