@@ -175,7 +175,7 @@ class HtmlReportTaskTest {
 					def xml = lint.lintOptions.xmlOutput
 					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
 					xml.withWriterAppend { writer ->
-						1000.times {
+						2800.times {
 						    writer.write(
 								'<issue id="MyLint" category="Performance" severity="Warning"' +
 								'       message="Fake lint" summary="Fake lint" explanation="Fake lint&#10;"' +
