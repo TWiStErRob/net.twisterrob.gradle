@@ -7,11 +7,11 @@ import org.redundent.kotlin.xml.Node
 import java.io.File
 
 internal fun Project.produceXml(results: Grouper.Start<Violations>, xmlFile: File, xslFile: File) {
-	val group = group(results)
-	val xml = renderXml(group).apply {
+	val group = group(results.list)
+	val xmlTree = renderXml(group).apply {
 		attribute("project", rootProject.name)
 	}
-	writeXml(xml, xmlFile, xslFile)
+	writeXml(xmlTree, xmlFile, xslFile)
 }
 
 private fun writeXml(xml: Node, xmlFile: File, xslFile: File) {
