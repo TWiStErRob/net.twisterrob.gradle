@@ -163,6 +163,48 @@ class HtmlReportTaskTest {
 		assertThat(gradle.violationsReport("xslt"), not(anExistingFile()))
 		assertThat(gradle.violationsReport("html"), not(anExistingFile()))
 	}
+
+	@Test fun `task is capable of handling huge number of violations`() {
+		gradle.basedOn("android-root_app")
+		gradle.basedOn("lint-UnusedResources")
+		@Language("gradle")
+		val script = """
+			apply plugin: 'org.gradle.reporting-base'
+			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
+				doFirst {
+					def xml = lint.lintOptions.xmlOutput
+					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
+					xml.withWriterAppend { writer ->
+						1000.times {
+						    writer.write(
+								'<issue id="MyLint" category="Performance" severity="Warning"' +
+								'       message="Fake lint" summary="Fake lint" explanation="Fake lint&#10;"' +
+								'       priority="3" errorLine1="foo" errorLine2="bar">' +
+	                            '    <location file="does not matter" line="' + it + '" column="0"/>' +
+								'</issue>'
+							)
+						}
+					}
+					xml.append('</issues>')
+				}
+			}
+
+			android.lintOptions {
+				//noinspection GroovyAssignabilityCheck
+				check = ['UnusedResources']
+				xmlOutput = project.file("build/report.xml")
+			}
+		""".trimIndent()
+		gradle.runner.projectDir.resolve("gradle.properties")
+			// useful for manually checking memory usage: -XX:+HeapDumpOnOutOfMemoryError
+			.appendText("org.gradle.jvmargs=-Xmx128M\n")
+
+		val result = gradle.runBuild {
+			run(script, "lint", "htmlReport")
+		}
+
+		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+	}
 }
 
 private fun GradleRunnerRule.violationsReport(extension: String) =

@@ -14,15 +14,17 @@ internal fun Project.produceXml(results: Grouper.Start<Violations>, xmlFile: Fil
 	writeXml(xmlTree, xmlFile, xslFile)
 }
 
-private fun writeXml(xml: Node, xmlFile: File, xslFile: File) {
-	xmlFile.parentFile.mkdirs()
-	xmlFile.delete()
-	xmlFile.writeText(
-		// append processing instructions here as the XML lib doesn't allow to do that
-		"""
-			|<?xml version="1.0" encoding="utf-8"?>
-			|<?xml-stylesheet type="text/xsl" href="${xslFile.relativeTo(xmlFile.parentFile)}"?>
-			|${xml.toString(prettyFormat = false)}
-		""".trimMargin()
-	)
+internal fun writeXml(xmlTree: Node, xmlFile: File, xslFile: File) {
+	check(xmlFile.parentFile.let { it.isDirectory || it.mkdirs() }) { "Cannot create parent folder for $xmlFile" }
+	check(!xmlFile.exists() || xmlFile.delete()) { "Cannot delete $xmlFile" }
+	// append processing instructions here as the XML lib doesn't allow to do that
+	xmlTree.includeXmlProlog = false
+	xmlFile.bufferedWriter().use { writer ->
+		writer.write("""<?xml version="1.0" encoding="utf-8"?>""" + "\n")
+		val xslPath = xslFile.toRelativeString(xmlFile.parentFile).replace('\\', '/')
+		writer.write("""<?xml-stylesheet type="text/xsl" href="${xslPath}"?>""" + "\n")
+		xmlTree.children.forEach { element ->
+			writer.write((element as Node).toString(prettyFormat = false))
+		}
+	}
 }
