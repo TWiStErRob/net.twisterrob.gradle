@@ -56,7 +56,9 @@ class HtmlReportTaskTest {
 			android.lintOptions {
 				abortOnError = false
 				//noinspection GroovyAssignabilityCheck
-				check = [${checks.joinToString(prefix = "\n\t\t", separator = ",\n\t\t", postfix = "\n\t") { "'$it'" }}]
+				check = [
+					${checks.joinToString(separator = ",\n\t\t\t\t\t") { "'$it'" }}
+				]
 			}
 		""".trimIndent()
 
@@ -81,7 +83,7 @@ class HtmlReportTaskTest {
 
 			android.lintOptions {
 				//noinspection GroovyAssignabilityCheck
-				check = ['IconXmlAndPng','UnusedResources']
+				check = ['IconXmlAndPng', 'UnusedResources']
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()
@@ -103,7 +105,7 @@ class HtmlReportTaskTest {
 
 			android.lintOptions {
 				//noinspection GroovyAssignabilityCheck
-				check = ['IconMissingDensityFolder','UnusedResources']
+				check = ['IconMissingDensityFolder', 'UnusedResources']
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()
