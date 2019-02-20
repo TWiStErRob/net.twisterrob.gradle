@@ -59,9 +59,17 @@ inline fun XMLStreamWriter.attribute(name: String, value: Any) {
 }
 
 inline fun XMLStreamWriter.cdata(content: String) {
-	writeCData(content)
+	writeCData(content.escapeForCData())
 }
 
 inline fun XMLStreamWriter.cdata(content: Any) {
-	writeCData(content.toString())
+	writeCData(content.toString().escapeForCData())
+}
+
+fun String.escapeForCData(): String {
+	val cdataEnd = """]]>"""
+	val cdataStart = """<![CDATA["""
+	return this
+		// split cdataEnd into two pieces so XML parser doesn't recognize it
+		.replace(cdataEnd, """]]${cdataEnd}${cdataStart}>""")
 }
