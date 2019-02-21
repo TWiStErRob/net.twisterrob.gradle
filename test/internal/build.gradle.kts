@@ -28,6 +28,7 @@ dependencies {
 	api("org.hamcrest:java-hamcrest:${VERSION_HAMCREST}")
 
 	api("org.mockito:mockito-core:${VERSION_MOCKITO}")
+	api("org.mockito:mockito-junit-jupiter:${VERSION_MOCKITO}")
 	api("com.nhaarman.mockitokotlin2:mockito-kotlin:${VERSION_MOCKITO_KOTLIN}")
 
 	api("io.mockk:mockk:${VERSION_MOCKK}")
