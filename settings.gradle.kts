@@ -6,8 +6,8 @@ include(":test")
 include(":test:internal")
 
 listOf("checkstyle", "pmd").forEach {
-	include(":$it")
-	project(":$it").projectDir = file("checkers/$it")
+	include(":${it}")
+	project(":${it}").projectDir = file("checkers/${it}")
 }
 
 // As part of making the publishing plugins stable,
