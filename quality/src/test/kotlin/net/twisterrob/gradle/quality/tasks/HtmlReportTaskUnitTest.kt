@@ -4,7 +4,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
 class HtmlReportTaskUnitTest {
@@ -14,7 +14,7 @@ class HtmlReportTaskUnitTest {
 		project.plugins.apply("reporting-base")
 		val sut = project.tasks.create("sut", HtmlReportTask::class.java)
 
-		val ex = assertThrows<Throwable> {
+		val ex = assertFailsWith<Throwable> {
 			sut.transform()
 		}
 

@@ -7,7 +7,6 @@ base.archivesBaseName = "twister-quality"
 
 val VERSION_ANDROID_PLUGIN: String by project
 val VERSION_VIOLATIONS: String by project
-val VERSION_XML_BUILDER: String by project
 
 dependencies {
 	implementation(project(":common"))
