@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.runBuild
@@ -10,12 +11,14 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItems
 import org.intellij.lang.annotations.Language
-import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertEquals
 
+@ExtendWith(GradleRunnerRuleExtension::class)
 class GlobalLintGlobalFinalizerTaskTest {
-	@Rule @JvmField val gradle = GradleRunnerRule()
+
+	private lateinit var gradle: GradleRunnerRule
 
 	@Test fun `passes when no lint violations found`() {
 		val modules: Array<String> = arrayOf(

@@ -7,7 +7,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
 

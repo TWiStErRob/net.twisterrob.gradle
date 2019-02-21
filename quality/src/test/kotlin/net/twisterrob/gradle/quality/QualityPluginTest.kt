@@ -2,6 +2,7 @@ package net.twisterrob.gradle.quality
 
 import net.twisterrob.gradle.quality.tasks.GlobalLintGlobalFinalizerTask
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.runBuild
@@ -11,13 +12,14 @@ import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.matchesPattern
 import org.hamcrest.Matchers.not
 import org.intellij.lang.annotations.Language
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
+@ExtendWith(GradleRunnerRuleExtension::class)
 class QualityPluginTest {
 
-	@Rule @JvmField val gradle = GradleRunnerRule()
+	private lateinit var gradle: GradleRunnerRule
 
 	@Test fun `apply violationReportConsole only on root project`() {
 		@Language("gradle")

@@ -7,8 +7,6 @@ base.archivesBaseName = "twister-quality-common"
 
 val VERSION_ANDROID_PLUGIN: String by project
 val VERSION_JSR305_ANNOTATIONS: String by project
-val VERSION_JETBRAINS_ANNOTATIONS: String by project
-val VERSION_JUNIT: String by project
 
 dependencies {
 	implementation(gradleApi())
@@ -16,15 +14,14 @@ dependencies {
 	compileOnly("com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}")
 	compileOnly("com.google.code.findbugs:jsr305:${VERSION_JSR305_ANNOTATIONS}")
 
-	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
-	testImplementation("junit:junit:${VERSION_JUNIT}")
+	testImplementation(project(":test:internal"))
 	testImplementation("com.google.guava:guava:22.0")
 }
 
 tasks.withType<JavaCompile> {
-	options.compilerArgs.addAll(listOf(
+	options.compilerArgs as MutableCollection<String> += listOf(
 		"-proc:none" // disable annotation processing (not used, hides auto-value processors being on classpath)
-	))
+	)
 }
 
 // don't double-compile Java classes

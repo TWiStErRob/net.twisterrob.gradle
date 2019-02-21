@@ -2,13 +2,14 @@ package net.twisterrob.gradle.test
 
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
-import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertEquals
 
+@ExtendWith(GradleRunnerRuleExtension::class)
 class TestPluginTest {
 
-	@Rule @JvmField val gradle = GradleRunnerRule()
+	private lateinit var gradle: GradleRunnerRule
 
 	/**
 	 * Set up a full Gradle project in a test that has a test to test the plugin that helps testing Gradle.

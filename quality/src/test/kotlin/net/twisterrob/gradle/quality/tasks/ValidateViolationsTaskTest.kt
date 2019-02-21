@@ -4,6 +4,7 @@ import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.runBuild
@@ -11,11 +12,12 @@ import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import java.io.File
 import kotlin.test.assertEquals
 
+@ExtendWith(GradleRunnerRuleExtension::class)
 class ValidateViolationsTaskTest {
 
 	companion object {
@@ -27,7 +29,7 @@ class ValidateViolationsTaskTest {
 		val VIOLATION_PATTERN = Regex("""([A-Z][a-zA-Z0-9_]+?)_(\d).java""")
 	}
 
-	@Rule @JvmField val gradle = GradleRunnerRule()
+	private lateinit var gradle: GradleRunnerRule
 
 	@Test fun `get total violation counts on root project`() {
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), *SOURCE_PATH, "Checkstyle.java")

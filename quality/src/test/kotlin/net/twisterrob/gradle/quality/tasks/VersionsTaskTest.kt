@@ -1,17 +1,19 @@
 package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.runBuild
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
-import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertEquals
 
+@ExtendWith(GradleRunnerRuleExtension::class)
 class VersionsTaskTest {
 
-	@Rule @JvmField val gradle = GradleRunnerRule()
+	private lateinit var gradle: GradleRunnerRule
 
 	@Test fun `print missing versions`() {
 		@Language("gradle")

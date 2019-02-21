@@ -5,14 +5,16 @@ import groovy.transform.CompileStatic
 import net.twisterrob.gradle.common.grouper.TFO.E
 import net.twisterrob.gradle.common.grouper.TFO.F
 import net.twisterrob.gradle.common.grouper.TFO.G
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+
+import static org.junit.jupiter.api.Assertions.assertThrows
 
 class GrouperTest_Groovy {
 
 	Grouper.Start<TFO> sut
 
-	@Before void setUp() {
+	@BeforeEach void setUp() {
 		sut = Grouper.create([ TFO.E1F1G1, TFO.E1F2G1, TFO.E2F1G2, TFO.E2F2G2 ])
 	}
 
@@ -26,8 +28,10 @@ class GrouperTest_Groovy {
 	}
 
 	@CompileDynamic
-	@Test(expected = MissingPropertyException) void missingPropertyFails() {
-		sut.aMissingName
+	@Test void missingPropertyFails() {
+		assertThrows(MissingPropertyException, {
+			sut.aMissingName
+		})
 	}
 
 	@CompileDynamic

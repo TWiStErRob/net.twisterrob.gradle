@@ -4,16 +4,16 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TemporaryFolder
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import kotlin.test.assertEquals
 
+@ExtendWith(GradleRunnerRuleExtension::class)
 class GradleRunnerRuleTest_usage {
 
-	@Rule @JvmField val gradle = GradleRunnerRule()
-	@Rule @JvmField val temp = TemporaryFolder()
+	private lateinit var gradle: GradleRunnerRule
 
 	@Test fun `gradle script test`() {
 		@Language("gradle")
@@ -74,9 +74,9 @@ class GradleRunnerRuleTest_usage {
 		assertThat(result.output, containsString(configFileContents))
 	}
 
-	@Test fun `buildFile from multiple basedOn merged into one including script`() {
+	@Test fun `buildFile from multiple basedOn merged into one including script`(@TempDir temp:File) {
 		fun generateFolder(name: String): File {
-			val folder = temp.newFolder("base_$name")
+			val folder = temp.resolve("base_$name").also { it.mkdirs() }
 			folder
 				.resolve("build.gradle")
 				.writeText("""println("basedOn($name)")${System.lineSeparator()}""")
