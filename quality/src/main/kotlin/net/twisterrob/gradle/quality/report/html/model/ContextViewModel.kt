@@ -13,7 +13,7 @@ sealed class ContextViewModel {
 
 	/**
 	 * Make sure that any external dependencies are resolved and lazy properties calculated.
-	 * After returning from this a ViewModel is considered ready for consumption
+	 * After returning from this function, a [ContextViewModel] is considered ready for consumption
 	 * and not expected to fail for any reason.
 	 */
 	open fun resolve() = Unit
