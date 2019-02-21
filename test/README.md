@@ -1,5 +1,5 @@
 # Gradle test plugin
-Helps
+Helps integration testing of Gradle plugins and tasks.
 
 ## Usage
 
@@ -56,13 +56,13 @@ class MyTest {
 	}
 }
 ```
-See `src/test/groovy/net/twisterrob/gradle/test/GradleRunnerRuleTest` for more examples.
+See `net.twisterrob.gradle.test.GradleRunnerRuleTest` for more examples.
 
 ### Running Gradle Test Kit tests
-To run tests from Android Studio, run it as usual, but edit the "Gradle-aware Make" to run `classes testClasses` tasks or `:module:classes :module:testClasses`.
-If this doesn't work, try to `gradlew build` the whole project and then run it again from AS.
+To run tests from **Android Studio 3.1**, run it as usual, but edit the "**Gradle-aware Make**" to run `classes testClasses` tasks or `:module:classes :module:testClasses`.
+If this doesn't work, try to `gradlew build` the whole project and then run it again.
 
-To run this test from IntelliJ IDEA, run it as usual, but first set: *Build, Execution, Deployment > Build Tools > Gradle > Runner > Run tests using:* in Settings to **Gradle Test Runner**
+To run this test from **IntelliJ IDEA**, run it as usual, but first set: *Build, Execution, Deployment > Build Tools > Gradle > Runner > Run tests using:* in Settings to "**Gradle Test Runner**"
 
 #### Potential test failure reasons:
  * `ANDROID_HOME` is missing from the system:  
