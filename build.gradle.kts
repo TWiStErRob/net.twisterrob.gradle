@@ -96,6 +96,8 @@ allprojects {
 		}
 
 		tasks.withType<Test> {
+			useJUnitPlatform()
+
 			if (System.getProperties().containsKey("idea.paths.selector")) {
 				logger.debug("Keeping folder contents after test run from IDEA")
 				// see net.twisterrob.gradle.test.GradleRunnerRule
@@ -233,13 +235,12 @@ project.tasks.create("tests", TestReport::class.java) {
 
 publishing {
 	publications.invoke {
-		subprojects {
-			val project = this
+		subprojects.filterNot { it.name == "internal" }.forEach { project ->
 			project.name(MavenPublication::class) {
 				// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
-				from(components["java"])
+				from(project.components["java"])
 				// source files
-				artifact(tasks["sourcesJar"]) { classifier = "sources" }
+				artifact(project.tasks["sourcesJar"]) { classifier = "sources" }
 
 				artifactId = project.base.archivesBaseName
 				version = project.version as String

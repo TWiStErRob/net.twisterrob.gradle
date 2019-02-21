@@ -6,9 +6,6 @@ plugins {
 base.archivesBaseName = "twister-quality-pmd"
 
 val VERSION_ANDROID_PLUGIN: String by project
-val VERSION_JUNIT: String by project
-val VERSION_HAMCREST: String by project
-val VERSION_JETBRAINS_ANNOTATIONS: String by project
 
 dependencies {
 	implementation(project(":common"))
@@ -16,9 +13,7 @@ dependencies {
 	compileOnly("com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}")
 
 	testImplementation(project(":test"))
-	testImplementation("junit:junit:${VERSION_JUNIT}")
-	testImplementation("org.hamcrest:java-hamcrest:${VERSION_HAMCREST}")
-	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
+	testImplementation(project(":test:internal"))
 }
 
 pullTestResourcesFrom(":test")

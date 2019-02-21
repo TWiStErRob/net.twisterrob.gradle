@@ -4,6 +4,7 @@ rootProject.name = "net.twisterrob.gradle"
 include(":quality")
 include(":common")
 include(":test")
+include(":test:internal")
 
 [ "checkstyle", "pmd" ].each {
 	include(":${it}")
