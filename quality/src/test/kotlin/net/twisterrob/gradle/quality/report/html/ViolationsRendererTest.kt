@@ -6,6 +6,11 @@ import kotlin.test.assertEquals
 
 class ViolationsRendererTest {
 
+	@Test fun `xmlWriter impl`() {
+		val writer = StringWriter().xmlWriter()
+		throw Exception(writer::class.toString() + ": " + writer.toString())
+	}
+
 	@Test fun `renderXml writes preamble`() {
 		val out = StringWriter()
 		out.xmlWriter().use { renderXml(it, emptyMap(), "", "some/path/to.xsl") }
