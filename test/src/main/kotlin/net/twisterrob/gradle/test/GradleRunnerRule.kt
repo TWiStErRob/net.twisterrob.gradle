@@ -66,19 +66,28 @@ open class GradleRunnerRule : TestRule {
 			override fun evaluate() {
 				var success = false
 				try {
-					temp.create()
-					setUp()
+					before()
 					base.evaluate()
 					success = true
 				} finally {
-					tearDown()
-					if ((success && needClearAfterSuccess) || (!success && needClearAfterFailure)) {
-						temp.delete()
-					}
+					after(success)
 				}
 			}
 		}
 	}
+
+	internal fun before() {
+		temp.create()
+		setUp()
+	}
+
+	internal fun after(success: Boolean) {
+		tearDown()
+		if ((success && needClearAfterSuccess) || (!success && needClearAfterFailure)) {
+			temp.delete()
+		}
+	}
+
 	//endregion
 
 	//region GradleRunner wrapper

@@ -2,6 +2,7 @@ package net.twisterrob.gradle.checkstyle
 
 import net.twisterrob.gradle.common.TaskConfigurator
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
@@ -16,10 +17,11 @@ import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
 import org.hamcrest.Matchers.startsWith
 import org.intellij.lang.annotations.Language
-import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertEquals
 
+@ExtendWith(GradleRunnerRuleExtension::class)
 class CheckStylePluginTest {
 
 	companion object {
@@ -27,7 +29,7 @@ class CheckStylePluginTest {
 		private val endl = System.lineSeparator()
 	}
 
-	@Rule @JvmField val gradle = GradleRunnerRule()
+	private lateinit var gradle: GradleRunnerRule
 
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")

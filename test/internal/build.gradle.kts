@@ -20,12 +20,10 @@ dependencies {
 
 	api("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
 
-	api("junit:junit:${VERSION_JUNIT}")
+	api("junit:junit:${VERSION_JUNIT}") // needed for GradleRunnerRule superclass even when using Extension
 	api("org.junit.jupiter:junit-jupiter-api:$VERSION_JUNIT_JUPITER")
-	api("org.junit.jupiter:junit-jupiter-migrationsupport:$VERSION_JUNIT_JUPITER")
 	api("org.junit.jupiter:junit-jupiter-params:$VERSION_JUNIT_JUPITER")
 	runtimeOnly("org.junit.jupiter:junit-jupiter-engine:$VERSION_JUNIT_JUPITER")
-	runtimeOnly("org.junit.vintage:junit-vintage-engine:$VERSION_JUNIT_JUPITER")
 
 	api("org.hamcrest:java-hamcrest:${VERSION_HAMCREST}")
 

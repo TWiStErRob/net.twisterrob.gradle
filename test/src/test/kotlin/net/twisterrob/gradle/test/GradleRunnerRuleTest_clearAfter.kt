@@ -12,12 +12,12 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.NullSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.junit.rules.TestRule
 import org.junit.runners.model.Statement
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class GradleRunnerRuleTest_clearAfter {
@@ -154,7 +154,7 @@ class GradleRunnerRuleTest_clearAfter {
 		}
 
 		@Test fun `clearAfterFailure triggers by default`() {
-			assertThrows<SimulatedTestFailure> {
+			assertFailsWith<SimulatedTestFailure> {
 				sut.evaluate()
 			}
 
@@ -164,7 +164,7 @@ class GradleRunnerRuleTest_clearAfter {
 		@Test fun `clearAfterFailure triggers when null`() {
 			gradle.clearAfterFailure = null
 
-			assertThrows<SimulatedTestFailure> {
+			assertFailsWith<SimulatedTestFailure> {
 				sut.evaluate()
 			}
 
@@ -180,7 +180,7 @@ class GradleRunnerRuleTest_clearAfter {
 
 			@Test
 			fun `keeps project folder`() {
-				assertThrows<SimulatedTestFailure> {
+				assertFailsWith<SimulatedTestFailure> {
 					sut.evaluate()
 				}
 
@@ -204,7 +204,7 @@ class GradleRunnerRuleTest_clearAfter {
 			}
 
 			@Test fun `removes project folder`() {
-				assertThrows<SimulatedTestFailure> {
+				assertFailsWith<SimulatedTestFailure> {
 					sut.evaluate()
 				}
 
@@ -237,7 +237,7 @@ class GradleRunnerRuleTest_clearAfter {
 			@Test fun `'true' removes project folder`() {
 				clearAfterFailureProperty.set("true")
 
-				assertThrows<SimulatedTestFailure> {
+				assertFailsWith<SimulatedTestFailure> {
 					sut.evaluate()
 				}
 
@@ -247,7 +247,7 @@ class GradleRunnerRuleTest_clearAfter {
 			@Test fun `'false' keeps project folder`() {
 				clearAfterFailureProperty.set("false")
 
-				assertThrows<SimulatedTestFailure> {
+				assertFailsWith<SimulatedTestFailure> {
 					sut.evaluate()
 				}
 

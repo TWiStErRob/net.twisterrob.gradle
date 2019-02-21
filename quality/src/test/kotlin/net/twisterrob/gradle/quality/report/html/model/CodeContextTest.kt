@@ -8,17 +8,16 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.matchesPattern
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TemporaryFolder
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.io.FileNotFoundException
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class CodeContextTest {
 
-	@Rule @JvmField val temp = TemporaryFolder()
+	@TempDir lateinit var temp: File
 
 	private val fixture = JFixture().apply {
 		customise().lazyInstance(Project::class.java) {
@@ -43,7 +42,7 @@ class CodeContextTest {
 
 		@Test
 		fun `render exception when violation points to a missing location`() {
-			val ex = assertThrows(FileNotFoundException::class.java) { model.data }
+			val ex = assertFailsWith<FileNotFoundException> { model.data }
 
 			assertThat(
 				ex.message,
@@ -53,7 +52,7 @@ class CodeContextTest {
 
 		@Test
 		fun `render exception with full path when violation points to a missing location`() {
-			val ex = assertThrows(FileNotFoundException::class.java) { model.data }
+			val ex = assertFailsWith<FileNotFoundException> { model.data }
 
 			assertThat(
 				ex.message,
@@ -63,8 +62,8 @@ class CodeContextTest {
 
 		@Test
 		fun `send invalid start and end lines when violation points to a missing location`() {
-			assertThrows(FileNotFoundException::class.java) { model.startLine }
-			assertThrows(FileNotFoundException::class.java) { model.endLine }
+			assertFailsWith<FileNotFoundException> { model.startLine }
+			assertFailsWith<FileNotFoundException> { model.endLine }
 		}
 	}
 
@@ -181,7 +180,7 @@ class CodeContextTest {
 		)
 
 	private fun runTest(input: String, requestedStart: Int, requestedEnd: Int, expectedStart: Int, expectedEnd: Int) {
-		val origin = temp.newFile().apply { writeText(input) }
+		val origin = temp.resolve("source.file").apply { writeText(input) }
 
 		val model = createModel(origin, requestedStart, requestedEnd)
 
@@ -191,17 +190,17 @@ class CodeContextTest {
 	}
 
 	private fun runFailTest(input: String, requestedStart: Int, requestedEnd: Int) {
-		val origin = temp.newFile().apply { writeText(input) }
+		val origin = temp.resolve("source.file").apply { writeText(input) }
 
 		val model = createModel(origin, requestedStart, requestedEnd)
-		val ex = assertThrows(IllegalStateException::class.java) { model.data }
+		val ex = assertFailsWith<IllegalStateException> { model.data }
 
 		val fileName = ".*${Regex.escape(origin.name)}"
 		assertThat(
 			ex.message,
 			matchesPattern("""Invalid location in ${fileName}: requested ${requestedStart} to ${requestedEnd}\b.*""")
 		)
-		assertThrows(IllegalStateException::class.java) { model.startLine }
-		assertThrows(IllegalStateException::class.java) { model.endLine }
+		assertFailsWith<IllegalStateException> { model.startLine }
+		assertFailsWith<IllegalStateException> { model.endLine }
 	}
 }

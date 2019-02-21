@@ -133,7 +133,6 @@ allprojects {
 			add("implementation", "org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}")
 
 			add("testImplementation", "org.jetbrains.kotlin:kotlin-test:${VERSION_KOTLIN}")
-			add("testImplementation", "org.jetbrains.kotlin:kotlin-test-junit:${VERSION_KOTLIN}")
 		}
 	}
 

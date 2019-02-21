@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.pmd
 
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.runFailingBuild
@@ -9,11 +10,12 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertEquals
 
+@ExtendWith(GradleRunnerRuleExtension::class)
 class PmdTaskTest_ConfigLocation {
 
 	companion object {
@@ -21,13 +23,13 @@ class PmdTaskTest_ConfigLocation {
 		val CONFIG_PATH = arrayOf("config", "pmd", "pmd.xml")
 	}
 
-	@Rule @JvmField val gradle = GradleRunnerRule()
+	private lateinit var gradle: GradleRunnerRule
 
 	private lateinit var noChecksConfig: String
 	private lateinit var failingConfig: String
 	private lateinit var failingContent: String
 
-	@Before fun setUp() {
+	@BeforeEach fun setUp() {
 		noChecksConfig = gradle.templateFile("pmd-empty.xml").readText()
 		failingConfig = gradle.templateFile("pmd-simple_failure.xml").readText()
 		failingContent = gradle.templateFile("pmd-simple_failure.java").readText()
