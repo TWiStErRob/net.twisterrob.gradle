@@ -321,6 +321,10 @@
 		display: inline;
 	}
 
+	.violation .description p:last-of-type {
+		margin-bottom: 0;
+	}
+
 	code.rule.copyable {
 		cursor: pointer;
 	}
