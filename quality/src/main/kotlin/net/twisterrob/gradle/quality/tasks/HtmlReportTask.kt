@@ -1,7 +1,9 @@
 package net.twisterrob.gradle.quality.tasks
 
+import com.android.annotations.VisibleForTesting
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.Action
+import org.gradle.api.GradleException
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.reporting.ReportingExtension
@@ -39,6 +41,7 @@ open class HtmlReportTask : ValidateViolationsTask() {
 	/**
 	 * val xslOutput: File = xml.parentFile.resolve(xslTemplate.name)
 	 */
+	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@OutputFile
 	var xslOutput: RegularFileProperty = project.layout.fileProperty().apply {
 		set(xml.map { regular ->
@@ -68,11 +71,18 @@ open class HtmlReportTask : ValidateViolationsTask() {
 		action = Action {
 			project.produceXml(it, xmlFile, xslOutputFile)
 		}
-		doLast {
+		doLast { transform() }
+	}
+
+	@VisibleForTesting
+	internal fun transform() {
+		try {
 			TransformerFactory
 				.newInstance()
 				.newTransformer(StreamSource(xslOutputFile.reader()))
 				.transform(StreamSource(xmlFile.reader()), StreamResult(htmlFile))
+		} catch (ex: Throwable) {
+			throw GradleException("Cannot transform ${xmlFile}\nto ${htmlFile}\nusing ${xslOutputFile}", ex)
 		}
 	}
 

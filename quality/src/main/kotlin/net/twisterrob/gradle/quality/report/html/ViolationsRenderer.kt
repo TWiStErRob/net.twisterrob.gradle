@@ -10,22 +10,32 @@ import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.EmptyCon
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.ErrorContext
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.ImageContext
 import net.twisterrob.gradle.quality.report.html.model.ViolationViewModel
-import org.redundent.kotlin.xml.Node
-import org.redundent.kotlin.xml.xml
+import javax.xml.stream.XMLStreamWriter
 
-internal fun renderXml(groups: Map<Category, Map<Reporter, List<Violation>>>): Node =
-	xml("violations") {
-		groups.forEach { (category, categoryViolations) ->
-			"category" {
-				attribute("name", category ?: "unknown")
-				categoryViolations.forEach { (reporter, reporterViolations) ->
-					"reporter" {
-						attribute("name", reporter)
-						reporterViolations.forEach {
-							try {
-								renderViolation(ViolationViewModel.create(it))
-							} catch (ex: Throwable) {
-								throw IllegalArgumentException(it.toString(), ex)
+internal fun renderXml(
+	to: XMLStreamWriter,
+	from: Map<Category, Map<Reporter, List<Violation>>>,
+	projectName: String,
+	xslPath: String? = null
+) {
+	to.document {
+		if (xslPath != null) {
+			writeProcessingInstruction("xml-stylesheet", """type="text/xsl" href="${xslPath}"""")
+		}
+		element("violations") {
+			attribute("project", projectName)
+			from.forEach { (category, categoryViolations) ->
+				element("category") {
+					attribute("name", category ?: "unknown")
+					categoryViolations.forEach { (reporter, reporterViolations) ->
+						element("reporter") {
+							attribute("name", reporter)
+							reporterViolations.forEach {
+								try {
+									renderViolation(to, ViolationViewModel.create(it))
+								} catch (ex: Throwable) {
+									throw IllegalArgumentException(it.toString(), ex)
+								}
 							}
 						}
 					}
@@ -33,12 +43,13 @@ internal fun renderXml(groups: Map<Category, Map<Reporter, List<Violation>>>): N
 			}
 		}
 	}
+}
 
 @VisibleForTesting
-internal fun Node.renderViolation(vm: ViolationViewModel) {
-	"violation" {
+internal fun renderViolation(to: XMLStreamWriter, vm: ViolationViewModel) {
+	to.element("violation") {
 		with(vm.location) {
-			"location"{
+			element("location") {
 				attribute("module", modulePath)
 				attribute("modulePrefix", modulePrefix)
 				attribute("moduleName", moduleName)
@@ -55,34 +66,37 @@ internal fun Node.renderViolation(vm: ViolationViewModel) {
 			}
 		}
 		with(vm.source) {
-			"source" {
+			element("source") {
 				attribute("parser", parser)
 				attribute("source", source)
 				attribute("reporter", reporter)
 			}
 		}
 		with(vm.details) {
-			"details"{
+			element("details") {
 				attribute("rule", rule)
-				suppression?.let { attribute("suppress", escapeAttr(it)) }
+				suppression?.let { attribute("suppress", it) }
 				attribute("category", category)
 				attribute("severity", severity)
-				messaging.title?.let { "title" { cdataSafe(it) } }
-				messaging.message?.let { "message" { cdataSafe(it) } }
-				messaging.description?.let { "description" { cdataSafe(it) } }
-				"context" {
+				messaging.title?.let { element("title") { cdata(it) } }
+				messaging.message?.let { element("message") { cdata(it) } }
+				messaging.description?.let { element("description") { cdata(it) } }
+				element("context") renderContext@{
 					try {
-						render(context)
+						// Make sure context is ready and only then start rendering it.
+						// This is a pecularity of streaming XML rendering,
+						// because there's no backtrack once the element started outputting.
+						context.resolve()
 					} catch (ex: Throwable) {
-						this.attributes.clear()
-						this.children.filterIsInstance<Node>().forEach { removeNode(it) }
-						render(ErrorContext(context, ex))
+						render(to, ErrorContext(context, ex))
+						return@renderContext
 					}
+					render(to, context)
 				}
 			}
 		}
 		vm.specifics.forEach { k, v ->
-			"specific" {
+			element("specific") {
 				attribute("key", k)
 				attribute("value", v)
 			}
@@ -90,7 +104,7 @@ internal fun Node.renderViolation(vm: ViolationViewModel) {
 	}
 }
 
-private fun Node.render(context: ContextViewModel) {
+private fun render(to: XMLStreamWriter, context: ContextViewModel) = with(to) {
 	when (context) {
 		is EmptyContext -> {
 			attribute("type", "none")
@@ -99,7 +113,7 @@ private fun Node.render(context: ContextViewModel) {
 		is ErrorContext -> {
 			attribute("type", "error")
 			attribute("message", context.message)
-			cdataSafe(context.fullStackTrace)
+			cdata(context.fullStackTrace)
 		}
 
 		is CodeContext -> {
@@ -107,17 +121,17 @@ private fun Node.render(context: ContextViewModel) {
 			attribute("language", context.language)
 			attribute("startLine", context.startLine)
 			attribute("endLine", context.endLine)
-			cdataSafe(context.data)
+			cdata(context.data)
 		}
 
 		is DirectoryContext -> {
 			attribute("type", "archive")
-			cdataSafe(context.listing)
+			cdata(context.listing)
 		}
 
 		is ArchiveContext -> {
 			attribute("type", "archive")
-			cdataSafe(context.listing)
+			cdata(context.listing)
 		}
 
 		is ImageContext -> {
@@ -126,31 +140,3 @@ private fun Node.render(context: ContextViewModel) {
 		}
 	}
 }
-
-private fun String.escapeForCData(): String {
-	val cdataEnd = """]]>"""
-	val cdataStart = """<![CDATA["""
-	return this
-		// split cdataEnd into two pieces so XML parser doesn't recognize it
-		.replace(cdataEnd, """]]${cdataEnd}${cdataStart}>""")
-}
-
-//TODEL https://github.com/redundent/kotlin-xml-builder/pull/13
-private fun Node.cdataSafe(text: String) = cdata(text.escapeForCData())
-
-private fun escapeAttr(value: String): String = StringBuilder().apply {
-	for (c in value) {
-		append(
-			when (c) {
-				//'"' -> "&quot;" // done by lib
-				//'\'' -> "&apos;" // done by lib
-				// REPORT escaping full XML data in attribute
-				'\n' -> "&#xA;"
-				'\r' -> "&#xD;"
-				'<' -> "&lt;"
-				'>' -> "&gt;"
-				else -> c
-			}
-		)
-	}
-}.toString()
