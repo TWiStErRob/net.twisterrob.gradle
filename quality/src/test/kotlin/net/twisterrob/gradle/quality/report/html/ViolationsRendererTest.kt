@@ -1,16 +1,13 @@
 package net.twisterrob.gradle.quality.report.html
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
 import java.io.StringWriter
 import kotlin.test.assertEquals
 
 class ViolationsRendererTest {
 
-	@Test fun `xmlWriter impl`() {
-		val writer = StringWriter().xmlWriter()
-		throw Exception(writer::class.toString() + ": " + writer.toString())
-	}
-
+	@DisabledIfEnvironmentVariable(named = "TRAVIS", matches = "true") // see #72
 	@Test fun `renderXml writes preamble`() {
 		val out = StringWriter()
 		out.xmlWriter().use { renderXml(it, emptyMap(), "", "some/path/to.xsl") }
@@ -25,6 +22,7 @@ class ViolationsRendererTest {
 		)
 	}
 
+	@DisabledIfEnvironmentVariable(named = "TRAVIS", matches = "true") // see #72
 	@Test fun `renderXml writes preamble without stylesheet`() {
 		val out = StringWriter()
 		out.xmlWriter().use { renderXml(it, emptyMap(), "") }
@@ -38,6 +36,7 @@ class ViolationsRendererTest {
 		)
 	}
 
+	@DisabledIfEnvironmentVariable(named = "TRAVIS", matches = "true") // see #72
 	@Test fun `renderXml writes project name on root`() {
 		val out = StringWriter()
 		out.xmlWriter().use { renderXml(it, emptyMap(), "project name") }
