@@ -11,6 +11,13 @@ import kotlin.math.min
 
 sealed class ContextViewModel {
 
+	/**
+	 * Make sure that any external dependencies are resolved and lazy properties calculated.
+	 * After returning from this function, a [ContextViewModel] is considered ready for consumption
+	 * and not expected to fail for any reason.
+	 */
+	open fun resolve() = Unit
+
 	object EmptyContext : ContextViewModel()
 
 	class ErrorContext(
@@ -30,6 +37,11 @@ sealed class ContextViewModel {
 	}
 
 	class CodeContext(private val v: Violation) : ContextViewModel() {
+
+		override fun resolve() {
+			context
+		}
+
 		private val context by lazy { getContext(v) }
 		val type: String get() = "code"
 		val language: String
@@ -78,6 +90,11 @@ sealed class ContextViewModel {
 	}
 
 	class DirectoryContext(private val v: Violation) : ContextViewModel() {
+
+		override fun resolve() {
+			listing
+		}
+
 		val listing by lazy {
 			fun <E> Iterable<E>.replace(old: E, new: E) = map { if (it == old) new else it }
 			fun Array<File>.sorted() = sortedWith(compareBy<File> { !it.isDirectory }.thenBy { it.name })
@@ -97,6 +114,11 @@ sealed class ContextViewModel {
 	}
 
 	class ImageContext(private val v: Violation) : ContextViewModel() {
+
+		override fun resolve() {
+			embeddedPixels
+		}
+
 		val embeddedPixels by lazy {
 			val data = Base64.getEncoder().encodeToString(v.location.file.readBytes())
 			"data:image/${v.location.file.extension};base64,${data}"
@@ -104,6 +126,11 @@ sealed class ContextViewModel {
 	}
 
 	class ArchiveContext(private val v: Violation) : ContextViewModel() {
+
+		override fun resolve() {
+			listing
+		}
+
 		val listing by lazy {
 			val entries = ZipFile(v.location.file).entries().asSequence()
 			entries.map { it.name }.sorted().joinToString("\n")
