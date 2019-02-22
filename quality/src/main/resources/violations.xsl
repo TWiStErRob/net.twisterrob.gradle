@@ -191,14 +191,21 @@
 					</details>
 				</xsl:if>
 			</details>
-			<details class="description">
-				<summary>
+			<xsl:if test="string-length(normalize-space(details/description)) != 0">
+				<details class="description">
+					<summary>
+						<script>render.markdown(`<xsl:value-of select="details/message" />`)</script>
+					</summary>
+						<section>
+						<script>render.markdown(`<xsl:value-of select="details/description" />`)</script>
+					</section>
+				</details>
+			</xsl:if>
+			<xsl:if test="string-length(normalize-space(details/description)) = 0">
+				<div class="description">
 					<script>render.markdown(`<xsl:value-of select="details/message" />`)</script>
-				</summary>
-				<section>
-					<script>render.markdown(`<xsl:value-of select="details/description" />`)</script>
-				</section>
-			</details>
+				</div>
+			</xsl:if>
 		</div>
 	</xsl:template>
 
