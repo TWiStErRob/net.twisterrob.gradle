@@ -38,6 +38,16 @@ class DetailsViewModel(private val v: Violation) {
 					}
 				}
 
+				"PMD" -> {
+					val lines = v.message.lineSequence()
+					message = lines.elementAt(0)
+					description = run {
+						lines
+							.drop(1) // already used 0 above
+							.joinToString("\n")
+					}
+				}
+
 				else -> {
 					if (v.message.count { it == '\n' } >= 1) {
 						description = v.message
@@ -75,6 +85,17 @@ private fun getSuppression(v: Violation): String? =
 				""".trimMargin()
 			}
 		}
+
+		"CHECKSTYLE" ->
+			when (v.location.file.extension) {
+				"java" -> """@SuppressWarnings("checkstyle:${v.rule}") // TODO explanation"""
+				else -> null
+			}
+		"PMD" ->
+			when (v.location.file.extension) {
+				"java" -> """@SuppressWarnings("PMD.${v.rule}") // TODO explanation"""
+				else -> null
+			}
 
 		else -> null
 	}
