@@ -164,10 +164,17 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		private fun fixVariantTaskGroups(variant: BaseVariant) {
 			fun BaseVariantData.fixTaskMetadata() {
-				taskContainer.compileTask.group = "Build"
-				taskContainer.compileTask.description = "Compiles sources for ${description}."
-				taskContainer.javacTask.group = "Build"
-				taskContainer.javacTask.description = "Compiles Java sources for ${description}."
+				``                try {
+					taskContainer.compileTask.group = "Build"
+					taskContainer.compileTask.description = "Compiles sources for ${description}."
+					taskContainer.javacTask.group = "Build"
+					taskContainer.javacTask.description = "Compiles Java sources for ${description}."
+				} catch (ex: NoSuchMethodError) {
+					// com.android.build.gradle.internal.scope.TaskContainer.getCompileTask()Lorg/gradle/api/Task;
+					// in 3.3 this property is now a Provider<Task>
+					// using internal API here and it's not that important to do this, so ignoring is a good option
+					// to get forward-compatibility
+				}
 			}
 			variant.variantData?.fixTaskMetadata()
 			variant.androidTestVariantData?.fixTaskMetadata()
