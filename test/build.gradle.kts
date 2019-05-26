@@ -26,22 +26,22 @@ dependencies {
 }
 
 // Need to depend on the real artifact so TestPluginTest can work
-val jar by tasks
 tasks {
-	"test" {
-		dependsOn(jar)
+	named<Test>("test") {
+		dependsOn("jar")
 		doFirst {
+			val jar by tasks.named<Jar>("jar")
 			val artifactPath = jar.outputs.files.singleFile.parentFile
 			(this as Test).jvmArgs("-Dnet.twisterrob.gradle.test.artifactPath=${artifactPath}")
 		}
 	}
 }
 
-afterEvaluate {
-	//noinspection UnnecessaryQualifiedReference keep it explicitly together with code
-	val metaTask = tasks["pluginUnderTestMetadata"] as org.gradle.plugin.devel.tasks.PluginUnderTestMetadata
-	metaTask.pluginClasspath = files(
-		configurations.runtimeClasspath - configurations.compileOnly,
-		jar.outputs.files.singleFile
-	)
+//noinspection UnnecessaryQualifiedReference keep it explicitly together with code
+tasks.named<org.gradle.plugin.devel.tasks.PluginUnderTestMetadata>("pluginUnderTestMetadata") {
+	pluginClasspath.apply{
+		setFrom()
+		from(configurations.runtimeClasspath - configurations.compileOnly)
+		from(tasks.getByName<Jar>("jar").outputs.files.singleFile)
+	}
 }

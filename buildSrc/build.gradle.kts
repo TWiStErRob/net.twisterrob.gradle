@@ -12,6 +12,11 @@ plugins {
 	`kotlin-dsl`
 }
 
+kotlinDslPluginOptions {
+	// https://docs.gradle.org/4.10.3/userguide/kotlin_dsl.html#sec:kotlin_compiler_arguments
+	experimentalWarning.set(false)
+}
+
 repositories {
 	jcenter()
 }

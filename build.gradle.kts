@@ -41,7 +41,7 @@ subprojects {
 	}
 
 	tasks {
-		"sourcesJar" (Jar::class) {
+		register<Jar>("sourcesJar") {
 			classifier = "sources"
 			from(java.sourceSets["main"].kotlin.sourceDirectories)
 		}
@@ -235,7 +235,7 @@ project.tasks.create("tests", TestReport::class.java) {
 publishing {
 	publications.invoke {
 		subprojects.filterNot { it.name == "internal" }.forEach { project ->
-			project.name(MavenPublication::class) {
+			register<MavenPublication>(project.name) {
 				// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
 				from(project.components["java"])
 				// source files
