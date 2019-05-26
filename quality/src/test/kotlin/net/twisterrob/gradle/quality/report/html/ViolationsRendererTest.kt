@@ -1,19 +1,55 @@
 package net.twisterrob.gradle.quality.report.html
 
-import org.redundent.kotlin.xml.CDATAElement
-import org.redundent.kotlin.xml.Node
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
+import java.io.StringWriter
+import kotlin.test.assertEquals
 
-/**
- * Resolve single child path.
- */
-private operator fun Node.invoke(vararg names: String): Node =
-	names.fold(this) { node, name -> node.invoke(name) }
+class ViolationsRendererTest {
 
-/**
- * Resolve only child named `name`.
- */
-private operator fun Node.invoke(name: String): Node =
-	children.filterIsInstance<Node>().single { it.nodeName == name }
+	@DisabledIfEnvironmentVariable(named = "TRAVIS", matches = "true") // see #72
+	@Test fun `renderXml writes preamble`() {
+		val out = StringWriter()
+		out.xmlWriter().use { renderXml(it, emptyMap(), "", "some/path/to.xsl") }
 
-private val Node.cdata: CDATAElement
-	get() = children.filterIsInstance<CDATAElement>().single()
+		assertEquals(
+			"""
+				<?xml version="1.0" encoding="utf-8"?>
+				<?xml-stylesheet type="text/xsl" href="some/path/to.xsl"?>
+				<violations project=""></violations>
+			""".unformat(),
+			out.toString()
+		)
+	}
+
+	@DisabledIfEnvironmentVariable(named = "TRAVIS", matches = "true") // see #72
+	@Test fun `renderXml writes preamble without stylesheet`() {
+		val out = StringWriter()
+		out.xmlWriter().use { renderXml(it, emptyMap(), "") }
+
+		assertEquals(
+			"""
+				<?xml version="1.0" encoding="utf-8"?>
+				<violations project=""></violations>
+			""".unformat(),
+			out.toString()
+		)
+	}
+
+	@DisabledIfEnvironmentVariable(named = "TRAVIS", matches = "true") // see #72
+	@Test fun `renderXml writes project name on root`() {
+		val out = StringWriter()
+		out.xmlWriter().use { renderXml(it, emptyMap(), "project name") }
+
+		assertEquals(
+			"""
+				<?xml version="1.0" encoding="utf-8"?>
+				<violations project="project name"></violations>
+			""".unformat(),
+			out.toString()
+		)
+	}
+}
+
+private fun String.unformat() =
+	trimIndent().lines().joinToString(separator = "")

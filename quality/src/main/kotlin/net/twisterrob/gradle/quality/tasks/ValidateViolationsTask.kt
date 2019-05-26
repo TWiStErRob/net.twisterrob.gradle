@@ -22,6 +22,8 @@ import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
+import se.bjurr.violations.lib.reports.Parser.CHECKSTYLE
+import se.bjurr.violations.lib.reports.Parser.PMD
 
 open class ValidateViolationsTask : DefaultTask() {
 
@@ -86,8 +88,28 @@ open class ValidateViolationsTask : DefaultTask() {
 						report = gatherer.getHumanReportLocation(task),
 						violations = gatherer.getViolations(task)?.map {
 							Violation(
-								rule = it.rule,
-								category = it.category,
+								rule = when (it.reporter) {
+									CHECKSTYLE.name ->
+										it.rule
+											.substringAfterLast('.') // class name
+											.removeSuffix("Check")
+									else ->
+										it.rule
+								},
+								category = when (it.reporter) {
+									CHECKSTYLE.name ->
+										it.rule
+											.substringBeforeLast('.') // package
+											.substringAfterLast('.') // last subpackage
+											.capitalize()
+									PMD.name ->
+										when (it.category) {
+											"Import Statements" -> "Imports"
+											else -> it.category
+										}
+									else ->
+										it.category
+								},
 								severity = when (it.severity!!) {
 									SEVERITY.INFO -> Violation.Severity.INFO
 									SEVERITY.WARN -> Violation.Severity.WARNING
