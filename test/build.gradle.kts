@@ -6,8 +6,7 @@ plugins {
 base.archivesBaseName = "twister-gradle-test"
 
 val VERSION_JUNIT: String by project
-val VERSION_MOCKITO: String by project
-val VERSION_HAMCREST: String by project
+val VERSION_JUNIT_JUPITER: String by project
 val VERSION_JSR305_ANNOTATIONS: String by project
 val VERSION_JETBRAINS_ANNOTATIONS: String by project
 
@@ -17,15 +16,13 @@ dependencies {
 
 	implementation(project(":common"))
 	compileOnly("junit:junit:${VERSION_JUNIT}")
+	compileOnly("org.junit.jupiter:junit-jupiter-api:$VERSION_JUNIT_JUPITER")
 	compileOnly("com.google.code.findbugs:jsr305:${VERSION_JSR305_ANNOTATIONS}")
 	compileOnly("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
 
 	testImplementation(gradleApi())
 	testImplementation(gradleTestKit())
-	testImplementation("junit:junit:${VERSION_JUNIT}")
-	testImplementation("org.hamcrest:hamcrest-all:${VERSION_HAMCREST}")
-	testImplementation("org.mockito:mockito-core:${VERSION_MOCKITO}")
-	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
+	testImplementation(project(":test:internal"))
 }
 
 // Need to depend on the real artifact so TestPluginTest can work
@@ -39,6 +36,7 @@ tasks {
 		}
 	}
 }
+
 //noinspection UnnecessaryQualifiedReference keep it explicitly together with code
 tasks.named<org.gradle.plugin.devel.tasks.PluginUnderTestMetadata>("pluginUnderTestMetadata") {
 	pluginClasspath.apply{

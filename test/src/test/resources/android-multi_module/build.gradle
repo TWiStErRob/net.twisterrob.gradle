@@ -4,7 +4,7 @@ buildscript {
 		google()
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:3.2.0'
+		classpath 'com.android.tools.build:gradle:@net.twisterrob.test.android.pluginVersion@'
 	}
 }
 
@@ -14,7 +14,7 @@ allprojects {
 	}
 	plugins.withType(com.android.build.gradle.api.AndroidBasePlugin) {
 		afterEvaluate { // need to delay setting this, because AndroidBasePlugin is the first plugin to apply
-			android.compileSdkVersion 28
+			android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
 		}
 	}
 }

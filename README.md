@@ -1,28 +1,50 @@
 # Gradle Quality plugins
-Plugins that configure the built-in plugins with saner defaults.
+Plugins that configure the built-in plugins with saner defaults (to be documented).
+ * CheckStyle
+ * PMD
+ * Android Lint
 
+Current goal is to make Android support better, because of build types and flavors.
+
+---
+
+For details on what was changed in different versions, see [CHANGELOG](CHANGELOG.md).
+
+## Quick setup
 ```gradle
 buildscript {
+	repositories {
+		maven { name = 'TWiStErRob'; url = 'https://dl.bintray.com/twisterrob/maven' }
+	}
 	dependencies {
-		classpath 'net.twisterrob.gradle:twister-quality'
+		classpath "net.twisterrob.gradle:twister-quality:${VERSION_TWISTER_QUALITY}"
 	}
 }
 apply plugin: 'net.twisterrob.quality'
-// above includes the following:
-// (but you can cherry-pick them one by one if you don't apply all)
-//apply plugin: 'net.twisterrob.checkstyle'
-//apply plugin: 'net.twisterrob.pmd'
 ```
 
-Example to use all plugins and print results:
-```groovy
-allprojects {
-	apply plugin: 'net.twisterrob.quality'
-}
+## Features
 
-task('printViolationCounts', type: net.twisterrob.gradle.quality.ValidateViolationsTask) {
-	action = {net.twisterrob.gradle.common.grouper.Grouper.Start<se.bjurr.violations.lib.model.Violation> results ->
-		results.by.parser.module.variant.group().each { checker, byModule -> 
+### HTML violation report
+There's a built-in HTML report that gathers all the results from all the modules into a single HTML file.
+```shell
+gradlew violationReportHtml
+```
+
+### Console violation report
+There's a built-in console report that gathers all the results from all the modules and outputs results to the console.
+```shell
+gradlew violationReportConsole
+```
+
+### Customizable violation report
+The action executed on the gathered reports can be customized in a Gradle script, for example:
+```groovy
+// The below code is the default behavior for `violationReportConsole`.
+// It is a good example to base customized output on.
+project.tasks.register("printViolationCounts", net.twisterrob.gradle.quality.tasks.ValidateViolationsTask) {
+	action = { net.twisterrob.gradle.common.grouper.Grouper.Start<net.twisterrob.gradle.quality.Violations> results ->
+		results.by.parser.module.variant.group().each { checker, byModule ->
 			println "\t${checker}"
 			byModule.each {module, byVariant ->
 				println "\t\t${module}:"
@@ -35,78 +57,22 @@ task('printViolationCounts', type: net.twisterrob.gradle.quality.ValidateViolati
 }
 ```
 
-### Root project test report:
+### Root project test report
 Gathers results from submodules and fails if there were errors.
 ```groovy
-task('tests', type: net.twisterrob.gradle.quality.tasks.GlobalTestFinalizerTask)
+rootProject.tasks.register("tests", net.twisterrob.gradle.quality.tasks.GlobalTestFinalizerTask)
+```
+Note: this changes the `:*:test` test tasks to not fail so a whole project encompassing report can be generated.
+
+### Global finalizer `:lint` task
+Depends on all the other lints and shows a summary of failures to reduce the need to scroll/scan the build logs.
+If invoked explicitly as `gradlew :lint` it'll fail, otherwise (e.g. `gradlew lint`) it just silently adds itself to the list of `lint` tasks along with the others and prints the summary at the end.
+
+To disable:
+```gradle
+afterEvaluate { tasks.named("lint").configure { it.enabled = false } }
 ```
 
-## Development
+## Contributions, custom builds
 
-### Structure
-
-| Module (location): summary | Distributed Artifact,<br>Gradle Plugin ID,<br>JVM Package |
-| --- | --- |
-| **quality** ([`/quality`](quality)):<br>All quality plugins bundled in one.<br> |`classpath 'net.twisterrob.gradle:twister-quality:+'`<br>`apply plugin: 'net.twisterrob.quality'`<br>`import net.twisterrob.gradle.quality;` |
-| **common** ([`/common`](common)):<br>Shared classes between checkers.<br>_Not to be consumed directly._ | `classpath 'net.twisterrob.gradle:twister-quality-common:+'`<br>`// apply plugin: N/A`<br>`import net.twisterrob.gradle.common;` |
-| **checkstyle** ([`/checkers/checkstyle`](checkers/checkstyle)):<br>Checkstyle setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-checkstyle:+'`<br>`apply plugin: 'net.twisterrob.checkstyle'`<br>`import net.twisterrob.gradle.checkstyle;` |
-| **pmd** ([`/checkers/pmd`](checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-pmd:+'`<br>`apply plugin: 'net.twisterrob.pmd'`<br>`import net.twisterrob.gradle.pmd;` |
-| **test** ([`/test`](test)):<br>[Gradle test plugin and resources.](test/README.md) | `classpath 'net.twisterrob.gradle:twister-gradle-test:+'`<br>`apply plugin: 'net.twisterrob.gradle.test'`<br>`import net.twisterrob.gradle.test;` |
-
-### Languages
-Most of the code is written in Kotlin, some in Groovy to test the integration with traditional Gradle, and some in Java to test interop (mostly Generics).
- 
-> Originally Groovy was the main language with `@CompileStatic` enabled so there's some type checking during compilation. Still after a successful `groovyc` compilation it was possible to get unrunnable invalid class files, and the amount of time spent on finding workarounds and helping the static compiler to infer the types was more than the ease and fun of converting everything to Kotlin.
-
-### Project
-
-1. Make sure it runs successfully from terminal with `./gradlew test`.  
-   Check failure reason (JUnit report) for things to fix.
-2. After it builds successfully it's ok to import the root `build.gradle` into IntelliJ IDEA/Android Studio.
-3. For running and debugging info see [test/README.md](test/README.md)
-
-### Using the `-SNAPSHOT` from a local build
-
-Add in root `build.gradle`:
-```groovy
-buildscript {
-	repositories {
-		jcenter()
-		def repoRoot = file($/P:\projects\workspace\net.twisterrob.gradle-quality/$).toURI()
-		ivy {
-			url = repoRoot
-			layout('pattern') {
-				artifact '[artifact]/build/libs/[artifact]-[revision](-[classifier]).[ext]'
-			}
-		}
-		ivy {
-			url = repoRoot
-			layout('pattern') {
-				artifact 'checkers/[artifact]/build/libs/[artifact]-[revision](-[classifier]).[ext]'
-			}
-		}
-	}
-	dependencies {
-		configurations.classpath.resolutionStrategy.cacheChangingModulesFor 0, 'seconds' // -SNAPSHOT
-		def VERSION_QUALITY='0.2-SNAPSHOT'
-		classpath "net.twisterrob.gradle:twister-quality:${VERSION_QUALITY}"
-		classpath "net.twisterrob.gradle:twister-quality-common:${VERSION_QUALITY}"
-		classpath "net.twisterrob.gradle:twister-quality-checkstyle:${VERSION_QUALITY}"
-		classpath "net.twisterrob.gradle:twister-quality-pmd:${VERSION_QUALITY}"
-		classpath "se.bjurr.violations:violations-lib:1.50"
-	}
-}
-```
-Add `printViolationCounts` from above and run `gradlew checkstyleEach :printViolationCounts`.
-
-## Useful articles
- * https://proandroiddev.com/configuring-android-project-static-code-analysis-tools-b6dd83282921
- * https://medium.com/mindorks/static-code-analysis-for-android-using-findbugs-pmd-and-checkstyle-3a2861834c6a
- * http://vincentbrison.com/2014/07/19/how-to-improve-quality-and-syntax-of-your-android-code/  
-   https://github.com/vincentbrison/vb-android-app-quality/blob/master/config/quality.gradle
- * https://github.com/jonathanhood/gradle-plugin-example/blob/master/tutorial/3-declaring-tasks-the-right-way.md
- * https://guides.gradle.org/implementing-gradle-plugins/#capturing_user_input_to_configure_plugin_runtime_behavior
-
-## Running CI locally
-
-See Dockerfile.* what commands to execute to run Travis CI locally for this project.
+See [development.md](docs/development.md) on how to set this project up.

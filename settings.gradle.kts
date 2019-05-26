@@ -1,11 +1,11 @@
-// Cannot convert to kts yet for some reason, IDEA doesn't recognize it
 rootProject.name = "net.twisterrob.gradle"
 
 include(":quality")
 include(":common")
 include(":test")
+include(":test:internal")
 
-[ "checkstyle", "pmd" ].each {
+listOf("checkstyle", "pmd").forEach {
 	include(":${it}")
 	project(":${it}").projectDir = file("checkers/${it}")
 }
@@ -13,4 +13,4 @@ include(":test")
 // As part of making the publishing plugins stable,
 // the 'deferred configurable' behavior of the 'publishing {}' block is now deprecated.
 // https://docs.gradle.org/4.8/userguide/publishing_maven.html#publishing_maven:deferred_configuration.
-enableFeaturePreview('STABLE_PUBLISHING')
+enableFeaturePreview("STABLE_PUBLISHING")

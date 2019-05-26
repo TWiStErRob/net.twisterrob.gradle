@@ -1,13 +1,15 @@
 package net.twisterrob.gradle.test
 
+import com.nhaarman.mockitokotlin2.whenever
 import org.gradle.testkit.runner.BuildResult
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.jupiter.MockitoExtension
+import kotlin.test.assertEquals
 
+@ExtendWith(MockitoExtension::class)
 class BuildResultExtensionsTest {
 
 	companion object {
@@ -41,9 +43,8 @@ class BuildResultExtensionsTest {
 
 	@Mock lateinit var mockResult: BuildResult
 
-	@Before fun setUp() {
-		MockitoAnnotations.initMocks(this)
-		`when`(mockResult.output).thenReturn(SAMPLE_OUTPUT)
+	@BeforeEach fun setUp() {
+		whenever(mockResult.output).thenReturn(SAMPLE_OUTPUT)
 	}
 
 	@Test fun failReason() {

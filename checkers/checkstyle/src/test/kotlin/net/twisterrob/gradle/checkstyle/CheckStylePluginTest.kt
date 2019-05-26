@@ -2,23 +2,26 @@ package net.twisterrob.gradle.checkstyle
 
 import net.twisterrob.gradle.common.TaskConfigurator
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
+import net.twisterrob.gradle.test.runBuild
+import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Checkstyle
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
 import org.hamcrest.Matchers.startsWith
 import org.intellij.lang.annotations.Language
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.assertEquals
 
+@ExtendWith(GradleRunnerRuleExtension::class)
 class CheckStylePluginTest {
 
 	companion object {
@@ -26,62 +29,52 @@ class CheckStylePluginTest {
 		private val endl = System.lineSeparator()
 	}
 
-	@Rule @JvmField val gradle = GradleRunnerRule(false)
+	private lateinit var gradle: GradleRunnerRule
 
 	@Test fun `does not apply to empty project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.checkstyle'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(script, "checkstyle").buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(script, "checkstyle")
+		}
 
-		`then`@
 		assertThat(result.failReason, startsWith("Task 'checkstyle' not found"))
 	}
 
 	@Test fun `does not apply to a Java project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			apply plugin: 'java'
 			apply plugin: 'net.twisterrob.checkstyle'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-				.run(script, "checkstyle").buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(script, "checkstyle")
+		}
 
-		`then`@
 		assertThat(result.failReason, startsWith("Task 'checkstyle' not found"))
 	}
 
 	@Test fun `applies without a hitch to an Android project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.checkstyle'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-				.basedOn("android-root_app")
-				.run(script, "checkstyleEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-root_app")
+			run(script, "checkstyleEach")
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":checkstyleEach")!!.outcome)
 		assertEquals(TaskOutcome.NO_SOURCE, result.task(":checkstyleDebug")!!.outcome)
 		assertEquals(TaskOutcome.NO_SOURCE, result.task(":checkstyleRelease")!!.outcome)
 	}
 
 	@Test fun `applies to all types of subprojects`() {
-		`given`@
 		gradle.file(gradle.templateFile("checkstyle-empty.xml").readText(), "config", "checkstyle", "checkstyle.xml")
 		@Language("gradle")
 		val script = """
@@ -89,23 +82,24 @@ class CheckStylePluginTest {
 				apply plugin: 'net.twisterrob.checkstyle'
 			}
 		""".trimIndent()
-		// ":instant" is not supported yet 
+		// ":instant" is not supported yet
 		val modules = arrayOf(":app", ":feature", ":base", ":library", ":library:nested", ":test")
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-				.basedOn("android-all_kinds")
-				.run(script, "checkstyleEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-all_kinds")
+			run(script, "checkstyleEach")
+		}
 
 		// these tasks are not generated because their modules are special
 		val exceptions = arrayOf(":test:checkstyleRelease")
-		`then`@
-		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
-				hasItems(*(tasksIn(modules, "checkstyleRelease", "checkstyleDebug") - exceptions)))
-		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
-				hasItems(*tasksIn(modules, "checkstyleEach")))
+		assertThat(
+			result.taskPaths(TaskOutcome.NO_SOURCE),
+			hasItems(*(tasksIn(modules, "checkstyleRelease", "checkstyleDebug") - exceptions))
+		)
+		assertThat(
+			result.taskPaths(TaskOutcome.UP_TO_DATE),
+			hasItems(*tasksIn(modules, "checkstyleEach"))
+		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "checkstyleEach", "checkstyleRelease", "checkstyleDebug") - exceptions
 		assertThat(allTasks - tasks, not(hasItem(containsString("checkstyle"))))
@@ -113,16 +107,15 @@ class CheckStylePluginTest {
 
 	@Test fun `applies to subprojects from root`() {
 		val modules = arrayOf(
-				":module1",
-				":module2",
-				":module2:sub1",
-				":module2:sub2",
-				":module3:sub1",
-				":module3:sub2"
+			":module1",
+			":module2",
+			":module2:sub1",
+			":module2:sub2",
+			":module3:sub1",
+			":module3:sub2"
 		)
-		`given`@
 		modules.forEach {
-			gradle.settingsFile().appendText("include '${it}'${endl}")
+			gradle.settingsFile.appendText("include '${it}'${endl}")
 
 			@Language("gradle")
 			val subProject = """
@@ -148,25 +141,25 @@ class CheckStylePluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-				.basedOn("android-multi_module")
-				.run(rootProject, "checkstyleEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(rootProject, "checkstyleEach")
+		}
 
-		`then`@
-		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
-				hasItems(*tasksIn(modules, "checkstyleRelease", "checkstyleDebug")))
-		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
-				hasItems(*tasksIn(modules, "checkstyleEach")))
+		assertThat(
+			result.taskPaths(TaskOutcome.NO_SOURCE),
+			hasItems(*tasksIn(modules, "checkstyleRelease", "checkstyleDebug"))
+		)
+		assertThat(
+			result.taskPaths(TaskOutcome.UP_TO_DATE),
+			hasItems(*tasksIn(modules, "checkstyleEach"))
+		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "checkstyleEach", "checkstyleRelease", "checkstyleDebug")
 		assertThat(allTasks - tasks, not(hasItem(containsString("checkstyle"))))
 	}
 
 	@Test fun `applies to individual subprojects`() {
-		`given`@
 		@Language("gradle")
 		val subProjectNotApplied = """
 			apply plugin: 'com.android.library'
@@ -178,16 +171,16 @@ class CheckStylePluginTest {
 		""".trimIndent()
 
 		val modules = arrayOf(
-				":module1",
-				":module2",
-				":module2:sub1",
-				":module2:sub2",
-				":module3:sub1",
-				":module3:sub2"
+			":module1",
+			":module2",
+			":module2:sub1",
+			":module2:sub2",
+			":module3:sub1",
+			":module3:sub2"
 		)
 		val applyTo = arrayOf(":module2", ":module2:sub1", ":module3:sub2")
 		modules.forEach { module ->
-			gradle.settingsFile().appendText("include '${module}'${endl}")
+			gradle.settingsFile.appendText("include '${module}'${endl}")
 
 			val subProject = if (module in applyTo) subProjectApplied else subProjectNotApplied
 			@Language("xml")
@@ -202,30 +195,30 @@ class CheckStylePluginTest {
 
 		gradle.file(gradle.templateFile("checkstyle-empty.xml").readText(), "config", "checkstyle", "checkstyle.xml")
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-				.basedOn("android-multi_module")
-				.run(null, "checkstyleEach")
-				.build()
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(null, "checkstyleEach")
+		}
 
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(applyTo, "checkstyleEach", "checkstyleRelease", "checkstyleDebug")
-		`then`@
 		assertThat(allTasks - tasks, not(hasItem(containsString("checkstyle"))))
 
-		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
-				hasItems(*tasksIn(applyTo, "checkstyleRelease", "checkstyleDebug")))
-		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
-				hasItems(*tasksIn(applyTo, "checkstyleEach")))
+		assertThat(
+			result.taskPaths(TaskOutcome.NO_SOURCE),
+			hasItems(*tasksIn(applyTo, "checkstyleRelease", "checkstyleDebug"))
+		)
+		assertThat(
+			result.taskPaths(TaskOutcome.UP_TO_DATE),
+			hasItems(*tasksIn(applyTo, "checkstyleEach"))
+		)
 	}
 
 	// TODO add more tests for modules
 	@Test fun `basedir truncates folder names`() {
-		`given`@
 		gradle
-				.basedOn("android-root_app")
-				.basedOn("checkstyle-basedir")
+			.basedOn("android-root_app")
+			.basedOn("checkstyle-basedir")
 
 		@Language("gradle")
 		val applyCheckstyle = """
@@ -236,20 +229,23 @@ class CheckStylePluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(applyCheckstyle, ":checkstyleDebug").buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(applyCheckstyle, ":checkstyleDebug")
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
-		result.assertHasOutputLine(""".*\[ERROR] src.main.java.Checkstyle\.java:1: .*? \[Header]""".toRegex())
+		result.assertHasOutputLine(Regex(""".*\[ERROR] src.main.java.Checkstyle\.java:1: .*? \[Header]"""))
 	}
 
 	@Test fun `custom source sets folders are picked up`() {
-		`given`@
 		gradle.basedOn("android-root_app")
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), "config", "checkstyle", "checkstyle.xml")
+		gradle.file(
+			gradle.templateFile("checkstyle-simple_failure.xml").readText(),
+			"config",
+			"checkstyle",
+			"checkstyle.xml"
+		)
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), "custom", "Checkstyle.java")
 
 		@Language("gradle")
@@ -262,26 +258,35 @@ class CheckStylePluginTest {
 			android.sourceSets.main.java.srcDir 'custom'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(build, ":checkstyleDebug").buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(build, ":checkstyleDebug")
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
-		result.assertHasOutputLine(""".*custom.Checkstyle\.java:1: .*? \[Header]""".toRegex())
+		result.assertHasOutputLine(Regex(""".*custom.Checkstyle\.java:1: .*? \[Header]"""))
 	}
 
 	@Test fun `exclusions are configurable per variant`() {
-		`given`@
 		gradle.basedOn("android-root_app")
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), "config", "checkstyle", "checkstyle.xml")
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(),
-				"src", "main", "java", "com", "example", "foo", "Checkstyle.java")
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(),
-				"src", "main", "java", "com", "example", "bar", "Checkstyle.java")
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(),
-				"src", "main", "java", "com", "example", "bar", "baz", "Checkstyle.java")
+		gradle.file(
+			gradle.templateFile("checkstyle-simple_failure.xml").readText(),
+			"config",
+			"checkstyle",
+			"checkstyle.xml"
+		)
+		gradle.file(
+			gradle.templateFile("checkstyle-simple_failure.java").readText(),
+			"src", "main", "java", "com", "example", "foo", "Checkstyle.java"
+		)
+		gradle.file(
+			gradle.templateFile("checkstyle-simple_failure.java").readText(),
+			"src", "main", "java", "com", "example", "bar", "Checkstyle.java"
+		)
+		gradle.file(
+			gradle.templateFile("checkstyle-simple_failure.java").readText(),
+			"src", "main", "java", "com", "example", "bar", "baz", "Checkstyle.java"
+		)
 
 		@Language("gradle")
 		val build = """
@@ -299,43 +304,40 @@ class CheckStylePluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(build, ":checkstyleDebug").buildAndFail()
+		val result = gradle.runFailingBuild {
+			run(build, ":checkstyleDebug")
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
-		result.assertHasOutputLine(""".*com.example.foo.Checkstyle\.java:1: .*? \[Header]""".toRegex())
-		result.assertNoOutputLine(""".*com.example.bar.Checkstyle\.java.*""".toRegex())
-		result.assertNoOutputLine(""".*com.example.bar.baz.Checkstyle\.java.*""".toRegex())
+		result.assertHasOutputLine(Regex(""".*com.example.foo.Checkstyle\.java:1: .*? \[Header]"""))
+		result.assertNoOutputLine(Regex(""".*com.example.bar.Checkstyle\.java.*"""))
+		result.assertNoOutputLine(Regex(""".*com.example.bar.baz.Checkstyle\.java.*"""))
 	}
 
 	// TODO test other properties
 	@Test fun `config_loc allows to use local files`() {
-		`given`@
 		gradle
-				.basedOn("android-root_app")
-				.basedOn("checkstyle-config_loc")
+			.basedOn("android-root_app")
+			.basedOn("checkstyle-config_loc")
 
 		@Language("gradle")
 		val applyCheckstyle = """
 			apply plugin: 'net.twisterrob.checkstyle'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(applyCheckstyle, ":checkstyleDebug").build()
+		val result = gradle.runBuild {
+			run(applyCheckstyle, ":checkstyleDebug")
+		}
 
-		`then`@
 		assertEquals(TaskOutcome.SUCCESS, result.task(":checkstyleDebug")!!.outcome)
 	}
 }
 
 private fun tasksIn(modules: Array<String>, vararg taskNames: String): Array<String> =
-		modules
-				.flatMap { module -> taskNames.map { taskName -> "${module}:${taskName}" } }
-				.toTypedArray()
+	modules
+		.flatMap { module -> taskNames.map { taskName -> "${module}:${taskName}" } }
+		.toTypedArray()
 
 private inline operator fun <reified T> Array<T>.minus(others: Array<T>) =
-		(this.toList() - others).toTypedArray()
+	(this.toList() - others).toTypedArray()

@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UtilsTest {
 
@@ -26,9 +27,11 @@ public class UtilsTest {
 				assertNull(result);
 			}
 
-			@Test(expected = NullPointerException.class) public void addValueToNullBuiltIn() {
-				@SuppressWarnings({"ConstantConditions", "unused"})
-				Integer result = VALUE + NULL;
+			@Test public void addValueToNullBuiltIn() {
+				assertThrows(NullPointerException.class, () -> {
+					@SuppressWarnings({"ConstantConditions", "unused"})
+					Integer result = VALUE + NULL;
+				});
 			}
 
 			@Test public void addValueToNull() {
@@ -37,9 +40,11 @@ public class UtilsTest {
 				assertEquals(VALUE, result);
 			}
 
-			@Test(expected = NullPointerException.class) public void addNullToValueBuiltIn() {
-				@SuppressWarnings({"ConstantConditions", "unused"})
-				Integer result = NULL + VALUE;
+			@Test public void addNullToValueBuiltIn() {
+				assertThrows(NullPointerException.class, () -> {
+					@SuppressWarnings({"ConstantConditions", "unused"})
+					Integer result = NULL + VALUE;
+				});
 			}
 
 			@Test public void addNullToValue() {

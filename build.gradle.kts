@@ -1,25 +1,19 @@
-import com.jfrog.bintray.gradle.BintrayPlugin
-import org.jetbrains.kotlin.gradle.dsl.Coroutines
-import org.gradle.api.publish.maven.MavenPom
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.jfrog.bintray.gradle.BintrayExtension
 import groovy.util.Node
 import groovy.util.NodeList
-import groovy.xml.QName
-import java.io.File
-import java.util.Date
-import java.text.SimpleDateFormat
-import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.testing.TestOutputEvent.Destination
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.api.tasks.testing.logging.TestLogEvent.*
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.EnumSet
+import kotlin.math.absoluteValue
 
 plugins {
 	`base` // just to get some support for subproject stuff, for example access to project.base
 //	kotlin("jvm") apply false
 	`maven-publish`
-	id("com.jfrog.bintray") version "1.8.0"
+	id("com.jfrog.bintray") version "1.8.4"
 }
 
 val VERSION: String by project
@@ -100,11 +94,30 @@ allprojects {
 			kotlinOptions.jvmTarget = JavaVersion.toVersion(VERSION_JAVA).toString()
 //			kotlinOptions.allWarningsAsErrors = true
 		}
+
 		tasks.withType<Test> {
+			useJUnitPlatform()
+
 			if (System.getProperties().containsKey("idea.paths.selector")) {
-				logger.debug("Keeping folder contents after failed test running from IDEA")
+				logger.debug("Keeping folder contents after test run from IDEA")
 				// see net.twisterrob.gradle.test.GradleRunnerRule
+				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterSuccess=false")
 				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterFailure=false")
+			}
+			project.findProperty("net.twisterrob.gradle.runner.gradleVersion")?.let {
+				jvmArgs("-Dnet.twisterrob.gradle.runner.gradleVersion=${it}")
+			}
+		}
+
+		tasks.withType<ProcessResources> {
+			filesMatching("**/build.gradle") {
+				val replacements = mapOf(
+					"net.twisterrob.test.android.pluginVersion" to
+							project.property("net.twisterrob.test.android.pluginVersion"),
+					"net.twisterrob.test.android.compileSdkVersion" to
+							project.property("net.twisterrob.test.android.compileSdkVersion")
+				)
+				filter(mapOf("tokens" to replacements), org.apache.tools.ant.filters.ReplaceTokens::class.java)
 			}
 		}
 	}
@@ -120,7 +133,6 @@ allprojects {
 			add("implementation", "org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}")
 
 			add("testImplementation", "org.jetbrains.kotlin:kotlin-test:${VERSION_KOTLIN}")
-			add("testImplementation", "org.jetbrains.kotlin:kotlin-test-junit:${VERSION_KOTLIN}")
 		}
 	}
 
@@ -149,12 +161,54 @@ allprojects {
 	if (project.hasProperty("verboseReports")) {
 		tasks.withType<Test> {
 			testLogging {
-				events = TestLogEvent.values().toSet() - STARTED
+				// disable all events, output handled by custom callbacks below
+				events = EnumSet.noneOf(TestLogEvent::class.java)
+				//events = TestLogEvent.values().toSet() - TestLogEvent.STARTED
 				exceptionFormat = TestExceptionFormat.FULL
 				showExceptions = true
 				showCauses = true
 				showStackTraces = true
 			}
+			class TestInfo(
+				val descriptor: TestDescriptor,
+				val stdOut: StringBuilder = StringBuilder(),
+				val stdErr: StringBuilder = StringBuilder()
+			)
+
+			val lookup = mutableMapOf<TestDescriptor, TestInfo>()
+			beforeTest(KotlinClosure1<TestDescriptor, Any>({
+				lookup.put(this, TestInfo(this))
+			}))
+			onOutput(KotlinClosure2({ descriptor: TestDescriptor, event: TestOutputEvent ->
+				val info = lookup.getValue(descriptor)
+				when (event.destination!!) {
+					Destination.StdOut -> info.stdOut.append(event.message)
+					Destination.StdErr -> info.stdErr.append(event.message)
+				}
+			}))
+			afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
+				val info = lookup.remove(descriptor)!!
+				fun fold(type: String, condition: Boolean, output: () -> Unit) {
+					val id = descriptor.toString().hashCode().absoluteValue
+					if (condition) {
+						println("travis_fold:start:test_${type}_${id}")
+						output()
+						println("travis_fold:end:test_${type}_${id}")
+					}
+				}
+				println("${descriptor.className} > ${descriptor.name} ${result.resultType}")
+				fold("ex", result.exception != null) {
+					result.exception!!.printStackTrace()
+				}
+				fold("out", info.stdOut.isNotEmpty()) {
+					println("STANDARD_OUT")
+					println(info.stdOut)
+				}
+				fold("err", info.stdErr.isNotEmpty()) {
+					println("STANDARD_ERR")
+					println(info.stdErr)
+				}
+			}))
 		}
 	}
 }
@@ -180,13 +234,12 @@ project.tasks.create("tests", TestReport::class.java) {
 
 publishing {
 	publications.invoke {
-		subprojects {
-			val project = this
+		subprojects.filterNot { it.name == "internal" }.forEach { project ->
 			register<MavenPublication>(project.name) {
 				// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
-				from(components["java"])
+				from(project.components["java"])
 				// source files
-				artifact(tasks["sourcesJar"]) { classifier = "sources" }
+				artifact(project.tasks["sourcesJar"]) { classifier = "sources" }
 
 				artifactId = project.base.archivesBaseName
 				version = project.version as String
