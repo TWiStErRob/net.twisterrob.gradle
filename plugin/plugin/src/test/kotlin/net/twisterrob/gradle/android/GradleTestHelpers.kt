@@ -17,7 +17,7 @@ internal fun File.apk(
 	fileName: String = {
 		val variantSuffix = if (variant != "release") ".${variant}" else ""
 		val variantVersionSuffix = if (variant == "debug") "d" else ""
-		"${packageName}${variantSuffix}@0-v0.0.0#0${variantVersionSuffix}+${variant}.apk"
+		"${packageName}${variantSuffix}@1-v0.0.0#1${variantVersionSuffix}+${variant}.apk"
 	}()
 ) =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
@@ -46,8 +46,8 @@ private fun resolveFromFolders(command: String, vararg dirs: File): File {
 internal fun assertDefaultDebugBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
-	versionCode: String = "",
-	versionName: String = "0.0.0#0d",
+	versionCode: String = "1",
+	versionName: String = "0.0.0#1d",
 	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
@@ -66,8 +66,8 @@ internal fun assertDefaultDebugBadging(
 internal fun assertDefaultReleaseBadging(
 	apk: File,
 	applicationId: String = packageName,
-	versionCode: String = "",
-	versionName: String = "0.0.0#0",
+	versionCode: String = "1",
+	versionName: String = "0.0.0#1",
 	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
@@ -86,8 +86,8 @@ internal fun assertDefaultReleaseBadging(
 internal fun assertDefaultBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
-	versionCode: String = "",
-	versionName: String = "0.0.0#0d",
+	versionCode: String = "1",
+	versionName: String = "0.0.0#1d",
 	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
@@ -101,8 +101,9 @@ internal fun assertDefaultBadging(
 	assertThat(fileNamesMessage, apk, anExistingFile())
 	val expectedOutput =
 		if (compileSdkVersion < 28) {
+			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2
 			"""
-				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' platformBuildVersionName='$compileSdkVersionName'
+				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName'
 				sdkVersion:'$minSdkVersion'
 				targetSdkVersion:'$targetSdkVersion'
 				feature-group: label=''

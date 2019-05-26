@@ -26,6 +26,11 @@ internal fun Iterable<String>.runCommand(
 }
 
 internal fun assertOutput(command: List<Any>, expected: String) {
-	val output = command.map(Any?::toString).runCommand()
-	assertEquals(expected.normalize(), output.normalize())
+	try {
+		val output = command.map(Any?::toString).runCommand()
+		assertEquals(expected.normalize(), output.normalize())
+	} catch (ex: Throwable) {
+		generateSequence(ex) { it.cause }.last().initCause(IllegalArgumentException("Command: $command"))
+		throw ex
+	}
 }

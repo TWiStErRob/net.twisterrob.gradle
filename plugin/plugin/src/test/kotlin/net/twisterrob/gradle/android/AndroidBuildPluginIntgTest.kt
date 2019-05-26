@@ -118,8 +118,8 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug"),
-			compileSdkVersion = 23,
-			compileSdkVersionName = "6.0-2704002"
+			compileSdkVersion = 23
+			//compileSdkVersionName = "6.0-2704002"
 		)
 	}
 
@@ -135,8 +135,8 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
-			compileSdkVersion = 23,
-			compileSdkVersionName = "6.0-2704002"
+			compileSdkVersion = 23
+			//compileSdkVersionName = "6.0-2704002"
 		)
 	}
 

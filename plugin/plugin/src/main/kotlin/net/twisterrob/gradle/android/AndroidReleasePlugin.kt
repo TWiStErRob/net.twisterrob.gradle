@@ -79,13 +79,9 @@ class AndroidReleasePlugin : BasePlugin() {
 			archiveName = android.defaultConfig
 				.extensions.getByName<AndroidVersionExtension>("version")
 				.formatArtifactName(project, variant, "archive") + ".zip"
-			variant.outputs.forEach { output ->
-				from(output.outputFile)
-			}
+			from(variant.packageApplicationProvider.get().outputDirectory)
 			if (variant is TestedVariant && variant.testVariant != null) {
-				variant.testVariant.outputs.forEach { output ->
-					from(output.outputFile)
-				}
+				from(variant.testVariant.packageApplicationProvider.get().outputDirectory)
 			}
 			if (variant.buildType.isMinifyEnabled) {
 				from(variant.mappingFile.parentFile) {
@@ -103,9 +99,9 @@ class AndroidReleasePlugin : BasePlugin() {
 				println("Published release artifacts to ${outputs.files.singleFile}")
 			}
 		}
-		releaseVariantTask.dependsOn(variant.assemble)
+		releaseVariantTask.dependsOn(variant.assembleProvider)
 		if (variant is TestedVariant && variant.testVariant != null) {
-			releaseVariantTask.dependsOn(variant.testVariant.assemble)
+			releaseVariantTask.dependsOn(variant.testVariant.assembleProvider)
 		}
 
 		variant.productFlavors.forEach { flavor ->

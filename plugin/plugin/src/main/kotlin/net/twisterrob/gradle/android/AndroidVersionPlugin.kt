@@ -7,7 +7,6 @@ import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.TestedVariant
-import com.android.builder.core.DefaultProductFlavor
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.base
 import net.twisterrob.gradle.kotlin.dsl.extensions
@@ -29,7 +28,6 @@ open class AndroidVersionExtension {
 	/** Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648) */
 	var autoVersion: Boolean = true
 	var versionNameFormat: String = "%1\$d.%2\$d.%3\$d#%4\$d"
-	var versionFile: File? = File("version.properties")
 	var major: Int = 0 // M 0..213
 	var minor: Int = 0 // N 0..99
 	var minorMagnitude: Int = 100
@@ -82,8 +80,8 @@ class AndroidVersionPlugin : BasePlugin() {
 	 *  * Default [version] extension info has to be initialized before [android] DSL is accessed from `build.gradle`.
 	 *  * [version] extension has to be ready by the time it is used in [configure].
 	 *
-	 * 0. The [DefaultProductFlavor.getVersionName] is used by the Android plugin to propagate the version information.
-	 * 0. This happens deep inside [com.android.build.gradle.BasePlugin.createAndroidTasks] (since 3.?, last check 3.2-beta05):
+	 * 1. The [DefaultProductFlavor.getVersionName] is used by the Android plugin to propagate the version information.
+	 * 2. This happens deep inside [com.android.build.gradle.BasePlugin.createAndroidTasks] (since 3.?, last check 3.2-beta05):
 	 *  * [com.android.build.gradle.internal.VariantManager.createAndroidTasks]
 	 *  * [com.android.build.gradle.internal.VariantManager.populateVariantDataList]
 	 *  * [com.android.build.gradle.internal.VariantManager.createVariantDataForProductFlavors]
@@ -94,7 +92,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	 *  * [com.android.build.gradle.internal.core.VariantConfiguration] constructor
 	 *  * that merges in DefaultConfig
 	 *  * in [com.android.builder.core.DefaultProductFlavor._initWith]: `this.mVersionName = thatProductFlavor.versionName`
-	 * 0. So the `versionName` has to be set before the tasks are created in `afterEvaluate`.
+	 * 3. So the `versionName` has to be set before the tasks are created in `afterEvaluate`.
 	 */
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -118,8 +116,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	}
 
 	private fun init() {
-		// resolve default version file against project
-		version.versionFile = project.file(version.versionFile!!.name)
+		readVersionFromFile(project.file("version.properties"))
 
 		val vcs = project.extensions.findByName("VCS") as VCSPluginExtension?
 		if (vcs != null && vcs.current.isAvailable) {
@@ -132,7 +129,6 @@ class AndroidVersionPlugin : BasePlugin() {
 	 * but before any of AGP's [Project.afterEvaluate] is executed.
 	 */
 	private fun configure() {
-		version.versionFile?.run(::readVersionFromFile)
 		if (version.autoVersion) {
 			android.defaultConfig.versionCode = calculateVersionCode()
 			android.defaultConfig.versionName = calculateVersionName(null)

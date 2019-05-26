@@ -1,3 +1,12 @@
+## 3.3.x
+
+### 3.3.2.14-28-28.0
+ - AGP 3.3.2
+ - Gradle 4.10.3 (Gradle 4.10.1+)
+ - Kotlin 1.3.21 / DSL RC11
+ - `android.defaultConfig.version.versionFile` removed  
+   `version.properties` is used to read defaults
+
 ## 3.2.x
 
 ### 3.2.1.14-28-28.2

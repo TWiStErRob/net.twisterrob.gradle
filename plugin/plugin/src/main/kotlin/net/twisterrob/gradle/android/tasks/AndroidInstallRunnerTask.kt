@@ -15,18 +15,26 @@ import javax.xml.xpath.XPathConstants
 open class AndroidInstallRunnerTask : Exec() {
 	private var variant: ApkVariant? = null
 
-	fun setVariant(variant: ApkVariant) {
-		this.variant = variant
+	init {
 		group = TaskManager.INSTALL_GROUP
-		description = "Installs the APK for ${variant.description}, and then runs the main launcher activity."
+		description = "Installs the APK for a variant, and then runs the main launcher activity."
 		onlyIf { this@AndroidInstallRunnerTask.variant != null }
 	}
 
+	fun setVariant(variant: ApkVariant) {
+		this.variant = variant
+		description = "Installs the APK for ${variant.description}, and then runs the main launcher activity."
+	}
+
 	override fun exec() {
-		val variant = variant!!
+		val variant = variant!! // protected by onlyIf
 		val output = variant.outputs.single()
-		val manifestFileName = "${output.processManifest.manifestOutputDirectory}/AndroidManifest.xml"
-		val activityClass = getMainActivity(project.file(manifestFileName))!!
+		val manifestFile = output
+			.processManifestProvider.get()
+			.manifestOutputDirectory.get()
+			.file("AndroidManifest.xml")
+			.asFile
+		val activityClass = getMainActivity(manifestFile)!!
 		val android: BaseExtension = project.extensions.getByName<BaseExtension>("android")
 		// doesn't work: setCommandLine(android.adbExe, "shell", "am", "start", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", variant.applicationId)
 		setCommandLine(android.adbExecutable, "shell", "am", "start", "-n", "${variant.applicationId}/${activityClass}")

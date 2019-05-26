@@ -18,11 +18,11 @@ abstract class BaseAndroidIntgTest : BaseIntgTest() {
 		gradle.file(androidManifest, "src/main/AndroidManifest.xml")
 
 		@Language("properties")
-		val gradleProperties = """
-			# suppress inspection "UnusedProperty"
-			android.enableAapt2=false
+		val versionProperties = """
+			# Since AGP 3.3 versionCode must be > 0
+			build=1
 		""".trimIndent()
-		gradle.file(gradleProperties, "gradle.properties")
+		gradle.file(versionProperties, "version.properties")
 
 		if (__testName.methodName.endsWith(" (release)")) {
 			createFileToMakeSureProguardPasses()

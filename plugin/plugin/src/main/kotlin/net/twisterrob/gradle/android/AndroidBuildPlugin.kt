@@ -8,7 +8,6 @@ import com.android.build.gradle.internal.api.androidTestVariantData
 import com.android.build.gradle.internal.api.unitTestVariantData
 import com.android.build.gradle.internal.api.variantData
 import com.android.build.gradle.internal.variant.BaseVariantData
-import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.DecorateBuildConfigTask
 import net.twisterrob.gradle.base.BasePlugin
@@ -152,11 +151,12 @@ class AndroidBuildPlugin : BasePlugin() {
 	companion object {
 
 		private fun createRunTask(variant: ApkVariant) {
-			if (variant.install != null) {
-				val project = variant.install.project
+			val install = variant.installProvider?.get()
+			if (install != null) {
+				val project = install.project
 				val name = "run${variant.name.capitalize()}"
 				project.tasks.create<AndroidInstallRunnerTask>(name) {
-					dependsOn(variant.install)
+					dependsOn(install)
 					this.setVariant(variant)
 				}
 			}
@@ -164,16 +164,13 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		private fun fixVariantTaskGroups(variant: BaseVariant) {
 			fun BaseVariantData.fixTaskMetadata() {
-				try {
-					taskContainer.compileTask.group = "Build"
-					taskContainer.compileTask.description = "Compiles sources for ${description}."
-					taskContainer.javacTask.group = "Build"
-					taskContainer.javacTask.description = "Compiles Java sources for ${description}."
-				} catch (ex: NoSuchMethodError) {
-					// com.android.build.gradle.internal.scope.TaskContainer.getCompileTask()Lorg/gradle/api/Task;
-					// in 3.3 this property is now a Provider<Task>
-					// using internal API here and it's not that important to do this, so ignoring is a good option
-					// to get forward-compatibility
+				taskContainer.compileTask.configure {
+					it.group = "Build"
+					it.description = "Compiles sources for ${description}."
+				}
+				taskContainer.javacTask.configure {
+					it.group = "Build"
+					it.description = "Compiles Java sources for ${description}."
 				}
 			}
 			variant.variantData?.fixTaskMetadata()
