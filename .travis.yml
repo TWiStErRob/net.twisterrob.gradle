@@ -10,31 +10,39 @@ script: ./gradlew
   -Pnet.twisterrob.gradle.runner.gradleVersion=$TEST_GRADLE_VERSION
 
 env:
+  # set them here just so if it fails/missing for whatever reason: it's not substituted to "", but a searchable value
   global:
-    # set them here just so if it fails/missing for whatever reason: it's not substituted to "", but a searchable value
+    # see https://developer.android.com/studio/releases/gradle-plugin#updating-gradle
     - TEST_GRADLE_VERSION=unset
     - ANDROID_PLUGIN_VERSION=unset
     - ANDROID_BUILD_TOOLS_VERSION=unset
+    # see android-all_kinds/build.gradle for more info
     - ANDROID_INSTANT_API_LEVEL=unset
 
 jobs:
   include:
-    - name: "Android Gradle Plugin 3.1.x, Gradle 4.9"
+#   - name: "Android Gradle Plugin 3.0.x, Gradle 4.1+"
+#     env:
+#       - TEST_GRADLE_VERSION=4.2.1
+#       - ANDROID_PLUGIN_VERSION=3.0.1
+#       - ANDROID_BUILD_TOOLS_VERSION=26.0.3
+#       - ANDROID_INSTANT_API_LEVEL=26
+    - name: "Android Gradle Plugin 3.1.x, Gradle 4.4+"
       env:
         - TEST_GRADLE_VERSION=4.9
         - ANDROID_PLUGIN_VERSION=3.1.4
         - ANDROID_BUILD_TOOLS_VERSION=27.0.3
         - ANDROID_INSTANT_API_LEVEL=26
-    - name: "Android Gradle Plugin 3.2.x, Gradle 4.9"
+    - name: "Android Gradle Plugin 3.2.x, Gradle 4.6+"
       env:
         - TEST_GRADLE_VERSION=4.9
         - ANDROID_PLUGIN_VERSION=3.2.1
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=27
-    - name: "Android Gradle Plugin 3.3.x, Gradle 4.10"
+    - name: "Android Gradle Plugin 3.3.x, Gradle 4.10.1+"
       env:
         - TEST_GRADLE_VERSION=4.10.3
-        - ANDROID_PLUGIN_VERSION=3.3.1
+        - ANDROID_PLUGIN_VERSION=3.3.2
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=27
 
