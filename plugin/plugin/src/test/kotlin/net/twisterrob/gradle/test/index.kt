@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-internal val GradleRunnerRule.root get () = this.settingsFile().parentFile!!
+internal val GradleRunnerRule.root get() = this.settingsFile.parentFile!!
 
 internal fun BuildResult.assertNoTask(taskPath: String) = assertNull(task(taskPath))
 

@@ -149,7 +149,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			android.defaultConfig.version { renameAPK = false; major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 		val projectName = "gradle-test-project"
-		gradle.settingsFile().appendText("rootProject.name = '$projectName'")
+		gradle.settingsFile.appendText("rootProject.name = '$projectName'")
 
 		val result = gradle.run(script, "assembleDebug").build()
 
@@ -168,7 +168,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			android.defaultConfig.version { renameAPK = false; major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 		val projectName = "gradle-test-project"
-		gradle.settingsFile().appendText("rootProject.name = '$projectName'")
+		gradle.settingsFile.appendText("rootProject.name = '$projectName'")
 
 		val result = gradle.run(script, "assembleRelease").build()
 
@@ -182,9 +182,8 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 	@Test fun `build version is used from SVN revision number (release)`() {
 		svn {
-			val root = gradle.settingsFile().parentFile
-			val repoUrl = doCreateRepository(root.resolve(".repo"))
-			doCheckout(repoUrl, root)
+			val repoUrl = doCreateRepository(gradle.root.resolve(".repo"))
+			doCheckout(repoUrl, gradle.root)
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 1")
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 2")
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 3")

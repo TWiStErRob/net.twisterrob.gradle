@@ -55,7 +55,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 		gradle.generateKotlinCompilationCheck("test")
 		gradle.generateKotlinCompilationCheckTest("test")
 
-		gradle.settingsFile().writeText("include ':test'")
+		gradle.settingsFile.writeText("include ':test'")
 		@Language("gradle")
 		val appScript = """
 			apply plugin: 'net.twisterrob.android-test'

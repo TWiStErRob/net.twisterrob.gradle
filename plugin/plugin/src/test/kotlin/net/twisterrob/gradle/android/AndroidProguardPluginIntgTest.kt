@@ -118,7 +118,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 			}
 		""".trimIndent()
 
-		gradle.settingsFile().appendText("include ':lib'")
+		gradle.settingsFile.appendText("include ':lib'")
 
 		@Language("gradle")
 		val libGradle = """

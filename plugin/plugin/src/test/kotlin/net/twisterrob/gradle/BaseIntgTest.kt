@@ -8,7 +8,9 @@ import org.junit.Rule
 abstract class BaseIntgTest {
 
 	@get:Rule(order = 1) val testKit = GradleTestKitDirRelocator()
-	@get:Rule(order = 2) val gradle = GradleRunnerRule(false)
+	@get:Rule(order = 2) val gradle = GradleRunnerRule().apply {
+		clearAfterFailure = false
+	}
 
 	companion object {
 		// TODEL once the GradleRunnerRule is updated to not use assert()

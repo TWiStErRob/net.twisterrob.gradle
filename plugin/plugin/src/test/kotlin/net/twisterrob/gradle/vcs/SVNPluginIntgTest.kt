@@ -14,9 +14,8 @@ class SVNPluginIntgTest : BaseIntgTest() {
 
 	@Test fun `svn is auto-selected when the working copy is SVN`() {
 		svn {
-			val root = gradle.settingsFile().parentFile
-			val repoUrl = doCreateRepository(root.resolve(".repo"))
-			doCheckout(repoUrl, root)
+			val repoUrl = doCreateRepository(gradle.root.resolve(".repo"))
+			doCheckout(repoUrl, gradle.root)
 		}
 		@Language("gradle")
 		val script = """
