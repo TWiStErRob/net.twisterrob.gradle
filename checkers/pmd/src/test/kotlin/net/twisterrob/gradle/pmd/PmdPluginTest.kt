@@ -33,6 +33,7 @@ class PmdPluginTest {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.pmd'
+			pmd { toolVersion = "6.15.0" }
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -47,6 +48,7 @@ class PmdPluginTest {
 		val script = """
 			apply plugin: 'java'
 			apply plugin: 'net.twisterrob.pmd'
+						pmd { toolVersion = "6.15.0" }
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -61,6 +63,7 @@ class PmdPluginTest {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.pmd'
+						pmd { toolVersion = "6.15.0" }
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -77,8 +80,11 @@ class PmdPluginTest {
 		gradle.file(gradle.templateFile("pmd-empty.xml").readText(), "config", "pmd", "pmd.xml")
 		@Language("gradle")
 		val script = """
-			allprojects {
+			allprojects { project ->
 				apply plugin: 'net.twisterrob.pmd'
+				afterEvaluate {
+							project.pmd { toolVersion = "6.15.0" }
+							}
 			}
 		""".trimIndent()
 		// ":instant" is not supported yet
@@ -135,8 +141,11 @@ class PmdPluginTest {
 
 		@Language("gradle")
 		val rootProject = """
-			allprojects {
+			allprojects { p->
 				apply plugin: 'net.twisterrob.pmd'
+								afterEvaluate {
+							p.pmd { toolVersion = "6.15.0" }
+							}
 			}
 		""".trimIndent()
 
@@ -167,6 +176,7 @@ class PmdPluginTest {
 		val subProjectApplied = """
 			apply plugin: 'net.twisterrob.pmd'
 			apply plugin: 'com.android.library'
+						pmd { toolVersion = "6.15.0" }
 		""".trimIndent()
 
 		val modules = arrayOf(
@@ -221,6 +231,7 @@ class PmdPluginTest {
 		@Language("gradle")
 		val applyPmd = """
 			apply plugin: 'net.twisterrob.pmd'
+						pmd { toolVersion = "6.15.0" }
 			tasks.withType(${Pmd::class.java.name}) {
 				// output all violations to the console so that we can parse the results
 				consoleOutput = true
