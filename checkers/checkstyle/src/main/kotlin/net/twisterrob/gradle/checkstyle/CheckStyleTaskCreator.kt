@@ -18,17 +18,24 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 	override fun taskConfigurator() = object : VariantTaskCreator<CheckStyleTask>.DefaultTaskConfig() {
 
 		override fun setupConfigLocations(task: CheckStyleTask) {
-			if (!task.configFile.exists()) {
-				val rootConfig = task.project.rootProject.file("config/checkstyle/checkstyle.xml")
-				if (!rootConfig.exists()) {
+			val subConfig = task.project.file("config/checkstyle/checkstyle.xml")
+			val rootConfig = task.project.rootProject.file("config/checkstyle/checkstyle.xml")
+			if (!task.configFile.exists() || (subConfig.exists() && rootConfig.exists())) {
+				if (!subConfig.exists() && !rootConfig.exists()) {
 					task.logger.warn("""
 						While configuring ${task} no configuration found at:
-							${rootConfig}
-							${task.configFile}
+							rootProject=${rootConfig}
+							subProject=${subConfig}
+							task=${task.configFile}
 							and there's no valid location set in Gradle build files either.
 					""".trimIndent())
 				}
-				task.configFile = rootConfig
+				// if both of them exists, take the subproject's one instead of the rootProject's
+				if (subConfig.exists()) {
+					task.configFile = subConfig
+				} else if (rootConfig.exists()) {
+					task.configFile = rootConfig
+				}
 			}
 			task.setConfigDir(task.project.provider { task.configFile.parentFile })
 		}

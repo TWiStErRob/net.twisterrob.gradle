@@ -31,6 +31,12 @@ T : VerificationTask {
 
 	private lateinit var eachTask: Task
 
+	private val checkerExtension: BaseQualityExtension<T>
+		get() {
+			val quality = project.extensions.getByName("quality") as ExtensionAware
+			return quality.extensions.getByType(extensionClass)
+		}
+
 	fun applyTo(variants: DomainObjectSet<out BaseVariant>) {
 		project.plugins.apply(pluginName)
 		createGlobalTask()
@@ -78,8 +84,6 @@ T : VerificationTask {
 			configurator.setupConfigLocations(task)
 			configurator.setupSources(task, variants)
 			configurator.setupReports(task)
-			val quality = project.extensions.getByName("quality") as ExtensionAware
-			val checkerExtension = quality.extensions.getByType(extensionClass)
 			checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
 		}
 	}
@@ -95,8 +99,6 @@ T : VerificationTask {
 			configurator.setupConfigLocations(task)
 			configurator.setupSources(task, listOf(variant))
 			configurator.setupReports(task, variant.name)
-			val quality = project.extensions.getByName("quality") as ExtensionAware
-			val checkerExtension = quality.extensions.getByType(extensionClass)
 			checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
 		}
 	}

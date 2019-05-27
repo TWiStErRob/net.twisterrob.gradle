@@ -15,6 +15,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
+/**
+ * @see CheckStyleTaskCreator
+ */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class CheckStyleTaskTest_ConfigLocation {
 
