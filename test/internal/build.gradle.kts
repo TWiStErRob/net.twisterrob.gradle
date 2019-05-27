@@ -42,5 +42,4 @@ dependencies {
 	testRuntimeOnly("com.android.tools.lint:lint-gradle:${VERSION_LINT}") { isTransitive = false }
 	testRuntimeOnly("com.android.tools.lint:lint-gradle-api:${VERSION_LINT}") { isTransitive = false }
 	testRuntimeOnly("com.android.tools.lint:lint-checks:${VERSION_LINT}") { isTransitive = false }
-	testRuntimeOnly("com.android.tools.lint:lint-kotlin:${VERSION_LINT}") { isTransitive = false }
 }

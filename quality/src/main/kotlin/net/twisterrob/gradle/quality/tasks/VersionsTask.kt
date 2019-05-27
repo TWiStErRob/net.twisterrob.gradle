@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package net.twisterrob.gradle.quality.tasks
 
 import org.gradle.api.DefaultTask
@@ -20,10 +22,10 @@ open class VersionsTask : DefaultTask() {
 			Gradle version: ${project.gradle.gradleVersion}
 			Checkstyle version: ${getVersion("checkstyle", CheckstyleExtension::class.java)}
 			PMD version: ${getVersion("pmd", PmdExtension::class.java)}
-			FindBugs version: ${getVersion("findbugs", FindBugsExtension::class.java)}
+			FindBugs version: ${@Suppress("DEPRECATION") getVersion("findbugs", FindBugsExtension::class.java)}
 		""".trimIndent())
 	}
 
 	private fun getVersion(pluginName: String, type: Class<out CodeQualityExtension>) =
-			project.extensions.findByType(type)?.toolVersion ?: "'${pluginName}' plugin not applied"
+		project.extensions.findByType(type)?.toolVersion ?: "'${pluginName}' plugin not applied"
 }

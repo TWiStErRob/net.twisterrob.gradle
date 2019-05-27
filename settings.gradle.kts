@@ -1,3 +1,5 @@
+import org.gradle.util.GradleVersion
+
 rootProject.name = "net.twisterrob.gradle"
 
 include(":quality")
@@ -13,4 +15,6 @@ listOf("checkstyle", "pmd").forEach {
 // As part of making the publishing plugins stable,
 // the 'deferred configurable' behavior of the 'publishing {}' block is now deprecated.
 // https://docs.gradle.org/4.8/userguide/publishing_maven.html#publishing_maven:deferred_configuration.
-enableFeaturePreview("STABLE_PUBLISHING")
+if (GradleVersion.current().baseVersion < GradleVersion.version("5.0")) {
+	enableFeaturePreview("STABLE_PUBLISHING")
+}

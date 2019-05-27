@@ -26,22 +26,25 @@ dependencies {
 }
 
 // Need to depend on the real artifact so TestPluginTest can work
-tasks {
-	named<Test>("test") {
-		dependsOn("jar")
-		doFirst {
-			val jar by tasks.named<Jar>("jar")
-			val artifactPath = jar.outputs.files.singleFile.parentFile
-			(this as Test).jvmArgs("-Dnet.twisterrob.gradle.test.artifactPath=${artifactPath}")
-		}
+tasks.named<Test>("test") {
+	dependsOn("jar")
+	doFirst {
+		val jarArtifactPath = tasks.jar.get().outputs.files.singleFile.parentFile
+		(this as Test).jvmArgs("-Dnet.twisterrob.gradle.test.artifactPath=${jarArtifactPath}")
 	}
 }
 
-//noinspection UnnecessaryQualifiedReference keep it explicitly together with code
-tasks.named<org.gradle.plugin.devel.tasks.PluginUnderTestMetadata>("pluginUnderTestMetadata") {
-	pluginClasspath.apply{
+tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
+	val jarArtifact = tasks.jar.get().outputs.files.singleFile
+	pluginClasspath.apply {
 		setFrom()
 		from(configurations.runtimeClasspath - configurations.compileOnly)
-		from(tasks.getByName<Jar>("jar").outputs.files.singleFile)
+		from(jarArtifact)
 	}
 }
+
+inline val TaskContainer.jar get() = named<Jar>("jar")
+
+// Polyfill for Gradle 5
+operator fun Provider<Configuration>.minus(other: Provider<Configuration>) =
+	this.get() - other.get()

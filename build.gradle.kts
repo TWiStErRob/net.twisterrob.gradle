@@ -4,6 +4,7 @@ import groovy.util.NodeList
 import org.gradle.api.tasks.testing.TestOutputEvent.Destination
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.utils.keysToMap
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.EnumSet
@@ -104,18 +105,28 @@ allprojects {
 				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterSuccess=false")
 				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterFailure=false")
 			}
-			project.findProperty("net.twisterrob.gradle.runner.gradleVersion")?.let {
-				jvmArgs("-Dnet.twisterrob.gradle.runner.gradleVersion=${it}")
-			}
+			val propertyNamesToExposeToJUnitTests = listOf(
+				// for GradleRunnerRule to use a different Gradle version for tests
+				"net.twisterrob.gradle.runner.gradleVersion",
+				// for tests to decide dynamically
+				"net.twisterrob.test.android.pluginVersion",
+				"net.twisterrob.test.android.compileSdkVersion"
+			)
+			val properties = propertyNamesToExposeToJUnitTests.keysToMap { project.findProperty(it) }
+			properties.forEach { (name, value) -> inputs.property(name, value) }
+			properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
 		}
 
 		tasks.withType<ProcessResources> {
+			val propertyNamesToReplace = listOf(
+				"net.twisterrob.test.android.pluginVersion",
+				"net.twisterrob.test.android.compileSdkVersion"
+			)
+			val properties = propertyNamesToReplace.keysToMap { project.findProperty(it) }
+			properties.forEach { (name, value) -> inputs.property(name, value) }
 			filesMatching("**/build.gradle") {
-				val replacements = mapOf(
-					"net.twisterrob.test.android.pluginVersion" to
-							project.property("net.twisterrob.test.android.pluginVersion"),
-					"net.twisterrob.test.android.compileSdkVersion" to
-							project.property("net.twisterrob.test.android.compileSdkVersion")
+				val replacements = properties + mapOf(
+					// custom replacements (`"name" to value`) would come here
 				)
 				filter(mapOf("tokens" to replacements), org.apache.tools.ant.filters.ReplaceTokens::class.java)
 			}

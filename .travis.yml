@@ -10,31 +10,45 @@ script: ./gradlew
   -Pnet.twisterrob.gradle.runner.gradleVersion=$TEST_GRADLE_VERSION
 
 env:
+  # set them here just so if it fails/missing for whatever reason: it's not substituted to "", but a searchable value
   global:
-    # set them here just so if it fails/missing for whatever reason: it's not substituted to "", but a searchable value
+    # see https://developer.android.com/studio/releases/gradle-plugin#updating-gradle
     - TEST_GRADLE_VERSION=unset
     - ANDROID_PLUGIN_VERSION=unset
     - ANDROID_BUILD_TOOLS_VERSION=unset
+    # see android-all_kinds/build.gradle for more info
     - ANDROID_INSTANT_API_LEVEL=unset
 
 jobs:
   include:
-    - name: "Android Gradle Plugin 3.1.x, Gradle 4.9"
+#   - name: "Android Gradle Plugin 3.0.x, Gradle 4.1+"
+#     env:
+#       - TEST_GRADLE_VERSION=4.2.1
+#       - ANDROID_PLUGIN_VERSION=3.0.1
+#       - ANDROID_BUILD_TOOLS_VERSION=26.0.3
+#       - ANDROID_INSTANT_API_LEVEL=26
+    - name: "Android Gradle Plugin 3.1.x, Gradle 4.4+"
       env:
         - TEST_GRADLE_VERSION=4.9
         - ANDROID_PLUGIN_VERSION=3.1.4
         - ANDROID_BUILD_TOOLS_VERSION=27.0.3
         - ANDROID_INSTANT_API_LEVEL=26
-    - name: "Android Gradle Plugin 3.2.x, Gradle 4.9"
+    - name: "Android Gradle Plugin 3.2.x, Gradle 4.6+"
       env:
         - TEST_GRADLE_VERSION=4.9
         - ANDROID_PLUGIN_VERSION=3.2.1
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=27
-    - name: "Android Gradle Plugin 3.3.x, Gradle 4.10"
+    - name: "Android Gradle Plugin 3.3.x, Gradle 4.10.1+"
       env:
         - TEST_GRADLE_VERSION=4.10.3
-        - ANDROID_PLUGIN_VERSION=3.3.1
+        - ANDROID_PLUGIN_VERSION=3.3.2
+        - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+        - ANDROID_INSTANT_API_LEVEL=27
+    - name: "Android Gradle Plugin 3.3.x, Gradle 5.x"
+      env:
+        - TEST_GRADLE_VERSION=5.4.1
+        - ANDROID_PLUGIN_VERSION=3.3.2
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=27
 
@@ -68,18 +82,22 @@ cache:
     # Prevent "Unzipping /home/travis/.gradle/wrapper/dists/gradle-4.2.1-all/domrskppdhf3wtn5mziw0c2zr/gradle-4.2.1-all.zip"
     - $HOME/.gradle/wrapper/dists/gradle-4.9-all/
     - $HOME/.gradle/wrapper/dists/gradle-4.10.3-all/
+    - $HOME/.gradle/wrapper/dists/gradle-5.4.1-all/
     # Prevent "Download https://jcenter.bintray.com/" during compilation
     - $HOME/.gradle/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during compilation
     - $HOME/.gradle/caches/4.9/generated-gradle-jars/
     - $HOME/.gradle/caches/4.10.3/generated-gradle-jars/
+    - $HOME/.gradle/caches/5.4.1/generated-gradle-jars/
     # Prevent "Welcome to Gradle 4.9! Here are the highlights of this release:" in build log
     - $HOME/.gradle/notifications/4.9/release-features.rendered
     - $HOME/.gradle/notifications/4.10.3/release-features.rendered
+    - $HOME/.gradle/notifications/5.4.1/release-features.rendered
     # Prevent "Download https://jcenter.bintray.com/" during test runs
     - /tmp/.gradle-test-kit-travis/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during test runs
     - /tmp/.gradle-test-kit-travis/caches/4.9/generated-gradle-jars/
     - /tmp/.gradle-test-kit-travis/caches/4.10.3/generated-gradle-jars/
+    - /tmp/.gradle-test-kit-travis/caches/5.4.1/generated-gradle-jars/
     # Do not cache Android SDK, caching is done after SDK components are installed
     #- $ANDROID_HOME
