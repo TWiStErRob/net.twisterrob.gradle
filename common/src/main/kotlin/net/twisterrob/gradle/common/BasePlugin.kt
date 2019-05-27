@@ -19,17 +19,25 @@ open class BasePlugin : Plugin<Project> {
 		project = target
 
 		val match = """(?<major>\d+)\.(?<minor>\d+).*""".toRegex().matchEntire(project.gradle.gradleVersion)
+			?: return
 		// TODO Kotlin !(match.groups["major"]!!.value == "4",
 		// test classpath doesn't recognize JDK8 extensions
 		// because PlatformImplementations is loaded from the Gradle distribution,
 		// and the IMPLEMENTATIONS ClassLoader is trying from the wrong place. (see Class.forName: getCallerClass)
-		if (match == null || !(match.groups[1]!!.value == "4" && 1 <= match.groups[2]!!.value.toInt())) {
-			val file = File("gradle" + File.separator + "wrapper" + File.separator + "gradle-wrapper.properties")
-			val required = "4.1+"
-			throw BuildException(
-					"Gradle version ${required} is required; the current version is ${project.gradle.gradleVersion}."
-							+ " Edit the distributionUrl in ${file.absolutePath}.", null
-			)
+		val major = match.groups[1]!!.value.toInt()
+		val minor = match.groups[2]!!.value.toInt()
+		when {
+			major < 4 -> fail()
+			major == 4 -> if (minor < 1) fail()
 		}
+	}
+
+	private fun fail() {
+		val file = File("gradle" + File.separator + "wrapper" + File.separator + "gradle-wrapper.properties")
+		val required = "4.1+"
+		throw BuildException(
+			"Gradle version ${required} is required; the current version is ${project.gradle.gradleVersion}."
+					+ " Edit the distributionUrl in ${file.absolutePath}.", null
+		)
 	}
 }
