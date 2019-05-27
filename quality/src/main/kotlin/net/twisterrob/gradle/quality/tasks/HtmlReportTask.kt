@@ -4,6 +4,7 @@ import com.android.annotations.VisibleForTesting
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.Action
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
@@ -13,6 +14,7 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.kotlin.dsl.getByName
+import org.gradle.util.GradleVersion
 import java.io.File
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
@@ -29,11 +31,9 @@ open class HtmlReportTask : ValidateViolationsTask() {
 	var html: RegularFileProperty = reportDir().file("violations.html").asProperty()
 
 	private val xslTemplateFile: File? get() = xslTemplate.asFile.orNull
-	@Suppress("DEPRECATION")
-	// keep using layout.fileProperty() instead of objects.fileProperty() for backward compatibility
 	@InputFile
 	@get:Optional
-	var xslTemplate: RegularFileProperty = project.layout.fileProperty().apply {
+	var xslTemplate: RegularFileProperty = project.fileProperty().apply {
 		//set(project.file("config/violations.xsl"))
 	}
 
@@ -89,10 +89,8 @@ open class HtmlReportTask : ValidateViolationsTask() {
 			.getByName<ReportingExtension>(ReportingExtension.NAME)
 			.baseDirectory
 
-	@Suppress("DEPRECATION")
-	// keep using layout.fileProperty() instead of objects.fileProperty() for backward compatibility
 	private fun Provider<RegularFile>.asProperty(): RegularFileProperty =
-		project.layout
+		project
 			.fileProperty()
 			.apply { set(this@asProperty) }
 
@@ -106,4 +104,14 @@ open class HtmlReportTask : ValidateViolationsTask() {
 		project.layout
 			.file(this@asRegularFile)
 			.get()
+
+	private fun Project.fileProperty(): RegularFileProperty =
+		when {
+			GradleVersion.current().baseVersion < GradleVersion.version("5.0") ->
+				// keep using layout.fileProperty() instead of objects.fileProperty() for backward compatibility
+				@Suppress("DEPRECATION")
+				layout.fileProperty()
+			else ->
+				objects.fileProperty()
+		}
 }
