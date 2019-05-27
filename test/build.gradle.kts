@@ -44,3 +44,7 @@ tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
 }
 
 inline val TaskContainer.jar get() = named<Jar>("jar")
+
+// Polyfill for Gradle 5
+operator fun Provider<Configuration>.minus(other: Provider<Configuration>) =
+	this.get() - other.get()
