@@ -4,6 +4,8 @@ import net.twisterrob.gradle.base.BasePlugin
 import java.net.JarURLConnection
 import java.time.Instant
 import java.time.format.DateTimeFormatter
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 val builtDate: Instant by lazy {
 	val aClassInJar = BasePlugin::class.java
@@ -22,5 +24,14 @@ val builtDate: Instant by lazy {
 			Instant.now()
 		else ->
 			error("Unknown URL type ${url::class.java}")
+	}
+}
+
+fun <R> systemProperty(name: String) = object : ReadWriteProperty<R, String> {
+	override fun getValue(thisRef: R, property: KProperty<*>): String =
+		System.getProperty(name)
+
+	override fun setValue(thisRef: R, property: KProperty<*>, value: String) {
+		System.setProperty(name, value)
 	}
 }

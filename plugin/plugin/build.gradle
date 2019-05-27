@@ -52,11 +52,12 @@ jar {
 	}
 }
 
-// Enable verbose test logging, because sometimes AndroidBuildPluginIntgTest hangs, hopefully this will uncover it
 tasks.withType(Test) {
+	// Enable verbose test logging, because sometimes AndroidBuildPluginIntgTest hangs, hopefully this will uncover it
 	//noinspection UnnecessaryQualifiedReference
 	testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
-	// More than 2 yields a ton of "Invalidating in-memory cache of .gradle-test-kit\caches\4.10.2\fileHashes\fileHashes.bin"
-	// but 2 as opposed to 1 makes build run more than twice as fast
-	maxParallelForks = 2
+	// See GradleTestKitDirRelocator for what enables this!
+	maxParallelForks = 10
+	// Limit memory usage of test forks. Gradle <5 allows 1/4th of total memory to be used, thus forbidding many forks.
+	maxHeapSize = "256M"
 }

@@ -1,12 +1,14 @@
 package net.twisterrob.gradle
 
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleTestKitDirRelocator
 import org.junit.BeforeClass
 import org.junit.Rule
 
 abstract class BaseIntgTest {
 
-	@get:Rule val gradle = GradleRunnerRule(false)
+	@get:Rule(order = 1) val testKit = GradleTestKitDirRelocator()
+	@get:Rule(order = 2) val gradle = GradleRunnerRule(false)
 
 	companion object {
 		// TODEL once the GradleRunnerRule is updated to not use assert()
