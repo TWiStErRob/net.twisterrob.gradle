@@ -36,7 +36,7 @@ internal fun resolveFromJDK(command: String): File {
 }
 
 private fun resolveFromFolders(command: String, vararg dirs: File): File {
-	val variants = listOf(command, "${command}.sh", "${command}.exe", "${command}.bat")
+	val variants = listOf("${command}.sh", command, "${command}.bat", "${command}.exe")
 	return variants
 		.flatMap { variant -> dirs.map { it.resolve(variant) } }
 		.firstOrNull { it.exists() && it.isFile }
