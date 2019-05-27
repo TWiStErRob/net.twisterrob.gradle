@@ -104,18 +104,22 @@ allprojects {
 				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterSuccess=false")
 				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterFailure=false")
 			}
-			project.findProperty("net.twisterrob.gradle.runner.gradleVersion")?.let {
+			val gradleVersion = project.findProperty("net.twisterrob.gradle.runner.gradleVersion")
+			inputs.property("gradleVersion", gradleVersion)
+			gradleVersion?.let {
 				jvmArgs("-Dnet.twisterrob.gradle.runner.gradleVersion=${it}")
 			}
 		}
 
 		tasks.withType<ProcessResources> {
+			val pluginVersion = project.property("net.twisterrob.test.android.pluginVersion")
+			val compileSdkVersion = project.property("net.twisterrob.test.android.compileSdkVersion")
+			inputs.property("pluginVersion", pluginVersion)
+			inputs.property("compileSdkVersion", pluginVersion)
 			filesMatching("**/build.gradle") {
 				val replacements = mapOf(
-					"net.twisterrob.test.android.pluginVersion" to
-							project.property("net.twisterrob.test.android.pluginVersion"),
-					"net.twisterrob.test.android.compileSdkVersion" to
-							project.property("net.twisterrob.test.android.compileSdkVersion")
+					"net.twisterrob.test.android.pluginVersion" to pluginVersion,
+					"net.twisterrob.test.android.compileSdkVersion" to compileSdkVersion
 				)
 				filter(mapOf("tokens" to replacements), org.apache.tools.ant.filters.ReplaceTokens::class.java)
 			}
