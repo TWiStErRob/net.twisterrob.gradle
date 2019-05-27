@@ -1,8 +1,10 @@
 package net.twisterrob.gradle.common
 
+import com.android.annotations.VisibleForTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.tooling.BuildException
+import org.gradle.util.GradleVersion
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -18,26 +20,21 @@ open class BasePlugin : Plugin<Project> {
 		LOG.debug("Applying to ${target}")
 		project = target
 
-		val match = """(?<major>\d+)\.(?<minor>\d+).*""".toRegex().matchEntire(project.gradle.gradleVersion)
-			?: return
-		// TODO Kotlin !(match.groups["major"]!!.value == "4",
-		// test classpath doesn't recognize JDK8 extensions
-		// because PlatformImplementations is loaded from the Gradle distribution,
-		// and the IMPLEMENTATIONS ClassLoader is trying from the wrong place. (see Class.forName: getCallerClass)
-		val major = match.groups[1]!!.value.toInt()
-		val minor = match.groups[2]!!.value.toInt()
-		when {
-			major < 4 -> fail()
-			major == 4 -> if (minor < 1) fail()
-		}
+		checkGradleVersion(GradleVersion.current())
 	}
 
-	private fun fail() {
-		val file = File("gradle" + File.separator + "wrapper" + File.separator + "gradle-wrapper.properties")
-		val required = "4.1+"
-		throw BuildException(
-			"Gradle version ${required} is required; the current version is ${project.gradle.gradleVersion}."
-					+ " Edit the distributionUrl in ${file.absolutePath}.", null
-		)
+	companion object {
+		@VisibleForTesting
+		internal fun checkGradleVersion(current: GradleVersion) {
+			val required = GradleVersion.version("4.1")
+			if (current.baseVersion < required) {
+				val file = File("gradle/wrapper/gradle-wrapper.properties")
+				throw BuildException(
+					"Gradle version ${required.version}+ is required; the current version is ${current.version}."
+							+ " Edit the distributionUrl in ${file.absolutePath}.",
+					null
+				)
+			}
+		}
 	}
 }
