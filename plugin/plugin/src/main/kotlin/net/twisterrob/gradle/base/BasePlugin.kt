@@ -1,8 +1,10 @@
 package net.twisterrob.gradle.base
 
+import com.android.annotations.VisibleForTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
+import org.gradle.util.GradleVersion
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -22,21 +24,18 @@ open class BasePlugin : Plugin<Project> {
 		LOG.debug("Applying to ${target}")
 		project = target
 
-		checkGradleVersion(project.gradle.gradleVersion)
+		checkGradleVersion(GradleVersion.current())
 	}
 
 	companion object {
-
-		internal fun checkGradleVersion(version: String) {
-			val pattern = """(?<major>\d+)\.(?<minor>\d+).*""".toRegex()
-			val match = pattern.matchEntire(version)
-			// using groups by number due to https://youtrack.jetbrains.com/issue/KT-29241 until Kotlin 1.3.20
-			if (match == null || !(match.groups[1]!!.value == "4" && 1 <= (match.groups[2]!!.value.toInt()))) {
+		@VisibleForTesting
+		internal fun checkGradleVersion(current: GradleVersion) {
+			val required = "4.1"
+			if (current < GradleVersion.version(required)) {
 				val file = File("gradle/wrapper/gradle-wrapper.properties")
-				val required = "4.1+"
 				@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 				throw ProjectConfigurationException(
-					"Gradle version ${required} is required; the current version is $version."
+					"Gradle version ${required}+ is required; the current version is ${current}."
 							+ " Edit the distributionUrl in ${file.absolutePath}.",
 					null
 				)
