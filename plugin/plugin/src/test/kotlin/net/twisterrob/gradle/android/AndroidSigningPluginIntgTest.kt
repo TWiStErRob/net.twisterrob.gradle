@@ -4,10 +4,10 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
 import net.twisterrob.test.process.runCommand
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.emptyString
-import org.hamcrest.junit.MatcherAssert.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Rule
 import org.junit.Test

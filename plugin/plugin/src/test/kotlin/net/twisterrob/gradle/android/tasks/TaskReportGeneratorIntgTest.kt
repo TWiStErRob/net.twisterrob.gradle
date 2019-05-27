@@ -4,9 +4,9 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.root
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.io.FileMatchers.anExistingDirectory
-import org.hamcrest.junit.MatcherAssert.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 

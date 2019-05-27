@@ -4,9 +4,9 @@ import com.jakewharton.dex.DexMethod
 import net.twisterrob.test.process.assertOutput
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.io.FileMatchers.anExistingFile
-import org.hamcrest.junit.MatcherAssert.assertThat
 import java.io.File
 
 internal const val packageName = "net.twisterrob.gradle.test_app"

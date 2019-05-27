@@ -5,9 +5,9 @@ import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
 import net.twisterrob.test.zip.hasZipEntry
 import org.gradle.testkit.runner.BuildResult
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
-import org.hamcrest.junit.MatcherAssert.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 import java.io.File
