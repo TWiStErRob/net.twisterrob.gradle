@@ -7,6 +7,7 @@ import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.TestedVariant
+import com.android.builder.core.DefaultProductFlavor
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.base
 import net.twisterrob.gradle.kotlin.dsl.extensions

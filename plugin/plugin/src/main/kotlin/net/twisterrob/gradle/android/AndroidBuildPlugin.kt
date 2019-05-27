@@ -8,6 +8,7 @@ import com.android.build.gradle.internal.api.androidTestVariantData
 import com.android.build.gradle.internal.api.unitTestVariantData
 import com.android.build.gradle.internal.api.variantData
 import com.android.build.gradle.internal.variant.BaseVariantData
+import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.DecorateBuildConfigTask
 import net.twisterrob.gradle.base.BasePlugin
