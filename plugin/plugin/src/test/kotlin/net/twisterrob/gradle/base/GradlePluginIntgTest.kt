@@ -8,8 +8,8 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.hamcrest.junit.MatcherAssert.assertThat
+import org.hamcrest.junit.MatcherAssume.assumeThat
 import org.intellij.lang.annotations.Language
-import org.junit.Assume.assumeThat
 import org.junit.Test
 
 /**

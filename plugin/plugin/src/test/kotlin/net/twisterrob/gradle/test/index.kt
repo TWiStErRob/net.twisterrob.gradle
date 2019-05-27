@@ -4,6 +4,7 @@ import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import org.junit.runners.model.Statement
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -25,3 +26,14 @@ internal fun BuildResult.assertOutcome(taskPath: String, outcome: TaskOutcome) {
 		.let { assertNotNull(it, "${taskPath} task not found") }
 	assertEquals(outcome, task.outcome)
 }
+
+/**
+ * Helper to allow SAM-like behavior for [Statement] abstract class.
+ */
+@Suppress("TestFunctionName")
+internal inline fun Statement(crossinline block: () -> Unit) =
+	object : Statement() {
+		override fun evaluate() {
+			block()
+		}
+	}

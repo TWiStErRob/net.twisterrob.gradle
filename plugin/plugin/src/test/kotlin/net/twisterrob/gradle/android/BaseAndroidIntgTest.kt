@@ -8,7 +8,7 @@ import kotlin.test.BeforeTest
 
 abstract class BaseAndroidIntgTest : BaseIntgTest() {
 	@Suppress("PropertyName")
-	@Rule @JvmField val __testName = TestName()
+	@get:Rule val __testName = TestName()
 
 	@BeforeTest fun setUp() {
 		@Language("xml")

@@ -30,7 +30,7 @@ configurations.all {
 }
 
 dependencies { // test
-	testImplementation "junit:junit:4.12"
+	testImplementation "junit:junit:4.13-beta-3"
 	testImplementation "org.hamcrest:java-hamcrest:2.0.0.0"
 	testImplementation "org.hamcrest:hamcrest-junit:2.0.0.0"
 	testImplementation "org.jetbrains:annotations:16.0.2"

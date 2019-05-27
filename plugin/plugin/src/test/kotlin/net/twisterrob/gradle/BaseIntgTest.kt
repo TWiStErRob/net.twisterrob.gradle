@@ -6,7 +6,7 @@ import org.junit.Rule
 
 abstract class BaseIntgTest {
 
-	@Rule @JvmField val gradle = GradleRunnerRule(false)
+	@get:Rule val gradle = GradleRunnerRule(false)
 
 	companion object {
 		// TODEL once the GradleRunnerRule is updated to not use assert()
