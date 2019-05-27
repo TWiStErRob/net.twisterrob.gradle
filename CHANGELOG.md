@@ -1,7 +1,9 @@
 # Change Log
 
 ## 0.9 *(2019-02-19 --- )*
- * ...
+ * Kotlin 1.3.21
+ * Android Gradle Plugin 3.4.1
+ * Android Gradle Plugin 3.3.2 compatible
 
 ## 0.8 *(2018-10-14 --- 2019-02-18)*
 

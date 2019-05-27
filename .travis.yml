@@ -45,6 +45,12 @@ jobs:
         - ANDROID_PLUGIN_VERSION=3.3.2
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=27
+    - name: "Android Gradle Plugin 3.4.x, Gradle 5.1.1+"
+      env:
+        - TEST_GRADLE_VERSION=5.1.1
+        - ANDROID_PLUGIN_VERSION=3.4.1
+        - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+        - ANDROID_INSTANT_API_LEVEL=28
 
 android:
   licenses:
