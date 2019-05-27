@@ -5,7 +5,9 @@ import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.Action
 import org.gradle.api.GradleException
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Provider
 import org.gradle.api.reporting.ReportingExtension
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
@@ -18,41 +20,37 @@ import javax.xml.transform.stream.StreamSource
 
 open class HtmlReportTask : ValidateViolationsTask() {
 
-	private val xmlFile get () = xml.asFile.get()
+	private val xmlFile get() = xml.asFile.get()
 	@OutputFile
-	var xml: RegularFileProperty = project.layout.fileProperty().apply {
-		set(reportDir().file("violations.xml"))
-	}
+	var xml: RegularFileProperty = reportDir().file("violations.xml").asProperty()
 
-	private val htmlFile get () = html.asFile.get()
+	private val htmlFile get() = html.asFile.get()
 	@OutputFile
-	var html: RegularFileProperty = project.layout.fileProperty().apply {
-		set(reportDir().file("violations.html"))
-	}
+	var html: RegularFileProperty = reportDir().file("violations.html").asProperty()
 
-	private val xslTemplateFile: File? get () = xslTemplate.asFile.orNull
+	private val xslTemplateFile: File? get() = xslTemplate.asFile.orNull
+	@Suppress("DEPRECATION")
+	// keep using layout.fileProperty() instead of objects.fileProperty() for backward compatibility
 	@InputFile
 	@get:Optional
 	var xslTemplate: RegularFileProperty = project.layout.fileProperty().apply {
 		//set(project.file("config/violations.xsl"))
 	}
 
-	private val xslOutputFile get () = xslOutput.asFile.get()
+	private val xslOutputFile get() = xslOutput.asFile.get()
 	/**
 	 * val xslOutput: File = xml.parentFile.resolve(xslTemplate.name)
 	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@OutputFile
-	var xslOutput: RegularFileProperty = project.layout.fileProperty().apply {
-		set(xml.map { regular ->
-			project.layout.file(
-				project.layout
-					.fileProperty(project.providers.provider { regular })
-					.asFile
-					.map { file -> file.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl") }
-			).get()
-		})
-	}
+	var xslOutput: RegularFileProperty = xml
+		.map { regular ->
+			regular.asFileProvider()
+				.map { file -> file.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl") }
+				.asRegularFile()
+
+		}
+		.asProperty()
 
 	init {
 		doFirst {
@@ -87,5 +85,25 @@ open class HtmlReportTask : ValidateViolationsTask() {
 	}
 
 	private fun reportDir(): DirectoryProperty =
-		project.extensions.getByName<ReportingExtension>(ReportingExtension.NAME).baseDirectory
+		project.extensions
+			.getByName<ReportingExtension>(ReportingExtension.NAME)
+			.baseDirectory
+
+	@Suppress("DEPRECATION")
+	// keep using layout.fileProperty() instead of objects.fileProperty() for backward compatibility
+	private fun Provider<RegularFile>.asProperty(): RegularFileProperty =
+		project.layout
+			.fileProperty()
+			.apply { set(this@asProperty) }
+
+	private fun RegularFile.asFileProvider(): Provider<File> =
+		project.providers
+			.provider { this@asFileProvider }
+			.asProperty()
+			.asFile
+
+	private fun Provider<File>.asRegularFile(): RegularFile =
+		project.layout
+			.file(this@asRegularFile)
+			.get()
 }
