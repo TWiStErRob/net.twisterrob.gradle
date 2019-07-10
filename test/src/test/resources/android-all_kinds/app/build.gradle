@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
 dependencies {
-	implementation project(':feature')
+	if ("@net.twisterrob.test.android.pluginVersion@" < "3.4.0") {
+		implementation project(':feature')
+	}
 }

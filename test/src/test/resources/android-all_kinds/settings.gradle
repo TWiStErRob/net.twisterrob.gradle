@@ -1,7 +1,11 @@
 include ':library'
 include ':library:nested'
-include ':base'
-include ':feature'
+if ("@net.twisterrob.test.android.pluginVersion@" < "3.4.0") {
+	include ':base'
+	include ':feature'
+} else {
+	include ':dynamic-feature'
+}
 include ':app'
 include ':instant'
 include ':test'
