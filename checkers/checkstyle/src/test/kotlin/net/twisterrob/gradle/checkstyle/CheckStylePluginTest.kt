@@ -21,6 +21,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
+/**
+ * @see CheckStylePlugin
+ */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class CheckStylePluginTest {
 
@@ -83,7 +86,11 @@ class CheckStylePluginTest {
 			}
 		""".trimIndent()
 		// ":instant" is not supported yet
-		val modules = arrayOf(":app", ":feature", ":base", ":library", ":library:nested", ":test")
+		val modules = arrayOf(":app", ":library", ":library:nested", ":test") +
+				if (System.getProperty("net.twisterrob.test.android.pluginVersion") < "3.4.0")
+					arrayOf(":feature", ":base")
+				else
+					emptyArray() // TODO arrayOf(":dynamic-feature")
 
 		val result = gradle.runBuild {
 			basedOn("android-all_kinds")

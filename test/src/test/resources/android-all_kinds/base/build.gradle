@@ -1,7 +1,7 @@
 apply plugin: 'com.android.feature'
 
 android {
-	baseFeature true
+	baseFeature = true
 }
 
 dependencies {

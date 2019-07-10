@@ -31,6 +31,7 @@ class AndroidVariantApplier(val project: Project) {
 		project.plugins.withId("com.android.application", callback)
 		project.plugins.withId("com.android.library", callback)
 		project.plugins.withId("com.android.feature", callback)
+		project.plugins.withId("com.android.dynamic-feature", callback)
 		project.plugins.withId("com.android.test", callback)
 		project.plugins.withId("com.android.instantapp", callback)
 	}
@@ -47,6 +48,10 @@ class AndroidVariantApplier(val project: Project) {
 		project.plugins.withId("com.android.feature") {
 			val android = project.extensions["android"] as FeatureExtension
 			variantsClosure.execute(android.libraryVariants)
+		}
+		project.plugins.withId("com.android.dynamic-feature") {
+			val android = project.extensions["android"] as AppExtension
+			variantsClosure.execute(android.applicationVariants)
 		}
 		project.plugins.withId("com.android.test") {
 			val android = project.extensions["android"] as TestExtension
