@@ -4,7 +4,7 @@
  * Kotlin 1.3.21
  * Gradle 5 compatible (up to 5.4.1)
  * Android Gradle Plugin 3.3.2 compatible
- * Android Gradle Plugin 3.4.1 compatible
+ * Android Gradle Plugin 3.4.2 compatible
 
 
 ## 0.8 *(2018-10-14 --- 2019-02-18)*
