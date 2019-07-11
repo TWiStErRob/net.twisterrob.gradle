@@ -40,7 +40,7 @@
 
  1. `git add gradle.properties CHANGELOG.md & git commit -m "Pre-Release x.z"`  
     * `gradle.properties`: version number `x.z-SNAPSHOT`
-    * `CHANGELONG.md`: add history section:
+    * `CHANGELOG.md`: add history section:
     ```
     ## x.z *(YYYY-MM-DD --- )*
      * ...
