@@ -1,11 +1,26 @@
 # Change Log
 
-## 0.9 *(2019-02-19 --- )*
- * Kotlin 1.3.21
- * Gradle 5 compatible (up to 5.4.1)
- * Android Gradle Plugin 3.3.2 compatible
- * Android Gradle Plugin 3.4.2 compatible
+## 0.9 *(2019-02-19 --- 2019-07-11)*
 
+### New
+ * Gradle 5 compatible (up to 5.4.1) (#78)
+ * Android Gradle Plugin 3.3.2 compatible (Kotlin 1.3.21) (#78)
+ * Android Gradle Plugin 3.4.2 compatible (Kotlin 1.3.31) (#79)
+
+### Fixes
+ * Clean up suppressions, categories and names for CheckStyle and PMD (#60, #63, #64 / #73)
+ * Don't show `details>summary` when there's no description (#61/#74)
+ * Add polyfill for 5.0-removed behavior (https://github.com/gradle/gradle/issues/6263),  
+   for more info and origin see https://github.com/gradle/gradle/issues/2765 (#78)
+
+### Internal
+ * Migrate all tests to JUnit 5 (Jupiter) (#68)
+ * Android Studio only works with settings.gradle.kts (#71)
+ * Improve documentation (#69)
+ * Move to standard Java XML generation to reduce memory usage (#62/#66)
+ * Fix breaking change: https://github.com/checkstyle/checkstyle/issues/6478
+ * Use Gradle 4.10.3 to build (#76/#77)
+ * Use Gradle 5.4.1 to build (#78)
 
 ## 0.8 *(2018-10-14 --- 2019-02-18)*
 
