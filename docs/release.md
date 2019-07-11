@@ -22,7 +22,7 @@
  1. `git add gradle.properties CHANGELOG.md & git commit -m "Release x.y"`  
     * `gradle.properties`: remove `-SNAPSHOT` suffix  
     * `CHANGELOG.md`: update version end date
- 1. `gradlew bintrayPublish -PbintrayApiKey=...`    
+ 1. `gradlew bintrayUpload -PbintrayApiKey=...`    
     Available from https://bintray.com/profile/edit > _API Key_  
     _If this fails, fix and amend last commit._
  1. `git push origin master:master`
