@@ -121,4 +121,21 @@ object Libs {
 		 */
 		const val vintage = "org.junit.vintage:junit-vintage-engine:${Versions.JUnit5}"
 	}
+
+	object Mockito {
+		/**
+		 * @see <a href="https://bintray.com/mockito/maven">Artifacts</a>
+		 * @see <a href="https://github.com/mockito/mockito/blob/release/2.x/doc/release-notes/official.md">Changelog</a>
+		 */
+		private const val version = "2.24.4"
+
+		/**
+		 * @see <a href="https://github.com/nhaarman/mockito-kotlin/releases">GitHub releases</a>
+		 */
+		private const val versionMockitoKotlin = "2.1.0"
+
+		const val core = "org.mockito:mockito-core:${version}"
+		const val junit5 = "org.mockito:mockito-junit-jupiter:${version}"
+		const val kotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${versionMockitoKotlin}"
+	}
 }

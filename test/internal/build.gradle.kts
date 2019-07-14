@@ -5,8 +5,6 @@ plugins {
 val VERSION_HAMCREST: String by project
 val VERSION_JFIXTURE: String by project
 
-val VERSION_MOCKITO: String by project
-val VERSION_MOCKITO_KOTLIN: String by project
 val VERSION_MOCKK: String by project
 
 val VERSION_LINT: String by project
@@ -24,9 +22,9 @@ dependencies {
 
 	api("org.hamcrest:java-hamcrest:${VERSION_HAMCREST}")
 
-	api("org.mockito:mockito-core:${VERSION_MOCKITO}")
-	api("org.mockito:mockito-junit-jupiter:${VERSION_MOCKITO}")
-	api("com.nhaarman.mockitokotlin2:mockito-kotlin:${VERSION_MOCKITO_KOTLIN}")
+	api(Libs.Mockito.core)
+	api(Libs.Mockito.junit5)
+	api(Libs.Mockito.kotlin)
 
 	api("io.mockk:mockk:${VERSION_MOCKK}")
 
