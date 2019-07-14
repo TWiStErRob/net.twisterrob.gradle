@@ -93,7 +93,7 @@ allprojects {
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions.verbose = true
 			kotlinOptions.jvmTarget = JavaVersion.toVersion(VERSION_JAVA).toString()
-//			kotlinOptions.allWarningsAsErrors = true
+			kotlinOptions.allWarningsAsErrors = true
 		}
 
 		tasks.withType<Test> {
