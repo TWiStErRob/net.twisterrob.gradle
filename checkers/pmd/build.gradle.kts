@@ -5,12 +5,10 @@ plugins {
 
 base.archivesBaseName = "twister-quality-pmd"
 
-val VERSION_ANDROID_PLUGIN: String by project
-
 dependencies {
 	implementation(project(":common"))
 
-	compileOnly("com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}")
+	compileOnly(Libs.Android.plugin)
 
 	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))

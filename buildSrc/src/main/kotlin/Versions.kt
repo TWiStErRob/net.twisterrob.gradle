@@ -13,6 +13,23 @@ object Libs {
 		 * @see <a href="https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/">Artifacts</a>
 		 */
 		const val KotlinDSL = "5.6.4"
+
+		/**
+		 * @see AndroidLint which is affected by this
+		 */
+		const val AndroidGradlePlugin = "3.5.3"
+
+		/**
+		 * @see com.android.build.gradle.BasePlugin.createLintClasspathConfiguration
+		 * @see `builder-model//version.properties`
+		 * @see VERSION_LINT in `gradle.properties`
+		 */
+		@Suppress("KDocUnresolvedReference")
+		const val AndroidLint = "26.5.3"
+	}
+
+	object Android {
+		const val plugin = "com.android.tools.build:gradle:${Versions.AndroidGradlePlugin}"
 	}
 
 	object Kotlin {
