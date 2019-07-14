@@ -9,14 +9,13 @@ val VERSION_MOCKITO: String by project
 val VERSION_MOCKITO_KOTLIN: String by project
 val VERSION_MOCKK: String by project
 
-val VERSION_JETBRAINS_ANNOTATIONS: String by project
 val VERSION_LINT: String by project
 
 dependencies {
 	api(gradleApi())
 	api(gradleTestKit())
 
-	api("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
+	api(Libs.Annotations.jetbrains)
 
 	api(Libs.JUnit4.library) // needed for GradleRunnerRule superclass even when using Extension
 	api(Libs.JUnit5.api)

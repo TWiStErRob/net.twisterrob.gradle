@@ -38,6 +38,27 @@ object Libs {
 		const val JUnit5 = "5.4.0"
 	}
 
+	object Annotations {
+
+		private const val versionJsr305 = "3.0.2"
+
+		/**
+		 * @see <a href="https://github.com/JetBrains/java-annotations">Repository</a>
+		 * @see <a href="http://repo1.maven.org/maven2/org/jetbrains/annotations/">Artifacts</a>
+		 */
+		private const val versionJetbrains = "17.0.0"
+
+		/**
+		 * <a href="https://jcp.org/en/jsr/detail?id=305">JSR 305: Annotations for Software Defect Detection</a>
+		 */
+		const val jsr305 = "com.google.code.findbugs:jsr305:${versionJsr305}"
+
+		/**
+		 * @see <a href="https://www.jetbrains.com/help/idea/annotating-source-code.html">Documentation</a>
+		 */
+		const val jetbrains = "org.jetbrains:annotations:${versionJetbrains}"
+	}
+
 	object Android {
 		const val plugin = "com.android.tools.build:gradle:${Versions.AndroidGradlePlugin}"
 	}
