@@ -5,8 +5,6 @@ plugins {
 
 base.archivesBaseName = "twister-quality"
 
-val VERSION_VIOLATIONS: String by project
-
 dependencies {
 	implementation(project(":common"))
 	implementation(project(":checkstyle"))
@@ -14,7 +12,7 @@ dependencies {
 
 	compileOnly(Libs.Android.plugin)
 //	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")
-	implementation("se.bjurr.violations:violations-lib:${VERSION_VIOLATIONS}")
+	implementation(Libs.violations)
 
 	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))

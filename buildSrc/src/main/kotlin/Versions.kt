@@ -144,4 +144,27 @@ object Libs {
 
 		const val new = "org.hamcrest:java-hamcrest:${versionNew}"
 	}
+
+	object JFixture {
+		/**
+		 * @see <a href="https://github.com/FlexTradeUKLtd/jfixture/releases">GitHub releases</a>
+		 */
+		private const val version = "2.7.2"
+
+		const val java = "com.flextrade.jfixture:jfixture:${version}"
+		const val kotlin = "com.flextrade.jfixture:kfixture:1.0.0"
+	}
+
+	/**
+	 * @see <a href="https://github.com/mockk/mockk/releases">GitHub releases</a>
+	 */
+	private const val mockkVersion = "1.9.1.kotlin12"
+	const val mockk = "io.mockk:mockk:${mockkVersion}"
+
+	/**
+	 * @see <a href="https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md">Changelog</a>
+	 * @see <a href="https://github.com/tomasbjerre/violations-lib/releases">GitHub Releases</a>
+	 */
+	private const val violationsVersion = "1.81"
+	const val violations = "se.bjurr.violations:violations-lib:${violationsVersion}"
 }

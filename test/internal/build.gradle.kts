@@ -2,10 +2,6 @@ plugins {
 	`java-library`
 }
 
-val VERSION_JFIXTURE: String by project
-
-val VERSION_MOCKK: String by project
-
 val VERSION_LINT: String by project
 
 dependencies {
@@ -25,9 +21,9 @@ dependencies {
 	api(Libs.Mockito.junit5)
 	api(Libs.Mockito.kotlin)
 
-	api("io.mockk:mockk:${VERSION_MOCKK}")
+	api(Libs.mockk)
 
-	api("com.flextrade.jfixture:jfixture:${VERSION_JFIXTURE}")
+	api(Libs.JFixture.java)
 
 	// TODO use buildSrc sourceOnly configuration
 	// only here so IDEA can browse the source files of this dependency when getting a stack trace or finding usages
