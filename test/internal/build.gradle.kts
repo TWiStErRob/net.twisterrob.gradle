@@ -2,8 +2,6 @@ plugins {
 	`java-library`
 }
 
-val VERSION_JUNIT: String by project
-val VERSION_JUNIT_JUPITER: String by project
 val VERSION_HAMCREST: String by project
 val VERSION_JFIXTURE: String by project
 
@@ -20,10 +18,10 @@ dependencies {
 
 	api("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
 
-	api("junit:junit:${VERSION_JUNIT}") // needed for GradleRunnerRule superclass even when using Extension
-	api("org.junit.jupiter:junit-jupiter-api:$VERSION_JUNIT_JUPITER")
-	api("org.junit.jupiter:junit-jupiter-params:$VERSION_JUNIT_JUPITER")
-	runtimeOnly("org.junit.jupiter:junit-jupiter-engine:$VERSION_JUNIT_JUPITER")
+	api(Libs.JUnit4.library) // needed for GradleRunnerRule superclass even when using Extension
+	api(Libs.JUnit5.api)
+	api(Libs.JUnit5.params)
+	runtimeOnly(Libs.JUnit5.engine)
 
 	api("org.hamcrest:java-hamcrest:${VERSION_HAMCREST}")
 

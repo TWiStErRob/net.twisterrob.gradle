@@ -1,3 +1,6 @@
+import Libs.JUnit5.api
+import Libs.JUnit5.engine
+import Libs.JUnit5.vintage
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencyResolveDetails
 
@@ -26,6 +29,13 @@ object Libs {
 		 */
 		@Suppress("KDocUnresolvedReference")
 		const val AndroidLint = "26.5.3"
+
+		const val JUnit4 = "4.13"
+
+		/**
+		 * @see <a href="https://junit.org/junit5/docs/current/release-notes/index.html">Changelog</a>
+		 */
+		const val JUnit5 = "5.4.0"
 	}
 
 	object Android {
@@ -67,5 +77,27 @@ object Libs {
 				}
 			}
 		}
+	}
+
+	object JUnit4 {
+		const val library = "junit:junit:${Versions.JUnit4}"
+	}
+
+	/**
+	 * JUnit 5 = JUnit Platform ([api]) + JUnit Jupiter ([engine]) + JUnit Vintage ([vintage])
+	 */
+	object JUnit5 {
+
+		const val api = "org.junit.jupiter:junit-jupiter-api:${Versions.JUnit5}"
+		const val params = "org.junit.jupiter:junit-jupiter-params:${Versions.JUnit5}"
+		/**
+		 * `runtimeOnly` dependency, because it implements some interfaces from [api], but doesn't need to be visible to user.
+		 * @see <a href="https://junit.org/junit5/docs/current/user-guide/index.html#running-tests-build-gradle-engines-configure">Engines</a>
+		 */
+		const val engine = "org.junit.jupiter:junit-jupiter-engine:${Versions.JUnit5}"
+		/**
+		 * `runtimeOnly` dependency, because it implements some interfaces from [api], but doesn't need to be visible to user.
+		 */
+		const val vintage = "org.junit.vintage:junit-vintage-engine:${Versions.JUnit5}"
 	}
 }
