@@ -1,3 +1,5 @@
+import Libs.Kotlin.replaceKotlinJre7WithJdk7
+import Libs.Kotlin.replaceKotlinJre8WithJdk8
 import com.jfrog.bintray.gradle.BintrayExtension
 import groovy.util.Node
 import groovy.util.NodeList
@@ -19,8 +21,6 @@ plugins {
 
 val VERSION: String by project
 val VERSION_JAVA: String by project
-val VERSION_KOTLIN: String by project
-val VERSION_KOTLIN_DSL: String by project
 
 group = rootProject.name
 description = "Quality plugin for Gradle that supports Android flavors."
@@ -52,23 +52,18 @@ subprojects {
 allprojects {
 
 	configurations.all {
+		replaceKotlinJre7WithJdk7()
+		replaceKotlinJre8WithJdk8()
 		resolutionStrategy {
-			eachDependency {
-				if (requested.group == "org.jetbrains.kotlin") {
-					because("https://issuetracker.google.com/issues/72274424")
-					when (requested.name) {
-						"kotlin-stdlib-jre7" -> useTarget("${target.group}:kotlin-stdlib-jdk7:${target.version}")
-						"kotlin-stdlib-jre8" -> useTarget("${target.group}:kotlin-stdlib-jdk8:${target.version}")
-					}
-				}
-			}
 			// make sure we don't have many versions of Kotlin lying around
-			force("org.jetbrains.kotlin:kotlin-stdlib:${VERSION_KOTLIN}")
-			force("org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}")
-			force("org.jetbrains.kotlin:kotlin-stdlib-jre7:${VERSION_KOTLIN}")
-			force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${VERSION_KOTLIN}")
-			force("org.jetbrains.kotlin:kotlin-stdlib-jre8:${VERSION_KOTLIN}")
-			force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${VERSION_KOTLIN}")
+			force(Libs.Kotlin.stdlib)
+			force(Libs.Kotlin.reflect)
+			@Suppress("DEPRECATION") // force version so that it's upgraded correctly with useTarget
+			force(Libs.Kotlin.stdlibJre7)
+			force(Libs.Kotlin.stdlibJdk7)
+			@Suppress("DEPRECATION") // force version so that it's upgraded correctly with useTarget
+			force(Libs.Kotlin.stdlibJre8)
+			force(Libs.Kotlin.stdlibJdk8)
 		}
 	}
 
@@ -136,14 +131,14 @@ allprojects {
 	plugins.withId("kotlin") {
 		dependencies {
 			//add("implementation", "org.funktionale:funktionale-partials:1.2")
-			add("compileOnly", "org.gradle:gradle-kotlin-dsl:${VERSION_KOTLIN_DSL}") {
+			add("compileOnly", Libs.Kotlin.dsl) {
 				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
 			}
-			add("implementation", "org.jetbrains.kotlin:kotlin-stdlib:${VERSION_KOTLIN}")
-			add("implementation", "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${VERSION_KOTLIN}")
-			add("implementation", "org.jetbrains.kotlin:kotlin-reflect:${VERSION_KOTLIN}")
+			add("implementation", Libs.Kotlin.stdlib)
+			add("implementation", Libs.Kotlin.stdlibJdk8)
+			add("implementation", Libs.Kotlin.reflect)
 
-			add("testImplementation", "org.jetbrains.kotlin:kotlin-test:${VERSION_KOTLIN}")
+			add("testImplementation", Libs.Kotlin.test)
 		}
 	}
 
