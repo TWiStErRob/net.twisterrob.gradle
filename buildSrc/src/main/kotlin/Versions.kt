@@ -138,4 +138,10 @@ object Libs {
 		const val junit5 = "org.mockito:mockito-junit-jupiter:${version}"
 		const val kotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${versionMockitoKotlin}"
 	}
+
+	object Hamcrest {
+		private const val versionNew = "2.0.0.0"
+
+		const val new = "org.hamcrest:java-hamcrest:${versionNew}"
+	}
 }

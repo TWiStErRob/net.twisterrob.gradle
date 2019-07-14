@@ -2,7 +2,6 @@ plugins {
 	`java-library`
 }
 
-val VERSION_HAMCREST: String by project
 val VERSION_JFIXTURE: String by project
 
 val VERSION_MOCKK: String by project
@@ -20,7 +19,7 @@ dependencies {
 	api(Libs.JUnit5.params)
 	runtimeOnly(Libs.JUnit5.engine)
 
-	api("org.hamcrest:java-hamcrest:${VERSION_HAMCREST}")
+	api(Libs.Hamcrest.new)
 
 	api(Libs.Mockito.core)
 	api(Libs.Mockito.junit5)
