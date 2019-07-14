@@ -43,7 +43,7 @@ subprojects {
 
 	tasks {
 		register<Jar>("sourcesJar") {
-			classifier = "sources"
+			archiveClassifier.set("sources")
 			from(java.sourceSets["main"].kotlin.sourceDirectories)
 		}
 	}
