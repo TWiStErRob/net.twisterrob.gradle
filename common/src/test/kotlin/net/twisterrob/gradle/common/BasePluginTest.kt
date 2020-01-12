@@ -32,6 +32,7 @@ class BasePluginTest {
 	@Test fun `passes for newer version`() {
 		verifyVersionAllowed("5.0")
 		verifyVersionAllowed("5.4.1")
+		verifyVersionAllowed("5.6.4")
 	}
 
 	@Test fun `passes compatible version`() {
