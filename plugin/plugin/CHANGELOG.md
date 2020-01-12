@@ -5,6 +5,7 @@
  - Use Java 8 as target version to allow for desugaring (e.g. default interface methods)
  - Use Robolectric 4.3.1 for testing
  - Use JUnit 4.13 and newest Hamcrest for testing
+ - Use latest dex-member-list
  
 ### 3.3.2.14-28-28.0
  - AGP 3.3.2
