@@ -2,6 +2,7 @@
 
 ### 3.3.2.14-28-28.1
  - Allow to be applied on Gradle 5+
+ - Use Java 8 as target version to allow for desugaring (e.g. default interface methods)
  - Use Robolectric 4.3.1 for testing
  - Use JUnit 4.13 and newest Hamcrest for testing
  

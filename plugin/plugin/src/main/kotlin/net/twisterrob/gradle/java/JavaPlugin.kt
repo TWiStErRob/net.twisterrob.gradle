@@ -13,8 +13,6 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getPlugin
 import org.gradle.kotlin.dsl.withType
 
-private val DEFAULT_JAVA_VERSION = JavaVersion.VERSION_1_7
-private val DEFAULT_JAVA_TEST_VERSION = JavaVersion.VERSION_1_8
 private const val DEFAULT_ENCODING = "UTF-8"
 
 class JavaPlugin : BaseExposedPlugin() {
@@ -26,9 +24,9 @@ class JavaPlugin : BaseExposedPlugin() {
 			val android: BaseExtension = project.extensions["android"] as BaseExtension
 			with(android.compileOptions) {
 				encoding = DEFAULT_ENCODING
-				setDefaultJavaVersion(DEFAULT_JAVA_VERSION)
-				setSourceCompatibility(DEFAULT_JAVA_VERSION)
-				setTargetCompatibility(DEFAULT_JAVA_VERSION)
+				setDefaultJavaVersion(JavaVersion.VERSION_1_7)
+				setSourceCompatibility(JavaVersion.VERSION_1_7)
+				setTargetCompatibility(JavaVersion.VERSION_1_8)
 			}
 		} else {
 			project.plugins.apply("java")
@@ -36,8 +34,8 @@ class JavaPlugin : BaseExposedPlugin() {
 
 		if (project.plugins.hasPlugin(org.gradle.api.plugins.JavaPlugin::class.java)) {
 			with(project.convention.getPlugin<JavaPluginConvention>()) {
-				sourceCompatibility = DEFAULT_JAVA_VERSION
-				targetCompatibility = DEFAULT_JAVA_VERSION
+				sourceCompatibility = JavaVersion.VERSION_1_7
+				targetCompatibility = JavaVersion.VERSION_1_8
 
 				sourceSets["main"].compileClasspath += project.configurations.maybeCreate("provided")
 			}
@@ -53,7 +51,7 @@ class JavaPlugin : BaseExposedPlugin() {
 				options.compilerArgs.add("-Xlint:deprecation")
 			}
 			if (isTestTask && !isAndroidTest) {
-				changeCompatibility(DEFAULT_JAVA_TEST_VERSION)
+				changeCompatibility(JavaVersion.VERSION_1_8)
 			}
 
 			val compileVersion = JavaVersion.toVersion(sourceCompatibility)
@@ -65,7 +63,7 @@ class JavaPlugin : BaseExposedPlugin() {
 				doFirst {
 					if (isTestTask && !isAndroidTest) {
 						// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
-						changeCompatibility(DEFAULT_JAVA_TEST_VERSION)
+						changeCompatibility(JavaVersion.VERSION_1_8)
 					}
 					classpath += project.files(options.bootstrapClasspath)
 					fixClasspath(JavaVersion.toVersion(sourceCompatibility))
