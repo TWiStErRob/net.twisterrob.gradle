@@ -1,5 +1,8 @@
 ## 3.3.x
 
+### 3.3.2.14-28-28.2
+ - TODO
+
 ### 3.3.2.14-28-28.1
  - Allow to be applied on Gradle 5+
  - Use Java 8 as target version to allow for desugaring (e.g. default interface methods)
