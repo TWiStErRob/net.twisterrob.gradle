@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.android
 
-import com.jakewharton.dex.DexParser
+import com.jakewharton.dex.DexParser.Companion.toDexParser
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertNoTask
@@ -51,8 +51,8 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		result.assertSuccess(":assembleDebug")
 		result.assertSuccess(":assemble")
-		val releaseMethods = DexParser.fromFile(gradle.root.apk("release")).listMethods()
-		val debugMethods = DexParser.fromFile(gradle.root.apk("debug")).listMethods()
+		val releaseMethods = gradle.root.apk("release").toDexParser().listMethods()
+		val debugMethods = gradle.root.apk("debug").toDexParser().listMethods()
 		val unusedMethod = dexMethod("${packageName}.SomeClass", "unusedMethod")
 		val usedMethod = dexMethod("${packageName}.SomeClass", "usedMethod")
 		assertThat(debugMethods, hasItems(unusedMethod, usedMethod))

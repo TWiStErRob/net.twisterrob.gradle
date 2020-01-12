@@ -140,5 +140,5 @@ fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =
 		}
 
 		override fun matchesSafely(item: DexMethod) =
-			className == item.declaringType && methodName == item.name
+			className == item.declaringType.sourceName && methodName == item.name
 	}
