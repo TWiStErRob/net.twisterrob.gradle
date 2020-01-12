@@ -22,13 +22,12 @@ class TaskConfigurator<out T>(val task: T) where T : SourceTask {
 	 * @param relativeExceptions relative to `basePrefix`, no trailing slash
 	 */
 	fun excludeExcept(basePrefix: String, vararg relativeExceptions: String) {
-		val exactException = PatternMatcherFactory
-				.getPatternMatcher(false, true, "${basePrefix}/*")
+		val exactException = PatternMatcherFactory.compile(true, "${basePrefix}/*")
 		val exceptions = PatternSet()
 				.include("${basePrefix}/*")
 				.exclude(relativeExceptions.map { "${basePrefix}/${it}" })
 		task.source.matching(exceptions).visit {
-			if (it.isDirectory && exactException.isSatisfiedBy(it.relativePath)) {
+			if (it.isDirectory && exactException.matches(it.relativePath.segments, 0)) {
 				task.exclude(it.relativePath.pathString + "/**")
 			}
 		}
