@@ -170,7 +170,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.android-app'
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
-				testImplementation 'junit:junit:4.12'
+				testImplementation 'junit:junit:4.13'
 				testImplementation 'org.robolectric:robolectric:4.1'
 			}
 			// TODO AGP 3.3+ android.enableUnitTestBinaryResources=true crashes: https://issuetracker.google.com/issues/120098460
@@ -224,7 +224,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.android-app'
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
-				testImplementation 'junit:junit:4.12'
+				testImplementation 'junit:junit:4.13'
 				testImplementation 'org.robolectric:robolectric:4.1'
 			}
 			// TODO AGP 3.3+ android.enableUnitTestBinaryResources=true crashes: https://issuetracker.google.com/issues/120098460

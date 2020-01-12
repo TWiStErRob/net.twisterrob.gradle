@@ -1,5 +1,9 @@
 ## 3.3.x
 
+### 3.3.2.14-28-28.1
+ - Allow to be applied on Gradle 5+
+ - Use JUnit 4.13 and newest Hamcrest for testing
+ 
 ### 3.3.2.14-28-28.0
  - AGP 3.3.2
  - Gradle 4.10.3 (Gradle 4.10.1+)
