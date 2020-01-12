@@ -122,6 +122,55 @@ class GlobalLintGlobalFinalizerTaskTest {
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
 	}
 
+	@Test fun `ignores disabled submodule lint tasks (rootProject setup)`() {
+		`ignores disabled submodule lint tasks` {
+			it + """
+
+				evaluationDependsOn(':module2').tasks.getByName('lint').enabled = false
+			""".trimIndent()
+		}
+	}
+
+	@Test fun `ignores disabled submodule lint tasks (direct setup)`() {
+		`ignores disabled submodule lint tasks` {
+			gradle.buildFile.parentFile.resolve("module2/build.gradle").appendText("""
+
+				tasks.lint.enabled = false
+			""".trimIndent())
+			it
+		}
+	}
+
+	private fun `ignores disabled submodule lint tasks`(extraSetup: (String) -> String) {
+		`set up 3 modules with a lint failures`()
+
+		@Language("gradle")
+		var script = """
+			subprojects {
+				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
+			}
+			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
+		""".trimIndent()
+
+		script = extraSetup(script)
+
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(script, "lint")
+		}
+
+		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
+		assertThat(lintTasks, hasItems(":module1:lint", ":module2:lint", ":module3:lint"))
+		assertThat(lintTasks.last(), equalTo(":lint"))
+		assertEquals(TaskOutcome.SUCCESS, result.task(":module1:lint")!!.outcome)
+		assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lint")!!.outcome)
+		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
+		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
+		// se.bjurr.violations.lib.reports.Parser.findViolations swallows exceptions, so must check logs
+		result.assertNoOutputLine(Regex("""Error when parsing.* as ANDROIDLINT"""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 0 + 1} issues found"""))
+	}
+
 	@Test fun `fails the build on explicit invocation`() {
 		`set up 3 modules with a lint failures`()
 

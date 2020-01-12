@@ -1,8 +1,9 @@
 # Change Log
 
-## 0.10 *(2019-??-?? --- )*
- * ...
+## 0.10 *(2020-01-12 --- )*
 
+## Fixes
+ * Make sure nothing is logged when lint task is disabled.
 
 ## 0.9 *(2019-02-19 --- 2019-07-11)*
 
