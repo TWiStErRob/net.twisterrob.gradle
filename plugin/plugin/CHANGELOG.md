@@ -2,6 +2,7 @@
 
 ### 3.3.2.14-28-28.1
  - Allow to be applied on Gradle 5+
+ - Use Robolectric 4.3.1 for testing
  - Use JUnit 4.13 and newest Hamcrest for testing
  
 ### 3.3.2.14-28-28.0

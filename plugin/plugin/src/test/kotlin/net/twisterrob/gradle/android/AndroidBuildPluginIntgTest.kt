@@ -10,6 +10,12 @@ import java.time.LocalDate
 import java.time.ZoneOffset
 
 /**
+ * Note: if Robolectric tests fail with
+ * > java.lang.IllegalArgumentException: URI is not hierarchical
+ * >     at java.base/sun.nio.fs.WindowsUriSupport.fromUri(WindowsUriSupport.java:122)
+ *
+ * [Delete %TEMP%\robolectric-2 folder](https://github.com/robolectric/robolectric/issues/4567#issuecomment-475740375)
+ *
  * @see AndroidBuildPlugin
  */
 class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
@@ -150,7 +156,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
-					val res = org.robolectric.RuntimeEnvironment.application.resources
+					val res = androidx.test.core.app.ApplicationProvider
+							.getApplicationContext<android.content.Context>()
+							.resources
 					printProperty("in_prod=" + res.getBoolean(R.bool.in_prod) as Boolean)
 					printProperty("in_test=" + res.getBoolean(R.bool.in_test) as Boolean)
 					printProperty("app_package=" + res.getString(R.string.app_package) as String)
@@ -161,9 +169,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				}
 				private fun printProperty(prop: String) = println(BuildConfig.BUILD_TYPE + "." + prop)
 			}
-
 		""".trimIndent()
 		gradle.file(kotlinTestClass, "src/test/kotlin/test.kt")
+		gradle.file("android.enableUnitTestBinaryResources=true", "gradle.properties")
 
 		@Language("gradle")
 		val script = """
@@ -171,9 +179,12 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
 				testImplementation 'junit:junit:4.13'
-				testImplementation 'org.robolectric:robolectric:4.1'
+				testImplementation ('org.robolectric:robolectric:4.3.1') {
+					// https://github.com/robolectric/robolectric/issues/5245
+					exclude group: 'com.google.auto.service', module: 'auto-service'
+				}
+				testImplementation 'androidx.test:core:1.2.0'
 			}
-			// TODO AGP 3.3+ android.enableUnitTestBinaryResources=true crashes: https://issuetracker.google.com/issues/120098460
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test) {
 				//noinspection UnnecessaryQualifiedReference
@@ -225,9 +236,11 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
 				testImplementation 'junit:junit:4.13'
-				testImplementation 'org.robolectric:robolectric:4.1'
+				testImplementation ('org.robolectric:robolectric:4.3.1') {
+					// https://github.com/robolectric/robolectric/issues/5245
+					exclude group: 'com.google.auto.service', module: 'auto-service'
+				}
 			}
-			// TODO AGP 3.3+ android.enableUnitTestBinaryResources=true crashes: https://issuetracker.google.com/issues/120098460
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test) {
 				//noinspection UnnecessaryQualifiedReference
