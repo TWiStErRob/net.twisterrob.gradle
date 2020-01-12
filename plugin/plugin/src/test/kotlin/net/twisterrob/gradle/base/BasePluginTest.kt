@@ -14,10 +14,8 @@ class BasePluginTest {
 		}
 	}
 
-	@Test fun `fails for newer version`() {
-		assertFailsWith<ProjectConfigurationException> {
-			BasePlugin.checkGradleVersion(GradleVersion.version("5.0"))
-		}
+	@Test fun `allows newer version`() {
+		BasePlugin.checkGradleVersion(GradleVersion.version("5.0"))
 	}
 
 	@Test fun `fails for incompatible version`() {
