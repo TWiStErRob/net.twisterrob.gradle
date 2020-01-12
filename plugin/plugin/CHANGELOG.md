@@ -1,7 +1,7 @@
 ## 3.3.x
 
 ### 3.3.2.14-28-28.2
- - TODO
+ - Revert Kotlin to compatible 1.3.21 version
 
 ### 3.3.2.14-28-28.1
  - Allow to be applied on Gradle 5+
