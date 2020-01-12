@@ -6,6 +6,7 @@
 ### New
  * Gradle 5 compatible (up to 5.6.4) (#84)
  * Use Gradle 5.6.4 to build (#84)
+ * Use Kotlin DSL 5.6.4 (#84)
 
 ## Fixes
  * Make sure nothing is logged when lint task is disabled.
