@@ -1,9 +1,15 @@
 # Change Log
 
+
 ## 0.10 *(2020-01-12 --- )*
+
+### New
+ * Gradle 5 compatible (up to 5.6.4) (#84)
+ * Use Gradle 5.6.4 to build (#84)
 
 ## Fixes
  * Make sure nothing is logged when lint task is disabled.
+
 
 ## 0.9 *(2019-02-19 --- 2019-07-11)*
 
@@ -27,6 +33,7 @@
  * Use Gradle 4.10.3 to build (#76/#77)
  * Use Gradle 5.4.1 to build (#78)
 
+
 ## 0.8 *(2018-10-14 --- 2019-02-18)*
 
 ### Breaking
@@ -49,6 +56,7 @@
  * Lot of internal cleanup and tests (#45, #47, #10/#22/#42, #40/#41)
  * Better travis JUnit output: folded stdout/exception blocks (#44)
 
+
 ## 0.7 *(2018-10-01 --- 2018-10-10)*
  * Publish `-sources.jar` files (#13)
  * Android Gradle Plugin 3.2.0 (#12)
@@ -60,15 +68,18 @@
  * Tasks are now automatically added when applying `quality` plugin (#14, #18, #20, #21)
  * Fixed empty data handling in TableGenerator (#16)
 
+
 ## 0.6 *(2018-08-17 --- 2018-10-01)*
  * Gradle: 4.5.1
  * Android Gradle Plugin 3.1.4
  * Kotlin 1.2.71 w/ DSL 1.0.RC11
 
+
 ## 0.5 *(2018-04-02 --- 2018-04-16)*
  * Gradle: 4.4.1
  * Android Gradle Plugin 3.1.1
  * more test coverage
+
 
 ## 0.4 *(2018-01-28 --- 2018-04-02)*
  * Minor fixes and more tests
