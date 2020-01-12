@@ -39,7 +39,9 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.android-app'
 			//android.twisterrob.addRunTasks = true // default
 			afterEvaluate {
+				// don't try to install the APK, as we have no emulator
 				tasks.runDebug.dependsOn -= tasks.installDebug
+				// but still assemble the APK, as the run task needs AndroidManifest.xml
 				tasks.runDebug.dependsOn tasks.assembleDebug
 			}
 		""".trimIndent()

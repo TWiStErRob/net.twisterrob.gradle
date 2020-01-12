@@ -11,11 +11,12 @@ class ResilientTestReport(
 	reportDir: File
 ) : TestReport(reportType, resultDir, reportDir) {
 
-	override fun generateReport() {
+	override fun generateReport(): CompositeTestResults {
 		val model = loadModel()
 		val allClassResults = model.packages.flatMap { it.classes }
 		allClassResults.forEach(::polyfillResults)
 		generateFiles(model)
+		return model
 	}
 
 	private fun polyfillResults(classResults: ClassTestResults) {

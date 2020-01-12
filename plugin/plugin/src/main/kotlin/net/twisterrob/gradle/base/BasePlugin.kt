@@ -37,7 +37,7 @@ open class BasePlugin : Plugin<Project> {
 				throw ProjectConfigurationException(
 					"Gradle version ${required}+ is required; the current version is ${current}."
 							+ " Edit the distributionUrl in ${file.absolutePath}.",
-					null
+					null as Throwable?
 				)
 			}
 		}

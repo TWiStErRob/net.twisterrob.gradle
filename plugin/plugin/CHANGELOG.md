@@ -1,3 +1,11 @@
+## 3.4.x
+
+### 3.4.2.14-28-28.0
+ - AGP 3.4.2  
+   Disabled R8 in tests, using Proguard still
+ - Gradle 5.1.1
+ - Kotlin 1.3.31 / DSL 1.1.3
+
 ## 3.3.x
 
 ### 3.3.2.14-28-28.2

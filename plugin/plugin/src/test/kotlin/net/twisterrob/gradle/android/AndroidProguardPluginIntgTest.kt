@@ -23,7 +23,7 @@ import org.junit.Test
  */
 class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
-	@Test fun `default build setup minifies only release`() {
+	@Test fun `default build setup minifies only release (debug) and (release)`() {
 		@Language("java")
 		val someClass = """
 			package ${packageName};
