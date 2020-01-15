@@ -67,6 +67,10 @@ class PmdTaskTest_ConfigLocation {
 		val script = """
 			subprojects { // i.e. :module
 				apply plugin: 'net.twisterrob.pmd'
+				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
+				pmd {
+					toolVersion = '5.6.1' // Gradle 4.10.3
+				}
 				tasks.withType(${Pmd::class.java.name}) {
 					// output all violations to the console so that we can parse the results
 					consoleOutput = true
