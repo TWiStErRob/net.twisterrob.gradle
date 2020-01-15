@@ -86,6 +86,8 @@ Running a test in embedded mode allows us to put breakpoints inside the tasks an
  * Terminal: run as `gradlew --no-daemon -Dorg.gradle.debug=true <tasks...>`
  * IDEA: attach Remote debugger (from Run configurations) with socket on `localhost:5005`
 
+### Recipes
+
 #### Dump applied `plugins`
 ```groovy
 gradle.buildFile << """\
@@ -95,4 +97,12 @@ gradle.buildFile << """\
 		}
 	}
 """.stripIndent()
+```
+
+#### Ignore test for specific Gradle version
+```kotlin
+val gradleVersion: String by systemProperty("net.twisterrob.gradle.runner.gradleVersion")
+assumeTrue(GradleVersion.version(gradleVersion) < GradleVersion.version("5.0")) {
+    "Gradle 5 bumped PMD version and broke classpath, TODO"
+    }
 ```

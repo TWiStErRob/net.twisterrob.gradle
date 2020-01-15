@@ -224,10 +224,6 @@ class PmdPluginTest {
 	}
 
 	@Test fun `allows ruleset inclusion from all sources`() {
-		val gradleVersion: String by systemProperty("net.twisterrob.gradle.runner.gradleVersion")
-		assumeTrue(GradleVersion.version(gradleVersion) < GradleVersion.version("5.0")) {
-			"Gradle 5 bumped PMD version and broke classpath, TODO"
-		}
 		gradle
 			.basedOn("android-root_app")
 			.basedOn("pmd-multi_file_config")
@@ -235,6 +231,9 @@ class PmdPluginTest {
 		@Language("gradle")
 		val applyPmd = """
 			apply plugin: 'net.twisterrob.pmd'
+			pmd {
+				toolVersion = '5.6.1'
+			}
 			tasks.withType(${Pmd::class.java.name}) {
 				// output all violations to the console so that we can parse the results
 				consoleOutput = true
