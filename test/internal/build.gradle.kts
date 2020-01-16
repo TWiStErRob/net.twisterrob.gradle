@@ -2,44 +2,32 @@ plugins {
 	`java-library`
 }
 
-val VERSION_JUNIT: String by project
-val VERSION_JUNIT_JUPITER: String by project
-val VERSION_HAMCREST: String by project
-val VERSION_JFIXTURE: String by project
-
-val VERSION_MOCKITO: String by project
-val VERSION_MOCKITO_KOTLIN: String by project
-val VERSION_MOCKK: String by project
-
-val VERSION_JETBRAINS_ANNOTATIONS: String by project
-val VERSION_LINT: String by project
-
 dependencies {
 	api(gradleApi())
 	api(gradleTestKit())
 
-	api("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
+	api(Libs.Annotations.jetbrains)
 
-	api("junit:junit:${VERSION_JUNIT}") // needed for GradleRunnerRule superclass even when using Extension
-	api("org.junit.jupiter:junit-jupiter-api:$VERSION_JUNIT_JUPITER")
-	api("org.junit.jupiter:junit-jupiter-params:$VERSION_JUNIT_JUPITER")
-	runtimeOnly("org.junit.jupiter:junit-jupiter-engine:$VERSION_JUNIT_JUPITER")
+	api(Libs.JUnit4.library) // needed for GradleRunnerRule superclass even when using Extension
+	api(Libs.JUnit5.api)
+	api(Libs.JUnit5.params)
+	runtimeOnly(Libs.JUnit5.engine)
 
-	api("org.hamcrest:java-hamcrest:${VERSION_HAMCREST}")
+	api(Libs.Hamcrest.new)
 
-	api("org.mockito:mockito-core:${VERSION_MOCKITO}")
-	api("org.mockito:mockito-junit-jupiter:${VERSION_MOCKITO}")
-	api("com.nhaarman.mockitokotlin2:mockito-kotlin:${VERSION_MOCKITO_KOTLIN}")
+	api(Libs.Mockito.core)
+	api(Libs.Mockito.junit5)
+	api(Libs.Mockito.kotlin)
 
-	api("io.mockk:mockk:${VERSION_MOCKK}")
+	api(Libs.mockk)
 
-	api("com.flextrade.jfixture:jfixture:${VERSION_JFIXTURE}")
+	api(Libs.JFixture.java)
 
 	// TODO use buildSrc sourceOnly configuration
 	// only here so IDEA can browse the source files of this dependency when getting a stack trace or finding usages
-	testRuntimeOnly("com.android.tools.lint:lint:${VERSION_LINT}") { isTransitive = false }
-	testRuntimeOnly("com.android.tools.lint:lint-api:${VERSION_LINT}") { isTransitive = false }
-	testRuntimeOnly("com.android.tools.lint:lint-gradle:${VERSION_LINT}") { isTransitive = false }
-	testRuntimeOnly("com.android.tools.lint:lint-gradle-api:${VERSION_LINT}") { isTransitive = false }
-	testRuntimeOnly("com.android.tools.lint:lint-checks:${VERSION_LINT}") { isTransitive = false }
+	testRuntimeOnly(Libs.Android.lint) { isTransitive = false }
+	testRuntimeOnly(Libs.Android.lintApi) { isTransitive = false }
+	testRuntimeOnly(Libs.Android.lintGradle) { isTransitive = false }
+	testRuntimeOnly(Libs.Android.lintGradleApi) { isTransitive = false }
+	testRuntimeOnly(Libs.Android.lintChecks) { isTransitive = false }
 }

@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.common
 
-import com.android.annotations.VisibleForTesting
+import com.google.common.annotations.VisibleForTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.tooling.BuildException

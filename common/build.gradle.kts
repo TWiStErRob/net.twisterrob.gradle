@@ -5,17 +5,14 @@ plugins {
 
 base.archivesBaseName = "twister-quality-common"
 
-val VERSION_ANDROID_PLUGIN: String by project
-val VERSION_JSR305_ANNOTATIONS: String by project
-
 dependencies {
 	implementation(gradleApi())
 
-	compileOnly("com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}")
-	compileOnly("com.google.code.findbugs:jsr305:${VERSION_JSR305_ANNOTATIONS}")
+	compileOnly(Libs.Android.plugin)
+	compileOnly(Libs.Annotations.jsr305)
 
 	testImplementation(project(":test:internal"))
-	testImplementation("com.google.guava:guava:22.0")
+	testImplementation(Libs.guava)
 }
 
 tasks.withType<JavaCompile> {

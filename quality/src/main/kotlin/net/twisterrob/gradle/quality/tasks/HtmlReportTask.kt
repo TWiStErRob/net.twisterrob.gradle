@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
-import com.android.annotations.VisibleForTesting
+import com.google.common.annotations.VisibleForTesting
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.Action
 import org.gradle.api.GradleException

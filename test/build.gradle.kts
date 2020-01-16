@@ -5,20 +5,15 @@ plugins {
 
 base.archivesBaseName = "twister-gradle-test"
 
-val VERSION_JUNIT: String by project
-val VERSION_JUNIT_JUPITER: String by project
-val VERSION_JSR305_ANNOTATIONS: String by project
-val VERSION_JETBRAINS_ANNOTATIONS: String by project
-
 dependencies {
 	compileOnly(gradleApi())
 	compileOnly(gradleTestKit())
 
 	implementation(project(":common"))
-	compileOnly("junit:junit:${VERSION_JUNIT}")
-	compileOnly("org.junit.jupiter:junit-jupiter-api:$VERSION_JUNIT_JUPITER")
-	compileOnly("com.google.code.findbugs:jsr305:${VERSION_JSR305_ANNOTATIONS}")
-	compileOnly("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
+	compileOnly(Libs.JUnit4.library)
+	compileOnly(Libs.JUnit5.api)
+	compileOnly(Libs.Annotations.jsr305)
+	compileOnly(Libs.Annotations.jetbrains)
 
 	testImplementation(gradleApi())
 	testImplementation(gradleTestKit())

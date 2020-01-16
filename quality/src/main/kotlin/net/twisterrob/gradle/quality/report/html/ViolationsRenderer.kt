@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.quality.report.html
 
-import com.android.annotations.VisibleForTesting
+import com.google.common.annotations.VisibleForTesting
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.ArchiveContext
