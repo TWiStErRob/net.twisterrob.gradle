@@ -166,4 +166,7 @@ object Libs {
 	 */
 	private const val violationsVersion = "1.81"
 	const val violations = "se.bjurr.violations:violations-lib:${violationsVersion}"
+
+	private const val guavaVersion = "22.0"
+	const val guava = "com.google.guava:guava:${guavaVersion}"
 }

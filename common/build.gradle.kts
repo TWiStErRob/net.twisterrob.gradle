@@ -12,7 +12,7 @@ dependencies {
 	compileOnly(Libs.Annotations.jsr305)
 
 	testImplementation(project(":test:internal"))
-	testImplementation("com.google.guava:guava:22.0")
+	testImplementation(Libs.guava)
 }
 
 tasks.withType<JavaCompile> {
