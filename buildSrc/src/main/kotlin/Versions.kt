@@ -30,19 +30,26 @@ object Libs {
 
 	object Android {
 		/**
-		 * @see AndroidLint which is affected by this
+		 * @see versionLint which is affected by this
 		 */
-		private const val AndroidGradlePlugin = "3.5.3"
+		private const val versionAndroidGradlePlugin = "3.5.3"
 
 		/**
+		 * = 23.0.0 + [versionAndroidGradlePlugin].
+		 *
 		 * @see com.android.build.gradle.BasePlugin.createLintClasspathConfiguration
 		 * @see `builder-model//version.properties`
-		 * @see VERSION_LINT in `gradle.properties`
 		 */
 		@Suppress("KDocUnresolvedReference")
-		private const val AndroidLint = "26.5.3"
+		private const val versionLint = "26.5.3"
 
-		const val plugin = "com.android.tools.build:gradle:${AndroidGradlePlugin}"
+		const val plugin = "com.android.tools.build:gradle:${versionAndroidGradlePlugin}"
+
+		const val lint = "com.android.tools.lint:lint:${versionLint}"
+		const val lintApi = "com.android.tools.lint:lint-api:${versionLint}"
+		const val lintGradle = "com.android.tools.lint:lint-gradle:${versionLint}"
+		const val lintGradleApi = "com.android.tools.lint:lint-gradle-api:${versionLint}"
+		const val lintChecks = "com.android.tools.lint:lint-checks:${versionLint}"
 	}
 
 	object Kotlin {

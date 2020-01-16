@@ -2,8 +2,6 @@ plugins {
 	`java-library`
 }
 
-val VERSION_LINT: String by project
-
 dependencies {
 	api(gradleApi())
 	api(gradleTestKit())
@@ -27,9 +25,9 @@ dependencies {
 
 	// TODO use buildSrc sourceOnly configuration
 	// only here so IDEA can browse the source files of this dependency when getting a stack trace or finding usages
-	testRuntimeOnly("com.android.tools.lint:lint:${VERSION_LINT}") { isTransitive = false }
-	testRuntimeOnly("com.android.tools.lint:lint-api:${VERSION_LINT}") { isTransitive = false }
-	testRuntimeOnly("com.android.tools.lint:lint-gradle:${VERSION_LINT}") { isTransitive = false }
-	testRuntimeOnly("com.android.tools.lint:lint-gradle-api:${VERSION_LINT}") { isTransitive = false }
-	testRuntimeOnly("com.android.tools.lint:lint-checks:${VERSION_LINT}") { isTransitive = false }
+	testRuntimeOnly(Libs.Android.lint) { isTransitive = false }
+	testRuntimeOnly(Libs.Android.lintApi) { isTransitive = false }
+	testRuntimeOnly(Libs.Android.lintGradle) { isTransitive = false }
+	testRuntimeOnly(Libs.Android.lintGradleApi) { isTransitive = false }
+	testRuntimeOnly(Libs.Android.lintChecks) { isTransitive = false }
 }
