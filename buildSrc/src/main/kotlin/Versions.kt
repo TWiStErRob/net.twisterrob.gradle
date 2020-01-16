@@ -1,6 +1,7 @@
 import Libs.JUnit5.api
 import Libs.JUnit5.engine
 import Libs.JUnit5.vintage
+import org.gradle.api.JavaVersion
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencyResolveDetails
 
@@ -153,6 +154,8 @@ object Libs {
 		const val java = "com.flextrade.jfixture:jfixture:${version}"
 		const val kotlin = "com.flextrade.jfixture:kfixture:1.0.0"
 	}
+
+	val javaVersion = JavaVersion.VERSION_1_8
 
 	/**
 	 * @see <a href="https://github.com/mockk/mockk/releases">GitHub releases</a>

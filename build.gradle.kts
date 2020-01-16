@@ -20,7 +20,6 @@ plugins {
 }
 
 val VERSION: String by project
-val VERSION_JAVA: String by project
 
 group = rootProject.name
 description = "Quality plugin for Gradle that supports Android flavors."
@@ -87,7 +86,7 @@ allprojects {
 		}
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions.verbose = true
-			kotlinOptions.jvmTarget = JavaVersion.toVersion(VERSION_JAVA).toString()
+			kotlinOptions.jvmTarget = Libs.javaVersion.toString()
 			kotlinOptions.allWarningsAsErrors = true
 		}
 
@@ -144,8 +143,8 @@ allprojects {
 
 	plugins.withId("java") {
 		val java = convention.getPluginByName<JavaPluginConvention>("java")
-		java.sourceCompatibility = JavaVersion.toVersion(VERSION_JAVA)
-		java.targetCompatibility = JavaVersion.toVersion(VERSION_JAVA)
+		java.sourceCompatibility = Libs.javaVersion
+		java.targetCompatibility = Libs.javaVersion
 		(tasks["test"] as Test).testLogging.events("passed", "skipped", "failed")
 		afterEvaluate {
 			with(tasks["jar"] as Jar) {
