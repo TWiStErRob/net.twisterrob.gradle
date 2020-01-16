@@ -5,38 +5,6 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencyResolveDetails
 
 object Libs {
-	private object Versions {
-		/**
-		 * @see <a href="https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md">Changelog</a>
-		 */
-		const val Kotlin = "1.3.50"
-
-		/**
-		 * @see <a href="https://github.com/gradle/kotlin-dsl/releases">GitHub Releases</a>
-		 * @see <a href="https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/">Artifacts</a>
-		 */
-		const val KotlinDSL = "5.6.4"
-
-		/**
-		 * @see AndroidLint which is affected by this
-		 */
-		const val AndroidGradlePlugin = "3.5.3"
-
-		/**
-		 * @see com.android.build.gradle.BasePlugin.createLintClasspathConfiguration
-		 * @see `builder-model//version.properties`
-		 * @see VERSION_LINT in `gradle.properties`
-		 */
-		@Suppress("KDocUnresolvedReference")
-		const val AndroidLint = "26.5.3"
-
-		const val JUnit4 = "4.13"
-
-		/**
-		 * @see <a href="https://junit.org/junit5/docs/current/release-notes/index.html">Changelog</a>
-		 */
-		const val JUnit5 = "5.4.0"
-	}
 
 	object Annotations {
 
@@ -60,22 +28,46 @@ object Libs {
 	}
 
 	object Android {
-		const val plugin = "com.android.tools.build:gradle:${Versions.AndroidGradlePlugin}"
+		/**
+		 * @see AndroidLint which is affected by this
+		 */
+		private const val AndroidGradlePlugin = "3.5.3"
+
+		/**
+		 * @see com.android.build.gradle.BasePlugin.createLintClasspathConfiguration
+		 * @see `builder-model//version.properties`
+		 * @see VERSION_LINT in `gradle.properties`
+		 */
+		@Suppress("KDocUnresolvedReference")
+		private const val AndroidLint = "26.5.3"
+
+		const val plugin = "com.android.tools.build:gradle:${AndroidGradlePlugin}"
 	}
 
 	object Kotlin {
-		const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.Kotlin}"
-		const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.Kotlin}"
-		const val test = "org.jetbrains.kotlin:kotlin-test:${Versions.Kotlin}"
-		const val stdlibJdk7 = "org.jetbrains.kotlin:kotlin-stdlib-jre8:${Versions.Kotlin}"
-		const val stdlibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.Kotlin}"
+		/**
+		 * @see <a href="https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md">Changelog</a>
+		 */
+		private const val version = "1.3.50"
 
-		const val dsl = "org.gradle:gradle-kotlin-dsl:${Versions.KotlinDSL}"
+		/**
+		 * @see <a href="https://github.com/gradle/kotlin-dsl/releases">GitHub Releases</a>
+		 * @see <a href="https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/">Artifacts</a>
+		 */
+		private const val versionDSL = "5.6.4"
+
+		const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${version}"
+		const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${version}"
+		const val test = "org.jetbrains.kotlin:kotlin-test:${version}"
+		const val stdlibJdk7 = "org.jetbrains.kotlin:kotlin-stdlib-jre8:${version}"
+		const val stdlibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
+
+		const val dsl = "org.gradle:gradle-kotlin-dsl:${versionDSL}"
 
 		@Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk7"))
-		const val stdlibJre7 = "org.jetbrains.kotlin:kotlin-stdlib-jre7:${Versions.Kotlin}"
+		const val stdlibJre7 = "org.jetbrains.kotlin:kotlin-stdlib-jre7:${version}"
 		@Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk8"))
-		const val stdlibJre8 = "org.jetbrains.kotlin:kotlin-stdlib-jre8:${Versions.Kotlin}"
+		const val stdlibJre8 = "org.jetbrains.kotlin:kotlin-stdlib-jre8:${version}"
 
 		fun Configuration.replaceKotlinJre7WithJdk7() {
 			resolutionStrategy.eachDependency { replaceJreWithJdk(7) }
@@ -101,7 +93,9 @@ object Libs {
 	}
 
 	object JUnit4 {
-		const val library = "junit:junit:${Versions.JUnit4}"
+		private const val version = "4.13"
+
+		const val library = "junit:junit:${version}"
 	}
 
 	/**
@@ -109,17 +103,22 @@ object Libs {
 	 */
 	object JUnit5 {
 
-		const val api = "org.junit.jupiter:junit-jupiter-api:${Versions.JUnit5}"
-		const val params = "org.junit.jupiter:junit-jupiter-params:${Versions.JUnit5}"
+		/**
+		 * @see <a href="https://junit.org/junit5/docs/current/release-notes/index.html">Changelog</a>
+		 */
+		private const val version = "5.4.0"
+
+		const val api = "org.junit.jupiter:junit-jupiter-api:${version}"
+		const val params = "org.junit.jupiter:junit-jupiter-params:${version}"
 		/**
 		 * `runtimeOnly` dependency, because it implements some interfaces from [api], but doesn't need to be visible to user.
 		 * @see <a href="https://junit.org/junit5/docs/current/user-guide/index.html#running-tests-build-gradle-engines-configure">Engines</a>
 		 */
-		const val engine = "org.junit.jupiter:junit-jupiter-engine:${Versions.JUnit5}"
+		const val engine = "org.junit.jupiter:junit-jupiter-engine:${version}"
 		/**
 		 * `runtimeOnly` dependency, because it implements some interfaces from [api], but doesn't need to be visible to user.
 		 */
-		const val vintage = "org.junit.vintage:junit-vintage-engine:${Versions.JUnit5}"
+		const val vintage = "org.junit.vintage:junit-vintage-engine:${version}"
 	}
 
 	object Mockito {
