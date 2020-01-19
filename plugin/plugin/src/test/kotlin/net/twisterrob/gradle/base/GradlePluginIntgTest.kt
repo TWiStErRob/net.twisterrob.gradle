@@ -1,10 +1,10 @@
 package net.twisterrob.gradle.base
 
 import net.twisterrob.gradle.BaseIntgTest
-import net.twisterrob.gradle.test.assertOutcome
+import net.twisterrob.gradle.test.assertSkipped
 import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.assertUpToDate
 import net.twisterrob.gradle.test.root
-import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
@@ -26,7 +26,7 @@ class GradlePluginIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script, "debugWrapper").build()
 
-		result.assertOutcome(":debugWrapper", TaskOutcome.SKIPPED)
+		result.assertSkipped(":debugWrapper")
 	}
 
 	@Test fun `generates gradled if gradlew exists`() {
@@ -53,6 +53,6 @@ class GradlePluginIntgTest : BaseIntgTest() {
 		assumeThat(gradle.root.resolve("gradled.bat"), anExistingFile())
 		val result = gradle.run(null, "debugWrapper").build()
 
-		result.assertOutcome(":debugWrapper", TaskOutcome.UP_TO_DATE)
+		result.assertUpToDate(":debugWrapper")
 	}
 }

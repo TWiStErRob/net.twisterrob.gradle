@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import com.android.ddmlib.AndroidDebugBridge
 import com.jakewharton.dex.DexMethod
 import net.twisterrob.test.process.assertOutput
 import org.hamcrest.Description
@@ -8,6 +9,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.io.FileMatchers.anExistingFile
 import java.io.File
+import kotlin.test.assertTrue
 
 internal const val packageName = "net.twisterrob.gradle.test_app"
 internal val packageFolder get() = packageName.replace('.', '/')
@@ -19,12 +21,26 @@ internal fun File.apk(
 		val variantVersionSuffix = if (variant == "debug") "d" else ""
 		"${packageName}${variantSuffix}@1-v0.0.0#1${variantVersionSuffix}+${variant}.apk"
 	}()
-) =
+): File =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
 
-internal val buildToolsDir get () = File(System.getenv("ANDROID_HOME"), "build-tools/${VERSION_BUILD_TOOLS}")
+internal val androidSdkDir: File
+	get() = File(System.getenv("ANDROID_HOME"))
 
-internal fun resolveFromAndroidSDK(command: String) = resolveFromFolders(command, buildToolsDir)
+internal val buildToolsDir: File
+	get() = androidSdkDir.resolve("build-tools/${VERSION_BUILD_TOOLS}")
+
+internal val toolsDir: File
+	get() = androidSdkDir.resolve("tools")
+
+internal val toolsBinDir: File
+	get() = androidSdkDir.resolve("tools/bin")
+
+internal val platformToolsDir: File
+	get() = androidSdkDir.resolve("platform-tools")
+
+internal fun resolveFromAndroidSDK(command: String): File =
+	resolveFromFolders(command, buildToolsDir, platformToolsDir, toolsDir, toolsBinDir)
 
 internal fun resolveFromJDK(command: String): File {
 	val jre = File(System.getProperty("java.home"))
@@ -142,3 +158,16 @@ fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =
 		override fun matchesSafely(item: DexMethod) =
 			className == item.declaringType.sourceName && methodName == item.name
 	}
+
+fun hasDevices(): Boolean {
+	AndroidDebugBridge.initIfNeeded(false)
+	val bridge = AndroidDebugBridge.createBridge(resolveFromAndroidSDK("adb").absolutePath, false)
+
+	var wait = 5000L
+	while (!bridge.hasInitialDeviceList() && wait > 0) {
+		Thread.sleep(wait)
+		wait -= 1000L
+	}
+	assertTrue(wait > 0 && bridge.hasInitialDeviceList(), "Cannot get device list")
+	return bridge.devices.isNotEmpty()
+}
