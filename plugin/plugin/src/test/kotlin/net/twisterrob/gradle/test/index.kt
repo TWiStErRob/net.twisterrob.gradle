@@ -9,6 +9,8 @@ import org.gradle.testkit.runner.TaskOutcome.SKIPPED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import org.junit.runners.model.Statement
+import java.io.File
+import java.util.Date
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -17,10 +19,41 @@ import kotlin.test.assertTrue
 internal val GradleRunnerRule.root get() = this.settingsFile.parentFile!!
 
 internal fun GradleRunnerRule.delete(path: String) {
+	val file = root.resolve(path)
 	assertTrue(
-		root.resolve(path).deleteRecursively(),
-		"Cannot delete $path"
+		file.deleteRecursively(),
+		"Cannot delete $path\n${file.describe()}"
 	)
+}
+
+internal fun GradleRunnerRule.move(from: String, to: String) {
+	val fromFile = root.resolve(from)
+	val toFile = root.resolve(to)
+	assertTrue(
+		toFile.parentFile.isDirectory || toFile.parentFile.mkdirs(),
+		"Cannot create folder: ${toFile.parentFile.describe()}"
+	)
+	assertTrue(
+		fromFile.renameTo(toFile),
+		"Cannot move $from to $to\n${fromFile.describe()}\n${toFile.describe()}"
+	)
+}
+
+private fun File.describe(): String = absolutePath +
+		", stat=${type() + chmod()}" +
+		", size=${length()}" +
+		", date=${Date(this.lastModified())}"
+
+private fun File.chmod(): String = "" +
+		(if (canRead()) "r" else "-") +
+		(if (canWrite()) "w" else "-") +
+		(if (canExecute()) "x" else "-")
+
+private fun File.type(): String = when {
+	isFile -> "f"
+	isDirectory -> "d"
+	exists() -> "e"
+	else -> "!"
 }
 
 internal fun BuildResult.assertNoTask(taskPath: String) = assertNull(task(taskPath))

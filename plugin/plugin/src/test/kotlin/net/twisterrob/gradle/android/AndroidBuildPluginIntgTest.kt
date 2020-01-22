@@ -3,6 +3,7 @@ package net.twisterrob.gradle.android
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.move
 import net.twisterrob.gradle.test.root
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -141,6 +142,53 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
+			compileSdkVersion = 23
+			//compileSdkVersionName = "6.0-2704002"
+		)
+	}
+
+	@Test fun `can override compileSdkVersion centrally (debug)`() {
+		@Language("gradle")
+		val appGradle = """
+			apply plugin: 'net.twisterrob.android-app'
+			afterEvaluate {
+				println(android.compileSdkVersion)
+			}
+		""".trimIndent()
+		gradle.file(appGradle, "app", "build.gradle")
+		gradle.move("version.properties", "app/version.properties")
+		gradle.move("src/main/AndroidManifest.xml", "app/src/main/AndroidManifest.xml")
+
+		@Language("gradle")
+		val settingsGradle = """
+			include ':app'
+		""".trimIndent()
+		gradle.file(settingsGradle, "settings.gradle")
+
+		@Language("gradle")
+		val script = """
+			// intentionally allprojects and not subprojects so it runs on the plugin-less root project too
+			allprojects {
+				// Ideal implementation would be this, but somehow it's too late at this point.
+//				project.plugins.whenPluginAdded { plugin ->
+//					if (plugin instanceof com.android.build.gradle.AppPlugin) {
+//						android.compileSdkVersion = 23
+//					}
+//				}
+				afterEvaluate {
+					def android = project.extensions.findByName("android")
+					if (android != null) {
+						android.compileSdkVersion = 23
+					}
+				}
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script, ":app:assembleDebug").build()
+
+		result.assertSuccess(":app:assembleDebug")
+		assertDefaultDebugBadging(
+			apk = gradle.root.resolve("app").apk("debug"),
 			compileSdkVersion = 23
 			//compileSdkVersionName = "6.0-2704002"
 		)
