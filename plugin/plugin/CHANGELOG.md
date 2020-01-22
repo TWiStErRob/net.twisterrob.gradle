@@ -1,5 +1,8 @@
 ## 3.4.x
 
+### 3.4.2.14-28-28.1
+ - Gradle 5.6.4
+
 ### 3.4.2.14-28-28.0
  - AGP 3.4.2  
    Disabled R8 in tests, using Proguard still
