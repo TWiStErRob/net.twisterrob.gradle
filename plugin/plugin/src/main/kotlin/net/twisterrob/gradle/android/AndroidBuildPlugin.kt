@@ -33,21 +33,21 @@ const val VERSION_SDK_MINIMUM = 14
 /**
  * Latest SDK version available, Google Play Store has stringent rules, so keep up to date.
  */
-const val VERSION_SDK_TARGET = 28
+const val VERSION_SDK_TARGET = 29
 
 /**
  * Latest SDK version available, useful for discovering deprecated methods and getting new features like `.findViewById<T>()`.
  */
-const val VERSION_SDK_COMPILE = 28
+const val VERSION_SDK_COMPILE = 29
 /**
  * Note: format changed at 9 Pie, was 8.1.0 Oreo.
  */
-const val VERSION_SDK_COMPILE_NAME = "9" // Pie
+const val VERSION_SDK_COMPILE_NAME = "10" // Android 10 (Q)
 
 /**
  * Latest build tools version available, there's no reason to hold back.
  */
-const val VERSION_BUILD_TOOLS = "28.0.3"
+const val VERSION_BUILD_TOOLS = "29.0.2"
 
 class AndroidBuildPlugin : BasePlugin() {
 
