@@ -71,6 +71,8 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 					fixClasspath(JavaVersion.toVersion(sourceCompatibility))
 				}
 			}
+
+			doFirst { removeDuplicateCompilerArgs() }
 		}
 	}
 }
@@ -99,4 +101,73 @@ private fun JavaCompile.changeCompatibility(ver: JavaVersion) {
 	sourceCompatibility = ver.toString()
 	targetCompatibility = ver.toString()
 	logger.info("Changed compatibility ${origS}/${origT} to ${ver}/${ver}")
+}
+
+/**
+ * Removes duplicate `-Xlint:opt` parameters from a `javac` task.
+ * If something is both disabled and enabled, make the disable win.
+ *
+ * Examples:
+ *  * given: `-Xlint:unchecked -Xlint:-deprecation -Xlint:deprecation`,
+ *    result: `-Xlint:unchecked -Xlint:-deprecation`
+ *  * given: `-Xlint:unchecked -Xlint:deprecation -Xlint:-deprecation`,
+ *    result: `-Xlint:unchecked -Xlint:-deprecation`
+ *
+ * Usage:
+ * ```
+ * tasks.withType(JavaCompile) { doFirst { removeDuplicateCompilerArgs(it) } }
+ * ```
+ *
+ * Since the suggested usage is [org.gradle.api.Task.doFirst],
+ * it doesn't matter if it's before or after the relevant `options.compilerArgs += [ ... ]` setup.
+ */
+private fun JavaCompile.removeDuplicateCompilerArgs() {
+	logger.debug("${this} (input): ${options.compilerArgs}")
+	val duplicates = options.compilerArgs
+		.filter { it.startsWith("-Xlint:-") }
+		.map { "-Xlint:${it.substring("-Xlint:-".length)}" }
+	options.compilerArgs.removeAll(duplicates)
+	logger.debug("${this} (filtered): ${options.compilerArgs}")
+}
+
+/**
+ * Removes duplicate `-Xlint:opt` parameters from a `javac` task.
+ * If something is both disabled and enabled, the last one wins.
+ *
+ * Examples:
+ *  * given: `-Xlint:unchecked -Xlint:-deprecation -Xlint:deprecation`,
+ *    result: `-Xlint:unchecked -Xlint:deprecation`
+ *  * given: `-Xlint:unchecked -Xlint:deprecation -Xlint:-deprecation`,
+ *    result: `-Xlint:unchecked -Xlint:-deprecation`
+ *
+ * Usage:
+ * ```
+ * tasks.withType(JavaCompile) { doFirst { removeDuplicateCompilerArgs2(it) } }
+ * ```
+ *
+ * Since the suggested usage is [org.gradle.api.Task.doFirst],
+ * it doesn't matter if it's before or after the relevant `options.compilerArgs += [ ... ]` setup.
+ */
+private fun JavaCompile.removeDuplicateCompilerArgs2() {
+	logger.debug("${this} (input): ${options.compilerArgs}")
+	fun xlintName(arg: String): String? =
+		when {
+			arg.startsWith("-Xlint:-") -> arg.substring("-Xlint:-".length)
+			arg.startsWith("-Xlint:") -> arg.substring("-Xlint:".length)
+			else -> null
+		}
+
+	fun xlintEnabled(arg: String): Boolean? =
+		when {
+			arg.startsWith("-Xlint:-") -> false
+			arg.startsWith("-Xlint:") -> true
+			else -> null
+		}
+
+	val optionMap = options.compilerArgs
+		.filter { xlintName(it) != null }
+		.associate { xlintName(it) to xlintEnabled(it) }
+	logger.debug("${this} (deduced): $optionMap")
+	options.compilerArgs = options.compilerArgs.filter { optionMap[xlintName(it)] == xlintEnabled(it) }
+	logger.debug("${this} (filtered): ${options.compilerArgs}")
 }

@@ -2,6 +2,7 @@
 
 ### 3.4.2.14-29-29.1
  - Add `net.twisterrob.java-library` plugin
+ - Automatically detect `-Xlint:opt -Xlint:-opt` and disable wins.
 
 ### 3.4.2.14-29-29.0
  - Gradle 5.6.4
