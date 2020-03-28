@@ -1,5 +1,7 @@
 ## 3.4.x
 
+### 3.4.2.14-29-29.1
+
 ### 3.4.2.14-29-29.0
  - Gradle 5.6.4
  - Default to API 29 / Android 10 (Q) (target and compile SDK)
