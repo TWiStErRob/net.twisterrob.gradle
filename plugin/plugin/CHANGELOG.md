@@ -1,5 +1,7 @@
 ## 3.4.x
 
+### 3.4.2.14-29-29.2
+
 ### 3.4.2.14-29-29.1
  - Add `net.twisterrob.java-library` plugin
  - Automatically detect `-Xlint:opt -Xlint:-opt` and disable wins.
