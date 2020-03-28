@@ -1,6 +1,6 @@
 apply plugin: 'kotlin'
 apply plugin: 'net.twisterrob.gradle.test'
-version = '3.4.2.14-29-29.1'
+version = '3.4.2.14-29-29.2'
 
 dependencies { // last checked 2019-05-27 (all latest, except Gradle+Kotlin)
 	implementation gradleApi()
