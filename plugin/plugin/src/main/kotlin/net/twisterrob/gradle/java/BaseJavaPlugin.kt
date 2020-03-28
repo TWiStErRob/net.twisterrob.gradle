@@ -1,0 +1,102 @@
+package net.twisterrob.gradle.java
+
+import com.android.build.gradle.BaseExtension
+import com.android.builder.core.VariantTypeImpl.ANDROID_TEST
+import com.android.builder.core.VariantTypeImpl.UNIT_TEST
+import net.twisterrob.gradle.android.hasAndroid
+import net.twisterrob.gradle.base.BaseExposedPlugin
+import org.gradle.api.JavaVersion
+import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getPlugin
+import org.gradle.kotlin.dsl.withType
+
+private const val DEFAULT_ENCODING = "UTF-8"
+
+abstract class BaseJavaPlugin : BaseExposedPlugin() {
+
+	abstract fun applyDefaultPlugin()
+
+	override fun apply(target: Project) {
+		super.apply(target)
+
+		if (project.plugins.hasAndroid()) {
+			val android: BaseExtension = project.extensions["android"] as BaseExtension
+			with(android.compileOptions) {
+				encoding = DEFAULT_ENCODING
+				setDefaultJavaVersion(JavaVersion.VERSION_1_7)
+				setSourceCompatibility(JavaVersion.VERSION_1_7)
+				setTargetCompatibility(JavaVersion.VERSION_1_8)
+			}
+		} else {
+			applyDefaultPlugin()
+		}
+
+		if (project.plugins.hasPlugin(org.gradle.api.plugins.JavaPlugin::class.java)) {
+			with(project.convention.getPlugin<JavaPluginConvention>()) {
+				sourceCompatibility = JavaVersion.VERSION_1_7
+				targetCompatibility = JavaVersion.VERSION_1_8
+
+				sourceSets["main"].compileClasspath += project.configurations.maybeCreate("provided")
+			}
+		}
+
+		project.tasks.withType<JavaCompile> {
+			options.encoding = DEFAULT_ENCODING
+			val isTestTask = name.contains("Test")
+			val isAndroidTest = name.endsWith("${ANDROID_TEST.suffix}JavaWithJavac")
+			val isAndroidUnitTest = name.endsWith("${UNIT_TEST.suffix}JavaWithJavac")
+			if (!isTestTask) {
+				options.compilerArgs.add("-Xlint:unchecked")
+				options.compilerArgs.add("-Xlint:deprecation")
+			}
+			if (isTestTask && !isAndroidTest) {
+				changeCompatibility(JavaVersion.VERSION_1_8)
+			}
+
+			val compileVersion = JavaVersion.toVersion(sourceCompatibility)
+			if (compileVersion < JavaVersion.current()) {
+				// prevent :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
+				fixClasspath(compileVersion)
+			}
+			if (isTestTask && isAndroidUnitTest) {
+				doFirst {
+					if (isTestTask && !isAndroidTest) {
+						// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
+						changeCompatibility(JavaVersion.VERSION_1_8)
+					}
+					classpath += project.files(options.bootstrapClasspath)
+					fixClasspath(JavaVersion.toVersion(sourceCompatibility))
+				}
+			}
+		}
+	}
+}
+
+private fun JavaCompile.fixClasspath(compileVersion: JavaVersion) {
+	val envVar = "JAVA${compileVersion.majorVersion}_HOME"
+	val root = System.getenv(envVar)
+	var rt = project.file("$root/jre/lib/rt.jar")
+	if (!rt.exists()) {
+		rt = project.file("$root/lib/rt.jar")
+	}
+	if (!rt.exists()) {
+		logger.warn(
+			"Java Compatibility: javac needs a bootclasspath, "
+					+ "but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root)."
+		)
+		return
+	}
+	logger.info("Java Compatiblity: using rt.jar from $rt")
+	options.bootstrapClasspath = project.files(rt.absolutePath)
+}
+
+private fun JavaCompile.changeCompatibility(ver: JavaVersion) {
+	val origS = sourceCompatibility
+	val origT = targetCompatibility
+	sourceCompatibility = ver.toString()
+	targetCompatibility = ver.toString()
+	logger.info("Changed compatibility ${origS}/${origT} to ${ver}/${ver}")
+}

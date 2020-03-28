@@ -6,6 +6,7 @@ import net.twisterrob.gradle.android.packageName
 import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertNoSource
 import net.twisterrob.gradle.test.assertSuccess
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -15,6 +16,38 @@ import org.junit.Test
  */
 class JavaPluginIntgTest : BaseAndroidIntgTest() {
 
+	@Test fun `java plugin can be applied standalone`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.java'
+			println("Java: " + plugins.hasPlugin("java"))
+			println("Java Library: " + plugins.hasPlugin("java-library"))
+		""".trimIndent()
+
+		val result = gradle.run(script, "build").build()
+
+		result.assertNoSource(":compileJava")
+		result.assertSuccess(":jar")
+		result.assertHasOutputLine("""Java: true""".toRegex())
+		result.assertHasOutputLine("""Java Library: false""".toRegex())
+	}
+
+	@Test fun `java-library plugin can be applied standalone`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.java-library'
+			println("Java: " + plugins.hasPlugin("java"))
+			println("Java Library: " + plugins.hasPlugin("java-library"))
+		""".trimIndent()
+
+		val result = gradle.run(script, "build").build()
+
+		result.assertNoSource(":compileJava")
+		result.assertSuccess(":jar")
+		result.assertHasOutputLine("""Java: true""".toRegex())
+		result.assertHasOutputLine("""Java Library: true""".toRegex())
+	}
+
 	@Test fun `test code supports Java 8`() {
 		@Language("java")
 		val java8InTest = """
@@ -23,7 +56,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 			public class TestCode {
 				@Test
 				public void testJava8() {
-					Runnable runnable = () -> { System.out.println("Lambda with " + BuildConfig.APPLICATION_ID); };
+					Runnable runnable = () -> System.out.println("Lambda with " + BuildConfig.APPLICATION_ID);
 					runnable.run();
 				}
 			}

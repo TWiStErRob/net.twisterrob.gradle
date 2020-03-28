@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.java
 
-class JavaPlugin : BaseJavaPlugin() {
+class JavaLibPlugin : BaseJavaPlugin() {
 
 	override fun applyDefaultPlugin() {
-		project.plugins.apply("java")
+		project.plugins.apply("java-library")
 	}
 }
