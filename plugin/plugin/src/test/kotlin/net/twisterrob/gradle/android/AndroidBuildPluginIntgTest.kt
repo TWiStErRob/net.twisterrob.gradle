@@ -339,4 +339,34 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertHasOutputLine("""^compileDebugAndroidTestJavaWithJavac - (.+)""".toRegex())
 		result.assertNoOutputLine("""^compileReleaseAndroidTestJavaWithJavac -(.*)""".toRegex())
 	}
+
+	/**
+	 * Trigger this behavior and check it doesn't happen by default.
+	 * ```
+	 * Execution failed for task ':javaPreCompileDebug'.
+	 * > Annotation processors must be explicitly declared now.
+	 * The following dependencies on the compile classpath are found to contain annotation processor.
+	 * Please add them to the annotationProcessor configuration.
+	 *  - auto-service-1.0-rc6.jar (com.google.auto.service:auto-service:1.0-rc6)
+	 * Alternatively, set
+	 * android.defaultConfig.javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
+	 * to continue with previous behavior.
+	 * Note that this option is deprecated and will be removed in the future.
+	 * See https://developer.android.com/r/tools/annotation-processor-error-message.html for more details.
+	 * ```
+	 */
+	@Test fun `annotation processors are excluded from the classpath (debug)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			dependencies {
+				implementation "com.google.auto.service:auto-service:1.0-rc6"
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleDebug").build()
+
+		result.assertSuccess(":javaPreCompileDebug")
+		result.assertNoOutputLine(""".*annotationProcessor.*""".toRegex())
+	}
 }

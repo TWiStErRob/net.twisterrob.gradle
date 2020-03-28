@@ -82,6 +82,7 @@ class AndroidBuildPlugin : BasePlugin() {
 				targetSdkVersion = DefaultApiVersion(VERSION_SDK_TARGET)
 				vectorDrawables.useSupportLibrary = true
 				buildConfigField("String", "EMAIL", "\"feedback@twisterrob.net\"")
+				javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = false
 			}
 
 			buildTypes.configure("debug") {
