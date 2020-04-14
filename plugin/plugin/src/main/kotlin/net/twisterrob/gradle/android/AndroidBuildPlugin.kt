@@ -4,6 +4,7 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.TaskManager
 import com.android.build.gradle.internal.api.androidTestVariantData
 import com.android.build.gradle.internal.api.unitTestVariantData
 import com.android.build.gradle.internal.api.variantData
@@ -146,7 +147,7 @@ class AndroidBuildPlugin : BasePlugin() {
 	private fun decorateBuildConfig() {
 		project.tasks.create<DecorateBuildConfigTask>("decorateBuildConfig") {
 			description = "Adds more information about build to BuildConfig.java."
-			project.tasks["preBuild"].dependsOn(this)
+			project.tasks[TaskManager.MAIN_PREBUILD].dependsOn(this)
 		}
 	}
 
