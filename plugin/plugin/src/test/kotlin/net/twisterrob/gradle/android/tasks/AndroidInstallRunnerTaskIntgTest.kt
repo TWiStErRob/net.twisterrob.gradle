@@ -68,7 +68,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 			result.assertSuccess(":installDebug")
 			result.assertSuccess(":runDebug")
 			// line is output to stderr, so no control over being on a new line
-			result.assertNoOutputLine(""".*error: no devices/emulators found.*""".toRegex())
+			result.assertNoOutputLine(""".*no devices/emulators found.*""".toRegex())
 			result.assertNoOutputLine("""Error: Activity class \{${packageName}\.debug/${packageName}\.MainActivity\} does not exist\.""".toRegex())
 		} else {
 			val result = gradle.run(script, "runDebug").buildAndFail()
@@ -77,7 +77,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 			result.assertSkipped(":installDebug")
 			result.assertFailed(":runDebug")
 			// line is output to stderr, so no control over being on a new line
-			result.assertHasOutputLine(""".*error: no devices/emulators found.*""".toRegex())
+			result.assertHasOutputLine(""".*adb.exe: no devices/emulators found.*""".toRegex())
 		}
 	}
 
