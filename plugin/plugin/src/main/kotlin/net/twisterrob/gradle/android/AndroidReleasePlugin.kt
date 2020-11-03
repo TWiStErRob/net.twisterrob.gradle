@@ -84,7 +84,7 @@ class AndroidReleasePlugin : BasePlugin() {
 				from(variant.testVariant.packageApplicationProvider.get().outputDirectory)
 			}
 			if (variant.buildType.isMinifyEnabled) {
-				from(variant.mappingFile.parentFile) {
+				from(variant.mappingFileProvider.map { it.singleFile.parentFile }) {
 					it.include("*")
 					it.rename("(.*)", "proguard_$1")
 				}

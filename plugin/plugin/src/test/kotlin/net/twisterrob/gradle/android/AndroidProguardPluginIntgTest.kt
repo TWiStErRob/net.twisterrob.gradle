@@ -46,8 +46,8 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assemble").build()
 
-		result.assertNoTask(":transformClassesAndResourcesWithProguardForDebug")
-		result.assertSuccess(":transformClassesAndResourcesWithProguardForRelease")
+		result.assertNoTask(":minifyDebugWithProguard")
+		result.assertSuccess(":minifyReleaseWithProguard")
 		result.assertSuccess(":assembleRelease")
 		result.assertSuccess(":assembleDebug")
 		result.assertSuccess(":assemble")
@@ -67,9 +67,32 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assembleRelease").build()
 
-		result.assertSuccess(":transformClassesAndResourcesWithProguardForRelease")
-		assumeThat(gradle.root.resolve("build/outputs/mapping/release/mapping.txt"), anExistingFile())
+		result.assertSuccess(":minifyReleaseWithProguard")
 		assertThat(gradle.root.resolve("build/outputs/mapping/release/configuration.pro"), anExistingFile())
+	}
+
+	@Test fun `default build setup writes ProGuard mapping file (release)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleRelease").build()
+
+		result.assertSuccess(":minifyReleaseWithProguard")
+		assumeThat(gradle.root.resolve("build/outputs/mapping/release/mapping.txt"), anExistingFile())
+	}
+
+	@Test fun `default build setup dumps (release)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleRelease").build()
+
+		result.assertSuccess(":minifyReleaseWithProguard")
+		assumeThat(gradle.root.resolve("build/outputs/mapping/release/dump.txt"), anExistingFile())
 	}
 
 	@Test fun `extracts and uses custom ProGuard rules (release)`() {
@@ -132,6 +155,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		""".trimIndent()
 		gradle.file(androidManifest, "lib", "src", "main", "AndroidManifest.xml")
 		val dummyProguardClass = "some.dummy.thing.SoItShowsUpInTheMergeConfiguration"
+
 		@Language("proguard")
 		val libProguardFile = """
 			# library proguard file for test

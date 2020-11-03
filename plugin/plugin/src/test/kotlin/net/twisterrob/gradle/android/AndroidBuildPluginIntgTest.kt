@@ -225,7 +225,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			}
 		""".trimIndent()
 		gradle.file(kotlinTestClass, "src/test/kotlin/test.kt")
-		gradle.file("android.enableUnitTestBinaryResources=true", "gradle.properties")
+
+		@Language("properties")
+		val properties = """
+			android.enableUnitTestBinaryResources=true
+			android.useAndroidX=true
+		""".trimIndent()
+		gradle.file(properties, "gradle.properties")
 
 		@Language("gradle")
 		val script = """
@@ -289,6 +295,12 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		""".trimIndent()
 		gradle.file(kotlinTestClass, "src/test/kotlin/test.kt")
+
+		@Language("properties")
+		val properties = """
+			android.useAndroidX=true
+		""".trimIndent()
+		gradle.file(properties, "gradle.properties")
 
 		@Language("gradle")
 		val script = """

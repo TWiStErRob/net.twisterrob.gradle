@@ -3,18 +3,19 @@ package net.twisterrob.gradle.android
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
-import com.android.build.gradle.internal.pipeline.TransformTask
-import com.android.build.gradle.internal.transforms.ProGuardTransform
-import com.android.build.gradle.internal.transforms.configuration
+import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.tasks.ProguardTask
 import com.android.builder.core.DefaultBuildType
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.builtDate
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.task
 import org.gradle.kotlin.dsl.withType
+import org.intellij.lang.annotations.Language
 import java.io.File
 
 class AndroidProguardPlugin : BasePlugin() {
@@ -23,6 +24,7 @@ class AndroidProguardPlugin : BasePlugin() {
 		super.apply(target)
 
 		val android = project.extensions["android"] as BaseExtension
+
 		/**
 		 * @see com.android.build.gradle.ProguardFiles#getDefaultProguardFile
 		 */
@@ -32,7 +34,10 @@ class AndroidProguardPlugin : BasePlugin() {
 		val myProguardRules = proguardBase.resolve("twisterrob.pro")
 		val myDebugProguardRules = proguardBase.resolve("twisterrob-debug.pro")
 		val myReleaseProguardRules = proguardBase.resolve("twisterrob-release.pro")
+		val generatedProguardRulesFile = proguardBase.resolve("generated.pro")
+
 		android.apply {
+			defaultConfig.proguardFiles.add(generatedProguardRulesFile)
 			defaultConfig.proguardFiles.add(defaultAndroidRules)
 			defaultConfig.proguardFiles.add(myProguardRules)
 
@@ -86,25 +91,33 @@ class AndroidProguardPlugin : BasePlugin() {
 
 		project.afterEvaluate {
 			android.variants.all { variant ->
-				val obfuscationTask = project.tasks.matching { task ->
-					task is TransformTask
-							&& task.variantName == variant.name
-							&& task.transform is ProGuardTransform
-				}.singleOrNull() as TransformTask?
+				val obfuscationTask = project.tasks
+					.withType(ProguardTask::class.java)
+					.matching { it.variantName == variant.name }
+					.singleOrNull()
 				if (obfuscationTask != null) {
 					obfuscationTask.dependsOn(extractProguardRules)
-					val proguard = obfuscationTask.transform as ProGuardTransform
-					proguard.configuration.printConfiguration =
-							variant.mappingFile.parentFile.resolve("configuration.pro")
-					// AGP 3.2 removed configuration.dump setup from
-					// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification
-					proguard.configuration.dump =
-							variant.mappingFile.parentFile.resolve("dump.txt")
-					// TODO dump and printConfiguration are not Gradle task outputs
+					obfuscationTask.dependsOn(createGenerateProguardRulesTask(variant, generatedProguardRulesFile))
 				}
 			}
 		}
 	}
+
+	private fun createGenerateProguardRulesTask(variant: BaseVariant, outputFile: File): Task =
+		project.task<Task>("generate${variant.name.capitalize()}ProguardRules") {
+			description = "Generates printConfiguration and dump options for ProGoard"
+			val mappingFolder: Provider<File> = variant.mappingFileProvider.map { it.singleFile.parentFile }
+			inputs.property("targetFolder", mappingFolder)
+			outputs.file(outputFile)
+			doFirst {
+				@Language("proguard")
+				val proguard = """
+					-printconfiguration ${mappingFolder.get().resolve("configuration.pro")}
+					-dump ${mappingFolder.get().resolve("dump.txt")}
+				""".trimIndent()
+				outputFile.writeText(proguard)
+			}
+		}
 
 	private fun copy(internalName: String, targetFile: File) {
 		targetFile.parentFile.mkdirs()
