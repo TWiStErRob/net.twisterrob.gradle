@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.android.tasks
 
-import com.android.annotations.VisibleForTesting
+import com.google.common.annotations.VisibleForTesting
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.internal.TaskManager
