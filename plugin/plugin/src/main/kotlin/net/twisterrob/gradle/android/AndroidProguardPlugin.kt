@@ -5,7 +5,6 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.ProguardTask
-import com.android.builder.core.DefaultBuildType
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.builtDate
@@ -42,7 +41,7 @@ class AndroidProguardPlugin : BasePlugin() {
 			defaultConfig.proguardFiles.add(myProguardRules)
 
 			project.plugins.withType<AppPlugin> {
-				val release = buildTypes["release"] as DefaultBuildType
+				val release = buildTypes["release"]
 				release.isMinifyEnabled = true
 			}
 

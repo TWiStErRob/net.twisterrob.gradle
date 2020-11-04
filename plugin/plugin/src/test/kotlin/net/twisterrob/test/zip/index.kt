@@ -14,7 +14,8 @@ fun withSize(sizeMatcher: Matcher<Long>): Matcher<ZipEntry> =
 			description.appendText("with size ").appendDescriptionOf(sizeMatcher)
 		}
 
-		override fun matchesSafely(item: ZipEntry) = sizeMatcher.matches(item.size)
+		override fun matchesSafely(item: ZipEntry): Boolean =
+			sizeMatcher.matches(item.size)
 	}
 
 fun hasZipEntry(

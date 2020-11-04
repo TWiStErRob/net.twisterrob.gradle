@@ -7,7 +7,6 @@ import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.TestedVariant
-import com.android.builder.core.DefaultProductFlavor
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.base
 import net.twisterrob.gradle.kotlin.dsl.extensions
@@ -16,6 +15,7 @@ import net.twisterrob.gradle.vcs.VCSExtension
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.withType
 import java.io.File
@@ -25,6 +25,10 @@ import java.util.Locale
 
 @Suppress("MemberVisibilityCanBePrivate")
 open class AndroidVersionExtension {
+
+	companion object {
+		internal const val NAME = "version"
+	}
 
 	/** Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648) */
 	var autoVersion: Boolean = true
@@ -71,7 +75,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	}
 
 	private val version: AndroidVersionExtension by lazy {
-		android.defaultConfig.extensions.create("version", AndroidVersionExtension::class.java)
+		android.defaultConfig.extensions.create<AndroidVersionExtension>(AndroidVersionExtension.NAME)
 	}
 
 	/**
@@ -119,7 +123,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	private fun init() {
 		readVersionFromFile(project.file("version.properties"))
 
-		val vcs = project.extensions.findByName("VCS") as VCSPluginExtension?
+		val vcs = project.extensions.findByName(VCSPluginExtension.NAME) as VCSPluginExtension?
 		if (vcs != null && vcs.current.isAvailable) {
 			version.versionByVCS(vcs.current)
 		}
@@ -169,7 +173,9 @@ class AndroidVersionPlugin : BasePlugin() {
 
 	private fun calculateVersionName(variant: BaseVariant?): String {
 		val suffix = variant?.let {
-			DefaultProductFlavor.mergeVersionNameSuffix(
+			@Suppress("DEPRECATION")
+			// It was changed from DefaultProductFlavor and deprecated in 4.0.0, keep it around until removal or relocation.
+			com.android.builder.core.AbstractProductFlavor.mergeVersionNameSuffix(
 				variant.buildType.versionNameSuffix,
 				variant.mergedFlavor.versionNameSuffix
 			)!!

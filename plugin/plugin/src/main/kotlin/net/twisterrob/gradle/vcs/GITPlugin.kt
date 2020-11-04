@@ -6,6 +6,7 @@ import org.ajoberstar.grgit.Grgit
 import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.eclipse.jgit.revwalk.RevWalk
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 
 class GITPlugin : BasePlugin() {
@@ -14,13 +15,18 @@ class GITPlugin : BasePlugin() {
 		super.apply(target)
 
 		val git = project
-			.extensions.getByName<VCSPluginExtension>("VCS")
-			.extensions.create("git", GITPluginExtension::class.java)
+			.extensions.getByName<VCSPluginExtension>(VCSPluginExtension.NAME)
+			.extensions.create<GITPluginExtension>(GITPluginExtension.NAME)
 		git.project = project // TODO better solution
 	}
 }
 
 open class GITPluginExtension : VCSExtension {
+
+	companion object {
+		internal const val NAME = "git"
+	}
+
 	internal lateinit var project: Project
 
 	@Suppress("DEPRECATION")

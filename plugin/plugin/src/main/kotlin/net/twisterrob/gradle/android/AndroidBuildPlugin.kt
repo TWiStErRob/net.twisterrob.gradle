@@ -22,6 +22,10 @@ import org.gradle.kotlin.dsl.withType
 
 open class AndroidBuildPluginExtension {
 
+	companion object {
+		internal const val NAME = "twisterrob"
+	}
+
 	var decorateBuildConfig: Boolean = true
 	var addRunTasks: Boolean = true
 }
@@ -58,7 +62,7 @@ class AndroidBuildPlugin : BasePlugin() {
 		super.apply(target)
 		android = project.extensions.getByName<BaseExtension>("android")
 
-		val twisterrob = android.extensions.create("twisterrob", AndroidBuildPluginExtension::class.java)
+		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
 		// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
 		// otherwise default maven repo that's a superset of mavenCentral(), so prefer this
@@ -83,7 +87,6 @@ class AndroidBuildPlugin : BasePlugin() {
 				targetSdkVersion = DefaultApiVersion(VERSION_SDK_TARGET)
 				vectorDrawables.useSupportLibrary = true
 				buildConfigField("String", "EMAIL", "\"feedback@twisterrob.net\"")
-				javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = false
 			}
 
 			buildTypes.configure("debug") {

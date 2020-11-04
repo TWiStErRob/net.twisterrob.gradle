@@ -41,7 +41,7 @@ open class DecorateBuildConfigTask : DefaultTask() {
 	@TaskAction
 	fun addVCSInformation() {
 		if (enableVCS) {
-			val vcs = project.extensions.getByName<VCSPluginExtension>("VCS")
+			val vcs = project.extensions.getByName<VCSPluginExtension>(VCSPluginExtension.NAME)
 			buildConfigField("String", "REVISION", "\"${vcs.current.revision}\"")
 			buildConfigField("int", "REVISION_NUMBER", "${vcs.current.revisionNumber}")
 		}

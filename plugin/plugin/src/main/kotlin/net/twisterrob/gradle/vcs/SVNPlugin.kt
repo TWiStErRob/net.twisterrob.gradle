@@ -3,6 +3,7 @@ package net.twisterrob.gradle.vcs
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 import org.tmatesoft.svn.cli.SVN
 import org.tmatesoft.svn.core.SVNException
@@ -21,13 +22,18 @@ class SVNPlugin : BasePlugin() {
 		super.apply(target)
 
 		val svn = project
-			.extensions.getByName<VCSPluginExtension>("VCS")
-			.extensions.create("svn", SVNPluginExtension::class.java)
+			.extensions.getByName<VCSPluginExtension>(VCSPluginExtension.NAME)
+			.extensions.create<SVNPluginExtension>(SVNPluginExtension.NAME)
 		svn.project = project // TODO better solution
 	}
 }
 
 open class SVNPluginExtension : VCSExtension {
+
+	companion object {
+		internal const val NAME = "svn"
+	}
+
 	internal lateinit var project: Project
 
 	private fun open(): SVNStatus {

@@ -4,17 +4,22 @@ import net.twisterrob.gradle.base.BaseExposedPlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 
 open class VCSPluginExtension : VCSExtension {
+
+	companion object {
+		internal const val NAME = "VCS"
+	}
 
 	var current: VCSExtension = DummyVcsExtension
 		internal set
 
 	val svn: SVNPluginExtension
-		get() = extensions.getByName<SVNPluginExtension>("svn")
+		get() = extensions.getByName<SVNPluginExtension>(SVNPluginExtension.NAME)
 	val git: GITPluginExtension
-		get() = extensions.getByName<GITPluginExtension>("git")
+		get() = extensions.getByName<GITPluginExtension>(GITPluginExtension.NAME)
 
 	// `: VCSExtension by current` is not possible because `current` is "lateinit"
 	override val isAvailable get() = current.isAvailable
@@ -40,7 +45,7 @@ class VCSPlugin : BaseExposedPlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
-		val vcs = project.extensions.create("VCS", VCSPluginExtension::class.java)
+		val vcs = project.extensions.create<VCSPluginExtension>(VCSPluginExtension.NAME)
 		project.apply<SVNPlugin>()
 		project.apply<GITPlugin>()
 		vcs.current = vcs.whichVCS()

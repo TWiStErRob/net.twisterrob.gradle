@@ -1,13 +1,23 @@
+## 4.0.0
+
+### 4.0.0.14-29-29.0
+ - AGP 4.0.0
+   - Remove net.twisterrob.android-feature as com.android.feature was deprecated
+   - `android.enableR8=false` gives a deprecation warning, but R8 is not supported yet.
+ - Gradle 6.1.1  
+   Note: use `apply from: resources.text.fromInsecureUri("http://localhost/maven/configure.gradle")`
+ - Target Java 8 for class files
+
 ## 3.6.x
 
 ### 3.6.4.14-29-29.0
-- AGP 3.6.4
-- Kotlin 1.3.72 / DSL 5.6.4
+ - AGP 3.6.4
+ - Kotlin 1.3.72 / DSL 5.6.4
 
 ## 3.5.x
 
 ### 3.5.4.14-29-29.0
-- AGP 3.5.4
+ - AGP 3.5.4
 
 ## 3.4.x
  

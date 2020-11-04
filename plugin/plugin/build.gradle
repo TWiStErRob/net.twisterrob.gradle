@@ -1,6 +1,6 @@
 apply plugin: 'kotlin'
 apply plugin: 'net.twisterrob.gradle.test'
-version = '3.6.4.14-29-29.0'
+version = '4.0.0.14-29-29.0'
 
 dependencies { // last checked 2019-05-27 (all latest, except Gradle+Kotlin)
 	implementation gradleApi()
@@ -13,12 +13,13 @@ dependencies { // last checked 2019-05-27 (all latest, except Gradle+Kotlin)
 	implementation /*+--- */ 'org.ajoberstar:grgit:1.9.3'
 	implementation /*|    +--- */ 'org.eclipse.jgit:org.eclipse.jgit:4.5.2.201704071617-r'
 	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
-	implementation 'com.android.tools.build:gradle:3.6.4'
+	implementation 'com.android.tools.build:gradle:4.0.0'
 	implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72'
-	implementation('org.gradle:gradle-kotlin-dsl:5.6.4') {
+	implementation('org.gradle:gradle-kotlin-dsl:6.1.1') {
 		transitive = false // make sure to not pull in kotlin-compiler-embeddable
 	}
 }
+
 configurations.all {
 	resolutionStrategy.eachDependency { DependencyResolveDetails dep ->
 		if (dep.requested.group == 'org.jetbrains.kotlin' && dep.requested.name == 'kotlin-stdlib-jre7') {
@@ -83,4 +84,8 @@ tasks.withType(Test) {
 	maxParallelForks = 10
 	// Limit memory usage of test forks. Gradle <5 allows 1/4th of total memory to be used, thus forbidding many forks.
 	maxHeapSize = "256M"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+	it.kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
 }

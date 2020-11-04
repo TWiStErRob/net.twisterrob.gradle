@@ -3,8 +3,6 @@ package net.twisterrob.gradle.android
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.FeatureExtension
-import com.android.build.gradle.FeaturePlugin
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.TestExtension
@@ -20,7 +18,6 @@ import org.gradle.api.plugins.PluginContainer
 fun PluginContainer.hasAndroid(): Boolean =
 	hasPlugin(AppPlugin::class.java) ||
 			hasPlugin(LibraryPlugin::class.java) ||
-			hasPlugin(FeaturePlugin::class.java) ||
 			hasAndroidTest()
 
 fun PluginContainer.hasAndroidTest() = hasPlugin(TestPlugin::class.java)
@@ -29,7 +26,6 @@ val BaseExtension.variants: DomainObjectSet<out BaseVariant>
 	get() =
 		when (this) {
 			is AppExtension -> applicationVariants
-			is FeatureExtension -> featureVariants
 			is LibraryExtension -> libraryVariants
 			is TestExtension -> applicationVariants
 			is TestedExtension -> testVariants

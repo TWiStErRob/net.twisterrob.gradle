@@ -228,7 +228,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("properties")
 		val properties = """
-			android.enableUnitTestBinaryResources=true
 			android.useAndroidX=true
 		""".trimIndent()
 		gradle.file(properties, "gradle.properties")
@@ -354,7 +353,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 	/**
 	 * Trigger this behavior and check it doesn't happen by default.
-	 * ```
+	 * ```log
 	 * Execution failed for task ':javaPreCompileDebug'.
 	 * > Annotation processors must be explicitly declared now.
 	 * The following dependencies on the compile classpath are found to contain annotation processor.
@@ -365,6 +364,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	 * to continue with previous behavior.
 	 * Note that this option is deprecated and will be removed in the future.
 	 * See https://developer.android.com/r/tools/annotation-processor-error-message.html for more details.
+	 * ```
+	 *
+	 * Since AGP 4.0 this setting has been removed:
+	 * ```log
+	 * WARNING: DSL element 'annotationProcessorOptions.includeCompileClasspath' is obsolete.
+	 * It will be removed in version 5.0 of the Android Gradle plugin.
+	 * It does not do anything and AGP no longer includes annotation processors added on your project's compile classpath
 	 * ```
 	 */
 	@Test fun `annotation processors are excluded from the classpath (debug)`() {

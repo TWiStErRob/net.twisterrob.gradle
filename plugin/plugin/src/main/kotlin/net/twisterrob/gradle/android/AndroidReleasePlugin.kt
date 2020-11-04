@@ -77,11 +77,15 @@ class AndroidReleasePlugin : BasePlugin() {
 			)
 			destinationDirectory.set(releaseDir.resolve("android"))
 			archiveFileName.set(android.defaultConfig
-				.extensions.getByName<AndroidVersionExtension>("version")
+				.extensions.getByName<AndroidVersionExtension>(AndroidVersionExtension.NAME)
 				.formatArtifactName(project, variant, "archive") + ".zip")
-			from(variant.packageApplicationProvider.get().outputDirectory)
+			from(variant.packageApplicationProvider.get().outputDirectory) {
+				it.exclude("output.json")
+			}
 			if (variant is TestedVariant && variant.testVariant != null) {
-				from(variant.testVariant.packageApplicationProvider.get().outputDirectory)
+				from(variant.testVariant.packageApplicationProvider.get().outputDirectory) {
+					it.exclude("output.json")
+				}
 			}
 			if (variant.buildType.isMinifyEnabled) {
 				from(variant.mappingFileProvider.map { it.singleFile.parentFile }) {

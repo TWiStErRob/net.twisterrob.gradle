@@ -26,8 +26,8 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			afterEvaluate {
 				// TODO workaround for testing until a Task input property is introduced instead of env.RELEASE_HOME
-				tasks.releaseRelease.destinationDir = file('releases')
-				tasks.releaseDebug.destinationDir = file('releases')
+				tasks.releaseRelease.destinationDirectory.set(file('releases'))
+				tasks.releaseDebug.destinationDirectory.set(file('releases'))
 			}
 		""".trimIndent()
 	}
@@ -49,12 +49,13 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, hasZipEntry("proguard_mapping.txt"))
 			assertThat(archive, hasZipEntry("proguard_seeds.txt"))
 			assertThat(archive, hasZipEntry("proguard_usage.txt"))
+			assertThat(archive, not(hasZipEntry("output.json")))
 			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
 		}
 	}
 
 	@Test fun `test (debug)`() {
-		val result = gradle.run(script, "releaseDebug").build()
+		val result = gradle.run(script, "releaseDebug", "--warning-mode", "all").build()
 
 		result.assertSuccess(":assembleDebug")
 		result.assertSuccess(":assembleDebugAndroidTest")
@@ -72,6 +73,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, not(hasZipEntry("proguard_mapping.txt")))
 			assertThat(archive, not(hasZipEntry("proguard_seeds.txt")))
 			assertThat(archive, not(hasZipEntry("proguard_usage.txt")))
+			assertThat(archive, not(hasZipEntry("output.json")))
 			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
 		}
 	}
