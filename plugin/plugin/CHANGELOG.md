@@ -1,7 +1,7 @@
-## 4.0.0
+## 4.0.x
 
-### 4.0.0.14-29-29.0
- - AGP 4.0.0
+### 4.0.2.14-29-29.0
+ - AGP 4.0.2
    - Remove net.twisterrob.android-feature as com.android.feature was deprecated
    - `android.enableR8=false` gives a deprecation warning, but R8 is not supported yet.
  - Gradle 6.1.1  
