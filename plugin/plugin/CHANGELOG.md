@@ -7,6 +7,7 @@
  - Gradle 6.1.1  
    Note: use `apply from: resources.text.fromInsecureUri("http://localhost/maven/configure.gradle")`
  - Target Java 8 for class files
+ - Bump internal libraries to latest
 
 ## 3.6.x
 

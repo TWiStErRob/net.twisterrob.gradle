@@ -9,11 +9,11 @@ It takes ~1.5 minutes (59 tests at v3.4.2) on 10 parallel threads on PC.
 
 ### `-SNAPSHOT` release
 ```terminal
-gradlew upload
+gradlew publish
 ```
 
 ### production-ready release
 with proper version number (strips `-SNAPSHOT`):
 ```terminal
-gradlew upload -Prelease
+gradlew publish -Prelease
 ```
