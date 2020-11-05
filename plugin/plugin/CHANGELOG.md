@@ -1,5 +1,8 @@
 ## 4.0.x
 
+### 4.0.2.14-29-29.1
+ - Expose AGP as api dependency -> maven/compile
+
 ### 4.0.2.14-29-29.0
  - AGP 4.0.2
    - Remove net.twisterrob.android-feature as com.android.feature was deprecated
