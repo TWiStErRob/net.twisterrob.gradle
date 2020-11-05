@@ -1,5 +1,7 @@
 ## 4.0.x
 
+### 4.0.2.14-29-29.2
+
 ### 4.0.2.14-29-29.1
  - Expose AGP as api dependency -> maven.pom scope=compile
 
