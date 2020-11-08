@@ -27,6 +27,7 @@ import java.util.Locale
 open class AndroidVersionExtension {
 
 	companion object {
+
 		internal const val NAME = "version"
 	}
 
@@ -51,6 +52,7 @@ open class AndroidVersionExtension {
 	}
 
 	var renameAPK: Boolean = true
+
 	/**
 	 * Bridge for Groovy callers.
 	 * @see formatArtifactName property
@@ -172,14 +174,16 @@ class AndroidVersionPlugin : BasePlugin() {
 	}
 
 	private fun calculateVersionName(variant: BaseVariant?): String {
-		val suffix = variant?.let {
-			@Suppress("DEPRECATION")
-			// It was changed from DefaultProductFlavor and deprecated in 4.0.0, keep it around until removal or relocation.
-			com.android.builder.core.AbstractProductFlavor.mergeVersionNameSuffix(
-				variant.buildType.versionNameSuffix,
-				variant.mergedFlavor.versionNameSuffix
-			)!!
-		} ?: ""
+		val suffix =
+			if (variant != null)
+				@Suppress("DEPRECATION")
+				// It was changed from DefaultProductFlavor and deprecated in 4.0.0, keep it around until removal or relocation.
+				com.android.builder.core.AbstractProductFlavor.mergeVersionNameSuffix(
+					variant.buildType.versionNameSuffix,
+					variant.mergedFlavor.versionNameSuffix
+				)
+			else
+				""
 		val versionName = version.versionNameFormat.format(
 			Locale.ROOT,
 			version.major, version.minor, version.patch, version.build

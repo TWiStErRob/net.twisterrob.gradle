@@ -9,6 +9,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.io.FileMatchers.anExistingFile
 import java.io.File
+import java.util.concurrent.TimeUnit
 import kotlin.test.assertTrue
 
 internal const val packageName = "net.twisterrob.gradle.test_app"
@@ -162,14 +163,25 @@ fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =
 	}
 
 fun hasDevices(): Boolean {
+	@Suppress("DEPRECATION") // REPORT Don't know why, cannot fix it.
 	AndroidDebugBridge.initIfNeeded(false)
-	val bridge = AndroidDebugBridge.createBridge(resolveFromAndroidSDK("adb").absolutePath, false)
-
-	var wait = 5000L
-	while (!bridge.hasInitialDeviceList() && wait > 0) {
-		Thread.sleep(wait)
-		wait -= 1000L
+	val bridge = AndroidDebugBridge.createBridge(
+		resolveFromAndroidSDK("adb").absolutePath,
+		false
+//		10,
+//		TimeUnit.SECONDS
+	)
+	ensuredWait(5000L, 1000L, "Cannot get device list") {
+		bridge.hasInitialDeviceList()
 	}
-	assertTrue(wait > 0 && bridge.hasInitialDeviceList(), "Cannot get device list")
 	return bridge.devices.isNotEmpty()
+}
+
+fun ensuredWait(initialWait: Long, reduceAmount: Long, message: String, block: () -> Boolean) {
+	var wait = initialWait
+	while (!block() && wait > 0) {
+		Thread.sleep(wait)
+		wait -= reduceAmount
+	}
+	assertTrue(wait > 0 && block(), message)
 }

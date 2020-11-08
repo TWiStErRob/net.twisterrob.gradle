@@ -20,6 +20,7 @@ import java.util.zip.ZipFile
 class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 	companion object {
+
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -50,6 +51,8 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, hasZipEntry("proguard_seeds.txt"))
 			assertThat(archive, hasZipEntry("proguard_usage.txt"))
 			assertThat(archive, not(hasZipEntry("output.json")))
+			assertThat(archive, not(hasZipEntry("metadata.json")))
+			assertThat(archive, not(hasZipEntry("output-metadata.json")))
 			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
 		}
 	}
@@ -74,6 +77,8 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, not(hasZipEntry("proguard_seeds.txt")))
 			assertThat(archive, not(hasZipEntry("proguard_usage.txt")))
 			assertThat(archive, not(hasZipEntry("output.json")))
+			assertThat(archive, not(hasZipEntry("metadata.json")))
+			assertThat(archive, not(hasZipEntry("output-metadata.json")))
 			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
 		}
 	}
@@ -99,7 +104,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 				.entries()
 				.asSequence()
 				.sortedBy { it.name }
-				.joinToString("\n") {
+				.joinToString(prefix = "'$archive' contents:\n", separator = "\n") {
 					"${it.name} (${it.compressedSize}/${it.size} bytes) @ ${Instant.ofEpochMilli(it.time)}"
 				})
 			throw ex

@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.variant.impl.BuiltArtifactsImpl
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
@@ -80,11 +81,11 @@ class AndroidReleasePlugin : BasePlugin() {
 				.extensions.getByName<AndroidVersionExtension>(AndroidVersionExtension.NAME)
 				.formatArtifactName(project, variant, "archive") + ".zip")
 			from(variant.packageApplicationProvider.get().outputDirectory) {
-				it.exclude("output.json")
+				it.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 			}
 			if (variant is TestedVariant && variant.testVariant != null) {
 				from(variant.testVariant.packageApplicationProvider.get().outputDirectory) {
-					it.exclude("output.json")
+  				it.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 				}
 			}
 			if (variant.buildType.isMinifyEnabled) {
