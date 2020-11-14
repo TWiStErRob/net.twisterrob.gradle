@@ -50,7 +50,7 @@ class KotlinPlugin : BasePlugin() {
 		private fun Project.addKotlinJUnitIfNeeded(configuration: String) {
 			configurations[configuration].dependencies.all {
 				if (it.group == "junit" && it.name == "junit"
-					&& (it.version ?: "").matches("""4.\d+(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
+					&& (it.version ?: "").matches("""4\.\d+(\.\d+)?(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
 				) {
 					dependencies.add(configuration, kotlin("test-junit"))
 				}

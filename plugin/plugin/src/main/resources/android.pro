@@ -113,8 +113,10 @@
 # }
 -dontnote androidx.core.graphics.drawable.IconCompatParcelizer
 
-# Understand the @Keep support annotation.
+# Understand the @Keep support annotation when using older support libraries.
 # Copied from support-annotations-28.0.0.jar/META-INF/proguard/androidx-annotations.pro
+# androidx.annotation:annotation:1.1.0 also has this file.
+# Latest versions don't need these, because they are actually merged in by AGP via consumerProguardFile.
 
 # No need to keep the actual annotation
 #-keep class android.support.annotation.Keep

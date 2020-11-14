@@ -164,7 +164,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
 			dependencies {
-				testImplementation "junit:junit:4.13"
+				testImplementation "junit:junit:4.13.1"
 			}
 			tasks.withType(Test) {
 				//noinspection UnnecessaryQualifiedReference

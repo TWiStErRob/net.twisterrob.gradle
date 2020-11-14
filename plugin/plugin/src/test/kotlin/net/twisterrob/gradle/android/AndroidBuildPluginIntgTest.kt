@@ -213,15 +213,17 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 					val res = androidx.test.core.app.ApplicationProvider
 							.getApplicationContext<android.content.Context>()
 							.resources
-					printProperty("in_prod=" + res.getBoolean(R.bool.in_prod) as Boolean)
-					printProperty("in_test=" + res.getBoolean(R.bool.in_test) as Boolean)
-					printProperty("app_package=" + res.getString(R.string.app_package) as String)
-					printProperty("EMAIL=" + BuildConfig.EMAIL as String)
-					printProperty("REVISION=" + BuildConfig.REVISION as String)
-					printProperty("REVISION_NUMBER=" + BuildConfig.REVISION_NUMBER as Int)
-					printProperty("BUILD_TIME=" + (BuildConfig.BUILD_TIME as java.util.Date).time)
+					printProperty("in_prod", res.getBoolean(R.bool.in_prod) as Boolean)
+					printProperty("in_test", res.getBoolean(R.bool.in_test) as Boolean)
+					printProperty("app_package", res.getString(R.string.app_package) as String)
+					printProperty("EMAIL", BuildConfig.EMAIL as String)
+					printProperty("REVISION", BuildConfig.REVISION as String)
+					printProperty("REVISION_NUMBER", BuildConfig.REVISION_NUMBER as Int)
+					printProperty("BUILD_TIME", (BuildConfig.BUILD_TIME as java.util.Date).time)
 				}
-				private fun printProperty(prop: String) = println(BuildConfig.BUILD_TYPE + "." + prop)
+				private fun printProperty(prop: String, value: Any?) {
+					println(BuildConfig.BUILD_TYPE + "." + prop + "=" + value)
+				}
 			}
 		""".trimIndent()
 		gradle.file(kotlinTestClass, "src/test/kotlin/test.kt")
@@ -237,12 +239,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.android-app'
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
-				testImplementation 'junit:junit:4.13'
-				testImplementation ('org.robolectric:robolectric:4.3.1') {
-					// https://github.com/robolectric/robolectric/issues/5245
-					exclude group: 'com.google.auto.service', module: 'auto-service'
-				}
-				testImplementation 'androidx.test:core:1.2.0'
+				testImplementation 'junit:junit:4.13.1'
+				testImplementation 'org.robolectric:robolectric:4.4'
+				testImplementation 'androidx.test:core:1.3.0'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test) {
@@ -278,18 +277,20 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			import ${packageName}.R
 
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
-			@org.robolectric.annotation.Config(sdk = [org.robolectric.annotation.Config.OLDEST_SDK])
 			// Specify SDK version to prevent failing on different JVMs.
 			// [Robolectric] WARN: Android SDK 29 requires Java 9 (have Java 8).
 			// Tests won't be run on SDK 29 unless explicitly requested.
 			// java.lang.UnsupportedOperationException:
 			// Failed to create a Robolectric sandbox: Android SDK 29 requires Java 9 (have Java 8)
+			@org.robolectric.annotation.Config(sdk = [org.robolectric.annotation.Config.OLDEST_SDK])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
-					printProperty("BUILD_TIME=" + (BuildConfig.BUILD_TIME as java.util.Date).time)
+					printProperty("BUILD_TIME", (BuildConfig.BUILD_TIME as java.util.Date).time)
 				}
-				private fun printProperty(prop: String) = println(BuildConfig.BUILD_TYPE + "." + prop)
+				private fun printProperty(prop: String, value: Any?) {
+					println(BuildConfig.BUILD_TYPE + "." + prop + "=" + value)
+				}
 			}
 
 		""".trimIndent()
@@ -306,11 +307,8 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.android-app'
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
-				testImplementation 'junit:junit:4.13'
-				testImplementation ('org.robolectric:robolectric:4.3.1') {
-					// https://github.com/robolectric/robolectric/issues/5245
-					exclude group: 'com.google.auto.service', module: 'auto-service'
-				}
+				testImplementation 'junit:junit:4.13.1'
+				testImplementation 'org.robolectric:robolectric:4.4'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test) {

@@ -23,7 +23,49 @@ import org.junit.Test
  */
 class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
-	@Test fun `default build setup minifies only release (debug) and (release)`() {
+	@Test fun `default build setup minifies only release using AndroidX (debug) and (release)`() {
+		@Language("java")
+		val someClass = """
+			package ${packageName};
+			public class SomeClass {
+				@androidx.annotation.Keep
+				public void usedMethod() { }
+				// no reason to -keep it, it'll be optimized away
+				public void unusedMethod() { }
+			}
+		""".trimIndent()
+		gradle.file(someClass, "src/main/java/${packageFolder}/SomeClass.java")
+
+		@Language("properties")
+		val properties = """
+			android.useAndroidX=true
+		""".trimIndent()
+		gradle.root.resolve("gradle.properties").appendText(properties)
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			dependencies {
+				implementation 'androidx.annotation:annotation:1.1.0'
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script, "assemble").build()
+
+		result.assertNoTask(":minifyDebugWithProguard")
+		result.assertSuccess(":minifyReleaseWithProguard")
+		result.assertSuccess(":assembleRelease")
+		result.assertSuccess(":assembleDebug")
+		result.assertSuccess(":assemble")
+		val releaseMethods = gradle.root.apk("release").toDexParser().listMethods()
+		val debugMethods = gradle.root.apk("debug").toDexParser().listMethods()
+		val unusedMethod = dexMethod("${packageName}.SomeClass", "unusedMethod")
+		val usedMethod = dexMethod("${packageName}.SomeClass", "usedMethod")
+		assertThat(debugMethods, hasItems(unusedMethod, usedMethod))
+		assertThat(releaseMethods, allOf(hasItem(usedMethod), not(hasItem(unusedMethod))))
+	}
+
+	@Test fun `default build setup minifies only release using support library (debug) and (release)`() {
 		@Language("java")
 		val someClass = """
 			package ${packageName};
@@ -35,6 +77,12 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 			}
 		""".trimIndent()
 		gradle.file(someClass, "src/main/java/${packageFolder}/SomeClass.java")
+
+		@Language("properties")
+		val properties = """
+			android.useAndroidX=true
+		""".trimIndent()
+		gradle.root.resolve("gradle.properties").appendText(properties)
 
 		@Language("gradle")
 		val script = """
