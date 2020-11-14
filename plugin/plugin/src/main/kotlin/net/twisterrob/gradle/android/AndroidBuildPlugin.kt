@@ -7,16 +7,19 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.androidTestVariantData
 import com.android.build.gradle.internal.api.unitTestVariantData
 import com.android.build.gradle.internal.api.variantData
-import com.android.build.gradle.internal.crash.afterEvaluate
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
-import net.twisterrob.gradle.android.tasks.DecorateBuildConfigTask
+import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
+import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addBuildConfigFields
+import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
+import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
 open class AndroidBuildPluginExtension {
@@ -146,19 +149,19 @@ class AndroidBuildPlugin : BasePlugin() {
 		}
 	}
 
+	/**
+	 * This is a new incubating way of adding buildConfigFields introduced in AGP 4.1.
+	 * @see https://issuetracker.google.com/issues/172657565
+	 * @see https://github.com/android/gradle-recipes/blob/8d0c14d6fed86726df60fb8c8f79e5a03c66fdee/Kotlin/addCustomFieldWithValueFromTask/app/build.gradle.kts
+	 */
 	private fun decorateBuildConfig() {
-		project.tasks.create<DecorateBuildConfigTask>("decorateBuildConfig") {
-			description = "Adds more information about build to BuildConfig.java."
-			// TODO use https://developer.android.com/reference/tools/gradle-api/4.2/com/android/build/api/variant/Variant.html#buildConfigFields:org.gradle.api.provider.MapProperty
-			// See also https://issuetracker.google.com/issues/172657565
-			// Xav: so I would keep your DecorateBuildConfigTask task, have it compute the value, and write it to a file (that's declared as a RegularFileProperty).
-			// Then do something like this: variant.buildConfigFields.put("name", myTask.outputFile.map { new BuildConfigField("name", "type", it.readText()) })
-			//project.tasks[TaskManager.MAIN_PREBUILD].dependsOn(this)
-			project.afterEvaluate {
-				addBuildInfo()
-				addVCSInformation()
-			}
-		}
+		val buildTimeTaskProvider =
+			project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
+		buildTimeTaskProvider.addBuildConfigFields(android)
+
+		val vcsTaskProvider =
+			project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
+		vcsTaskProvider.addBuildConfigFields(android)
 	}
 
 	companion object {

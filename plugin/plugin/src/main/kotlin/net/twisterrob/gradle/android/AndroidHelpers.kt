@@ -1,5 +1,8 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.variant.BuildConfigField
+import com.android.build.api.variant.VariantProperties
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
@@ -11,9 +14,14 @@ import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.VersionedVariant
 import com.android.build.gradle.internal.dsl.BuildType
+import com.android.builder.model.AndroidProject
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
+import org.gradle.api.Task
+import org.gradle.api.file.RegularFile
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.PluginContainer
+import java.io.Serializable
 
 fun PluginContainer.hasAndroid(): Boolean =
 	hasPlugin(AppPlugin::class.java) ||
@@ -21,6 +29,10 @@ fun PluginContainer.hasAndroid(): Boolean =
 			hasAndroidTest()
 
 fun PluginContainer.hasAndroidTest() = hasPlugin(TestPlugin::class.java)
+
+fun BaseExtension.onVariantProperties(action: VariantProperties.() -> Unit) {
+	(this as CommonExtension<*, *, *, *, *, *, *, *>).onVariantProperties(action)
+}
 
 val BaseExtension.variants: DomainObjectSet<out BaseVariant>
 	get() =
@@ -43,4 +55,20 @@ fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType)
 	configureEach {
 		if (it.name == name)
 			block(it)
+	}
+
+fun <T : Serializable> RegularFile.asBuildConfigField(
+	type: String,
+	valueMapper: (String) -> T
+): BuildConfigField<T> =
+	BuildConfigField(
+		type = type,
+		value = valueMapper(this.asFile.readText()),
+		comment = null
+	)
+
+fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
+	project.objects.fileProperty().apply {
+		set(project.layout.buildDirectory
+			.map { it.file("${AndroidProject.FD_INTERMEDIATES}/$relativePath") })
 	}
