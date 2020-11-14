@@ -167,9 +167,9 @@ fun hasDevices(): Boolean {
 	AndroidDebugBridge.initIfNeeded(false)
 	val bridge = AndroidDebugBridge.createBridge(
 		resolveFromAndroidSDK("adb").absolutePath,
-		false
-//		10,
-//		TimeUnit.SECONDS
+		false,
+		10,
+		TimeUnit.SECONDS
 	)
 	ensuredWait(5000L, 1000L, "Cannot get device list") {
 		bridge.hasInitialDeviceList()

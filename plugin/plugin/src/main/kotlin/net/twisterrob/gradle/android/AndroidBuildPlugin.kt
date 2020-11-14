@@ -4,10 +4,10 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.internal.TaskManager
 import com.android.build.gradle.internal.api.androidTestVariantData
 import com.android.build.gradle.internal.api.unitTestVariantData
 import com.android.build.gradle.internal.api.variantData
+import com.android.build.gradle.internal.crash.afterEvaluate
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
@@ -16,7 +16,6 @@ import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.withType
 
@@ -150,7 +149,15 @@ class AndroidBuildPlugin : BasePlugin() {
 	private fun decorateBuildConfig() {
 		project.tasks.create<DecorateBuildConfigTask>("decorateBuildConfig") {
 			description = "Adds more information about build to BuildConfig.java."
-			project.tasks[TaskManager.MAIN_PREBUILD].dependsOn(this)
+			// TODO use https://developer.android.com/reference/tools/gradle-api/4.2/com/android/build/api/variant/Variant.html#buildConfigFields:org.gradle.api.provider.MapProperty
+			// See also https://issuetracker.google.com/issues/172657565
+			// Xav: so I would keep your DecorateBuildConfigTask task, have it compute the value, and write it to a file (that's declared as a RegularFileProperty).
+			// Then do something like this: variant.buildConfigFields.put("name", myTask.outputFile.map { new BuildConfigField("name", "type", it.readText()) })
+			//project.tasks[TaskManager.MAIN_PREBUILD].dependsOn(this)
+			project.afterEvaluate {
+				addBuildInfo()
+				addVCSInformation()
+			}
 		}
 	}
 

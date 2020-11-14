@@ -48,9 +48,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", "${packageName}.debug@1234-vd+debug.apk"),
+			apk = gradle.root.apk("debug", "${packageName}.debug@1234-vnull+debug.apk"),
 			versionCode = "1234",
-			versionName = "d"
+			versionName = ""
 		)
 	}
 

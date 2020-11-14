@@ -1,10 +1,14 @@
 package net.twisterrob.gradle.android.tasks
 
-import com.google.common.annotations.VisibleForTesting
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.internal.TaskManager
+import com.android.build.gradle.tasks.ManifestProcessorTask
+import com.android.build.gradle.tasks.ProcessApplicationManifest
+import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.android.xml.AndroidXPathFactory
+import com.google.common.annotations.VisibleForTesting
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Exec
 import org.gradle.kotlin.dsl.getByName
 import org.xml.sax.InputSource
@@ -30,10 +34,10 @@ open class AndroidInstallRunnerTask : Exec() {
 		val variant = variant!! // protected by onlyIf
 		val output = variant.outputs.single()
 		val manifestFile = output
-			.processManifestProvider.get()
-			.manifestOutputDirectory.get()
-			.file("AndroidManifest.xml")
-			.asFile
+			.processManifestProvider
+			.get()
+			.manifestFile
+			.get()
 		val activityClass = getMainActivity(manifestFile)!!
 		val android: BaseExtension = project.extensions.getByName<BaseExtension>("android")
 		// doesn't work: setCommandLine(android.adbExe, "shell", "am", "start", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", variant.applicationId)
@@ -70,3 +74,11 @@ open class AndroidInstallRunnerTask : Exec() {
 		}
 	}
 }
+
+private val ManifestProcessorTask.manifestFile: Provider<File>
+	get() =
+		when (this) {
+			is ProcessApplicationManifest -> mergedManifest.asFile
+			is ProcessMultiApkApplicationManifest -> mainMergedManifest.asFile
+			else -> error("$this is an unsupported ${ManifestProcessorTask::class}")
+		}
