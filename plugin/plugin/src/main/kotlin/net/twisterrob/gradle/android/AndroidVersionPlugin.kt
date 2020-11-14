@@ -53,13 +53,6 @@ open class AndroidVersionExtension {
 
 	var renameAPK: Boolean = true
 
-	/**
-	 * Bridge for Groovy callers.
-	 * @see formatArtifactName property
-	 */
-	fun formatArtifactName(project: Project, variant: ApkVariant, baseName: String) =
-		(formatArtifactName)(project, variant, baseName)
-
 	var formatArtifactName: (Project, ApkVariant, String) -> String = { project, variant, baseName ->
 		// strip project name, leave only variant
 		val strippedBaseName = baseName.replace("${project.base.archivesBaseName}-", "")
@@ -158,19 +151,6 @@ class AndroidVersionPlugin : BasePlugin() {
 	private fun calculateOutputFileName(variant: ApkVariant): String {
 		val artifactName = version.formatArtifactName(project, variant, variant.baseName)
 		return "${artifactName}.apk"
-	}
-
-	@Suppress("DEPRECATION")
-	@Deprecated("new method is using defaultConfig")
-	private fun autoVersion(variant: ApkVariant) {
-		variant.outputs.filterIsInstance<ApkVariantOutput>().forEach { output ->
-			output.versionNameOverride = calculateVersionName(variant)
-			output.versionCodeOverride = calculateVersionCode()
-		}
-		// need to version the test variant, so the androidTest APK gets the same version its AndroidManifest
-		if (variant is TestedVariant) {
-			variant.testVariant?.run(::autoVersion)
-		}
 	}
 
 	private fun calculateVersionName(variant: BaseVariant?): String {
