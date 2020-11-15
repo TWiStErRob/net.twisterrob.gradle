@@ -91,20 +91,20 @@ class AndroidBuildPlugin : BasePlugin() {
 				buildConfigField("String", "EMAIL", "\"feedback@twisterrob.net\"")
 			}
 
-			buildTypes.configure("debug") {
+			buildTypes.configure("debug") { debug ->
 				project.plugins.withType<AppPlugin> {
 					// TODO make debug buildTypes configurable, use name of buildType as suffix
-					it.applicationIdSuffix = ".${it.name}"
+					debug.applicationIdSuffix = ".${debug.name}"
 				}
-				it.versionNameSuffix = "d"
-				it.buildConfigField("String", "EMAIL", "\"papp.robert.s@gmail.com\"")
-				it.resValue("bool", "in_test", "true")
-				it.resValue("bool", "in_prod", "false")
+				debug.versionNameSuffix = "d"
+				debug.buildConfigField("String", "EMAIL", "\"papp.robert.s@gmail.com\"")
+				debug.resValue("bool", "in_test", "true")
+				debug.resValue("bool", "in_prod", "false")
 			}
 
-			buildTypes.configure("release") {
-				it.resValue("bool", "in_test", "false")
-				it.resValue("bool", "in_prod", "true")
+			buildTypes.configure("release") { release ->
+				release.resValue("bool", "in_test", "false")
+				release.resValue("bool", "in_prod", "true")
 			}
 
 			// configure files we don't need in APKs
@@ -180,13 +180,13 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		private fun fixVariantTaskGroups(variant: BaseVariant) {
 			fun BaseVariantData.fixTaskMetadata() {
-				taskContainer.compileTask.configure {
-					it.group = "Build"
-					it.description = "Compiles sources for ${description}."
+				taskContainer.compileTask.configure { task ->
+					task.group = "Build"
+					task.description = "Compiles sources for ${description}."
 				}
-				taskContainer.javacTask.configure {
-					it.group = "Build"
-					it.description = "Compiles Java sources for ${description}."
+				taskContainer.javacTask.configure { task ->
+					task.group = "Build"
+					task.description = "Compiles Java sources for ${description}."
 				}
 			}
 			variant.variantData?.fixTaskMetadata()
