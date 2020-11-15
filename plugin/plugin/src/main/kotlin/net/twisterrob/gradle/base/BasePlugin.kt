@@ -28,6 +28,7 @@ open class BasePlugin : Plugin<Project> {
 	}
 
 	companion object {
+
 		@VisibleForTesting
 		internal fun checkGradleVersion(current: GradleVersion) {
 			val required = "4.1"

@@ -34,6 +34,7 @@ class GradleTestKitDirRelocator : TestRule {
 	}
 
 	companion object {
+
 		private val workerId by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
 		private var testKitDir by systemProperty(DefaultGradleRunner.TEST_KIT_DIR_SYS_PROP)
 	}

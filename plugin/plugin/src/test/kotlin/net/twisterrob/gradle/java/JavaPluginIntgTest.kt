@@ -85,7 +85,6 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertHasOutputLine("""Note: Recompile with -Xlint:unchecked for details.""".toRegex())
 	}
 
-
 	@Test fun `unchecked warnings show up`() {
 		@Language("java")
 		val uncheckedWarning = """

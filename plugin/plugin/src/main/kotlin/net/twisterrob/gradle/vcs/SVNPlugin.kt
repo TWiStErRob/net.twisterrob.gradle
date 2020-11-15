@@ -31,6 +31,7 @@ class SVNPlugin : BasePlugin() {
 open class SVNPluginExtension : VCSExtension {
 
 	companion object {
+
 		internal const val NAME = "svn"
 	}
 
@@ -80,6 +81,7 @@ open class SVNPluginExtension : VCSExtension {
 	}
 
 	private object NonExitingSecurityManager : SecurityManager() {
+
 		override fun checkPermission(perm: Permission) {
 			// do nothing
 		}

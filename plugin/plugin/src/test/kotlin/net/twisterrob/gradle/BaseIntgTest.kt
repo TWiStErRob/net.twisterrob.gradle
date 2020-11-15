@@ -13,6 +13,7 @@ abstract class BaseIntgTest {
 	}
 
 	companion object {
+
 		// TODEL once the GradleRunnerRule is updated to not use assert()
 		@BeforeClass @JvmStatic fun enableAssertions() {
 			val kotlinClassLoader = Class.forName("kotlin._Assertions").classLoader!!

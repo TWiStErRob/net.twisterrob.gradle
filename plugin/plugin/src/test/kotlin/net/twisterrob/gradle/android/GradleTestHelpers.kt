@@ -112,10 +112,12 @@ internal fun assertDefaultBadging(
 	isAndroidTestApk: Boolean = false
 ) {
 	val fileNamesMessage =
-		"Wanted: ${apk.absolutePath}${System.lineSeparator()}list: ${apk.parentFile.listFiles().orEmpty().joinToString(
-			prefix = System.lineSeparator(),
-			separator = System.lineSeparator()
-		)}"
+		"Wanted: ${apk.absolutePath}${System.lineSeparator()}list: ${
+			apk.parentFile.listFiles().orEmpty().joinToString(
+				prefix = System.lineSeparator(),
+				separator = System.lineSeparator()
+			)
+		}"
 	assertThat(fileNamesMessage, apk, anExistingFile())
 	val expectedOutput =
 		if (compileSdkVersion < 28) {
@@ -148,7 +150,7 @@ internal fun assertDefaultBadging(
 					locales: '--_--'
 					densities: '160'
 				""".trimIndent()
-			}else {
+			} else {
 				// TODO versionCode and versionName is not verified!
 				"""
 					package: name='$applicationId' versionCode='' versionName='' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'

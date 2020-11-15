@@ -25,6 +25,7 @@ import org.gradle.kotlin.dsl.withType
 open class AndroidBuildPluginExtension {
 
 	companion object {
+
 		internal const val NAME = "twisterrob"
 	}
 
@@ -46,6 +47,7 @@ const val VERSION_SDK_TARGET = 29
  * Latest SDK version available, useful for discovering deprecated methods and getting new features like `.findViewById<T>()`.
  */
 const val VERSION_SDK_COMPILE = 29
+
 /**
  * Note: format changed at 9 Pie, was 8.1.0 Oreo.
  */

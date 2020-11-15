@@ -17,6 +17,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPathConstants
 
 open class AndroidInstallRunnerTask : Exec() {
+
 	private var variant: ApkVariant? = null
 
 	init {

@@ -24,6 +24,7 @@ class GITPlugin : BasePlugin() {
 open class GITPluginExtension : VCSExtension {
 
 	companion object {
+
 		internal const val NAME = "git"
 	}
 
@@ -43,6 +44,7 @@ open class GITPluginExtension : VCSExtension {
 		} catch (_: RepositoryNotFoundException) {
 			false
 		}
+
 	// 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 	override val revision: String
 		get() = open().use { git -> git.head().abbreviatedId }

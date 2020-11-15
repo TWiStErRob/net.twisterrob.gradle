@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.get
 class AndroidSigningPlugin : BasePlugin() {
 
 	companion object {
+
 		private const val SIGNING_CONFIG_NAME = "twisterrob"
 
 		private const val DEFAULT_STORE_FILE = "twisterrob.jks"

@@ -7,6 +7,7 @@ import org.junit.rules.TestName
 import kotlin.test.BeforeTest
 
 abstract class BaseAndroidIntgTest : BaseIntgTest() {
+
 	@Suppress("PropertyName")
 	@get:Rule val __testName = TestName()
 

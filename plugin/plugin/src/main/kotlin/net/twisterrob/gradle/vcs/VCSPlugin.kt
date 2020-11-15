@@ -10,6 +10,7 @@ import org.gradle.kotlin.dsl.getByName
 open class VCSPluginExtension : VCSExtension {
 
 	companion object {
+
 		internal const val NAME = "VCS"
 	}
 
@@ -31,6 +32,7 @@ open class VCSPluginExtension : VCSExtension {
 class VCSPlugin : BaseExposedPlugin() {
 
 	companion object {
+
 		@JvmStatic
 		fun VCSPluginExtension.whichVCS(): VCSExtension = when {
 			current != DummyVcsExtension -> current // already determined
