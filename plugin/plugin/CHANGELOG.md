@@ -4,6 +4,7 @@
  - AGP 4.1.0
  - decorateBuildConfig -> calculateBuildConfigBuildTime, calculateBuildConfigVCSRevisionInfo
  - JUnit/Kotlin minor version fix
+ - Remove preset BuildConfig.EMAIL
 
 ## 4.0.x
 

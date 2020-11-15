@@ -90,7 +90,6 @@ class AndroidBuildPlugin : BasePlugin() {
 				minSdkVersion = DefaultApiVersion(VERSION_SDK_MINIMUM)
 				targetSdkVersion = DefaultApiVersion(VERSION_SDK_TARGET)
 				vectorDrawables.useSupportLibrary = true
-				buildConfigField("String", "EMAIL", "\"feedback@twisterrob.net\"")
 			}
 
 			buildTypes.configure("debug") { debug ->
@@ -99,7 +98,6 @@ class AndroidBuildPlugin : BasePlugin() {
 					debug.applicationIdSuffix = ".${debug.name}"
 				}
 				debug.versionNameSuffix = "d"
-				debug.buildConfigField("String", "EMAIL", "\"papp.robert.s@gmail.com\"")
 				debug.resValue("bool", "in_test", "true")
 				debug.resValue("bool", "in_prod", "false")
 			}
