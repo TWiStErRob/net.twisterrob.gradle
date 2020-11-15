@@ -1,3 +1,10 @@
+## 4.1.x
+
+### 4.1.0.14-29-29.0
+ - AGP 4.1.0
+ - decorateBuildConfig -> calculateBuildConfigBuildTime, calculateBuildConfigVCSRevisionInfo
+ - JUnit/Kotlin minor version fix
+
 ## 4.0.x
 
 ### 4.0.2.14-29-29.2
