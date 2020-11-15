@@ -77,15 +77,23 @@ class AndroidReleasePlugin : BasePlugin() {
 					?: throw IllegalArgumentException("Please set ${envVarName} environment variable to a directory.")
 			)
 			destinationDirectory.set(releaseDir.resolve("android"))
-			archiveFileName.set(android.defaultConfig
-				.extensions.getByName<AndroidVersionExtension>(AndroidVersionExtension.NAME)
-				.formatArtifactName(project, variant, "archive") + ".zip")
+			archiveFileName.set(
+				android.defaultConfig
+					.extensions.getByName<AndroidVersionExtension>(AndroidVersionExtension.NAME)
+					.formatArtifactName(
+						project,
+						"archive",
+						variant.applicationId,
+						variant.versionCode.toLong(),
+						variant.versionName
+					) + ".zip"
+			)
 			from(variant.packageApplicationProvider.get().outputDirectory) {
 				it.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 			}
 			if (variant is TestedVariant && variant.testVariant != null) {
 				from(variant.testVariant.packageApplicationProvider.get().outputDirectory) {
-  				it.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
+					it.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 				}
 			}
 			if (variant.buildType.isMinifyEnabled) {

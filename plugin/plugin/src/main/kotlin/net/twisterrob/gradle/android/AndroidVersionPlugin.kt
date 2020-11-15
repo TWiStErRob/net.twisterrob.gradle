@@ -53,11 +53,12 @@ open class AndroidVersionExtension {
 
 	var renameAPK: Boolean = true
 
-	var formatArtifactName: (Project, ApkVariant, String) -> String = { project, variant, baseName ->
-		// strip project name, leave only variant
-		val strippedBaseName = baseName.replace("${project.base.archivesBaseName}-", "")
-		"${variant.applicationId}@${variant.versionCode}-v${variant.versionName}+${strippedBaseName}"
-	}
+	var formatArtifactName: (Project, String, String, Long, String?) -> String =
+		{ project, baseName, applicationId, versionCode, versionName ->
+			// strip project name, leave only variant
+			val strippedBaseName = baseName.replace("${project.base.archivesBaseName}-", "")
+			"${applicationId}@${versionCode}-v${versionName}+${strippedBaseName}"
+		}
 }
 
 class AndroidVersionPlugin : BasePlugin() {
@@ -134,23 +135,33 @@ class AndroidVersionPlugin : BasePlugin() {
 			android.defaultConfig.versionName = calculateVersionName(null)
 		}
 		if (version.renameAPK) {
-			android.applicationVariants.all(::renameAPK)
+			android.applicationVariants.all { renameAPK(it, it) }
 		}
 	}
 
-	private fun renameAPK(variant: ApkVariant) {
+	/**
+	 * AGP 4.1 doesn't propagate versionName and versionCode to androidTest variant any more.
+	 *
+	 * @param variant the APK to rename
+	 * @param source the versioned APK
+	 */
+	private fun renameAPK(variant: ApkVariant, source: ApkVariant) {
 		// only called for applicationVariants and their testVariants so filter should be safe
-		variant.outputs.filterIsInstance<ApkVariantOutput>().forEach { output ->
-			output.outputFileName = calculateOutputFileName(variant)
+		variant.outputs.withType<ApkVariantOutput> {
+			val artifactName = version.formatArtifactName(
+				project, variant.baseName, variant.applicationId, source.versionCode.toLong(), source.versionName
+			)
+			outputFileName = "${artifactName}.apk"
 		}
 		if (variant is TestedVariant) {
-			variant.testVariant?.run(::renameAPK)
+			// TODO this is a Hail Mary trying to propagate version to androidTest APK, but has no effect.
+			// Maybe? https://github.com/android/gradle-recipes/blob/bd8336e32ae512c630911287ea29b45a6bacb73b/BuildSrc/setVersionsFromTask/buildSrc/src/main/kotlin/CustomPlugin.kt
+//			variant.testVariant?.outputs?.withType<ApkVariantOutput> {
+//				versionNameOverride = source.versionName
+//				versionCodeOverride = source.versionCode
+//			}
+			variant.testVariant?.run { renameAPK(this, source) }
 		}
-	}
-
-	private fun calculateOutputFileName(variant: ApkVariant): String {
-		val artifactName = version.formatArtifactName(project, variant, variant.baseName)
-		return "${artifactName}.apk"
 	}
 
 	private fun calculateVersionName(variant: BaseVariant?): String {

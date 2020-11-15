@@ -72,6 +72,26 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
+	@Test fun `can give versionCode androidTest (debug)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.versionCode = 1234
+			android.defaultConfig.version.autoVersion = false
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleDebugAndroidTest").build()
+
+		result.assertSuccess(":assembleDebugAndroidTest")
+		assertDefaultBadging(
+			applicationId = "${packageName}.debug.test",
+			apk = gradle.root.apk("androidTest/debug", "${packageName}.debug.test@1234-vnull+debug-androidTest.apk"),
+			versionCode = "1234",
+			versionName = "",
+			isAndroidTestApk = true
+		)
+	}
+
 	@Test fun `can give versionName (debug)`() {
 		@Language("gradle")
 		val script = """
@@ -108,6 +128,26 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
+	@Test fun `can give versionName androidTest (debug)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.versionName = "_custom_"
+			android.defaultConfig.version.autoVersion = false
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleDebugAndroidTest").build()
+
+		result.assertSuccess(":assembleDebugAndroidTest")
+		assertDefaultBadging(
+			applicationId = "${packageName}.debug.test",
+			apk = gradle.root.apk("androidTest/debug", "${packageName}.debug.test@-1-v_custom_d+debug-androidTest.apk"),
+			versionCode = "",
+			versionName = "_custom_d",
+			isAndroidTestApk = true
+		)
+	}
+
 	@Test fun `can customize version (debug)`() {
 		@Language("gradle")
 		val script = """
@@ -139,6 +179,28 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			apk = gradle.root.apk("release", "${packageName}@10203004-v1.2.3#4+release.apk"),
 			versionCode = "10203004",
 			versionName = "1.2.3#4"
+		)
+	}
+
+	@Test fun `can customize version propagates androidTest (debug)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleDebugAndroidTest").build()
+
+		result.assertSuccess(":assembleDebugAndroidTest")
+		assertDefaultBadging(
+			applicationId = "${packageName}.debug.test",
+			apk = gradle.root.apk(
+				"androidTest/debug",
+				"${packageName}.debug.test@10203004-v1.2.3#4d+debug-androidTest.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4d",
+			isAndroidTestApk = true
 		)
 	}
 

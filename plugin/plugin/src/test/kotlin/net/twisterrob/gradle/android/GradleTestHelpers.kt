@@ -19,7 +19,7 @@ internal fun File.apk(
 	variant: String,
 	fileName: String = {
 		val variantSuffix = if (variant != "release") ".${variant}" else ""
-		val variantVersionSuffix = if (variant == "debug") "d" else ""
+		val variantVersionSuffix = if ("debug" in variant) "d" else ""
 		"${packageName}${variantSuffix}@1-v0.0.0#1${variantVersionSuffix}+${variant}.apk"
 	}()
 ): File =
@@ -108,10 +108,11 @@ internal fun assertDefaultBadging(
 	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
-	targetSdkVersion: Int = VERSION_SDK_TARGET
+	targetSdkVersion: Int = VERSION_SDK_TARGET,
+	isAndroidTestApk: Boolean = false
 ) {
 	val fileNamesMessage =
-		"Wanted: ${apk.absolutePath}${System.lineSeparator()}list: ${apk.parentFile.listFiles().joinToString(
+		"Wanted: ${apk.absolutePath}${System.lineSeparator()}list: ${apk.parentFile.listFiles().orEmpty().joinToString(
 			prefix = System.lineSeparator(),
 			separator = System.lineSeparator()
 		)}"
@@ -133,19 +134,38 @@ internal fun assertDefaultBadging(
 				densities: '160'
 			""".trimIndent()
 		} else {
-			"""
-				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
-				sdkVersion:'$minSdkVersion'
-				targetSdkVersion:'$targetSdkVersion'
-				application: label='' icon=''
-				feature-group: label=''
-				  uses-feature: name='android.hardware.faketouch'
-				  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
-				supports-screens: 'small' 'normal' 'large' 'xlarge'
-				supports-any-density: 'true'
-				locales: '--_--'
-				densities: '160'
-			""".trimIndent()
+			if (!isAndroidTestApk) {
+				"""
+					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
+					sdkVersion:'$minSdkVersion'
+					targetSdkVersion:'$targetSdkVersion'
+					application: label='' icon=''
+					feature-group: label=''
+					  uses-feature: name='android.hardware.faketouch'
+					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+					supports-screens: 'small' 'normal' 'large' 'xlarge'
+					supports-any-density: 'true'
+					locales: '--_--'
+					densities: '160'
+				""".trimIndent()
+			}else {
+				// TODO versionCode and versionName is not verified!
+				"""
+					package: name='$applicationId' versionCode='' versionName='' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
+					sdkVersion:'$minSdkVersion'
+					targetSdkVersion:'$targetSdkVersion'
+					application: label='' icon=''
+					application-debuggable
+					uses-library:'android.test.runner'
+					feature-group: label=''
+					  uses-feature: name='android.hardware.faketouch'
+					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+					supports-screens: 'small' 'normal' 'large' 'xlarge'
+					supports-any-density: 'true'
+					locales:
+					densities:
+				""".trimIndent()
+			}
 		}
 	assertOutput(listOf(resolveFromAndroidSDK("aapt"), "dump", "badging", apk), expectedOutput)
 }
