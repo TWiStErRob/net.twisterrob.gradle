@@ -12,10 +12,11 @@ class AndroidAppPlugin : BaseExposedPlugin() {
 		super.apply(target)
 
 		project.apply<VCSPlugin>()
-		project.apply<AndroidVersionPlugin>() // after vcs
+		project.apply<AndroidLifecyclePlugin>()
 		project.plugins.apply("com.android.application")
 
 		project.apply<JavaPlugin>()
+		project.apply<AndroidVersionPlugin>()
 		project.apply<AndroidBuildPlugin>()
 		project.apply<AndroidSigningPlugin>()
 		project.apply<AndroidProguardPlugin>()

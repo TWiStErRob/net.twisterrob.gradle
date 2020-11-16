@@ -5,6 +5,7 @@
  - decorateBuildConfig -> calculateBuildConfigBuildTime, calculateBuildConfigVCSRevisionInfo
  - JUnit/Kotlin minor version fix
  - Remove preset BuildConfig.EMAIL
+ - Lifecycle-aware configuration of AGP is now separate (internal change)
 
 ## 4.0.x
 
