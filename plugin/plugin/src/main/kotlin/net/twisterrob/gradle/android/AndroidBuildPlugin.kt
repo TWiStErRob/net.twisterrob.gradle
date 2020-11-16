@@ -130,8 +130,10 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 		}
 
-		if (twisterrob.decorateBuildConfig) {
-			decorateBuildConfig()
+		project.beforeAndroidTasksCreated {
+			if (twisterrob.decorateBuildConfig) {
+				decorateBuildConfig()
+			}
 		}
 		project.afterEvaluate {
 			if (project.plugins.hasAndroid()) {

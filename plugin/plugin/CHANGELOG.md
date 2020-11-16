@@ -2,10 +2,11 @@
 
 ### 4.1.0.14-29-29.0
  - AGP 4.1.0
- - decorateBuildConfig -> calculateBuildConfigBuildTime, calculateBuildConfigVCSRevisionInfo
- - JUnit/Kotlin minor version fix
+ - Task decorateBuildConfig split into calculateBuildConfigBuildTime, calculateBuildConfigVCSRevisionInfo.
+ - JUnit/Kotlin minor version fix.
  - Remove preset BuildConfig.EMAIL
  - Lifecycle-aware configuration of AGP is now separate (internal change)
+ - android.twisterrob.decorateBuildConfig now actually works.
 
 ## 4.0.x
 

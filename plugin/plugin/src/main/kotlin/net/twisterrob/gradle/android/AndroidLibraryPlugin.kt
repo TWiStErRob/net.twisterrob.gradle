@@ -11,6 +11,7 @@ class AndroidLibraryPlugin : BaseExposedPlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
+		project.apply<AndroidLifecyclePlugin>()
 		project.plugins.apply("com.android.library")
 
 		project.apply<VCSPlugin>()

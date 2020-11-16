@@ -12,6 +12,7 @@ class AndroidTestPlugin : BaseExposedPlugin() {
 		super.apply(target)
 
 		project.apply<VCSPlugin>()
+		project.apply<AndroidLifecyclePlugin>()
 		project.plugins.apply("com.android.test")
 
 		project.apply<JavaPlugin>()

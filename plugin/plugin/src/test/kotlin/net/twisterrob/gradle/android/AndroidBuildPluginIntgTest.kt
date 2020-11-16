@@ -194,6 +194,88 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
+	@Test fun `can disable buildConfig generation (debug)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-library'
+			android.buildFeatures.buildConfig = false
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleDebug").build()
+
+		result.assertSuccess(":assembleDebug")
+	}
+
+	@Test fun `can disable buildConfig decoration (debug)`() {
+		@Language("kotlin")
+		val kotlinTestClass = """
+			import ${packageName}.BuildConfig
+			import org.hamcrest.MatcherAssert.assertThat
+			
+			class BuildConfigTest {
+				@org.junit.Test fun testRevision() {
+					assertThat(BuildConfig::class, hasNoConstant("REVISION"))
+				}
+				@org.junit.Test fun testRevisionNumber() {
+					assertThat(BuildConfig::class, hasNoConstant("REVISION_NUMBER"))
+				}
+				@org.junit.Test fun testBuildTime() {
+					assertThat(BuildConfig::class, hasNoConstant("BUILD_TIME"))
+				}
+				// not using org.hamcrest.CoreMatchers.not, because describeMismatch is not implemented.
+				private fun hasNoConstant(prop: String) : org.hamcrest.Matcher<in kotlin.reflect.KClass<*>> =
+					object : org.hamcrest.TypeSafeDiagnosingMatcher<kotlin.reflect.KClass<*>>() {
+						override fun describeTo(description: org.hamcrest.Description) {
+							description.appendText("Class has constant named ").appendValue(prop)
+						}
+						override fun matchesSafely(item: kotlin.reflect.KClass<*>, mismatchDescription: org.hamcrest.Description): Boolean {
+							try {
+								// @formatter:off
+								val field = item.java.getDeclaredField(prop).apply { isAccessible = true }
+								val value = try { field.get(null) } catch (ex: Exception) { ex }
+								// @formatter:on
+								mismatchDescription.appendValue(field).appendText(" existed with value: ").appendValue(value);
+								return false
+							} catch (ex: NoSuchFieldException) {
+								return true
+							}
+						}
+					}
+			}
+		""".trimIndent()
+		gradle.file(kotlinTestClass, "src/test/kotlin/test.kt")
+
+		@Language("properties")
+		val properties = """
+			android.useAndroidX=true
+		""".trimIndent()
+		gradle.file(properties, "gradle.properties")
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-library'
+			android.twisterrob.decorateBuildConfig = false
+			
+			apply plugin: 'net.twisterrob.kotlin'
+			dependencies {
+				testImplementation 'junit:junit:4.13.1'
+				testImplementation 'org.robolectric:robolectric:4.4'
+				testImplementation 'androidx.test:core:1.3.0'
+			}
+			android.testOptions.unitTests.includeAndroidResources = true
+			tasks.withType(Test) {
+				//noinspection UnnecessaryQualifiedReference
+				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleDebug", "test").build()
+
+		result.assertSuccess(":assembleDebug")
+		result.assertSuccess(":testReleaseUnitTest")
+		result.assertSuccess(":testDebugUnitTest")
+	}
+
 	@Test fun `adds custom resources and BuildConfig values`() {
 		@Language("kotlin")
 		val kotlinTestClass = """
@@ -249,8 +331,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			}
 		""".trimIndent()
 
-		val today = LocalDate.now().atStartOfDay().toEpochSecond(ZoneOffset.UTC) * 1000
 		val result = gradle.run(script, "test").build()
+
+		val today = LocalDate.now().atStartOfDay().toEpochSecond(ZoneOffset.UTC) * 1000
 		result.assertSuccess(":testReleaseUnitTest")
 		result.assertHasOutputLine("    release.app_package=${packageName}")
 		result.assertHasOutputLine("    release.in_prod=true")
@@ -312,7 +395,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				//noinspection UnnecessaryQualifiedReference
 				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
 			}
-			tasks.calculateBuildConfigBuildTime.configure { getBuildTime = { 1234567890 }}
+			afterEvaluate {
+				tasks.named("calculateBuildConfigBuildTime").configure { getBuildTime = { 1234567890 } }
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "testReleaseUnitTest").build()

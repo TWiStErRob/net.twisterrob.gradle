@@ -1,11 +1,9 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.AndroidBasePlugin
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
-import net.twisterrob.gradle.kotlin.dsl.withId
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.create
@@ -28,15 +26,12 @@ fun Project.beforeAndroidTasksCreated(block: () -> Unit) {
 	this.lifecycle.beforeAndroidEvaluateActions.add(block)
 }
 
-private val Project.android: AppExtension
+private val Project.android: BaseExtension
 	get() {
 		if (!this.plugins.hasPlugin("com.android.base")) {
 			throw PluginInstantiationException("Cannot use this before the Android plugins are applied.")
 		}
-		if (!this.plugins.hasPlugin("com.android.application")) {
-			throw PluginInstantiationException("Can only use lifecycle plugin with Android applications.")
-		}
-		return this.extensions["android"] as AppExtension
+		return this.extensions["android"] as BaseExtension
 	}
 
 private val Project.lifecycle: AndroidLifecycleExtension
@@ -74,7 +69,7 @@ class AndroidLifecyclePlugin : BasePlugin() {
 		}
 		// just to make sure we're in the right module (see lazy initializer of android)
 		project.afterEvaluate { project.android }
-		project.plugins.withId<AppPlugin>("com.android.application") {
+		project.plugins.withType<com.android.build.gradle.internal.plugins.BasePlugin<*, *>> {
 			project.android.extensions.create<AndroidLifecycleExtension>(AndroidLifecycleExtension.NAME)
 		}
 		// when we detect that an Android plugin is going to be applied
