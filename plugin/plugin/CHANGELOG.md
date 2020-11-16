@@ -1,5 +1,8 @@
 ## 4.1.x
 
+### 4.1.1.14-29-29.0
+ - AGP 4.1.1
+
 ### 4.1.0.14-29-29.0
  - AGP 4.1.0
  - Task decorateBuildConfig split into calculateBuildConfigBuildTime, calculateBuildConfigVCSRevisionInfo.

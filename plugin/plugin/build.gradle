@@ -1,6 +1,6 @@
 apply plugin: 'kotlin'
 apply plugin: 'net.twisterrob.gradle.test'
-version = '4.1.0.14-29-29.0'
+version = '4.1.1.14-29-29.0'
 
 dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 	implementation gradleApi()
@@ -13,7 +13,7 @@ dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 	implementation /*+--- */ 'org.ajoberstar:grgit:1.9.3'
 	implementation /*|    +--- */ 'org.eclipse.jgit:org.eclipse.jgit:4.5.2.201704071617-r'
 	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
-	api 'com.android.tools.build:gradle:4.1.0'
+	api 'com.android.tools.build:gradle:4.1.1'
 	implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72'
 	implementation('org.gradle:gradle-kotlin-dsl:6.1.1') {
 		transitive = false // make sure to not pull in kotlin-compiler-embeddable
