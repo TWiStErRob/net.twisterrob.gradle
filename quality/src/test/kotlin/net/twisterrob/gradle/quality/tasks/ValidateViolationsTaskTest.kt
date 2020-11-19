@@ -91,7 +91,7 @@ class ValidateViolationsTaskTest {
 	@Test fun `get per module violation counts`() {
 		val template = gradle.templateFile("checkstyle-multiple_violations/checkstyle-template.xml").readText()
 		val dir = gradle.templateFile("checkstyle-multiple_violations")
-		dir.listFiles().sorted().forEach { file: File ->
+		dir.listFiles().orEmpty().sorted().forEach { file: File ->
 			println("Building module from ${file}")
 			VIOLATION_PATTERN.matchEntire(file.name)?.apply {
 				val checkName = groups[1]!!.value
