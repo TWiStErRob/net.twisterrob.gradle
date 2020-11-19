@@ -22,28 +22,28 @@ import javax.xml.transform.stream.StreamSource
 
 open class HtmlReportTask : ValidateViolationsTask() {
 
-	private val xmlFile get() = xml.asFile.get()
+	private val xmlFile: File get() = xml.asFile.get()
 	@OutputFile
-	var xml: RegularFileProperty = reportDir().file("violations.xml").asProperty()
+	val xml: RegularFileProperty = reportDir().file("violations.xml").asProperty()
 
-	private val htmlFile get() = html.asFile.get()
+	private val htmlFile: File get() = html.asFile.get()
 	@OutputFile
-	var html: RegularFileProperty = reportDir().file("violations.html").asProperty()
+	val html: RegularFileProperty = reportDir().file("violations.html").asProperty()
 
 	private val xslTemplateFile: File? get() = xslTemplate.asFile.orNull
 	@InputFile
 	@get:Optional
-	var xslTemplate: RegularFileProperty = project.fileProperty().apply {
+	val xslTemplate: RegularFileProperty = project.fileProperty().apply {
 		//set(project.file("config/violations.xsl"))
 	}
 
-	private val xslOutputFile get() = xslOutput.asFile.get()
+	private val xslOutputFile: File get() = xslOutput.asFile.get()
 	/**
 	 * val xslOutput: File = xml.parentFile.resolve(xslTemplate.name)
 	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@OutputFile
-	var xslOutput: RegularFileProperty = xml
+	val xslOutput: RegularFileProperty = xml
 		.map { regular ->
 			regular.asFileProvider()
 				.map { file -> file.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl") }
