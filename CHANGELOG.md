@@ -12,6 +12,8 @@
 ### Fixes
  * Make sure nothing is logged when lint task is disabled.
 
+### Internal
+ * Test against latest minor versions of AGP (#96)
 
 ## 0.9 *(2019-02-19 --- 2019-07-11)*
 
