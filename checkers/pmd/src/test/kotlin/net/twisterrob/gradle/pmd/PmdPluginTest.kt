@@ -87,7 +87,7 @@ class PmdPluginTest {
 				apply plugin: 'net.twisterrob.pmd'
 			}
 		""".trimIndent()
-		// ":instant" is not supported yet
+		// ":instant" is not supported yet, and won't be since it's deprecated in 3.6.x.
 		val modules = arrayOf(":app", ":library", ":library:nested", ":test") +
 				if (System.getProperty("net.twisterrob.test.android.pluginVersion") < "3.4.0")
 					arrayOf(":feature", ":base")
