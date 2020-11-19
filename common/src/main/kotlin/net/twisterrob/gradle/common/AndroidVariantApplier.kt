@@ -2,7 +2,6 @@ package net.twisterrob.gradle.common
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BasePlugin
-import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
 import com.android.build.gradle.api.BaseVariant
@@ -30,7 +29,6 @@ class AndroidVariantApplier(val project: Project) {
 		}
 		project.plugins.withId("com.android.application", callback)
 		project.plugins.withId("com.android.library", callback)
-		project.plugins.withId("com.android.feature", callback)
 		project.plugins.withId("com.android.dynamic-feature", callback)
 		project.plugins.withId("com.android.test", callback)
 		if (ANDROID_GRADLE_PLUGIN_VERSION < "3.6.0") {
@@ -45,10 +43,6 @@ class AndroidVariantApplier(val project: Project) {
 		}
 		project.plugins.withId("com.android.library") {
 			val android = project.extensions["android"] as LibraryExtension
-			variantsClosure.execute(android.libraryVariants)
-		}
-		project.plugins.withId("com.android.feature") {
-			val android = project.extensions["android"] as FeatureExtension
 			variantsClosure.execute(android.libraryVariants)
 		}
 		project.plugins.withId("com.android.dynamic-feature") {
