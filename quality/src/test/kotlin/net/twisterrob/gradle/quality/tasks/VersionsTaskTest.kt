@@ -29,7 +29,6 @@ class VersionsTaskTest {
 		result.assertHasOutputLine(Regex("""Gradle version: .+"""))
 		result.assertHasOutputLine("""Checkstyle version: 'checkstyle' plugin not applied""")
 		result.assertHasOutputLine("""PMD version: 'pmd' plugin not applied""")
-		result.assertHasOutputLine("""FindBugs version: 'findbugs' plugin not applied""")
 	}
 
 	@Test fun `print checkstyle version (Gradle 4 latest)`() {
@@ -68,24 +67,6 @@ class VersionsTaskTest {
 		result.assertHasOutputLine("""PMD version: 5.6.1""")
 	}
 
-	@Test fun `print findbugs version (Gradle 4 latest)`() {
-		gradle.setGradleVersion("4.10.3")
-
-		@Language("gradle")
-		val script = """
-			apply plugin: 'findbugs'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
-		""".trimIndent()
-
-		val result = gradle.runBuild {
-			run(script, "qualityVersions")
-		}
-
-		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
-		result.assertHasOutputLine("""Gradle version: 4.10.3""")
-		result.assertHasOutputLine("""FindBugs version: 3.0.1""")
-	}
-
 	@Test fun `print checkstyle version (Gradle 5 latest)`() {
 		gradle.setGradleVersion("5.6.4")
 
@@ -120,24 +101,6 @@ class VersionsTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
 		result.assertHasOutputLine("""Gradle version: 5.6.4""")
 		result.assertHasOutputLine("""PMD version: 6.15.0""")
-	}
-
-	@Test fun `print findbugs version (Gradle 5 latest)`() {
-		gradle.setGradleVersion("5.6.4")
-
-		@Language("gradle")
-		val script = """
-			apply plugin: 'findbugs'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
-		""".trimIndent()
-
-		val result = gradle.runBuild {
-			run(script, "qualityVersions")
-		}
-
-		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
-		result.assertHasOutputLine("""Gradle version: 5.6.4""")
-		result.assertHasOutputLine("""FindBugs version: 3.0.1""")
 	}
 
 	@Test fun `print checkstyle version (specific version)`() {
