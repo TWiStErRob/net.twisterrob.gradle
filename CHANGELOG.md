@@ -11,7 +11,7 @@
 
 ## Fixes
  * Make sure nothing is logged when lint task is disabled.
-
+ * Gradle validateTaskProperties issues (#85).
 
 ## 0.9 *(2019-02-19 --- 2019-07-11)*
 
