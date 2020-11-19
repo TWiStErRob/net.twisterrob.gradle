@@ -230,9 +230,13 @@ class PmdPluginTest {
 
 		@Language("gradle")
 		val applyPmd = """
+			import org.gradle.util.GradleVersion
 			apply plugin: 'net.twisterrob.pmd'
 			pmd {
 				toolVersion = '5.6.1'
+				if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
+					incrementalAnalysis.set(false)
+				}
 			}
 			tasks.withType(${Pmd::class.java.name}) {
 				// output all violations to the console so that we can parse the results
