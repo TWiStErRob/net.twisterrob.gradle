@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.quality.tasks
 
 import com.google.common.annotations.VisibleForTesting
+import net.twisterrob.gradle.common.grouper.Grouper
+import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.Action
 import org.gradle.api.GradleException
@@ -66,10 +68,11 @@ open class HtmlReportTask : ValidateViolationsTask() {
 				}
 			}
 		}
-		action = Action {
-			project.produceXml(it, xmlFile, xslOutputFile)
-		}
 		doLast { transform() }
+	}
+
+	override fun processViolations(violations: Grouper.Start<Violations>) {
+		project.produceXml(violations, xmlFile, xslOutputFile)
 	}
 
 	@VisibleForTesting

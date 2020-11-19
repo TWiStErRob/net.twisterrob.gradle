@@ -3,14 +3,19 @@
 
 ## 0.10 *(2020-01-12 --- )*
 
+### Breaking
+ * `ValidateViolationsTask.action` is removed, override `processViolations` instead (#85).
+
 ### New
  * Gradle 5 compatible (up to 5.6.4) (#84)
  * Use Gradle 5.6.4 to build (#84)
  * Use Kotlin DSL 5.6.4 (#84)
- * Android Gradle Plugin 3.5.3 compatible (#85)
+ * Android Gradle Plugin 3.5.3 compatible (#86)
 
-## Fixes
+### Fixes
  * Make sure nothing is logged when lint task is disabled.
+ 
+### Internal
  * Gradle validateTaskProperties issues (#85).
 
 ## 0.9 *(2019-02-19 --- 2019-07-11)*

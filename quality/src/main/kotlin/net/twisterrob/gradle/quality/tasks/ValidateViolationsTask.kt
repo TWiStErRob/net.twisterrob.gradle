@@ -13,7 +13,6 @@ import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.TableGenerator
 import net.twisterrob.gradle.quality.report.html.deduplicate
-import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.Project
@@ -26,9 +25,6 @@ import se.bjurr.violations.lib.reports.Parser.CHECKSTYLE
 import se.bjurr.violations.lib.reports.Parser.PMD
 
 open class ValidateViolationsTask : DefaultTask() {
-
-	@Suppress("MemberVisibilityCanBePrivate") // DSL
-	var action: Action<Grouper.Start<Violations>> = Action(::defaultAction)
 
 	companion object {
 		@Suppress("UNCHECKED_CAST")
@@ -142,7 +138,7 @@ open class ValidateViolationsTask : DefaultTask() {
 		}
 		val nullSafeSum = nullSafeSum(java.util.function.Function { v: Violations? -> v?.violations?.size })
 		@Suppress("UNCHECKED_CAST")
-		action.execute(Grouper.create(deduplicate(results), nullSafeSum) as Grouper.Start<Violations>)
+		processViolations(Grouper.create(deduplicate(results), nullSafeSum) as Grouper.Start<Violations>)
 	}
 
 	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
@@ -161,42 +157,42 @@ open class ValidateViolationsTask : DefaultTask() {
 			}
 		}
 	}
-}
 
-private fun defaultAction(violations: Grouper.Start<Violations>) {
-	@Suppress("UNCHECKED_CAST")
-	val grouped = violations
-		.count<Int>()
-		.by("module")
-		.by("variant")
-		.by("parser")
-		.group() as Map<String, Map<String, Map<String, Int?>>>
-	val table = TableGenerator(
-		zeroCount = "." /*TODO ✓*/,
-		missingCount = "",
-		printEmptyRows = false,
-		printEmptyColumns = false
-	).build(grouped)
-	val result = violations
-		.list
-		.flatMap { it.violations ?: emptyList() }
-		.map { violation ->
-			val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
-			val loc = violation.location
-			return@map (""
-					+ "\n${loc.file.absolutePath}:${loc.startLine} in ${loc.module}/${loc.variant}"
-					+ "\n\t${violation.source.reporter}/${violation.rule}"
-					+ "\n${message.prependIndent("\t")}"
-					)
-		}
-	val reportLocations = violations
-		.list
-		.filter { (it.violations ?: emptyList()).isNotEmpty() }
-		.map { "${it.module}:${it.parser}@${it.variant} (${it.violations!!.size}): ${it.report}" }
+	protected open fun processViolations(violations: Grouper.Start<Violations>) {
+		@Suppress("UNCHECKED_CAST")
+		val grouped = violations
+			.count<Int>()
+			.by("module")
+			.by("variant")
+			.by("parser")
+			.group() as Map<String, Map<String, Map<String, Int?>>>
+		val table = TableGenerator(
+			zeroCount = "." /*TODO ✓*/,
+			missingCount = "",
+			printEmptyRows = false,
+			printEmptyColumns = false
+		).build(grouped)
+		val result = violations
+			.list
+			.flatMap { it.violations ?: emptyList() }
+			.map { violation ->
+				val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
+				val loc = violation.location
+				return@map (""
+						+ "\n${loc.file.absolutePath}:${loc.startLine} in ${loc.module}/${loc.variant}"
+						+ "\n\t${violation.source.reporter}/${violation.rule}"
+						+ "\n${message.prependIndent("\t")}"
+						)
+			}
+		val reportLocations = violations
+			.list
+			.filter { (it.violations ?: emptyList()).isNotEmpty() }
+			.map { "${it.module}:${it.parser}@${it.variant} (${it.violations!!.size}): ${it.report}" }
 
-	println(result.joinToString(System.lineSeparator() + System.lineSeparator()))
-	println()
-	println(reportLocations.joinToString(System.lineSeparator()))
-	println()
-	println(table)
+		println(result.joinToString(System.lineSeparator() + System.lineSeparator()))
+		println()
+		println(reportLocations.joinToString(System.lineSeparator()))
+		println()
+		println(table)
+	}
 }
