@@ -74,6 +74,12 @@ jobs:
         - ANDROID_PLUGIN_VERSION=3.6.4
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=28
+    - name: "Android Gradle Plugin 4.0.x, Gradle 6.1.1+"
+      env:
+        - TEST_GRADLE_VERSION=6.1.1
+        - ANDROID_PLUGIN_VERSION=4.0.1
+        - ANDROID_BUILD_TOOLS_VERSION=29.0.2
+        - ANDROID_INSTANT_API_LEVEL=29
 
 android:
   licenses:
@@ -86,7 +92,7 @@ android:
     # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
     - android-$ANDROID_INSTANT_API_LEVEL
     # compileSdkVersion for almost all tests
-    - android-28
+    - android-29
 
 before_cache:
   # Don't cache lock files to prevent breaking future builds
