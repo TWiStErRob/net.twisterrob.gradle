@@ -1,6 +1,11 @@
 language: android
 jdk: oraclejdk8
 
+# White-list master branch to prevent building PRs with both continuous-integration/travis-ci/pr and continuous-integration/travis-ci/push.
+branches:
+  only:
+    - master
+
 # To run specific test, replace `check tests` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
 script: ./gradlew
   --stacktrace
