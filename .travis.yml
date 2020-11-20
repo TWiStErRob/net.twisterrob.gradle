@@ -68,15 +68,33 @@ jobs:
         - ANDROID_PLUGIN_VERSION=3.5.4
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=28
+    - name: "Android Gradle Plugin 3.5.x, Gradle 6.x"
+      env:
+        - TEST_GRADLE_VERSION=6.7.1
+        - ANDROID_PLUGIN_VERSION=3.5.4
+        - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+        - ANDROID_INSTANT_API_LEVEL=28
     - name: "Android Gradle Plugin 3.6.x, Gradle 5.6.4+"
       env:
         - TEST_GRADLE_VERSION=5.6.4
         - ANDROID_PLUGIN_VERSION=3.6.4
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=28
+    - name: "Android Gradle Plugin 3.6.x, Gradle 6.x"
+      env:
+        - TEST_GRADLE_VERSION=6.7.1
+        - ANDROID_PLUGIN_VERSION=3.6.4
+        - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+        - ANDROID_INSTANT_API_LEVEL=28
     - name: "Android Gradle Plugin 4.0.x, Gradle 6.1.1+"
       env:
         - TEST_GRADLE_VERSION=6.1.1
+        - ANDROID_PLUGIN_VERSION=4.0.1
+        - ANDROID_BUILD_TOOLS_VERSION=29.0.2
+        - ANDROID_INSTANT_API_LEVEL=29
+    - name: "Android Gradle Plugin 4.0.x, Gradle 6.x"
+      env:
+        - TEST_GRADLE_VERSION=6.7.1
         - ANDROID_PLUGIN_VERSION=4.0.1
         - ANDROID_BUILD_TOOLS_VERSION=29.0.2
         - ANDROID_INSTANT_API_LEVEL=29
