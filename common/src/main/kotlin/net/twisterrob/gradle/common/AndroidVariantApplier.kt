@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.common
 
-import com.android.Version
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BasePlugin
 import com.android.build.gradle.FeatureExtension
@@ -34,7 +33,7 @@ class AndroidVariantApplier(val project: Project) {
 		project.plugins.withId("com.android.feature", callback)
 		project.plugins.withId("com.android.dynamic-feature", callback)
 		project.plugins.withId("com.android.test", callback)
-		if (Version.ANDROID_GRADLE_PLUGIN_VERSION < "3.6.0") {
+		if (ANDROID_GRADLE_PLUGIN_VERSION < "3.6.0") {
 			project.plugins.withId("com.android.instantapp", callback)
 		}
 	}
