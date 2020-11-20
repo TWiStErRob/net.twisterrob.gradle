@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.report.html.model
 
+import net.twisterrob.gradle.common.listFilesInDirectory
 import net.twisterrob.gradle.quality.Violation
 import java.io.File
 import java.io.PrintWriter
@@ -99,13 +100,12 @@ sealed class ContextViewModel {
 			fun <E> Iterable<E>.replace(old: E, new: E) = map { if (it == old) new else it }
 			fun Array<File>.sorted() = sortedWith(compareBy<File> { !it.isDirectory }.thenBy { it.name })
 			val dir = v.location.file
-			val contents = dir.listFiles()
-				.orEmpty()
+			val contents = dir.listFilesInDirectory()
 				.sorted()
 				.joinToString("\n") { it.name }
 				.prependIndent("\t")
 			val dirWithContents = dir.name + ":\n" + contents
-			val siblings = dir.parentFile.listFiles().orEmpty().sorted().map { it.name }
+			val siblings = dir.parentFile.listFilesInDirectory().sorted().map { it.name }
 			val relevantListing = siblings
 				.replace(dir.name, dirWithContents)
 				.joinToString("\n")

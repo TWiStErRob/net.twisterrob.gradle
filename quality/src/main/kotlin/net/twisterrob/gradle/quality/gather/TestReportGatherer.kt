@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.gather
 
+import net.twisterrob.gradle.common.listFilesInDirectory
 import net.twisterrob.gradle.quality.parsers.JUnitParser
 import org.gradle.api.tasks.testing.Test
 import se.bjurr.violations.lib.model.Violation
@@ -24,7 +25,6 @@ class TestReportGatherer<T>(
 
 	override fun findViolations(report: File): List<Violation> =
 			report
-					.listFiles({ file -> file.isFile })
-					.orEmpty()
+					.listFilesInDirectory(File::isFile)
 					.flatMap { file -> parser.parseReportOutput(file.readText()) }
 }
