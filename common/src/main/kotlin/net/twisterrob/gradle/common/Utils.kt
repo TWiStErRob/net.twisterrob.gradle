@@ -33,6 +33,19 @@ fun <T> nullSafeSum(mapper: Function<T?, Int?>): Collector<T?, *, Int?> {
 	return Collectors.reducing(null, mapper, BinaryOperator(::safeAdd))
 }
 
+fun File.listFilesInDirectory(filter: ((File) -> Boolean)? = null): Array<File> {
+	val listFiles: Array<File>? =
+		if (filter != null)
+			this.listFiles(filter)
+		else
+			this.listFiles()
+
+	return listFiles ?: error(
+		"$this does not denote a directory or an error occurred" +
+				"\nisDirectory=${this.isDirectory}, exists=${this.exists()}, canRead=${this.canRead()}"
+	)
+}
+
 val Task.wasLaunchedOnly: Boolean
 	get() = project.gradle.startParameter.taskNames == listOf(path)
 

@@ -2,6 +2,7 @@ package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.grouper.Grouper
+import net.twisterrob.gradle.common.listFilesInDirectory
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -91,7 +92,7 @@ class ValidateViolationsTaskTest {
 	@Test fun `get per module violation counts`() {
 		val template = gradle.templateFile("checkstyle-multiple_violations/checkstyle-template.xml").readText()
 		val dir = gradle.templateFile("checkstyle-multiple_violations")
-		dir.listFiles().sorted().forEach { file: File ->
+		dir.listFilesInDirectory().sorted().forEach { file: File ->
 			println("Building module from ${file}")
 			VIOLATION_PATTERN.matchEntire(file.name)?.apply {
 				val checkName = groups[1]!!.value
