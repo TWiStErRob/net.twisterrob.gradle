@@ -37,26 +37,6 @@ There's a built-in console report that gathers all the results from all the modu
 gradlew violationReportConsole
 ```
 
-### Customizable violation report
-The action executed on the gathered reports can be customized in a Gradle script, for example:
-```groovy
-// The below code is the default behavior for `violationReportConsole`.
-// It is a good example to base customized output on.
-project.tasks.register("printViolationCounts", net.twisterrob.gradle.quality.tasks.ValidateViolationsTask) {
-	action = { net.twisterrob.gradle.common.grouper.Grouper.Start<net.twisterrob.gradle.quality.Violations> results ->
-		results.by.parser.module.variant.group().each { checker, byModule ->
-			println "\t${checker}"
-			byModule.each {module, byVariant ->
-				println "\t\t${module}:"
-				byVariant.each {variant, violations ->
-					println "\t\t\t${variant}: ${violations.size()}"
-				}
-			}
-		}
-	}
-}
-```
-
 ### Root project test report
 Gathers results from submodules and fails if there were errors.
 ```groovy

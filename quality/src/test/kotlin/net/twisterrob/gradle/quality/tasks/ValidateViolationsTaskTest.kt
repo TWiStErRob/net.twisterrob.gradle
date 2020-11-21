@@ -43,12 +43,7 @@ class ValidateViolationsTaskTest {
 			apply plugin: 'net.twisterrob.checkstyle'
 			apply plugin: 'net.twisterrob.pmd'
 
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
-				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
-					def count = results.list.sum(0) { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
-					println "Violations: ${'$'}{count}"
-				}
-			}
+			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -57,7 +52,7 @@ class ValidateViolationsTaskTest {
 		}
 
 		// TODO find another CheckStyle violation that's more specific
-		result.assertHasOutputLine("Violations: 3")
+		result.assertHasOutputLine("Summary\t(total: 3)\t         2\t  1")
 	}
 
 	@Test fun `get total violation counts`() {
@@ -72,12 +67,7 @@ class ValidateViolationsTaskTest {
 				apply plugin: 'net.twisterrob.checkstyle'
 				apply plugin: 'net.twisterrob.pmd'
 			}
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
-				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
-					def count = results.list.sum(0) { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
-					println "Violations: ${'$'}{count}"
-				}
-			}
+			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -86,7 +76,7 @@ class ValidateViolationsTaskTest {
 		}
 
 		// TODO find another CheckStyle violation that's more specific
-		result.assertHasOutputLine("Violations: 3")
+		result.assertHasOutputLine("Summary\t(total: 3)\t         2\t  1")
 	}
 
 	@Test fun `get per module violation counts`() {
@@ -112,18 +102,7 @@ class ValidateViolationsTaskTest {
 				apply plugin: 'com.android.library'
 				apply plugin: 'net.twisterrob.checkstyle'
 			}
-			task('printViolationCounts', type: ${ValidateViolationsTask::class.java.name}) {
-				action = {${Grouper.Start::class.java.name}<${Violations::class.java.name}> results ->
-					results.count().by.parser.by.module.by.variant.group()['checkstyle'].each {module, byVariant ->
-						println "\t${'$'}{module}:"
-						byVariant.each {variant, resultCount ->
-							if (resultCount != null) {
-								println "\t\t${'$'}{variant}: ${'$'}{resultCount}"
-							}
-						}
-					}
-				}
-			}
+			task('printViolationCounts', type: ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -134,13 +113,11 @@ class ValidateViolationsTaskTest {
 		assertThat(
 			result.output, containsString(
 				"""
-				:printViolationCounts
-					:EmptyBlock:
-						${ALL_VARIANTS_NAME}: 3
-					:MemberName:
-						${ALL_VARIANTS_NAME}: 2
-					:UnusedImports:
-						${ALL_VARIANTS_NAME}: 4
+				module        	variant  	checkstyle
+				:EmptyBlock   	*        	         3
+				:MemberName   	*        	         2
+				:UnusedImports	*        	         4
+				Summary       	(total: 9)	         9
 				""".trimIndent().replace(Regex("""\r?\n"""), System.lineSeparator())
 			)
 		)
@@ -156,12 +133,7 @@ class ValidateViolationsTaskTest {
 			apply plugin: 'net.twisterrob.checkstyle'
 			apply plugin: 'net.twisterrob.pmd'
 
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
-				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
-					def count = results.list.sum(0) { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
-					println "Violations: ${'$'}{count}"
-				}
-			}
+			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), *SOURCE_PATH, "Checkstyle.java")
@@ -181,12 +153,7 @@ class ValidateViolationsTaskTest {
 
 		@Language("gradle")
 		val script = """
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
-				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
-					def count = results.list.sum(0) { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
-					println "Violations: ${'$'}{count}"
-				}
-			}
+			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
 			android.lintOptions.xmlOutput = new File(buildDir, "reports/my-lint/results.xml")
 			android.lintOptions.check = ['UnusedResources']
 		""".trimIndent()
@@ -196,7 +163,7 @@ class ValidateViolationsTaskTest {
 		}
 
 		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
-		result.assertHasOutputLine("Violations: 1")
+		result.assertHasOutputLine("Summary\t(total: 1)\t   1\t          0")
 	}
 
 	@Test fun `gather unique lint violations when multiple variants are linted`() {
@@ -205,12 +172,7 @@ class ValidateViolationsTaskTest {
 
 		@Language("gradle")
 		val script = """
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name}) {
-				action = {/*${Grouper.Start::class.java.name}<${Violations::class.java.name}>*/ results ->
-					def count = results.list.sum(0) { /*${Violations::class.java.name}*/ result -> result.violations?.size() ?: 0 }
-					println "Violations: ${'$'}{count}"
-				}
-			}
+			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
 			android.lintOptions.check = ['UnusedResources']
 		""".trimIndent()
 
@@ -219,7 +181,7 @@ class ValidateViolationsTaskTest {
 		}
 
 		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
-		result.assertHasOutputLine("Violations: 1")
+		result.assertHasOutputLine("Summary\t(total: 1)\t   1\t          0")
 	}
 
 	@Test fun `do not gather non-existent reports`() {
