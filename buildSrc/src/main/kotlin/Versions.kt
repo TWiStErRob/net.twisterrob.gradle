@@ -32,7 +32,7 @@ object Libs {
 		/**
 		 * @see versionLint which is affected by this
 		 */
-		private const val versionAndroidGradlePlugin = "4.0.1"
+		private const val versionAndroidGradlePlugin = "4.1.1"
 
 		/**
 		 * = 23.0.0 + [versionAndroidGradlePlugin].
@@ -41,7 +41,7 @@ object Libs {
 		 * @see `builder-model//version.properties`
 		 */
 		@Suppress("KDocUnresolvedReference")
-		private const val versionLint = "27.0.1"
+		private const val versionLint = "27.1.1"
 
 		const val plugin = "com.android.tools.build:gradle:${versionAndroidGradlePlugin}"
 
