@@ -15,6 +15,8 @@
 
 ### Fixes
  * Make sure nothing is logged when lint task is disabled.
+ * Reduce empty output
+ * Output generated files from violationReportHtml
 
 ### Internal
  * Gradle validateTaskProperties issues (#85).
