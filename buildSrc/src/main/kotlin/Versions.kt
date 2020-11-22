@@ -32,16 +32,16 @@ object Libs {
 		/**
 		 * @see versionLint which is affected by this
 		 */
-		private const val versionAndroidGradlePlugin = "3.5.3"
+		private const val versionAndroidGradlePlugin = "3.6.4"
 
 		/**
 		 * = 23.0.0 + [versionAndroidGradlePlugin].
 		 *
-		 * @see com.android.build.gradle.BasePlugin.createLintClasspathConfiguration
+		 * @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
 		 * @see `builder-model//version.properties`
 		 */
 		@Suppress("KDocUnresolvedReference")
-		private const val versionLint = "26.5.3"
+		private const val versionLint = "26.6.4"
 
 		const val plugin = "com.android.tools.build:gradle:${versionAndroidGradlePlugin}"
 
@@ -56,7 +56,7 @@ object Libs {
 		/**
 		 * @see <a href="https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md">Changelog</a>
 		 */
-		private const val version = "1.3.50"
+		private const val version = "1.3.72"
 
 		/**
 		 * @see <a href="https://github.com/gradle/kotlin-dsl/releases">GitHub Releases</a>

@@ -13,10 +13,10 @@ import org.gradle.api.plugins.ExtensionContainer
 
 class AndroidVariantApplier(val project: Project) {
 
-	fun applyAfterPluginConfigured(pluginClosure: Action<BasePlugin<*>>) {
+	fun applyAfterPluginConfigured(pluginClosure: Action<BasePlugin>) {
 		val callback = Action { plugin: Plugin<*> ->
 			// withId ensures we have BasePlugin, so let's smart cast for further usage
-			plugin as BasePlugin<*>
+			plugin as BasePlugin
 			if (project.state.executed) {
 				// if state is executed the project has been evaluated so everything is already configured
 				// This is required because project.afterEvaluate is not executing Closure after this is true:
@@ -33,7 +33,9 @@ class AndroidVariantApplier(val project: Project) {
 		project.plugins.withId("com.android.feature", callback)
 		project.plugins.withId("com.android.dynamic-feature", callback)
 		project.plugins.withId("com.android.test", callback)
-		project.plugins.withId("com.android.instantapp", callback)
+		if (ANDROID_GRADLE_PLUGIN_VERSION < "3.6.0") {
+			project.plugins.withId("com.android.instantapp", callback)
+		}
 	}
 
 	fun apply(variantsClosure: Action<Variants>) {

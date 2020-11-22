@@ -52,6 +52,19 @@ val Task.wasLaunchedOnly: Boolean
 val Task.wasLaunchedExplicitly: Boolean
 	get() = path in project.gradle.startParameter.taskNames
 
+val ANDROID_GRADLE_PLUGIN_VERSION: String
+	get() {
+		val versionClass: Class<*> =
+			try {
+				// Introduced in AGP 3.6.x.
+				Class.forName("com.android.Version")
+			} catch (ex: Throwable) {
+				// Deprecated in AGP 3.6.x and removed in AGP 4.x.
+				Class.forName("com.android.builder.model.Version")
+			}
+		return versionClass.getDeclaredField("ANDROID_GRADLE_PLUGIN_VERSION").get(null) as String
+	}
+
 // TODO find globalScope.reportsDir and task.isFatalOnly
 private val LintBaseTask.reportsDir get() = project.buildDir.resolve("reports")
 
