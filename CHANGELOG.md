@@ -14,7 +14,7 @@
  * Android Gradle Plugin 3.6.4 compatible (Kotlin 1.3.72) (#98)
 
 ### Fixes
- * Make sure nothing is logged when lint task is disabled.
+ * Make sure nothing is logged when lint task is disabled. (#82/#83)
  * Reduce empty output
  * Output generated files from violationReportHtml
 

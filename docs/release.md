@@ -1,8 +1,8 @@
 ## Publish release `x.y`
 
- 1. `git add CHANGELOG.md & git commit -m "Prepare x.y history"`  
-    * `CHANGELOG.md`: review bullet points of what changed  
-    * `CHANGELOG.md`: add links to PRs/commits for changes  
+ 1. `git add CHANGELOG.md & git commit -m "Prepare x.y history"`
+    * `CHANGELOG.md`: review bullet points of what changed
+    * `CHANGELOG.md`: add links to PRs/commits for changes
  1. `git push origin master:master`
  1. [Draft a new release](https://github.com/TWiStErRob/net.twisterrob.gradle/releases/new) on GitHub
     * "_Tag version_": `vx.y` @ Target: `master`
@@ -19,10 +19,10 @@
     [2]: https://github.com/TWiStErRob/net.twisterrob.gradle/milestone/1?closed=1
     [3]: https://github.com/TWiStErRob/net.twisterrob.gradle/compare/v0.4...v0.5
     ```
- 1. `git add gradle.properties CHANGELOG.md & git commit -m "Release x.y"`  
-    * `gradle.properties`: remove `-SNAPSHOT` suffix  
+ 1. `git add gradle.properties CHANGELOG.md & git commit -m "Release x.y"`
+    * `gradle.properties`: remove `-SNAPSHOT` suffix
     * `CHANGELOG.md`: update version end date
- 1. `gradlew bintrayUpload -PbintrayApiKey=...`    
+ 1. `gradlew bintrayUpload -PbintrayApiKey=...`  
     Available from https://bintray.com/profile/edit > _API Key_  
     _If this fails, fix and amend last commit._
  1. `git push origin master:master`
@@ -38,7 +38,7 @@
 
 ## Prepare next release `x.z`
 
- 1. `git add gradle.properties CHANGELOG.md & git commit -m "Pre-Release x.z"`  
+ 1. `git add gradle.properties CHANGELOG.md & git commit -m "Pre-Release x.z"`
     * `gradle.properties`: version number `x.z-SNAPSHOT`
     * `CHANGELOG.md`: add history section:
     ```
