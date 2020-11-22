@@ -1,7 +1,7 @@
 # Change Log
 
 
-## 0.10 *(2020-01-12 --- )*
+## 0.10 *(2020-01-12 --- 2020-11-22)*
 
 ### Breaking
  * `ValidateViolationsTask.action` is removed, override `processViolations` instead (#85).
