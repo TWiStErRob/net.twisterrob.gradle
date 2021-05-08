@@ -32,12 +32,10 @@ subprojects {
 	apply { plugin("kotlin") }
 
 	repositories {
-		jcenter()
+		mavenCentral()
 		google()
 		// for Kotlin-DSL
 		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
-		// for Mockito minor versions (only major versions are synced to jcenter)
-		maven { setUrl("https://dl.bintray.com/mockito/maven") }
 	}
 
 	tasks {

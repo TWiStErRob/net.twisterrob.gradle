@@ -1,6 +1,6 @@
 buildscript {
 	repositories {
-		jcenter()
+		mavenCentral()
 	}
 
 	dependencies {
@@ -19,7 +19,7 @@ kotlinDslPluginOptions {
 }
 
 repositories {
-	jcenter()
+	mavenCentral()
 }
 
 dependencies {
