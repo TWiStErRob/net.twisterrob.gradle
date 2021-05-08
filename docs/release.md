@@ -22,8 +22,8 @@
  1. `git add gradle.properties CHANGELOG.md & git commit -m "Release x.y"`
     * `gradle.properties`: remove `-SNAPSHOT` suffix
     * `CHANGELOG.md`: update version end date
- 1. `gradlew bintrayUpload -PbintrayApiKey=...`  
-    Available from https://bintray.com/profile/edit > _API Key_  
+ 1. `gradlew TODOupload`  
+    Available from ?  
     _If this fails, fix and amend last commit._
  1. `git push origin master:master`
  1. Publish [drafted release](https://github.com/TWiStErRob/net.twisterrob.gradle/releases) on GitHub  

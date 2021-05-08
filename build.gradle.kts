@@ -1,6 +1,5 @@
 import Libs.Kotlin.replaceKotlinJre7WithJdk7
 import Libs.Kotlin.replaceKotlinJre8WithJdk8
-import com.jfrog.bintray.gradle.BintrayExtension
 import groovy.util.Node
 import groovy.util.NodeList
 import org.gradle.api.tasks.testing.TestOutputEvent.Destination
@@ -16,7 +15,6 @@ plugins {
 	`base` // just to get some support for subproject stuff, for example access to project.base
 //	kotlin("jvm") apply false
 	`maven-publish`
-	id("com.jfrog.bintray") version "1.8.4"
 }
 
 val VERSION: String by project
@@ -277,45 +275,6 @@ publishing {
 							}
 				}
 			}
-		}
-	}
-}
-
-if (hasProperty("bintrayApiKey")) {
-	bintray {
-		user = "twisterrob"
-		key = findProperty("bintrayApiKey") as String
-		publish = true
-		override = false
-		dryRun = false
-		setPublications(*publishing.publications.names.toTypedArray())
-
-		pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
-			userOrg = "twisterrob"
-			repo = "maven"
-			name = rootProject.name
-			desc = rootProject.description
-			websiteUrl = "http://www.twisterrob.net"
-			vcsUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle"
-			issueTrackerUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle/issues"
-			githubRepo = "TWiStErRob/net.twisterrob.gradle"
-			githubReleaseNotesFile = "CHANGELOG.md"
-			//githubReadmeFile = "README.md" // Gradle plugin doesn't support this
-			setLicenses("MIT")
-
-			version(delegateClosureOf<BintrayExtension.VersionConfig> {
-				name = VERSION
-				desc = rootProject.description
-				released = Date().toString()
-				vcsTag = "v${VERSION}"
-				attributes = mapOf<String, String>()
-			})
-		})
-	}
-} else {
-	gradle.taskGraph.whenReady {
-		if (hasTask(":bintrayUpload")) {
-			throw GradleException("Bintray publication is not configured, use `gradlew -PbintrayApiKey=...`!")
 		}
 	}
 }
