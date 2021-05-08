@@ -131,7 +131,7 @@ object Libs {
 
 	object Mockito {
 		/**
-		 * @see <a href="https://bintray.com/mockito/maven">Artifacts</a>
+		 * @see <a href="https://mvnrepository.com/artifact/org.mockito/mockito-core">Artifacts</a>
 		 * @see <a href="https://github.com/mockito/mockito/blob/release/2.x/doc/release-notes/official.md">Changelog</a>
 		 */
 		private const val version = "2.24.4"
