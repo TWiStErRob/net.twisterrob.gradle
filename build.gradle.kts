@@ -15,6 +15,7 @@ plugins {
 	`base` // just to get some support for subproject stuff, for example access to project.base
 //	kotlin("jvm") apply false
 	`maven-publish`
+	id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
 val VERSION: String by project
@@ -275,6 +276,18 @@ publishing {
 							}
 				}
 			}
+		}
+	}
+}
+
+nexusPublishing {
+	repositories {
+		sonatype { // https://issues.sonatype.org/browse/OSSRH-68665
+			nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+			snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+			stagingProfileId.set("sonatypeStagingProfileId")
+			username.set("papp.robert.s@gmail.com")
+			password.set("password")
 		}
 	}
 }
