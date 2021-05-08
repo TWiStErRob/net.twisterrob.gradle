@@ -27,7 +27,7 @@ For details on what was changed in different versions, see [CHANGELOG](CHANGELOG
 ```gradle
 buildscript {
 	repositories {
-		maven { name = 'TWiStErRob'; url = 'https://dl.bintray.com/twisterrob/maven' }
+		mavenCentral()
 	}
 	dependencies {
 		classpath "net.twisterrob.gradle:twister-quality:${VERSION_TWISTER_QUALITY}"
