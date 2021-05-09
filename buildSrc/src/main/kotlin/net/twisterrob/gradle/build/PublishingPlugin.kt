@@ -13,6 +13,7 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.the
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.DokkaTask
@@ -59,10 +60,15 @@ class PublishingPlugin : Plugin<Project> {
 			}
 		}
 		project.configure<SigningExtension> {
+			//val signingKeyId: String? by project // Gradle 6+ only
+			// -PsigningKey to gradlew, or ORG_GRADLE_PROJECT_signingKey env var
 			val signingKey: String? by project
+			// -PsigningPassword to gradlew, or ORG_GRADLE_PROJECT_signingPassword env var
 			val signingPassword: String? by project
-			useInMemoryPgpKeys(signingKey, signingPassword)
-//			sign(project.the<PublishingExtension>().publications["release"])
+			if (signingKey != null && signingPassword != null) {
+				useInMemoryPgpKeys(signingKey, signingPassword)
+				sign(project.the<PublishingExtension>().publications["release"])
+			}
 		}
 	}
 }
