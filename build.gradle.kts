@@ -238,11 +238,14 @@ nexusPublishing {
 			snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
 
 			// For :closeAndReleaseSonatypeStagingRepository
-			//val sonatypeStagingProfileId: String? by project
-			//stagingProfileId.set(sonatypeStagingProfileId)
+			// Set via -PsonatypeStagingProfileId to gradlew, or ORG_GRADLE_PROJECT_sonatypeStagingProfileId env var.
+			val sonatypeStagingProfileId: String? by project
+			stagingProfileId.set(sonatypeStagingProfileId)
 
-			// Automatically done by plugin.
+			// For everything sonatype, but automatically done by the plugin.
+			// Set via -PsonatypeUsername to gradlew, or ORG_GRADLE_PROJECT_sonatypeUsername env var.
 			//username.set(val sonatypeUsername: String? by project)
+			// Set via -PsonatypePassword to gradlew, or ORG_GRADLE_PROJECT_sonatypePassword env var.
 			//password.set(val sonatypePassword: String? by project)
 		}
 	}
