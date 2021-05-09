@@ -1,12 +1,14 @@
 plugins {
 //	kotlin("jvm")
 	`java-gradle-plugin`
+	id("net.twisterrob.gradle.build.publishing")
 }
 
 base.archivesBaseName = "twister-quality-pmd"
+description = "PMD: PMD quality setup plugin for Gradle."
 
 dependencies {
-	implementation(project(":common"))
+	api(project(":common"))
 
 	compileOnly(Libs.Android.plugin)
 

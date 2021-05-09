@@ -10,6 +10,7 @@ buildscript {
 
 plugins {
 	`kotlin-dsl`
+	`java-gradle-plugin`
 }
 
 kotlinDslPluginOptions {
@@ -24,6 +25,7 @@ repositories {
 
 dependencies {
 	implementation(kotlin("gradle-plugin"))
+	implementation("org.jetbrains.dokka:dokka-gradle-plugin:0.10.0") // version for 1.3.41
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -37,4 +39,13 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			// Library has Kotlin runtime bundled into it
 			"-Xskip-runtime-version-check"
 	)
+}
+
+gradlePlugin {
+	plugins {
+		create("publishing") {
+			id = "net.twisterrob.gradle.build.publishing"
+			implementationClass = "net.twisterrob.gradle.build.PublishingPlugin"
+		}
+	}
 }

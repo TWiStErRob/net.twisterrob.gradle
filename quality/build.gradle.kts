@@ -1,18 +1,20 @@
 plugins {
 //	kotlin("jvm")
 	`java-gradle-plugin`
+	id("net.twisterrob.gradle.build.publishing")
 }
 
 base.archivesBaseName = "twister-quality"
+description = "Quality: All quality plugins bundled in one."
 
 dependencies {
-	implementation(project(":common"))
-	implementation(project(":checkstyle"))
-	implementation(project(":pmd"))
+	api(project(":common"))
+	api(project(":checkstyle"))
+	api(project(":pmd"))
 
 	compileOnly(Libs.Android.plugin)
 //	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")
-	implementation(Libs.violations)
+	api(Libs.violations)
 
 	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))

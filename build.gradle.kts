@@ -1,7 +1,5 @@
 import Libs.Kotlin.replaceKotlinJre7WithJdk7
 import Libs.Kotlin.replaceKotlinJre8WithJdk8
-import groovy.util.Node
-import groovy.util.NodeList
 import org.gradle.api.tasks.testing.TestOutputEvent.Destination
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -14,7 +12,6 @@ import kotlin.math.absoluteValue
 plugins {
 	`base` // just to get some support for subproject stuff, for example access to project.base
 //	kotlin("jvm") apply false
-	`maven-publish`
 	id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
@@ -35,13 +32,6 @@ subprojects {
 		google()
 		// for Kotlin-DSL
 		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
-	}
-
-	tasks {
-		register<Jar>("sourcesJar") {
-			archiveClassifier.set("sources")
-			from(java.sourceSets["main"].kotlin.sourceDirectories)
-		}
 	}
 }
 
@@ -130,9 +120,9 @@ allprojects {
 			add("compileOnly", Libs.Kotlin.dsl) {
 				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
 			}
-			add("implementation", Libs.Kotlin.stdlib)
-			add("implementation", Libs.Kotlin.stdlibJdk8)
-			add("implementation", Libs.Kotlin.reflect)
+			add("api", Libs.Kotlin.stdlib)
+			add("api", Libs.Kotlin.stdlibJdk8)
+			add("api", Libs.Kotlin.reflect)
 
 			add("testImplementation", Libs.Kotlin.test)
 		}
@@ -230,52 +220,6 @@ project.tasks.create("tests", TestReport::class.java) {
 		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
 		if (!successRegex.containsMatchIn(reportFile.readText())) {
 			throw GradleException("There were failing tests. See the report at: ${reportFile.toURI()}")
-		}
-	}
-}
-
-publishing {
-	publications.invoke {
-		subprojects.filterNot { it.name == "internal" }.forEach { project ->
-			register<MavenPublication>(project.name) {
-				// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
-				from(project.components["java"])
-				// source files
-				artifact(project.tasks["sourcesJar"]) { classifier = "sources" }
-
-				artifactId = project.base.archivesBaseName
-				version = project.version as String
-
-				pom.withXml {
-					fun Node.getChildren(localName: String) = get(localName) as NodeList
-					fun NodeList.nodes() = filterIsInstance<Node>()
-					fun Node.getChild(localName: String) = getChildren(localName).nodes().single()
-					// declare `implementation` dependencies as `compile` instead of `runtime`
-					asNode()
-							.getChild("dependencies")
-							.getChildren("*").nodes()
-							.filter { depNode -> depNode.getChild("scope").text() == "runtime" }
-							.filter { depNode ->
-								project.configurations["implementation"].allDependencies.any {
-									it.group == depNode.getChild("groupId").text()
-											&& it.name == depNode.getChild("artifactId").text()
-								}
-							}
-							.forEach { depNode -> depNode.getChild("scope").setValue("compile") }
-					// use internal `project("...")` dependencies' artifact name, not subproject name
-					asNode()
-							.getChild("dependencies")
-							.getChildren("*").nodes()
-							.filter { depNode -> depNode.getChild("groupId").text() == project.group as String }
-							.forEach { depNode ->
-								val depProject = project
-										.rootProject
-										.allprojects
-										.single { it.name == depNode.getChild("artifactId").text() }
-								depNode.getChild("artifactId").setValue(depProject.base.archivesBaseName)
-							}
-				}
-			}
 		}
 	}
 }
