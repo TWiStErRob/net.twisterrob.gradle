@@ -1,3 +1,4 @@
+
 import Libs.Kotlin.replaceKotlinJre7WithJdk7
 import Libs.Kotlin.replaceKotlinJre8WithJdk8
 import org.gradle.api.tasks.testing.TestOutputEvent.Destination
@@ -10,21 +11,19 @@ import java.util.EnumSet
 import kotlin.math.absoluteValue
 
 plugins {
-	`base` // just to get some support for subproject stuff, for example access to project.base
 //	kotlin("jvm") apply false
 	id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
-val VERSION: String by project
+val projectVersion: String by project
 
-group = rootProject.name
 description = "Quality plugin for Gradle that supports Android flavors."
-//version = not set here, because the root project has no an artifact
+allprojects {
+	group = rootProject.name
+	version = projectVersion
+}
 
 subprojects {
-	group = rootProject.group
-	version = VERSION
-
 	apply { plugin("kotlin") }
 
 	repositories {
@@ -55,17 +54,21 @@ allprojects {
 
 	gradle.projectsEvaluated {
 		tasks.withType<JavaCompile> {
-			options.compilerArgs.addAll(listOf(
+			options.compilerArgs.addAll(
+				listOf(
 					"-Werror", // fail on warnings
 					"-Xlint:all", // enable all possible checks
 					"-Xlint:-processing" // except "No processor claimed any of these annotations"
-			))
+				)
+			)
 		}
 		tasks.withType<GroovyCompile> {
-			options.compilerArgs.addAll(listOf(
+			options.compilerArgs.addAll(
+				listOf(
 					"-Werror", // fail on warnings
 					"-Xlint:all" // enable all possible checks
-			))
+				)
+			)
 			groovyOptions.configurationScript = rootProject.file("gradle/compileGroovy.groovy")
 			// enable Java 7 invokeDynamic, since Java target is > 7 (Android requires Java 8 at least)
 			// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project
@@ -136,7 +139,8 @@ allprojects {
 		afterEvaluate {
 			with(tasks["jar"] as Jar) {
 				manifest {
-					attributes(mapOf(
+					attributes(
+						mapOf(
 							// Implementation-* used by TestPlugin
 							"Implementation-Vendor" to project.group,
 							"Implementation-Title" to project.base.archivesBaseName,
@@ -144,7 +148,8 @@ allprojects {
 							// TODO Make sure it doesn't change often (skip for SNAPSHOT)
 							// otherwise :jar always re-packages and compilations cascade
 							"Built-Date" to SimpleDateFormat("yyyy-MM-dd'T'00:00:00Z").format(Date())
-					))
+						)
+					)
 				}
 			}
 		}
@@ -226,12 +231,19 @@ project.tasks.create("tests", TestReport::class.java) {
 
 nexusPublishing {
 	repositories {
-		sonatype { // https://issues.sonatype.org/browse/OSSRH-68665
+		@Suppress("UnstableApiUsage")
+		sonatype {
+			// For :publishReleasePublicationToSonatypeRepository, projectVersion suffix chooses repo.
 			nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
 			snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-			stagingProfileId.set("sonatypeStagingProfileId")
-			username.set("papp.robert.s@gmail.com")
-			password.set("password")
+
+			// For :closeAndReleaseSonatypeStagingRepository
+			//val sonatypeStagingProfileId: String? by project
+			//stagingProfileId.set(sonatypeStagingProfileId)
+
+			// Automatically done by plugin.
+			//username.set(val sonatypeUsername: String? by project)
+			//password.set(val sonatypePassword: String? by project)
 		}
 	}
 }
