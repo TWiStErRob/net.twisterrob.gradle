@@ -134,7 +134,7 @@ object Libs {
 		 * @see <a href="https://mvnrepository.com/artifact/org.mockito/mockito-core">Artifacts</a>
 		 * @see <a href="https://github.com/mockito/mockito/blob/release/2.x/doc/release-notes/official.md">Changelog</a>
 		 */
-		private const val version = "2.24.4"
+		private const val version = "2.24.5"
 
 		/**
 		 * @see <a href="https://github.com/nhaarman/mockito-kotlin/releases">GitHub releases</a>
