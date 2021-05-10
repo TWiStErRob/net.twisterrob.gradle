@@ -12,13 +12,11 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.codehaus.groovy.runtime.NullObject;
-
-import static org.codehaus.groovy.runtime.DefaultGroovyMethods.plus;
-
 import groovy.lang.GroovyObjectSupport;
 import groovy.lang.MissingPropertyException;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import static org.codehaus.groovy.runtime.DefaultGroovyMethods.plus;
+import org.codehaus.groovy.runtime.NullObject;
 
 /**
  * A grouper for uniform lists. Non-uniform lists may misbehave depending on order due to
