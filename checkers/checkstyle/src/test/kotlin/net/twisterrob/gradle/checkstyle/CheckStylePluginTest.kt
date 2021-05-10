@@ -100,7 +100,7 @@ class CheckStylePluginTest {
 		val exceptions = arrayOf(
 			// These tasks are not generated because their modules are special.
 			":test:checkstyleRelease",
-			// :feature module is deprecated in AGP 4.x, and support for it is removed in Quality 0.11.
+			// :feature module is deprecated in AGP 4.x and support for it was removed.
 			*tasksIn(arrayOf(":feature", ":base"), "checkstyleEach", "checkstyleRelease", "checkstyleDebug")
 		)
 		assertThat(
