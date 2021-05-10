@@ -20,9 +20,9 @@
 
 	<!-- one defined inline -->
 	<rule name="InlineCustomViolation"
-	      class="net.sourceforge.pmd.lang.rule.XPathRule"
-	      language="java"
-	      message="Inline custom message">
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
+		language="java"
+		message="Inline custom message">
 		<properties>
 			<property name="xpath" value="//ClassOrInterfaceDeclaration[@Public = 'false']" />
 		</properties>

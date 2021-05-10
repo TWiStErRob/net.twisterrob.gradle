@@ -57,7 +57,11 @@ open class ValidateViolationsTask : DefaultTask() {
 					if (report.exists()) {
 						this.inputs.file(report)
 					} else {
-						logger.info("Missing report for {} (probably wasn't executed yet after clean): {}", reportTask, report)
+						logger.info(
+							"Missing report for {} (probably wasn't executed yet after clean): {}",
+							reportTask,
+							report
+						)
 					}
 				}
 			}

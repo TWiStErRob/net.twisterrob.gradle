@@ -55,7 +55,8 @@ open class GradleRunnerRule : TestRule {
 	lateinit var runner: GradleRunner private set
 
 	@Suppress("MemberVisibilityCanBePrivate") // API
-	lateinit var buildFile: File private set
+	lateinit var buildFile: File
+		private set
 
 	val settingsFile get() = File(runner.projectDir, "settings.gradle")
 
@@ -95,12 +96,12 @@ open class GradleRunnerRule : TestRule {
 	protected fun setUp() {
 		buildFile = temp.newFile("build.gradle")
 		runner = GradleRunner
-				.create()
-				//.forwardOutput() // need to customize forwarding because of test output
-				.forwardStdOutput(WriteOnlyWhenLineCompleteWriter(System.out.writer()))
-				.forwardStdError(WriteOnlyWhenLineCompleteWriter(System.err.writer()))
-				.withProjectDir(temp.root)
-				.withPluginClasspath()
+			.create()
+			//.forwardOutput() // need to customize forwarding because of test output
+			.forwardStdOutput(WriteOnlyWhenLineCompleteWriter(System.out.writer()))
+			.forwardStdError(WriteOnlyWhenLineCompleteWriter(System.err.writer()))
+			.withProjectDir(temp.root)
+			.withPluginClasspath()
 		check(buildFile == File(runner.projectDir, "build.gradle")) {
 			"${buildFile} is not within ${runner.projectDir}."
 		}
@@ -120,12 +121,14 @@ open class GradleRunnerRule : TestRule {
 			buildFile.appendText(script)
 		}
 		val args = arrayOf(*tasks, "--stacktrace")
-		println("""
+		println(
+			"""
 			Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
 			```gradle
 ${buildFile.readText().prependIndent("\t\t\t")}
 			```
-		""".trimIndent())
+			""".trimIndent()
+		)
 		return runner.withArguments(*args)
 	}
 
@@ -134,10 +137,10 @@ ${buildFile.readText().prependIndent("\t\t\t")}
 	 */
 	private fun fixClassPath(runner: GradleRunner) {
 		val classPaths = runner
-				.pluginClasspath
-				.joinToString(System.lineSeparator()) {
-					"classpath files('${it.absolutePath.replace("\\", "\\\\")}')"
-				}
+			.pluginClasspath
+			.joinToString(System.lineSeparator()) {
+				"classpath files('${it.absolutePath.replace("\\", "\\\\")}')"
+			}
 		@Language("gradle")
 		val buildscript = """
 			buildscript {
@@ -156,8 +159,8 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	fun setGradleVersion(version: String) {
 		val distributionUrl = URI.create("https://services.gradle.org/distributions/gradle-${version}-all.zip")
 		runner
-				.withGradleVersion(version)
-				.withGradleDistribution(distributionUrl)
+			.withGradleVersion(version)
+			.withGradleDistribution(distributionUrl)
 	}
 
 	//@Test:given/@Before
@@ -198,7 +201,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 			else -> "/${relativeTo.javaClass.`package`.name}"
 		}
 		val resource = this.javaClass.getResource("${container}/${path}")
-				?: throw IllegalArgumentException("Cannot find ${path} relative to {$relativeTo}")
+			?: throw IllegalArgumentException("Cannot find ${path} relative to {$relativeTo}")
 		return File(resource.file)
 	}
 

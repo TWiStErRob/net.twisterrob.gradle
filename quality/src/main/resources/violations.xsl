@@ -23,7 +23,7 @@
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js" />
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" />
 				<link type="text/css" rel="stylesheet"
-				      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" />
+					href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" />
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/gradle.min.js" />
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/java.min.js" />
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/kotlin.min.js" />
@@ -113,7 +113,7 @@
 					<code class="module">
 						<xsl:value-of select="." />
 					</code>
-					<xsl:if test="position() != last()">, </xsl:if>
+					<xsl:if test="position() != last()" xml:space="preserve">, </xsl:if>
 				</xsl:for-each>
 				)
 			</li>
@@ -145,12 +145,15 @@
 			<a name="{details/@category}-{source/@reporter}-{details/@rule}" />
 		</xsl:if>
 		<div class="violation" xml:space="preserve">
+			<!-- @formatter:off -->
 			<b><code class="rule copyable" title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!" onClick="copyToClipboard(`{details/@suppress}`)"><xsl:value-of select="details/@rule" /></code>: <xsl:value-of select="details/title" /></b><br />
+			<!-- @formatter:on -->
 			<details class="location" open="open">
 				<xsl:if test="details/context/@type = 'code'">
 					<!--<xsl:attribute name="open">open</xsl:attribute>-->
 				</xsl:if>
 				<summary>
+					<!-- @formatter:off -->
 					<code class="module"><xsl:value-of select="location/@modulePrefix" />:<b><xsl:value-of select="location/@moduleName" /></b></code><!--
 					--><xsl:if test="location/@variant != '*'">(<xsl:value-of select="location/@variant" />)</xsl:if>:
 					<a class="file" href="{location/@fileAbsoluteAsUrl}">
@@ -160,10 +163,12 @@
 							--><xsl:if test="location/@startLine != location/@endLine">-<xsl:value-of select="location/@endLine" /></xsl:if>
 						</xsl:if>
 					</a>
+					<!-- @formatter:on -->
 				</summary>
 				<xsl:if test="details/context/@type = 'code'">
 					<pre class="hljs"><code><!--
 						--><script>
+							// @formatter:off
 							render.code(
 								`<xsl:value-of select="details/context" />`,
 								{
@@ -173,6 +178,7 @@
 									highlightEnd: <xsl:value-of select="location/@endLine" />
 								}
 							)
+							// @formatter:on
 						</script><!--
 					--></code></pre>
 				</xsl:if>
@@ -196,7 +202,7 @@
 					<summary>
 						<script>render.markdown(`<xsl:value-of select="details/message" />`)</script>
 					</summary>
-						<section>
+					<section>
 						<script>render.markdown(`<xsl:value-of select="details/description" />`)</script>
 					</section>
 				</details>
@@ -211,68 +217,68 @@
 
 	<xsl:variable name="script" xml:space="preserve">
 	<!--suppress JSUnusedLocalSymbols -->
-	<script><![CDATA[/*&lt;![CDATA[*/
-	var md = window.markdownit({
-		linkify: true,
-		highlight: function (str, lang) {
-			if (lang && hljs.getLanguage(lang)) {
-				try {
-					return hljs.highlight(lang, str).value;
-				} catch (__) {
+		<script><![CDATA[/*&lt;![CDATA[*/
+		var md = window.markdownit({
+			linkify: true,
+			highlight: function (str, lang) {
+				if (lang && hljs.getLanguage(lang)) {
+					try {
+						return hljs.highlight(lang, str).value;
+					} catch (__) {
+					}
 				}
+				return ''; // use external default escaping
 			}
-			return ''; // use external default escaping
-		}
-	});
-
-	function copyToClipboard(text) {
-		var $temp = $("<textarea>");
-		$("body").append($temp);
-		$temp.val(text).select();
-		document.execCommand("copy");
-		$temp.remove();
-	}
-
-	var render = {
-		markdown: function (text) {
-			var html = md.render(text);
-			document.write(html);
-		},
-		code: function (text, options) {
-			options = options || {};
-			var lang = options.language || 'text';
-			var html = hljs.highlight(lang, text).value;
-			html = addSourceLineNumbers(
-				html,
-				options.firstLine || 1,
-				options.highlightStart || -1,
-				options.highlightEnd || -1
-			);
-			document.write(html);
-		}
-	};
-
-	// based on http://bellido.us/blog/07-06-2014-Adding-LineNumbers-highlight-js.html
-	function addSourceLineNumbers(html, start, highlightStart, highlightEnd) {
-		var prefix = 'prefix';
-		var current = start;
-
-		function line(number) {
-			var classes = 'line';
-			if (highlightStart === number) classes += ' start';
-			if (highlightEnd === number) classes += ' end';
-			if (highlightStart <= number && number <= highlightEnd) classes += ' highlight';
-			return '<a class="' + classes + '" name="' + prefix + number + '">' + number + '</a>'
-		}
-
-		var result = html.replace(/\n/g, function () {
-			return "\n" + line(++current);
 		});
 
-		return line(start) + result;
-	}
+		function copyToClipboard(text) {
+			var $temp = $("<textarea>");
+			$("body").append($temp);
+			$temp.val(text).select();
+			document.execCommand("copy");
+			$temp.remove();
+		}
 
-	/*]]&gt;*/]]></script>
+		var render = {
+			markdown: function (text) {
+				var html = md.render(text);
+				document.write(html);
+			},
+			code: function (text, options) {
+				options = options || {};
+				var lang = options.language || 'text';
+				var html = hljs.highlight(lang, text).value;
+				html = addSourceLineNumbers(
+					html,
+					options.firstLine || 1,
+					options.highlightStart || -1,
+					options.highlightEnd || -1
+				);
+				document.write(html);
+			}
+		};
+
+		// based on http://bellido.us/blog/07-06-2014-Adding-LineNumbers-highlight-js.html
+		function addSourceLineNumbers(html, start, highlightStart, highlightEnd) {
+			var prefix = 'prefix';
+			var current = start;
+
+			function line(number) {
+				var classes = 'line';
+				if (highlightStart === number) classes += ' start';
+				if (highlightEnd === number) classes += ' end';
+				if (highlightStart <= number && number <= highlightEnd) classes += ' highlight';
+				return '<a class="' + classes + '" name="' + prefix + number + '">' + number + '</a>'
+			}
+
+			var result = html.replace(/\n/g, function () {
+				return "\n" + line(++current);
+			});
+
+			return line(start) + result;
+		}
+
+		/*]]&gt;*/]]></script>
 	</xsl:variable>
 	<xsl:variable name="style" xml:space="preserve">
 	<style type="text/css"><![CDATA[/*&lt;![CDATA[*/

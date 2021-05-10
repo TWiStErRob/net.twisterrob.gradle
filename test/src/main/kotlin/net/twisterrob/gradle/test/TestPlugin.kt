@@ -17,12 +17,13 @@ class TestPlugin : BaseExposedPlugin() {
 			add("testImplementation", gradleTestKit())
 
 			val myManifest = getManifest()
+			val selfDependency = mapOf(
+				"group" to myManifest.getValue("Implementation-Vendor")!!,
+				"name" to myManifest.getValue("Implementation-Title")!!,
+				"version" to myManifest.getValue("Implementation-Version")!!
+			)
+			add("testImplementation", selfDependency)
 
-			add("testImplementation", mapOf(
-					"group" to myManifest.getValue("Implementation-Vendor")!!,
-					"name" to myManifest.getValue("Implementation-Title")!!,
-					"version" to myManifest.getValue("Implementation-Version")!!
-			))
 			return@with
 		}
 	}

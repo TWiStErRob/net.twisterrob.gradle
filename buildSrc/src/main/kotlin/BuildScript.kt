@@ -18,15 +18,16 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 val SourceSet.kotlin: SourceDirectorySet
 	get() =
 		(this as HasConvention)
-				.convention
-				.getPlugin(KotlinSourceSet::class.java)
-				.kotlin
+			.convention
+			.getPlugin(KotlinSourceSet::class.java)
+			.kotlin
 
 /**
  * @see <a href="https://github.com/JetBrains/kotlin/blob/v1.2.20/buildSrc/src/main/kotlin/sourceSets.kt#L45-L54">sourceSets.kt</a>
  */
-fun SourceSet.kotlin(action: SourceDirectorySet.() -> Unit) =
-		kotlin.action()
+fun SourceSet.kotlin(action: SourceDirectorySet.() -> Unit) {
+	kotlin.action()
+}
 
 /**
  * Pull in resources from other modules' `src/test/resources` folders.

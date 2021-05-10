@@ -77,10 +77,10 @@ val BuildResult.fullException: String?
 fun BuildResult.findFailureBlock(label: String): String {
 	val fullLabel = "* ${label}:"
 	return output
-			.split(System.lineSeparator())
-			.dropWhile { it != fullLabel }
-			.drop(1)
-			.takeWhile { !it.startsWith("* ") }
-			.joinToString(System.lineSeparator())
-			.trim()
+		.split(System.lineSeparator())
+		.dropWhile { it != fullLabel }
+		.drop(1)
+		.takeWhile { !it.startsWith("* ") }
+		.joinToString(System.lineSeparator())
+		.trim()
 }

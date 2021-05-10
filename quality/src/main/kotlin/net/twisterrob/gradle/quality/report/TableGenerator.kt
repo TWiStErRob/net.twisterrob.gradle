@@ -8,13 +8,13 @@ private typealias Parser = String
 private typealias MaybeCount = Int?
 
 class TableGenerator(
-		private val columnSeparator: String = "\t",
-		private val missingCount: String = "N/A",
-		private val zeroCount: String = "0",
-		private val printEmptyColumns: Boolean = true,
-		private val printEmptyRows: Boolean = true,
-		private val summaryRow: Boolean = true,
-		private val minWidth: Int = 0
+	private val columnSeparator: String = "\t",
+	private val missingCount: String = "N/A",
+	private val zeroCount: String = "0",
+	private val printEmptyColumns: Boolean = true,
+	private val printEmptyRows: Boolean = true,
+	private val summaryRow: Boolean = true,
+	private val minWidth: Int = 0
 ) {
 
 	companion object {
@@ -28,10 +28,10 @@ class TableGenerator(
 		var parsers = byModuleByVariantByParserCounts.flatMap { it.value.values }.flatMap { it.keys }.distinct()
 		val summary: Map<Parser, MaybeCount> = parsers.associateBy({ it }) { parser ->
 			byModuleByVariantByParserCounts
-					.values
-					.flatMap({ it.values })
-					.map({ it[parser] })
-					.reduce(::safeAdd)
+				.values
+				.flatMap({ it.values })
+				.map({ it[parser] })
+				.reduce(::safeAdd)
 		}
 
 		if (!printEmptyColumns) {
@@ -48,12 +48,12 @@ class TableGenerator(
 		val rowFormat = "${rowHeaderFormat}${format}"
 		val header = String.format(rowFormat, *(listOf("module", "variant") + parsers).toTypedArray())
 		val rows = byModuleByVariantByParserCounts.flatMap { byModule ->
-			byModule.value.flatMap row@ { byVariant ->
+			byModule.value.flatMap row@{ byVariant ->
 				val byParserCounts = byVariant.value
 				if (!printEmptyRows && byParserCounts.values.count { it != null } == 0) {
 					return@row listOf<String>()
 				}
-				val cells = parsers.map cell@ {
+				val cells = parsers.map cell@{
 					return@cell when (byParserCounts[it]) {
 						0 -> zeroCount
 						null -> missingCount

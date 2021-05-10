@@ -18,11 +18,11 @@ import org.gradle.api.tasks.VerificationTask
 import java.io.File
 
 open class VariantTaskCreator<T>(
-		private val project: Project,
-		private val baseName: String,
-		private val pluginName: String,
-		private val taskClass: Class<T>,
-		private val extensionClass: Class<out BaseQualityExtension<T>>
+	private val project: Project,
+	private val baseName: String,
+	private val pluginName: String,
+	private val taskClass: Class<T>,
+	private val extensionClass: Class<out BaseQualityExtension<T>>
 ) where
 T : SourceTask,
 T : Reporting<out ReportContainer<out ConfigurableReport>>,
@@ -47,13 +47,13 @@ T : VerificationTask {
 	}
 
 	open fun variantsConfig(variants: Collection<BaseVariant>) =
-			DefaultVariantsTaskConfig(taskConfigurator(), variants)
+		DefaultVariantsTaskConfig(taskConfigurator(), variants)
 
 	open fun variantConfig(variant: BaseVariant) =
-			DefaultVariantTaskConfig(taskConfigurator(), variant)
+		DefaultVariantTaskConfig(taskConfigurator(), variant)
 
 	open fun taskConfigurator() =
-			DefaultTaskConfig()
+		DefaultTaskConfig()
 
 	private fun createGlobalTask() {
 		val globalTaskName = "${baseName}Each"
@@ -73,8 +73,8 @@ T : VerificationTask {
 	}
 
 	open inner class DefaultVariantsTaskConfig(
-			private val configurator: DefaultTaskConfig,
-			private val variants: Collection<BaseVariant>
+		private val configurator: DefaultTaskConfig,
+		private val variants: Collection<BaseVariant>
 	) : Action<T> {
 
 		override fun execute(task: T) {
@@ -89,8 +89,8 @@ T : VerificationTask {
 	}
 
 	open inner class DefaultVariantTaskConfig(
-			private val configurator: DefaultTaskConfig,
-			private val variant: BaseVariant
+		private val configurator: DefaultTaskConfig,
+		private val variant: BaseVariant
 	) : Action<T> {
 
 		override fun execute(task: T) {
@@ -121,11 +121,13 @@ T : VerificationTask {
 			val buildPath = task.project.buildDir.toPath()
 			val projectPath = task.project.projectDir.toPath()
 			if (!buildPath.startsWith(projectPath)) {
-				task.logger.warn("""
+				task.logger.warn(
+					"""
 					Cannot set up ${baseName} source folders,
 						because the build directory ${buildPath}
 						needs to be inside the project directory ${projectPath}.
-				""".trimIndent().replace("""\r?\n\t*""".toRegex(), " "))
+					""".trimIndent().replace("""\r?\n\t*""".toRegex(), " ")
+				)
 				return@setupSources
 			}
 			val relativeBuildPath = projectPath.relativize(buildPath)
@@ -135,12 +137,12 @@ T : VerificationTask {
 
 			// include whatever needs to be included
 			task.include(variants
-					.flatMap { it.getSourceFolders(SourceKind.JAVA) }
-					.map { tree ->
-						// build relative path (e.g. src/main/java) and
-						// append a trailing "/" for include to treat it as recursive
-						projectPath.relativize(tree.dir.toPath()).toString() + File.separator
-					})
+				.flatMap { it.getSourceFolders(SourceKind.JAVA) }
+				.map { tree ->
+					// build relative path (e.g. src/main/java) and
+					// append a trailing "/" for include to treat it as recursive
+					projectPath.relativize(tree.dir.toPath()).toString() + File.separator
+				})
 
 			variants.forEach { variant ->
 				// exclude generated code

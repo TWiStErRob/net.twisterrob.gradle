@@ -6,11 +6,11 @@ import org.gradle.api.Project
 import java.io.File
 
 class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
-		project,
-		"pmd",
-		"pmd",
-		PmdTask::class.java,
-		PmdExtension::class.java
+	project,
+	"pmd",
+	"pmd",
+	PmdTask::class.java,
+	PmdExtension::class.java
 ) {
 
 	override fun taskConfigurator() = object : VariantTaskCreator<PmdTask>.DefaultTaskConfig() {
@@ -23,12 +23,14 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 			if (config != null) {
 				task.ruleSetFiles += task.project.files(config)
 			} else if (task.ruleSetFiles.files.isEmpty()) {
-				task.logger.warn("""
+				task.logger.warn(
+					"""
 					While configuring ${task} no configuration found at:
 						${rootConfig}
 						${subConfig}
 						and there's no configuration location set in Gradle build files either.
-				""".trimIndent())
+					""".trimIndent()
+				)
 			}
 
 			// put configuration files on classpath of PMD so it's possible to reference own rulesets with relative path
@@ -42,30 +44,32 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 			val buildPath = task.project.buildDir.toPath()
 			val projectPath = task.project.projectDir.toPath()
 			if (!buildPath.startsWith(projectPath)) {
-				task.logger.warn("""
+				task.logger.warn(
+					"""
 					Cannot set up ${task} source folders,
 						because the build directory ${buildPath}
 						needs to be inside the project directory ${projectPath}.
-				""".trimIndent().replace("""\r?\n\t*""".toRegex(), " "))
+					""".trimIndent().replace("""\r?\n\t*""".toRegex(), " ")
+				)
 				return@setupSources
 			}
 
 			task.include(variants
-					.flatMap { it.sourceSets }
-					.flatMap { it.resDirectories }
-					.map { dir ->
-						// build relative path (e.g. src/main/res) and
-						// append a trailing "/" for include to treat it as recursive
-						projectPath.relativize(dir.toPath()).toString() + File.separator
-					})
+				.flatMap { it.sourceSets }
+				.flatMap { it.resDirectories }
+				.map { dir ->
+					// build relative path (e.g. src/main/res) and
+					// append a trailing "/" for include to treat it as recursive
+					projectPath.relativize(dir.toPath()).toString() + File.separator
+				})
 
 			task.include(variants
-					.flatMap { it.sourceSets }
-					.map { it.manifestFile }
-					.map { file ->
-						// build relative path (e.g. src/main/AndroidManifest.xml)
-						projectPath.relativize(file.toPath()).toString()
-					})
+				.flatMap { it.sourceSets }
+				.map { it.manifestFile }
+				.map { file ->
+					// build relative path (e.g. src/main/AndroidManifest.xml)
+					projectPath.relativize(file.toPath()).toString()
+				})
 		}
 	}
 }

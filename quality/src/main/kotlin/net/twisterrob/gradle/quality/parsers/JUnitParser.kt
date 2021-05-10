@@ -25,32 +25,32 @@ class JUnitParser : ViolationsParser {
 	}
 
 	private fun parseSkips(testChunk: String, className: String, methodName: String): List<Violation> =
-			getChunks(testChunk, "<skipped", "/>").map { skippedChunk ->
-				val message = getAttribute(skippedChunk, "message")
-				violationBuilder()
-						.setParser(Parser.PITEST)
-						.setReporter("JUnit")
-						.setFile(className)
-						.setStartLine(0)
-						.setRule(methodName)
-						.setSeverity(SEVERITY.WARN)
-						.setMessage(message)
-						.build()
-			}
+		getChunks(testChunk, "<skipped", "/>").map { skippedChunk ->
+			val message = getAttribute(skippedChunk, "message")
+			violationBuilder()
+				.setParser(Parser.PITEST)
+				.setReporter("JUnit")
+				.setFile(className)
+				.setStartLine(0)
+				.setRule(methodName)
+				.setSeverity(SEVERITY.WARN)
+				.setMessage(message)
+				.build()
+		}
 
 	private fun parseFailures(testChunk: String, className: String, methodName: String): List<Violation> =
-			getChunks(testChunk, "<failure", "</failure>").map { failureChunk ->
-				val message = getAttribute(failureChunk, "message")
-				val stack = getContent(failureChunk, "failure")
-				violationBuilder()
-						.setParser(Parser.PITEST)
-						.setReporter("JUnit")
-						.setFile(className)
-						.setStartLine(0)
-						.setRule(methodName)
-						.setSeverity(SEVERITY.ERROR)
-						.setMessage(message)
-						.setSpecifics(Collections.singletonMap("stacktrace", stack))
-						.build()
-			}
+		getChunks(testChunk, "<failure", "</failure>").map { failureChunk ->
+			val message = getAttribute(failureChunk, "message")
+			val stack = getContent(failureChunk, "failure")
+			violationBuilder()
+				.setParser(Parser.PITEST)
+				.setReporter("JUnit")
+				.setFile(className)
+				.setStartLine(0)
+				.setRule(methodName)
+				.setSeverity(SEVERITY.ERROR)
+				.setMessage(message)
+				.setSpecifics(Collections.singletonMap("stacktrace", stack))
+				.build()
+		}
 }

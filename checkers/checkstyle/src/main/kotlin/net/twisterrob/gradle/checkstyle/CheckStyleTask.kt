@@ -22,11 +22,11 @@ open class CheckStyleTask : Checkstyle(), TargetChecker {
 	private fun setupProperties() {
 		// partially based on https://github.com/jshiell/checkstyle-idea#eclipse-cs-variable-support
 		configProperties = (configProperties ?: emptyMap()) + mapOf(
-				"basedir" to project.projectDir, // TODO or rootDir?
-				"project_loc" to project.rootDir,
-				"workspace_loc" to project.rootDir
-				//"config_loc" to configFile.parentFile // set via setConfigDir
-				//"samedir" to /*use config_loc instead (until I figure out how to do doFirst properly)*/
+			"basedir" to project.projectDir, // TODO or rootDir?
+			"project_loc" to project.rootDir,
+			"workspace_loc" to project.rootDir
+			//"config_loc" to configFile.parentFile // set via setConfigDir
+			//"samedir" to /*use config_loc instead (until I figure out how to do doFirst properly)*/
 		)
 	}
 }

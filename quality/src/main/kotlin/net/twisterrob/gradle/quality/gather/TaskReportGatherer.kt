@@ -5,8 +5,8 @@ import se.bjurr.violations.lib.model.Violation
 import java.io.File
 
 abstract class TaskReportGatherer<T>(
-		var displayName: String,
-		var taskType: Class<T>
+	var displayName: String,
+	var taskType: Class<T>
 ) where T : Task {
 
 	abstract fun getParsableReportLocation(task: T): File
