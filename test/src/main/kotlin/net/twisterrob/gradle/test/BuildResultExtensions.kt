@@ -32,14 +32,14 @@ fun BuildResult.assertHasOutputLine(reason: String?, expectedLine: String) {
 
 /**
  * Matches a full line not containing the regex.
- * [expectedLineRegex] needs to include `.*` if the line beginning/end doesn't matter.
+ * [unexpectedLineRegex] needs to include `.*` if the line beginning/end doesn't matter.
  */
 fun BuildResult.assertNoOutputLine(unexpectedLineRegex: Regex) {
 	assertNoOutputLine(null, unexpectedLineRegex)
 }
 
 /**
- * Matches a full line containing the text. An exact match will be performed against [expectedLine].
+ * Matches a full line containing the text. An exact match will be performed against [unexpectedLine].
  * Use [#assertNoOutputLine(Regex)] with heading/trailing `.*` if parts don't matter.
  */
 fun BuildResult.assertNoOutputLine(unexpectedLine: String) {
@@ -65,13 +65,13 @@ ${output.prependIndent("\t\t")}
 	assertTrue(message, positive == regex.containsMatchIn(output))
 }
 
-val BuildResult.failReason: String?
+val BuildResult.failReason: String
 	get() = findFailureBlock("What went wrong")
 
-val BuildResult.failSuggestion: String?
+val BuildResult.failSuggestion: String
 	get() = findFailureBlock("Try")
 
-val BuildResult.fullException: String?
+val BuildResult.fullException: String
 	get() = findFailureBlock("Exception is")
 
 fun BuildResult.findFailureBlock(label: String): String {

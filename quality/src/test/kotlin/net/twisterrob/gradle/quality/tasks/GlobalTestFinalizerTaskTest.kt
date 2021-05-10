@@ -20,7 +20,7 @@ class GlobalTestFinalizerTaskTest {
 		val testFile = """
 			import org.junit.*;
 
-			@SuppressWarnings("NewMethodNamingConvention")
+			@SuppressWarnings({"NewMethodNamingConvention", "ConstantConditions"})
 			public class Tests {
 				@Test public void success1() {}
 				@Test public void success2() {}

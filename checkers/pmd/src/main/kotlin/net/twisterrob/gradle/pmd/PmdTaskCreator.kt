@@ -51,7 +51,7 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 						needs to be inside the project directory ${projectPath}.
 					""".trimIndent().replace("""\r?\n\t*""".toRegex(), " ")
 				)
-				return@setupSources
+				return
 			}
 
 			task.include(variants

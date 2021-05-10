@@ -3,11 +3,11 @@
 https://github.com/twisterrob/net.twisterrob.gradle/actions?query=workflow%3A%22Continuous+Integration%22)
 -->
 [![](https://img.shields.io/github/v/release/twisterrob/net.twisterrob.gradle)](
-releases)
+https://github.com/TWiStErRob/net.twisterrob.gradle/releases)
 [![](https://img.shields.io/maven-central/v/net.twisterrob.gradle/twister-quality)](
 https://search.maven.org/search?q=g:net.twisterrob.gradle)
 [![](https://img.shields.io/github/license/twisterrob/net.twisterrob.gradle)](
-LICENSE)
+https://github.com/TWiStErRob/net.twisterrob.gradle/blob/master/LICENCE)
 [![](https://img.shields.io/twitter/follow/twisterrob?style=social)](
 https://twitter.com/twisterrob)
 

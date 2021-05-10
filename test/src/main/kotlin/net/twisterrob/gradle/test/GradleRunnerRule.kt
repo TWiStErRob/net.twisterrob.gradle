@@ -26,6 +26,7 @@ open class GradleRunnerRule : TestRule {
 	 * @param value `null` = automatic, `true` clean, `false` keep
 	 * @see GradleRunner.getProjectDir `runner.projectDir`
 	 */
+	@Suppress("KDocUnresolvedReference")
 	var clearAfterFailure: Boolean? = null
 	private val needClearAfterFailure: Boolean
 		get() = listOfNotNull(
@@ -44,6 +45,7 @@ open class GradleRunnerRule : TestRule {
 	 * @param value `null` = automatic, `true` clean, `false` keep
 	 * @see GradleRunner.getProjectDir `runner.projectDir`
 	 */
+	@Suppress("KDocUnresolvedReference")
 	var clearAfterSuccess: Boolean? = null
 	private val needClearAfterSuccess: Boolean
 		get() = listOfNotNull(

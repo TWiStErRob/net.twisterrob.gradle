@@ -1,9 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
-import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
-import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.common.listFilesInDirectory
-import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -187,6 +184,7 @@ class ValidateViolationsTaskTest {
 	@Test fun `do not gather non-existent reports`() {
 		gradle.basedOn("android-root_app")
 
+		@Suppress("UnusedProperty")
 		@Language("properties")
 		val props = """
 			org.gradle.warning.mode=all

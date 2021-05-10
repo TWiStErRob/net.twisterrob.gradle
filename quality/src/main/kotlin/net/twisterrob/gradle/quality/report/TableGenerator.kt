@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality.report
 
 import net.twisterrob.gradle.common.safeAdd
+import kotlin.math.log10
 
 private typealias Module = String
 private typealias Variant = String
@@ -29,21 +30,21 @@ class TableGenerator(
 		val summary: Map<Parser, MaybeCount> = parsers.associateBy({ it }) { parser ->
 			byModuleByVariantByParserCounts
 				.values
-				.flatMap({ it.values })
-				.map({ it[parser] })
+				.flatMap { it.values }
+				.map { it[parser] }
 				.reduce(::safeAdd)
 		}
 
 		if (!printEmptyColumns) {
 			parsers = parsers.filter { summary[it] != null }
 		}
-		val format = parsers.map { Math.max(minWidth, it.length) }.joinToString("") { "${columnSeparator}%${it}s" }
+		val format = parsers.map { it.length.coerceAtLeast(minWidth) }.joinToString("") { "${columnSeparator}%${it}s" }
 		val longestModule = modules.maxBy { it.length }
 		val longestVariant = variants.maxBy { it.length }
-		val moduleWidth = Math.max(MIN_MODULE_LENGTH, longestModule?.length ?: 0)
+		val moduleWidth = (longestModule?.length ?: 0).coerceAtLeast(MIN_MODULE_LENGTH)
 		val total = summary.values.sumBy { it ?: 0 }
-		val totalCountWidth = if (total == 0) 1 else Math.log10(total.toDouble()).toInt()
-		val variantWidth = Math.max(MIN_VARIANT_LENGTH + totalCountWidth, longestVariant?.length ?: 0)
+		val totalCountWidth = if (total == 0) 1 else log10(total.toDouble()).toInt()
+		val variantWidth = (longestVariant?.length ?: 0).coerceAtLeast(MIN_VARIANT_LENGTH + totalCountWidth)
 		val rowHeaderFormat = "%-${moduleWidth}s${columnSeparator}%-${variantWidth}s"
 		val rowFormat = "${rowHeaderFormat}${format}"
 		val header = String.format(rowFormat, *(listOf("module", "variant") + parsers).toTypedArray())

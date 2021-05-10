@@ -84,7 +84,7 @@ public class UtilsTest {
 			Collector<Integer, ?, Integer> sut = Utils.nullSafeSum();
 			Integer result = input.stream().collect(sut);
 
-			assertEquals(null, result);
+			assertNull(result);
 		}
 
 		@Test public void sumStringLengths() {

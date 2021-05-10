@@ -73,7 +73,8 @@ private val LintBaseTask.isFatalOnly
 	get() = false
 
 /**
- * Workaround for 3.2 vs 3.3: [LintBaseTask] extended [AndroidVariantTask] in 3.2,
+ * Workaround for 3.2 vs 3.3: [com.android.build.gradle.tasks.LintBaseTask]
+ * extended [com.android.build.gradle.internal.tasks.AndroidVariantTask] in 3.2,
  * but not in 3.3 and the `variantName` property was moved to [LintPerVariantTask].
  * Due to Kotlin limitations, cannot polyfill `variantName` (extension methods are compile time bound),
  * so introducing a separate property is a good compromise.

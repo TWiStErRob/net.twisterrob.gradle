@@ -58,7 +58,7 @@ T : VerificationTask {
 	private fun createGlobalTask() {
 		val globalTaskName = "${baseName}Each"
 		if (project.tasks.findByName(globalTaskName) != null) {
-			return@createGlobalTask
+			return
 		}
 		eachTask = project.tasks.create(globalTaskName) { task: Task ->
 			task.group = JavaBasePlugin.VERIFICATION_GROUP
@@ -128,7 +128,7 @@ T : VerificationTask {
 						needs to be inside the project directory ${projectPath}.
 					""".trimIndent().replace("""\r?\n\t*""".toRegex(), " ")
 				)
-				return@setupSources
+				return
 			}
 			val relativeBuildPath = projectPath.relativize(buildPath)
 
@@ -154,7 +154,7 @@ T : VerificationTask {
 		}
 
 		open fun setupReports(task: T, suffix: String? = null) {
-			val fullSuffix = if (suffix != null) "-" + suffix else ""
+			val fullSuffix = if (suffix != null) "-${suffix}" else ""
 			// stop the build only if user wanted this task, otherwise we'll gather the results at once for reporting
 			task.ignoreFailures = !task.wasLaunchedOnly
 			// TODO too soon?

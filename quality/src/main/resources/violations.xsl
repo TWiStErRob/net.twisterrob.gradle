@@ -216,7 +216,7 @@
 	</xsl:template>
 
 	<xsl:variable name="script" xml:space="preserve">
-	<!--suppress JSUnusedLocalSymbols -->
+	<!--suppress JSUnusedLocalSymbols, JSUnresolvedVariable, JSUnresolvedFunction -->
 		<script><![CDATA[/*&lt;![CDATA[*/
 		var md = window.markdownit({
 			linkify: true,
