@@ -4,6 +4,7 @@
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.HasConvention
+import org.gradle.api.plugins.BasePluginConvention
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
 import org.gradle.kotlin.dsl.get
@@ -41,5 +42,8 @@ private fun Project.pullTestResourcesFrom(project: Project) {
 /**
  * @see <a href="file://.../gradle-kotlin-dsl-accessors/.../src/org/gradle/kotlin/dsl/accessors.kt">Generated code</a>
  */
-val Project.java: JavaPluginConvention get() = convention.getPluginByName("java")
-//private val Project.base: BasePluginConvention get() = convention.getPluginByName("base")
+val Project.java: JavaPluginConvention
+	get() = convention.getPluginByName("java")
+
+val Project.base: BasePluginConvention
+	get() = convention.getPluginByName("base")

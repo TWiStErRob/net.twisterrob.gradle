@@ -1,6 +1,6 @@
 buildscript {
 	repositories {
-		jcenter()
+		mavenCentral()
 		google()
 	}
 	dependencies {
@@ -11,7 +11,7 @@ buildscript {
 allprojects {
 	repositories {
 		google() // for aapt2 internal binary
-		jcenter() // quality plugin needs to be downloaded in test
+		mavenCentral() // quality plugin needs to be downloaded in test
 	}
 	plugins.withType(com.android.build.gradle.BasePlugin) {
 		// BEWARE: InstantAppExtension overrides compileSdkVersion and hard-codes it (see ANDROID_INSTANT_API_LEVEL)

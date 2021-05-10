@@ -188,10 +188,16 @@ open class ValidateViolationsTask : DefaultTask() {
 			.filter { (it.violations ?: emptyList()).isNotEmpty() }
 			.map { "${it.module}:${it.parser}@${it.variant} (${it.violations!!.size}): ${it.report}" }
 
-		println(result.joinToString(System.lineSeparator() + System.lineSeparator()))
-		println()
-		println(reportLocations.joinToString(System.lineSeparator()))
-		println()
-		println(table)
+		if (result.isNotEmpty()) {
+			println(result.joinToString(System.lineSeparator() + System.lineSeparator()))
+			println()
+		}
+		if (reportLocations.isNotEmpty()) {
+			println(reportLocations.joinToString(System.lineSeparator()))
+			println()
+		}
+		if (table.isNotBlank()) {
+			println(table)
+		}
 	}
 }

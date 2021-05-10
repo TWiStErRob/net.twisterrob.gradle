@@ -1,15 +1,17 @@
 plugins {
 //	kotlin("jvm")
 	`java-gradle-plugin`
+	id("net.twisterrob.gradle.build.publishing")
 }
 
 base.archivesBaseName = "twister-gradle-test"
+description = "Test: Gradle test plugin."
 
 dependencies {
 	compileOnly(gradleApi())
 	compileOnly(gradleTestKit())
 
-	implementation(project(":common"))
+	api(project(":common"))
 	compileOnly(Libs.JUnit4.library)
 	compileOnly(Libs.JUnit5.api)
 	compileOnly(Libs.Annotations.jsr305)

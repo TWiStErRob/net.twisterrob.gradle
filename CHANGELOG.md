@@ -1,7 +1,19 @@
 # Change Log
 
 
-## 0.10 *(2020-01-12 --- )*
+## 0.11 *(2020-11-22 --- )*
+
+### Breaking
+ * Removed Bintray publishing as it shut down, replaced with Maven Central. Use `mavenCentral()` instead of custom Bintray url.
+
+### New
+
+### Fixes
+
+### Internal
+
+
+## 0.10 *(2020-01-12 --- 2020-11-22)*
 
 ### Breaking
  * `ValidateViolationsTask.action` is removed, override `processViolations` instead (#85).
@@ -14,7 +26,9 @@
  * Android Gradle Plugin 3.6.4 compatible (Kotlin 1.3.72) (#98)
 
 ### Fixes
- * Make sure nothing is logged when lint task is disabled.
+ * Make sure nothing is logged when lint task is disabled. (#82/#83)
+ * Reduce empty output
+ * Output generated files from violationReportHtml
 
 ### Internal
  * Gradle validateTaskProperties issues (#85).

@@ -47,7 +47,7 @@ Add in root `build.gradle`:
 ```groovy
 buildscript {
 	repositories {
-		jcenter()
+		mavenCentral()
 		def repoRoot = file($/P:\projects\workspace\net.twisterrob.gradle-quality/$).toURI()
 		ivy {
 			url = repoRoot

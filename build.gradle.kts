@@ -1,8 +1,6 @@
+
 import Libs.Kotlin.replaceKotlinJre7WithJdk7
 import Libs.Kotlin.replaceKotlinJre8WithJdk8
-import com.jfrog.bintray.gradle.BintrayExtension
-import groovy.util.Node
-import groovy.util.NodeList
 import org.gradle.api.tasks.testing.TestOutputEvent.Destination
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -13,38 +11,26 @@ import java.util.EnumSet
 import kotlin.math.absoluteValue
 
 plugins {
-	`base` // just to get some support for subproject stuff, for example access to project.base
 //	kotlin("jvm") apply false
-	`maven-publish`
-	id("com.jfrog.bintray") version "1.8.4"
+	id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
-val VERSION: String by project
+val projectVersion: String by project
 
-group = rootProject.name
 description = "Quality plugin for Gradle that supports Android flavors."
-//version = not set here, because the root project has no an artifact
+allprojects {
+	group = rootProject.name
+	version = projectVersion
+}
 
 subprojects {
-	group = rootProject.group
-	version = VERSION
-
 	apply { plugin("kotlin") }
 
 	repositories {
-		jcenter()
+		mavenCentral()
 		google()
 		// for Kotlin-DSL
 		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
-		// for Mockito minor versions (only major versions are synced to jcenter)
-		maven { setUrl("https://dl.bintray.com/mockito/maven") }
-	}
-
-	tasks {
-		register<Jar>("sourcesJar") {
-			archiveClassifier.set("sources")
-			from(java.sourceSets["main"].kotlin.sourceDirectories)
-		}
 	}
 }
 
@@ -68,17 +54,21 @@ allprojects {
 
 	gradle.projectsEvaluated {
 		tasks.withType<JavaCompile> {
-			options.compilerArgs.addAll(listOf(
+			options.compilerArgs.addAll(
+				listOf(
 					"-Werror", // fail on warnings
 					"-Xlint:all", // enable all possible checks
 					"-Xlint:-processing" // except "No processor claimed any of these annotations"
-			))
+				)
+			)
 		}
 		tasks.withType<GroovyCompile> {
-			options.compilerArgs.addAll(listOf(
+			options.compilerArgs.addAll(
+				listOf(
 					"-Werror", // fail on warnings
 					"-Xlint:all" // enable all possible checks
-			))
+				)
+			)
 			groovyOptions.configurationScript = rootProject.file("gradle/compileGroovy.groovy")
 			// enable Java 7 invokeDynamic, since Java target is > 7 (Android requires Java 8 at least)
 			// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project
@@ -133,9 +123,9 @@ allprojects {
 			add("compileOnly", Libs.Kotlin.dsl) {
 				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
 			}
-			add("implementation", Libs.Kotlin.stdlib)
-			add("implementation", Libs.Kotlin.stdlibJdk8)
-			add("implementation", Libs.Kotlin.reflect)
+			add("api", Libs.Kotlin.stdlib)
+			add("api", Libs.Kotlin.stdlibJdk8)
+			add("api", Libs.Kotlin.reflect)
 
 			add("testImplementation", Libs.Kotlin.test)
 		}
@@ -149,7 +139,8 @@ allprojects {
 		afterEvaluate {
 			with(tasks["jar"] as Jar) {
 				manifest {
-					attributes(mapOf(
+					attributes(
+						mapOf(
 							// Implementation-* used by TestPlugin
 							"Implementation-Vendor" to project.group,
 							"Implementation-Title" to project.base.archivesBaseName,
@@ -157,7 +148,8 @@ allprojects {
 							// TODO Make sure it doesn't change often (skip for SNAPSHOT)
 							// otherwise :jar always re-packages and compilations cascade
 							"Built-Date" to SimpleDateFormat("yyyy-MM-dd'T'00:00:00Z").format(Date())
-					))
+						)
+					)
 				}
 			}
 		}
@@ -237,87 +229,24 @@ project.tasks.create("tests", TestReport::class.java) {
 	}
 }
 
-publishing {
-	publications.invoke {
-		subprojects.filterNot { it.name == "internal" }.forEach { project ->
-			register<MavenPublication>(project.name) {
-				// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
-				from(project.components["java"])
-				// source files
-				artifact(project.tasks["sourcesJar"]) { classifier = "sources" }
+nexusPublishing {
+	repositories {
+		@Suppress("UnstableApiUsage")
+		sonatype {
+			// For :publishReleasePublicationToSonatypeRepository, projectVersion suffix chooses repo.
+			nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+			snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
 
-				artifactId = project.base.archivesBaseName
-				version = project.version as String
+			// For :closeAndReleaseSonatypeStagingRepository
+			// Set via -PsonatypeStagingProfileId to gradlew, or ORG_GRADLE_PROJECT_sonatypeStagingProfileId env var.
+			val sonatypeStagingProfileId: String? by project
+			stagingProfileId.set(sonatypeStagingProfileId)
 
-				pom.withXml {
-					fun Node.getChildren(localName: String) = get(localName) as NodeList
-					fun NodeList.nodes() = filterIsInstance<Node>()
-					fun Node.getChild(localName: String) = getChildren(localName).nodes().single()
-					// declare `implementation` dependencies as `compile` instead of `runtime`
-					asNode()
-							.getChild("dependencies")
-							.getChildren("*").nodes()
-							.filter { depNode -> depNode.getChild("scope").text() == "runtime" }
-							.filter { depNode ->
-								project.configurations["implementation"].allDependencies.any {
-									it.group == depNode.getChild("groupId").text()
-											&& it.name == depNode.getChild("artifactId").text()
-								}
-							}
-							.forEach { depNode -> depNode.getChild("scope").setValue("compile") }
-					// use internal `project("...")` dependencies' artifact name, not subproject name
-					asNode()
-							.getChild("dependencies")
-							.getChildren("*").nodes()
-							.filter { depNode -> depNode.getChild("groupId").text() == project.group as String }
-							.forEach { depNode ->
-								val depProject = project
-										.rootProject
-										.allprojects
-										.single { it.name == depNode.getChild("artifactId").text() }
-								depNode.getChild("artifactId").setValue(depProject.base.archivesBaseName)
-							}
-				}
-			}
-		}
-	}
-}
-
-if (hasProperty("bintrayApiKey")) {
-	bintray {
-		user = "twisterrob"
-		key = findProperty("bintrayApiKey") as String
-		publish = true
-		override = false
-		dryRun = false
-		setPublications(*publishing.publications.names.toTypedArray())
-
-		pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
-			userOrg = "twisterrob"
-			repo = "maven"
-			name = rootProject.name
-			desc = rootProject.description
-			websiteUrl = "http://www.twisterrob.net"
-			vcsUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle"
-			issueTrackerUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle/issues"
-			githubRepo = "TWiStErRob/net.twisterrob.gradle"
-			githubReleaseNotesFile = "CHANGELOG.md"
-			//githubReadmeFile = "README.md" // Gradle plugin doesn't support this
-			setLicenses("MIT")
-
-			version(delegateClosureOf<BintrayExtension.VersionConfig> {
-				name = VERSION
-				desc = rootProject.description
-				released = Date().toString()
-				vcsTag = "v${VERSION}"
-				attributes = mapOf<String, String>()
-			})
-		})
-	}
-} else {
-	gradle.taskGraph.whenReady {
-		if (hasTask(":bintrayUpload")) {
-			throw GradleException("Bintray publication is not configured, use `gradlew -PbintrayApiKey=...`!")
+			// For everything sonatype, but automatically done by the plugin.
+			// Set via -PsonatypeUsername to gradlew, or ORG_GRADLE_PROJECT_sonatypeUsername env var.
+			//username.set(val sonatypeUsername: String? by project)
+			// Set via -PsonatypePassword to gradlew, or ORG_GRADLE_PROJECT_sonatypePassword env var.
+			//password.set(val sonatypePassword: String? by project)
 		}
 	}
 }

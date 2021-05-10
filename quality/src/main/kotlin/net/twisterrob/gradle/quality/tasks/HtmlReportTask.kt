@@ -1,10 +1,10 @@
 package net.twisterrob.gradle.quality.tasks
 
+import com.android.utils.SdkUtils
 import com.google.common.annotations.VisibleForTesting
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.html.produceXml
-import org.gradle.api.Action
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
@@ -73,6 +73,7 @@ open class HtmlReportTask : ValidateViolationsTask() {
 
 	override fun processViolations(violations: Grouper.Start<Violations>) {
 		project.produceXml(violations, xmlFile, xslOutputFile)
+		println("Wrote XML report to ${SdkUtils.fileToUrlString(xmlFile.absoluteFile)}")
 	}
 
 	@VisibleForTesting
@@ -82,6 +83,7 @@ open class HtmlReportTask : ValidateViolationsTask() {
 				.newInstance()
 				.newTransformer(StreamSource(xslOutputFile.reader()))
 				.transform(StreamSource(xmlFile.reader()), StreamResult(htmlFile))
+			println("Wrote HTML report to ${SdkUtils.fileToUrlString(htmlFile.absoluteFile)}")
 		} catch (ex: Throwable) {
 			throw GradleException("Cannot transform ${xmlFile}\nto ${htmlFile}\nusing ${xslOutputFile}", ex)
 		}
