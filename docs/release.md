@@ -22,9 +22,20 @@
  1. `git add gradle.properties CHANGELOG.md & git commit -m "Release x.y"`
     * `gradle.properties`: remove `-SNAPSHOT` suffix
     * `CHANGELOG.md`: update version end date
- 1. `gradlew bintrayUpload -PbintrayApiKey=...`  
-    Available from https://bintray.com/profile/edit > _API Key_  
-    _If this fails, fix and amend last commit._
+ 1. Upload
+    * Set up credentials
+        * `<sonatypeUsername>` is the account name of https://s01.oss.sonatype.org/
+        * `<sonatypePassword>` is `<sonatypeUsername>`'s password
+        * `<signingKey>` is GPG private armored key (just the base64 part on one line)
+        * `<signingPassword>` is `<signingKey>`'s passphrase
+        ```bash
+        set ORG_GRADLE_PROJECT_sonatypeUsername=<sonatypeUsername>
+        set ORG_GRADLE_PROJECT_sonatypePassword=<sonatypePassword>
+        set ORG_GRADLE_PROJECT_signingKey=<signingKey>
+        set ORG_GRADLE_PROJECT_signingPassword=<signingPassword>
+        ```
+    * `gradlew publishReleasePublicationToSonatypeRepository`  
+     _If this fails, fix and amend last commit._
  1. `git push origin master:master`
  1. Publish [drafted release](https://github.com/TWiStErRob/net.twisterrob.gradle/releases) on GitHub  
     Note: _this will create a tag on `master`, equivalent to:_

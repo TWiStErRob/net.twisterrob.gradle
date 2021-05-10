@@ -1,3 +1,16 @@
+<!--
+[![](https://github.com/twisterrob/net.twisterrob.gradle/workflows/Continuous%20Integration/badge.svg)](
+https://github.com/twisterrob/net.twisterrob.gradle/actions?query=workflow%3A%22Continuous+Integration%22)
+-->
+[![](https://img.shields.io/github/v/release/twisterrob/net.twisterrob.gradle)](
+releases)
+[![](https://img.shields.io/maven-central/v/net.twisterrob.gradle/twister-quality)](
+https://search.maven.org/search?q=g:net.twisterrob.gradle)
+[![](https://img.shields.io/github/license/twisterrob/net.twisterrob.gradle)](
+LICENSE)
+[![](https://img.shields.io/twitter/follow/twisterrob?style=social)](
+https://twitter.com/twisterrob)
+
 # Gradle Quality plugins
 Plugins that configure the built-in plugins with saner defaults (to be documented).
  * CheckStyle
@@ -14,7 +27,7 @@ For details on what was changed in different versions, see [CHANGELOG](CHANGELOG
 ```gradle
 buildscript {
 	repositories {
-		maven { name = 'TWiStErRob'; url = 'https://dl.bintray.com/twisterrob/maven' }
+		mavenCentral()
 	}
 	dependencies {
 		classpath "net.twisterrob.gradle:twister-quality:${VERSION_TWISTER_QUALITY}"

@@ -4,6 +4,7 @@
 ## 0.11 *(2020-11-22 --- )*
 
 ### Breaking
+ * Removed Bintray publishing as it shut down, replaced with Maven Central. Use `mavenCentral()` instead of custom Bintray url.
 
 ### New
 
