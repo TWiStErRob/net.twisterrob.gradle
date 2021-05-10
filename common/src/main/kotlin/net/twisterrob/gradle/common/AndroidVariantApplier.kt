@@ -28,6 +28,9 @@ class AndroidVariantApplier(val project: Project) {
 		}
 		project.plugins.withId("com.android.application", callback)
 		project.plugins.withId("com.android.library", callback)
+		// These types of feature modules were deprecated and removed in AGP 4.x.
+		// Support was removed in Quality 0.11.
+		//project.plugins.withId("com.android.feature", callback)
 		project.plugins.withId("com.android.dynamic-feature", callback)
 		project.plugins.withId("com.android.test", callback)
 		if (ANDROID_GRADLE_PLUGIN_VERSION < "3.6.0") {
@@ -43,6 +46,12 @@ class AndroidVariantApplier(val project: Project) {
 		project.plugins.withId("com.android.library") {
 			val android = project.extensions["android"] as LibraryExtension
 			variantsClosure.execute(android.libraryVariants)
+		}
+		project.plugins.withId("com.android.feature") {
+			// These types of feature modules were deprecated and removed in AGP 4.x.
+			// Support was removed in Quality 0.11.
+			//val android = project.extensions["android"] as FeatureExtension
+			//variantsClosure.execute(android.featureVariants)
 		}
 		project.plugins.withId("com.android.dynamic-feature") {
 			val android = project.extensions["android"] as AppExtension

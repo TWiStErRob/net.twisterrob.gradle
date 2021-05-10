@@ -97,15 +97,19 @@ class CheckStylePluginTest {
 			run(script, "checkstyleEach")
 		}
 
-		// these tasks are not generated because their modules are special
-		val exceptions = arrayOf(":test:checkstyleRelease")
+		val exceptions = arrayOf(
+			// These tasks are not generated because their modules are special.
+			":test:checkstyleRelease",
+			// :feature module is deprecated in AGP 4.x, and support for it is removed in Quality 0.11.
+			*tasksIn(arrayOf(":feature", ":base"), "checkstyleEach", "checkstyleRelease", "checkstyleDebug")
+		)
 		assertThat(
 			result.taskPaths(TaskOutcome.NO_SOURCE),
 			hasItems(*(tasksIn(modules, "checkstyleRelease", "checkstyleDebug") - exceptions))
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.UP_TO_DATE),
-			hasItems(*tasksIn(modules, "checkstyleEach"))
+			hasItems(*tasksIn(modules, "checkstyleEach") - exceptions)
 		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "checkstyleEach", "checkstyleRelease", "checkstyleDebug") - exceptions

@@ -99,15 +99,19 @@ class PmdPluginTest {
 			run(script, "pmdEach")
 		}
 
-		// these tasks are not generated because their modules are special
-		val exceptions = arrayOf(":test:pmdRelease")
+		val exceptions = arrayOf(
+			// These tasks are not generated because their modules are special.
+			":test:pmdRelease",
+			// :feature module is deprecated in AGP 4.x, and support for it is removed in Quality 0.11.
+			*tasksIn(arrayOf(":feature", ":base"), "pmdEach", "pmdRelease", "pmdDebug")
+		)
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),
 			hasItems(*(tasksIn(modules, "pmdRelease", "pmdDebug") - exceptions))
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),
-			hasItems(*tasksIn(modules, "pmdEach"))
+			hasItems(*tasksIn(modules, "pmdEach") - exceptions)
 		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "pmdEach", "pmdRelease", "pmdDebug") - exceptions
