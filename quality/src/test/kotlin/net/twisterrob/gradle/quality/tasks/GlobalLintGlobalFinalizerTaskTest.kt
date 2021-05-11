@@ -133,10 +133,12 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 	@Test fun `ignores disabled submodule lint tasks (direct setup)`() {
 		`ignores disabled submodule lint tasks` {
-			gradle.buildFile.parentFile.resolve("module2/build.gradle").appendText("""
+			gradle.buildFile.parentFile.resolve("module2/build.gradle").appendText(
+				"""
 
 				tasks.lint.enabled = false
-			""".trimIndent())
+				""".trimIndent()
+			)
 			it
 		}
 	}

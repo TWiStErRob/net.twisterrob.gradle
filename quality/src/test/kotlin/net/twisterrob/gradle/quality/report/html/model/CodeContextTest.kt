@@ -3,7 +3,6 @@ package net.twisterrob.gradle.quality.report.html.model
 import com.flextrade.jfixture.JFixture
 import com.nhaarman.mockitokotlin2.mock
 import net.twisterrob.gradle.quality.Violation
-import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.CodeContext
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.hamcrest.MatcherAssert.assertThat
@@ -171,7 +170,7 @@ class CodeContextTest {
 		(start..end).joinToString(System.lineSeparator()) { "line$it" }
 
 	private fun createModel(origin: File, requestedStart: Int, requestedEnd: Int) =
-		CodeContext(
+		ContextViewModel.CodeContext(
 			fixture.build<Violation>().apply {
 				location.setField("file", origin)
 				location.setField("startLine", requestedStart)

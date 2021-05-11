@@ -74,7 +74,7 @@ class GradleRunnerRuleTest_usage {
 		assertThat(result.output, containsString(configFileContents))
 	}
 
-	@Test fun `buildFile from multiple basedOn merged into one including script`(@TempDir temp:File) {
+	@Test fun `buildFile from multiple basedOn merged into one including script`(@TempDir temp: File) {
 		fun generateFolder(name: String): File {
 			val folder = temp.resolve("base_$name").also { it.mkdirs() }
 			folder

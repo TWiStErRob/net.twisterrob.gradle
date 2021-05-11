@@ -4,9 +4,9 @@ package net.twisterrob.gradle.common.grouper
  * Three Fields Object.
  */
 internal class TFO private constructor(
-		private val e: E,
-		private val f: F,
-		private val g: G
+	private val e: E,
+	private val f: F,
+	private val g: G
 ) {
 
 	override fun toString() = String.format("%s-%s-%s", e, f, g)

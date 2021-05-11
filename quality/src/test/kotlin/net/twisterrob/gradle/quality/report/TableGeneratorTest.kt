@@ -7,27 +7,27 @@ class TableGeneratorTest {
 
 	companion object {
 		val INPUT = mapOf(
-				"module1" to mapOf(
-						"variant1" to mapOf(
-								"checkstyle" to 1,
-								"pmd" to 2
-						),
-						"variant2" to mapOf(
-								"pmd" to 3
-						)
+			"module1" to mapOf(
+				"variant1" to mapOf(
+					"checkstyle" to 1,
+					"pmd" to 2
 				),
-				"module2" to mapOf(
-						"variant2" to mapOf(
-						),
-						"variant3" to mapOf(
-								"checkstyle" to 0,
-								"unchecked" to null
-						)
-				),
-				"module3" to mapOf(
-						"variant2" to mapOf(
-						)
+				"variant2" to mapOf(
+					"pmd" to 3
 				)
+			),
+			"module2" to mapOf(
+				"variant2" to mapOf(
+				),
+				"variant3" to mapOf(
+					"checkstyle" to 0,
+					"unchecked" to null
+				)
+			),
+			"module3" to mapOf(
+				"variant2" to mapOf(
+				)
+			)
 		)
 	}
 

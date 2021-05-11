@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality.report
 
 import net.twisterrob.gradle.common.safeAdd
+import kotlin.math.log10
 
 private typealias Module = String
 private typealias Variant = String
@@ -8,13 +9,13 @@ private typealias Parser = String
 private typealias MaybeCount = Int?
 
 class TableGenerator(
-		private val columnSeparator: String = "\t",
-		private val missingCount: String = "N/A",
-		private val zeroCount: String = "0",
-		private val printEmptyColumns: Boolean = true,
-		private val printEmptyRows: Boolean = true,
-		private val summaryRow: Boolean = true,
-		private val minWidth: Int = 0
+	private val columnSeparator: String = "\t",
+	private val missingCount: String = "N/A",
+	private val zeroCount: String = "0",
+	private val printEmptyColumns: Boolean = true,
+	private val printEmptyRows: Boolean = true,
+	private val summaryRow: Boolean = true,
+	private val minWidth: Int = 0
 ) {
 
 	companion object {
@@ -28,32 +29,32 @@ class TableGenerator(
 		var parsers = byModuleByVariantByParserCounts.flatMap { it.value.values }.flatMap { it.keys }.distinct()
 		val summary: Map<Parser, MaybeCount> = parsers.associateBy({ it }) { parser ->
 			byModuleByVariantByParserCounts
-					.values
-					.flatMap({ it.values })
-					.map({ it[parser] })
-					.reduce(::safeAdd)
+				.values
+				.flatMap { it.values }
+				.map { it[parser] }
+				.reduce(::safeAdd)
 		}
 
 		if (!printEmptyColumns) {
 			parsers = parsers.filter { summary[it] != null }
 		}
-		val format = parsers.map { Math.max(minWidth, it.length) }.joinToString("") { "${columnSeparator}%${it}s" }
+		val format = parsers.map { it.length.coerceAtLeast(minWidth) }.joinToString("") { "${columnSeparator}%${it}s" }
 		val longestModule = modules.maxBy { it.length }
 		val longestVariant = variants.maxBy { it.length }
-		val moduleWidth = Math.max(MIN_MODULE_LENGTH, longestModule?.length ?: 0)
+		val moduleWidth = (longestModule?.length ?: 0).coerceAtLeast(MIN_MODULE_LENGTH)
 		val total = summary.values.sumBy { it ?: 0 }
-		val totalCountWidth = if (total == 0) 1 else Math.log10(total.toDouble()).toInt()
-		val variantWidth = Math.max(MIN_VARIANT_LENGTH + totalCountWidth, longestVariant?.length ?: 0)
+		val totalCountWidth = if (total == 0) 1 else log10(total.toDouble()).toInt()
+		val variantWidth = (longestVariant?.length ?: 0).coerceAtLeast(MIN_VARIANT_LENGTH + totalCountWidth)
 		val rowHeaderFormat = "%-${moduleWidth}s${columnSeparator}%-${variantWidth}s"
 		val rowFormat = "${rowHeaderFormat}${format}"
 		val header = String.format(rowFormat, *(listOf("module", "variant") + parsers).toTypedArray())
 		val rows = byModuleByVariantByParserCounts.flatMap { byModule ->
-			byModule.value.flatMap row@ { byVariant ->
+			byModule.value.flatMap row@{ byVariant ->
 				val byParserCounts = byVariant.value
 				if (!printEmptyRows && byParserCounts.values.count { it != null } == 0) {
 					return@row listOf<String>()
 				}
-				val cells = parsers.map cell@ {
+				val cells = parsers.map cell@{
 					return@cell when (byParserCounts[it]) {
 						0 -> zeroCount
 						null -> missingCount

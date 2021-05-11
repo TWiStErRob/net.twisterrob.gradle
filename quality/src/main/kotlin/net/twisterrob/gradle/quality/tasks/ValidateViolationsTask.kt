@@ -21,8 +21,6 @@ import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
-import se.bjurr.violations.lib.reports.Parser.CHECKSTYLE
-import se.bjurr.violations.lib.reports.Parser.PMD
 
 open class ValidateViolationsTask : DefaultTask() {
 
@@ -57,7 +55,11 @@ open class ValidateViolationsTask : DefaultTask() {
 					if (report.exists()) {
 						this.inputs.file(report)
 					} else {
-						logger.info("Missing report for {} (probably wasn't executed yet after clean): {}", reportTask, report)
+						logger.info(
+							"Missing report for {} (probably wasn't executed yet after clean): {}",
+							reportTask,
+							report
+						)
 					}
 				}
 			}
@@ -85,7 +87,7 @@ open class ValidateViolationsTask : DefaultTask() {
 						violations = gatherer.getViolations(task)?.map {
 							Violation(
 								rule = when (it.reporter) {
-									CHECKSTYLE.name ->
+									Parser.CHECKSTYLE.name ->
 										it.rule
 											.substringAfterLast('.') // class name
 											.removeSuffix("Check")
@@ -93,12 +95,12 @@ open class ValidateViolationsTask : DefaultTask() {
 										it.rule
 								},
 								category = when (it.reporter) {
-									CHECKSTYLE.name ->
+									Parser.CHECKSTYLE.name ->
 										it.rule
 											.substringBeforeLast('.') // package
 											.substringAfterLast('.') // last subpackage
 											.capitalize()
-									PMD.name ->
+									Parser.PMD.name ->
 										when (it.category) {
 											"Import Statements" -> "Imports"
 											else -> it.category

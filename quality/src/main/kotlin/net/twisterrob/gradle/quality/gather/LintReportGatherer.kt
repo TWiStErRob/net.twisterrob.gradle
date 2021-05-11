@@ -12,8 +12,8 @@ import se.bjurr.violations.lib.reports.Parser
 import java.io.File
 
 class LintReportGatherer<T>(
-		displayName: String,
-		taskType: Class<T>
+	displayName: String,
+	taskType: Class<T>
 ) : TaskReportGatherer<T>(displayName, taskType) where T : LintBaseTask {
 
 	override fun getParsableReportLocation(task: T): File = when (task) {
@@ -35,7 +35,7 @@ class LintReportGatherer<T>(
 	}
 
 	override fun findViolations(report: File): List<Violation> =
-			Parser.ANDROIDLINT.findViolations(listOf(report))
+		Parser.ANDROIDLINT.findViolations(listOf(report))
 }
 
 private fun unsupported(task: Task): Nothing {

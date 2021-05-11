@@ -37,6 +37,7 @@ class GrouperTest {
 		val grouping = f.group()
 		assertEquals(emptyMap<Any, Map<Any, List<TFO>>>(), grouping)
 	}
+
 	@Test fun `group nothing on 2 levels (with Groovy sugar)`() {
 		val grouper = Grouper.create(emptyList<TFO>())
 		@Suppress("UNCHECKED_CAST")

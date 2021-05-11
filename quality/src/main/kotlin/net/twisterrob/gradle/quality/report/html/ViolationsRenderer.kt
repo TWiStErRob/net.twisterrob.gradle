@@ -95,7 +95,7 @@ internal fun renderViolation(to: XMLStreamWriter, vm: ViolationViewModel) {
 				}
 			}
 		}
-		vm.specifics.forEach { k, v ->
+		vm.specifics.forEach { (k, v) ->
 			element("specific") {
 				attribute("key", k)
 				attribute("value", v)

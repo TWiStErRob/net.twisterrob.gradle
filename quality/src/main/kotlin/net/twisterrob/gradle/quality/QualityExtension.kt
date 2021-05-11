@@ -7,7 +7,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 
 open class QualityExtension(
-		val project: Project
+	val project: Project
 ) {
 
 	fun checkstyle(closure: Action<CheckStyleExtension>) {
