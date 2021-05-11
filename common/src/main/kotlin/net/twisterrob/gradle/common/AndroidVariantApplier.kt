@@ -1,8 +1,6 @@
 package net.twisterrob.gradle.common
 
 import com.android.build.gradle.AppExtension
-import com.android.build.gradle.BasePlugin
-import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
 import com.android.build.gradle.api.BaseVariant
@@ -13,10 +11,10 @@ import org.gradle.api.plugins.ExtensionContainer
 
 class AndroidVariantApplier(val project: Project) {
 
-	fun applyAfterPluginConfigured(pluginClosure: Action<BasePlugin>) {
+	fun applyAfterPluginConfigured(pluginClosure: Action<Plugin<Project>>) {
 		val callback = Action { plugin: Plugin<*> ->
-			// withId ensures we have BasePlugin, so let's smart cast for further usage
-			plugin as BasePlugin
+			@Suppress("UNCHECKED_CAST") // withId ensures we have BasePlugin, so let's smart cast for further usage
+			plugin as Plugin<Project>
 			if (project.state.executed) {
 				// if state is executed the project has been evaluated so everything is already configured
 				// This is required because project.afterEvaluate is not executing Closure after this is true:
@@ -30,7 +28,8 @@ class AndroidVariantApplier(val project: Project) {
 		}
 		project.plugins.withId("com.android.application", callback)
 		project.plugins.withId("com.android.library", callback)
-		project.plugins.withId("com.android.feature", callback)
+		// These types of feature modules were deprecated and removed in AGP 4.x.
+		//project.plugins.withId("com.android.feature", callback)
 		project.plugins.withId("com.android.dynamic-feature", callback)
 		project.plugins.withId("com.android.test", callback)
 		if (ANDROID_GRADLE_PLUGIN_VERSION < "3.6.0") {
@@ -48,8 +47,9 @@ class AndroidVariantApplier(val project: Project) {
 			variantsClosure.execute(android.libraryVariants)
 		}
 		project.plugins.withId("com.android.feature") {
-			val android = project.extensions["android"] as FeatureExtension
-			variantsClosure.execute(android.libraryVariants)
+			// These types of feature modules were deprecated and removed in AGP 4.x.
+			//val android = project.extensions["android"] as FeatureExtension
+			//variantsClosure.execute(android.featureVariants)
 		}
 		project.plugins.withId("com.android.dynamic-feature") {
 			val android = project.extensions["android"] as AppExtension

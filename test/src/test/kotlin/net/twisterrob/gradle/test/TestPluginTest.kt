@@ -63,9 +63,14 @@ class TestPluginTest {
 				ivy {
 					// make /test/build/libs/X-0.0.jar available as 'net.twisterrob.gradle:X:0.0'
 					url '${artifactPath.replace("\\", "\\\\")}'
+					// Using layout(String, Closure) instead of patternLayout(Action) for backwards compatibility with Gradle 4.x
 					layout('pattern') {
 						artifact '[artifact]-[revision].[ext]'
 						m2compatible = true
+					}
+					// https://docs.gradle.org/nightly/userguide/upgrading_version_5.html#maven_or_ivy_repositories_are_no_longer_queried_for_artifacts_without_metadata_by_default
+					metadataSources {
+						artifact()
 					}
 				}
 				mavenCentral()

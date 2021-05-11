@@ -68,12 +68,63 @@ jobs:
         - ANDROID_PLUGIN_VERSION=3.5.4
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=28
+    - name: "Android Gradle Plugin 3.5.x, Gradle 6.x"
+      env:
+        - TEST_GRADLE_VERSION=6.7.1
+        - ANDROID_PLUGIN_VERSION=3.5.4
+        - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+        - ANDROID_INSTANT_API_LEVEL=28
     - name: "Android Gradle Plugin 3.6.x, Gradle 5.6.4+"
       env:
         - TEST_GRADLE_VERSION=5.6.4
         - ANDROID_PLUGIN_VERSION=3.6.4
         - ANDROID_BUILD_TOOLS_VERSION=28.0.3
         - ANDROID_INSTANT_API_LEVEL=28
+    - name: "Android Gradle Plugin 3.6.x, Gradle 6.x"
+      env:
+        - TEST_GRADLE_VERSION=6.7.1
+        - ANDROID_PLUGIN_VERSION=3.6.4
+        - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+        - ANDROID_INSTANT_API_LEVEL=28
+    - name: "Android Gradle Plugin 4.0.x, Gradle 6.1.1+"
+      env:
+        - TEST_GRADLE_VERSION=6.1.1
+        - ANDROID_PLUGIN_VERSION=4.0.2
+        - ANDROID_BUILD_TOOLS_VERSION=29.0.2
+        - ANDROID_INSTANT_API_LEVEL=29
+    - name: "Android Gradle Plugin 4.0.x, Gradle 6.x"
+      env:
+        - TEST_GRADLE_VERSION=6.7.1
+        - ANDROID_PLUGIN_VERSION=4.0.2
+        - ANDROID_BUILD_TOOLS_VERSION=29.0.2
+        - ANDROID_INSTANT_API_LEVEL=29
+    - name: "Android Gradle Plugin 4.1.x, Gradle 6.5+"
+      env:
+        - TEST_GRADLE_VERSION=6.5.1
+        - ANDROID_PLUGIN_VERSION=4.1.3
+        - ANDROID_BUILD_TOOLS_VERSION=29.0.2
+        - ANDROID_INSTANT_API_LEVEL=29
+    - name: "Android Gradle Plugin 4.1.x, Gradle 6.x"
+      env:
+        - TEST_GRADLE_VERSION=6.7.1
+        - ANDROID_PLUGIN_VERSION=4.1.3
+        - ANDROID_BUILD_TOOLS_VERSION=29.0.2
+        - ANDROID_INSTANT_API_LEVEL=29
+    - name: "Android Gradle Plugin 4.2.x, Gradle 6.7.1+"
+      env:
+        - TEST_GRADLE_VERSION=6.7.1
+        - ANDROID_PLUGIN_VERSION=4.2.0
+        - ANDROID_BUILD_TOOLS_VERSION=30.0.2
+        - ANDROID_INSTANT_API_LEVEL=30
+    - name: "Android Gradle Plugin 4.2.x, Gradle 6.x"
+      env:
+        - TEST_GRADLE_VERSION=6.9
+        - ANDROID_PLUGIN_VERSION=4.2.0
+        - ANDROID_BUILD_TOOLS_VERSION=30.0.2
+        - ANDROID_INSTANT_API_LEVEL=30
+
+before_install:
+  - yes | sdkmanager "platforms;android-30"
 
 android:
   licenses:
@@ -86,7 +137,8 @@ android:
     # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
     - android-$ANDROID_INSTANT_API_LEVEL
     # compileSdkVersion for almost all tests
-    - android-28
+    # Since 30 it is not enough to add a licence and list it here, also need to manually install it with sdkmanager.
+    - android-30
 
 before_cache:
   # Don't cache lock files to prevent breaking future builds
@@ -100,31 +152,19 @@ before_cache:
   - rm -fr $HOME/.gradle/wrapper/dists/gradle-*/*/gradle-*/docs
   - rm -fr $HOME/.gradle/wrapper/dists/gradle-*/*/gradle-*/src
 cache:
-  directories:
+  directories: # Most of them are disabled for now as it doesn't scale.
     # Prevent "Downloading https://services.gradle.org/distributions/gradle-4.2.1-all.zip"
     # Prevent "Unzipping /home/travis/.gradle/wrapper/dists/gradle-4.2.1-all/domrskppdhf3wtn5mziw0c2zr/gradle-4.2.1-all.zip"
-    - $HOME/.gradle/wrapper/dists/gradle-4.9-all/
-    - $HOME/.gradle/wrapper/dists/gradle-4.10.3-all/
-    - $HOME/.gradle/wrapper/dists/gradle-5.4.1-all/
-    - $HOME/.gradle/wrapper/dists/gradle-5.6.4-all/
+    #- $HOME/.gradle/wrapper/dists/gradle-5.6.4-all/
     # Prevent "Download https://repo1.maven.org/maven2/" during compilation
     - $HOME/.gradle/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during compilation
-    - $HOME/.gradle/caches/4.9/generated-gradle-jars/
-    - $HOME/.gradle/caches/4.10.3/generated-gradle-jars/
-    - $HOME/.gradle/caches/5.4.1/generated-gradle-jars/
-    - $HOME/.gradle/caches/5.6.4/generated-gradle-jars/
+    #- $HOME/.gradle/caches/5.6.4/generated-gradle-jars/
     # Prevent "Welcome to Gradle 4.9! Here are the highlights of this release:" in build log
-    - $HOME/.gradle/notifications/4.9/release-features.rendered
-    - $HOME/.gradle/notifications/4.10.3/release-features.rendered
-    - $HOME/.gradle/notifications/5.4.1/release-features.rendered
-    - $HOME/.gradle/notifications/5.6.4/release-features.rendered
+    #- $HOME/.gradle/notifications/5.6.4/release-features.rendered
     # Prevent "Download https://repo1.maven.org/maven2/" during test runs
-    - /tmp/.gradle-test-kit-travis/caches/modules-2/
+    #- /tmp/.gradle-test-kit-travis/caches/modules-2/
     # Prevent "Generating JAR file 'gradle-api-4.2.1.jar'" during test runs
-    - /tmp/.gradle-test-kit-travis/caches/4.9/generated-gradle-jars/
-    - /tmp/.gradle-test-kit-travis/caches/4.10.3/generated-gradle-jars/
-    - /tmp/.gradle-test-kit-travis/caches/5.4.1/generated-gradle-jars/
-    - /tmp/.gradle-test-kit-travis/caches/5.6.4/generated-gradle-jars/
+    #- /tmp/.gradle-test-kit-travis/caches/5.6.4/generated-gradle-jars/
     # Do not cache Android SDK, caching is done after SDK components are installed
     #- $ANDROID_HOME

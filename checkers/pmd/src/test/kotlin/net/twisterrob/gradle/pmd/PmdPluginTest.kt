@@ -96,15 +96,19 @@ class PmdPluginTest {
 			run(script, "pmdEach")
 		}
 
-		// these tasks are not generated because their modules are special
-		val exceptions = arrayOf(":test:pmdRelease")
+		val exceptions = arrayOf(
+			// These tasks are not generated because their modules are special.
+			":test:pmdRelease",
+			// :feature module is deprecated in AGP 4.x and support for it was removed.
+			*tasksIn(arrayOf(":feature", ":base"), "pmdEach", "pmdRelease", "pmdDebug")
+		)
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),
 			hasItems(*(tasksIn(modules, "pmdRelease", "pmdDebug") - exceptions))
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),
-			hasItems(*tasksIn(modules, "pmdEach"))
+			hasItems(*tasksIn(modules, "pmdEach") - exceptions)
 		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "pmdEach", "pmdRelease", "pmdDebug") - exceptions
@@ -227,9 +231,13 @@ class PmdPluginTest {
 
 		@Language("gradle")
 		val applyPmd = """
+			import org.gradle.util.GradleVersion
 			apply plugin: 'net.twisterrob.pmd'
 			pmd {
 				toolVersion = '5.6.1'
+				if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
+					incrementalAnalysis.set(false)
+				}
 			}
 			tasks.withType(${Pmd::class.java.name}) {
 				// output all violations to the console so that we can parse the results

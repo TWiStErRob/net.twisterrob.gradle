@@ -65,11 +65,15 @@ class PmdTaskTest_ConfigLocation {
 	private fun executeBuildAndVerifyMissingContentCheckWasRun() {
 		@Language("gradle")
 		val script = """
+			import org.gradle.util.GradleVersion
 			subprojects { // i.e. :module
 				apply plugin: 'net.twisterrob.pmd'
 				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
 				pmd {
 					toolVersion = '5.6.1' // Gradle 4.10.3
+					if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
+						incrementalAnalysis.set(false)
+					}
 				}
 				tasks.withType(${Pmd::class.java.name}) {
 					// output all violations to the console so that we can parse the results

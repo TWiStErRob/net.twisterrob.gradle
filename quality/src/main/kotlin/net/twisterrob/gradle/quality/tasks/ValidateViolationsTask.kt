@@ -30,7 +30,6 @@ open class ValidateViolationsTask : DefaultTask() {
 			QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
 			QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
 //			ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
-//			ViolationChecker("findbugs", FindBugs::class.java, Parser.FINDBUGS, {it.reports.xml.destination}),
 			LintReportGatherer("lintVariant", LintPerVariantTask::class.java),
 			LintReportGatherer("lint", LintGlobalTask::class.java)
 //			TestReportGatherer<>("test", Test)

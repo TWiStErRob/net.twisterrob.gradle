@@ -4,6 +4,7 @@ import com.android.build.gradle.tasks.LintBaseTask
 import com.android.build.gradle.tasks.LintGlobalTask
 import com.android.build.gradle.tasks.LintPerVariantTask
 import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
+import net.twisterrob.gradle.common.androidVariantName
 import net.twisterrob.gradle.common.htmlOutput
 import net.twisterrob.gradle.common.xmlOutput
 import org.gradle.api.Task
@@ -30,7 +31,7 @@ class LintReportGatherer<T>(
 
 	override fun getName(task: T): String = when (task) {
 		is LintGlobalTask -> ALL_VARIANTS_NAME
-		is LintPerVariantTask -> task.variantName
+		is LintPerVariantTask -> task.androidVariantName!!
 		else -> unsupported(task)
 	}
 
