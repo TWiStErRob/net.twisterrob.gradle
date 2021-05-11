@@ -1,5 +1,6 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
+    <option name="LINE_SEPARATOR" value="&#10;" />
     <option name="FORMATTER_TAGS_ENABLED" value="true" />
     <GroovyCodeStyleSettings>
       <option name="SPACE_WITHIN_LIST_OR_MAP" value="true" />
