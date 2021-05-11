@@ -1,9 +1,13 @@
 @file:JvmName("Utils")
 
 package net.twisterrob.gradle.common
-
+import com.android.build.gradle.internal.tasks.VariantAwareTask
+import com.android.build.gradle.internal.tasks.NonIncrementalGlobalTask
+import org.gradle.api.DefaultTask
 import com.android.SdkConstants
+import com.android.build.gradle.internal.tasks.BaseTask
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.tasks.AndroidVariantTask
 import com.android.build.gradle.tasks.LintBaseTask
 import com.android.build.gradle.tasks.LintFixTask
 import com.android.build.gradle.tasks.LintGlobalTask
@@ -73,15 +77,38 @@ private val LintBaseTask.isFatalOnly
 	get() = false
 
 /**
- * Workaround for 3.2 vs 3.3: [LintBaseTask] extended [AndroidVariantTask] in 3.2,
- * but not in 3.3 and the `variantName` property was moved to [LintPerVariantTask].
+ * Workaround for 3.2 vs 3.3+: [LintBaseTask] extended [AndroidVariantTask] in 3.2, but not in 3.3+.
+ * The `variantName` property was moved from [AndroidVariantTask] base class to [LintPerVariantTask].
  * Due to Kotlin limitations, cannot polyfill `variantName` (extension methods are compile time bound),
  * so introducing a separate property is a good compromise.
  * This only calls [LintPerVariantTask.variantName] when it actually exists.
+ * 3.1.4, 3.2.1:
+ *  * [AndroidVariantTask.variantName] : [DefaultTask]
+ *  * [LintPerVariantTask] : [LintBaseTask]
+ *  * [LintGlobalTask] : [LintBaseTask]
+ *  * [LintFixTask] (new in 3.2.0) : [LintBaseTask]
+ *  * [LintBaseTask] : `com.android.build.gradle.internal.tasks.AndroidBuilderTask`
+ *  * `AndroidBuilderTask` : [AndroidVariantTask]
+ * 3.3.3, 3.6.4, 4.0.0, 4.1.0:
+ *  * [AndroidVariantTask] : [DefaultTask], [VariantAwareTask.variantName]
+ *  * [LintPerVariantTask] : [LintBaseTask], [VariantAwareTask.variantName]
+ *  * [LintGlobalTask] : [LintBaseTask]
+ *  * [LintFixTask] : [LintBaseTask]
+ *  * [LintBaseTask] : [DefaultTask]
+ * 4.2.0:
+ *  * [AndroidVariantTask] : [BaseTask], [VariantAwareTask.variantName]
+ *  * [LintPerVariantTask] : [LintBaseTask], [VariantAwareTask.variantName]
+ *  * [LintGlobalTask] : [LintBaseTask]
+ *  * [LintFixTask] : [LintBaseTask]
+ *  * [LintBaseTask] : [NonIncrementalGlobalTask]
+ *  * [NonIncrementalGlobalTask] : [BaseTask], [VariantAwareTask.variantName] = ""
+ *  * [BaseTask] : [DefaultTask]
  */
+@Suppress("USELESS_IS_CHECK") // LintBaseTask : VariantAwareTask was historically not true.
 val LintBaseTask.androidVariantName: String?
 	get() = when (this) {
-		is LintPerVariantTask -> variantName
+		is VariantAwareTask -> variantName // >=3.3
+		is AndroidVariantTask -> variantName // <3.3
 		is LintGlobalTask -> null
 		is LintFixTask -> null
 		else -> null
