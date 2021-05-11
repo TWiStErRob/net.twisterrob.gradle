@@ -48,24 +48,30 @@ class BuildResultExtensionsTest {
 	}
 
 	@Test fun failReason() {
-		assertEquals(mockResult.failReason,
-				"Task 'checkstyle' is ambiguous in root project 'temp'."
-						+ " Candidates are: 'checkstyleMain', 'checkstyleTest'.")
+		assertEquals(
+			mockResult.failReason,
+			"Task 'checkstyle' is ambiguous in root project 'temp'."
+					+ " Candidates are: 'checkstyleMain', 'checkstyleTest'."
+		)
 	}
 
 	@Test fun failSuggestion() {
-		assertEquals(mockResult.failSuggestion,
-				"Run gradle tasks to get a list of available tasks."
-						+ " Run with --info or --debug option to get more log output.")
+		assertEquals(
+			mockResult.failSuggestion,
+			"Run gradle tasks to get a list of available tasks."
+					+ " Run with --info or --debug option to get more log output."
+		)
 	}
 
 	@Test fun fullException() {
-		assertEquals(mockResult.fullException, "org.gradle.execution.TaskSelectionException:"
-				+ " Task 'checkstyle' is ambiguous in root project 'temp'."
-				+ " Candidates are: 'checkstyleMain', 'checkstyleTest'." + NL
-				+ "\tat org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:116)" + NL
-				+ "\tat org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:81)" + NL
-				+ "\tat org.gradle.execution.commandline.CommandLineTaskParser.parseTasks(CommandLineTaskParser.java:42)"
+		assertEquals(
+			mockResult.fullException,
+			"org.gradle.execution.TaskSelectionException:"
+					+ " Task 'checkstyle' is ambiguous in root project 'temp'."
+					+ " Candidates are: 'checkstyleMain', 'checkstyleTest'." + NL
+					+ "\tat org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:116)" + NL
+					+ "\tat org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:81)" + NL
+					+ "\tat org.gradle.execution.commandline.CommandLineTaskParser.parseTasks(CommandLineTaskParser.java:42)"
 		)
 	}
 }

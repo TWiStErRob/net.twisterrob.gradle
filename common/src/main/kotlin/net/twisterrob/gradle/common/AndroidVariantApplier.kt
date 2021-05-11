@@ -71,9 +71,10 @@ class AndroidVariantApplier(val project: Project) {
 	 * {@code after} is not really after all items have been processed.
 	 */
 	fun applyAll(
-			variantClosure: Action<in BaseVariant>,
-			before: Action<Variants> = NOOP,
-			after: Action<Variants> = NOOP) {
+		variantClosure: Action<in BaseVariant>,
+		before: Action<Variants> = NOOP,
+		after: Action<Variants> = NOOP
+	) {
 		apply(Action { variants: Variants ->
 			before.execute(variants)
 			variants.all(variantClosure)

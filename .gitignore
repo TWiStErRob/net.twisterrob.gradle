@@ -8,6 +8,8 @@ out/
 # IDEA Project files
 .idea/
 !/.idea/misc.xml
+!/.idea/codeStyles/
+!/.idea/inspectionProfiles/
 *.iml
 *.ipr
 *.iws

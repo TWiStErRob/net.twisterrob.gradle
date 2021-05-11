@@ -1,4 +1,3 @@
-
 import Libs.Kotlin.replaceKotlinJre7WithJdk7
 import Libs.Kotlin.replaceKotlinJre8WithJdk8
 import org.gradle.api.tasks.testing.TestOutputEvent.Destination

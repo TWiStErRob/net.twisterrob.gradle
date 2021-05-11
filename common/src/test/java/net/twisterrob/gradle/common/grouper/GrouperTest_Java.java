@@ -6,17 +6,15 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.google.common.collect.ImmutableMap;
-
 import net.twisterrob.gradle.common.grouper.TFO.E;
 import net.twisterrob.gradle.common.grouper.TFO.F;
 import net.twisterrob.gradle.common.grouper.TFO.G;
+import org.jetbrains.annotations.NotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("RedundantTypeArguments")
 public class GrouperTest_Java {
 
 	@Test public void groupOn1Level() {

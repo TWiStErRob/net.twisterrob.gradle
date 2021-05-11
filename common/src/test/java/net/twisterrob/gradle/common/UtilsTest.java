@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 public class UtilsTest {
 
@@ -56,13 +55,13 @@ public class UtilsTest {
 			@Test public void addValueToValueBuiltIn() {
 				Integer result = VALUE + VALUE2;
 
-				assertEquals((Integer)11, result);
+				assertEquals((Integer) 11, result);
 			}
 
 			@Test public void addValueToValue() {
 				Integer result = Utils.safeAdd(VALUE, VALUE2);
 
-				assertEquals((Integer)(VALUE + VALUE2), result);
+				assertEquals((Integer) (VALUE + VALUE2), result);
 			}
 		}
 	}
@@ -75,7 +74,7 @@ public class UtilsTest {
 			Collector<Integer, ?, Integer> sut = Utils.nullSafeSum();
 			Integer result = input.stream().collect(sut);
 
-			assertEquals((Integer)(5 + 6 + 7 + 8), result);
+			assertEquals((Integer) (5 + 6 + 7 + 8), result);
 		}
 
 		@Test public void sumNulls() {
@@ -84,17 +83,17 @@ public class UtilsTest {
 			Collector<Integer, ?, Integer> sut = Utils.nullSafeSum();
 			Integer result = input.stream().collect(sut);
 
-			assertEquals(null, result);
+			assertNull(result);
 		}
 
 		@Test public void sumStringLengths() {
 			List<String> input = Arrays.asList(null, "1", "12", null, "123", null, null, "1234", null);
-			Function<String, Integer> safeLength = s -> s != null? s.length() : null; // s?.length()
+			Function<String, Integer> safeLength = s -> s != null ? s.length() : null; // s?.length()
 
 			Collector<String, ?, Integer> sut = Utils.nullSafeSum(safeLength);
 			Integer result = input.stream().collect(sut);
 
-			assertEquals((Integer)(1 + 2 + 3 + 4), result);
+			assertEquals((Integer) (1 + 2 + 3 + 4), result);
 		}
 	}
 }

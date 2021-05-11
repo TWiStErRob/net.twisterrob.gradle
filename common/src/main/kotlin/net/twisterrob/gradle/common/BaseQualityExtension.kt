@@ -7,8 +7,8 @@ import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.util.PatternSet
 
 open class BaseQualityExtension<T>(
-		private val project: Project,
-		internal var taskConfigurator: Action<TaskConfigurator<T>> = Action {}
+	private val project: Project,
+	internal var taskConfigurator: Action<TaskConfigurator<T>> = Action {}
 ) where T : SourceTask {
 
 	fun taskConfigurator(closure: Action<TaskConfigurator<T>>) {
@@ -24,8 +24,8 @@ class TaskConfigurator<out T>(val task: T) where T : SourceTask {
 	fun excludeExcept(basePrefix: String, vararg relativeExceptions: String) {
 		val exactException = PatternMatcherFactory.compile(true, "${basePrefix}/*")
 		val exceptions = PatternSet()
-				.include("${basePrefix}/*")
-				.exclude(relativeExceptions.map { "${basePrefix}/${it}" })
+			.include("${basePrefix}/*")
+			.exclude(relativeExceptions.map { "${basePrefix}/${it}" })
 		task.source.matching(exceptions).visit {
 			if (it.isDirectory && exactException.matches(it.relativePath.segments, 0)) {
 				task.exclude(it.relativePath.pathString + "/**")

@@ -13,14 +13,14 @@ class LocationViewModel(violation: Violation) {
 	val modulePath: String get() = module.path
 
 	val modulePrefix: String
-		get() = when {
-			module.path == ":" -> ""
+		get() = when (module.path) {
+			":" -> ""
 			else -> module.path.substring(0, module.path.length - module.name.length - 1)
 		}
 
 	val moduleName: String
-		get() = when {
-			module.path == ":" -> ""
+		get() = when (module.path) {
+			":" -> ""
 			else -> module.name
 		}
 

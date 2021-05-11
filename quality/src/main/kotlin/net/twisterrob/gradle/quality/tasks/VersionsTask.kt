@@ -15,11 +15,13 @@ open class VersionsTask : DefaultTask() {
 	@Suppress("unused")
 	@TaskAction
 	fun printVersions() {
-		println("""
+		println(
+			"""
 			Gradle version: ${project.gradle.gradleVersion}
 			Checkstyle version: ${getVersion("checkstyle", CheckstyleExtension::class.java)}
 			PMD version: ${getVersion("pmd", PmdExtension::class.java)}
-		""".trimIndent())
+			""".trimIndent()
+		)
 	}
 
 	private fun getVersion(pluginName: String, type: Class<out CodeQualityExtension>) =

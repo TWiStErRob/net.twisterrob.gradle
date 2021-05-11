@@ -42,7 +42,7 @@ class HtmlReportTaskTest {
 		val checks = listOf(
 			"Autofill",
 			"IconMissingDensityFolder",
-			"IconXmlAndPng",
+			"UnusedIds",
 			"UnusedResources"
 		)
 		gradle.basedOn("android-root_app")
@@ -74,7 +74,7 @@ class HtmlReportTaskTest {
 
 	@Test fun `task is up-to-date when lint results are unchanged`() {
 		gradle.basedOn("android-root_app")
-		gradle.basedOn("lint-IconXmlAndPng")
+		gradle.basedOn("lint-UnusedIds")
 		gradle.basedOn("lint-UnusedResources")
 		@Language("gradle")
 		val script = """
@@ -83,7 +83,7 @@ class HtmlReportTaskTest {
 
 			android.lintOptions {
 				//noinspection GroovyAssignabilityCheck
-				check = ['IconXmlAndPng', 'UnusedResources']
+				check = ['UnusedIds', 'UnusedResources']
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()

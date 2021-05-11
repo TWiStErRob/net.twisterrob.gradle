@@ -6,16 +6,16 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.SourceTask
 
 open class BaseQualityPlugin(
-		private val taskCreatorType: Class<out VariantTaskCreator<*>>,
-		private val extensionName: String,
-		private val extensionType: Class<out BaseQualityExtension<out SourceTask>>
+	private val taskCreatorType: Class<out VariantTaskCreator<*>>,
+	private val extensionName: String,
+	private val extensionType: Class<out BaseQualityExtension<out SourceTask>>
 ) : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
 
 		val quality = project.extensions.findByName("quality") as ExtensionAware?
-				?: project.extensions.create("quality", FakeQualityExtension::class.java) as ExtensionAware
+			?: project.extensions.create("quality", FakeQualityExtension::class.java) as ExtensionAware
 		quality.extensions.create(extensionName, extensionType, project)
 
 		// level of indirection with base is to prevent loading classes in project not having Android
@@ -27,6 +27,6 @@ open class BaseQualityPlugin(
 }
 
 private inline fun <T, reified P1> Class<T>.newInstance(p1: P1?): T =
-		this.getDeclaredConstructor(P1::class.java).newInstance(p1)
+	this.getDeclaredConstructor(P1::class.java).newInstance(p1)
 
 private open class FakeQualityExtension

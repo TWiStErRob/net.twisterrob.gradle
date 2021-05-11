@@ -12,13 +12,11 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.codehaus.groovy.runtime.NullObject;
-
-import static org.codehaus.groovy.runtime.DefaultGroovyMethods.plus;
-
 import groovy.lang.GroovyObjectSupport;
 import groovy.lang.MissingPropertyException;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import static org.codehaus.groovy.runtime.DefaultGroovyMethods.plus;
+import org.codehaus.groovy.runtime.NullObject;
 
 /**
  * A grouper for uniform lists. Non-uniform lists may misbehave depending on order due to
@@ -58,7 +56,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 	@Override
 	@SuppressWarnings("unchecked")
 	public @Nonnull Grouper<K, Map<?, V>> getAt(@Nonnull String fieldName) {
-		return (Grouper<K, Map<?, V>>)super.getAt(fieldName);
+		return (Grouper<K, Map<?, V>>) super.getAt(fieldName);
 	}
 
 	@SuppressWarnings("EmptyMethod") // Groovy needs this
@@ -77,7 +75,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 			Function access = obj -> DefaultGroovyMethods.getAt(obj, field);
 			collectors = Collectors.groupingBy(access, LinkedHashMap::new, collectors);
 		}
-		return (Map)list.stream().collect(collectors);
+		return (Map) list.stream().collect(collectors);
 	}
 
 	@Override
@@ -105,7 +103,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 
 		@SuppressWarnings("unchecked")
 		public @Nonnull List<T> getList() {
-			return (List<T>)list;
+			return (List<T>) list;
 		}
 
 		@Override
@@ -115,13 +113,13 @@ public class Grouper<K, V> extends AbstractGrouper {
 
 		@SuppressWarnings("unchecked")
 		public @Nonnull <R> Counter<T, R> count() {
-			return new Counter<>(getList(), representative, (Collector<T, ?, R>)finalCollector);
+			return new Counter<>(getList(), representative, (Collector<T, ?, R>) finalCollector);
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
 		public @Nonnull Grouper<?, List<T>> getAt(@Nonnull String fieldName) {
-			return (Grouper<?, List<T>>)super.getAt(fieldName);
+			return (Grouper<?, List<T>>) super.getAt(fieldName);
 		}
 
 		@SuppressWarnings("EmptyMethod") // Groovy needs this
@@ -148,7 +146,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 		@SuppressWarnings("unchecked")
 		@Override
 		public @Nonnull Grouper<?, R> getAt(@Nonnull String fieldName) {
-			return (Grouper<?, R>)super.getAt(fieldName);
+			return (Grouper<?, R>) super.getAt(fieldName);
 		}
 
 		@SuppressWarnings("EmptyMethod") // Groovy needs this
