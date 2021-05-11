@@ -123,6 +123,9 @@ jobs:
         - ANDROID_BUILD_TOOLS_VERSION=30.0.2
         - ANDROID_INSTANT_API_LEVEL=30
 
+before_install:
+  - yes | sdkmanager "platforms;android-30"
+
 android:
   licenses:
     - android-sdk-license-.+
@@ -134,6 +137,7 @@ android:
     # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
     - android-$ANDROID_INSTANT_API_LEVEL
     # compileSdkVersion for almost all tests
+    # Since 30 it is not enough to add a licence and list it here, also need to manually install it with sdkmanager.
     - android-30
 
 before_cache:
