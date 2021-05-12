@@ -1,9 +1,9 @@
 name: Check Gradle and AGP combinations
-on:
-  push:
-    branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+on: [push]
+#  push:
+#    branches: [ $default-branch ]
+#  pull_request:
+#    branches: [ $default-branch ]
 jobs:
   check:
     runs-on: ubuntu-latest
