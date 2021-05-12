@@ -29,7 +29,6 @@ jobs:
       # To run specific test, replace `check tests` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
       - name: ${{ matrix.name }}
         run: >
-          echo
           ./gradlew
           --no-daemon
           --no-build-cache
