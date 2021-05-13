@@ -41,21 +41,23 @@ jobs:
 
       - name: Download Gradle 5.6.4 running the build.
         run: |
-          mkdir --parents --verbose ~/.gradle/notifications/5.6.4
-          touch ~/.gradle/notifications/5.6.4/release-features.rendered
+          # Prevent "Welcome to Gradle ${{ matrix.gradle }}! Here are the highlights of this release:" in build log
+          #mkdir --parents --verbose ~/.gradle/notifications/5.6.4
+          #touch ~/.gradle/notifications/5.6.4/release-features.rendered
+          # Run a no-op gradlew command in workspace.
           ./gradlew --no-daemon --no-build-cache --version
 
       - name: Download Gradle ${{ matrix.gradle }} running the tests.
         run: |
           # Prevent "Welcome to Gradle ${{ matrix.gradle }}! Here are the highlights of this release:" in build log
-          mkdir --parents --verbose ~/.gradle/notifications/${{ matrix.gradle }}
-          touch ~/.gradle/notifications/${{ matrix.gradle }}/release-features.rendered
+          #mkdir --parents --verbose ~/.gradle/notifications/${{ matrix.gradle }}
+          #touch ~/.gradle/notifications/${{ matrix.gradle }}/release-features.rendered
           # Create an empty project with wrapper using ${{ matrix.gradle }}.
           mkdir ~/gradle-${{ matrix.gradle }}
           cd ~/gradle-${{ matrix.gradle }}
           touch settings.gradle
           ${{ github.workspace }}/gradlew wrapper --gradle-version ${{ matrix.gradle }} --distribution-type all --quiet
-          # Run empty project.
+          # Run a no-op gradlew command in an empty project with a specific wrapper version.
           ./gradlew --no-daemon --no-build-cache --version
 
       - name: Check Android Gradle Plugin ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}.
