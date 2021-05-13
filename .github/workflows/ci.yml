@@ -57,7 +57,7 @@ jobs:
           # Run a no-op gradlew command in an empty project with a specific wrapper version.
           ./gradlew --no-daemon --version
 
-      - name: Check Android Gradle Plugin ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}.
+      - name: Check ${{ env.JOB_NAME }}.
         # To run specific test, replace `check tests` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
         run: >
           ./gradlew
