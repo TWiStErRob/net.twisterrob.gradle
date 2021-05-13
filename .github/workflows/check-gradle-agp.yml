@@ -8,7 +8,7 @@ jobs:
   check:
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
-    if: matrix.smoke
+    if: ${{ matrix.smoke }}
     env:
       # see https://developer.android.com/studio/releases/gradle-plugin#updating-gradle
       TEST_GRADLE_VERSION: ${{ matrix.gradle }}
