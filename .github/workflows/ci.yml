@@ -6,9 +6,11 @@ on: [ push ]
 #    branches: [ $default-branch ]
 jobs:
   check:
-    name: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
+    name: ${{ env.JOB_NAME }}
     runs-on: ubuntu-latest
     env:
+      # Cannot access ${{ job.name }} so create own.
+      JOB_NAME: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
       # see https://developer.android.com/studio/releases/gradle-plugin#updating-gradle
       TEST_GRADLE_VERSION: ${{ matrix.gradle }}
       ANDROID_PLUGIN_VERSION: ${{ matrix.agp }}
@@ -17,32 +19,7 @@ jobs:
       ANDROID_INSTANT_API_LEVEL: ${{ matrix.instant-api }}
 
     steps:
-      - run: echo "Running in response to a ${{ github.event_name }} event."
-
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump job context
-        env:
-          JOB_CONTEXT: ${{ toJSON(job) }}
-        run: echo "$JOB_CONTEXT"
-      - name: Dump steps context
-        env:
-          STEPS_CONTEXT: ${{ toJSON(steps) }}
-        run: echo "$STEPS_CONTEXT"
-      - name: Dump runner context
-        env:
-          RUNNER_CONTEXT: ${{ toJSON(runner) }}
-        run: echo "$RUNNER_CONTEXT"
-      - name: Dump strategy context
-        env:
-          STRATEGY_CONTEXT: ${{ toJSON(strategy) }}
-        run: echo "$STRATEGY_CONTEXT"
-      - name: Dump matrix context
-        env:
-          MATRIX_CONTEXT: ${{ toJSON(matrix) }}
-        run: echo "$MATRIX_CONTEXT"
+      - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
 
       - name: Set up JDK 1.8.
         uses: actions/setup-java@v1
@@ -98,32 +75,32 @@ jobs:
           -Pnet.twisterrob.test.android.pluginVersion=$ANDROID_PLUGIN_VERSION
           -Pnet.twisterrob.gradle.runner.gradleVersion=$TEST_GRADLE_VERSION
 
-      - name: Upload "AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} Test Results XMLs".
+      - name: Upload "${{ env.JOB_NAME }} Test Results XMLs".
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} Test Results XMLs
+          name: ${{ env.JOB_NAME }} Test Results XMLs
           path: ${{ github.workspace }}/**/build/test-results/test/TEST-*.xml
 
-      - name: Upload "AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} Test Results HTML".
+      - name: Upload "${{ env.JOB_NAME }} Test Results HTML".
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} Test Results HTML
+          name: ${{ env.JOB_NAME }} Test Results HTML
           path: ${{ github.workspace }}/build/reports/tests/all/
 
-      - name: Upload "AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} Test Results HTMLs".
+      - name: Upload "${{ env.JOB_NAME }} Test Results HTMLs".
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} Test Results HTMLs
+          name: ${{ env.JOB_NAME }} Test Results HTMLs
           path: ${{ github.workspace }}/**/build/reports/tests/test/
 
-      - name: Upload "AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} JARs".
+      - name: Upload "${{ env.JOB_NAME }} JARs".
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} JARs
+          name: ${{ env.JOB_NAME }} JARs
           path: ${{ github.workspace }}/**/build/libs/*.jar
 
     strategy:
