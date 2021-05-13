@@ -6,7 +6,8 @@ on: [ push ]
 #    branches: [ $default-branch ]
 jobs:
   check:
-    name: ${{ env.JOB_NAME }}
+    # Cannot access ${{ env.JOB_NAME }}, so need to duplicate.
+    name: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
     runs-on: ubuntu-latest
     env:
       # Cannot access ${{ job.name }} so create own.
