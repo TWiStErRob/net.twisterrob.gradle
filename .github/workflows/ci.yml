@@ -1,5 +1,5 @@
-name: Check Gradle and AGP combinations
-on: [push]
+name: CI # Check Gradle and AGP combinations
+on: [ push ]
 #  push:
 #    branches: [ $default-branch ]
 #  pull_request:
@@ -15,20 +15,53 @@ jobs:
       ANDROID_BUILD_TOOLS_VERSION: ${{ matrix.build-tools }}
       # see android-all_kinds/build.gradle for more info
       ANDROID_INSTANT_API_LEVEL: ${{ matrix.instant-api }}
+
     steps:
       - run: echo "Running in response to a ${{ github.event_name }} event."
+
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
+#        with: # Not actually supported properties "licenses" and "components", here for history from travis.yml.
+#          licenses:
+#            - android-sdk-license-.+
+#          components:
+#            - tools
+#            - platform-tools
+#            # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
+#            - build-tools-${{ matrix.build-tools }}
+#            # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
+#            - android-${{ matrix.instant-api }}
+#            # compileSdkVersion for almost all tests, may need an extra `yes | sdkmanager "platforms;android-30"` step.
+#            - android-30
+
       - name: Check out ${{ github.ref }} branch in ${{ github.repository }} repository
         uses: actions/checkout@v2
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      # To run specific test, replace `check tests` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
+
+      - name: Download Gradle 5.6.4 running the build.
+        run: |
+          touch ~/.gradle/notifications/5.6.4/release-features.rendered
+          chmod +x gradlew
+          ./gradlew --no-daemon --no-build-cache --version
+
+      - name: Download Gradle ${{ matrix.gradle }} running the tests.
+        run: |
+          # Prevent "Welcome to Gradle ${{ matrix.gradle }}! Here are the highlights of this release:" in build log
+          touch ~/.gradle/notifications/${{ matrix.gradle }}/release-features.rendered
+          # Create an empty project with wrapper using ${{ matrix.gradle }}.
+          mkdir ~/gradle-${{ matrix.gradle }}
+          cd ~/gradle-${{ matrix.gradle }}
+          touch settings.gradle
+          ${{ github.workspace }}/gradlew wrapper --gradle-version ${{ matrix.gradle }} --distribution-type all --quiet
+          # Run empty project.
+          ./gradlew --no-daemon --no-build-cache --version
+
       - name: Check Android Gradle Plugin ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
+        # To run specific test, replace `check tests` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
         run: >
           ./gradlew
           --no-daemon
@@ -38,12 +71,35 @@ jobs:
           -PverboseReports
           -Pnet.twisterrob.test.android.pluginVersion=$ANDROID_PLUGIN_VERSION
           -Pnet.twisterrob.gradle.runner.gradleVersion=$TEST_GRADLE_VERSION
-      - name: Upload Unit Test Results
+
+      - name: Upload Unit Test Results XMLs
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: Test Results (AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }})
+          name: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} Test Results XMLs
           path: ${{ github.workspace }}/**/build/test-results/test/TEST-*.xml
+
+      - name: Upload Unit Test Results HTML
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} Test Results HTML
+          path: ${{ github.workspace }}/build/reports/tests/all/
+
+      - name: Upload Unit Test Results HTMLs
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} Test Results HTMLs
+          path: ${{ github.workspace }}/**/build/reports/tests/test/
+
+      - name: Upload JARs
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }} JARs
+          path: ${{ github.workspace }}/**/build/libs/*.jar
+
     strategy:
       matrix:
         #gradle: []
@@ -51,6 +107,16 @@ jobs:
         #build-tools: []
         #instant-api: []
         include:
+#           - name: "Android Gradle Plugin 3.0.x, Gradle 4.1+"
+#             gradle: 4.2.1
+#             agp: 3.0.1
+#             build-tools: 26.0.3
+#             instant-api: 26
+#           - name: "Android Gradle Plugin 3.1.x, Gradle 4.4+"
+#             gradle: 4.9
+#             agp: 3.1.4
+#             build-tools: 27.0.3
+#             instant-api: 26
 #           - name: "Android Gradle Plugin 3.1.x, Gradle 4.4+"
 #             gradle: 4.9
 #             agp: 3.1.4
@@ -126,6 +192,8 @@ jobs:
             agp: 4.2.0
             build-tools: 30.0.2
             instant-api: 30
+
+  # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
     name: "Publish Unit Tests Results"
     runs-on: ubuntu-latest
@@ -137,7 +205,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: artifacts
+
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: artifacts
+
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
-          files: artifacts/**/*.xml
+          files: artifacts/* Test Results XMLs/**/*.xml

@@ -187,9 +187,9 @@ allprojects {
 				fun fold(type: String, condition: Boolean, output: () -> Unit) {
 					val id = descriptor.toString().hashCode().absoluteValue
 					if (condition) {
-						println("travis_fold:start:test_${type}_${id}")
+						println("::group::test_${type}_${id}")
 						output()
-						println("travis_fold:end:test_${type}_${id}")
+						println("::endgroup::test_${type}_${id}")
 					}
 				}
 				println("${descriptor.className} > ${descriptor.name} ${result.resultType}")
