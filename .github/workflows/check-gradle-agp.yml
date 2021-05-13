@@ -43,7 +43,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: Test Results (AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle })
+          name: Test Results (AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }})
           path: ${GITHUB_WORKSPACE}/**/build/test-results/test/TEST-*.xml
     strategy:
       matrix:
