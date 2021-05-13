@@ -11,12 +11,6 @@ jobs:
     env:
       # Cannot access ${{ job.name }} so create own.
       JOB_NAME: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
-      # see https://developer.android.com/studio/releases/gradle-plugin#updating-gradle
-      TEST_GRADLE_VERSION: ${{ matrix.gradle }}
-      ANDROID_PLUGIN_VERSION: ${{ matrix.agp }}
-      ANDROID_BUILD_TOOLS_VERSION: ${{ matrix.build-tools }}
-      # see android-all_kinds/build.gradle for more info
-      ANDROID_INSTANT_API_LEVEL: ${{ matrix.instant-api }}
 
     steps:
       - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
@@ -71,9 +65,9 @@ jobs:
           --no-build-cache
           --stacktrace
           check tests
-          -PverboseReports
-          -Pnet.twisterrob.test.android.pluginVersion=$ANDROID_PLUGIN_VERSION
-          -Pnet.twisterrob.gradle.runner.gradleVersion=$TEST_GRADLE_VERSION
+          -Pnet.twisterrob.gradle.build.verboseReports=true
+          -Pnet.twisterrob.test.android.pluginVersion=${{ matrix.agp }}
+          -Pnet.twisterrob.gradle.runner.gradleVersion=${{ matrix.gradle }}
 
       - name: Upload "${{ env.JOB_NAME }} Test Results XMLs".
         if: always()
@@ -105,9 +99,13 @@ jobs:
 
     strategy:
       matrix:
+        # See https://developer.android.com/studio/releases/gradle-plugin#updating-gradle.
         #gradle: []
+        # See https://developer.android.com/studio/releases/gradle-plugin.
         #agp: []
+        # See https://developer.android.com/studio/releases/build-tools#notes.
         #build-tools: []
+        # See android-all_kinds/build.gradle for more info.
         #instant-api: []
         include:
           #- name: "Android Gradle Plugin 3.0.x, Gradle 4.1+"

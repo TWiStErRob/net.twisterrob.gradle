@@ -154,7 +154,7 @@ allprojects {
 		}
 	}
 
-	if (project.hasProperty("verboseReports")) {
+	if (project.property("net.twisterrob.gradle.build.verboseReports").toString().toBoolean()) {
 		tasks.withType<Test> {
 			testLogging {
 				// disable all events, output handled by custom callbacks below
