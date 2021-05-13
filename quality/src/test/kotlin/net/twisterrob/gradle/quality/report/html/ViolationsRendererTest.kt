@@ -7,7 +7,6 @@ import kotlin.test.assertEquals
 
 class ViolationsRendererTest {
 
-	@DisabledIfEnvironmentVariable(named = "CI", matches = "true") // see #72
 	@Test fun `renderXml writes preamble`() {
 		val out = StringWriter()
 		out.xmlWriter().use { renderXml(it, emptyMap(), "", "some/path/to.xsl") }
@@ -22,7 +21,6 @@ class ViolationsRendererTest {
 		)
 	}
 
-	@DisabledIfEnvironmentVariable(named = "CI", matches = "true") // see #72
 	@Test fun `renderXml writes preamble without stylesheet`() {
 		val out = StringWriter()
 		out.xmlWriter().use { renderXml(it, emptyMap(), "") }
@@ -36,7 +34,6 @@ class ViolationsRendererTest {
 		)
 	}
 
-	@DisabledIfEnvironmentVariable(named = "CI", matches = "true") // see #72
 	@Test fun `renderXml writes project name on root`() {
 		val out = StringWriter()
 		out.xmlWriter().use { renderXml(it, emptyMap(), "project name") }
