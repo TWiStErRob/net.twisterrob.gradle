@@ -1,7 +1,5 @@
-<!--
-[![](https://github.com/twisterrob/net.twisterrob.gradle/workflows/Continuous%20Integration/badge.svg)](
-https://github.com/twisterrob/net.twisterrob.gradle/actions?query=workflow%3A%22Continuous+Integration%22)
--->
+[![](https://github.com/TWiStErRob/net.twisterrob.gradle/actions/workflows/CI.yml/badge.svg)](
+https://github.com/TWiStErRob/net.twisterrob.gradle/actions?query=workflow%3A%22CI%22)
 [![](https://img.shields.io/github/v/release/twisterrob/net.twisterrob.gradle)](
 https://github.com/TWiStErRob/net.twisterrob.gradle/releases)
 [![](https://img.shields.io/maven-central/v/net.twisterrob.gradle/twister-quality)](
