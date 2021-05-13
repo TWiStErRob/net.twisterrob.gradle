@@ -5,31 +5,6 @@ on: [push]
 #  pull_request:
 #    branches: [ $default-branch ]
 jobs:
-  demo:
-   runs-on: ubuntu-latest
-   steps:
-     - run: |
-         echo "::group::Outer 1"
-         echo "Outer 1 line 1"
-         echo "::group::Inner 1"
-         echo "Inner line 1"
-         echo "::endgroup::"
-         echo "::group::Inner 2"
-         echo "Inner line 2"
-         echo "::endgroup::"
-         echo "Outer 1 line 2"
-         echo "::endgroup::"
-
-         echo "::group::Outer 2"
-         echo "Outer 2 line 1"
-         echo "::group::Inner 3"
-         echo "Inner line 3"
-         echo "::endgroup::Inner 3"
-         echo "::group::Inner 4"
-         echo "Inner line 4"
-         echo "::endgroup::Inner 4"
-         echo "Outer 2 line 2"
-         echo "::endgroup::Outer 2"
   check:
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
@@ -68,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Test Results (AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }})
-          path: ${GITHUB_WORKSPACE}/**/build/test-results/test/TEST-*.xml
+          path: ${{ GITHUB_WORKSPACE }}/**/build/test-results/test/TEST-*.xml
     strategy:
       matrix:
         #gradle: []
