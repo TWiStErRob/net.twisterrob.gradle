@@ -45,7 +45,7 @@ jobs:
       - name: Download Gradle 5.6.4 running the build.
         run: |
           # Run a no-op gradlew command in workspace.
-          ./gradlew --no-daemon --no-build-cache --version
+          ./gradlew --no-daemon --version
 
       - name: Download Gradle ${{ matrix.gradle }} running the tests.
         run: |
@@ -55,7 +55,7 @@ jobs:
           touch settings.gradle
           ${{ github.workspace }}/gradlew wrapper --gradle-version ${{ matrix.gradle }} --distribution-type all --quiet
           # Run a no-op gradlew command in an empty project with a specific wrapper version.
-          ./gradlew --no-daemon --no-build-cache --version
+          ./gradlew --no-daemon --version
 
       - name: Check Android Gradle Plugin ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}.
         # To run specific test, replace `check tests` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
