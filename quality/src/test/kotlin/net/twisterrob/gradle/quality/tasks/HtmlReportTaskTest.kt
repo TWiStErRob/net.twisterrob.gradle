@@ -185,7 +185,7 @@ class HtmlReportTaskTest {
 					 * 10000 violations used 333MB
 					 * These follow a linear trend and 1MB is capable of holding ~{@value} violations.
 					 */ 
-					double multiplier = 31
+					double multiplier = 30
 					def xml = lint.lintOptions.xmlOutput
 					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
 					xml.withWriterAppend { writer ->
