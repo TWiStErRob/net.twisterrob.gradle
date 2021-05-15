@@ -172,12 +172,35 @@ class HtmlReportTaskTest {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
+			@SuppressWarnings("GroovyUnusedAssignment")
 			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
 				doFirst {
+					/**
+					 * Calculated based on empirical measurements with -Xmx3G.
+					 * 500 violations used 19MB
+					 * 1000 violations used 33MB
+					 * 2000 violations used 67MB
+					 * 3000 violations used 100MB
+					 * 5000 violations used 166MB
+					 * 10000 violations used 333MB
+					 * These follow a linear trend and 1MB is capable of holding ~{@value} violations.
+					 */ 
+					double multiplier = 31
 					def xml = lint.lintOptions.xmlOutput
 					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
 					xml.withWriterAppend { writer ->
-						1500.times {
+						Runtime runtime = Runtime.getRuntime()
+						long potentialFreeB = runtime.freeMemory() + (runtime.maxMemory() - runtime.totalMemory())
+						long potentialFreeMB = (long)(potentialFreeB / 1024 / 1024)
+						long totalMB = (long)(runtime.totalMemory() / 1024 / 1024)
+						long maxMB = (long)(runtime.maxMemory() / 1024 / 1024)
+						int count = (potentialFreeMB * multiplier).toInteger()
+						println("There's ${'$'}{potentialFreeMB}MB free out of ${'$'}{maxMB}MB (${'$'}{totalMB}MB allocated).")
+						println("Generating ${'$'}{count} lint violations.")
+						if (count < 1000) {
+							throw new IllegalStateException("Bad test setup, ${'$'}{count} is not a 'huge number', probably not enough memory.")
+						}
+						count.times {
 							writer.write(
 								'<issue id="MyLint" category="Performance" severity="Warning"' +
 								'       message="Fake lint" summary="Fake lint" explanation="Fake lint&#10;"' +
