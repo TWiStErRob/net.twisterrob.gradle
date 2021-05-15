@@ -172,7 +172,6 @@ class HtmlReportTaskTest {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			@SuppressWarnings("GroovyUnusedAssignment")
 			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
 				doFirst {
 					/**
@@ -185,7 +184,7 @@ class HtmlReportTaskTest {
 					 * 10000 violations used 333MB
 					 * These follow a linear trend and 1MB is capable of holding ~{@value} violations.
 					 */ 
-					double multiplier = 30
+					double multiplier = 31
 					def xml = lint.lintOptions.xmlOutput
 					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
 					xml.withWriterAppend { writer ->
