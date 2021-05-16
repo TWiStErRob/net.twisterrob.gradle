@@ -196,7 +196,7 @@ class HtmlReportTaskTest {
 						long potentialFreeMB = (long)(potentialFreeB / 1024 / 1024)
 						long totalMB = (long)(runtime.totalMemory() / 1024 / 1024)
 						long maxMB = (long)(runtime.maxMemory() / 1024 / 1024)
-						long leewayMB = 5
+						long leewayMB = 10
 						int leewayCount = (leewayMB * multiplier).toInteger()
 						long availableMB = potentialFreeMB - leewayMB
 						int count = (availableMB * multiplier).toInteger()
