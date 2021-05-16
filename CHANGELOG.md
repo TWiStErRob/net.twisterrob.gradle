@@ -4,13 +4,19 @@
 ## 0.11 *(2020-11-22 --- )*
 
 ### Breaking
- * Removed Bintray publishing as it shut down, replaced with Maven Central. Use `mavenCentral()` instead of custom Bintray url.
+ * Removed Bintray publishing as it shut down, replaced with Maven Central. Use `mavenCentral()` instead of custom Bintray url. (#107/#108)
 
 ### New
+ * Android Gradle Plugin 4.0.2 compatible (#101)
+ * Android Gradle Plugin 4.1.3 compatible (#101)
+ * Android Gradle Plugin 4.2.0 compatible (#101)
 
 ### Fixes
 
 ### Internal
+ * Moved Continuous Integration from Travis to GitHub Actions (#110).
+ * Allow ignored tests to run on CI (#72/#110).
+ * Share code style and inspections (#109).
 
 
 ## 0.10 *(2020-01-12 --- 2020-11-22)*
