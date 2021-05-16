@@ -198,7 +198,7 @@ jobs:
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
-    name: "Publish Unit Tests Results"
+    name: "📢 Publish Unit Tests Results"
     runs-on: ubuntu-latest
     needs: check
     # The dependency job might be skipped, we don't need to run this job then.
@@ -216,4 +216,5 @@ jobs:
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
+          report_individual_runs: true
           files: artifacts/* Test Results XMLs/**/*.xml
