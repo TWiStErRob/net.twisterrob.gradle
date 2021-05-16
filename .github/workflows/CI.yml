@@ -52,7 +52,8 @@ jobs:
           # Run a no-op gradlew command in workspace.
           ./gradlew --no-daemon --version | tee gradle.version
           # Capture version for later usage.
-          echo GRADLE_VERSION=$(grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?)' gradle.version) >> $GITHUB_ENV
+          echo GRADLE_VERSION=$(grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?)$' gradle.version) >> $GITHUB_ENV
+          echo Detected Gradle version: ${{ env.GRADLE_VERSION }}.
 
       - name: Download Gradle ${{ matrix.gradle }} running the tests.
         run: |
