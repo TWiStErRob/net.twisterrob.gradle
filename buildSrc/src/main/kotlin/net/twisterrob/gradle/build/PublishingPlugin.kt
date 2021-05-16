@@ -35,7 +35,7 @@ class PublishingPlugin : Plugin<Project> {
 		}
 		project.tasks {
 			project.afterEvaluate {
-				named("dokka").configure { this as DokkaTask; configureDokka() }
+				named("dokkaJavadoc").configure { this as DokkaTask; configureDokka() }
 			}
 			val sourcesJar = register<Jar>("sourcesJar") {
 				archiveClassifier.set("sources")
@@ -45,7 +45,7 @@ class PublishingPlugin : Plugin<Project> {
 
 			val javadocJar = register<Jar>("javadocJar") {
 				archiveClassifier.set("javadoc")
-				from(named("dokka"))
+				from(named("dokkaJavadoc"))
 			}
 			project.artifacts.add("archives", javadocJar)
 		}
@@ -73,12 +73,14 @@ class PublishingPlugin : Plugin<Project> {
 	}
 }
 
+@Suppress("UnstableApiUsage")
 private fun DokkaTask.configureDokka() {
-	outputDirectory = project.buildDir.resolve("dokkaDoc").toString()
-	configuration {
-		moduleName = project.base.archivesBaseName
-		includeRootPackage = true
-		reportUndocumented = false
+	outputDirectory.set(project.buildDir.resolve("dokkaDoc"))
+	moduleName.set(project.base.archivesBaseName)
+	dokkaSourceSets {
+		configureEach {
+			reportUndocumented.set(false)
+		}
 	}
 }
 
