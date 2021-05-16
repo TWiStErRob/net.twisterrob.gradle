@@ -78,7 +78,7 @@ jobs:
 
             # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build
             ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
-          key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**) }}
+          key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
           restore-keys: |
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
