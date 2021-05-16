@@ -183,9 +183,9 @@ class HtmlReportTaskTest {
 						// Note: I tried to estimate the number of violations to create by measuring free memory:
 						// (rt.freeMemory() + (rt.maxMemory() - rt.totalMemory())) / 1024 / 1024 * 30
 						// After many tries and empirical measurements, it was still flaky on each execution on GitHub.
-						// Since then I bumped Xmx from 128 to 256 and the count from 1500 to 7500.
+						// Since then I bumped Xmx from 128 to 256 and the count from 1500 to 3000.
 						// This should be stable and catch any regressions, if the processing goes non-linear.
-						5000.times {
+						3000.times {
 							writer.write(
 								'<issue id="MyLint" category="Performance" severity="Warning"' +
 								'       message="Fake lint" summary="Fake lint" explanation="Fake lint&#10;"' +
