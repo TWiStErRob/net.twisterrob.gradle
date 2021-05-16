@@ -196,9 +196,12 @@ class HtmlReportTaskTest {
 						long potentialFreeMB = (long)(potentialFreeB / 1024 / 1024)
 						long totalMB = (long)(runtime.totalMemory() / 1024 / 1024)
 						long maxMB = (long)(runtime.maxMemory() / 1024 / 1024)
-						int count = (potentialFreeMB * multiplier).toInteger()
+						long leewayMB = 5
+						int leewayCount = (leewayMB * multiplier).toInteger()
+						long availableMB = potentialFreeMB - leewayMB
+						int count = (availableMB * multiplier).toInteger()
 						println("There's ${'$'}{potentialFreeMB}MB free out of ${'$'}{maxMB}MB (${'$'}{totalMB}MB allocated).")
-						println("Generating ${'$'}{count} lint violations.")
+						println("Generating ${'$'}{count} lint violations (${'$'}{leewayCount} less than possible to give leeway).")
 						if (count < 1000) {
 							throw new IllegalStateException("Bad test setup, ${'$'}{count} is not a 'huge number', probably not enough memory.")
 						}
