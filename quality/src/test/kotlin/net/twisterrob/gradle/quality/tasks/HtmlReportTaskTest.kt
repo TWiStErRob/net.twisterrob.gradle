@@ -177,35 +177,15 @@ class HtmlReportTaskTest {
 			apply plugin: 'org.gradle.reporting-base'
 			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
 				doFirst {
-					/**
-					 * Calculated based on empirical measurements with -Xmx3G.
-					 * 500 violations used 19MB
-					 * 1000 violations used 33MB
-					 * 2000 violations used 67MB
-					 * 3000 violations used 100MB
-					 * 5000 violations used 166MB
-					 * 10000 violations used 333MB
-					 * These follow a linear trend and 1MB is capable of holding ~{@value} violations.
-					 */ 
-					double multiplier = 30
 					def xml = lint.lintOptions.xmlOutput
 					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
 					xml.withWriterAppend { writer ->
-						Runtime runtime = Runtime.getRuntime()
-						long potentialFreeB = runtime.freeMemory() + (runtime.maxMemory() - runtime.totalMemory())
-						long potentialFreeMB = (long)(potentialFreeB / 1024 / 1024)
-						long totalMB = (long)(runtime.totalMemory() / 1024 / 1024)
-						long maxMB = (long)(runtime.maxMemory() / 1024 / 1024)
-						long leewayMB = 10
-						int leewayCount = (leewayMB * multiplier).toInteger()
-						long availableMB = potentialFreeMB - leewayMB
-						int count = (availableMB * multiplier).toInteger()
-						println("There's ${'$'}{potentialFreeMB}MB free out of ${'$'}{maxMB}MB (${'$'}{totalMB}MB allocated).")
-						println("Generating ${'$'}{count} lint violations (${'$'}{leewayCount} less than possible to give leeway).")
-						if (count < 1000) {
-							throw new IllegalStateException("Bad test setup, ${'$'}{count} is not a 'huge number', probably not enough memory.")
-						}
-						count.times {
+						// Note: I tried to estimate the number of violations to create by measuring free memory:
+						// (rt.freeMemory() + (rt.maxMemory() - rt.totalMemory())) / 1024 / 1024 * 30
+						// After many tries and empirical measurements, it was still flaky on each execution on GitHub.
+						// Since then I bumped Xmx from 128 to 256 and the count from 1500 to 7500.
+						// This should be stable and catch any regressions, if the processing goes non-linear.
+						5000.times {
 							writer.write(
 								'<issue id="MyLint" category="Performance" severity="Warning"' +
 								'       message="Fake lint" summary="Fake lint" explanation="Fake lint&#10;"' +
@@ -227,7 +207,7 @@ class HtmlReportTaskTest {
 		""".trimIndent()
 		gradle.runner.projectDir.resolve("gradle.properties")
 			// useful for manually checking memory usage: -XX:+HeapDumpOnOutOfMemoryError
-			.appendText("org.gradle.jvmargs=-Xmx128M\n")
+			.appendText("org.gradle.jvmargs=-Xmx256M\n")
 
 		val result = assertTimeoutPreemptively(ofMinutes(2), ThrowingSupplier {
 			gradle.runBuild {
