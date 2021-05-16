@@ -24,7 +24,8 @@ repositories {
 }
 
 dependencies {
-	implementation(kotlin("gradle-plugin"))
+	implementation(kotlin("gradle-plugin", version = "1.4.32"))
+	implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:1.4.32"))
 	implementation("org.jetbrains.dokka:dokka-gradle-plugin:1.4.32")
 }
 
