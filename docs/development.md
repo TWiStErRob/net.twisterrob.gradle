@@ -77,12 +77,6 @@ buildscript {
 To try it out, add `printViolationCounts` from README.md and run `gradlew checkstyleEach :printViolationCounts`.
 
 
-## Running CI locally
-
-See `Dockerfile.*` what commands to execute to run Travis CI locally for this project. May not work.
-
-
-
 ## Details and background
 
 

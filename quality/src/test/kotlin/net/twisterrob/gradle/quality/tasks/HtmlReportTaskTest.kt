@@ -8,8 +8,11 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Assertions.assertTimeoutPreemptively
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.function.ThrowingSupplier
+import java.time.Duration.ofMinutes
 import kotlin.test.assertEquals
 
 /**
@@ -177,7 +180,12 @@ class HtmlReportTaskTest {
 					def xml = lint.lintOptions.xmlOutput
 					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
 					xml.withWriterAppend { writer ->
-						1500.times {
+						// Note: I tried to estimate the number of violations to create by measuring free memory:
+						// (rt.freeMemory() + (rt.maxMemory() - rt.totalMemory())) / 1024 / 1024 * 30
+						// After many tries and empirical measurements, it was still flaky on each execution on GitHub.
+						// Since then I bumped Xmx from 128 to 256 and the count from 1500 to 3000.
+						// This should be stable and catch any regressions, if the processing goes non-linear.
+						3000.times {
 							writer.write(
 								'<issue id="MyLint" category="Performance" severity="Warning"' +
 								'       message="Fake lint" summary="Fake lint" explanation="Fake lint&#10;"' +
@@ -199,11 +207,13 @@ class HtmlReportTaskTest {
 		""".trimIndent()
 		gradle.runner.projectDir.resolve("gradle.properties")
 			// useful for manually checking memory usage: -XX:+HeapDumpOnOutOfMemoryError
-			.appendText("org.gradle.jvmargs=-Xmx128M\n")
+			.appendText("org.gradle.jvmargs=-Xmx256M\n")
 
-		val result = gradle.runBuild {
-			run(script, "lint", "htmlReport")
-		}
+		val result = assertTimeoutPreemptively(ofMinutes(2), ThrowingSupplier {
+			gradle.runBuild {
+				run(script, "lint", "htmlReport")
+			}
+		})
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
 	}
