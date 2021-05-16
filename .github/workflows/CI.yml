@@ -12,6 +12,8 @@ jobs:
     env:
       # Cannot access ${{ job.name }} so create own.
       JOB_NAME: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
+    # Average observed execution time is 6-7 minutes, double it for timeout constraint.
+    timeout-minutes: 15
 
     steps:
       - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
@@ -203,6 +205,9 @@ jobs:
     needs: check
     # The dependency job might be skipped, we don't need to run this job then.
     if: success() || failure()
+    # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
+    timeout-minutes: 5
+
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@v2

@@ -8,8 +8,11 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Assertions.assertTimeoutPreemptively
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.function.ThrowingSupplier
+import java.time.Duration.ofMinutes
 import kotlin.test.assertEquals
 
 /**
@@ -223,9 +226,11 @@ class HtmlReportTaskTest {
 			// useful for manually checking memory usage: -XX:+HeapDumpOnOutOfMemoryError
 			.appendText("org.gradle.jvmargs=-Xmx128M\n")
 
-		val result = gradle.runBuild {
-			run(script, "lint", "htmlReport")
-		}
+		val result = assertTimeoutPreemptively(ofMinutes(2), ThrowingSupplier {
+			gradle.runBuild {
+				run(script, "lint", "htmlReport")
+			}
+		})
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
 	}
