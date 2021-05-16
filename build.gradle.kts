@@ -189,7 +189,7 @@ allprojects {
 					if (condition) {
 						println("::group::test_${type}_${id}")
 						output()
-						println("::endgroup::test_${type}_${id}")
+						println("::endgroup:: ")
 					}
 				}
 				println("${descriptor.className} > ${descriptor.name} ${result.resultType}")
