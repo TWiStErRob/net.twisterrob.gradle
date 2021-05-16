@@ -69,7 +69,7 @@ jobs:
         with:
           path: |
             # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ env.GRADLE_VERSION }}-all.zip"
-            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/${{ random-hash }}/gradle-${{ env.GRADLE_VERSION }}-all.zip"
+            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/${ gradle-dist-hash }/gradle-${{ env.GRADLE_VERSION }}-all.zip"
             # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
             #~/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/
 
@@ -87,7 +87,7 @@ jobs:
         with:
           path: |
             # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ matrix.gradle }}-all.zip"
-            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/${{ random-hash }}/gradle-${{ matrix.gradle }}-all.zip"
+            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/${ gradle-dist-hash }/gradle-${{ matrix.gradle }}-all.zip"
             # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
             #~/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/
 
