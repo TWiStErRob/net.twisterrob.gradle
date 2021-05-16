@@ -12,6 +12,9 @@ jobs:
     env:
       # Cannot access ${{ job.name }} so create own.
       JOB_NAME: AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
+      # Capture which Gradle version is running the build to use in some steps.
+      # Value will be written in a later step using `>> $GITHUB_ENV`.
+      GRADLE_VERSION: 0.0.0
     # Average observed execution time is 6-7 minutes, double it for timeout constraint.
     timeout-minutes: 15
 
@@ -44,10 +47,12 @@ jobs:
       # To prevent "Welcome to Gradle <version>! Here are the highlights of this release:" in build log, use:
       #- run: touch ~/.gradle/notifications/5.6.4/release-features.rendered
 
-      - name: Download Gradle 5.6.4 running the build.
+      - name: Download Gradle running the build.
         run: |
           # Run a no-op gradlew command in workspace.
-          ./gradlew --no-daemon --version
+          ./gradlew --no-daemon --version | tee gradle.version
+          # Capture version for later usage.
+          echo GRADLE_VERSION=$(grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?)' gradle.version) >> $GITHUB_ENV
 
       - name: Download Gradle ${{ matrix.gradle }} running the tests.
         run: |
@@ -58,6 +63,40 @@ jobs:
           ${{ github.workspace }}/gradlew wrapper --gradle-version ${{ matrix.gradle }} --distribution-type all --quiet
           # Run a no-op gradlew command in an empty project with a specific wrapper version.
           ./gradlew --no-daemon --version
+
+      - name: Cache Gradle ${{ env.GRADLE_VERSION }} files.
+        uses: actions/cache@v2
+        with:
+          path: |
+            # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ env.GRADLE_VERSION }}-all.zip"
+            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/${{ random-hash }}/gradle-${{ env.GRADLE_VERSION }}-all.zip"
+            # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
+            #~/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/
+
+            # Prevent "Download https://repo1.maven.org/maven2/" during build
+            ~/.gradle/caches/modules-2/
+
+            # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build
+            ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
+          key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**) }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
+
+      - name: Cache Gradle Test Kit ${{ matrix.gradle }} files.
+        uses: actions/cache@v2
+        with:
+          path: |
+            # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ matrix.gradle }}-all.zip"
+            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/${{ random-hash }}/gradle-${{ matrix.gradle }}-all.zip"
+            # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
+            #~/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/
+
+            # Prevent "Download https://repo1.maven.org/maven2/" during test runs
+            /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/
+
+            # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar'" during test runs
+            /tmp/.gradle-test-kit-${{ env.USER }}/caches/${{ matrix.gradle }}/generated-gradle-jars/
+          key: ${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}
 
       - name: Check ${{ env.JOB_NAME }}.
         # To run specific test, replace `check tests` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
@@ -98,6 +137,20 @@ jobs:
         with:
           name: ${{ env.JOB_NAME }} JARs
           path: ${{ github.workspace }}/**/build/libs/*.jar
+
+      - name: Cleanup Gradle files before caching.
+        run: |
+          # Don't cache lock files to prevent breaking future builds
+          rm -f  ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f  ~/.gradle/caches/modules-2/gc.properties
+          rm -fr ~/.gradle/caches/*/plugin-resolution/
+
+      - name: Cleanup Gradle Test Kit files before caching.
+        run: |
+          # Don't cache lock files to prevent breaking future builds
+          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/modules-2.lock
+          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/gc.properties
+          rm -fr /tmp/.gradle-test-kit-${{ env.USER }}/caches/*/plugin-resolution/
 
     strategy:
       fail-fast: false
