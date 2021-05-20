@@ -34,6 +34,7 @@ subprojects {
 }
 
 allprojects {
+	replaceGradlePluginAutoDependenciesWithoutKotlin()
 
 	configurations.all {
 		replaceKotlinJre7WithJdk7()

@@ -8,8 +8,7 @@ base.archivesBaseName = "twister-gradle-test"
 description = "Test: Gradle test plugin."
 
 dependencies {
-	compileOnly(gradleApi())
-	compileOnly(gradleTestKit())
+	compileOnly(gradleTestKitWithoutKotlin())
 
 	api(project(":common"))
 	compileOnly(Libs.JUnit4.library)
@@ -17,8 +16,8 @@ dependencies {
 	compileOnly(Libs.Annotations.jsr305)
 	compileOnly(Libs.Annotations.jetbrains)
 
-	testImplementation(gradleApi())
-	testImplementation(gradleTestKit())
+	testImplementation(gradleApiWithoutKotlin())
+	testImplementation(gradleTestKitWithoutKotlin())
 	testImplementation(project(":test:internal"))
 }
 
