@@ -75,6 +75,7 @@ class PublishingPlugin : Plugin<Project> {
 
 @Suppress("UnstableApiUsage")
 private fun DokkaTask.configureDokka() {
+	// TODO https://github.com/Kotlin/dokka/issues/1894
 	outputDirectory.set(project.buildDir.resolve("dokkaDoc"))
 	moduleName.set(project.base.archivesBaseName)
 	dokkaSourceSets {
