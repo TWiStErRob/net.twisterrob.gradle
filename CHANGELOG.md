@@ -5,7 +5,7 @@
 
 ### Breaking
  * Removed Bintray publishing as it shut down, replaced with Maven Central. Use `mavenCentral()` instead of custom Bintray url. (#107/#108)
- * Build with Kotlin 1.4.32, this also comes as transitive dependency.
+ * Build with Kotlin 1.4.32 (#112), this also comes as transitive dependency.
 
 ### New
  * Android Gradle Plugin 4.0.2 compatible (#101)
@@ -18,6 +18,7 @@
  * Moved Continuous Integration from Travis to GitHub Actions (#110).
  * Allow ignored tests to run on CI (#72/#110).
  * Share code style and inspections (#109).
+ * Use Gradle 6.9 to build (#114).
 
 
 ## 0.10 *(2020-01-12 --- 2020-11-22)*
