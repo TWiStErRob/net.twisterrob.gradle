@@ -77,7 +77,7 @@ class TestPluginTest {
 			}
 			dependencies {
 				testImplementation 'org.jetbrains.kotlin:kotlin-stdlib:${KotlinVersion.CURRENT}'
-				testImplementation 'junit:junit:4.12'
+				testImplementation 'junit:junit:4.13.2'
 			}
 			// output test execution result so we can verify it actually ran
 			test.afterTest { desc, result ->

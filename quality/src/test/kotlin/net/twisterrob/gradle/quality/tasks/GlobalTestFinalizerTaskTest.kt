@@ -38,7 +38,7 @@ class GlobalTestFinalizerTaskTest {
 		@Language("gradle")
 		val script = """
 			dependencies {
-				testImplementation 'junit:junit:4.12'
+				testImplementation 'junit:junit:4.13.2'
 			}
 			task('tests', type: ${GlobalTestFinalizerTask::class.java.name})
 		""".trimIndent()
