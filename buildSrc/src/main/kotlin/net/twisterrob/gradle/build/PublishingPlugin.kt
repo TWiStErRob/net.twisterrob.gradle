@@ -11,6 +11,7 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
@@ -34,8 +35,14 @@ class PublishingPlugin : Plugin<Project> {
 			}
 		}
 		project.tasks {
-			project.afterEvaluate {
-				named("dokkaJavadoc").configure { this as DokkaTask; configureDokka() }
+			val dokkaJavadoc = named<DokkaTask>("dokkaJavadoc") {
+				// TODO https://github.com/Kotlin/dokka/issues/1894
+				moduleName.set(this.project.base.archivesBaseName)
+				dokkaSourceSets {
+					configureEach {
+						reportUndocumented.set(false)
+					}
+				}
 			}
 			val sourcesJar = register<Jar>("sourcesJar") {
 				archiveClassifier.set("sources")
@@ -45,7 +52,7 @@ class PublishingPlugin : Plugin<Project> {
 
 			val javadocJar = register<Jar>("javadocJar") {
 				archiveClassifier.set("javadoc")
-				from(named("dokkaJavadoc"))
+				from(dokkaJavadoc)
 			}
 			project.artifacts.add("archives", javadocJar)
 		}
@@ -69,18 +76,6 @@ class PublishingPlugin : Plugin<Project> {
 				useInMemoryPgpKeys(signingKey, signingPassword)
 				sign(project.the<PublishingExtension>().publications["release"])
 			}
-		}
-	}
-}
-
-@Suppress("UnstableApiUsage")
-private fun DokkaTask.configureDokka() {
-	// TODO https://github.com/Kotlin/dokka/issues/1894
-	outputDirectory.set(project.buildDir.resolve("dokkaDoc"))
-	moduleName.set(project.base.archivesBaseName)
-	dokkaSourceSets {
-		configureEach {
-			reportUndocumented.set(false)
 		}
 	}
 }
