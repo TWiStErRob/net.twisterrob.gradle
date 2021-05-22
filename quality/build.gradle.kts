@@ -18,7 +18,7 @@ dependencies {
 
 	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))
-	testRuntime(Libs.Android.plugin)
+	testRuntimeOnly(Libs.Android.plugin)
 }
 
 listOf(":test", ":checkstyle", ":pmd").forEach(project::pullTestResourcesFrom)
