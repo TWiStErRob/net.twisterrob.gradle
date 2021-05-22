@@ -27,11 +27,12 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath "net.twisterrob.gradle:twister-quality:${VERSION_TWISTER_QUALITY}"
+		classpath("net.twisterrob.gradle:twister-quality:${VERSION_TWISTER_QUALITY}")
 	}
 }
-apply plugin: 'net.twisterrob.quality'
+apply plugin: "net.twisterrob.quality"
 ```
+For more, see the [examples](docs/examples) folder.
 
 ## Features
 
