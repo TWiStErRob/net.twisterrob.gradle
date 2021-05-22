@@ -127,5 +127,5 @@ open class HtmlReportTask : ValidateViolationsTask() {
 			"It was Deprecated in Gradle 5.6.4, but removed in Gradle 6.x, polyfill here.",
 	replaceWith = ReplaceWith("project.objects.fileProperty()")
 )
-fun ProjectLayout.fileProperty(): RegularFileProperty =
+private fun ProjectLayout.fileProperty(): RegularFileProperty =
 	ProjectLayout::class.java.getDeclaredMethod("fileProperty").invoke(this) as RegularFileProperty
