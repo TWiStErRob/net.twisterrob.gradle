@@ -26,15 +26,17 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 			val rootConfig = task.project.rootProject.file("config/checkstyle/checkstyle.xml")
 			if (!task.configFile.exists() || (subConfig.exists() && rootConfig.exists())) {
 				if (!subConfig.exists() && !rootConfig.exists()) {
-					task.logger.warn(
-						"""
-						While configuring ${task} no configuration found at:
-							rootProject=${rootConfig}
-							subProject=${subConfig}
-							task=${task.configFile}
-							and there's no valid location set in Gradle build files either.
-						""".trimIndent()
-					)
+					task.doFirst("Warn about missing configuration files.") {
+						task.logger.warn(
+							"""
+							While configuring ${task} no configuration found at:
+								rootProject=${rootConfig}
+								subProject=${subConfig}
+								task=${task.configFile}
+								and there's no configuration location set in Gradle build files either.
+							""".trimIndent()
+						)
+					}
 				}
 				// if both of them exists, take the subproject's one instead of the rootProject's
 				if (subConfig.exists()) {
