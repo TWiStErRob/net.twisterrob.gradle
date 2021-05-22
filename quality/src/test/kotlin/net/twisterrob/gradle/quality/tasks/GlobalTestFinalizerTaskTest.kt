@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
+import junit.runner.Version
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -38,7 +39,7 @@ class GlobalTestFinalizerTaskTest {
 		@Language("gradle")
 		val script = """
 			dependencies {
-				testImplementation 'junit:junit:4.13.2'
+				testImplementation 'junit:junit:${Version.id()}'
 			}
 			task('tests', type: ${GlobalTestFinalizerTask::class.java.name})
 		""".trimIndent()
