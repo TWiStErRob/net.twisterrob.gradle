@@ -8,6 +8,7 @@ import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
@@ -113,10 +114,18 @@ open class HtmlReportTask : ValidateViolationsTask() {
 	private fun Project.fileProperty(): RegularFileProperty =
 		when {
 			GradleVersion.current().baseVersion < GradleVersion.version("5.0") ->
-				// keep using layout.fileProperty() instead of objects.fileProperty() for backward compatibility
+				// Keep using layout.fileProperty() instead of objects.fileProperty() for backward compatibility.
 				@Suppress("DEPRECATION")
 				layout.fileProperty()
 			else ->
 				objects.fileProperty()
 		}
 }
+
+@Deprecated(
+	message = "Replaced by [ObjectFactory.fileProperty]." +
+			"It was Deprecated in Gradle 5.6.4, but removed in Gradle 6.x, polyfill here.",
+	replaceWith = ReplaceWith("project.objects.fileProperty()")
+)
+fun ProjectLayout.fileProperty(): RegularFileProperty =
+	ProjectLayout::class.java.getDeclaredMethod("fileProperty").invoke(this) as RegularFileProperty
