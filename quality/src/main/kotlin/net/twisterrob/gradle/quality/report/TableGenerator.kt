@@ -39,8 +39,8 @@ class TableGenerator(
 			parsers = parsers.filter { summary[it] != null }
 		}
 		val format = parsers.map { it.length.coerceAtLeast(minWidth) }.joinToString("") { "${columnSeparator}%${it}s" }
-		val longestModule = modules.maxBy { it.length }
-		val longestVariant = variants.maxBy { it.length }
+		val longestModule = modules.maxByOrNull { it.length }
+		val longestVariant = variants.maxByOrNull { it.length }
 		val moduleWidth = (longestModule?.length ?: 0).coerceAtLeast(MIN_MODULE_LENGTH)
 		val total = summary.values.sumBy { it ?: 0 }
 		val totalCountWidth = if (total == 0) 1 else log10(total.toDouble()).toInt()

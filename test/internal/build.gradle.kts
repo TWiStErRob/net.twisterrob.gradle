@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-	api(gradleApi())
-	api(gradleTestKit())
+	api(gradleApiWithoutKotlin())
+	api(gradleTestKitWithoutKotlin())
 
 	api(Libs.Annotations.jetbrains)
 

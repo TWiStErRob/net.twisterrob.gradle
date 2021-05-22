@@ -24,8 +24,10 @@ repositories {
 }
 
 dependencies {
-	implementation(kotlin("gradle-plugin"))
-	implementation("org.jetbrains.dokka:dokka-gradle-plugin:0.10.0") // version for 1.3.41
+	implementation(kotlin("gradle-plugin", version = "1.4.32"))
+	implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:1.4.32"))
+	implementation(kotlin("compiler-embeddable", version = "1.4.32"))
+	implementation("org.jetbrains.dokka:dokka-gradle-plugin:1.4.32")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

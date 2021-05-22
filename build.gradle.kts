@@ -34,6 +34,7 @@ subprojects {
 }
 
 allprojects {
+	replaceGradlePluginAutoDependenciesWithoutKotlin()
 
 	configurations.all {
 		replaceKotlinJre7WithJdk7()
@@ -77,6 +78,14 @@ allprojects {
 			kotlinOptions.verbose = true
 			kotlinOptions.jvmTarget = Libs.javaVersion.toString()
 			kotlinOptions.allWarningsAsErrors = true
+			kotlinOptions.freeCompilerArgs += listOf(
+				// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
+				//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
+				//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
+				//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
+				// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
+				"-Xno-optimized-callable-references"
+			)
 		}
 
 		tasks.withType<Test> {

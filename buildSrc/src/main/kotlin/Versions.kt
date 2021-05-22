@@ -56,7 +56,7 @@ object Libs {
 		/**
 		 * @see <a href="https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md">Changelog</a>
 		 */
-		private const val version = "1.3.72"
+		private const val version = "1.4.32"
 
 		/**
 		 * @see <a href="https://github.com/gradle/kotlin-dsl/releases">GitHub Releases</a>

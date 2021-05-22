@@ -5,6 +5,7 @@
 
 ### Breaking
  * Removed Bintray publishing as it shut down, replaced with Maven Central. Use `mavenCentral()` instead of custom Bintray url. (#107/#108)
+ * Build with Kotlin 1.4.32, this also comes as transitive dependency.
 
 ### New
  * Android Gradle Plugin 4.0.2 compatible (#101)

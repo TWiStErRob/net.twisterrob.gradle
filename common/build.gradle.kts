@@ -8,7 +8,7 @@ base.archivesBaseName = "twister-quality-common"
 description = "Common: Shared classes between checkers. (Not to be consumed directly.)"
 
 dependencies {
-	implementation(gradleApi())
+	implementation(gradleApiWithoutKotlin())
 
 	compileOnly(Libs.Android.plugin)
 	compileOnly(Libs.Annotations.jsr305)
