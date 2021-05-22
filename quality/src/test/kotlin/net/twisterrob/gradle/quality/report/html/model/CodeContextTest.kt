@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.quality.report.html.model
 
 import com.flextrade.jfixture.JFixture
-import com.nhaarman.mockitokotlin2.mock
 import net.twisterrob.gradle.quality.Violation
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -9,6 +8,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.matchesPattern
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import org.mockito.kotlin.mock
 import java.io.File
 import java.io.FileNotFoundException
 import kotlin.test.assertEquals

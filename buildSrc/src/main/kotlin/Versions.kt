@@ -152,7 +152,7 @@ object Libs {
 
 		const val core = "org.mockito:mockito-core:${version}"
 		const val junit5 = "org.mockito:mockito-junit-jupiter:${version}"
-		const val kotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${versionMockitoKotlin}"
+		const val kotlin = "org.mockito.kotlin:mockito-kotlin:${versionMockitoKotlin}"
 	}
 
 	object Hamcrest {
