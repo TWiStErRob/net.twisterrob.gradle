@@ -2,10 +2,14 @@ package net.twisterrob.gradle.checkstyle
 
 import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.Project
+import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleReports
+import org.gradle.api.provider.Provider
 import org.gradle.api.reporting.CustomizableHtmlReport
 import org.gradle.api.reporting.SingleFileReport
 import org.gradle.api.tasks.Internal
+import org.gradle.util.GradleVersion
+import java.io.File
 
 class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTask>(
 	project,
@@ -39,7 +43,17 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 					task.configFile = rootConfig
 				}
 			}
-			task.setConfigDir(task.project.provider { task.configFile.parentFile })
+			when {
+				GradleVersion.current().baseVersion < GradleVersion.version("6.0") -> {
+					// Keep using Checkstyle.setConfigDir instead of getConfigDirectory() for backward compatibility.
+					// Once it fails to compile because the method is removed, the polyfill below will kick in.
+					@Suppress("DEPRECATION")
+					task.setConfigDir(task.project.provider { task.configFile.parentFile })
+				}
+				else -> {
+					task.configDirectory.set(task.configFile.parentFile)
+				}
+			}
 		}
 
 		override fun setupReports(task: CheckStyleTask, suffix: String?) {
@@ -78,3 +92,13 @@ private val CheckstyleReports.customHtml: CustomizableHtmlReport
 		val html = this::class.java.getDeclaredMethod("getHtml")
 		return html.invoke(this) as CustomizableHtmlReport
 	}
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER") // prepared polyfill
+@Deprecated(
+	message = "Replaced by [Checkstyle.configDirectory]." +
+			"It was Deprecated in Gradle 6.x, but removed in Gradle 7.x, polyfill here.",
+	replaceWith = ReplaceWith("configDirectory.set(configDir)")
+)
+private fun Checkstyle.setConfigDir(configDir: Provider<File>) {
+	Checkstyle::class.java.getDeclaredMethod("setConfigDir", Provider::class.java).invoke(this, configDir)
+}
