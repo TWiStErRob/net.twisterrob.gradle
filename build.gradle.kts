@@ -1,5 +1,6 @@
 import Libs.Kotlin.replaceKotlinJre7WithJdk7
 import Libs.Kotlin.replaceKotlinJre8WithJdk8
+import net.twisterrob.gradle.build.configureDokka
 import org.gradle.api.tasks.testing.TestOutputEvent.Destination
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -215,6 +216,18 @@ allprojects {
 				}
 			}))
 		}
+	}
+}
+
+tasks {
+	val assembleExamples = register("assembleExamples") {
+		dependsOn(gradle.includedBuilds.map { it.task(":assemble") })
+	}
+	val checkExamples = register("checkExamples") {
+		dependsOn(gradle.includedBuilds.map { it.task(":check") })
+	}
+	named("check") {
+		dependsOn(assembleExamples, checkExamples)
 	}
 }
 

@@ -18,3 +18,7 @@ listOf("checkstyle", "pmd").forEach {
 if (GradleVersion.current().baseVersion < GradleVersion.version("5.0")) {
 	enableFeaturePreview("STABLE_PUBLISHING")
 }
+
+includeBuild("docs/examples/local")
+includeBuild("docs/examples/snapshot")
+includeBuild("docs/examples/release")
