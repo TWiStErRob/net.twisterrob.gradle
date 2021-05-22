@@ -61,8 +61,9 @@ object Libs {
 		/**
 		 * @see <a href="https://github.com/gradle/kotlin-dsl/releases">GitHub Releases</a>
 		 * @see <a href="https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/">Artifacts</a>
+		 * TODO there's no later version that 6.1.1, even though Gradle is 6.9 / 7.x already.
 		 */
-		private const val versionDSL = "5.6.4"
+		private const val versionDSL = "6.1.1"
 
 		const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${version}"
 		const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${version}"

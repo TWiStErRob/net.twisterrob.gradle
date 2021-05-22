@@ -4,6 +4,7 @@
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.FileCollectionDependency
+import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.HasConvention
@@ -14,7 +15,6 @@ import org.gradle.api.plugins.BasePluginConvention
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
-import org.gradle.internal.component.local.model.OpaqueComponentIdentifier
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
@@ -117,6 +117,28 @@ private fun DependencyHandler.withoutKotlin(notation: ClassPathNotation): Depend
 	// Originally created in org.gradle.api.internal.notations.DependencyClassPathNotationConverter.create
 	val gradleApi = create(notation) as FileCollectionDependency
 	val filteredSource = gradleApi.files.filter { !it.name.startsWith("kotlin-") }
-	val displayName = OpaqueComponentIdentifier("${notation.displayName} (without Kotlin)")
+	val displayName = StaticComponentIdentifier("${notation.displayName} (without Kotlin)")
 	return DefaultSelfResolvingDependency(displayName, filteredSource as FileCollectionInternal)
+}
+
+/**
+ * Based on [org.gradle.internal.component.local.model.OpaqueComponentIdentifier] in Gradle 5.6.4.
+ */
+class StaticComponentIdentifier(private val displayName: String) : ComponentIdentifier {
+
+	override fun getDisplayName(): String = displayName
+
+	override fun equals(other: Any?): Boolean =
+		when {
+			this === other -> true
+			other != null && this::class == other::class -> {
+				val that = other as StaticComponentIdentifier
+				this.displayName == that.displayName
+			}
+			else -> false
+		}
+
+	override fun hashCode(): Int = displayName.hashCode()
+
+	override fun toString(): String = displayName
 }
