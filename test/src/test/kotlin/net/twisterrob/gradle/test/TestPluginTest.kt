@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.test
 
+import junit.runner.Version
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
@@ -77,7 +78,7 @@ class TestPluginTest {
 			}
 			dependencies {
 				testImplementation 'org.jetbrains.kotlin:kotlin-stdlib:${KotlinVersion.CURRENT}'
-				testImplementation 'junit:junit:4.12'
+				testImplementation 'junit:junit:${Version.id()}'
 			}
 			// output test execution result so we can verify it actually ran
 			test.afterTest { desc, result ->

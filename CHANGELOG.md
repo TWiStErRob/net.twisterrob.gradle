@@ -19,6 +19,7 @@
  * Allow ignored tests to run on CI (#72/#110).
  * Share code style and inspections (#109).
  * Use Gradle 6.9 to build (#114).
+ * Bump test library versions to latest (#115).
 
 
 ## 0.10 *(2020-01-12 --- 2020-11-22)*

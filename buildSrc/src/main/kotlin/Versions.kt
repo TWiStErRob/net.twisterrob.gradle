@@ -9,13 +9,16 @@ object Libs {
 
 	object Annotations {
 
+		/**
+		 * @see <a href="https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/">Artifacts</a>
+		 */
 		private const val versionJsr305 = "3.0.2"
 
 		/**
 		 * @see <a href="https://github.com/JetBrains/java-annotations">Repository</a>
-		 * @see <a href="http://repo1.maven.org/maven2/org/jetbrains/annotations/">Artifacts</a>
+		 * @see <a href="https://repo1.maven.org/maven2/org/jetbrains/annotations/">Artifacts</a>
 		 */
-		private const val versionJetbrains = "17.0.0"
+		private const val versionJetbrains = "21.0.0"
 
 		/**
 		 * <a href="https://jcp.org/en/jsr/detail?id=305">JSR 305: Annotations for Software Defect Detection</a>
@@ -102,7 +105,12 @@ object Libs {
 	}
 
 	object JUnit4 {
-		private const val version = "4.13"
+
+		/**
+		 * @see <a href="https://github.com/junit-team/junit4/tree/main/doc">Release notes</a>
+		 * @see <a href="https://github.com/junit-team/junit4/wiki">Major releases</a>
+		 */
+		private const val version = "4.13.2"
 
 		const val library = "junit:junit:${version}"
 	}
@@ -115,7 +123,7 @@ object Libs {
 		/**
 		 * @see <a href="https://junit.org/junit5/docs/current/release-notes/index.html">Changelog</a>
 		 */
-		private const val version = "5.4.0"
+		private const val version = "5.7.2"
 
 		const val api = "org.junit.jupiter:junit-jupiter-api:${version}"
 		const val params = "org.junit.jupiter:junit-jupiter-params:${version}"
@@ -135,16 +143,16 @@ object Libs {
 		 * @see <a href="https://mvnrepository.com/artifact/org.mockito/mockito-core">Artifacts</a>
 		 * @see <a href="https://github.com/mockito/mockito/blob/release/2.x/doc/release-notes/official.md">Changelog</a>
 		 */
-		private const val version = "2.24.5"
+		private const val version = "3.10.0"
 
 		/**
 		 * @see <a href="https://github.com/nhaarman/mockito-kotlin/releases">GitHub releases</a>
 		 */
-		private const val versionMockitoKotlin = "2.1.0"
+		private const val versionMockitoKotlin = "3.2.0"
 
 		const val core = "org.mockito:mockito-core:${version}"
 		const val junit5 = "org.mockito:mockito-junit-jupiter:${version}"
-		const val kotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${versionMockitoKotlin}"
+		const val kotlin = "org.mockito.kotlin:mockito-kotlin:${versionMockitoKotlin}"
 	}
 
 	object Hamcrest {
@@ -168,7 +176,7 @@ object Libs {
 	/**
 	 * @see <a href="https://github.com/mockk/mockk/releases">GitHub releases</a>
 	 */
-	private const val mockkVersion = "1.9.1.kotlin12"
+	private const val mockkVersion = "1.11.0"
 	const val mockk = "io.mockk:mockk:${mockkVersion}"
 
 	/**

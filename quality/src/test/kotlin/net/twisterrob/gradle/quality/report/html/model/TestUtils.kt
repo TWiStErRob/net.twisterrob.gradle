@@ -1,9 +1,9 @@
 package net.twisterrob.gradle.quality.report.html.model
 
 import com.flextrade.jfixture.JFixture
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import org.gradle.api.Project
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 internal fun project(path: String): Project = mock<Project>().also {
 	whenever(it.path).thenReturn(path)
