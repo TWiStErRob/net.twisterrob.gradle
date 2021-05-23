@@ -8,12 +8,18 @@ jobs:
   cancel:
     name: 0; ⛔ Cancel
     runs-on: ubuntu-latest
+    # Shouldn't take long, it's a simple GitHub Actions API call.
+    timeout-minutes: 1
+    # Not a mandatory piece, let the build finish anyway.
+    continue-on-error: true
     steps:
       - name: Cancel previous Workflow runs, no need for stale executions.
         uses: styfle/cancel-workflow-action@0.9.0
   build:
     name: 1; 🔨 Build
     runs-on: ubuntu-latest
+    # Don't know the limits yet. Try similar to check.
+    timeout-minutes: 15
     steps:
       # Short-cut version of env setup in "check:".
       - uses: actions/setup-java@v1
