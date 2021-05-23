@@ -56,6 +56,8 @@ jobs:
             ${{ github.workspace }}/**/build/publications/release/module.json
             ${{ github.workspace }}/**/build/publications/release/pom-default.xml
 
+      - run: echo ${{ env.HOME }}
+      - run: echo ${{ toJSON(env) }}
       - name: Upload mavenLocal() artifacts.
         if: success() || failure()
         uses: actions/upload-artifact@v2
