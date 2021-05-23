@@ -19,6 +19,8 @@ if (GradleVersion.current().baseVersion < GradleVersion.version("5.0")) {
 	enableFeaturePreview("STABLE_PUBLISHING")
 }
 
-includeBuild("docs/examples/local")
-includeBuild("docs/examples/snapshot")
-includeBuild("docs/examples/release")
+if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toBoolean()) {
+	includeBuild("docs/examples/local")
+	includeBuild("docs/examples/snapshot")
+	includeBuild("docs/examples/release")
+}

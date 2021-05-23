@@ -217,16 +217,14 @@ allprojects {
 		}
 	}
 }
-
-tasks {
-	val assembleExamples = register("assembleExamples") {
-		dependsOn(gradle.includedBuilds.map { it.task(":assemble") })
-	}
-	val checkExamples = register("checkExamples") {
-		dependsOn(gradle.includedBuilds.map { it.task(":check") })
-	}
-	named("check") {
-		dependsOn(assembleExamples, checkExamples)
+if (project.property("net.twisterrob.gradle.build.includeExamples").toString().toBoolean()) {
+	tasks {
+		register("assembleExamples") {
+			dependsOn(gradle.includedBuilds.map { it.task(":assemble") })
+		}
+		register("checkExamples") {
+			dependsOn(gradle.includedBuilds.map { it.task(":check") })
+		}
 	}
 }
 
