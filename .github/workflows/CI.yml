@@ -5,6 +5,55 @@ on: [ push ]
 #  pull_request:
 #    branches: [ $default-branch ]
 jobs:
+  build:
+    name: 1; 🔨 Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs.
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+
+      # Short-cut version of env setup in "check:".
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - uses: android-actions/setup-android@v2
+      - uses: actions/checkout@v2
+
+      - name: Build Gradle Quality plugins.
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          jar uploadToMavenLocal
+
+      - name: Upload JARs and metadata.
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Artifacts
+          path: |
+            ${{ github.workspace }}/**/build/libs/*.jar
+            ${{ github.workspace }}/**/build/publications/release/module.json
+            ${{ github.workspace }}/**/build/publications/release/pom-default.xml
+
+      - name: Upload mavenLocal() artifacts.
+        uses: actions/upload-artifact@v2
+        with:
+          name: mavenLocal
+          path: |
+            ${{ env.home }}/.m2/**
+
+      - name: Check Examples.
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          assembleExamples checkExamples
+          -Pnet.twisterrob.gradle.build.includeExamples=true
   check:
     # Cannot access ${{ env.JOB_NAME }}, so need to duplicate.
     name: 2; 🛠️ AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
@@ -134,13 +183,6 @@ jobs:
         with:
           name: ${{ env.JOB_NAME }} Test Results HTMLs
           path: ${{ github.workspace }}/**/build/reports/tests/test/
-
-      - name: Upload "${{ env.JOB_NAME }} JARs".
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.JOB_NAME }} JARs
-          path: ${{ github.workspace }}/**/build/libs/*.jar
 
       - name: Cleanup Gradle files before caching.
         run: |
