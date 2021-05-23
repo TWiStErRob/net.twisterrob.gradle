@@ -23,44 +23,57 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
 
-      - name: Build Gradle Quality plugins.
-        run: >
-          ./gradlew
-          --no-daemon
-          --no-build-cache
-          --stacktrace
-          jar publishToMavenLocal
+      # Check publicly available release version first, this should be independent of repository state.
+      - name: Verify docs/examples/release.
+        working-directory: docs/examples/release
+        if: success() || failure()
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
-      - name: Upload JARs and metadata.
+      - name: Build Gradle Quality plugins.
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace jar
+
+      - name: Cancel other jobs on Build failure, no need to check / test it.
+        if: failure()
+        uses: andymckay/cancel-action@0.2
+
+      - name: Upload JARs.
         if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
           name: Artifacts
           path: |
             ${{ github.workspace }}/**/build/libs/*.jar
+
+      - name: Publish Gradle Quality plugins to mavenLocal().
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace publishToMavenLocal
+
+      - name: Upload Maven and Gradle metadata.
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Publications Metadata
+          path: |
             ${{ github.workspace }}/**/build/publications/release/module.json
             ${{ github.workspace }}/**/build/publications/release/pom-default.xml
 
       - name: Upload mavenLocal() artifacts.
-        if: success()
+        if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
           name: mavenLocal
           path: |
             ${{ env.HOME }}/.m2/**
 
-      - name: Check Examples.
-        run: >
-          ./gradlew
-          --no-daemon
-          --no-build-cache
-          --stacktrace
-          assembleExamples checkExamples
-          -Pnet.twisterrob.gradle.build.includeExamples=true
+      - name: Verify docs/examples/local.
+        working-directory: docs/examples/local
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
-      - name: Cancel other jobs on Build failure, no need to check / test it.
-        if: failure()
-        uses: andymckay/cancel-action@0.2
+      # TODO publish to sonatype
+
+      - name: Verify docs/examples/snapshot.
+        working-directory: docs/examples/snapshot
+        if: success() || failure()
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
   check:
     # Cannot access ${{ env.JOB_NAME }}, so need to duplicate.
