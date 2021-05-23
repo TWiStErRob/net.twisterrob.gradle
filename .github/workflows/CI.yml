@@ -47,7 +47,7 @@ jobs:
         with:
           name: mavenLocal
           path: |
-            ${{ env.home }}/.m2/**
+            ${{ env.HOME }}/.m2/**
 
       - name: Check Examples.
         run: >
