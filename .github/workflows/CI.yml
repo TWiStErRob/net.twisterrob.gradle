@@ -32,7 +32,7 @@ jobs:
           jar publishToMavenLocal
 
       - name: Upload JARs and metadata.
-        if: always()
+        if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
           name: Artifacts
@@ -42,6 +42,7 @@ jobs:
             ${{ github.workspace }}/**/build/publications/release/pom-default.xml
 
       - name: Upload mavenLocal() artifacts.
+        if: success()
         uses: actions/upload-artifact@v2
         with:
           name: mavenLocal
@@ -171,21 +172,21 @@ jobs:
           -Pnet.twisterrob.gradle.runner.gradleVersion=${{ matrix.gradle }}
 
       - name: Upload "${{ env.JOB_NAME }} Test Results XMLs".
-        if: always()
+        if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.JOB_NAME }} Test Results XMLs
           path: ${{ github.workspace }}/**/build/test-results/test/TEST-*.xml
 
       - name: Upload "${{ env.JOB_NAME }} Test Results HTML".
-        if: always()
+        if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.JOB_NAME }} Test Results HTML
           path: ${{ github.workspace }}/build/reports/tests/all/
 
       - name: Upload "${{ env.JOB_NAME }} Test Results HTMLs".
-        if: always()
+        if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.JOB_NAME }} Test Results HTMLs
