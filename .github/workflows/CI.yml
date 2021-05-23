@@ -5,15 +5,16 @@ on: [ push ]
 #  pull_request:
 #    branches: [ $default-branch ]
 jobs:
+  cancel:
+    name: 0; ⛔ Cancel
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel previous Workflow runs, no need for stale executions.
+        uses: styfle/cancel-workflow-action@0.9.0
   build:
     name: 1; 🔨 Build
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs.
-        uses: styfle/cancel-workflow-action@0.9.0
-        with:
-          access_token: ${{ github.token }}
-
       # Short-cut version of env setup in "check:".
       - uses: actions/setup-java@v1
         with:
@@ -54,6 +55,11 @@ jobs:
           --stacktrace
           assembleExamples checkExamples
           -Pnet.twisterrob.gradle.build.includeExamples=true
+
+      - name: Cancel other jobs on Build failure, no need to check / test it.
+        if: failure()
+        uses: andymckay/cancel-action@0.2
+
   check:
     # Cannot access ${{ env.JOB_NAME }}, so need to duplicate.
     name: 2; 🛠️ AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
