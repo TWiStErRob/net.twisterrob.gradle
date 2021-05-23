@@ -25,7 +25,7 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
-          jar uploadToMavenLocal
+          jar publishToMavenLocal
 
       - name: Upload JARs and metadata.
         if: always()
