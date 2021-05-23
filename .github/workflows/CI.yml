@@ -7,7 +7,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
-    name: 1; 🔨 Build
+    name: 1 🔨 Build
     runs-on: ubuntu-latest
     # Don't know the limits yet. Try similar to check.
     timeout-minutes: 15
@@ -59,7 +59,7 @@ jobs:
 
   check:
     # Cannot access ${{ env.JOB_NAME }}, so need to duplicate.
-    name: 2; 🛠️ AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
+    name: 2 🛠️ AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
     runs-on: ubuntu-latest
     env:
       # Cannot access ${{ job.name }} so create own.
@@ -302,7 +302,7 @@ jobs:
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
-    name: 3; 📢 Publish Unit Tests Results
+    name: 3 📢 Publish Unit Tests Results
     runs-on: ubuntu-latest
     needs: check
     # The dependency job might be skipped, we don't need to run this job then.
@@ -323,7 +323,7 @@ jobs:
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
-          check_name: 0; 🔔 Test Results
+          check_name: 0 🔔 Test Results
           comment_title: Test Results
           report_individual_runs: true
           test_changes_limit: 0
