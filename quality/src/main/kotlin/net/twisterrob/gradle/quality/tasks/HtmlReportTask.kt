@@ -25,35 +25,47 @@ import javax.xml.transform.stream.StreamSource
 
 open class HtmlReportTask : ValidateViolationsTask() {
 
-	private val xmlFile: File get() = xml.asFile.get()
-	@OutputFile
-	val xml: RegularFileProperty = reportDir().file("violations.xml").asProperty()
+	private val xmlFile: File
+		get() = xml.asFile.get()
 
-	private val htmlFile: File get() = html.asFile.get()
 	@OutputFile
-	val html: RegularFileProperty = reportDir().file("violations.html").asProperty()
+	val xml: RegularFileProperty =
+		reportDir().file("violations.xml").asProperty()
 
-	private val xslTemplateFile: File? get() = xslTemplate.asFile.orNull
+	private val htmlFile: File
+		get() = html.asFile.get()
+
+	@OutputFile
+	val html: RegularFileProperty =
+		reportDir().file("violations.html").asProperty()
+
+	private val xslTemplateFile: File?
+		get() = xslTemplate.asFile.orNull
+
 	@InputFile
 	@get:Optional
-	val xslTemplate: RegularFileProperty = project.fileProperty().apply {
-		//set(project.file("config/violations.xsl"))
-	}
+	val xslTemplate: RegularFileProperty =
+		project.fileProperty().apply {
+			//set(project.file("config/violations.xsl"))
+		}
 
-	private val xslOutputFile: File get() = xslOutput.asFile.get()
+	private val xslOutputFile: File
+		get() = xslOutput.asFile.get()
+
 	/**
 	 * val xslOutput: File = xml.parentFile.resolve(xslTemplate.name)
 	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@OutputFile
-	val xslOutput: RegularFileProperty = xml
-		.map { regular ->
-			regular.asFileProvider()
-				.map { file -> file.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl") }
-				.asRegularFile()
+	val xslOutput: RegularFileProperty =
+		xml
+			.map { regular ->
+				regular.asFileProvider()
+					.map { file -> file.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl") }
+					.asRegularFile()
 
-		}
-		.asProperty()
+			}
+			.asProperty()
 
 	init {
 		doFirst {
