@@ -140,9 +140,7 @@ jobs:
           # Capture version for later usage.
           # Note: the $ is very important no prevent matching the "Welcome to Gradle x.y.z!" line.
           grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?)$' gradle.version.log > gradle.version
-          echo GRADLE_VERSION=$(<gradle.version) >> $GITHUB_ENV
-          # Note: env.GRADLE_VERSION is not ready yet, because it's one step.
-          echo GRADLE_VERSION=$(<gradle.version)
+          echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
 
       - name: Download Gradle ${{ matrix.gradle }} running the tests.
         run: |
