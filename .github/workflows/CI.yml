@@ -36,23 +36,16 @@ jobs:
         if: failure()
         uses: andymckay/cancel-action@0.2
 
-      - name: Upload JARs.
-        if: success() || failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: Artifacts
-          path: |
-            ${{ github.workspace }}/**/build/libs/*.jar
-
       - name: Publish Gradle Quality plugins to mavenLocal().
         run: ./gradlew --no-daemon --no-build-cache --stacktrace publishToMavenLocal
 
-      - name: Upload Maven and Gradle metadata.
+      - name: Upload JARs, Maven and Gradle metadata.
         if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
-          name: Publications Metadata
+          name: Intermediate Artifacts
           path: |
+            ${{ github.workspace }}/**/build/libs/*.jar
             ${{ github.workspace }}/**/build/publications/release/module.json
             ${{ github.workspace }}/**/build/publications/release/pom-default.xml
 
@@ -62,7 +55,7 @@ jobs:
         with:
           name: mavenLocal
           path: |
-            ~/.m2/**
+            ~/.m2/repository/**
 
       - name: Verify docs/examples/local.
         working-directory: docs/examples/local
