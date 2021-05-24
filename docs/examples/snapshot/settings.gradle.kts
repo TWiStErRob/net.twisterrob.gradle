@@ -1,9 +1,21 @@
 pluginManagement {
 	repositories {
-		google()
+		maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+			name = "Sonatype 01"
+			content {
+				includeGroup("net.twisterrob.gradle")
+			}
+			mavenContent {
+				snapshotsOnly()
+			}
+		}
+		google {
+			content {
+				includeGroup("com.android.tools.build")
+			}
+		}
 		mavenCentral()
-		maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") { name = "Sonatype 01" }
-		gradlePluginPortal()
+		//gradlePluginPortal() // not used
 	}
 	resolutionStrategy {
 		eachPlugin {

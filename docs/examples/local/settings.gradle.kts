@@ -1,9 +1,17 @@
 pluginManagement {
 	repositories {
-		mavenLocal()
-		google()
+		mavenLocal {
+			content {
+				includeGroup("net.twisterrob.gradle")
+			}
+		}
+		google {
+			content {
+				includeGroup("com.android.tools.build")
+			}
+		}
 		mavenCentral()
-		gradlePluginPortal()
+		//gradlePluginPortal() // not used
 	}
 	resolutionStrategy {
 		eachPlugin {

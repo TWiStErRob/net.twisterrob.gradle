@@ -1,8 +1,12 @@
 pluginManagement {
 	repositories {
-		google()
+		google {
+			content {
+				includeGroup("com.android.tools.build")
+			}
+		}
 		mavenCentral()
-		gradlePluginPortal()
+		//gradlePluginPortal() // not used
 	}
 	resolutionStrategy {
 		eachPlugin {
