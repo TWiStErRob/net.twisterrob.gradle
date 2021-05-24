@@ -5,6 +5,7 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
+import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.BuildResult
@@ -25,6 +26,16 @@ class CheckStyleTaskTest_ConfigLocation {
 
 	companion object {
 		val CONFIG_PATH = arrayOf("config", "checkstyle", "checkstyle.xml")
+		@Language("gradle")
+		val SCRIPT_CONFIGURE_CHECKSTYLE = """
+			subprojects { // i.e. :module
+				apply plugin: 'net.twisterrob.checkstyle'
+				tasks.withType(${Checkstyle::class.java.name}) {
+					// output all violations to the console so that we can parse the results
+					showViolations = true
+				}
+			}
+		""".trimIndent()
 	}
 
 	private lateinit var gradle: GradleRunnerRule
@@ -78,24 +89,27 @@ class CheckStyleTaskTest_ConfigLocation {
 		result.assertHasOutputLine("""While auto-configuring configFile for task ':module:checkstyleDebug', there was no configuration found at:""")
 	}
 
-	private fun executeBuild(): BuildResult {
-		@Language("gradle")
-		val script = """
-			subprojects { // i.e. :module
-				apply plugin: 'net.twisterrob.checkstyle'
-				tasks.withType(${Checkstyle::class.java.name}) {
-					// output all violations to the console so that we can parse the results
-					showViolations = true
-				}
-			}
-		""".trimIndent()
+	@Test fun `does not warn about missing configuration when not executed`() {
+		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
+		if (false) {
+			gradle.file(noChecksConfig, *CONFIG_PATH)
+		}
 
+		val result = gradle.runBuild {
+			basedOn("android-single_module")
+			run(SCRIPT_CONFIGURE_CHECKSTYLE, ":module:tasks")
+		}
+		assertEquals(TaskOutcome.SUCCESS, result.task(":module:tasks")!!.outcome)
+		result.assertNoOutputLine(Regex("""While auto-configuring configFile for task '.*"""))
+	}
+
+	private fun executeBuild(): BuildResult {
 		gradle.file(failingContent, "module", "src", "main", "java", "Checkstyle.java")
 		// see also @Test/given for configuration file location setup
 
 		return gradle.runFailingBuild {
 			basedOn("android-single_module")
-			run(script, ":module:checkstyleDebug")
+			run(SCRIPT_CONFIGURE_CHECKSTYLE, ":module:checkstyleDebug")
 		}
 	}
 }

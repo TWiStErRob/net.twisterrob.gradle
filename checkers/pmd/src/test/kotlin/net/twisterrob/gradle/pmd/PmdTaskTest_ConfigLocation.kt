@@ -5,6 +5,7 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
+import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.BuildResult
@@ -23,6 +24,25 @@ class PmdTaskTest_ConfigLocation {
 	companion object {
 
 		val CONFIG_PATH = arrayOf("config", "pmd", "pmd.xml")
+
+		@Language("gradle")
+		val SCRIPT_CONFIGURE_PMD = """
+			import org.gradle.util.GradleVersion
+			subprojects { // i.e. :module
+				apply plugin: 'net.twisterrob.pmd'
+				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
+				pmd {
+					toolVersion = '5.6.1' // Gradle 4.10.3
+					if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
+						incrementalAnalysis.set(false)
+					}
+				}
+				tasks.withType(${Pmd::class.java.name}) {
+					// output all violations to the console so that we can parse the results
+					consoleOutput = true
+				}
+			}
+		""".trimIndent()
 	}
 
 	private lateinit var gradle: GradleRunnerRule
@@ -76,32 +96,27 @@ class PmdTaskTest_ConfigLocation {
 		result.assertHasOutputLine("""While auto-configuring ruleSetFiles for task ':module:pmdDebug', there was no configuration found at:""")
 	}
 
-	private fun executeBuild(): BuildResult {
-		@Language("gradle")
-		val script = """
-			import org.gradle.util.GradleVersion
-			subprojects { // i.e. :module
-				apply plugin: 'net.twisterrob.pmd'
-				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
-				pmd {
-					toolVersion = '5.6.1' // Gradle 4.10.3
-					if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
-						incrementalAnalysis.set(false)
-					}
-				}
-				tasks.withType(${Pmd::class.java.name}) {
-					// output all violations to the console so that we can parse the results
-					consoleOutput = true
-				}
-			}
-		""".trimIndent()
+	@Test fun `does not warn about missing configuration when not executed`() {
+		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
+		if (false) {
+			gradle.file(noChecksConfig, *CONFIG_PATH)
+		}
 
+		val result = gradle.runBuild {
+			basedOn("android-single_module")
+			run(SCRIPT_CONFIGURE_PMD, ":module:tasks")
+		}
+		assertEquals(TaskOutcome.SUCCESS, result.task(":module:tasks")!!.outcome)
+		result.assertNoOutputLine(Regex("""While auto-configuring ruleSetFiles for task '.*"""))
+	}
+
+	private fun executeBuild(): BuildResult {
 		gradle.file(failingContent, "module", "src", "main", "java", "Pmd.java")
 		// see also @Test/given for configuration file location setup
 
 		return gradle.runFailingBuild {
 			basedOn("android-single_module")
-			run(script, ":module:pmdDebug")
+			run(SCRIPT_CONFIGURE_PMD, ":module:pmdDebug")
 		}
 	}
 }
