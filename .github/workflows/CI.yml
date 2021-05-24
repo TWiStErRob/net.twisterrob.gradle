@@ -28,9 +28,10 @@ jobs:
       - name: Parse env.PROJECT_VERSION.
         run: echo "PROJECT_VERSION=$(grep --color=never --perl-regexp --only-matching '(?<=^projectVersion=)(.*)$' gradle.properties)" | tee --append $GITHUB_ENV
 
-      - name: Calculate env.SNAPSHOT_VERSION for PRs.
-        if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.event.pull_request.number
-        run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION | sed -re "s/^(.*)(-SNAPSHOT)$/\1.pr${{ github.event.pull_request.number }}\2/")" | tee --append $GITHUB_ENV
+      - name: Calculate env.SNAPSHOT_VERSION for branches.
+        # ${{ github.event.pull_request.number }} is not available for push.
+        if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref != 'refs/heads/master'
+        run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION | sed -re 's/^(.*)(-SNAPSHOT)$/\1.pr$(echo ${{ github.ref }} | sed -re 's/^refs\/heads\///')\2/')" | tee --append $GITHUB_ENV
 
       - name: Calculate env.SNAPSHOT_VERSION for master.
         if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/master'
