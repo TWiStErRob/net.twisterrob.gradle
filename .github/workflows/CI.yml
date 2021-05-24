@@ -73,7 +73,7 @@ jobs:
         run: echo "SNAPSHOT_VERSION=$(echo PROJECT_VERSION)" | tee --append $GITHUB_ENV
 
       - name: Publish Gradle Quality plugins to mavenLocal().
-        if: env.SNAPSHOT_VERSION != Null
+        if: env.SNAPSHOT_VERSION != ''
         run: >
           ./gradlew
           --no-daemon
@@ -86,7 +86,7 @@ jobs:
 
       - name: Verify docs/examples/snapshot.
         working-directory: docs/examples/snapshot
-        if: env.SNAPSHOT_VERSION != Null
+        if: env.SNAPSHOT_VERSION != ''
         run: |
           sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}"/version "${{ env.SNAPSHOT_VERSION }}"/g' build.gradle.kts
           ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
