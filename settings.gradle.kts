@@ -18,3 +18,9 @@ listOf("checkstyle", "pmd").forEach {
 if (GradleVersion.current().baseVersion < GradleVersion.version("5.0")) {
 	enableFeaturePreview("STABLE_PUBLISHING")
 }
+
+if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toBoolean()) {
+	includeBuild("docs/examples/local")
+	includeBuild("docs/examples/snapshot")
+	includeBuild("docs/examples/release")
+}

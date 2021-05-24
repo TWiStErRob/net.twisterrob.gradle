@@ -23,14 +23,16 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 			if (config != null) {
 				task.ruleSetFiles += task.project.files(config)
 			} else if (task.ruleSetFiles.files.isEmpty()) {
-				task.logger.warn(
-					"""
-					While configuring ${task} no configuration found at:
-						${rootConfig}
-						${subConfig}
-						and there's no configuration location set in Gradle build files either.
-					""".trimIndent()
-				)
+				task.doFirst("Warn about missing configuration files.") {
+					task.logger.warn(
+						"""
+						While auto-configuring ruleSetFiles for ${task}, there was no configuration found at:
+							rootProject=${rootConfig}
+							subProject=${subConfig}
+							and there's no configuration location set in Gradle build files either.
+						""".trimIndent()
+					)
+				}
 			}
 
 			// put configuration files on classpath of PMD so it's possible to reference own rulesets with relative path

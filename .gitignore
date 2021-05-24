@@ -3,6 +3,7 @@
 /build/
 /*/build/
 /*/*/build/
+/docs/examples/*/build/
 out/
 
 # IDEA Project files

@@ -11,6 +11,7 @@
  * Android Gradle Plugin 4.0.2 compatible (#101)
  * Android Gradle Plugin 4.1.3 compatible (#101)
  * Android Gradle Plugin 4.2.0 compatible (#101)
+ * Full project examples as documentation (#116).
 
 ### Fixes
 

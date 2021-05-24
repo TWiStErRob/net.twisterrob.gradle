@@ -217,6 +217,16 @@ allprojects {
 		}
 	}
 }
+if (project.property("net.twisterrob.gradle.build.includeExamples").toString().toBoolean()) {
+	tasks {
+		register("assembleExamples") {
+			dependsOn(gradle.includedBuilds.map { it.task(":assemble") })
+		}
+		register("checkExamples") {
+			dependsOn(gradle.includedBuilds.map { it.task(":check") })
+		}
+	}
+}
 
 project.tasks.create("tests", TestReport::class.java) {
 	destinationDir = file("${buildDir}/reports/tests/all")

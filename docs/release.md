@@ -24,15 +24,15 @@
     * `CHANGELOG.md`: update version end date
  1. Upload
     * Set up credentials
-        * `<sonatypeUsername>` is the account name of https://s01.oss.sonatype.org/
-        * `<sonatypePassword>` is `<sonatypeUsername>`'s password
-        * `<signingKey>` is GPG private armored key (just the base64 part on one line)
-        * `<signingPassword>` is `<signingKey>`'s passphrase
+        * `sonatypeUsername` is the account name of https://s01.oss.sonatype.org/
+        * `sonatypePassword` is `sonatypeUsername`'s password
+        * `signingKey` is GPG private armored key (just the base64 part on one line)
+        * `signingPassword` is `signingKey`'s passphrase
         ```bash
-        set ORG_GRADLE_PROJECT_sonatypeUsername=<sonatypeUsername>
-        set ORG_GRADLE_PROJECT_sonatypePassword=<sonatypePassword>
-        set ORG_GRADLE_PROJECT_signingKey=<signingKey>
-        set ORG_GRADLE_PROJECT_signingPassword=<signingPassword>
+        set ORG_GRADLE_PROJECT_sonatypeUsername=...
+        set ORG_GRADLE_PROJECT_sonatypePassword=...
+        set ORG_GRADLE_PROJECT_signingKey=...
+        set ORG_GRADLE_PROJECT_signingPassword=...
         ```
     * `gradlew publishReleasePublicationToSonatypeRepository`  
      _If this fails, fix and amend last commit._
@@ -49,8 +49,10 @@
 
 ## Prepare next release `x.z`
 
- 1. `git add gradle.properties CHANGELOG.md & git commit -m "Pre-Release x.z"`
+ 1. `git add gradle.properties CHANGELOG.md docs/examples/*/build.gradle.kts & git commit -m "Pre-Release x.z"`
     * `gradle.properties`: version number `x.z-SNAPSHOT`
+    * `docs/examples/snapshot/build.gradle.kts`: plugin version `x.z-SNAPSHOT`
+    * `docs/examples/release/build.gradle.kts`: plugin version `x.y`
     * `CHANGELOG.md`: add history section:
     ```
     ## x.z *(YYYY-MM-DD --- )*
