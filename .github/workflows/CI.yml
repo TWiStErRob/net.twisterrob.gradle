@@ -23,8 +23,6 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
 
-      - run: echo "${{ toJSON(github) }}"
-
       - name: Parse env.PROJECT_VERSION.
         run: echo "PROJECT_VERSION=$(grep --color=never --perl-regexp --only-matching '(?<=^projectVersion=)(.*)$' gradle.properties)" | tee --append $GITHUB_ENV
 
