@@ -26,9 +26,9 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 				task.doFirst("Warn about missing configuration files.") {
 					task.logger.warn(
 						"""
-						While configuring ${task} no configuration found at:
-							${rootConfig}
-							${subConfig}
+						While auto-configuring ruleSetFiles for ${task}, there was no configuration found at:
+							rootProject=${rootConfig}
+							subProject=${subConfig}
 							and there's no configuration location set in Gradle build files either.
 						""".trimIndent()
 					)
