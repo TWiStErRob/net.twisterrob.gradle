@@ -23,6 +23,44 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
 
+      # Check publicly available release version first, this should be independent of repository state.
+      - name: Verify docs/examples/release.
+        working-directory: docs/examples/release
+        if: success() || failure()
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+
+      - name: Build Gradle Quality plugins.
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace jar
+
+      - name: Cancel other jobs on Build failure, no need to check / test it.
+        if: failure()
+        uses: andymckay/cancel-action@0.2
+
+      - name: Publish Gradle Quality plugins to mavenLocal().
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace publishToMavenLocal
+
+      - name: Upload JARs, Maven and Gradle metadata.
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Intermediate Artifacts
+          path: |
+            ${{ github.workspace }}/**/build/libs/*.jar
+            ${{ github.workspace }}/**/build/publications/release/module.json
+            ${{ github.workspace }}/**/build/publications/release/pom-default.xml
+
+      - name: Upload mavenLocal() artifacts.
+        if: success() || failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: mavenLocal
+          path: |
+            ~/.m2/repository/**
+
+      - name: Verify docs/examples/local.
+        working-directory: docs/examples/local
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+
       - name: Parse env.PROJECT_VERSION.
         run: echo "PROJECT_VERSION=$(grep --color=never --perl-regexp --only-matching '(?<=^projectVersion=)(.*)$' gradle.properties)" | tee --append $GITHUB_ENV
 
@@ -35,6 +73,18 @@ jobs:
         if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/master'
         run: echo "SNAPSHOT_VERSION=$(echo PROJECT_VERSION)" | tee --append $GITHUB_ENV
 
+      - name: Publish Gradle Quality plugins to mavenLocal().
+        if: env.SNAPSHOT_VERSION != ''
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          publishReleasePublicationToSonatypeRepository
+          -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}
+          -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
+          -PprojectVersion=${{ env.SNAPSHOT_VERSION }}
+
       - name: Verify docs/examples/snapshot.
         working-directory: docs/examples/snapshot
         if: env.SNAPSHOT_VERSION != ''
@@ -43,7 +93,6 @@ jobs:
           ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
   check:
-    if: false
     # Cannot access ${{ env.JOB_NAME }}, so need to duplicate.
     name: 2 🛠️ AGP ${{ matrix.agp }} on Gradle ${{ matrix.gradle }}
     runs-on: ubuntu-latest
