@@ -61,12 +61,35 @@ jobs:
         working-directory: docs/examples/local
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
-      # TODO publish to sonatype
+      - name: Parse env.PROJECT_VERSION.
+        run: echo "PROJECT_VERSION=$(grep --color=never --perl-regexp --only-matching '(?<=^projectVersion=)(.*)$' gradle.properties)" | tee --append $GITHUB_ENV
+
+      - name: Calculate env.SNAPSHOT_VERSION for PRs.
+        if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.event.pull_request.number
+        run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION | sed -re "s/^(.*)(-SNAPSHOT)$/\1.pr${{ github.event.pull_request.number }}\2/")" | tee --append $GITHUB_ENV
+
+      - name: Calculate env.SNAPSHOT_VERSION for master.
+        if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/master'
+        run: echo "SNAPSHOT_VERSION=$(echo PROJECT_VERSION)" | tee --append $GITHUB_ENV
+
+      - name: Publish Gradle Quality plugins to mavenLocal().
+        if: env.SNAPSHOT_VERSION != Null
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          publishReleasePublicationToSonatypeRepository
+          -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}
+          -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
+          -PprojectVersion=${{ env.SNAPSHOT_VERSION }}
 
       - name: Verify docs/examples/snapshot.
         working-directory: docs/examples/snapshot
-        if: success() || failure()
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+        if: env.SNAPSHOT_VERSION != Null
+        run: |
+          sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}"/version "${{ env.SNAPSHOT_VERSION }}"/g' build.gradle.kts
+          ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
   check:
     # Cannot access ${{ env.JOB_NAME }}, so need to duplicate.
