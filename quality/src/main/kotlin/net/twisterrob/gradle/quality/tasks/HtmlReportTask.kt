@@ -73,7 +73,7 @@ open class HtmlReportTask : ValidateViolationsTask() {
 				xslTemplateFile!!.copyTo(xslOutputFile, overwrite = true)
 			} else {
 				val builtIn =
-					this::class.java.getResourceAsStream("/violations.xsl")
+					this::class.java.getResourceAsStream("/violations.xsl")!!
 				builtIn.use { input ->
 					xslOutputFile.outputStream().use { output ->
 						input.copyTo(output)
