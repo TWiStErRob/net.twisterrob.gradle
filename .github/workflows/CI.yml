@@ -257,11 +257,6 @@ jobs:
             agp: 3.1.4
             build-tools: 27.0.3
             instant-api: 26
-          - name: "Android Gradle Plugin 3.1.x, Gradle 4.4+"
-            gradle: 4.9
-            agp: 3.1.4
-            build-tools: 27.0.3
-            instant-api: 26
           - name: "Android Gradle Plugin 3.2.x, Gradle 4.6+"
             gradle: 4.9
             agp: 3.2.1
