@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertTimeoutPreemptively
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.function.ThrowingSupplier
+import java.io.File
 import java.time.Duration.ofMinutes
 import kotlin.test.assertEquals
 
@@ -39,6 +40,105 @@ class HtmlReportTaskTest {
 		assertThat(gradle.violationsReport("xsl"), anExistingFile())
 		assertThat(gradle.violationsReport("xml"), anExistingFile())
 		assertThat(gradle.violationsReport("html"), anExistingFile())
+	}
+
+	@Test fun `able to relocate outputs`() {
+		gradle.basedOn("android-root_app")
+		@Language("gradle")
+		val script = """
+			apply plugin: 'org.gradle.reporting-base'
+			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
+			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
+			    html.set(project.file("my_report/htmldir/htmlname.htmlext"))
+			    xsl.set(project.file("my_report/xsldir/xslname.xslext"))
+			}
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "htmlReport")
+		}
+
+		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		assertThat(gradle.projectFile("my_report/xmldir/xmlname.xmlext"), anExistingFile())
+		assertThat(gradle.projectFile("my_report/htmldir/htmlname.htmlext"), anExistingFile())
+		assertThat(gradle.projectFile("my_report/xsldir/xslname.xslext"), anExistingFile())
+	}
+
+	@Test fun `relocating the XML moves XSL too`() {
+		gradle.basedOn("android-root_app")
+		@Language("gradle")
+		val script = """
+			apply plugin: 'org.gradle.reporting-base'
+			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
+			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
+			}
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "htmlReport")
+		}
+
+		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		assertThat(gradle.violationsReport("html"), anExistingFile())
+		assertThat(gradle.projectFile("my_report/xmldir/xmlname.xmlext"), anExistingFile())
+		assertThat(gradle.projectFile("my_report/xmldir/violations.xsl"), anExistingFile())
+	}
+
+	@Test fun `specifying custom XSL template and output works correctly`() {
+		gradle.basedOn("android-root_app")
+		gradle.file(SIMPLE_XSL, "src", "input.xsl")
+		@Language("gradle")
+		val script = """
+			apply plugin: 'org.gradle.reporting-base'
+			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
+			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
+			    xsl.set(project.file("my_report/xsldir/xslname.xslext"))
+				xslTemplate.set(project.file("src/input.xsl"))
+			}
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "htmlReport")
+		}
+
+		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		assertThat(gradle.violationsReport("html"), anExistingFile())
+		assertThat(gradle.projectFile("my_report/xmldir/xmlname.xmlext"), anExistingFile())
+		assertThat(gradle.projectFile("my_report/xsldir/xslname.xslext"), anExistingFile())
+		assertEquals(SIMPLE_XSL, gradle.projectFile("my_report/xsldir/xslname.xslext").readText())
+		assertEquals(
+			"${System.lineSeparator()}\t\tp=${gradle.projectFile(".").parentFile.name}," +
+					"${System.lineSeparator()}\t\tc=0",
+			gradle.violationsReport("html").readText()
+		)
+	}
+
+	@Test fun `specifying custom template works correctly`() {
+		gradle.basedOn("android-root_app")
+		gradle.file(SIMPLE_XSL, "src", "input.xsl")
+		@Language("gradle")
+		val script = """
+			apply plugin: 'org.gradle.reporting-base'
+			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
+			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
+				xslTemplate.set(project.file("src/input.xsl"))
+			}
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "htmlReport")
+		}
+
+		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		assertThat(gradle.violationsReport("html"), anExistingFile())
+		assertThat(gradle.projectFile("my_report/xmldir/xmlname.xmlext"), anExistingFile())
+		assertThat(gradle.projectFile("my_report/xmldir/input.xsl"), anExistingFile())
+		assertEquals(SIMPLE_XSL, gradle.projectFile("my_report/xmldir/input.xsl").readText())
+		assertEquals(
+			"${System.lineSeparator()}\t\tp=${gradle.projectFile(".").parentFile.name}," +
+					"${System.lineSeparator()}\t\tc=0",
+			gradle.violationsReport("html").readText()
+		)
 	}
 
 	@Test fun `runs on lints`() {
@@ -217,7 +317,24 @@ class HtmlReportTaskTest {
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
 	}
+
+	companion object {
+		@Language("xsl")
+		private val SIMPLE_XSL: String =
+			"""
+				<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+					<xsl:output method="text" />
+					<xsl:template match="/violations">
+						p=<xsl:value-of select="@project" />,
+						c=<xsl:value-of select="count(.//violation)" />
+					</xsl:template>
+				</xsl:stylesheet>
+			""".trimIndent()
+	}
 }
 
-private fun GradleRunnerRule.violationsReport(extension: String) =
-	this.runner.projectDir.resolve("build/reports/violations.${extension}")
+private fun GradleRunnerRule.projectFile(relative: String): File =
+	this.runner.projectDir.resolve(relative)
+
+private fun GradleRunnerRule.violationsReport(extension: String): File =
+	this.projectFile("build/reports/violations.${extension}")

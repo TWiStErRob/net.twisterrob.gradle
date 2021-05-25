@@ -40,14 +40,14 @@ abstract class HtmlReportTask : ValidateViolationsTask() {
 	abstract val xslTemplate: RegularFileProperty
 
 	private val xslOutputFile: File
-		get() = xslOutput.asFile.get()
+		get() = xsl.asFile.get()
 
 	/**
-	 * val xslOutput: File = xml.parentFile.resolve(xslTemplate.name)
+	 * val xsl: File = xml.parentFile.resolve(xslTemplate.name)
 	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@get:OutputFile
-	abstract val xslOutput: RegularFileProperty
+	abstract val xsl: RegularFileProperty
 
 	init {
 		val reportDir = project.extensions
@@ -55,7 +55,7 @@ abstract class HtmlReportTask : ValidateViolationsTask() {
 			.baseDirectory
 		xml.convention(reportDir.file("violations.xml"))
 		html.convention(reportDir.file("violations.html"))
-		xslOutput.convention(
+		xsl.convention(
 			xml.flatMap { regular ->
 				project.layout.dir(project.provider { regular.asFile.parentFile })
 					.map { it.file(xslTemplateFile?.name ?: "violations.xsl") }
