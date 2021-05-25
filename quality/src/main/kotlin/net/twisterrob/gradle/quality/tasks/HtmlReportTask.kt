@@ -6,48 +6,38 @@ import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.GradleException
-import org.gradle.api.Project
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.ProjectLayout
-import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Provider
 import org.gradle.api.reporting.ReportingExtension
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.kotlin.dsl.getByName
-import org.gradle.util.GradleVersion
 import java.io.File
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
-open class HtmlReportTask : ValidateViolationsTask() {
+@Suppress("UnstableApiUsage")
+abstract class HtmlReportTask : ValidateViolationsTask() {
 
 	private val xmlFile: File
 		get() = xml.asFile.get()
 
-	@OutputFile
-	val xml: RegularFileProperty =
-		reportDir().file("violations.xml").asProperty()
+	@get:OutputFile
+	abstract val xml: RegularFileProperty
 
 	private val htmlFile: File
 		get() = html.asFile.get()
 
-	@OutputFile
-	val html: RegularFileProperty =
-		reportDir().file("violations.html").asProperty()
+	@get:OutputFile
+	abstract val html: RegularFileProperty
 
 	private val xslTemplateFile: File?
 		get() = xslTemplate.asFile.orNull
 
-	@InputFile
+	@get:InputFile
 	@get:Optional
-	val xslTemplate: RegularFileProperty =
-		project.fileProperty().apply {
-			//set(project.file("config/violations.xsl"))
-		}
+	abstract val xslTemplate: RegularFileProperty
 
 	private val xslOutputFile: File
 		get() = xslOutput.asFile.get()
@@ -56,18 +46,22 @@ open class HtmlReportTask : ValidateViolationsTask() {
 	 * val xslOutput: File = xml.parentFile.resolve(xslTemplate.name)
 	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
-	@OutputFile
-	val xslOutput: RegularFileProperty =
-		xml
-			.map { regular ->
-				regular.asFileProvider()
-					.map { file -> file.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl") }
-					.asRegularFile()
-
-			}
-			.asProperty()
+	@get:OutputFile
+	abstract val xslOutput: RegularFileProperty
 
 	init {
+		val reportDir = project.extensions
+			.getByName<ReportingExtension>(ReportingExtension.NAME)
+			.baseDirectory
+		xml.convention(reportDir.file("violations.xml"))
+		html.convention(reportDir.file("violations.html"))
+		xslOutput.convention(
+			xml.flatMap { regular ->
+				project.layout.dir(project.provider { regular.asFile.parentFile })
+					.map { it.file(xslTemplateFile?.name ?: "violations.xsl") }
+			}
+		)
+		//xslTemplate.convention(project.layout.projectDirectory.file("config/violations.xsl"))
 		doFirst {
 			if (xslTemplateFile?.exists() == true) {
 				xslTemplateFile!!.copyTo(xslOutputFile, overwrite = true)
@@ -101,43 +95,4 @@ open class HtmlReportTask : ValidateViolationsTask() {
 			throw GradleException("Cannot transform ${xmlFile}\nto ${htmlFile}\nusing ${xslOutputFile}", ex)
 		}
 	}
-
-	private fun reportDir(): DirectoryProperty =
-		project.extensions
-			.getByName<ReportingExtension>(ReportingExtension.NAME)
-			.baseDirectory
-
-	private fun Provider<RegularFile>.asProperty(): RegularFileProperty =
-		project
-			.fileProperty()
-			.apply { set(this@asProperty) }
-
-	private fun RegularFile.asFileProvider(): Provider<File> =
-		project.providers
-			.provider { this@asFileProvider }
-			.asProperty()
-			.asFile
-
-	private fun Provider<File>.asRegularFile(): RegularFile =
-		project.layout
-			.file(this@asRegularFile)
-			.get()
-
-	private fun Project.fileProperty(): RegularFileProperty =
-		when {
-			GradleVersion.current().baseVersion < GradleVersion.version("5.0") ->
-				// Keep using layout.fileProperty() instead of objects.fileProperty() for backward compatibility.
-				@Suppress("DEPRECATION")
-				layout.fileProperty()
-			else ->
-				objects.fileProperty()
-		}
 }
-
-@Deprecated(
-	message = "Replaced by [ObjectFactory.fileProperty]." +
-			"It was Deprecated in Gradle 5.6.4, but removed in Gradle 6.x, polyfill here.",
-	replaceWith = ReplaceWith("project.objects.fileProperty()")
-)
-private fun ProjectLayout.fileProperty(): RegularFileProperty =
-	ProjectLayout::class.java.getDeclaredMethod("fileProperty").invoke(this) as RegularFileProperty
