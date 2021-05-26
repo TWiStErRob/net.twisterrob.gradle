@@ -151,7 +151,7 @@ fun ProjectLayout.dirCompat(project: Project, provider: Provider<File>): Provide
  * @see DefaultTask.newInputFileCompat
  */
 @Deprecated(
-	message = "Replaced with ObjectFactory.fileProperty()",
+	message = "Replaced with ObjectFactory.fileProperty().",
 	replaceWith = ReplaceWith("project.objects.fileProperty()")
 )
 fun DefaultTask.newInputFile(): RegularFileProperty {
@@ -171,7 +171,7 @@ fun DefaultTask.newInputFile(): RegularFileProperty {
  * @see DefaultTask.newOutputFileCompat
  */
 @Deprecated(
-	message = "Replaced with ObjectFactory.fileProperty()",
+	message = "Replaced with ObjectFactory.fileProperty().",
 	replaceWith = ReplaceWith("project.objects.fileProperty()")
 )
 fun DefaultTask.newOutputFile(): RegularFileProperty {
@@ -188,11 +188,28 @@ fun DefaultTask.newOutputFile(): RegularFileProperty {
  *  * [Deprecated in Gradle 5.0](https://docs.gradle.org/5.0/release-notes.html#changes-to-incubating-factory-methods-for-creating-properties)
  *  * [Removed in Gradle 6.0](https://docs.gradle.org/current/userguide/upgrading_version_5.html#methods_on_defaulttask_and_projectlayout_replaced_with_objectfactory)
  *
+ * @see ObjectFactory.fileProperty
+ */
+@Deprecated(
+	message = "Replaced with ObjectFactory.fileProperty().",
+	replaceWith = ReplaceWith("project.objects.fileProperty()")
+)
+fun ProjectLayout.fileProperty(): RegularFileProperty {
+	val fileProperty = ProjectLayout::class.java.getDeclaredMethod("fileProperty")
+	return fileProperty(this) as RegularFileProperty
+}
+
+/**
+ * Polyfill as reflective call, as this method was...
+ *  * [Added in Gradle 4.3](https://docs.gradle.org/4.3/release-notes.html#improvements-for-plugin-authors)
+ *  * [Deprecated in Gradle 5.0](https://docs.gradle.org/5.0/release-notes.html#changes-to-incubating-factory-methods-for-creating-properties)
+ *  * [Removed in Gradle 6.0](https://docs.gradle.org/current/userguide/upgrading_version_5.html#methods_on_defaulttask_and_projectlayout_replaced_with_objectfactory)
+ *
  * @see ObjectFactory.directoryProperty
  */
 @Deprecated(
-	message = "Replaced with ObjectFactory.directoryProperty()",
-	replaceWith = ReplaceWith("objects.directoryProperty()")
+	message = "Replaced with ObjectFactory.directoryProperty().",
+	replaceWith = ReplaceWith("project.objects.directoryProperty()")
 )
 fun ProjectLayout.directoryProperty(): DirectoryProperty {
 	val directoryProperty = ProjectLayout::class.java.getDeclaredMethod("directoryProperty")
