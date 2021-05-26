@@ -62,6 +62,7 @@ open class HtmlReportTask : ValidateViolationsTask() {
 			}
 		)
 		//xslTemplate.convention(project.layout.projectDirectory.file("config/violations.xsl"))
+		@Suppress("LeakingThis")
 		doFirst {
 			if (xslTemplateFile?.exists() == true) {
 				xslTemplateFile!!.copyTo(xslOutputFile, overwrite = true)
@@ -75,6 +76,7 @@ open class HtmlReportTask : ValidateViolationsTask() {
 				}
 			}
 		}
+		@Suppress("LeakingThis")
 		doLast { transform() }
 	}
 
