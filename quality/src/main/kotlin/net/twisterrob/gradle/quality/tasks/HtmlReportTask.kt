@@ -3,41 +3,44 @@ package net.twisterrob.gradle.quality.tasks
 import com.android.utils.SdkUtils
 import com.google.common.annotations.VisibleForTesting
 import net.twisterrob.gradle.common.grouper.Grouper
+import net.twisterrob.gradle.compat.conventionCompat
+import net.twisterrob.gradle.compat.dirCompat
+import net.twisterrob.gradle.compat.flatMapCompat
+import net.twisterrob.gradle.compat.newInputFileCompat
+import net.twisterrob.gradle.compat.newOutputFileCompat
+import net.twisterrob.gradle.dsl.reporting
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.reporting.ReportingExtension
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
-import org.gradle.kotlin.dsl.getByName
 import java.io.File
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
-@Suppress("UnstableApiUsage")
-abstract class HtmlReportTask : ValidateViolationsTask() {
+open class HtmlReportTask : ValidateViolationsTask() {
 
 	private val xmlFile: File
 		get() = xml.asFile.get()
 
 	@get:OutputFile
-	abstract val xml: RegularFileProperty
+	val xml: RegularFileProperty = newOutputFileCompat()
 
 	private val htmlFile: File
 		get() = html.asFile.get()
 
 	@get:OutputFile
-	abstract val html: RegularFileProperty
+	val html: RegularFileProperty = newOutputFileCompat()
 
 	private val xslTemplateFile: File?
 		get() = xslTemplate.asFile.orNull
 
 	@get:InputFile
 	@get:Optional
-	abstract val xslTemplate: RegularFileProperty
+	val xslTemplate: RegularFileProperty = newInputFileCompat()
 
 	private val xslOutputFile: File
 		get() = xsl.asFile.get()
@@ -47,17 +50,14 @@ abstract class HtmlReportTask : ValidateViolationsTask() {
 	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@get:OutputFile
-	abstract val xsl: RegularFileProperty
+	val xsl: RegularFileProperty = newOutputFileCompat()
 
 	init {
-		val reportDir = project.extensions
-			.getByName<ReportingExtension>(ReportingExtension.NAME)
-			.baseDirectory
-		xml.convention(reportDir.file("violations.xml"))
-		html.convention(reportDir.file("violations.html"))
-		xsl.convention(
-			xml.flatMap { regular ->
-				project.layout.dir(project.provider { regular.asFile.parentFile })
+		xml.conventionCompat(project.reporting.baseDirectory.file("violations.xml"))
+		html.conventionCompat(project.reporting.baseDirectory.file("violations.html"))
+		xsl.conventionCompat(
+			xml.flatMapCompat { regular ->
+				project.layout.dirCompat(project, project.provider { regular.asFile.parentFile })
 					.map { it.file(xslTemplateFile?.name ?: "violations.xsl") }
 			}
 		)
