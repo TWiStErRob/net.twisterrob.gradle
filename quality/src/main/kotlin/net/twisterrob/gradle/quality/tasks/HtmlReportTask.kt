@@ -4,7 +4,6 @@ import com.android.utils.SdkUtils
 import com.google.common.annotations.VisibleForTesting
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.compat.conventionCompat
-import net.twisterrob.gradle.compat.dirCompat
 import net.twisterrob.gradle.compat.flatMapCompat
 import net.twisterrob.gradle.compat.newInputFileCompat
 import net.twisterrob.gradle.compat.newOutputFileCompat
@@ -57,8 +56,9 @@ open class HtmlReportTask : ValidateViolationsTask() {
 		html.conventionCompat(project.reporting.baseDirectory.file("violations.html"))
 		xsl.conventionCompat(
 			xml.flatMapCompat { regular ->
-				project.layout.dirCompat(project, project.provider { regular.asFile.parentFile })
-					.map { it.file(xslTemplateFile?.name ?: "violations.xsl") }
+				project.layout.file(project.provider {
+					regular.asFile.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl")
+				})
 			}
 		)
 		//xslTemplate.convention(project.layout.projectDirectory.file("config/violations.xsl"))
