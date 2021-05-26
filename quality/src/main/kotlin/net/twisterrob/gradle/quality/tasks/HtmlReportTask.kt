@@ -61,7 +61,8 @@ open class HtmlReportTask : ValidateViolationsTask() {
 				})
 			}
 		)
-		//xslTemplate.convention(project.layout.projectDirectory.file("config/violations.xsl"))
+		// Setting up this convention would trigger a file not found when no override is set.
+		//xslTemplate.conventionCompat(project.layout.projectDirectory.file("config/violations.xsl"))
 		@Suppress("LeakingThis")
 		doFirst {
 			if (xslTemplateFile?.exists() == true) {
