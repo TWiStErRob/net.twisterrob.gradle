@@ -3,21 +3,18 @@ package net.twisterrob.gradle.quality.tasks
 import com.android.utils.SdkUtils
 import com.google.common.annotations.VisibleForTesting
 import net.twisterrob.gradle.common.grouper.Grouper
+import net.twisterrob.gradle.compat.conventionCompat
+import net.twisterrob.gradle.compat.flatMapCompat
+import net.twisterrob.gradle.compat.newInputFileCompat
+import net.twisterrob.gradle.compat.newOutputFileCompat
+import net.twisterrob.gradle.dsl.reporting
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.GradleException
-import org.gradle.api.Project
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.ProjectLayout
-import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Provider
-import org.gradle.api.reporting.ReportingExtension
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
-import org.gradle.kotlin.dsl.getByName
-import org.gradle.util.GradleVersion
 import java.io.File
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
@@ -25,43 +22,54 @@ import javax.xml.transform.stream.StreamSource
 
 open class HtmlReportTask : ValidateViolationsTask() {
 
-	private val xmlFile: File get() = xml.asFile.get()
-	@OutputFile
-	val xml: RegularFileProperty = reportDir().file("violations.xml").asProperty()
+	private val xmlFile: File
+		get() = xml.asFile.get()
 
-	private val htmlFile: File get() = html.asFile.get()
-	@OutputFile
-	val html: RegularFileProperty = reportDir().file("violations.html").asProperty()
+	@get:OutputFile
+	val xml: RegularFileProperty = newOutputFileCompat()
 
-	private val xslTemplateFile: File? get() = xslTemplate.asFile.orNull
-	@InputFile
+	private val htmlFile: File
+		get() = html.asFile.get()
+
+	@get:OutputFile
+	val html: RegularFileProperty = newOutputFileCompat()
+
+	private val xslTemplateFile: File?
+		get() = xslTemplate.asFile.orNull
+
+	@get:InputFile
 	@get:Optional
-	val xslTemplate: RegularFileProperty = project.fileProperty().apply {
-		//set(project.file("config/violations.xsl"))
-	}
+	val xslTemplate: RegularFileProperty = newInputFileCompat()
 
-	private val xslOutputFile: File get() = xslOutput.asFile.get()
+	private val xslOutputFile: File
+		get() = xsl.asFile.get()
+
 	/**
-	 * val xslOutput: File = xml.parentFile.resolve(xslTemplate.name)
+	 * val xsl: File = xml.parentFile.resolve(xslTemplate.name)
 	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
-	@OutputFile
-	val xslOutput: RegularFileProperty = xml
-		.map { regular ->
-			regular.asFileProvider()
-				.map { file -> file.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl") }
-				.asRegularFile()
-
-		}
-		.asProperty()
+	@get:OutputFile
+	val xsl: RegularFileProperty = newOutputFileCompat()
 
 	init {
+		xml.conventionCompat(project.reporting.baseDirectory.file("violations.xml"))
+		html.conventionCompat(project.reporting.baseDirectory.file("violations.html"))
+		xsl.conventionCompat(
+			xml.flatMapCompat { regular ->
+				project.layout.file(project.provider {
+					regular.asFile.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl")
+				})
+			}
+		)
+		// Setting up this convention would trigger a file not found when no override is set.
+		//xslTemplate.conventionCompat(project.layout.projectDirectory.file("config/violations.xsl"))
+		@Suppress("LeakingThis")
 		doFirst {
 			if (xslTemplateFile?.exists() == true) {
 				xslTemplateFile!!.copyTo(xslOutputFile, overwrite = true)
 			} else {
 				val builtIn =
-					this::class.java.getResourceAsStream("/violations.xsl")
+					this::class.java.getResourceAsStream("/violations.xsl")!!
 				builtIn.use { input ->
 					xslOutputFile.outputStream().use { output ->
 						input.copyTo(output)
@@ -69,6 +77,7 @@ open class HtmlReportTask : ValidateViolationsTask() {
 				}
 			}
 		}
+		@Suppress("LeakingThis")
 		doLast { transform() }
 	}
 
@@ -89,43 +98,4 @@ open class HtmlReportTask : ValidateViolationsTask() {
 			throw GradleException("Cannot transform ${xmlFile}\nto ${htmlFile}\nusing ${xslOutputFile}", ex)
 		}
 	}
-
-	private fun reportDir(): DirectoryProperty =
-		project.extensions
-			.getByName<ReportingExtension>(ReportingExtension.NAME)
-			.baseDirectory
-
-	private fun Provider<RegularFile>.asProperty(): RegularFileProperty =
-		project
-			.fileProperty()
-			.apply { set(this@asProperty) }
-
-	private fun RegularFile.asFileProvider(): Provider<File> =
-		project.providers
-			.provider { this@asFileProvider }
-			.asProperty()
-			.asFile
-
-	private fun Provider<File>.asRegularFile(): RegularFile =
-		project.layout
-			.file(this@asRegularFile)
-			.get()
-
-	private fun Project.fileProperty(): RegularFileProperty =
-		when {
-			GradleVersion.current().baseVersion < GradleVersion.version("5.0") ->
-				// Keep using layout.fileProperty() instead of objects.fileProperty() for backward compatibility.
-				@Suppress("DEPRECATION")
-				layout.fileProperty()
-			else ->
-				objects.fileProperty()
-		}
 }
-
-@Deprecated(
-	message = "Replaced by [ObjectFactory.fileProperty]." +
-			"It was Deprecated in Gradle 5.6.4, but removed in Gradle 6.x, polyfill here.",
-	replaceWith = ReplaceWith("project.objects.fileProperty()")
-)
-private fun ProjectLayout.fileProperty(): RegularFileProperty =
-	ProjectLayout::class.java.getDeclaredMethod("fileProperty").invoke(this) as RegularFileProperty

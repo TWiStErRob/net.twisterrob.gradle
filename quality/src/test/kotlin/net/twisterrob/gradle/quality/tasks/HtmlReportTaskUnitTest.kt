@@ -19,7 +19,7 @@ class HtmlReportTaskUnitTest {
 		}
 
 		assertThat(ex.message, containsString(sut.xml.get().toString()))
-		assertThat(ex.message, containsString(sut.xslOutput.get().toString()))
+		assertThat(ex.message, containsString(sut.xsl.get().toString()))
 		assertThat(ex.message, containsString(sut.html.get().toString()))
 		assertNotNull(ex.cause)
 	}
