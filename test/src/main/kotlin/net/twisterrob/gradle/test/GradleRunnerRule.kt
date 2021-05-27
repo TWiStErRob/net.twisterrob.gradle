@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.test
 
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.rules.TemporaryFolder
 import org.junit.rules.TestRule
@@ -158,12 +159,17 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	//region Helper methods
 
 	//@Test:given/@Before
+	private lateinit var gradleVersion: String
 	fun setGradleVersion(version: String) {
 		val distributionUrl = URI.create("https://services.gradle.org/distributions/gradle-${version}-all.zip")
 		runner
 			.withGradleVersion(version)
 			.withGradleDistribution(distributionUrl)
+		this.gradleVersion = version
 	}
+
+	fun getGradleVersion(): GradleVersion =
+		GradleVersion.version(gradleVersion)
 
 	//@Test:given/@Before
 	fun file(contents: String, path: String) {

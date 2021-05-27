@@ -10,6 +10,7 @@ import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
@@ -32,7 +33,6 @@ class PmdTaskTest_ConfigLocation {
 				apply plugin: 'net.twisterrob.pmd'
 				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
 				pmd {
-					toolVersion = '5.6.1' // Gradle 4.10.3
 					if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
 						incrementalAnalysis.set(false)
 					}
@@ -119,15 +119,21 @@ class PmdTaskTest_ConfigLocation {
 			run(SCRIPT_CONFIGURE_PMD, ":module:pmdDebug")
 		}
 	}
-}
 
-private fun BuildResult.verifyMissingContentCheckWasRun() {
-	// build should only fail if failing config wins the preference,
-	// otherwise it's BUILD SUCCESSFUL or RuleSetNotFoundException: Can't find resource "....xml" for rule "null".
-	assertEquals(TaskOutcome.FAILED, this.task(":module:pmdDebug")!!.outcome)
-	assertThat(this.failReason, containsString("1 PMD rule violations were found."))
-	this.assertHasOutputLine(
-		Regex(""".*src.main.java.Pmd\.java:1:\s+All classes and interfaces must belong to a named package""")
-	)
-	this.assertNoOutputLine(Regex("""While auto-configuring ruleSetFiles for task '.*"""))
+	private fun BuildResult.verifyMissingContentCheckWasRun() {
+		// build should only fail if failing config wins the preference,
+		// otherwise it's BUILD SUCCESSFUL or RuleSetNotFoundException: Can't find resource "....xml" for rule "null".
+		assertEquals(TaskOutcome.FAILED, this.task(":module:pmdDebug")!!.outcome)
+		assertThat(this.failReason, containsString("1 PMD rule violations were found."))
+		if (gradle.getGradleVersion() < GradleVersion.version("5.6.0")) {
+			this.assertHasOutputLine(
+				Regex(""".*src.main.java.Pmd\.java:1:\s+All classes and interfaces must belong to a named package""")
+			)
+		} else {
+			this.assertHasOutputLine(
+				Regex(""".*src.main.java.Pmd\.java:1:\s+All classes, interfaces, enums and annotations must belong to a named package""")
+			)
+		}
+		this.assertNoOutputLine(Regex("""While auto-configuring ruleSetFiles for task '.*"""))
+	}
 }
