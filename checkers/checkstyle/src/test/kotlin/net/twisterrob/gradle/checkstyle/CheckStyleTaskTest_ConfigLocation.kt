@@ -13,7 +13,6 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
@@ -40,15 +39,14 @@ class CheckStyleTaskTest_ConfigLocation {
 
 	private lateinit var gradle: GradleRunnerRule
 
-	private lateinit var noChecksConfig: String
-	private lateinit var failingConfig: String
-	private lateinit var failingContent: String
+	private val noChecksConfig: String
+		get() = gradle.templateFile("checkstyle-empty.xml").readText()
 
-	@BeforeEach fun setUp() {
-		noChecksConfig = gradle.templateFile("checkstyle-empty.xml").readText()
-		failingConfig = gradle.templateFile("checkstyle-simple_failure.xml").readText()
-		failingContent = gradle.templateFile("checkstyle-simple_failure.xml").readText()
-	}
+	private val failingConfig: String
+		get() = gradle.templateFile("checkstyle-simple_failure.xml").readText()
+
+	private val failingContent: String
+		get() = gradle.templateFile("checkstyle-simple_failure.xml").readText()
 
 	@Test fun `uses rootProject checkstyle config as a fallback`() {
 		gradle.file(failingConfig, *CONFIG_PATH)
@@ -85,7 +83,7 @@ class CheckStyleTaskTest_ConfigLocation {
 
 		val result = executeBuild()
 		assertEquals(TaskOutcome.FAILED, result.task(":module:checkstyleDebug")!!.outcome)
- 		if (System.getProperty("net.twisterrob.gradle.runner.gradleVersion") < "5.0")
+		if (System.getProperty("net.twisterrob.gradle.runner.gradleVersion") < "5.0")
 			assertThat(result.failReason, containsString("Unable to create a Checker: configLocation"))
 		else
 			assertThat(result.failReason, containsString("Unable to create Root Module: config"))

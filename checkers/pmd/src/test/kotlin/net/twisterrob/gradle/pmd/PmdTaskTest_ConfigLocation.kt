@@ -14,7 +14,6 @@ import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
@@ -47,15 +46,14 @@ class PmdTaskTest_ConfigLocation {
 
 	private lateinit var gradle: GradleRunnerRule
 
-	private lateinit var noChecksConfig: String
-	private lateinit var failingConfig: String
-	private lateinit var failingContent: String
+	private val noChecksConfig: String
+		get() = gradle.templateFile("pmd-empty.xml").readText()
 
-	@BeforeEach fun setUp() {
-		noChecksConfig = gradle.templateFile("pmd-empty.xml").readText()
-		failingConfig = gradle.templateFile("pmd-simple_failure.xml").readText()
-		failingContent = gradle.templateFile("pmd-simple_failure.java").readText()
-	}
+	private val failingConfig: String
+		get() = gradle.templateFile("pmd-simple_failure.xml").readText()
+
+	private val failingContent: String
+		get() = gradle.templateFile("pmd-simple_failure.java").readText()
 
 	@Test fun `uses rootProject pmd config as a fallback`() {
 		gradle.file(failingConfig, *CONFIG_PATH)
