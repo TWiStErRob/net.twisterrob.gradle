@@ -10,6 +10,7 @@ import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
@@ -83,7 +84,7 @@ class CheckStyleTaskTest_ConfigLocation {
 
 		val result = executeBuild()
 		assertEquals(TaskOutcome.FAILED, result.task(":module:checkstyleDebug")!!.outcome)
-		if (System.getProperty("net.twisterrob.gradle.runner.gradleVersion") < "5.0")
+		if (gradle.getGradleVersion() < GradleVersion.version("5.0"))
 			assertThat(result.failReason, containsString("Unable to create a Checker: configLocation"))
 		else
 			assertThat(result.failReason, containsString("Unable to create Root Module: config"))
