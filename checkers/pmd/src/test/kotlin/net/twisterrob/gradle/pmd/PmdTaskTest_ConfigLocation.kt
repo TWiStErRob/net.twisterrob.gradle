@@ -33,7 +33,7 @@ class PmdTaskTest_ConfigLocation {
 				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
 				pmd {
 					if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
-						incrementalAnalysis.set(false)
+						//incrementalAnalysis.set(false)
 					}
 				}
 				tasks.withType(${Pmd::class.java.name}) {
@@ -50,7 +50,13 @@ class PmdTaskTest_ConfigLocation {
 		get() = gradle.templateFile("pmd-empty.xml").readText()
 
 	private val failingConfig: String
-		get() = gradle.templateFile("pmd-simple_failure.xml").readText()
+		get() =
+			if (gradle.getGradleVersion() < GradleVersion.version("5.0.0")) {
+				gradle.templateFile("pmd-simple_failure-old.xml").readText()
+			} else {
+				// Gradle 5+ has PMD 6.x embedded, so they emit a deprecation warning if the old config is used (#81).
+				gradle.templateFile("pmd-simple_failure.xml").readText()
+			}
 
 	private val failingContent: String
 		get() = gradle.templateFile("pmd-simple_failure.java").readText()
