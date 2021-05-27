@@ -33,7 +33,7 @@ class PmdTaskTest_ConfigLocation {
 				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
 				pmd {
 					if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
-						//incrementalAnalysis.set(false)
+						incrementalAnalysis.set(false)
 					}
 				}
 				tasks.withType(${Pmd::class.java.name}) {
