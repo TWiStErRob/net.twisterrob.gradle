@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.common.listFilesInDirectory
+import net.twisterrob.gradle.pmd.test.pmdRes
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -32,8 +33,8 @@ class ValidateViolationsTaskTest {
 	@Test fun `get total violation counts on root project`() {
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), *SOURCE_PATH, "Checkstyle.java")
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), *CONFIG_PATH_CS)
-		gradle.file(gradle.templateFile("pmd-simple_failure.java").readText(), *SOURCE_PATH, "Pmd.java")
-		gradle.file(gradle.templateFile("pmd-simple_failure.xml").readText(), *CONFIG_PATH_PMD)
+		gradle.file(gradle.pmdRes.failingContent, *SOURCE_PATH, "Pmd.java")
+		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH_PMD)
 
 		@Language("gradle")
 		val script = """
@@ -55,8 +56,8 @@ class ValidateViolationsTaskTest {
 	@Test fun `get total violation counts`() {
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), "module", *SOURCE_PATH, "Cs.java")
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), *CONFIG_PATH_CS)
-		gradle.file(gradle.templateFile("pmd-simple_failure.java").readText(), "module", *SOURCE_PATH, "Pmd.java")
-		gradle.file(gradle.templateFile("pmd-simple_failure.xml").readText(), *CONFIG_PATH_PMD)
+		gradle.file(gradle.pmdRes.failingContent, "module", *SOURCE_PATH, "Pmd.java")
+		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH_PMD)
 
 		@Language("gradle")
 		val script = """
@@ -123,7 +124,7 @@ class ValidateViolationsTaskTest {
 	@Test fun `task is re-executed when violation results are changed`() {
 		gradle.basedOn("android-root_app")
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), *CONFIG_PATH_CS)
-		gradle.file(gradle.templateFile("pmd-simple_failure.xml").readText(), *CONFIG_PATH_PMD)
+		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH_PMD)
 
 		@Language("gradle")
 		val script = """
@@ -135,7 +136,7 @@ class ValidateViolationsTaskTest {
 
 		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), *SOURCE_PATH, "Checkstyle.java")
 		gradle.run(script, "checkstyleAll", "pmdAll", "printViolationCount").build()
-		gradle.file(gradle.templateFile("pmd-simple_failure.java").readText(), *SOURCE_PATH, "Pmd.java")
+		gradle.file(gradle.pmdRes.failingContent, *SOURCE_PATH, "Pmd.java")
 
 		val result = gradle.runBuild {
 			run(null, "checkstyleAll", "pmdAll", "printViolationCount")

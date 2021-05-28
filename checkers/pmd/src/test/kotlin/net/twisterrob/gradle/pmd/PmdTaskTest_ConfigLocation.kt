@@ -46,26 +46,11 @@ class PmdTaskTest_ConfigLocation {
 
 	private lateinit var gradle: GradleRunnerRule
 
-	private val noChecksConfig: String
-		get() = gradle.templateFile("pmd-empty.xml").readText()
-
-	private val failingConfig: String
-		get() =
-			if (gradle.getGradleVersion() < GradleVersion.version("5.0.0")) {
-				gradle.templateFile("pmd-simple_failure-old.xml").readText()
-			} else {
-				// Gradle 5+ has PMD 6.x embedded, so they emit a deprecation warning if the old config is used (#81).
-				gradle.templateFile("pmd-simple_failure.xml").readText()
-			}
-
-	private val failingContent: String
-		get() = gradle.templateFile("pmd-simple_failure.java").readText()
-
 	@Test fun `uses rootProject pmd config as a fallback`() {
-		gradle.file(failingConfig, *CONFIG_PATH)
+		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH)
 		@Suppress("ConstantConditionIf") // do not set up, we want it to use rootProject's
 		if (false) {
-			gradle.file(noChecksConfig, "module", * CONFIG_PATH)
+			gradle.file(gradle.pmdRes.noChecksConfig, "module", * CONFIG_PATH)
 		}
 
 		executeBuild().verifyMissingContentCheckWasRun()
@@ -74,16 +59,16 @@ class PmdTaskTest_ConfigLocation {
 	@Test fun `uses local module pmd config if available`() {
 		@Suppress("ConstantConditionIf") // do not set up rootProject's, we want to see if works without as well
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(gradle.pmdRes.noChecksConfig, *CONFIG_PATH)
 		}
-		gradle.file(failingConfig, "module", *CONFIG_PATH)
+		gradle.file(gradle.pmdRes.failingConfig, "module", *CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
 
 	@Test fun `uses local module pmd config over rootProject pmd config`() {
-		gradle.file(noChecksConfig, *CONFIG_PATH)
-		gradle.file(failingConfig, "module", * CONFIG_PATH)
+		gradle.file(gradle.pmdRes.noChecksConfig, *CONFIG_PATH)
+		gradle.file(gradle.pmdRes.failingConfig, "module", * CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
@@ -91,7 +76,7 @@ class PmdTaskTest_ConfigLocation {
 	@Test fun `warns about missing configuration`() {
 		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(gradle.pmdRes.noChecksConfig, *CONFIG_PATH)
 		}
 
 		val result = executeBuild()
@@ -103,7 +88,7 @@ class PmdTaskTest_ConfigLocation {
 	@Test fun `does not warn about missing configuration when not executed`() {
 		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(gradle.pmdRes.noChecksConfig, *CONFIG_PATH)
 		}
 
 		val result = gradle.runBuild {
@@ -115,7 +100,7 @@ class PmdTaskTest_ConfigLocation {
 	}
 
 	private fun executeBuild(): BuildResult {
-		gradle.file(failingContent, "module", "src", "main", "java", "Pmd.java")
+		gradle.file(gradle.pmdRes.failingContent, "module", "src", "main", "java", "Pmd.java")
 		// see also @Test/given for configuration file location setup
 
 		return gradle.runFailingBuild {

@@ -1,6 +1,7 @@
 plugins {
 //	kotlin("jvm")
 	`java-gradle-plugin`
+	`java-test-fixtures`
 	id("net.twisterrob.gradle.build.publishing")
 }
 
@@ -14,6 +15,9 @@ dependencies {
 
 	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))
+
+	testFixturesImplementation(project(":test"))
+	testFixturesImplementation(project(":test:internal"))
 }
 
 pullTestResourcesFrom(":test")
