@@ -206,7 +206,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 		val container = when (relativeTo) {
 			is String -> relativeTo
 			null -> ""
-			else -> "/${relativeTo.javaClass.`package`.name}"
+			else -> "/${relativeTo.javaClass.`package`.name.replace(".", "/")}"
 		}
 		val resource = this.javaClass.getResource("${container}/${path}")
 			?: throw IllegalArgumentException("Cannot find ${path} relative to {$relativeTo}")
