@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.pmd
 
+import net.twisterrob.gradle.pmd.test.pmdRes
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
