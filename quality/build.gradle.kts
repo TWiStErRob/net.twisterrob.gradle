@@ -21,6 +21,7 @@ dependencies {
 	testRuntimeOnly(Libs.Android.plugin)
 
 	testImplementation(testFixtures(project(":pmd")))
+	testImplementation(testFixtures(project(":checkstyle")))
 }
 
-listOf(":test", ":checkstyle").forEach(project::pullTestResourcesFrom)
+pullTestResourcesFrom(":test")

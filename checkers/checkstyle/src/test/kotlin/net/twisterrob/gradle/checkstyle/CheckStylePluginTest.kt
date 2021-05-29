@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.checkstyle
 
+import net.twisterrob.gradle.checkstyle.test.csRes
 import net.twisterrob.gradle.common.TaskConfigurator
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -78,7 +79,7 @@ class CheckStylePluginTest {
 	}
 
 	@Test fun `applies to all types of subprojects`() {
-		gradle.file(gradle.templateFile("checkstyle-empty.xml").readText(), "config", "checkstyle", "checkstyle.xml")
+		gradle.file(gradle.csRes.noChecksConfig, "config", "checkstyle", "checkstyle.xml")
 		@Language("gradle")
 		val script = """
 			allprojects {
@@ -143,7 +144,7 @@ class CheckStylePluginTest {
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
-		gradle.file(gradle.templateFile("checkstyle-empty.xml").readText(), "config", "checkstyle", "checkstyle.xml")
+		gradle.file(gradle.csRes.noChecksConfig, "config", "checkstyle", "checkstyle.xml")
 
 		@Language("gradle")
 		val rootProject = """
@@ -204,7 +205,7 @@ class CheckStylePluginTest {
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
-		gradle.file(gradle.templateFile("checkstyle-empty.xml").readText(), "config", "checkstyle", "checkstyle.xml")
+		gradle.file(gradle.csRes.noChecksConfig, "config", "checkstyle", "checkstyle.xml")
 
 		val result = gradle.runBuild {
 			basedOn("android-multi_module")
@@ -251,13 +252,8 @@ class CheckStylePluginTest {
 
 	@Test fun `custom source sets folders are picked up`() {
 		gradle.basedOn("android-root_app")
-		gradle.file(
-			gradle.templateFile("checkstyle-simple_failure.xml").readText(),
-			"config",
-			"checkstyle",
-			"checkstyle.xml"
-		)
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), "custom", "Checkstyle.java")
+		gradle.file(gradle.csRes.failingConfig, "config", "checkstyle", "checkstyle.xml")
+		gradle.file(gradle.csRes.failingContent, "custom", "Checkstyle.java")
 
 		@Language("gradle")
 		val build = """
@@ -280,22 +276,11 @@ class CheckStylePluginTest {
 
 	@Test fun `exclusions are configurable per variant`() {
 		gradle.basedOn("android-root_app")
+		gradle.file(gradle.csRes.failingConfig, "config", "checkstyle", "checkstyle.xml")
+		gradle.file(gradle.csRes.failingContent, "src", "main", "java", "com", "example", "foo", "Checkstyle.java")
+		gradle.file(gradle.csRes.failingContent, "src", "main", "java", "com", "example", "bar", "Checkstyle.java")
 		gradle.file(
-			gradle.templateFile("checkstyle-simple_failure.xml").readText(),
-			"config",
-			"checkstyle",
-			"checkstyle.xml"
-		)
-		gradle.file(
-			gradle.templateFile("checkstyle-simple_failure.java").readText(),
-			"src", "main", "java", "com", "example", "foo", "Checkstyle.java"
-		)
-		gradle.file(
-			gradle.templateFile("checkstyle-simple_failure.java").readText(),
-			"src", "main", "java", "com", "example", "bar", "Checkstyle.java"
-		)
-		gradle.file(
-			gradle.templateFile("checkstyle-simple_failure.java").readText(),
+			gradle.csRes.failingContent,
 			"src", "main", "java", "com", "example", "bar", "baz", "Checkstyle.java"
 		)
 

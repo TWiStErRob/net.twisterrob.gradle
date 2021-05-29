@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.checkstyle
 
+import net.twisterrob.gradle.checkstyle.test.csRes
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -40,20 +41,11 @@ class CheckStyleTaskTest_ConfigLocation {
 
 	private lateinit var gradle: GradleRunnerRule
 
-	private val noChecksConfig: String
-		get() = gradle.templateFile("checkstyle-empty.xml").readText()
-
-	private val failingConfig: String
-		get() = gradle.templateFile("checkstyle-simple_failure.xml").readText()
-
-	private val failingContent: String
-		get() = gradle.templateFile("checkstyle-simple_failure.xml").readText()
-
 	@Test fun `uses rootProject checkstyle config as a fallback`() {
-		gradle.file(failingConfig, *CONFIG_PATH)
+		gradle.file(gradle.csRes.failingConfig, *CONFIG_PATH)
 		@Suppress("ConstantConditionIf") // do not set up, we want it to use rootProject's
 		if (false) {
-			gradle.file(noChecksConfig, "module", *CONFIG_PATH)
+			gradle.file(gradle.csRes.noChecksConfig, "module", *CONFIG_PATH)
 		}
 
 		executeBuild().verifyMissingContentCheckWasRun()
@@ -62,16 +54,16 @@ class CheckStyleTaskTest_ConfigLocation {
 	@Test fun `uses local module checkstyle config if available`() {
 		@Suppress("ConstantConditionIf") // do not set up rootProject's, we want to see if works without as well
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(gradle.csRes.noChecksConfig, *CONFIG_PATH)
 		}
-		gradle.file(failingConfig, "module", *CONFIG_PATH)
+		gradle.file(gradle.csRes.failingConfig, "module", *CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
 
 	@Test fun `uses local module checkstyle config over rootProject checkstyle config`() {
-		gradle.file(noChecksConfig, *CONFIG_PATH)
-		gradle.file(failingConfig, "module", *CONFIG_PATH)
+		gradle.file(gradle.csRes.noChecksConfig, *CONFIG_PATH)
+		gradle.file(gradle.csRes.failingConfig, "module", *CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
@@ -79,7 +71,7 @@ class CheckStyleTaskTest_ConfigLocation {
 	@Test fun `warns about missing configuration`() {
 		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(gradle.csRes.noChecksConfig, *CONFIG_PATH)
 		}
 
 		val result = executeBuild()
@@ -94,7 +86,7 @@ class CheckStyleTaskTest_ConfigLocation {
 	@Test fun `does not warn about missing configuration when not executed`() {
 		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(gradle.csRes.noChecksConfig, *CONFIG_PATH)
 		}
 
 		val result = gradle.runBuild {
@@ -106,7 +98,7 @@ class CheckStyleTaskTest_ConfigLocation {
 	}
 
 	private fun executeBuild(): BuildResult {
-		gradle.file(failingContent, "module", "src", "main", "java", "Checkstyle.java")
+		gradle.file(gradle.csRes.failingContent, "module", "src", "main", "java", "Checkstyle.java")
 		// see also @Test/given for configuration file location setup
 
 		return gradle.runFailingBuild {

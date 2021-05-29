@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
+import net.twisterrob.gradle.checkstyle.test.csRes
 import net.twisterrob.gradle.common.listFilesInDirectory
 import net.twisterrob.gradle.pmd.test.pmdRes
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -31,8 +32,8 @@ class ValidateViolationsTaskTest {
 	private lateinit var gradle: GradleRunnerRule
 
 	@Test fun `get total violation counts on root project`() {
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), *SOURCE_PATH, "Checkstyle.java")
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), *CONFIG_PATH_CS)
+		gradle.file(gradle.csRes.failingContent, *SOURCE_PATH, "Checkstyle.java")
+		gradle.file(gradle.csRes.failingConfig, *CONFIG_PATH_CS)
 		gradle.file(gradle.pmdRes.failingContent, *SOURCE_PATH, "Pmd.java")
 		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH_PMD)
 
@@ -54,8 +55,8 @@ class ValidateViolationsTaskTest {
 	}
 
 	@Test fun `get total violation counts`() {
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), "module", *SOURCE_PATH, "Cs.java")
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), *CONFIG_PATH_CS)
+		gradle.file(gradle.csRes.failingContent, "module", *SOURCE_PATH, "Cs.java")
+		gradle.file(gradle.csRes.failingConfig, *CONFIG_PATH_CS)
 		gradle.file(gradle.pmdRes.failingContent, "module", *SOURCE_PATH, "Pmd.java")
 		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH_PMD)
 
@@ -123,7 +124,7 @@ class ValidateViolationsTaskTest {
 
 	@Test fun `task is re-executed when violation results are changed`() {
 		gradle.basedOn("android-root_app")
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.xml").readText(), *CONFIG_PATH_CS)
+		gradle.file(gradle.csRes.failingConfig, *CONFIG_PATH_CS)
 		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH_PMD)
 
 		@Language("gradle")
@@ -134,7 +135,7 @@ class ValidateViolationsTaskTest {
 			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
-		gradle.file(gradle.templateFile("checkstyle-simple_failure.java").readText(), *SOURCE_PATH, "Checkstyle.java")
+		gradle.file(gradle.csRes.failingContent, *SOURCE_PATH, "Checkstyle.java")
 		gradle.run(script, "checkstyleAll", "pmdAll", "printViolationCount").build()
 		gradle.file(gradle.pmdRes.failingContent, *SOURCE_PATH, "Pmd.java")
 
