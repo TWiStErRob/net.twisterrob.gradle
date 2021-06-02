@@ -1,26 +1,41 @@
 # Change Log
 
 
-## 0.11 *(2020-11-22 --- )*
+## 0.11 *(2020-11-22 --- 2021-06-06)*
 
 ### Breaking
  * Removed Bintray publishing as it shut down, replaced with Maven Central. Use `mavenCentral()` instead of custom Bintray url. (#107/#108)
  * Build with Kotlin 1.4.32 (#112), this also comes as transitive dependency.
 
+### Deprecations
+
+#### `net.twisterrob.gradle:twister-gradle-test`
+ * `GradleRunnerRule.templateFile(String): File`
+ * `GradleRunnerRule.templateFile(String, Any?): File`
+ * `GradleRunnerRule.setGradleVersion(String)`
+
 ### New
  * Android Gradle Plugin 4.0.2 compatible (#101)
  * Android Gradle Plugin 4.1.3 compatible (#101)
  * Android Gradle Plugin 4.2.0 compatible (#101)
- * Full project examples as documentation (#116).
+ * Full project examples as documentation (#116), see [docs/examples](docs/examples).
 
 ### Fixes
+ * Use new Checkstyle API in Gradle 6.9 (#114) to fix:
+> The Checkstyle.setConfigDir() method has been deprecated. This is scheduled to be removed in Gradle 7.0. Please use the Checkstyle.getConfigDirectory().set() method instead.
+
+ * Use conventions instead of manually created properties (#102/#117) to fix:
+> Querying the mapped value of task ':violationReportHtml' property 'xml' before task ':violationReportHtml' has completed has been deprecated. This will fail with an error in Gradle 7.0.
 
 ### Internal
  * Moved Continuous Integration from Travis to GitHub Actions (#110).
- * Allow ignored tests to run on CI (#72/#110).
- * Share code style and inspections (#109).
  * Use Gradle 6.9 to build (#114).
+ * Enable Parallel builds (#119/#120)
  * Bump test library versions to latest (#115).
+ * Allow ignored tests to run on CI (#72/#110).
+ * Let Gradle decide PMD version and adapt to it (#81/#118).
+ * Share code style and inspections (#109).
+ * Clarify ANDROID_HOME variable (#75/#121).
 
 
 ## 0.10 *(2020-01-12 --- 2020-11-22)*

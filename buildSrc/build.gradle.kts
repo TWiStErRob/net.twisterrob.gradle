@@ -1,3 +1,5 @@
+@file:Suppress("PropertyName")
+
 buildscript {
 	repositories {
 		mavenCentral()
@@ -21,13 +23,21 @@ kotlinDslPluginOptions {
 
 repositories {
 	mavenCentral()
+	// Note on `plugins { }`: when the version is declared in the plugins block (`plugins { id(...) version "..." }`),
+	// the referenced dependencies are visible by IntelliJ Gradle Sync, but the breakpoints are not hit.
+	// Declaring all the dependencies in this project resolves this issue.
+	gradlePluginPortal()
 }
 
+val kotlin_version: String by project
+val nexus_version: String by project
+
 dependencies {
-	implementation(kotlin("gradle-plugin", version = "1.4.32"))
-	implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:1.4.32"))
-	implementation(kotlin("compiler-embeddable", version = "1.4.32"))
-	implementation("org.jetbrains.dokka:dokka-gradle-plugin:1.4.32")
+	implementation(kotlin("gradle-plugin", version = kotlin_version))
+	implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:${kotlin_version}"))
+	implementation(kotlin("compiler-embeddable", version = kotlin_version))
+	implementation("org.jetbrains.dokka:dokka-gradle-plugin:${kotlin_version}")
+	implementation("io.github.gradle-nexus:publish-plugin:${nexus_version}")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

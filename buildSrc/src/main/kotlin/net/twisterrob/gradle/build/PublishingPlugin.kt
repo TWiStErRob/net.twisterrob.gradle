@@ -100,6 +100,8 @@ private fun MavenPublication.setupArtifacts(project: Project) {
 	} else {
 		// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
 		from(project.components["java"])
+		suppressPomMetadataWarningsFor("testFixturesApiElements")
+		suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
 	}
 	artifact(project.tasks["sourcesJar"]) { classifier = "sources" }
 	artifact(project.tasks["javadocJar"]) { classifier = "javadoc" }

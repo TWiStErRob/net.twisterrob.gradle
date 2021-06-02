@@ -58,7 +58,9 @@ object Libs {
 	object Kotlin {
 		/**
 		 * @see <a href="https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md">Changelog</a>
+		 * @see kotlin_version in buildSrc/gradle.properties
 		 */
+		@Suppress("KDocUnresolvedReference")
 		private const val version = "1.4.32"
 
 		/**
@@ -96,7 +98,7 @@ object Libs {
 		 */
 		private fun DependencyResolveDetails.replaceJreWithJdk(version: Int) {
 			if (requested.group == "org.jetbrains.kotlin") {
-				because("http://kotlinlang.org/docs/reference/whatsnew12.html#kotlin-standard-library-artifacts-and-split-packages")
+				because("https://kotlinlang.org/docs/reference/whatsnew12.html#kotlin-standard-library-artifacts-and-split-packages")
 				when (requested.name) {
 					"kotlin-stdlib-jre$version" -> useTarget("${target.group}:kotlin-stdlib-jdk$version:${target.version}")
 				}
