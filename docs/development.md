@@ -6,9 +6,11 @@
 The project should work in IntelliJ IDEA 2018 and Android Studio 3.2/3.3.
 Current development is being done on IntelliJ IDEA 2019 EAP.
 
+0. `ANDROID_HOME` should be set to an Android SDK root folder.  
+   This is required because the tests build full Android projects.
+   For more info see [Official Documentation on environment variables](https://developer.android.com/studio/command-line/variables).
 1. First make sure it runs successfully from terminal with `./gradlew tests`.
-   * `ANDROID_HOME` should be set to an Android SDK root folder.
-   * Check failure reason (probably in console or JUnit report) for things to fix.
+   * Check failure reasons (in JUnit report) for things to fix.
    * This helps to rule out trivial problems during import.
 2. After it builds successfully, import the root `build.gradle.kts` into IDE.
 
