@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.pmd
 
-import net.twisterrob.gradle.pmd.test.pmdRes
+import net.twisterrob.gradle.pmd.test.pmd
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -48,10 +48,10 @@ class PmdTaskTest_ConfigLocation {
 	private lateinit var gradle: GradleRunnerRule
 
 	@Test fun `uses rootProject pmd config as a fallback`() {
-		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH)
+		gradle.file(gradle.pmd.simple.config, *CONFIG_PATH)
 		@Suppress("ConstantConditionIf") // do not set up, we want it to use rootProject's
 		if (false) {
-			gradle.file(gradle.pmdRes.noChecksConfig, "module", * CONFIG_PATH)
+			gradle.file(gradle.pmd.empty.config, "module", * CONFIG_PATH)
 		}
 
 		executeBuild().verifyMissingContentCheckWasRun()
@@ -60,16 +60,16 @@ class PmdTaskTest_ConfigLocation {
 	@Test fun `uses local module pmd config if available`() {
 		@Suppress("ConstantConditionIf") // do not set up rootProject's, we want to see if works without as well
 		if (false) {
-			gradle.file(gradle.pmdRes.noChecksConfig, *CONFIG_PATH)
+			gradle.file(gradle.pmd.empty.config, *CONFIG_PATH)
 		}
-		gradle.file(gradle.pmdRes.failingConfig, "module", *CONFIG_PATH)
+		gradle.file(gradle.pmd.simple.config, "module", *CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
 
 	@Test fun `uses local module pmd config over rootProject pmd config`() {
-		gradle.file(gradle.pmdRes.noChecksConfig, *CONFIG_PATH)
-		gradle.file(gradle.pmdRes.failingConfig, "module", * CONFIG_PATH)
+		gradle.file(gradle.pmd.empty.config, *CONFIG_PATH)
+		gradle.file(gradle.pmd.simple.config, "module", * CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
@@ -77,7 +77,7 @@ class PmdTaskTest_ConfigLocation {
 	@Test fun `warns about missing configuration`() {
 		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
 		if (false) {
-			gradle.file(gradle.pmdRes.noChecksConfig, *CONFIG_PATH)
+			gradle.file(gradle.pmd.empty.config, *CONFIG_PATH)
 		}
 
 		val result = executeBuild()
@@ -89,7 +89,7 @@ class PmdTaskTest_ConfigLocation {
 	@Test fun `does not warn about missing configuration when not executed`() {
 		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
 		if (false) {
-			gradle.file(gradle.pmdRes.noChecksConfig, *CONFIG_PATH)
+			gradle.file(gradle.pmd.empty.config, *CONFIG_PATH)
 		}
 
 		val result = gradle.runBuild {
@@ -101,7 +101,7 @@ class PmdTaskTest_ConfigLocation {
 	}
 
 	private fun executeBuild(): BuildResult {
-		gradle.file(gradle.pmdRes.failingContent, "module", "src", "main", "java", "Pmd.java")
+		gradle.file(gradle.pmd.simple.content, "module", "src", "main", "java", "Pmd.java")
 		// see also @Test/given for configuration file location setup
 
 		return gradle.runFailingBuild {
