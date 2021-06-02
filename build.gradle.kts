@@ -33,14 +33,6 @@ subprojects {
 	}
 }
 
-@Suppress("UnstableApiUsage")
-abstract class TestTaskLimiter : BuildService<BuildServiceParameters.None>
-
-@Suppress("UnstableApiUsage")
-gradle.sharedServices.registerIfAbsent("testTaskLimiter", TestTaskLimiter::class) {
-	maxParallelUsages.set(1)
-}
-
 allprojects {
 	replaceGradlePluginAutoDependenciesWithoutKotlin()
 
@@ -97,8 +89,6 @@ allprojects {
 		}
 
 		tasks.withType<Test> {
-			@Suppress("UnstableApiUsage")
-			usesService(gradle.sharedServices.registrations["testTaskLimiter"].service)
 			useJUnitPlatform()
 
 			if (System.getProperties().containsKey("idea.paths.selector")) {
