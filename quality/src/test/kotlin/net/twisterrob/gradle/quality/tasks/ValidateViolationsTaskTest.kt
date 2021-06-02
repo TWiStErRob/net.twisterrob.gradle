@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
-import net.twisterrob.gradle.checkstyle.test.csRes
+import net.twisterrob.gradle.checkstyle.test.checkstyle
 import net.twisterrob.gradle.pmd.test.pmdRes
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -30,8 +30,8 @@ class ValidateViolationsTaskTest {
 	private lateinit var gradle: GradleRunnerRule
 
 	@Test fun `get total violation counts on root project`() {
-		gradle.file(gradle.csRes.failingContent, *SOURCE_PATH, "Checkstyle.java")
-		gradle.file(gradle.csRes.failingConfig, *CONFIG_PATH_CS)
+		gradle.file(gradle.checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")
+		gradle.file(gradle.checkstyle.simple.config, *CONFIG_PATH_CS)
 		gradle.file(gradle.pmdRes.failingContent, *SOURCE_PATH, "Pmd.java")
 		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH_PMD)
 
@@ -53,8 +53,8 @@ class ValidateViolationsTaskTest {
 	}
 
 	@Test fun `get total violation counts`() {
-		gradle.file(gradle.csRes.failingContent, "module", *SOURCE_PATH, "Cs.java")
-		gradle.file(gradle.csRes.failingConfig, *CONFIG_PATH_CS)
+		gradle.file(gradle.checkstyle.simple.content, "module", *SOURCE_PATH, "Cs.java")
+		gradle.file(gradle.checkstyle.simple.config, *CONFIG_PATH_CS)
 		gradle.file(gradle.pmdRes.failingContent, "module", *SOURCE_PATH, "Pmd.java")
 		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH_PMD)
 
@@ -77,14 +77,13 @@ class ValidateViolationsTaskTest {
 	}
 
 	@Test fun `get per module violation counts`() {
-		val template = gradle.csRes.multiConfig
-		gradle.csRes.multiContents.forEach { (name, content) ->
+		gradle.checkstyle.multi.contents.forEach { (name, content) ->
 			val match = VIOLATION_PATTERN.matchEntire(name) ?: error("$name doesn't match $VIOLATION_PATTERN")
 			println("Building module from ${name}")
 			val checkName = match.groups[1]!!.value
 			@Suppress("UNUSED_VARIABLE")
 			val checkCount = match.groups[2]!!.value.toInt()
-			val checkstyleXmlContents = template.replace("CheckName", checkName)
+			val checkstyleXmlContents = gradle.checkstyle.multi.config.replace("CheckName", checkName)
 			gradle.file(checkstyleXmlContents, checkName, *CONFIG_PATH_CS)
 			gradle.file("""<manifest package="checkstyle.${checkName}" />""", checkName, *MANIFEST_PATH)
 			gradle.file(content, checkName, *SOURCE_PATH, name)
@@ -120,7 +119,7 @@ class ValidateViolationsTaskTest {
 
 	@Test fun `task is re-executed when violation results are changed`() {
 		gradle.basedOn("android-root_app")
-		gradle.file(gradle.csRes.failingConfig, *CONFIG_PATH_CS)
+		gradle.file(gradle.checkstyle.simple.config, *CONFIG_PATH_CS)
 		gradle.file(gradle.pmdRes.failingConfig, *CONFIG_PATH_PMD)
 
 		@Language("gradle")
@@ -131,7 +130,7 @@ class ValidateViolationsTaskTest {
 			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
-		gradle.file(gradle.csRes.failingContent, *SOURCE_PATH, "Checkstyle.java")
+		gradle.file(gradle.checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")
 		gradle.run(script, "checkstyleAll", "pmdAll", "printViolationCount").build()
 		gradle.file(gradle.pmdRes.failingContent, *SOURCE_PATH, "Pmd.java")
 

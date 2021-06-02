@@ -3,45 +3,47 @@ package net.twisterrob.gradle.checkstyle.test
 import net.twisterrob.gradle.test.GradleRunnerRule
 
 @Suppress("unused") // For consistency with PmdTestResources.
-val GradleRunnerRule.csRes: CheckstyleTestResources
+val GradleRunnerRule.checkstyle: CheckstyleTestResources
 	get() = CheckstyleTestResources()
 
 class CheckstyleTestResources {
 
-	val noChecksConfig: String
-		get() = read("checkstyle-empty.xml")
+	val empty = object : EmptyConfiguration {}
 
-	/**
-	 * @see [failingContent]
-	 */
-	val failingConfig: String
-		get() = read("checkstyle-simple_failure.xml")
+	interface EmptyConfiguration {
+		val config: String
+			get() = read("checkstyle-empty.xml")
+	}
 
-	/**
-	 * @see [failingConfig]
-	 */
-	val failingContent: String
-		get() = read("checkstyle-simple_failure.java")
+	val simple = object : SimpleFailure {}
 
-	/**
-	 * @see [multiContents]
-	 */
-	val multiConfig: String
-		get() = read("checkstyle-multiple_violations/checkstyle-template.xml")
+	interface SimpleFailure {
+		val config: String
+			get() = read("checkstyle-simple_failure.xml")
 
-	/**
-	 * @see [multiConfig]
-	 */
-	val multiContents: Map<String, String>
-		get() =
-			listOf(
-				"EmptyBlock_3.java",
-				"MemberName_2.java",
-				"UnusedImports_4.java"
-			).associateWith { read("checkstyle-multiple_violations/$it") }
+		val content: String
+			get() = read("checkstyle-simple_failure.java")
+	}
 
-	private fun read(path: String): String =
-		fileFromResources(CheckstyleTestResources::class.java, path)
+	val multi = object : MultiFailure {}
+
+	interface MultiFailure {
+		val config: String
+			get() = read("checkstyle-multiple_violations/checkstyle-template.xml")
+
+		val contents: Map<String, String>
+			get() =
+				listOf(
+					"EmptyBlock_3.java",
+					"MemberName_2.java",
+					"UnusedImports_4.java"
+				).associateWith { read("checkstyle-multiple_violations/$it") }
+	}
+
+	companion object {
+		private fun read(path: String): String =
+			fileFromResources(CheckstyleTestResources::class.java, path)
+	}
 }
 
 private fun fileFromResources(loader: Class<*>, path: String): String {
