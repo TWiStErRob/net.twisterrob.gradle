@@ -33,7 +33,7 @@ class PmdPluginTest {
 
 	private lateinit var gradle: GradleRunnerRule
 
-	private val pmd = PmdTestResources { gradle.getGradleVersion() }
+	private val pmd = PmdTestResources { gradle.gradleVersion }
 
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")

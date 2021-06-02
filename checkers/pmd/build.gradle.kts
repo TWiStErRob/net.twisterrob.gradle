@@ -16,7 +16,6 @@ dependencies {
 	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))
 
-	testFixturesImplementation(project(":test"))
 	testFixturesImplementation(project(":test:internal"))
 }
 

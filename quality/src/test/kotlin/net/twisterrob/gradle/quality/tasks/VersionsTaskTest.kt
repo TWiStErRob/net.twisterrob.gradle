@@ -5,6 +5,7 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.runBuild
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -31,8 +32,8 @@ class VersionsTaskTest {
 		result.assertHasOutputLine("""PMD version: 'pmd' plugin not applied""")
 	}
 
- 	@Test fun `print checkstyle version (Gradle 4 earliest)`() {
-		gradle.setGradleVersion("4.9")
+	@Test fun `print checkstyle version (Gradle 4 earliest)`() {
+		gradle.gradleVersion = GradleVersion.version("4.9")
 
 		@Language("gradle")
 		val script = """
@@ -50,7 +51,7 @@ class VersionsTaskTest {
 	}
 
 	@Test fun `print pmd version (Gradle 4 earliest)`() {
-		gradle.setGradleVersion("4.9")
+		gradle.gradleVersion = GradleVersion.version("4.9")
 
 		@Language("gradle")
 		val script = """
@@ -68,7 +69,7 @@ class VersionsTaskTest {
 	}
 
 	@Test fun `print checkstyle version (Gradle 4 latest)`() {
-		gradle.setGradleVersion("4.10.3")
+		gradle.gradleVersion = GradleVersion.version("4.10.3")
 
 		@Language("gradle")
 		val script = """
@@ -86,7 +87,7 @@ class VersionsTaskTest {
 	}
 
 	@Test fun `print pmd version (Gradle 4 latest)`() {
-		gradle.setGradleVersion("4.10.3")
+		gradle.gradleVersion = GradleVersion.version("4.10.3")
 
 		@Language("gradle")
 		val script = """
@@ -104,7 +105,7 @@ class VersionsTaskTest {
 	}
 
 	@Test fun `print checkstyle version (Gradle 5 latest)`() {
-		gradle.setGradleVersion("5.6.4")
+		gradle.gradleVersion = GradleVersion.version("5.6.4")
 
 		@Language("gradle")
 		val script = """
@@ -122,7 +123,7 @@ class VersionsTaskTest {
 	}
 
 	@Test fun `print pmd version (Gradle 5 latest)`() {
-		gradle.setGradleVersion("5.6.4")
+		gradle.gradleVersion = GradleVersion.version("5.6.4")
 
 		@Language("gradle")
 		val script = """
@@ -140,7 +141,7 @@ class VersionsTaskTest {
 	}
 
 	@Test fun `print checkstyle version (Gradle 6 latest)`() {
-		gradle.setGradleVersion("6.9")
+		gradle.gradleVersion = GradleVersion.version("6.9")
 
 		@Language("gradle")
 		val script = """
@@ -158,7 +159,7 @@ class VersionsTaskTest {
 	}
 
 	@Test fun `print pmd version (Gradle 6 latest)`() {
-		gradle.setGradleVersion("6.9")
+		gradle.gradleVersion = GradleVersion.version("6.9")
 
 		@Language("gradle")
 		val script = """

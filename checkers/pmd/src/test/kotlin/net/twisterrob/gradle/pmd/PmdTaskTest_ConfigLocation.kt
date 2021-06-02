@@ -47,7 +47,7 @@ class PmdTaskTest_ConfigLocation {
 
 	private lateinit var gradle: GradleRunnerRule
 
-	private val pmd = PmdTestResources { gradle.getGradleVersion() }
+	private val pmd = PmdTestResources { gradle.gradleVersion }
 
 	@Test fun `uses rootProject pmd config as a fallback`() {
 		gradle.file(pmd.simple.config, *CONFIG_PATH)
@@ -117,7 +117,7 @@ class PmdTaskTest_ConfigLocation {
 		// otherwise it's BUILD SUCCESSFUL or RuleSetNotFoundException: Can't find resource "....xml" for rule "null".
 		assertEquals(TaskOutcome.FAILED, this.task(":module:pmdDebug")!!.outcome)
 		assertThat(this.failReason, containsString("1 PMD rule violations were found."))
-		if (gradle.getGradleVersion() < GradleVersion.version("5.6.0")) {
+		if (gradle.gradleVersion < GradleVersion.version("5.6.0")) {
 			this.assertHasOutputLine(
 				Regex(""".*src.main.java.Pmd\.java:1:\s+All classes and interfaces must belong to a named package""")
 			)

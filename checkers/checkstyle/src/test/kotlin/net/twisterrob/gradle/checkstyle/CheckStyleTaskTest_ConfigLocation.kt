@@ -77,7 +77,7 @@ class CheckStyleTaskTest_ConfigLocation {
 
 		val result = executeBuild()
 		assertEquals(TaskOutcome.FAILED, result.task(":module:checkstyleDebug")!!.outcome)
-		if (gradle.getGradleVersion() < GradleVersion.version("5.0"))
+		if (gradle.gradleVersion < GradleVersion.version("5.0"))
 			assertThat(result.failReason, containsString("Unable to create a Checker: configLocation"))
 		else
 			assertThat(result.failReason, containsString("Unable to create Root Module: config"))
