@@ -107,14 +107,14 @@ class CheckStyleTaskTest_ConfigLocation {
 			run(SCRIPT_CONFIGURE_CHECKSTYLE, ":module:checkstyleDebug")
 		}
 	}
-}
 
-private fun BuildResult.verifyMissingContentCheckWasRun() {
-	// build should only fail if failing config wins the preference,
-	// otherwise it's BUILD SUCCESSFUL or CheckstyleException: Unable to find: ...xml
-	assertEquals(TaskOutcome.FAILED, this.task(":module:checkstyleDebug")!!.outcome)
+	private fun BuildResult.verifyMissingContentCheckWasRun() {
+		// build should only fail if failing config wins the preference,
+		// otherwise it's BUILD SUCCESSFUL or CheckstyleException: Unable to find: ...xml
+		assertEquals(TaskOutcome.FAILED, this.task(":module:checkstyleDebug")!!.outcome)
 
-	assertThat(this.failReason, containsString("Checkstyle rule violations were found"))
-	this.assertHasOutputLine(Regex(""".*src.main.java.Checkstyle\.java:1: .*? \[Header]"""))
-	this.assertNoOutputLine(Regex("""While auto-configuring configFile for task '.*"""))
+		assertThat(this.failReason, containsString("Checkstyle rule violations were found"))
+		this.assertHasOutputLine(checkstyle.simple.message)
+		this.assertNoOutputLine(Regex("""While auto-configuring configFile for task '.*"""))
+	}
 }

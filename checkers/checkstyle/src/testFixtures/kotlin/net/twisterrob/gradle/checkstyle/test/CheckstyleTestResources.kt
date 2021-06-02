@@ -10,7 +10,8 @@ package net.twisterrob.gradle.checkstyle.test
  *     gradle.file(checkstyle.….config, "config", "checkstyle", "checkstyle.xml")
  * }
  * ```
- */class CheckstyleTestResources {
+ */
+class CheckstyleTestResources {
 
 	val empty = object : EmptyConfiguration {}
 
@@ -27,6 +28,9 @@ package net.twisterrob.gradle.checkstyle.test
 
 		val content: String
 			get() = read("simple_failure/empty.java")
+
+		val message: Regex
+			get() = Regex(""".*src.main.java.Checkstyle\.java:1: .*? \[Header]""")
 	}
 
 	val multi = object : MultiFailure {}

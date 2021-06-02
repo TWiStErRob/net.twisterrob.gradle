@@ -38,6 +38,14 @@ class PmdTestResources(
 
 		val content: String
 			get() = read("simple_failure/WithoutPackage.java")
+
+		val message: Regex
+			get() =
+				if (gradleVersion() < GradleVersion.version("5.6.0")) {
+					Regex(""".*src.main.java.Pmd\.java:1:\s+All classes and interfaces must belong to a named package""")
+				} else {
+					Regex(""".*src.main.java.Pmd\.java:1:\s+All classes, interfaces, enums and annotations must belong to a named package""")
+				}
 	}
 
 	companion object {

@@ -11,7 +11,6 @@ import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
-import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
@@ -117,15 +116,7 @@ class PmdTaskTest_ConfigLocation {
 		// otherwise it's BUILD SUCCESSFUL or RuleSetNotFoundException: Can't find resource "....xml" for rule "null".
 		assertEquals(TaskOutcome.FAILED, this.task(":module:pmdDebug")!!.outcome)
 		assertThat(this.failReason, containsString("1 PMD rule violations were found."))
-		if (gradle.gradleVersion < GradleVersion.version("5.6.0")) {
-			this.assertHasOutputLine(
-				Regex(""".*src.main.java.Pmd\.java:1:\s+All classes and interfaces must belong to a named package""")
-			)
-		} else {
-			this.assertHasOutputLine(
-				Regex(""".*src.main.java.Pmd\.java:1:\s+All classes, interfaces, enums and annotations must belong to a named package""")
-			)
-		}
+		this.assertHasOutputLine(pmd.simple.message)
 		this.assertNoOutputLine(Regex("""While auto-configuring ruleSetFiles for task '.*"""))
 	}
 }
