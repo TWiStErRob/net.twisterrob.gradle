@@ -5,6 +5,6 @@
 
 <module name="Checker">
 	<module name="TreeWalker">
-		<module name="${CheckName}" />
+		<module name="CheckName" />
 	</module>
 </module>

@@ -84,7 +84,7 @@ class ValidateViolationsTaskTest {
 			val checkName = match.groups[1]!!.value
 			@Suppress("UNUSED_VARIABLE")
 			val checkCount = match.groups[2]!!.value.toInt()
-			val checkstyleXmlContents = template.replace("\${CheckName}", checkName)
+			val checkstyleXmlContents = template.replace("CheckName", checkName)
 			gradle.file(checkstyleXmlContents, checkName, *CONFIG_PATH_CS)
 			gradle.file("""<manifest package="checkstyle.${checkName}" />""", checkName, *MANIFEST_PATH)
 			gradle.file(content, checkName, *SOURCE_PATH, name)
