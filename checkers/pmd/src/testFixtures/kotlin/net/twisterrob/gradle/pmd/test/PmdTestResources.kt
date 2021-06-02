@@ -14,7 +14,7 @@ class PmdTestResources(
 
 	interface EmptyConfiguration {
 		val config: String
-			get() = read("pmd-empty.xml")
+			get() = read("empty/empty-pmd.xml")
 	}
 
 	val simple = SimpleFailure()
@@ -23,14 +23,14 @@ class PmdTestResources(
 		val config: String
 			get() =
 				if (gradle.getGradleVersion() < GradleVersion.version("5.0.0")) {
-					read("pmd-simple_failure-old.xml")
+					read("simple_failure/simple_old-pmd.xml")
 				} else {
 					// Gradle 5+ has PMD 6.x embedded, so they emit a deprecation warning if the old config is used (#81).
-					read("pmd-simple_failure.xml")
+					read("simple_failure/simple-pmd.xml")
 				}
 
 		val content: String
-			get() = read("pmd-simple_failure.java")
+			get() = read("simple_failure/WithoutPackage.java")
 	}
 
 	companion object {

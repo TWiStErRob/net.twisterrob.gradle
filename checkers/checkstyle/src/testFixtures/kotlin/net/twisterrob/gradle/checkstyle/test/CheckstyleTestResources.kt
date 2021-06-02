@@ -12,24 +12,24 @@ class CheckstyleTestResources {
 
 	interface EmptyConfiguration {
 		val config: String
-			get() = read("checkstyle-empty.xml")
+			get() = read("empty/empty-checkstyle.xml")
 	}
 
 	val simple = object : SimpleFailure {}
 
 	interface SimpleFailure {
 		val config: String
-			get() = read("checkstyle-simple_failure.xml")
+			get() = read("simple_failure/simple-checkstyle.xml")
 
 		val content: String
-			get() = read("checkstyle-simple_failure.java")
+			get() = read("simple_failure/empty.java")
 	}
 
 	val multi = object : MultiFailure {}
 
 	interface MultiFailure {
 		val config: String
-			get() = read("checkstyle-multiple_violations/checkstyle-template.xml")
+			get() = read("multiple_violations/multi-checkstyle.xml")
 
 		val contents: Map<String, String>
 			get() =
@@ -37,7 +37,7 @@ class CheckstyleTestResources {
 					"EmptyBlock_3.java",
 					"MemberName_2.java",
 					"UnusedImports_4.java"
-				).associateWith { read("checkstyle-multiple_violations/$it") }
+				).associateWith { read("multiple_violations/$it") }
 	}
 
 	companion object {
