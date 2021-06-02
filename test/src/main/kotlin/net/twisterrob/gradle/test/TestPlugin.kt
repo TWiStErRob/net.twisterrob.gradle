@@ -30,8 +30,10 @@ class TestPlugin : BaseExposedPlugin() {
 
 	private fun getManifest(): Attributes {
 		val res = javaClass.getResource("${javaClass.simpleName}.class")
+			?: error("Cannot find ${javaClass}'s class file in its own ClassLoader.")
 		val conn = res.openConnection() as JarURLConnection
 		val mf = conn.manifest
+			?: error("No manifest entry found in ${conn.jarFileURL}.")
 		return mf.mainAttributes
 	}
 }

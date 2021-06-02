@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.test
 
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.rules.TemporaryFolder
 import org.junit.rules.TestRule
@@ -109,7 +110,7 @@ open class GradleRunnerRule : TestRule {
 		}
 		fixClassPath(runner)
 		System.getProperty("net.twisterrob.gradle.runner.gradleVersion", null)?.let {
-			setGradleVersion(it)
+			gradleVersion = GradleVersion.version(it)
 		}
 	}
 
@@ -158,12 +159,23 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	//region Helper methods
 
 	//@Test:given/@Before
+	@Deprecated(
+		message = "Use gradleVersion property instead.",
+		replaceWith = ReplaceWith("gradleVersion = GradleVersion.version(version)")
+	)
 	fun setGradleVersion(version: String) {
-		val distributionUrl = URI.create("https://services.gradle.org/distributions/gradle-${version}-all.zip")
-		runner
-			.withGradleVersion(version)
-			.withGradleDistribution(distributionUrl)
+		gradleVersion = GradleVersion.version(version)
 	}
+
+	//@Test:given/@Before
+	var gradleVersion: GradleVersion = GradleVersion.current()
+		set(value) {
+			val distributionUrl = URI.create("https://services.gradle.org/distributions/gradle-${value.version}-all.zip")
+			runner
+				.withGradleVersion(value.version)
+				.withGradleDistribution(distributionUrl)
+			field = value
+		}
 
 	//@Test:given/@Before
 	fun file(contents: String, path: String) {
@@ -191,11 +203,12 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 
 	//@Test:given/@Before
 	@JvmOverloads
-	fun basedOn(folder: String, relativeTo: Any? = null): GradleRunnerRule {
-		return basedOn(templateFile(folder, relativeTo))
-	}
+	fun basedOn(folder: String, relativeTo: Any? = null): GradleRunnerRule =
+		@Suppress("DEPRECATION")
+		basedOn(templateFile(folder, relativeTo))
 
 	@JvmOverloads
+	@Deprecated("This method does not belong on the Gradle rule, use some other utility to load from resources.")
 	fun templateFile(path: String, relativeTo: Any? = null): File {
 		val container = when (relativeTo) {
 			is String -> relativeTo

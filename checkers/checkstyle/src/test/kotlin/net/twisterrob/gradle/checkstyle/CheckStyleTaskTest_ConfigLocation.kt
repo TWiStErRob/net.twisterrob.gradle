@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.checkstyle
 
+import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -10,10 +11,10 @@ import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
@@ -39,22 +40,13 @@ class CheckStyleTaskTest_ConfigLocation {
 	}
 
 	private lateinit var gradle: GradleRunnerRule
-
-	private lateinit var noChecksConfig: String
-	private lateinit var failingConfig: String
-	private lateinit var failingContent: String
-
-	@BeforeEach fun setUp() {
-		noChecksConfig = gradle.templateFile("checkstyle-empty.xml").readText()
-		failingConfig = gradle.templateFile("checkstyle-simple_failure.xml").readText()
-		failingContent = gradle.templateFile("checkstyle-simple_failure.xml").readText()
-	}
+	private val checkstyle = CheckstyleTestResources()
 
 	@Test fun `uses rootProject checkstyle config as a fallback`() {
-		gradle.file(failingConfig, *CONFIG_PATH)
+		gradle.file(checkstyle.simple.config, *CONFIG_PATH)
 		@Suppress("ConstantConditionIf") // do not set up, we want it to use rootProject's
 		if (false) {
-			gradle.file(noChecksConfig, "module", *CONFIG_PATH)
+			gradle.file(checkstyle.empty.config, "module", *CONFIG_PATH)
 		}
 
 		executeBuild().verifyMissingContentCheckWasRun()
@@ -63,16 +55,16 @@ class CheckStyleTaskTest_ConfigLocation {
 	@Test fun `uses local module checkstyle config if available`() {
 		@Suppress("ConstantConditionIf") // do not set up rootProject's, we want to see if works without as well
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(checkstyle.empty.config, *CONFIG_PATH)
 		}
-		gradle.file(failingConfig, "module", *CONFIG_PATH)
+		gradle.file(checkstyle.simple.config, "module", *CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
 
 	@Test fun `uses local module checkstyle config over rootProject checkstyle config`() {
-		gradle.file(noChecksConfig, *CONFIG_PATH)
-		gradle.file(failingConfig, "module", *CONFIG_PATH)
+		gradle.file(checkstyle.empty.config, *CONFIG_PATH)
+		gradle.file(checkstyle.simple.config, "module", *CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
@@ -80,12 +72,12 @@ class CheckStyleTaskTest_ConfigLocation {
 	@Test fun `warns about missing configuration`() {
 		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(checkstyle.empty.config, *CONFIG_PATH)
 		}
 
 		val result = executeBuild()
 		assertEquals(TaskOutcome.FAILED, result.task(":module:checkstyleDebug")!!.outcome)
- 		if (System.getProperty("net.twisterrob.gradle.runner.gradleVersion") < "5.0")
+		if (gradle.gradleVersion < GradleVersion.version("5.0"))
 			assertThat(result.failReason, containsString("Unable to create a Checker: configLocation"))
 		else
 			assertThat(result.failReason, containsString("Unable to create Root Module: config"))
@@ -95,7 +87,7 @@ class CheckStyleTaskTest_ConfigLocation {
 	@Test fun `does not warn about missing configuration when not executed`() {
 		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(checkstyle.empty.config, *CONFIG_PATH)
 		}
 
 		val result = gradle.runBuild {
@@ -107,7 +99,7 @@ class CheckStyleTaskTest_ConfigLocation {
 	}
 
 	private fun executeBuild(): BuildResult {
-		gradle.file(failingContent, "module", "src", "main", "java", "Checkstyle.java")
+		gradle.file(checkstyle.simple.content, "module", "src", "main", "java", "Checkstyle.java")
 		// see also @Test/given for configuration file location setup
 
 		return gradle.runFailingBuild {
@@ -115,14 +107,14 @@ class CheckStyleTaskTest_ConfigLocation {
 			run(SCRIPT_CONFIGURE_CHECKSTYLE, ":module:checkstyleDebug")
 		}
 	}
-}
 
-private fun BuildResult.verifyMissingContentCheckWasRun() {
-	// build should only fail if failing config wins the preference,
-	// otherwise it's BUILD SUCCESSFUL or CheckstyleException: Unable to find: ...xml
-	assertEquals(TaskOutcome.FAILED, this.task(":module:checkstyleDebug")!!.outcome)
+	private fun BuildResult.verifyMissingContentCheckWasRun() {
+		// build should only fail if failing config wins the preference,
+		// otherwise it's BUILD SUCCESSFUL or CheckstyleException: Unable to find: ...xml
+		assertEquals(TaskOutcome.FAILED, this.task(":module:checkstyleDebug")!!.outcome)
 
-	assertThat(this.failReason, containsString("Checkstyle rule violations were found"))
-	this.assertHasOutputLine(Regex(""".*src.main.java.Checkstyle\.java:1: .*? \[Header]"""))
-	this.assertNoOutputLine(Regex("""While auto-configuring configFile for task '.*"""))
+		assertThat(this.failReason, containsString("Checkstyle rule violations were found"))
+		this.assertHasOutputLine(checkstyle.simple.message)
+		this.assertNoOutputLine(Regex("""While auto-configuring configFile for task '.*"""))
+	}
 }

@@ -20,6 +20,12 @@ Current goal is to make Android support better, because of build types and flavo
 
 For details on what was changed in different versions, see [CHANGELOG](CHANGELOG.md).
 
+## Compatibility
+
+Android Gradle Plugin 3.1.4 — 4.2.0 on Gradle 4.9 — 6.9 as listed in [AGP's compatibility guide](https://developer.android.com/studio/releases/gradle-plugin#updating-gradle).
+
+Gradle 4.4 — 4.9 is not supported, because it's hard to backport the lazy task configuration APIs.
+
 ## Quick setup
 ```gradle
 buildscript {

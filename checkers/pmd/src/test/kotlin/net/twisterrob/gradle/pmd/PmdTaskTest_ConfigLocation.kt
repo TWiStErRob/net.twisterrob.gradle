@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.pmd
 
+import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -13,7 +14,6 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
@@ -32,7 +32,6 @@ class PmdTaskTest_ConfigLocation {
 				apply plugin: 'net.twisterrob.pmd'
 				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
 				pmd {
-					toolVersion = '5.6.1' // Gradle 4.10.3
 					if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
 						incrementalAnalysis.set(false)
 					}
@@ -47,21 +46,13 @@ class PmdTaskTest_ConfigLocation {
 
 	private lateinit var gradle: GradleRunnerRule
 
-	private lateinit var noChecksConfig: String
-	private lateinit var failingConfig: String
-	private lateinit var failingContent: String
-
-	@BeforeEach fun setUp() {
-		noChecksConfig = gradle.templateFile("pmd-empty.xml").readText()
-		failingConfig = gradle.templateFile("pmd-simple_failure.xml").readText()
-		failingContent = gradle.templateFile("pmd-simple_failure.java").readText()
-	}
+	private val pmd = PmdTestResources { gradle.gradleVersion }
 
 	@Test fun `uses rootProject pmd config as a fallback`() {
-		gradle.file(failingConfig, *CONFIG_PATH)
+		gradle.file(pmd.simple.config, *CONFIG_PATH)
 		@Suppress("ConstantConditionIf") // do not set up, we want it to use rootProject's
 		if (false) {
-			gradle.file(noChecksConfig, "module", * CONFIG_PATH)
+			gradle.file(pmd.empty.config, "module", * CONFIG_PATH)
 		}
 
 		executeBuild().verifyMissingContentCheckWasRun()
@@ -70,16 +61,16 @@ class PmdTaskTest_ConfigLocation {
 	@Test fun `uses local module pmd config if available`() {
 		@Suppress("ConstantConditionIf") // do not set up rootProject's, we want to see if works without as well
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(pmd.empty.config, *CONFIG_PATH)
 		}
-		gradle.file(failingConfig, "module", *CONFIG_PATH)
+		gradle.file(pmd.simple.config, "module", *CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
 
 	@Test fun `uses local module pmd config over rootProject pmd config`() {
-		gradle.file(noChecksConfig, *CONFIG_PATH)
-		gradle.file(failingConfig, "module", * CONFIG_PATH)
+		gradle.file(pmd.empty.config, *CONFIG_PATH)
+		gradle.file(pmd.simple.config, "module", * CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
@@ -87,7 +78,7 @@ class PmdTaskTest_ConfigLocation {
 	@Test fun `warns about missing configuration`() {
 		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(pmd.empty.config, *CONFIG_PATH)
 		}
 
 		val result = executeBuild()
@@ -99,7 +90,7 @@ class PmdTaskTest_ConfigLocation {
 	@Test fun `does not warn about missing configuration when not executed`() {
 		@Suppress("ConstantConditionIf") // Do not set up, we want it to not exist.
 		if (false) {
-			gradle.file(noChecksConfig, *CONFIG_PATH)
+			gradle.file(pmd.empty.config, *CONFIG_PATH)
 		}
 
 		val result = gradle.runBuild {
@@ -111,7 +102,7 @@ class PmdTaskTest_ConfigLocation {
 	}
 
 	private fun executeBuild(): BuildResult {
-		gradle.file(failingContent, "module", "src", "main", "java", "Pmd.java")
+		gradle.file(pmd.simple.content, "module", "src", "main", "java", "Pmd.java")
 		// see also @Test/given for configuration file location setup
 
 		return gradle.runFailingBuild {
@@ -119,15 +110,13 @@ class PmdTaskTest_ConfigLocation {
 			run(SCRIPT_CONFIGURE_PMD, ":module:pmdDebug")
 		}
 	}
-}
 
-private fun BuildResult.verifyMissingContentCheckWasRun() {
-	// build should only fail if failing config wins the preference,
-	// otherwise it's BUILD SUCCESSFUL or RuleSetNotFoundException: Can't find resource "....xml" for rule "null".
-	assertEquals(TaskOutcome.FAILED, this.task(":module:pmdDebug")!!.outcome)
-	assertThat(this.failReason, containsString("1 PMD rule violations were found."))
-	this.assertHasOutputLine(
-		Regex(""".*src.main.java.Pmd\.java:1:\s+All classes and interfaces must belong to a named package""")
-	)
-	this.assertNoOutputLine(Regex("""While auto-configuring ruleSetFiles for task '.*"""))
+	private fun BuildResult.verifyMissingContentCheckWasRun() {
+		// build should only fail if failing config wins the preference,
+		// otherwise it's BUILD SUCCESSFUL or RuleSetNotFoundException: Can't find resource "....xml" for rule "null".
+		assertEquals(TaskOutcome.FAILED, this.task(":module:pmdDebug")!!.outcome)
+		assertThat(this.failReason, containsString("1 PMD rule violations were found."))
+		this.assertHasOutputLine(pmd.simple.message)
+		this.assertNoOutputLine(Regex("""While auto-configuring ruleSetFiles for task '.*"""))
+	}
 }
