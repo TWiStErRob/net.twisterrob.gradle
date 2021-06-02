@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.checkstyle
 
-import net.twisterrob.gradle.checkstyle.test.checkstyle
+import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.TaskConfigurator
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -34,6 +34,7 @@ class CheckStylePluginTest {
 	}
 
 	private lateinit var gradle: GradleRunnerRule
+	private val checkstyle = CheckstyleTestResources()
 
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
@@ -79,7 +80,7 @@ class CheckStylePluginTest {
 	}
 
 	@Test fun `applies to all types of subprojects`() {
-		gradle.file(gradle.checkstyle.empty.config, "config", "checkstyle", "checkstyle.xml")
+		gradle.file(checkstyle.empty.config, "config", "checkstyle", "checkstyle.xml")
 		@Language("gradle")
 		val script = """
 			allprojects {
@@ -144,7 +145,7 @@ class CheckStylePluginTest {
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
-		gradle.file(gradle.checkstyle.empty.config, "config", "checkstyle", "checkstyle.xml")
+		gradle.file(checkstyle.empty.config, "config", "checkstyle", "checkstyle.xml")
 
 		@Language("gradle")
 		val rootProject = """
@@ -205,7 +206,7 @@ class CheckStylePluginTest {
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
-		gradle.file(gradle.checkstyle.empty.config, "config", "checkstyle", "checkstyle.xml")
+		gradle.file(checkstyle.empty.config, "config", "checkstyle", "checkstyle.xml")
 
 		val result = gradle.runBuild {
 			basedOn("android-multi_module")
@@ -252,8 +253,8 @@ class CheckStylePluginTest {
 
 	@Test fun `custom source sets folders are picked up`() {
 		gradle.basedOn("android-root_app")
-		gradle.file(gradle.checkstyle.simple.config, "config", "checkstyle", "checkstyle.xml")
-		gradle.file(gradle.checkstyle.simple.content, "custom", "Checkstyle.java")
+		gradle.file(checkstyle.simple.config, "config", "checkstyle", "checkstyle.xml")
+		gradle.file(checkstyle.simple.content, "custom", "Checkstyle.java")
 
 		@Language("gradle")
 		val build = """
@@ -276,11 +277,11 @@ class CheckStylePluginTest {
 
 	@Test fun `exclusions are configurable per variant`() {
 		gradle.basedOn("android-root_app")
-		gradle.file(gradle.checkstyle.simple.config, "config", "checkstyle", "checkstyle.xml")
-		gradle.file(gradle.checkstyle.simple.content, "src", "main", "java", "com", "example", "foo", "Checkstyle.java")
-		gradle.file(gradle.checkstyle.simple.content, "src", "main", "java", "com", "example", "bar", "Checkstyle.java")
+		gradle.file(checkstyle.simple.config, "config", "checkstyle", "checkstyle.xml")
+		gradle.file(checkstyle.simple.content, "src", "main", "java", "com", "example", "foo", "Checkstyle.java")
+		gradle.file(checkstyle.simple.content, "src", "main", "java", "com", "example", "bar", "Checkstyle.java")
 		gradle.file(
-			gradle.checkstyle.simple.content,
+			checkstyle.simple.content,
 			"src", "main", "java", "com", "example", "bar", "baz", "Checkstyle.java"
 		)
 

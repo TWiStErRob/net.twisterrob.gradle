@@ -1,12 +1,16 @@
 package net.twisterrob.gradle.checkstyle.test
 
-import net.twisterrob.gradle.test.GradleRunnerRule
-
-@Suppress("unused") // For consistency with PmdTestResources.
-val GradleRunnerRule.checkstyle: CheckstyleTestResources
-	get() = CheckstyleTestResources()
-
-class CheckstyleTestResources {
+/**
+ * Usage:
+ * ```
+ * private lateinit var gradle: GradleRunnerRule
+ * private val pmd = CheckstyleTestResources()
+ *
+ * @Test fun test() {
+ *     gradle.file(checkstyle.….config, "config", "checkstyle", "checkstyle.xml")
+ * }
+ * ```
+ */class CheckstyleTestResources {
 
 	val empty = object : EmptyConfiguration {}
 

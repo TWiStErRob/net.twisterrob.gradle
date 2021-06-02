@@ -1,13 +1,20 @@
 package net.twisterrob.gradle.pmd.test
 
-import net.twisterrob.gradle.test.GradleRunnerRule
 import org.gradle.util.GradleVersion
 
-val GradleRunnerRule.pmd: PmdTestResources
-	get() = PmdTestResources(this)
-
+/**
+ * Usage:
+ * ```
+ * private lateinit var gradle: GradleRunnerRule
+ * private val pmd = PmdTestResources { gradle.getGradleVersion() }
+ *
+ * @Test fun test() {
+ *     gradle.file(pmd.….config, "config", "pmd", "pmd.xml")
+ * }
+ * ```
+ */
 class PmdTestResources(
-	private val gradle: GradleRunnerRule
+	private val gradleVersion: () -> GradleVersion
 ) {
 
 	val empty = object : EmptyConfiguration {}
@@ -22,7 +29,7 @@ class PmdTestResources(
 	inner class SimpleFailure {
 		val config: String
 			get() =
-				if (gradle.getGradleVersion() < GradleVersion.version("5.0.0")) {
+				if (gradleVersion() < GradleVersion.version("5.0.0")) {
 					read("simple_failure/simple_old-pmd.xml")
 				} else {
 					// Gradle 5+ has PMD 6.x embedded, so they emit a deprecation warning if the old config is used (#81).

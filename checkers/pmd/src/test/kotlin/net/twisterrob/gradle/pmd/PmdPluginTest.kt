@@ -1,6 +1,6 @@
-package net.twisterrob.gradle.pmd
+package net.twisterrob.pmd
 
-import net.twisterrob.gradle.pmd.test.pmd
+import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -33,6 +33,8 @@ class PmdPluginTest {
 
 	private lateinit var gradle: GradleRunnerRule
 
+	private val pmd = PmdTestResources { gradle.getGradleVersion() }
+
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
 		val script = """
@@ -61,7 +63,7 @@ class PmdPluginTest {
 	}
 
 	@Test fun `applies without a hitch to an Android project`() {
-		gradle.file(gradle.pmd.empty.config, "config", "pmd", "pmd.xml")
+		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.pmd'
@@ -78,7 +80,7 @@ class PmdPluginTest {
 	}
 
 	@Test fun `applies to all types of subprojects`() {
-		gradle.file(gradle.pmd.empty.config, "config", "pmd", "pmd.xml")
+		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
 		@Language("gradle")
 		val script = """
 			allprojects {
@@ -143,7 +145,7 @@ class PmdPluginTest {
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
-		gradle.file(gradle.pmd.empty.config, "config", "pmd", "pmd.xml")
+		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
 
 		@Language("gradle")
 		val rootProject = """
@@ -204,7 +206,7 @@ class PmdPluginTest {
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
-		gradle.file(gradle.pmd.empty.config, "config", "pmd", "pmd.xml")
+		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
 
 		val result = gradle.runBuild {
 			basedOn("android-multi_module")
