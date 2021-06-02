@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.checkstyle.test.csRes
-import net.twisterrob.gradle.common.listFilesInDirectory
 import net.twisterrob.gradle.pmd.test.pmdRes
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -14,7 +13,6 @@ import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.io.File
 import kotlin.test.assertEquals
 
 @ExtendWith(GradleRunnerRuleExtension::class)
@@ -26,7 +24,7 @@ class ValidateViolationsTaskTest {
 		val MANIFEST_PATH = arrayOf("src", "main", "AndroidManifest.xml")
 		val SOURCE_PATH = arrayOf("src", "main", "java")
 
-		val VIOLATION_PATTERN = Regex("""([A-Z][a-zA-Z0-9_]+?)_(\d).java""")
+		val VIOLATION_PATTERN = Regex("""([A-Z][a-zA-Z0-9_]+?)_(\d)\.java""")
 	}
 
 	private lateinit var gradle: GradleRunnerRule
@@ -79,20 +77,18 @@ class ValidateViolationsTaskTest {
 	}
 
 	@Test fun `get per module violation counts`() {
-		val template = gradle.templateFile("checkstyle-multiple_violations/checkstyle-template.xml").readText()
-		val dir = gradle.templateFile("checkstyle-multiple_violations")
-		dir.listFilesInDirectory().sorted().forEach { file: File ->
-			println("Building module from ${file}")
-			VIOLATION_PATTERN.matchEntire(file.name)?.apply {
-				val checkName = groups[1]!!.value
-				@Suppress("UNUSED_VARIABLE")
-				val checkCount = groups[2]!!.value.toInt()
-				val checkstyleXmlContents = template.replace("\${CheckName}", checkName)
-				gradle.file(checkstyleXmlContents, checkName, *CONFIG_PATH_CS)
-				gradle.file("""<manifest package="checkstyle.${checkName}" />""", checkName, *MANIFEST_PATH)
-				gradle.file(file.readText(), checkName, *SOURCE_PATH, file.name)
-				gradle.settingsFile.appendText("include ':${checkName}'${System.lineSeparator()}")
-			}
+		val template = gradle.csRes.multiConfig
+		gradle.csRes.multiContents.forEach { (name, content) ->
+			val match = VIOLATION_PATTERN.matchEntire(name) ?: error("$name doesn't match $VIOLATION_PATTERN")
+			println("Building module from ${name}")
+			val checkName = match.groups[1]!!.value
+			@Suppress("UNUSED_VARIABLE")
+			val checkCount = match.groups[2]!!.value.toInt()
+			val checkstyleXmlContents = template.replace("\${CheckName}", checkName)
+			gradle.file(checkstyleXmlContents, checkName, *CONFIG_PATH_CS)
+			gradle.file("""<manifest package="checkstyle.${checkName}" />""", checkName, *MANIFEST_PATH)
+			gradle.file(content, checkName, *SOURCE_PATH, name)
+			gradle.settingsFile.appendText("include ':${checkName}'${System.lineSeparator()}")
 		}
 
 		@Language("gradle")

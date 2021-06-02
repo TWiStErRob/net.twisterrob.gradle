@@ -23,6 +23,23 @@ class CheckstyleTestResources {
 	val failingContent: String
 		get() = read("checkstyle-simple_failure.java")
 
+	/**
+	 * @see [multiContents]
+	 */
+	val multiConfig: String
+		get() = read("checkstyle-multiple_violations/checkstyle-template.xml")
+
+	/**
+	 * @see [multiConfig]
+	 */
+	val multiContents: Map<String, String>
+		get() =
+			listOf(
+				"EmptyBlock_3.java",
+				"MemberName_2.java",
+				"UnusedImports_4.java"
+			).associateWith { read("checkstyle-multiple_violations/$it") }
+
 	private fun read(path: String): String =
 		fileFromResources(CheckstyleTestResources::class.java, path)
 }
