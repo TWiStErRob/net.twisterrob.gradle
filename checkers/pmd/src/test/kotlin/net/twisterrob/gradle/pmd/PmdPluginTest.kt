@@ -1,4 +1,4 @@
-package net.twisterrob.pmd
+package net.twisterrob.gradle.pmd
 
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
