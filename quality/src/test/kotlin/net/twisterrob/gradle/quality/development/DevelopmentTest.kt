@@ -24,7 +24,7 @@ class DevelopmentTest {
 	fun `manual test for HTML output`() {
 		gradle.basedOn("android-root_app")
 		val lintResultsXml = resources.customLint.xml
-			.replace("""P:\projects\test-project\""", gradle.runner.projectDir.absolutePath)
+			.replace("""P:\projects\test-project""", gradle.runner.projectDir.absolutePath)
 		gradle.file(lintResultsXml, "build", "reports", "lint-results.xml")
 		@Language("gradle")
 		val script = """
