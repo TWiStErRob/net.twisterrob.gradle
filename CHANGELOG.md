@@ -1,18 +1,31 @@
 # Change Log
 
 
+## 0.12 *(2021-06-06 --- )*
+
+### Breaking
+ * ...
+
+### New
+ * ...
+
+### Fixes
+ * ...
+
+### Deprecations
+
+#### `net.twisterrob.gradle:artifact-name`
+ * ...
+
+### Internal
+ * ...
+
+
 ## 0.11 *(2020-11-22 --- 2021-06-06)*
 
 ### Breaking
  * Removed Bintray publishing as it shut down, replaced with Maven Central. Use `mavenCentral()` instead of custom Bintray url. (#107/#108)
  * Build with Kotlin 1.4.32 (#112), this also comes as transitive dependency.
-
-### Deprecations
-
-#### `net.twisterrob.gradle:twister-gradle-test`
- * `GradleRunnerRule.templateFile(String): File`
- * `GradleRunnerRule.templateFile(String, Any?): File`
- * `GradleRunnerRule.setGradleVersion(String)`
 
 ### New
  * Android Gradle Plugin 4.0.2 compatible (#101)
@@ -22,10 +35,17 @@
 
 ### Fixes
  * Use new Checkstyle API in Gradle 6.9 (#114) to fix:
-> The Checkstyle.setConfigDir() method has been deprecated. This is scheduled to be removed in Gradle 7.0. Please use the Checkstyle.getConfigDirectory().set() method instead.
+   > The Checkstyle.setConfigDir() method has been deprecated. This is scheduled to be removed in Gradle 7.0. Please use the Checkstyle.getConfigDirectory().set() method instead.
 
  * Use conventions instead of manually created properties (#102/#117) to fix:
-> Querying the mapped value of task ':violationReportHtml' property 'xml' before task ':violationReportHtml' has completed has been deprecated. This will fail with an error in Gradle 7.0.
+   > Querying the mapped value of task ':violationReportHtml' property 'xml' before task ':violationReportHtml' has completed has been deprecated. This will fail with an error in Gradle 7.0.
+
+### Deprecations
+
+#### `net.twisterrob.gradle:twister-gradle-test`
+* `GradleRunnerRule.templateFile(String): File`
+* `GradleRunnerRule.templateFile(String, Any?): File`
+* `GradleRunnerRule.setGradleVersion(String)`
 
 ### Internal
  * Moved Continuous Integration from Travis to GitHub Actions (#110).

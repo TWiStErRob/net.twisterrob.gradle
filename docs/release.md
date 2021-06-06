@@ -69,6 +69,22 @@
     * `CHANGELOG.md`: add history section:
     ```
     ## x.z *(YYYY-MM-DD --- )*
+
+    ### Breaking
+     * ...
+
+    ### New
+     * ...
+
+    ### Fixes
+     * ...
+
+    ### Deprecations
+
+    #### `net.twisterrob.gradle:artifact-name`
+     * ...
+
+    ### Internal
      * ...
     ```
  1. [Create milestone](https://github.com/TWiStErRob/net.twisterrob.gradle/milestones/new) `vx.z`, if doesn't exist yet.

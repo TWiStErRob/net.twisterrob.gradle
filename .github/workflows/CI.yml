@@ -57,10 +57,6 @@ jobs:
           path: |
             ~/.m2/repository/**
 
-      - name: Verify docs/examples/local.
-        working-directory: docs/examples/local
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
-
       - name: Parse env.PROJECT_VERSION.
         run: echo "PROJECT_VERSION=$(grep --color=never --perl-regexp --only-matching '(?<=^projectVersion=)(.*)$' gradle.properties)" | tee --append $GITHUB_ENV
 
@@ -73,7 +69,19 @@ jobs:
         if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/master'
         run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION)" | tee --append $GITHUB_ENV
 
-      - name: Publish Gradle Quality plugins to mavenLocal().
+      - name: Verify docs/examples/local for release.
+        working-directory: docs/examples/local
+        if: env.SNAPSHOT_VERSION == ''
+        run: |
+          sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}-SNAPSHOT"/version "${{ env.PROJECT_VERSION }}"/g' build.gradle.kts
+          ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+
+      - name: Verify docs/examples/local for snapshot.
+        working-directory: docs/examples/local
+        if: env.SNAPSHOT_VERSION != ''
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+
+      - name: Publish Gradle Quality plugins to Sonatype Snapshot.
         if: env.SNAPSHOT_VERSION != ''
         run: >
           ./gradlew
