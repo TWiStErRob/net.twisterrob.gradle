@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="5" by="lint 4.0.1">
+
+	<issue
+		id="LintError"
+		severity="Error"
+		message="Unexpected failure during lint analysis of module-info.class (this is a bug in lint or one of the libraries it depends on)&#xA;&#xA;Stack: `NullPointerException:InvalidPackageDetector.checkClass(InvalidPackageDetector.java:110)←AsmVisitor.runClassDetectors(AsmVisitor.java:154)←LintDriver.runClassDetectors(LintDriver.kt:1408)←LintDriver.checkClasses(LintDriver.kt:1276)←LintDriver.runFileDetectors(LintDriver.kt:1044)←LintDriver.checkProject(LintDriver.kt:850)←LintDriver.analyze(LintDriver.kt:378)←LintCliClient.run(LintCliClient.java:238)`&#xA;&#xA;You can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout."
+		category="Lint"
+		priority="10"
+		summary="Lint Failure"
+		explanation="This issue type represents a problem running lint itself. Examples include failure to find bytecode for source files (which means certain detectors could not be run), parsing errors in lint configuration files, etc.&#xA;&#xA;These errors are not errors in your own code, but they are shown to make it clear that some checks were not completed."
+		includedVariants="debug"
+		excludedVariants="release">
+		<location
+			file="P:\projects\test-project\module-info.class"/>
+	</issue>
+
+	<issue
+		id="LintError"
+		severity="Error"
+		message="Unexpected failure during lint analysis of module-info.class (this is a bug in lint or one of the libraries it depends on)&#xA;&#xA;Stack: `NullPointerException:`&#xA;&#xA;You can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout."
+		category="Lint"
+		priority="10"
+		summary="Lint Failure"
+		explanation="This issue type represents a problem running lint itself. Examples include failure to find bytecode for source files (which means certain detectors could not be run), parsing errors in lint configuration files, etc.&#xA;&#xA;These errors are not errors in your own code, but they are shown to make it clear that some checks were not completed."
+		includedVariants="release"
+		excludedVariants="debug">
+		<location
+			file="P:\projects\test-project\module-info.class"/>
+	</issue>
+
+</issues>
