@@ -22,7 +22,6 @@ class DetailsViewModel(private val v: Violation) {
 						.replace("""\""", """\\""")
 						.replace("""$""", """\$""")
 						.replace("""`""", """\`""")
-						.replace("""&#xA;""", "\n")
 
 					val details = LintMessageDetailsSplitter().split(v)
 					title = details.title

@@ -17,17 +17,22 @@ class LintMessageDetailsSplitter {
 
 	companion object {
 
+		private fun String.replaceNewLines(): String =
+			replace("""&#xA;""", "\n")
+
 		/**
 		 * Reverse of [se.bjurr.violations.lib.parsers.AndroidLintParser.parseReportOutput].
 		 */
 		private fun defaultSplit(v: Violation): MessageDetails {
 			val lines = v.message.lineSequence()
+
 			return MessageDetails(
-				title = lines.elementAt(0),
-				message = lines.elementAt(1),
+				title = lines.elementAt(0).replaceNewLines(),
+				message = lines.elementAt(1).replaceNewLines(),
 				description = lines
 					.drop(2) // already used 0 and 1 above
 					.joinToString("\n")
+					.replaceNewLines()
 			)
 		}
 
@@ -42,30 +47,53 @@ class LintMessageDetailsSplitter {
 			},
 			"LintError" to fun(v: Violation): MessageDetails {
 				val split = defaultSplit(v)
-				val replaced = split.message
-					.replace(
-						Regex("""during lint analysis of (.*?) \(this is a bug in lint"""),
-						"""during lint analysis of `$1` (this is a bug in lint"""
-					)
-					.replace(
-						Regex("""Stack: `(.*?):"""),
-						"""
-						```
-						Exception in thread "lint" $1:
-							at 
-						""".trimIndent()
-					)
-					.replace(
-						"""←""",
-						"\n\tat "
-					)
-					.replace(
-						Regex("""`&#xA;&#xA;You can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout\."""),
-						"\n```"
-					)
+				val replaced =
+					if ("←" in split.message) {
+						split.message
+							.replace(Regex("""Stack: `(.*?):"""), "$0←")
+							.replace(
+								Regex(
+									"""
+									Unexpected failure during lint analysis of (.*?) \(this is a bug in lint or one of the libraries it depends on\)
+		
+									Stack: `(.*?):(.*)`\n\nYou can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout\.
+									""".trimIndent()
+								)
+							) {
+								"""
+								Unexpected failure during lint analysis of `${it.groupValues[1]}`.
+		
+								```
+								Exception in thread "lint" ${it.groupValues[2]}:${
+									it.groupValues[3]
+										.replace("←", "\n\tat ")
+										.prependIndent("\t\t\t\t\t\t\t\t")
+										.trimStart('\t')
+								}
+								```
+								""".trimIndent()
+							}
+					} else {
+						split.message
+							.replace(
+								Regex(
+									"""
+									Unexpected failure during lint analysis of (.*?) \(this is a bug in lint or one of the libraries it depends on\)
+		
+									Stack: `(.*?):`\n\nYou can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout\.
+									""".trimIndent()
+								)
+							) {
+								"""
+								`${it.groupValues[2]}` during lint analysis of `${it.groupValues[1]}`.
+								""".trimIndent()
+							}
+					}
 				return split.copy(
 					message = replaced,
-					description = "You can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout.\n\n" + split.description
+					description = "This is a bug in lint or one of the libraries it depends on." +
+							"\n\nYou can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout." +
+							"\n\n" + split.description
 				)
 			}
 		)
