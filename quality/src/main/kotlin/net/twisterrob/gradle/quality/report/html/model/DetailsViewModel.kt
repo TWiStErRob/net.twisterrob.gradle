@@ -24,18 +24,10 @@ class DetailsViewModel(private val v: Violation) {
 						.replace("""`""", """\`""")
 						.replace("""&#xA;""", "\n")
 
-					val lines = v.message.lineSequence()
-					title = lines.elementAt(0)
-					message = run {
-						val messageLine = lines.elementAt(1)
-						cleanLintMessage(v.rule, messageLine).escapeMarkdownForJSTemplate()
-					}
-					description = run {
-						lines
-							.drop(2) // already used 0 and 1 above
-							.joinToString("\n")
-							.escapeMarkdownForJSTemplate()
-					}
+					val details = LintMessageDetailsSplitter().split(v)
+					title = details.title
+					message = details.message.escapeMarkdownForJSTemplate()
+					description = details.description.escapeMarkdownForJSTemplate()
 				}
 
 				"PMD" -> {
@@ -58,13 +50,4 @@ class DetailsViewModel(private val v: Violation) {
 			}
 		}
 	}
-}
-
-private fun cleanLintMessage(check: String, messageLine: String): String = when (check) {
-	"IconMissingDensityFolder" ->
-		messageLine.replace(Regex("""(?<=Missing density variation folders in `)(.*?)(?=`:)""")) {
-			it.value.replace("""\\""", """\""")
-		}
-
-	else -> messageLine
 }
