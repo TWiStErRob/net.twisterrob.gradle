@@ -4,11 +4,8 @@ import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
-import java.io.File
 import kotlin.test.assertEquals
 
 class DetailsViewModelTest_ANDROIDLINT {
@@ -45,33 +42,6 @@ class DetailsViewModelTest_ANDROIDLINT {
 		val result = model.messaging.message
 
 		assertEquals("""something with escapes:\\n 1:\\ 2:\\\\ 3:\\\\\\ 4:\\\\\\\\""", result)
-	}
-
-	class Suppressions {
-
-		private val fixture = createAndroidLintFixture()
-
-		@Test
-		fun `unknown files are suppressed with lint-xml`() {
-			val model = DetailsViewModel(fixture.build<Violation>().apply {
-				// this.location.file is fixture'd
-			})
-
-			val result = model.suppression
-
-			assertThat(result, containsString("""<issue id="${model.rule}" severity="ignore">"""))
-		}
-
-		@Test
-		fun `java files are suppressed with annotation`() {
-			val model = DetailsViewModel(fixture.build<Violation>().apply {
-				this.location.setField("file", File(fixture.build<String>() + ".java"))
-			})
-
-			val result = model.suppression
-
-			assertThat(result, containsString("""@SuppressLint("${model.rule}")"""))
-		}
 	}
 
 	companion object {

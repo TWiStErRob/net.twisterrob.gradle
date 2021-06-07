@@ -12,11 +12,11 @@ class SuppressionGenerator {
 					"xml" -> """tools:ignore="${v.rule}""""
 					"gradle" -> """//noinspection ${v.rule} TODO explanation"""
 					else -> """
-					|<issue id="${v.rule}" severity="ignore">
-					|    <!-- TODO explanation -->
-					|    <ignore path="${if (v.isLocationExternal) v.location.file.name else v.locationRelativeToModule}" />
-					|</issue>
-				""".trimMargin()
+						<issue id="${v.rule}" severity="ignore">
+						    <!-- TODO explanation -->
+						    <ignore path="${if (v.isLocationExternal) v.location.file.name else v.locationRelativeToModule}" />
+						</issue>
+					""".trimIndent()
 				}
 			}
 
