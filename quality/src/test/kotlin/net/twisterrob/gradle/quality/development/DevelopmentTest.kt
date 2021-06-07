@@ -8,10 +8,8 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.Assumptions.assumeTrue
 //import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.awt.Desktop
 import kotlin.test.assertEquals
 
 @Suppress("unused") // add @Test to run any fun
@@ -33,14 +31,13 @@ class DevelopmentTest {
 		""".trimIndent()
 
 		val result = gradle.runBuild {
-			run(script, "htmlReport")
+			run(script, "htmlReport").withDebug(true)
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
 		val violationsHtml = gradle.runner.projectDir.resolve("build/reports/violations.html")
 		assertThat(violationsHtml, anExistingFile())
 
-		assumeTrue(Desktop.isDesktopSupported())
-		Desktop.getDesktop().browse(violationsHtml.toURI())
+		Runtime.getRuntime().exec("""cmd /k "start "" "${violationsHtml.toURI()}""""")
 	}
 }
