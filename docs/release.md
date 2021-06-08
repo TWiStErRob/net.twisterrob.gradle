@@ -64,6 +64,7 @@
 
  1. `git add gradle.properties CHANGELOG.md docs/examples/*/build.gradle.kts & git commit -m "Pre-Release x.z"`
     * `gradle.properties`: version number `x.z-SNAPSHOT`
+    * `docs/examples/local/build.gradle.kts`: plugin version `x.z-SNAPSHOT`
     * `docs/examples/snapshot/build.gradle.kts`: plugin version `x.z-SNAPSHOT`
     * `docs/examples/release/build.gradle.kts`: plugin version `x.y`
     * `CHANGELOG.md`: add history section:
