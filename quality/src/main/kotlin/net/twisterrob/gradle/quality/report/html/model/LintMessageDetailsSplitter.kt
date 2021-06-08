@@ -45,6 +45,7 @@ class LintMessageDetailsSplitter {
 					}
 				return split.copy(message = replaced)
 			},
+			// Consider using ContextViewModel.ErrorContext for displaying the stack trace of this.
 			"LintError" to fun(v: Violation): MessageDetails {
 				val split = defaultSplit(v)
 				val replaced =
@@ -55,14 +56,14 @@ class LintMessageDetailsSplitter {
 								Regex(
 									"""
 									Unexpected failure during lint analysis of (.*?) \(this is a bug in lint or one of the libraries it depends on\)
-		
+									
 									Stack: `(.*?):(.*)`\n\nYou can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout\.
 									""".trimIndent()
 								)
 							) {
 								"""
 								Unexpected failure during lint analysis of `${it.groupValues[1]}`.
-		
+								
 								```
 								Exception in thread "lint" ${it.groupValues[2]}:${
 									it.groupValues[3]
@@ -79,7 +80,7 @@ class LintMessageDetailsSplitter {
 								Regex(
 									"""
 									Unexpected failure during lint analysis of (.*?) \(this is a bug in lint or one of the libraries it depends on\)
-		
+									
 									Stack: `(.*?):`\n\nYou can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout\.
 									""".trimIndent()
 								)
