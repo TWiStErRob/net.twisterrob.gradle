@@ -357,8 +357,8 @@
 		padding-left: 8px;
 	}
 
-	details > summary > pre {
-		display: inline-block;
+	details.location > summary > pre {
+		 display: inline-block;
 	}
 
 	ul {
