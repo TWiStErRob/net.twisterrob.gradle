@@ -21,8 +21,8 @@ class QualityPlugin : BaseExposedPlugin() {
 		project.apply<PmdPlugin>()
 
 		if (project.rootProject == project) {
-			project.tasks.register("violationReportConsole", ValidateViolationsTask::class.java)
-			project.tasks.register("violationReportHtml", HtmlReportTask::class.java)
+			project.tasks.register(REPORT_CONSOLE_TASK_NAME, ValidateViolationsTask::class.java)
+			project.tasks.register(REPORT_HTML_TASK_NAME, HtmlReportTask::class.java)
 			project.afterEvaluate {
 				// TODO only when lint is on classpath? what about normal Java projects?
 				// TODO move to LintPlugin?
@@ -31,5 +31,10 @@ class QualityPlugin : BaseExposedPlugin() {
 				}
 			}
 		}
+	}
+
+	companion object {
+		const val REPORT_CONSOLE_TASK_NAME = "violationReportConsole"
+		const val REPORT_HTML_TASK_NAME = "violationReportHtml"
 	}
 }

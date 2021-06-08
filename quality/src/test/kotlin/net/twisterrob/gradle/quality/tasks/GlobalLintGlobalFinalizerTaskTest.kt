@@ -49,9 +49,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		@Language("gradle")
 		val script = """
-			subprojects {
-				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
-			}
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
@@ -75,9 +73,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		@Language("gradle")
 		val script = """
-			subprojects {
-				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
-			}
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
@@ -101,9 +97,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		@Language("gradle")
 		val script = """
-			subprojects {
-				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
-			}
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			tasks.register('lint', ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
@@ -120,6 +114,33 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
+	}
+
+	@Test fun `does not suggest violation report if already executing it`() {
+		`set up 3 modules with a lint failures`()
+		gradle.basedOn("android-multi_module")
+
+		@Language("gradle")
+		val script = """
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
+			apply plugin: 'net.twisterrob.quality'
+		""".trimIndent()
+
+		val message =
+			Regex("""To get a full breakdown and listing, execute violationReportConsole or violationReportHtml\.""")
+
+		gradle.run(script, "lint").build()
+			.assertHasOutputLine(message)
+
+		gradle.run(null, "lint", "violationReportHtml").build()
+			.assertNoOutputLine(message)
+
+		gradle.run(null, "lint", "violationReportConsole").build()
+			.assertNoOutputLine(message)
+
+		// Test also that short names are considered.
+		gradle.run(null, "lint", "vRH", "vRC").build()
+			.assertNoOutputLine(message)
 	}
 
 	@Test fun `ignores disabled submodule lint tasks (rootProject setup)`() {
@@ -148,9 +169,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		@Language("gradle")
 		var script = """
-			subprojects {
-				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
-			}
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
@@ -178,9 +197,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		@Language("gradle")
 		val script = """
-			subprojects {
-				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
-			}
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			tasks.register('lint', ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
