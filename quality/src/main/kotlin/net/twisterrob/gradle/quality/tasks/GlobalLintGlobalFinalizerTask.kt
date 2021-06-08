@@ -4,7 +4,8 @@ import com.android.build.gradle.tasks.LintGlobalTask
 import net.twisterrob.gradle.common.AndroidVariantApplier
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.common.xmlOutput
-import net.twisterrob.gradle.quality.QualityPlugin
+import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
+import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
@@ -46,22 +47,23 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			.associateBy({ it }) { gatherer.findViolations(it) }
 		val totalCount = violationsByFile.values.sumBy { violations: List<Violation> -> violations.size }
 		if (totalCount > 0) {
-			val hasConsole = project.gradle.taskGraph.hasTask(":" + QualityPlugin.REPORT_CONSOLE_TASK_NAME)
-			val hasHtml = project.gradle.taskGraph.hasTask(":" + QualityPlugin.REPORT_HTML_TASK_NAME)
-			val postfix = if (!hasConsole && !hasHtml) {
-				"${System.lineSeparator()}To get a full breakdown and listing, " +
-						"execute ${QualityPlugin.REPORT_CONSOLE_TASK_NAME} or ${QualityPlugin.REPORT_HTML_TASK_NAME}."
-			} else {
-				"" // No message, it's already going to execute.
-			}
-			val message = "Ran lint on subprojects: ${totalCount} issues found${System.lineSeparator()}" +
-					violationsByFile.entries.joinToString(
-						prefix = "See reports in subprojects:${System.lineSeparator()}",
-						separator = System.lineSeparator(),
-						postfix = postfix,
-					) { (report, violations) ->
-						"${report} (${violations.size})"
-					}
+			val hasConsole = project.gradle.taskGraph.hasTask(":$REPORT_CONSOLE_TASK_NAME")
+			val hasHtml = project.gradle.taskGraph.hasTask(":$REPORT_HTML_TASK_NAME")
+			val projectReports = violationsByFile.entries
+				.map { (report, violations) ->
+					"${report} (${violations.size})"
+				}
+			val lines = listOfNotNull(
+				"Ran lint on subprojects: ${totalCount} issues found.",
+				"See reports in subprojects:",
+				*projectReports.toTypedArray(),
+				if (hasConsole || hasHtml) {
+					null // No message, it's already going to execute.
+				} else {
+					"To get a full breakdown and listing, execute $REPORT_CONSOLE_TASK_NAME or $REPORT_HTML_TASK_NAME."
+				}
+			)
+			val message = lines.joinToString(separator = System.lineSeparator())
 			if (this.wasLaunchedExplicitly) {
 				throw GradleException(message)
 			} else {

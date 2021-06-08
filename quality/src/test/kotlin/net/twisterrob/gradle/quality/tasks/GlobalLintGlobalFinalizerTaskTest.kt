@@ -66,6 +66,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
 		result.assertNoOutputLine(Regex(""".*Ran lint on subprojects.*"""))
+		result.assertNoOutputLine(Regex(""".*See reports in subprojects.*"""))
 	}
 
 	@Test fun `gathers results from submodules`() {
@@ -89,7 +90,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 1 + 1} issues found\."""))
 	}
 
 	@Test fun `gathers results from submodules (lazy init)`() {
@@ -113,7 +114,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 1 + 1} issues found\."""))
 	}
 
 	@Test fun `does not suggest violation report if already executing it`() {
@@ -189,7 +190,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
 		// se.bjurr.violations.lib.reports.Parser.findViolations swallows exceptions, so must check logs
 		result.assertNoOutputLine(Regex("""Error when parsing.* as ANDROIDLINT"""))
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 0 + 1} issues found"""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 0 + 1} issues found\."""))
 	}
 
 	@Test fun `fails the build on explicit invocation`() {
@@ -207,7 +208,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		}
 
 		assertEquals(TaskOutcome.FAILED, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
+		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${1 + 1 + 1} issues found\."""))
 	}
 
 	private fun `set up 3 modules with a lint failures`() {
