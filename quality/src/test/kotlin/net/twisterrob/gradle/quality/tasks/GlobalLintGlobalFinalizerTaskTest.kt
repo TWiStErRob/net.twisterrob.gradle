@@ -231,7 +231,8 @@ class GlobalLintGlobalFinalizerTaskTest {
 				apply plugin: 'com.android.library'
 				android {
 					lintOptions {
-						check 'LongLogTag'
+						//noinspection GroovyAssignabilityCheck
+						check = ['LongLogTag']
 					}
 				}
 			""".trimIndent()
