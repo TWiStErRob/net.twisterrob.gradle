@@ -7,7 +7,6 @@ import net.twisterrob.gradle.common.xmlOutput
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
-import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.plugins.JavaBasePlugin
@@ -28,14 +27,14 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	init {
 		group = JavaBasePlugin.VERIFICATION_GROUP
 		project.allprojects.forEach { subproject ->
-			AndroidVariantApplier(subproject).applyAfterPluginConfigured(Action {
+			AndroidVariantApplier(subproject).applyAfterPluginConfigured {
 				mustRunAfter(subproject.tasks.withType(LintGlobalTask::class.java) { subTask ->
 					subTask.lintOptions.isAbortOnError = subTask.wasLaunchedExplicitly
 					// make sure we have xml output, otherwise can't figure out if it failed
 					subTask.lintOptions.xmlReport = true
 					xmlReports += subTask.xmlOutput
 				})
-			})
+			}
 		}
 	}
 

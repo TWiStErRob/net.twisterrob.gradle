@@ -75,11 +75,11 @@ class AndroidVariantApplier(val project: Project) {
 		before: Action<Variants> = NOOP,
 		after: Action<Variants> = NOOP
 	) {
-		apply(Action { variants: Variants ->
+		apply { variants: Variants ->
 			before.execute(variants)
 			variants.all(variantClosure)
 			after.execute(variants)
-		})
+		}
 	}
 }
 
