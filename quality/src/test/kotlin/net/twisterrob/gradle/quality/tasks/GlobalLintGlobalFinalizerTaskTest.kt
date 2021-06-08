@@ -49,9 +49,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		@Language("gradle")
 		val script = """
-			subprojects {
-				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
-			}
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
@@ -68,6 +66,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
 		result.assertNoOutputLine(Regex(""".*Ran lint on subprojects.*"""))
+		result.assertNoOutputLine(Regex(""".*See reports in subprojects.*"""))
 	}
 
 	@Test fun `gathers results from submodules`() {
@@ -75,9 +74,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		@Language("gradle")
 		val script = """
-			subprojects {
-				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
-			}
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
@@ -93,7 +90,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 1 + 1} issues found\."""))
 	}
 
 	@Test fun `gathers results from submodules (lazy init)`() {
@@ -101,9 +98,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		@Language("gradle")
 		val script = """
-			subprojects {
-				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
-			}
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			tasks.register('lint', ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
@@ -119,7 +114,34 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 1 + 1} issues found\."""))
+	}
+
+	@Test fun `does not suggest violation report if already executing it`() {
+		`set up 3 modules with a lint failures`()
+		gradle.basedOn("android-multi_module")
+
+		@Language("gradle")
+		val script = """
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
+			apply plugin: 'net.twisterrob.quality'
+		""".trimIndent()
+
+		val message =
+			Regex("""To get a full breakdown and listing, execute violationReportConsole or violationReportHtml\.""")
+
+		gradle.run(script, "lint").build()
+			.assertHasOutputLine(message)
+
+		gradle.run(null, "lint", "violationReportHtml").build()
+			.assertNoOutputLine(message)
+
+		gradle.run(null, "lint", "violationReportConsole").build()
+			.assertNoOutputLine(message)
+
+		// Test also that short names are considered.
+		gradle.run(null, "lint", "vRH", "vRC").build()
+			.assertNoOutputLine(message)
 	}
 
 	@Test fun `ignores disabled submodule lint tasks (rootProject setup)`() {
@@ -148,9 +170,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		@Language("gradle")
 		var script = """
-			subprojects {
-				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
-			}
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
@@ -170,7 +190,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
 		// se.bjurr.violations.lib.reports.Parser.findViolations swallows exceptions, so must check logs
 		result.assertNoOutputLine(Regex("""Error when parsing.* as ANDROIDLINT"""))
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 0 + 1} issues found"""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 0 + 1} issues found\."""))
 	}
 
 	@Test fun `fails the build on explicit invocation`() {
@@ -178,9 +198,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		@Language("gradle")
 		val script = """
-			subprojects {
-				repositories { google() } // needed for com.android.tools.lint:lint-gradle resolution
-			}
+			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			tasks.register('lint', ${GlobalLintGlobalFinalizerTask::class.java.name})
 		""".trimIndent()
 
@@ -190,7 +208,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 		}
 
 		assertEquals(TaskOutcome.FAILED, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${1 + 1 + 1} issues found"""))
+		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${1 + 1 + 1} issues found\."""))
 	}
 
 	private fun `set up 3 modules with a lint failures`() {

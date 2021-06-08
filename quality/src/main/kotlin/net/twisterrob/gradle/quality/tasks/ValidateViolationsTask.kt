@@ -137,7 +137,7 @@ open class ValidateViolationsTask : DefaultTask() {
 				}
 			}
 		}
-		val nullSafeSum = nullSafeSum(java.util.function.Function { v: Violations? -> v?.violations?.size })
+		val nullSafeSum = nullSafeSum { v: Violations? -> v?.violations?.size }
 		@Suppress("UNCHECKED_CAST")
 		processViolations(Grouper.create(deduplicate(results), nullSafeSum) as Grouper.Start<Violations>)
 	}
