@@ -122,6 +122,38 @@ class LintMessageDetailsSplitterTest {
 		)
 	}
 
+	@Test
+	fun `TypographyFractions keeps HTML entities`() {
+		val input = fixture.build<Violation>().apply {
+			setField("rule", "TypographyFractions")
+			val summary = "Fraction string can be replaced with fraction character"
+			val message = "Use fraction character ¼ (&#188;) instead of 1/4 ?"
+			val explanation = "You can replace certain strings, such as 1/2, and 1/4, with dedicated characters for these, such as ½ (&#189;) and ¼ (&#188;). This can help make the text more readable."
+			setField("message", "$summary\n$message\n$explanation")
+		}
+
+		val output = sut.split(input)
+
+		assertEquals(
+			"""
+			Fraction string can be replaced with fraction character
+			""".trimIndent(),
+			output.title
+		)
+		assertEquals(
+			"""
+			Use fraction character ¼ (&#188;) instead of 1/4 ?
+			""".trimIndent(),
+			output.message
+		)
+		assertEquals(
+			"""
+			You can replace certain strings, such as 1/2, and 1/4, with dedicated characters for these, such as ½ (&#189;) and ¼ (&#188;). This can help make the text more readable.
+			""".trimIndent(),
+			output.description
+		)
+	}
+
 	companion object {
 
 		private fun createAndroidLintFixture(): JFixture {
