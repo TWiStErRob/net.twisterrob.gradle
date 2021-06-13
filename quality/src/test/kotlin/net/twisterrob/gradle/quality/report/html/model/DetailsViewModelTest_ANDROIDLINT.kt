@@ -44,6 +44,36 @@ class DetailsViewModelTest_ANDROIDLINT {
 		assertEquals("""something with escapes:\\n 1:\\ 2:\\\\ 3:\\\\\\ 4:\\\\\\\\""", result)
 	}
 
+	@Test
+	fun `HTML entities are kept`() {
+		val model = DetailsViewModel(fixture.build<Violation>().apply {
+			val input = """&, &amp;, `&amp;`, text: &#188;, code: `&#188;`"""
+			val lintMessage = """
+				Title: $input
+				Message: $input
+				Description: $input
+			""".trimIndent()
+			setField("message", lintMessage)
+		})
+
+		val result = model.messaging
+
+		// The real expectation would be different, but that would require full syntactic parsing of lint's markdown.
+		// See https://github.com/TWiStErRob/net.twisterrob.gradle/issues/65#issuecomment-860275509.
+		assertEquals(
+			"""Title: &amp;, &amp;amp;, `&amp;amp;`, text: &amp;#188;, code: `&amp;#188;`""",
+			result.title
+		)
+		assertEquals(
+			"""Message: &amp;, &amp;amp;, \`&amp;amp;\`, text: &amp;#188;, code: \`&amp;#188;\`""",
+			result.message
+		)
+		assertEquals(
+			"""Description: &amp;, &amp;amp;, \`&amp;amp;\`, text: &amp;#188;, code: \`&amp;#188;\`""",
+			result.description
+		)
+	}
+
 	companion object {
 
 		private fun createAndroidLintFixture(): JFixture {
