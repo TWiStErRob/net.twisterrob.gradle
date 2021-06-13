@@ -1,12 +1,29 @@
+@file:Suppress("unused")
+
 package net.twisterrob.gradle.quality.development
 
 class DevelopmentTestResources {
 
-	val customLint = object : CustomLint {}
+	val customLint get() = object : CustomLint {}
 
 	interface CustomLint {
-		val xml: String
-			get() = read("custom-lint/lint-results.xml")
+
+		val lintError get() = object : LintError {}
+
+		interface LintError {
+			val xmlReport: String
+				get() = read("custom-lint/LintError/lint-results.xml")
+		}
+
+		val typographyFractions get() = object : TypographyFractions {}
+
+		interface TypographyFractions {
+			val violation: String
+				get() = read("custom-lint/TypographyFractions/strings.xml")
+
+			val xmlReport: String
+				get() = read("custom-lint/TypographyFractions/lint-results.xml")
+		}
 	}
 
 	companion object {

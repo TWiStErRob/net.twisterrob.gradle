@@ -23,10 +23,14 @@ class DetailsViewModel(private val v: Violation) {
 						.replace("""$""", """\$""")
 						.replace("""`""", """\`""")
 
+					fun String.preprocessLintMarkdown(): String = this
+						// https://github.com/TWiStErRob/net.twisterrob.gradle/issues/65#issuecomment-860275509
+						.replace("""&""", """&amp;""")
+
 					val details = LintMessageDetailsSplitter().split(v)
-					title = details.title
-					message = details.message.escapeMarkdownForJSTemplate()
-					description = details.description.escapeMarkdownForJSTemplate()
+					title = details.title.preprocessLintMarkdown()
+					message = details.message.preprocessLintMarkdown().escapeMarkdownForJSTemplate()
+					description = details.description.preprocessLintMarkdown().escapeMarkdownForJSTemplate()
 				}
 
 				"PMD" -> {

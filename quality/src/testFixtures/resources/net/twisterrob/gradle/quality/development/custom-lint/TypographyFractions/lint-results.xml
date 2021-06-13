@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="5" by="lint 4.2.1">
+
+	<issue
+		id="TypographyFractions"
+		severity="Warning"
+		message="Use fraction character ¼ (&amp;#188;) instead of 1/4 ?"
+		category="Usability:Typography"
+		priority="5"
+		summary="Fraction string can be replaced with fraction character"
+		explanation="You can replace certain strings, such as 1/2, and 1/4, with dedicated characters for these, such as ½ (&amp;#189;) and ¼ (&amp;#188;). This can help make the text more readable."
+		url="https://en.wikipedia.org/wiki/Number_Forms"
+		urls="https://en.wikipedia.org/wiki/Number_Forms"
+		errorLine1=" &lt;string name=&quot;fraction&quot;>From 1/4 off.&lt;/string>"
+		errorLine2="                         ^">
+		<location
+			file="P:\projects\test-project\src\main\res\values\strings.xml"
+			line="3"
+			column="26"/>
+	</issue>
+
+</issues>

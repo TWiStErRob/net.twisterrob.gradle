@@ -84,7 +84,7 @@ internal fun renderViolation(to: XMLStreamWriter, vm: ViolationViewModel) {
 				element("context") renderContext@{
 					try {
 						// Make sure context is ready and only then start rendering it.
-						// This is a pecularity of streaming XML rendering,
+						// This is a peculiarity of streaming XML rendering,
 						// because there's no backtrack once the element started outputting.
 						context.resolve()
 					} catch (ex: Throwable) {
