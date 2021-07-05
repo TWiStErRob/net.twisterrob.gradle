@@ -1,17 +1,19 @@
 @file:JvmName("Utils")
 
 package net.twisterrob.gradle.common
-import com.android.build.gradle.internal.tasks.VariantAwareTask
-import com.android.build.gradle.internal.tasks.NonIncrementalGlobalTask
-import org.gradle.api.DefaultTask
+
 import com.android.SdkConstants
-import com.android.build.gradle.internal.tasks.BaseTask
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.AndroidVariantTask
+import com.android.build.gradle.internal.tasks.BaseTask
+import com.android.build.gradle.internal.tasks.NonIncrementalGlobalTask
+import com.android.build.gradle.internal.tasks.VariantAwareTask
 import com.android.build.gradle.tasks.LintBaseTask
 import com.android.build.gradle.tasks.LintFixTask
 import com.android.build.gradle.tasks.LintGlobalTask
 import com.android.build.gradle.tasks.LintPerVariantTask
+import com.android.builder.core.BuilderConstants
+import org.gradle.api.DefaultTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -106,6 +108,8 @@ private val LintBaseTask.isFatalOnly
  */
 val LintBaseTask.androidVariantName: String?
 	get() = when {
+		this is LintGlobalTask ->
+			this.variantInputMap.keys.singleOrNull()
 		"3.3.0" <= ANDROID_GRADLE_PLUGIN_VERSION && @Suppress("USELESS_IS_CHECK") (this is VariantAwareTask) ->
 			// USELESS_IS_CHECK: Need to check for interface explicitly,
 			// because before 4.2.0 LintGlobalTask/LintFixTask didn't implement the interface.
@@ -114,10 +118,17 @@ val LintBaseTask.androidVariantName: String?
 		ANDROID_GRADLE_PLUGIN_VERSION <= "3.3.0" && this is AndroidVariantTask ->
 			@Suppress("CAST_NEVER_SUCCEEDS") // Historical binding to inherited property.
 			(this as AndroidVariantTask).variantName
-		this is LintGlobalTask -> null
-		"3.2.0" <= ANDROID_GRADLE_PLUGIN_VERSION && this is LintFixTask -> null
-		else -> null
+		"3.2.0" <= ANDROID_GRADLE_PLUGIN_VERSION && this is LintFixTask ->
+			null
+		else ->
+			null
 	}
+
+val LintGlobalTask.variantInputMap: Map<String, *>
+	@Suppress("UNCHECKED_CAST")
+	get() = LintGlobalTask::class.java.getDeclaredField("variantInputMap")
+		.apply { isAccessible = true }
+		.get(this) as Map<String, *>
 
 val LintBaseTask.xmlOutput: File
 	get() = lintOptions.xmlOutput ?: LintOptions_createOutputPath(
@@ -130,13 +141,14 @@ val LintBaseTask.htmlOutput: File
 	)
 
 // TODO figure out where to find com.android.tools.lint.gradle.SyncOptions#createOutputPath
+// lint-gradle:27.2.1: com.android.tools.lint.gradle.SyncOptionsKt.createOutputPath
 @Suppress("FunctionName")
 fun LintOptions_createOutputPath(
 	project: Project, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean
 ): File {
 	val base = StringBuilder().apply {
 		append("lint-results")
-		if (!variantName.isNullOrEmpty()) {
+		if (!variantName.isNullOrBlank()) {
 			append("-")
 			append(variantName)
 		}
@@ -149,6 +161,6 @@ fun LintOptions_createOutputPath(
 	}.toString()
 	return when {
 		reportsDir != null -> File(reportsDir, base)
-		else -> File(project.buildDir, "reports" + File.separator + base)
+		else -> File(project.buildDir, BuilderConstants.FD_REPORTS + File.separator + base)
 	}
 }

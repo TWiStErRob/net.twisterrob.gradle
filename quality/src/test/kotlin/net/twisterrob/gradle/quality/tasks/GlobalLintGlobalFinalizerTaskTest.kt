@@ -193,6 +193,34 @@ class GlobalLintGlobalFinalizerTaskTest {
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 0 + 1} issues found\."""))
 	}
 
+	@Test fun `ignores disabled variants`() {
+		@Language("gradle")
+		val script = """
+			android {
+				lintOptions {
+					abortOnError = false
+					check = ['UnusedIds'] // Force a failure to get a report output to console.
+				}
+				variantFilter { variant ->
+					if (variant.buildType.name == com.android.builder.core.BuilderConstants.RELEASE) {
+						variant.setIgnore(true)
+					}
+				}
+			}
+			tasks.register('lintGlobal', ${GlobalLintGlobalFinalizerTask::class.java.name})
+		""".trimIndent()
+
+		val result = gradle.runFailingBuild {
+			basedOn("android-root_app")
+			basedOn("lint-UnusedIds")
+			run(script, "lint", ":lintGlobal")
+		}
+
+		assertEquals(TaskOutcome.FAILED, result.task(":lintGlobal")!!.outcome)
+		result.assertNoOutputLine(Regex("""Error when parsing.* as ANDROIDLINT"""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: 1 issues found."""))
+	}
+
 	@Test fun `fails the build on explicit invocation`() {
 		`set up 3 modules with a lint failures`()
 
