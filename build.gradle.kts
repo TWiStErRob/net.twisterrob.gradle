@@ -11,6 +11,7 @@ import kotlin.math.absoluteValue
 
 plugins {
 //	kotlin("jvm") apply false
+	idea
 	id("io.github.gradle-nexus.publish-plugin")
 }
 
@@ -274,5 +275,13 @@ nexusPublishing {
 			// Set via -PsonatypePassword to gradlew, or ORG_GRADLE_PROJECT_sonatypePassword env var.
 			//password.set(sonatypePassword)
 		}
+	}
+}
+
+idea {
+	module {
+		excludeDirs = excludeDirs + listOf(
+			rootProject.file("temp")
+		)
 	}
 }
