@@ -11,6 +11,7 @@
        }
    }
    ```
+ - Workaround usability issues in Git VCS plugin
 
 ### 4.1.1.14-29-29.0
  - AGP 4.1.1

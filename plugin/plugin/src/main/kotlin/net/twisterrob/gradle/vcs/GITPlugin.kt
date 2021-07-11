@@ -4,10 +4,13 @@ import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.ajoberstar.grgit.Grgit
 import org.eclipse.jgit.errors.RepositoryNotFoundException
+import org.eclipse.jgit.lib.RepositoryCache
 import org.eclipse.jgit.revwalk.RevWalk
+import org.eclipse.jgit.util.FS
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
+import java.io.FileNotFoundException
 
 class GITPlugin : BasePlugin() {
 
@@ -36,13 +39,21 @@ open class GITPluginExtension : VCSExtension {
 		}
 
 	override val isAvailableQuick: Boolean
-		get() = project.rootDir.resolve(".git").exists()
+		get() {
+			// Check more than just the presence of .git to lessen the possibility of detecting "git",
+			// but not actually having a git repository.
+			val gitDir = RepositoryCache.FileKey.resolve(project.rootDir, FS.DETECTED)
+			return gitDir != null
+		}
 
 	// 'git describe --always'.execute([], project.rootDir).waitFor() == 0
 	override val isAvailable: Boolean
 		get() = try {
 			open().close()
 			true
+		} catch (_: FileNotFoundException) {
+			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=572617
+			false
 		} catch (_: RepositoryNotFoundException) {
 			false
 		}

@@ -39,7 +39,7 @@ class SVNPluginIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.vcs'
-			println("SVN revision: " + project.VCS.svn.revision)
+			println("SVN revision: " + project.VCS.current.revision)
 		""".trimIndent()
 
 		val result = gradle.run(script).build()
@@ -57,7 +57,7 @@ class SVNPluginIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.vcs'
-			println("SVN revision: " + project.VCS.svn.revisionNumber)
+			println("SVN revision: " + project.VCS.current.revisionNumber)
 		""".trimIndent()
 
 		val result = gradle.run(script).build()

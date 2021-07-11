@@ -35,7 +35,7 @@ class GITPluginIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.vcs'
-			println("GIT revision: " + project.VCS.git.revision)
+			println("GIT revision: " + project.VCS.current.revision)
 		""".trimIndent()
 
 		val result = gradle.run(script).build()
@@ -51,11 +51,41 @@ class GITPluginIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.vcs'
-			println("GIT revision: " + project.VCS.git.revisionNumber)
+			println("GIT revision: " + project.VCS.current.revisionNumber)
 		""".trimIndent()
 
 		val result = gradle.run(script).build()
 
 		result.assertHasOutputLine("""GIT revision: 2""")
+	}
+
+	@Test fun `git works malformed git directory`() {
+		gradle.root.resolve(".git").mkdir()
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.vcs'
+			println("VCS.current: " + project.VCS.current)
+		""".trimIndent()
+
+		val result = gradle.run(script).withDebug(true).build()
+
+		result.assertHasOutputLine("""VCS.current: ${DummyVcsExtension::class.qualifiedName}@[a-z0-9]{1,8}""".toRegex())
+	}
+
+	/**
+	 * Testing for https://bugs.eclipse.org/bugs/show_bug.cgi?id=572617
+	 */
+	@Test fun `git does not crash when config directory is present`() {
+		// Must not have real repo in .git, because that would trigger quick check: `git(gradle.root) {}`.
+		gradle.root.resolve("config").mkdir()
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.vcs'
+			println("VCS.current: " + project.VCS.current)
+		""".trimIndent()
+
+		val result = gradle.run(script).build()
+
+		result.assertHasOutputLine("""VCS.current: ${DummyVcsExtension::class.qualifiedName}@[a-z0-9]{1,8}""".toRegex())
 	}
 }
