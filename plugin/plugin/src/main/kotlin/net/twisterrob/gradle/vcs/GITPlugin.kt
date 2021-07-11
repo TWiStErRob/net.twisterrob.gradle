@@ -39,23 +39,24 @@ open class GITPluginExtension : VCSExtension {
 		}
 
 	override val isAvailableQuick: Boolean
-		get() {
-			// Check more than just the presence of .git to lessen the possibility of detecting "git",
-			// but not actually having a git repository.
-			val gitDir = RepositoryCache.FileKey.resolve(project.rootDir, FS.DETECTED)
-			return gitDir != null
-		}
+		get() = project.rootDir.resolve(".git").exists()
 
 	// 'git describe --always'.execute([], project.rootDir).waitFor() == 0
 	override val isAvailable: Boolean
-		get() = try {
-			open().close()
-			true
-		} catch (_: FileNotFoundException) {
-			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=572617
-			false
-		} catch (_: RepositoryNotFoundException) {
-			false
+		get() {
+			// Check more than just the presence of .git to lessen the possibility of detecting "git",
+			// but not actually having a git repository.
+			RepositoryCache.FileKey.resolve(project.rootDir, FS.DETECTED) ?: return false
+			return try {
+				// Actually try to open the repository now.
+				open().close()
+				true
+			} catch (_: FileNotFoundException) {
+				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=572617
+				false
+			} catch (_: RepositoryNotFoundException) {
+				false
+			}
 		}
 
 	// 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()

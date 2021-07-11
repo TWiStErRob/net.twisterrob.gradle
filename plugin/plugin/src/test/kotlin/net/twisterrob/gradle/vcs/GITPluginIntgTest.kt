@@ -59,17 +59,19 @@ class GITPluginIntgTest : BaseIntgTest() {
 		result.assertHasOutputLine("""GIT revision: 2""")
 	}
 
-	@Test fun `git works malformed git directory`() {
+	@Test fun `fails with malformed git directory`() {
 		gradle.root.resolve(".git").mkdir()
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.vcs'
 			println("VCS.current: " + project.VCS.current)
+			println("GIT revision: " + project.VCS.current.revision)
 		""".trimIndent()
 
-		val result = gradle.run(script).withDebug(true).build()
+		val result = gradle.run(script).buildAndFail()
 
-		result.assertHasOutputLine("""VCS.current: ${DummyVcsExtension::class.qualifiedName}@[a-z0-9]{1,8}""".toRegex())
+		result.assertHasOutputLine("""VCS.current: extension '${GITPluginExtension.NAME}'""".toRegex())
+		result.assertHasOutputLine("""> repository not found: \Q${gradle.root.absolutePath}\E""".toRegex())
 	}
 
 	/**
