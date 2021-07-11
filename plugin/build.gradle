@@ -3,7 +3,6 @@ group = rootProject.name
 buildscript {
 	repositories {
 		jcenter()
-		maven { name = "TWiStErRob Bintray"; url = "https://dl.bintray.com/twisterrob/maven" }
 	}
 	dependencies {
 		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72'
@@ -15,7 +14,6 @@ subprojects {
 	repositories {
 		jcenter()
 		google()
-		maven { name = "TWiStErRob Bintray"; url = "https://dl.bintray.com/twisterrob/maven" }
 		maven { name = "Gradle libs (for Kotlin-DSL)"; url = "https://repo.gradle.org/gradle/libs-releases-local/" }
 	}
 
