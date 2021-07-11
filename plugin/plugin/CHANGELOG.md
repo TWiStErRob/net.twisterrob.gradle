@@ -1,6 +1,16 @@
 ## 4.1.x
 
 ### 4.1.1.14-29-29.1
+ - Update Git VCS dependencies to latest, will need to add:
+   ```gradle
+   maven {
+       name = "ajoberstar-backup"
+       url = "https://ajoberstar.org/bintray-backup/"
+       content {
+           includeGroup("org.ajoberstar")
+       }
+   }
+   ```
 
 ### 4.1.1.14-29-29.0
  - AGP 4.1.1

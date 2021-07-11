@@ -7,15 +7,13 @@ import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 /**
- * @see SVNPlugin
- * @see SVNPluginExtension
+ * @see GITPlugin
+ * @see GITPluginExtension
  */
-class SVNPluginIntgTest : BaseIntgTest() {
+class GITPluginIntgTest : BaseIntgTest() {
 
-	@Test fun `svn is auto-selected when the working copy is SVN`() {
-		svn {
-			val repoUrl = doCreateRepository(gradle.root.resolve(".repo"))
-			doCheckout(repoUrl, gradle.root)
+	@Test fun `git is auto-selected when the working copy is GIT`() {
+		git(gradle.root) {
 			// empty repo
 		}
 		@Language("gradle")
@@ -26,42 +24,38 @@ class SVNPluginIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script).build()
 
-		result.assertHasOutputLine("""VCS.current: extension '${SVNPluginExtension.NAME}'""".toRegex())
+		result.assertHasOutputLine("""VCS.current: extension '${GITPluginExtension.NAME}'""".toRegex())
 	}
 
-	@Test fun `svn revision detected correctly`() {
-		svn {
-			val repoUrl = doCreateRepository(gradle.root.resolve(".repo"))
-			doCheckout(repoUrl, gradle.root)
+	@Test fun `git revision detected correctly`() {
+		git(gradle.root) {
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "First commit")
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Second commit")
 		}
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.vcs'
-			println("SVN revision: " + project.VCS.svn.revision)
+			println("GIT revision: " + project.VCS.git.revision)
 		""".trimIndent()
 
 		val result = gradle.run(script).build()
 
-		result.assertHasOutputLine("""SVN revision: 2""")
+		result.assertHasOutputLine("""GIT revision: [a-z0-9]{7}""".toRegex())
 	}
 
-	@Test fun `svn revision number detected correctly`() {
-		svn {
-			val repoUrl = doCreateRepository(gradle.root.resolve(".repo"))
-			doCheckout(repoUrl, gradle.root)
+	@Test fun `git revision number detected correctly`() {
+		git(gradle.root) {
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "First commit")
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Second commit")
 		}
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.vcs'
-			println("SVN revision: " + project.VCS.svn.revisionNumber)
+			println("GIT revision: " + project.VCS.git.revisionNumber)
 		""".trimIndent()
 
 		val result = gradle.run(script).build()
 
-		result.assertHasOutputLine("""SVN revision: 2""")
+		result.assertHasOutputLine("""GIT revision: 2""")
 	}
 }

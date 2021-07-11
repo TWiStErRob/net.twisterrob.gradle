@@ -2,15 +2,22 @@ apply plugin: 'kotlin'
 apply plugin: 'net.twisterrob.gradle.test'
 version = '4.1.1.14-29-29.1'
 
+repositories {
+	maven {
+		name = "ajoberstar-backup"; url = "https://ajoberstar.org/bintray-backup/"
+		content {
+			includeGroup("org.ajoberstar")
+		}
+	}
+}
+
 dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 	implementation gradleApi()
 	// https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
 	implementation 'org.tmatesoft.svnkit:svnkit:1.10.1'
 	implementation 'org.tmatesoft.svnkit:svnkit-cli:1.10.1'
 	// https://github.com/ajoberstar/grgit/releases
-	implementation 'org.ajoberstar:grgit:1.9.3'
-	// TODEL explicit dependencies are required because https://github.com/gradle/gradle/issues/11875
-	implementation /*+--- */ 'org.eclipse.jgit:org.eclipse.jgit:4.5.2.201704071617-r'
+	implementation 'org.ajoberstar.grgit:grgit-core:4.1.0'
 	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
 	api 'com.android.tools.build:gradle:4.1.1'
 	implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72'

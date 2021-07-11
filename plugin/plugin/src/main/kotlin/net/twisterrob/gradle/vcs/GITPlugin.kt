@@ -30,8 +30,10 @@ open class GITPluginExtension : VCSExtension {
 
 	internal lateinit var project: Project
 
-	@Suppress("DEPRECATION")
-	private fun open(): Grgit = Grgit.open(project.rootDir)
+	private fun open(): Grgit =
+		Grgit.open {
+			it.dir = project.rootDir
+		}
 
 	override val isAvailableQuick: Boolean
 		get() = project.rootDir.resolve(".git").exists()
