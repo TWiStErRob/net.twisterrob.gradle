@@ -7,11 +7,10 @@ dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 	// https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
 	implementation 'org.tmatesoft.svnkit:svnkit:1.10.1'
 	implementation 'org.tmatesoft.svnkit:svnkit-cli:1.10.1'
-	// https://github.com/ajoberstar/gradle-git/releases
-	implementation 'org.ajoberstar:gradle-git:1.7.2'
+	// https://github.com/ajoberstar/grgit/releases
+	implementation 'org.ajoberstar:grgit:1.9.3'
 	// TODEL explicit dependencies are required because https://github.com/gradle/gradle/issues/11875
-	implementation /*+--- */ 'org.ajoberstar:grgit:1.9.3'
-	implementation /*|    +--- */ 'org.eclipse.jgit:org.eclipse.jgit:4.5.2.201704071617-r'
+	implementation /*+--- */ 'org.eclipse.jgit:org.eclipse.jgit:4.5.2.201704071617-r'
 	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
 	api 'com.android.tools.build:gradle:4.1.1'
 	implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72'
