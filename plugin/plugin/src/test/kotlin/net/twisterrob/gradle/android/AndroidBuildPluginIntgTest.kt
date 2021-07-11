@@ -333,21 +333,22 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "test").build()
 
-		val today = LocalDate.now().atStartOfDay().toEpochSecond(ZoneOffset.UTC) * 1000
+		val today = LocalDate.now().atStartOfDay()
+		val todayMillis = today.toEpochSecond(ZoneOffset.systemDefault().rules.getOffset(today)) * 1000
 		result.assertSuccess(":testReleaseUnitTest")
 		result.assertHasOutputLine("    release.app_package=${packageName}")
 		result.assertHasOutputLine("    release.in_prod=true")
 		result.assertHasOutputLine("    release.in_test=false")
 		result.assertHasOutputLine("    release.REVISION=no VCS")
 		result.assertHasOutputLine("    release.REVISION_NUMBER=0")
-		result.assertHasOutputLine("    release.BUILD_TIME=${today}")
+		result.assertHasOutputLine("    release.BUILD_TIME=${todayMillis}")
 		result.assertSuccess(":testDebugUnitTest")
 		result.assertHasOutputLine("    debug.app_package=${packageName}.debug")
 		result.assertHasOutputLine("    debug.in_prod=false")
 		result.assertHasOutputLine("    debug.in_test=true")
 		result.assertHasOutputLine("    debug.REVISION=no VCS")
 		result.assertHasOutputLine("    debug.REVISION_NUMBER=0")
-		result.assertHasOutputLine("    debug.BUILD_TIME=${today}")
+		result.assertHasOutputLine("    debug.BUILD_TIME=${todayMillis}")
 	}
 
 	@Test fun `can customize build time`() {
