@@ -1,0 +1,21 @@
+group = rootProject.name
+
+subprojects {
+	repositories {
+		jcenter()
+	}
+
+	group = rootProject.group
+	apply from: 'http://localhost/maven/configure.gradle'
+}
+
+allprojects {
+	gradle.projectsEvaluated {
+		tasks.withType(JavaCompile) {
+			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+		}
+		tasks.withType(GroovyCompile) {
+			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+		}
+	}
+}

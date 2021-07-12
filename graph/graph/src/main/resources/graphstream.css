@@ -1,0 +1,51 @@
+/* http://graphstream-project.org/doc/Tutorials/GraphStream-CSS-Reference_1.2/ */
+graph {
+	fill-color: white;
+}
+node {
+	text-background-mode: rounded-box;
+	text-background-color: red;
+/*
+	text-color: white;
+	fill-color: gray;
+	text-size: 15;
+	text-style: bold;
+	text-alignment: under;
+	text-padding: 5px, 4px;
+	shape: rounded-box;
+	fill-color: black;
+	stroke-mode: plain;
+	stroke-width: 4px;
+	stroke-color: black;
+	shadow-mode: gradient-radial;
+*/
+}
+node:clicked {
+	fill-color: gray;
+}
+
+node.unknown {
+	fill-color: lightgray;
+}
+node.requested {
+	fill-color: purple;
+}
+node.excluded {
+	fill-color: pink;
+}
+
+node.executing {
+	fill-color: yellow;
+}
+node.executed {
+	fill-color: green;
+}
+node.failure {
+	fill-color: red;
+}
+node.skipped {
+	fill-color: cyan;
+}
+node.uptodate {
+	fill-color: magenta;
+}

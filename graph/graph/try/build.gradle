@@ -1,0 +1,69 @@
+apply plugin: 'net.twisterrob.graph'
+graphSettings {
+	dontClose = true
+}
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:1.2.0'
+		classpath fileTree(dir: '../build/libs/', include: '*.jar')
+		classpath 'org.graphstream:gs-core:1.3' // automatic when published
+		def jvm = org.gradle.internal.jvm.Jvm.current()
+		if (jvm.javaVersion.java7Compatible) {
+			classpath files("${jvm.jre.homeDir}/lib/jfxrt.jar")
+		}
+	}
+}
+
+apply plugin: 'com.android.application'
+
+dependencies {
+	compile project(':lib')
+}
+
+android {
+	buildToolsVersion "21.1.1"
+	compileSdkVersion 21
+	defaultConfig {
+		minSdkVersion 21
+		targetSdkVersion 21
+	}
+}
+
+project.afterEvaluate {
+	def newTask = { String name, Closure action ->
+		def t = project.task(name)
+		t.outputs.upToDateWhen {
+			false
+		}
+		t.doLast action
+		tasks.preBuild.dependsOn t
+		return t;
+	}
+	newTask("stopExecTask", {
+		throw new StopExecutionException("stop task")
+	})
+	newTask("stopActionTask", {
+		throw new StopActionException("stop action")
+	})
+
+	newTask("throwTask", {
+		//throw new RuntimeException("fail task")
+	})
+
+	newTask("onlyIf", {}).onlyIf { false }
+}
+
+if (!project.hasProperty('fast')) {
+	allprojects { p ->
+		p.afterEvaluate {
+			p.tasks.all { Task task ->
+				task.doLast {
+					sleep((int)(Math.random() * 500))
+				}
+			}
+		}
+	}
+}

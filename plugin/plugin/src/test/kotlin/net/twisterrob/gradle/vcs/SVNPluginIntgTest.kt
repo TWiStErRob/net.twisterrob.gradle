@@ -1,0 +1,67 @@
+package net.twisterrob.gradle.vcs
+
+import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.root
+import org.intellij.lang.annotations.Language
+import org.junit.Test
+
+/**
+ * @see SVNPlugin
+ * @see SVNPluginExtension
+ */
+class SVNPluginIntgTest : BaseIntgTest() {
+
+	@Test fun `svn is auto-selected when the working copy is SVN`() {
+		svn {
+			val repoUrl = doCreateRepository(gradle.root.resolve(".repo"))
+			doCheckout(repoUrl, gradle.root)
+			// empty repo
+		}
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.vcs'
+			println("VCS.current: " + project.VCS.current)
+		""".trimIndent()
+
+		val result = gradle.run(script).build()
+
+		result.assertHasOutputLine("""VCS.current: extension '${SVNPluginExtension.NAME}'""".toRegex())
+	}
+
+	@Test fun `svn revision detected correctly`() {
+		svn {
+			val repoUrl = doCreateRepository(gradle.root.resolve(".repo"))
+			doCheckout(repoUrl, gradle.root)
+			doCommitSingleFile(gradle.root.createTestFileToCommit(), "First commit")
+			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Second commit")
+		}
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.vcs'
+			println("SVN revision: " + project.VCS.current.revision)
+		""".trimIndent()
+
+		val result = gradle.run(script).build()
+
+		result.assertHasOutputLine("""SVN revision: 2""")
+	}
+
+	@Test fun `svn revision number detected correctly`() {
+		svn {
+			val repoUrl = doCreateRepository(gradle.root.resolve(".repo"))
+			doCheckout(repoUrl, gradle.root)
+			doCommitSingleFile(gradle.root.createTestFileToCommit(), "First commit")
+			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Second commit")
+		}
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.vcs'
+			println("SVN revision: " + project.VCS.current.revisionNumber)
+		""".trimIndent()
+
+		val result = gradle.run(script).build()
+
+		result.assertHasOutputLine("""SVN revision: 2""")
+	}
+}
