@@ -2,8 +2,9 @@ package net.twisterrob.gradle.vcs
 
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
-import org.ajoberstar.grgit.Grgit
+import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.errors.RepositoryNotFoundException
+import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.RepositoryCache
 import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.util.FS
@@ -33,10 +34,8 @@ open class GITPluginExtension : VCSExtension {
 
 	internal lateinit var project: Project
 
-	private fun open(): Grgit =
-		Grgit.open {
-			it.dir = project.rootDir
-		}
+	private fun open(): Git =
+		Git.open(project.rootDir)
 
 	override val isAvailableQuick: Boolean
 		get() = project.rootDir.resolve(".git").exists()
@@ -61,16 +60,22 @@ open class GITPluginExtension : VCSExtension {
 
 	// 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 	override val revision: String
-		get() = open().use { git -> git.head().abbreviatedId }
+		get() = open().use { git ->
+			git.repository.newObjectReader().use { reader ->
+				reader.abbreviate(git.head).name()
+			}
+		}
 
 	// 'git rev-list --count HEAD'.execute([], project.rootDir).text.trim()
 	override val revisionNumber: Int
 		get() = open().use { git ->
-			val repository = git.repository.jgit.repository
-			RevWalk(repository).use { walk ->
+			RevWalk(git.repository).use { walk ->
 				walk.isRetainBody = false
-				walk.markStart(walk.parseCommit(repository.resolve("HEAD")))
+				walk.markStart(walk.parseCommit(git.head))
 				return walk.count()
 			}
 		}
 }
+
+private val Git.head: ObjectId
+	get() = repository.resolve("HEAD")
