@@ -1,27 +1,38 @@
 package net.twisterrob.gradle.vcs
 
-import org.ajoberstar.grgit.Commit
-import org.ajoberstar.grgit.Grgit
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.revwalk.RevCommit
 import java.io.File
 
-fun createGitRepository(repoDir: File): Grgit =
-	Grgit.init {
-		it.dir = repoDir
-	}
-	.also { result -> println("Repository created at ${result.repository}") }
+fun createGitRepository(repoDir: File): Git =
+	Git
+		.init()
+		.apply {
+			setDirectory(repoDir)
+		}
+		.call()
+		.also { result -> println("Repository created at ${result}") }
 
-fun Grgit.doCommitSingleFile(file: File, message: String): Commit {
-	val relativePath = file.relativeTo(this@doCommitSingleFile.repository.rootDir)
-	add {
-		it.patterns = setOf(relativePath.toString())
-	}.also { println("Added $relativePath") }
+fun Git.doCommitSingleFile(file: File, message: String): RevCommit {
+	val relativePath = file.relativeTo(this@doCommitSingleFile.repository.directory)
+	this
+		.add()
+		.apply {
+			addFilepattern(relativePath.toString())
+		}
+		.call()
+		.also { println("Added $relativePath") }
 
-	return commit {
-		it.message = message
-	}.also { println("Committed revision ${it.id}: ${it.fullMessage}") }
+	return this
+		.commit()
+		.apply {
+			setMessage(message)
+		}
+		.call()
+		.also { println("Committed revision ${it.id}: ${it.fullMessage}") }
 }
 
-inline fun git(repoDir: File, block: Grgit.() -> Unit) {
+inline fun git(repoDir: File, block: Git.() -> Unit) {
 	val repo = createGitRepository(repoDir)
 	repo.use {
 		block(it)
