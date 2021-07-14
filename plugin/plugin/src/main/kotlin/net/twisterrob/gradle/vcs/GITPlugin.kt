@@ -4,6 +4,8 @@ import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.errors.RepositoryNotFoundException
+import org.eclipse.jgit.lib.AbbreviatedObjectId
+import org.eclipse.jgit.lib.AnyObjectId
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.RepositoryCache
 import org.eclipse.jgit.revwalk.RevWalk
@@ -61,21 +63,28 @@ open class GITPluginExtension : VCSExtension {
 	// 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 	override val revision: String
 		get() = open().use { git ->
-			git.repository.newObjectReader().use { reader ->
-				reader.abbreviate(git.head).name()
-			}
+			git.abbreviate(git.head).name()
 		}
 
 	// 'git rev-list --count HEAD'.execute([], project.rootDir).text.trim()
 	override val revisionNumber: Int
 		get() = open().use { git ->
-			RevWalk(git.repository).use { walk ->
-				walk.isRetainBody = false
-				walk.markStart(walk.parseCommit(git.head))
-				return walk.count()
+			git.walk {
+				isRetainBody = false
+				markStart(parseCommit(git.head))
+				return count()
 			}
 		}
 }
 
 private val Git.head: ObjectId
-	get() = repository.resolve("HEAD")
+	get() = this.repository.resolve("HEAD")
+
+private inline fun <T> Git.walk(block: RevWalk.() -> T): T =
+	RevWalk(this.repository).use(block)
+
+private fun Git.abbreviate(objectId: AnyObjectId): AbbreviatedObjectId {
+	return this.repository.newObjectReader().use { reader ->
+		reader.abbreviate(objectId)
+	}
+}
