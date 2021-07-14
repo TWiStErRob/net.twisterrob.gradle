@@ -64,7 +64,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `test (debug)`() {
-		val result = gradle.run(script, "releaseDebug", "--warning-mode", "all").build()
+		val result = gradle.run(script, "releaseDebug").build()
 
 		result.assertSuccess(":assembleDebug")
 		result.assertSuccess(":assembleDebugAndroidTest")
