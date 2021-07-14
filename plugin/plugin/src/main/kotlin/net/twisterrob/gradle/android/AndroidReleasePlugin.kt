@@ -12,10 +12,12 @@ import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import java.io.File
 
@@ -68,8 +70,8 @@ class AndroidReleasePlugin : BasePlugin() {
 		return allBuildTypeTask
 	}
 
-	private fun createReleaseTask(variant: ApkVariant): Task {
-		val releaseVariantTask = project.tasks.create<Zip>("release${variant.name.capitalize()}") {
+	private fun createReleaseTask(variant: ApkVariant): Provider<out Task> {
+		val releaseVariantTask = project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
 			description = "Assembles and archives apk and its proguard mapping for ${variant.description}"
 			val releaseDir = File(
@@ -112,9 +114,9 @@ class AndroidReleasePlugin : BasePlugin() {
 				println("Published release artifacts to ${outputs.files.singleFile}")
 			}
 		}
-		releaseVariantTask.dependsOn(variant.assembleProvider)
+		releaseVariantTask.configure { it.dependsOn(variant.assembleProvider) }
 		if (variant is TestedVariant && variant.testVariant != null) {
-			releaseVariantTask.dependsOn(variant.testVariant.assembleProvider)
+			releaseVariantTask.configure { it.dependsOn(variant.testVariant.assembleProvider) }
 		}
 
 		variant.productFlavors.forEach { flavor ->

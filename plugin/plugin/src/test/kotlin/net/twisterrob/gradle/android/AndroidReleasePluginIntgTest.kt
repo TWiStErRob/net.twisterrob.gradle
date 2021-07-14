@@ -35,8 +35,8 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			afterEvaluate {
 				// TODO workaround for testing until a Task input property is introduced instead of env.RELEASE_HOME
-				tasks.releaseRelease.destinationDirectory.set(file('releases'))
-				tasks.releaseDebug.destinationDirectory.set(file('releases'))
+				tasks.named("releaseRelease") { destinationDirectory.set(file('releases')) }
+				tasks.named("releaseDebug") { destinationDirectory.set(file('releases')) }
 			}
 		""".trimIndent()
 	}
