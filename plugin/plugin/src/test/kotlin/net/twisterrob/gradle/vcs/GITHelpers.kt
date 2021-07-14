@@ -3,38 +3,34 @@ package net.twisterrob.gradle.vcs
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.revwalk.RevCommit
 import java.io.File
+import java.util.concurrent.Callable
+
+inline fun git(repoDir: File, block: Git.() -> Unit) {
+	val repo = createGitRepository(repoDir)
+	repo.use(block)
+}
 
 fun createGitRepository(repoDir: File): Git =
 	Git
-		.init()
-		.apply {
+		.init().call {
 			setDirectory(repoDir)
 		}
-		.call()
 		.also { result -> println("Repository created at ${result}") }
 
 fun Git.doCommitSingleFile(file: File, message: String): RevCommit {
 	val relativePath = file.relativeTo(this@doCommitSingleFile.repository.directory)
 	this
-		.add()
-		.apply {
+		.add().call {
 			addFilepattern(relativePath.toString())
 		}
-		.call()
 		.also { println("Added $relativePath") }
 
 	return this
-		.commit()
-		.apply {
+		.commit().call {
 			setMessage(message)
 		}
-		.call()
 		.also { println("Committed revision ${it.id}: ${it.fullMessage}") }
 }
 
-inline fun git(repoDir: File, block: Git.() -> Unit) {
-	val repo = createGitRepository(repoDir)
-	repo.use {
-		block(it)
-	}
-}
+private fun <R, T : Callable<R>> T.call(block: T.() -> Unit): R =
+	this.apply(block).call()
