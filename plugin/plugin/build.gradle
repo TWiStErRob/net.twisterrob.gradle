@@ -4,12 +4,19 @@ version = '4.1.1.14-29-29.2'
 
 dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 	implementation gradleApi()
+
 	// https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
 	implementation 'org.tmatesoft.svnkit:svnkit:1.10.1'
 	implementation 'org.tmatesoft.svnkit:svnkit-cli:1.10.1'
+
+	// Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
+	// Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
+	// Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.12.0.202106070339-r'
+
 	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
 	api 'com.android.tools.build:gradle:4.1.1'
+
 	implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72'
 	implementation('org.gradle:gradle-kotlin-dsl:6.1.1') {
 		transitive = false // make sure to not pull in kotlin-compiler-embeddable

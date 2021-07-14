@@ -18,7 +18,7 @@ fun createGitRepository(repoDir: File): Git =
 		.also { result -> println("Repository created at ${result}") }
 
 fun Git.doCommitSingleFile(file: File, message: String): RevCommit {
-	val relativePath = file.relativeTo(this@doCommitSingleFile.repository.directory)
+	val relativePath = file.relativeTo(this.repository.directory)
 	this
 		.add().call {
 			addFilepattern(relativePath.toString())
