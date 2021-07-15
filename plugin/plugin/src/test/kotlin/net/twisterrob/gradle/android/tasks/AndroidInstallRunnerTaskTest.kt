@@ -1,20 +1,16 @@
 package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.packageName
-import org.junit.Rule
+import org.intellij.lang.annotations.Language
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
 import kotlin.test.assertEquals
 
 class AndroidInstallRunnerTaskTest {
 
-	@Rule @JvmField val temp = TemporaryFolder()
-
 	@Test fun `one match in the middle`() {
-		val file = temp.newFile()
-		file.writeText(
-			"""
-			<?xml version="1.0" encoding="utf-8"?>
+		@Language("xml")
+		val androidManifest =
+			"""<?xml version="1.0" encoding="utf-8"?>
 			<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="${packageName}">
 				<!-- Extra permission for more flexibility in test -->
 				<uses-permission android:name="android.permission.INTERNET" />
@@ -54,9 +50,8 @@ class AndroidInstallRunnerTaskTest {
 				</application>
 			</manifest>
 			""".trimIndent()
-		)
 
-		val mainActivity = AndroidInstallRunnerTask.getMainActivity(file)
+		val mainActivity = AndroidInstallRunnerTask.getMainActivity(androidManifest.byteInputStream())
 
 		assertEquals(".activity.MainActivity", mainActivity)
 	}
