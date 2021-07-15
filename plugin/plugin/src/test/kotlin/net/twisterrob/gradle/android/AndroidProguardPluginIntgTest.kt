@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.android
 
 import com.jakewharton.dex.DexParser.Companion.toDexParser
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertNoTask
@@ -17,11 +19,15 @@ import org.hamcrest.io.FileMatchers.anExistingFile
 import org.hamcrest.junit5.MatcherAssume.assumeThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see AndroidProguardPlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `default build setup minifies only release using AndroidX (debug) and (release)`() {
 		@Language("java")

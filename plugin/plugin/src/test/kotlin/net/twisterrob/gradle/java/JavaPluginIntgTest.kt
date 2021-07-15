@@ -3,6 +3,8 @@ package net.twisterrob.gradle.java
 import net.twisterrob.gradle.android.BaseAndroidIntgTest
 import net.twisterrob.gradle.android.packageFolder
 import net.twisterrob.gradle.android.packageName
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
@@ -10,13 +12,17 @@ import net.twisterrob.gradle.test.assertNoSource
 import net.twisterrob.gradle.test.assertSuccess
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see BaseJavaPlugin
  * @see JavaPlugin
  * @see JavaLibPlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class JavaPluginIntgTest : BaseAndroidIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `java plugin can be applied standalone`() {
 		@Language("gradle")

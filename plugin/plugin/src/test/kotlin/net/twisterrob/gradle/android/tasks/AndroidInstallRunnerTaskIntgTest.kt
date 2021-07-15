@@ -4,6 +4,8 @@ import net.twisterrob.gradle.android.AndroidBuildPlugin
 import net.twisterrob.gradle.android.BaseAndroidIntgTest
 import net.twisterrob.gradle.android.hasDevices
 import net.twisterrob.gradle.android.packageName
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
@@ -13,13 +15,17 @@ import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.delete
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * [AndroidInstallRunnerTask] via [AndroidBuildPlugin]
  * @see AndroidInstallRunnerTask
  * @see AndroidBuildPlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `adds run task, or installs and runs activity (debug)`() {
 		// Having two paths in tests in not nice, but flaky tests are even worse.

@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
@@ -11,11 +13,15 @@ import net.twisterrob.gradle.vcs.git
 import net.twisterrob.gradle.vcs.svn
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see AndroidVersionPlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `can use version block (debug) and (release)`() {
 		@Language("gradle")

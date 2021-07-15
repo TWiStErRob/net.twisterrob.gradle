@@ -1,17 +1,23 @@
 package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.kotlin.KotlinPlugin
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.test.compile.generateKotlinCompilationCheck
 import net.twisterrob.test.compile.generateKotlinCompilationCheckTest
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * [KotlinPlugin] interop with Android modules
  * @see KotlinPlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class KotlinPluginIntgTest : BaseAndroidIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `can test kotlin with JUnit in Android Library`() {
 		gradle.generateKotlinCompilationCheck()

@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.base
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSkipped
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.assertUpToDate
@@ -11,11 +13,15 @@ import org.hamcrest.io.FileMatchers.anExistingFile
 import org.hamcrest.junit5.MatcherAssume.assumeThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see GradlePlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class GradlePluginIntgTest : BaseIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `skips debugWrapper if gradlew does not exist`() {
 		assumeThat(gradle.root.resolve("gradlew.bat"), not(anExistingFile()))

@@ -8,9 +8,7 @@ import org.junit.jupiter.api.BeforeAll
 abstract class BaseIntgTest {
 
 	@get:Rule(order = 1) val testKit = GradleTestKitDirRelocator()
-	@get:Rule(order = 2) val gradle = GradleRunnerRule().apply {
-		clearAfterFailure = false
-	}
+	protected abstract val gradle: GradleRunnerRule
 
 	companion object {
 

@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
@@ -10,13 +12,17 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.emptyString
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 /**
  * @see AndroidSigningPlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `logs error when keystore not valid (release)`() {
 		@Language("properties")
