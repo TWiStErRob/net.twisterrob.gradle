@@ -4,7 +4,7 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.root
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 /**
  * @see VCSPlugin

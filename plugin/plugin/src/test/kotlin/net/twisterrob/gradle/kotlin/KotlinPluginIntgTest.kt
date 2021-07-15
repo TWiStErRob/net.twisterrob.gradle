@@ -5,7 +5,7 @@ import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.test.compile.generateKotlinCompilationCheck
 import net.twisterrob.test.compile.generateKotlinCompilationCheckTest
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 /**
  * @see KotlinPlugin

@@ -8,9 +8,9 @@ import net.twisterrob.gradle.test.root
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
-import org.hamcrest.junit.MatcherAssume.assumeThat
+import org.hamcrest.junit5.MatcherAssume.assumeThat
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 /**
  * @see GradlePlugin

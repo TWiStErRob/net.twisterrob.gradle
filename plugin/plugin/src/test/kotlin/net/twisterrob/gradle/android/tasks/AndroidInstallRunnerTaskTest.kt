@@ -2,8 +2,8 @@ package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.packageName
 import org.intellij.lang.annotations.Language
-import org.junit.Test
-import kotlin.test.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class AndroidInstallRunnerTaskTest {
 

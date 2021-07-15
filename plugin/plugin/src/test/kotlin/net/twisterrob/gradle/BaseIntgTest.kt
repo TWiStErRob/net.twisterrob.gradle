@@ -2,8 +2,8 @@ package net.twisterrob.gradle
 
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleTestKitDirRelocator
-import org.junit.BeforeClass
 import org.junit.Rule
+import org.junit.jupiter.api.BeforeAll
 
 abstract class BaseIntgTest {
 
@@ -15,7 +15,7 @@ abstract class BaseIntgTest {
 	companion object {
 
 		// TODEL once the GradleRunnerRule is updated to not use assert()
-		@BeforeClass @JvmStatic fun enableAssertions() {
+		@BeforeAll @JvmStatic fun enableAssertions() {
 			val kotlinClassLoader = Class.forName("kotlin._Assertions").classLoader!!
 			kotlinClassLoader.setClassAssertionStatus("kotlin._Assertions", true)
 		}

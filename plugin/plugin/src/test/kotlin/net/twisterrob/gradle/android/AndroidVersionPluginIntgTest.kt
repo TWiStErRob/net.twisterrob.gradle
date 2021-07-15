@@ -10,7 +10,7 @@ import net.twisterrob.gradle.vcs.doCreateRepository
 import net.twisterrob.gradle.vcs.git
 import net.twisterrob.gradle.vcs.svn
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 /**
  * @see AndroidVersionPlugin
