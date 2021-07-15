@@ -2,12 +2,12 @@ package net.twisterrob.gradle
 
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleTestKitDirRelocator
-import org.junit.Rule
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(GradleTestKitDirRelocator::class)
 abstract class BaseIntgTest {
 
-	@get:Rule(order = 1) val testKit = GradleTestKitDirRelocator()
 	protected abstract val gradle: GradleRunnerRule
 
 	companion object {
