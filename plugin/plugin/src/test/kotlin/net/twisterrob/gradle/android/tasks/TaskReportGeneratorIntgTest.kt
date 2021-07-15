@@ -10,6 +10,9 @@ import org.hamcrest.io.FileMatchers.anExistingDirectory
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
+/**
+ * @see TestReportGenerator
+ */
 class TaskReportGeneratorIntgTest : BaseIntgTest() {
 
 	@Test fun `generator runs with empty input`() {
