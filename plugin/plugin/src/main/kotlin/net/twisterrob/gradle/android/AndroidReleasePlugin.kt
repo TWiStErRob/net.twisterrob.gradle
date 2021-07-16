@@ -7,14 +7,16 @@ import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.internal.api.TestedVariant
 import com.android.builder.model.BuildType
+import com.android.builder.model.ProductFlavor
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
+import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.invoke
@@ -44,31 +46,38 @@ class AndroidReleasePlugin : BasePlugin() {
 
 		android = project.extensions.getByName<BaseExtension>("android")
 
-		val allTask = project.tasks.register<Task>("release") {
-			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
-			description = "Assembles and archives all builds"
-		}
+		val allTask = registerReleaseAllTask()
 		project.afterEvaluate {
 			android.buildTypes.forEach { buildType ->
-				val registerReleaseTasks = registerReleaseTasks(buildType)
-				allTask { dependsOn(registerReleaseTasks) }
+				val releaseBuildTypeTask = registerReleaseTasks(buildType)
+				allTask { dependsOn(releaseBuildTypeTask) }
 			}
 		}
 	}
 
-	private fun registerReleaseTasks(buildType: BuildType): Provider<out Task> {
+	private fun registerReleaseAllTask(): TaskProvider<Task> =
+		project.tasks.register<Task>("release") {
+			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
+			description = "Assembles and archives all builds"
+		}
+
+	private fun registerReleaseTasks(buildType: BuildType): TaskProvider<Task> {
 		val allBuildTypeTask = project.tasks.register<Task>("releaseAll${buildType.name.capitalize()}") {
 			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
 			description = "Assembles and archives all ${buildType.name} builds"
 		}
 		LOG.debug("Creating tasks for {}", buildType.name)
 		fun registerReleaseTaskWithDependency(variant: ApkVariant) {
-			val registerReleaseTask = registerReleaseTask(variant)
-			allBuildTypeTask { dependsOn(registerReleaseTask) }
+			val buildTypeTask = registerReleaseTask(variant)
+			allBuildTypeTask { dependsOn(buildTypeTask) }
+			variant.productFlavors.forEach { flavor ->
+				val flavorTask = registerFlavorTask(flavor)
+				flavorTask { dependsOn(buildTypeTask) }
+			}
 		}
 
 		@Suppress("UNCHECKED_CAST")
-		fun getVariantsForBuildType() =
+		fun getVariantsForBuildType(): DomainObjectCollection<ApkVariant> =
 			android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
 
 		project.plugins.withType<AppPlugin> {
@@ -84,7 +93,7 @@ class AndroidReleasePlugin : BasePlugin() {
 		return allBuildTypeTask
 	}
 
-	private fun registerReleaseTask(variant: ApkVariant): Provider<out Task> {
+	private fun registerReleaseTask(variant: ApkVariant): TaskProvider<Zip> {
 		val releaseVariantTask = project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
 			description = "Assembles and archives apk and its proguard mapping for ${variant.description}"
@@ -128,22 +137,6 @@ class AndroidReleasePlugin : BasePlugin() {
 		if (variant is TestedVariant && variant.testVariant != null) {
 			releaseVariantTask { dependsOn(variant.testVariant.assembleProvider) }
 		}
-
-		variant.productFlavors.forEach { flavor ->
-			val releaseFlavorTaskName = "release${flavor.name.capitalize()}"
-			var releaseFlavorTask = try {
-				project.tasks.named(releaseFlavorTaskName)
-			} catch (ex: UnknownTaskException) {
-				null
-			}
-			if (releaseFlavorTask == null) {
-				releaseFlavorTask = project.tasks.register<Task>(releaseFlavorTaskName) {
-					group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
-					description = "Assembles and archives all builds for flavor ${flavor.name}"
-				}
-			}
-			releaseFlavorTask { dependsOn(releaseVariantTask) }
-		}
 		return releaseVariantTask
 		/*val task: AndroidReleaseTask = variant.install.project.tasks.create(
 			mapOf(
@@ -153,5 +146,22 @@ class AndroidReleasePlugin : BasePlugin() {
 			)
 		)
 		task.variant = variant*/
+	}
+
+	private fun registerFlavorTask(flavor: ProductFlavor): TaskProvider<Task> {
+		val releaseFlavorTaskName = "release${flavor.name.capitalize()}"
+		// Get the flavor task in case it was already registered by another variant.
+		var releaseFlavorTask = try {
+			project.tasks.named(releaseFlavorTaskName)
+		} catch (ex: UnknownTaskException) {
+			null
+		}
+		if (releaseFlavorTask == null) {
+			releaseFlavorTask = project.tasks.register<Task>(releaseFlavorTaskName) {
+				group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
+				description = "Assembles and archives all builds for flavor ${flavor.name}"
+			}
+		}
+		return releaseFlavorTask
 	}
 }
