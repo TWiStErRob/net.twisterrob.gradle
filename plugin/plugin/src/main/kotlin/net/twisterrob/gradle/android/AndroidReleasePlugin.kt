@@ -38,19 +38,19 @@ class AndroidReleasePlugin : BasePlugin() {
 		}
 		project.afterEvaluate {
 			android.buildTypes.forEach { buildType ->
-				allTask.configure { it.dependsOn(createReleaseTasks(buildType)) }
+				allTask.configure { it.dependsOn(registerReleaseTasks(buildType)) }
 			}
 		}
 	}
 
-	private fun createReleaseTasks(buildType: BuildType): Provider<out Task> {
+	private fun registerReleaseTasks(buildType: BuildType): Provider<out Task> {
 		val allBuildTypeTask = project.tasks.register<Task>("releaseAll${buildType.name.capitalize()}") {
 			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
 			description = "Assembles and archives all ${buildType.name} builds"
 		}
 		LOG.debug("Creating tasks for {}", buildType.name)
-		fun createReleaseTaskWithDependency(variant: ApkVariant) {
-			allBuildTypeTask.configure { it.dependsOn(createReleaseTask(variant)) }
+		fun registerReleaseTaskWithDependency(variant: ApkVariant) {
+			allBuildTypeTask.configure { it.dependsOn(registerReleaseTask(variant)) }
 		}
 
 		@Suppress("UNCHECKED_CAST")
@@ -60,17 +60,17 @@ class AndroidReleasePlugin : BasePlugin() {
 		project.plugins.withType<AppPlugin> {
 			val matching = getVariantsForBuildType()
 			LOG.debug("Found android app, variants with {}: {}", buildType.name, matching)
-			matching.all(::createReleaseTaskWithDependency)
+			matching.all(::registerReleaseTaskWithDependency)
 		}
 		project.plugins.withType<LibraryPlugin> {
 			val matching = getVariantsForBuildType()
 			LOG.debug("Found android lib, variants with {}: {}", buildType.name, matching)
-			matching.all(::createReleaseTaskWithDependency)
+			matching.all(::registerReleaseTaskWithDependency)
 		}
 		return allBuildTypeTask
 	}
 
-	private fun createReleaseTask(variant: ApkVariant): Provider<out Task> {
+	private fun registerReleaseTask(variant: ApkVariant): Provider<out Task> {
 		val releaseVariantTask = project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
 			description = "Assembles and archives apk and its proguard mapping for ${variant.description}"
