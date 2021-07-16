@@ -1,12 +1,15 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.move
 import net.twisterrob.gradle.test.root
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -19,7 +22,10 @@ import java.time.ZoneOffset
  *
  * @see AndroidBuildPlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `default build setup is simple and produces default output (debug)`() {
 		@Language("gradle")

@@ -1,16 +1,22 @@
 package net.twisterrob.gradle.vcs
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.root
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see SVNPlugin
  * @see SVNPluginExtension
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class SVNPluginIntgTest : BaseIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `svn is auto-selected when the working copy is SVN`() {
 		svn {

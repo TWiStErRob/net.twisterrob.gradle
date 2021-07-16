@@ -3,7 +3,7 @@ package net.twisterrob.test.process
 import java.io.File
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.MINUTES
-import kotlin.test.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 
 internal fun String.normalize() =
 	trim().replace("\r?\n".toRegex(), System.lineSeparator())

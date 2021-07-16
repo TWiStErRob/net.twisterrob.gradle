@@ -4,9 +4,8 @@ import net.twisterrob.gradle.systemProperty
 import org.gradle.api.internal.tasks.testing.worker.TestWorker
 import org.gradle.internal.SystemProperties
 import org.gradle.testkit.runner.internal.DefaultGradleRunner
-import org.junit.rules.TestRule
-import org.junit.runner.Description
-import org.junit.runners.model.Statement
+import org.junit.jupiter.api.extension.BeforeEachCallback
+import org.junit.jupiter.api.extension.ExtensionContext
 import java.io.File
 
 /**
@@ -15,11 +14,10 @@ import java.io.File
  * is shown repeatedly and the parallel tests cannot start.
  * Changing the directory of the Gradle Test Kit helps to resolve this contention.
  */
-class GradleTestKitDirRelocator : TestRule {
+class GradleTestKitDirRelocator : BeforeEachCallback {
 
-	override fun apply(base: Statement, description: Description) = Statement {
+	override fun beforeEach(context: ExtensionContext) {
 		setTestKitDir()
-		base.evaluate()
 	}
 
 	/**

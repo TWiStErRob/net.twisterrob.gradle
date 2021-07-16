@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
@@ -9,7 +11,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import java.io.File
 import java.time.Instant
 import java.util.zip.ZipFile
@@ -17,7 +20,10 @@ import java.util.zip.ZipFile
 /**
  * @see AndroidReleasePlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	companion object {
 

@@ -2,14 +2,14 @@ package net.twisterrob.gradle.base
 
 import org.gradle.api.ProjectConfigurationException
 import org.gradle.util.GradleVersion
-import org.junit.Test
-import kotlin.test.assertFailsWith
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.Test
 
 // TODO Parameterize
 class BasePluginTest {
 
 	@Test fun `fails with very old version`() {
-		assertFailsWith<ProjectConfigurationException> {
+		assertThrows<ProjectConfigurationException> {
 			BasePlugin.checkGradleVersion(GradleVersion.version("3.5.1"))
 		}
 	}
@@ -19,7 +19,7 @@ class BasePluginTest {
 	}
 
 	@Test fun `fails for incompatible version`() {
-		assertFailsWith<ProjectConfigurationException> {
+		assertThrows<ProjectConfigurationException> {
 			BasePlugin.checkGradleVersion(GradleVersion.version("4.0"))
 		}
 	}
