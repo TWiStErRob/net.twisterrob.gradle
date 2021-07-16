@@ -126,14 +126,21 @@ jobs:
 
       - name: Install Android SDK components
         run: |
-          sdkmanager --install "cmdline-tools;latest"
+          # sdkmanager --install "cmdline-tools;latest"
+          echo sdkmanager --update
+          sdkmanager --update
+          echo sdkmanager --install "tools"
           sdkmanager --install "tools"
+          echo sdkmanager --install "platform-tools"
           sdkmanager --install "platform-tools"
           # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
+          echo sdkmanager --install "build-tools;${{ matrix.build-tools }}"
           sdkmanager --install "build-tools;${{ matrix.build-tools }}"
           # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
+          echo sdkmanager --install "platforms;android-${{ matrix.instant-api }}"
           sdkmanager --install "platforms;android-${{ matrix.instant-api }}"
           # compileSdkVersion for almost all tests, may need an extra `yes | sdkmanager "platforms;android-30"` step.
+          echo sdkmanager --install "platforms;android-30"
           sdkmanager --install "platforms;android-30"
 
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
