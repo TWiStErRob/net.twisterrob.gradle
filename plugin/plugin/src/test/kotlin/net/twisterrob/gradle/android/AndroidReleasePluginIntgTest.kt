@@ -3,6 +3,7 @@ package net.twisterrob.gradle.android
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoTask
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
 import net.twisterrob.test.zip.hasZipEntry
@@ -13,6 +14,7 @@ import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junitpioneer.jupiter.ClearEnvironmentVariable
 import java.io.File
 import java.time.Instant
 import java.util.zip.ZipFile
@@ -37,6 +39,18 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 				tasks.releaseDebug.destinationDirectory.set(file('releases'))
 			}
 		""".trimIndent()
+	}
+
+	@ClearEnvironmentVariable(key = "RELEASE_HOME")
+	@Test fun `assemble doesn't need env var`() {
+		val result = gradle.run(script, "assemble", "assembleAndroidTest").build()
+
+		result.assertSuccess(":assembleDebug")
+		result.assertSuccess(":assembleRelease")
+		result.assertSuccess(":assembleDebugAndroidTest")
+		result.assertNoTask(":releaseDebug")
+		result.assertNoTask(":releaseRelease")
+		result.assertNoTask(":releaseAll")
 	}
 
 	@Test fun `test (release)`() {
