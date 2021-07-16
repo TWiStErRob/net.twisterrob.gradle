@@ -126,15 +126,15 @@ jobs:
 
       - name: Install Android SDK components
         run: |
-          sdkmanager --install cmdline-tools;latest
-          sdkmanager --install tools
-          sdkmanager --install platform-tools
+          sdkmanager --install "cmdline-tools;latest"
+          sdkmanager --install "tools"
+          sdkmanager --install "platform-tools"
           # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
-          sdkmanager --install build-tools;${{ matrix.build-tools }}
+          sdkmanager --install "build-tools;${{ matrix.build-tools }}"
           # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
-          sdkmanager --install platforms;android-${{ matrix.instant-api }}
+          sdkmanager --install "platforms;android-${{ matrix.instant-api }}"
           # compileSdkVersion for almost all tests, may need an extra `yes | sdkmanager "platforms;android-30"` step.
-          sdkmanager --install platforms;android-30
+          sdkmanager --install "platforms;android-30"
 
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
