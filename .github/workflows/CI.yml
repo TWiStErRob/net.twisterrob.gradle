@@ -126,19 +126,28 @@ jobs:
 
       - name: Install Android SDK components
         run: |
+          # Uninstall NDK, because it's not used and it emits a warning:
+          # Warning: Observed package id 'ndk;21.4.7075529' in inconsistent location '/usr/local/lib/android/sdk/ndk-bundle' (Expected '/usr/local/lib/android/sdk/ndk/21.4.7075529')
+          echo sdkmanager --uninstall "ndk;21.4.7075529"
+          sdkmanager --uninstall "ndk;21.4.7075529"
+
+          # The following are already done by setup-android@v2 action:
           # sdkmanager --install "cmdline-tools;latest"
+          # sdkmanager --install "tools"
+          # sdkmanager --install "platform-tools"
+
+          # Update, because setup-android@v2 installs "cmdline-tools;3.0" as latest, but there's 4.0 already.
           echo sdkmanager --update
           sdkmanager --update
-          echo sdkmanager --install "tools"
-          sdkmanager --install "tools"
-          echo sdkmanager --install "platform-tools"
-          sdkmanager --install "platform-tools"
+
           # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
           echo sdkmanager --install "build-tools;${{ matrix.build-tools }}"
           sdkmanager --install "build-tools;${{ matrix.build-tools }}"
+
           # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
           echo sdkmanager --install "platforms;android-${{ matrix.instant-api }}"
           sdkmanager --install "platforms;android-${{ matrix.instant-api }}"
+
           # compileSdkVersion for almost all tests, may need an extra `yes | sdkmanager "platforms;android-30"` step.
           echo sdkmanager --install "platforms;android-30"
           sdkmanager --install "platforms;android-30"
