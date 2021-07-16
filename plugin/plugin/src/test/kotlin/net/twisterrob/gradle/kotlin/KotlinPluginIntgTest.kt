@@ -1,16 +1,22 @@
 package net.twisterrob.gradle.kotlin
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.test.compile.generateKotlinCompilationCheck
 import net.twisterrob.test.compile.generateKotlinCompilationCheckTest
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see KotlinPlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class KotlinPluginIntgTest : BaseIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `can compile Kotlin`() {
 		gradle.generateKotlinCompilationCheck()

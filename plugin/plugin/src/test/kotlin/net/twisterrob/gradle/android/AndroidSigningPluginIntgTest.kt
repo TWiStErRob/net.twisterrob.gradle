@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
@@ -9,16 +11,18 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.emptyString
 import org.intellij.lang.annotations.Language
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TemporaryFolder
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
 
 /**
  * @see AndroidSigningPlugin
  */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 
-	@Rule @JvmField val temp = TemporaryFolder()
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `logs error when keystore not valid (release)`() {
 		@Language("properties")
@@ -42,7 +46,7 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		}
 	}
 
-	@Test fun `applies signing config from properties (release)`() {
+	@Test fun `applies signing config from properties (release)`(@TempDir temp: File) {
 		val generationParams = mapOf(
 			"-alias" to "gradle.plugin.test",
 			"-keyalg" to "RSA",
@@ -56,14 +60,14 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 			resolveFromJDK("keytool").absolutePath,
 			"-genkey",
 			*generationParams.flatMap { it.toPair().toList() }.toTypedArray()
-		).runCommand(temp.root).also {
+		).runCommand(temp).also {
 			assertThat(it, emptyString())
 		}
 
 		@Language("properties")
 		val props = """
 			# suppress inspection "UnusedProperty" for whole file
-			RELEASE_STORE_FILE=${temp.root.resolve(generationParams["-keystore"]!!).absolutePath.replace("\\", "\\\\")}
+			RELEASE_STORE_FILE=${temp.resolve(generationParams["-keystore"]!!).absolutePath.replace("\\", "\\\\")}
 			RELEASE_STORE_PASSWORD=${generationParams["-storepass"]}
 			RELEASE_KEY_ALIAS=${generationParams["-alias"]}
 			RELEASE_KEY_PASSWORD=${generationParams["-keypass"]}

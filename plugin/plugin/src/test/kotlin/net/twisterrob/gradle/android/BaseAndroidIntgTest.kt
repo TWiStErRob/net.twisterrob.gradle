@@ -2,16 +2,12 @@ package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.BaseIntgTest
 import org.intellij.lang.annotations.Language
-import org.junit.Rule
-import org.junit.rules.TestName
-import kotlin.test.BeforeTest
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.TestInfo
 
 abstract class BaseAndroidIntgTest : BaseIntgTest() {
 
-	@Suppress("PropertyName")
-	@get:Rule val __testName = TestName()
-
-	@BeforeTest fun setUp() {
+	@BeforeEach fun setUp(testInfo : TestInfo) {
 		@Language("xml")
 		val androidManifest = """
 			<manifest package="${packageName}" />
@@ -25,7 +21,7 @@ abstract class BaseAndroidIntgTest : BaseIntgTest() {
 		""".trimIndent()
 		gradle.file(versionProperties, "version.properties")
 
-		if (__testName.methodName.endsWith(" (release)")) {
+		if (testInfo.testMethod.get().name.endsWith(" (release)")) {
 			createFileToMakeSureProguardPasses()
 		}
 	}

@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.root
@@ -8,9 +10,16 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.io.FileMatchers.anExistingDirectory
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+/**
+ * @see TestReportGenerator
+ */
+@ExtendWith(GradleRunnerRuleExtension::class)
 class TaskReportGeneratorIntgTest : BaseIntgTest() {
+
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `generator runs with empty input`() {
 		gradle.root.resolve("my_test_input").mkdirs()

@@ -10,7 +10,7 @@ import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.io.FileMatchers.anExistingFile
 import java.io.File
 import java.util.concurrent.TimeUnit
-import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assertions.assertTrue
 
 internal const val packageName = "net.twisterrob.gradle.test_app"
 internal val packageFolder get() = packageName.replace('.', '/')

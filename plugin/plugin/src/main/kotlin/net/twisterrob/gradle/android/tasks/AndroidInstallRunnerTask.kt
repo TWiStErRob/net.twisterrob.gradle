@@ -11,8 +11,10 @@ import com.google.common.annotations.VisibleForTesting
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Exec
 import org.gradle.kotlin.dsl.getByName
+import org.intellij.lang.annotations.Language
 import org.xml.sax.InputSource
 import java.io.File
+import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPathConstants
 
@@ -39,7 +41,7 @@ open class AndroidInstallRunnerTask : Exec() {
 			.get()
 			.manifestFile
 			.get()
-		val activityClass = getMainActivity(manifestFile)!!
+		val activityClass = getMainActivity(manifestFile.inputStream())!!
 		val android: BaseExtension = project.extensions.getByName<BaseExtension>("android")
 		// doesn't work: setCommandLine(android.adbExe, "shell", "am", "start", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", variant.applicationId)
 		setCommandLine(android.adbExecutable, "shell", "am", "start", "-n", "${variant.applicationId}/${activityClass}")
@@ -50,11 +52,12 @@ open class AndroidInstallRunnerTask : Exec() {
 	companion object {
 
 		@VisibleForTesting
-		internal fun getMainActivity(file: File): String? {
+		internal fun getMainActivity(androidManifest: InputStream): String? {
 			val document = DocumentBuilderFactory
 				.newInstance().apply { isNamespaceAware = true }
 				.newDocumentBuilder()
-				.parse(InputSource(file.inputStream()))
+				.parse(InputSource(androidManifest))
+			@Language("XPath")
 			val xpath = """
 				/manifest
 				/application
