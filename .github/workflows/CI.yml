@@ -123,18 +123,18 @@ jobs:
 
       - name: Set up Android SDK.
         uses: android-actions/setup-android@v2
-        #with: # Not actually supported properties "licenses" and "components", here for history from travis.yml.
-        #  licenses:
-        #    - android-sdk-license-.+
-        #  components:
-        #    - tools
-        #    - platform-tools
-        #    # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
-        #    - build-tools-${{ matrix.build-tools }}
-        #    # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
-        #    - android-${{ matrix.instant-api }}
-        #    # compileSdkVersion for almost all tests, may need an extra `yes | sdkmanager "platforms;android-30"` step.
-        #    - android-30
+
+      - name: Install Android SDK components
+        run: |
+          sdkmanager --install cmdline-tools;latest
+          sdkmanager --install tools
+          sdkmanager --install platform-tools
+          # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
+          sdkmanager --install build-tools;${{ matrix.build-tools }}
+          # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
+          sdkmanager --install platforms;android-${{ matrix.instant-api }}
+          # compileSdkVersion for almost all tests, may need an extra `yes | sdkmanager "platforms;android-30"` step.
+          sdkmanager --install platforms;android-30
 
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v2
