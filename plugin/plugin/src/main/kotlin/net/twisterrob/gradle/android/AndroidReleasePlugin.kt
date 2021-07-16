@@ -22,7 +22,18 @@ import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import java.io.File
 
-private const val envVarName = "RELEASE_HOME"
+private val defaultReleaseDir: File
+	get() {
+		val envVarName = "RELEASE_HOME"
+		val releaseHome = checkNotNull(System.getenv(envVarName)) {
+			"Please set ${envVarName} environment variable to an existing directory."
+		}
+		return File(releaseHome).also {
+			check(it.exists() && it.isDirectory) {
+				"Please set ${envVarName} environment variable to an existing directory."
+			}
+		}
+	}
 
 class AndroidReleasePlugin : BasePlugin() {
 
@@ -77,11 +88,7 @@ class AndroidReleasePlugin : BasePlugin() {
 		val releaseVariantTask = project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
 			description = "Assembles and archives apk and its proguard mapping for ${variant.description}"
-			val releaseDir = File(
-				System.getenv(envVarName)
-					?: throw IllegalArgumentException("Please set ${envVarName} environment variable to a directory.")
-			)
-			destinationDirectory.set(releaseDir.resolve("android"))
+			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
 			archiveFileName.set(
 				android.defaultConfig
 					.extensions.getByName<AndroidVersionExtension>(AndroidVersionExtension.NAME)

@@ -27,22 +27,13 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
-	companion object {
-
+	@ClearEnvironmentVariable(key = "RELEASE_HOME")
+	@Test fun `assemble doesn't need env var`() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
-			afterEvaluate {
-				// TODO workaround for testing until a Task input property is introduced instead of env.RELEASE_HOME
-				tasks.named("releaseRelease") { destinationDirectory.set(file('releases')) }
-				tasks.named("releaseDebug") { destinationDirectory.set(file('releases')) }
-			}
 		""".trimIndent()
-	}
 
-	@ClearEnvironmentVariable(key = "RELEASE_HOME")
-	@Test fun `assemble doesn't need env var`() {
 		val result = gradle.run(script, "assemble", "assembleAndroidTest").build()
 
 		result.assertSuccess(":assembleDebug")
@@ -53,7 +44,40 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertNoTask(":releaseAll")
 	}
 
+	@ClearEnvironmentVariable(key = "RELEASE_HOME")
+	@Test fun `needs environment variable to release (debug)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+		""".trimIndent()
+
+		val result = gradle.run(script, "releaseDebug").buildAndFail()
+
+		result.assertHasOutputLine(""".*Please set RELEASE_HOME environment variable to an existing directory\.""".toRegex())
+	}
+
+	@ClearEnvironmentVariable(key = "RELEASE_HOME")
+	@Test fun `needs environment variable to release (release)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+		""".trimIndent()
+
+		val result = gradle.run(script, "releaseRelease").buildAndFail()
+
+		result.assertHasOutputLine(""".*Please set RELEASE_HOME environment variable to an existing directory\.""".toRegex())
+	}
+
 	@Test fun `test (release)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
+			afterEvaluate {
+				tasks.named("releaseRelease", Zip) { destinationDirectory.set(file('releases/release')) }
+			}
+		""".trimIndent()
+
 		val result = gradle.run(script, "releaseRelease").build()
 
 		result.assertSuccess(":assembleRelease")
@@ -62,7 +86,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	private fun assertReleaseArchive(result: BuildResult) {
-		val releasesDir = gradle.root.resolve("releases")
+		val releasesDir = gradle.root.resolve("releases/release")
 		assertArchive(releasesDir.resolve("${packageName}@10203004-v1.2.3#4+archive.zip")) { archive ->
 			assertThat(archive, hasZipEntry("${packageName}@10203004-v1.2.3#4+release.apk"))
 			assertThat(archive, hasZipEntry("proguard_configuration.pro"))
@@ -78,6 +102,15 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `test (debug)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
+			afterEvaluate {
+				tasks.named("releaseDebug", Zip) { destinationDirectory.set(file('releases/debug')) }
+			}
+		""".trimIndent()
+
 		val result = gradle.run(script, "releaseDebug").build()
 
 		result.assertSuccess(":assembleDebug")
@@ -87,7 +120,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	private fun assertDebugArchive(result: BuildResult) {
-		val releasesDir = gradle.root.resolve("releases")
+		val releasesDir = gradle.root.resolve("releases/debug")
 		assertArchive(releasesDir.resolve("${packageName}.debug@10203004-v1.2.3#4d+archive.zip")) { archive ->
 			assertThat(archive, hasZipEntry("${packageName}.debug@10203004-v1.2.3#4d+debug.apk"))
 			assertThat(archive, hasZipEntry("${packageName}.debug.test@10203004-v1.2.3#4d+debug-androidTest.apk"))
@@ -104,6 +137,16 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `test (debug) and (release)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
+			afterEvaluate {
+				tasks.named("releaseRelease", Zip) { destinationDirectory.set(file('releases/release')) }
+				tasks.named("releaseDebug", Zip) { destinationDirectory.set(file('releases/debug')) }
+			}
+		""".trimIndent()
+
 		val result = gradle.run(script, "release").build()
 
 		result.assertSuccess(":assembleRelease")
