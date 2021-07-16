@@ -15,8 +15,8 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
+import org.hamcrest.assumeThat
 import org.hamcrest.io.FileMatchers.anExistingFile
-import org.hamcrest.junit5.MatcherAssume.assumeThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
