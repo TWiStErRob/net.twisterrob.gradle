@@ -17,6 +17,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import java.io.File
@@ -38,7 +39,8 @@ class AndroidReleasePlugin : BasePlugin() {
 		}
 		project.afterEvaluate {
 			android.buildTypes.forEach { buildType ->
-				allTask.configure { it.dependsOn(registerReleaseTasks(buildType)) }
+				val registerReleaseTasks = registerReleaseTasks(buildType)
+				allTask { dependsOn(registerReleaseTasks) }
 			}
 		}
 	}
@@ -50,7 +52,8 @@ class AndroidReleasePlugin : BasePlugin() {
 		}
 		LOG.debug("Creating tasks for {}", buildType.name)
 		fun registerReleaseTaskWithDependency(variant: ApkVariant) {
-			allBuildTypeTask.configure { it.dependsOn(registerReleaseTask(variant)) }
+			val registerReleaseTask = registerReleaseTask(variant)
+			allBuildTypeTask { dependsOn(registerReleaseTask) }
 		}
 
 		@Suppress("UNCHECKED_CAST")
@@ -114,9 +117,9 @@ class AndroidReleasePlugin : BasePlugin() {
 				println("Published release artifacts to ${outputs.files.singleFile}")
 			}
 		}
-		releaseVariantTask.configure { it.dependsOn(variant.assembleProvider) }
+		releaseVariantTask { dependsOn(variant.assembleProvider) }
 		if (variant is TestedVariant && variant.testVariant != null) {
-			releaseVariantTask.configure { it.dependsOn(variant.testVariant.assembleProvider) }
+			releaseVariantTask { dependsOn(variant.testVariant.assembleProvider) }
 		}
 
 		variant.productFlavors.forEach { flavor ->
@@ -132,7 +135,7 @@ class AndroidReleasePlugin : BasePlugin() {
 					description = "Assembles and archives all builds for flavor ${flavor.name}"
 				}
 			}
-			releaseFlavorTask.configure { it.dependsOn(releaseVariantTask) }
+			releaseFlavorTask { dependsOn(releaseVariantTask) }
 		}
 		return releaseVariantTask
 		/*val task: AndroidReleaseTask = variant.install.project.tasks.create(
