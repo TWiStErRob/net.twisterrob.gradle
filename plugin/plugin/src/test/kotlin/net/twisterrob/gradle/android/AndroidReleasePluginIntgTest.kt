@@ -23,11 +23,11 @@ import java.util.zip.ZipFile
  * @see AndroidReleasePlugin
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
+@ClearEnvironmentVariable(key = "RELEASE_HOME")
 class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
-	@ClearEnvironmentVariable(key = "RELEASE_HOME")
 	@Test fun `assemble doesn't need env var`() {
 		@Language("gradle")
 		val script = """
@@ -44,7 +44,6 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertNoTask(":releaseAll")
 	}
 
-	@ClearEnvironmentVariable(key = "RELEASE_HOME")
 	@Test fun `needs environment variable to release (debug)`() {
 		@Language("gradle")
 		val script = """
@@ -56,7 +55,6 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertHasOutputLine(""".*Please set RELEASE_HOME environment variable to an existing directory\.""".toRegex())
 	}
 
-	@ClearEnvironmentVariable(key = "RELEASE_HOME")
 	@Test fun `needs environment variable to release (release)`() {
 		@Language("gradle")
 		val script = """
