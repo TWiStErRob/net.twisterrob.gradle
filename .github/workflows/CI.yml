@@ -3,7 +3,7 @@ on:
   push
 concurrency:
   # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers.
-  group: github.ref == 'refs/heads/master' && 'ci-${{ github.sha }}' || 'ci-${{ github.ref }}'
+  group: github.ref != 'refs/heads/master' && 'ci-${{ github.sha }}' || 'ci-${{ github.ref }}'
   cancel-in-progress: true
 jobs:
   build:
