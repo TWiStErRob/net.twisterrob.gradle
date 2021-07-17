@@ -1,29 +1,36 @@
 package net.twisterrob.gradle.vcs
 
-import org.ajoberstar.grgit.Commit
-import org.ajoberstar.grgit.Grgit
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.revwalk.RevCommit
 import java.io.File
+import java.util.concurrent.Callable
 
-fun createGitRepository(repoDir: File): Grgit =
-	Grgit.init {
-		it.dir = repoDir
-	}
-	.also { result -> println("Repository created at ${result.repository}") }
-
-fun Grgit.doCommitSingleFile(file: File, message: String): Commit {
-	val relativePath = file.relativeTo(this@doCommitSingleFile.repository.rootDir)
-	add {
-		it.patterns = setOf(relativePath.toString())
-	}.also { println("Added $relativePath") }
-
-	return commit {
-		it.message = message
-	}.also { println("Committed revision ${it.id}: ${it.fullMessage}") }
-}
-
-inline fun git(repoDir: File, block: Grgit.() -> Unit) {
+inline fun git(repoDir: File, block: Git.() -> Unit) {
 	val repo = createGitRepository(repoDir)
-	repo.use {
-		block(it)
-	}
+	repo.use(block)
 }
+
+fun createGitRepository(repoDir: File): Git =
+	Git
+		.init().call {
+			setDirectory(repoDir)
+		}
+		.also { result -> println("Repository created at ${result}") }
+
+fun Git.doCommitSingleFile(file: File, message: String): RevCommit {
+	val relativePath = file.relativeTo(this.repository.directory)
+	this
+		.add().call {
+			addFilepattern(relativePath.toString())
+		}
+		.also { println("Added $relativePath") }
+
+	return this
+		.commit().call {
+			setMessage(message)
+		}
+		.also { println("Committed revision ${it.id}: ${it.fullMessage}") }
+}
+
+private fun <R, T : Callable<R>> T.call(block: T.() -> Unit): R =
+	this.apply(block).call()

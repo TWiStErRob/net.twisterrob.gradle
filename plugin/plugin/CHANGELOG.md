@@ -1,7 +1,11 @@
 ## 4.1.x
 
+### 4.1.1.14-29-29.2
+ - Remove GrGit dependency, use JGit directly
+
 ### 4.1.1.14-29-29.1
  - Update Git VCS dependencies to latest, will need to add:
+   (Update to next version to remove this need.)
    ```gradle
    maven {
        name = "ajoberstar-backup"
