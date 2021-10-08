@@ -8,6 +8,7 @@ out/
 
 # IDEA Project files
 .idea/
+!/.idea/icon.png
 !/.idea/misc.xml
 !/.idea/codeStyles/
 !/.idea/inspectionProfiles/
