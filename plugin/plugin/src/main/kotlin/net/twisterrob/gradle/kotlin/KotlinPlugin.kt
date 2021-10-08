@@ -18,7 +18,7 @@ class KotlinPlugin : BasePlugin() {
 			// CONSIDER https://github.com/griffio/dagger2-kotlin/blob/master/README.md
 			project.plugins.apply("kotlin-android")
 			project.plugins.apply("kotlin-kapt")
-			project.repositories.jcenter()
+			project.repositories.mavenCentral()
 			project.dependencies.add("implementation", kotlin("stdlib-jdk7"))
 			if (project.plugins.hasAndroidTest()) {
 				project.addTestDependencies("implementation")
@@ -31,7 +31,7 @@ class KotlinPlugin : BasePlugin() {
 			}
 		} else {
 			project.plugins.apply("kotlin")
-			project.repositories.jcenter()
+			project.repositories.mavenCentral()
 			project.dependencies.add("implementation", kotlin("stdlib"))
 			project.addTestDependencies("testImplementation")
 		}
