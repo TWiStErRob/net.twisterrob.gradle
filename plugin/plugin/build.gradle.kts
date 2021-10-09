@@ -132,18 +132,8 @@ tasks.withType<JavaCompile> {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 	kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
 	kotlinOptions.verbose = true
-	kotlinOptions.apiVersion = "1.4"
-	//kotlinOptions.allWarningsAsErrors = true
+	kotlinOptions.allWarningsAsErrors = true
 	kotlinOptions.freeCompilerArgs += listOf(
-		// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
-		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
-		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
-		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
-		// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
-		"-Xno-optimized-callable-references",
-		// java.lang.NoSuchMethodError: com.jakewharton.dex.DexMethod.getDeclaringType-YNYzXYw()Ljava/lang/String;
-		//     at net.twisterrob.gradle.android.DexMethodTypeSafeMatcher.matchesSafely(GradleTestHelpers.kt:189)
-		"-Xuse-14-inline-classes-mangling-scheme"
 	)
 }
 
