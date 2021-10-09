@@ -161,6 +161,32 @@ object Libs {
 		private const val versionNew = "2.0.0.0"
 
 		const val new = "org.hamcrest:java-hamcrest:${versionNew}"
+
+		fun Configuration.replaceHamcrestDependencies() {
+			resolutionStrategy.eachDependency { replaceHamcrestDependencies() }
+		}
+
+		/**
+		 * https://github.com/junit-team/junit4/pull/1608#issuecomment-496238766
+ 		 */
+		private fun DependencyResolveDetails.replaceHamcrestDependencies() {
+			if (requested.group == "org.hamcrest") {
+				when (requested.name) {
+					"java-hamcrest" -> {
+						useTarget("org.hamcrest:hamcrest:2.2")
+						because("2.0.0.0 shouldn't have been published")
+					}
+					"hamcrest-core" -> {
+						useTarget("org.hamcrest:hamcrest:${target.version}")
+						because("hamcrest-core doesn't contain anything")
+					}
+					"hamcrest-library" -> {
+						useTarget("org.hamcrest:hamcrest:${target.version}")
+						because("hamcrest-library doesn't contain anything")
+					}
+				}
+			}
+		}
 	}
 
 	object JFixture {

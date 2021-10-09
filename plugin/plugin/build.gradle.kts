@@ -44,31 +44,6 @@ dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 	}
 }
 
-configurations.all {
-	resolutionStrategy.eachDependency {
-		val dep: DependencyResolveDetails = this
-		// https://github.com/junit-team/junit4/pull/1608#issuecomment-496238766
-		if (dep.requested.group == "org.hamcrest") {
-			when (dep.requested.name) {
-				"java-hamcrest" -> {
-					dep.useTarget("org.hamcrest:hamcrest:2.2")
-					dep.because("2.0.0.0 shouldn't have been published")
-				}
-
-				"hamcrest-core" -> {
-					dep.useTarget("org.hamcrest:hamcrest:${dep.target.version}")
-					dep.because("hamcrest-core doesn't contain anything")
-				}
-
-				"hamcrest-library" -> {
-					dep.useTarget("org.hamcrest:hamcrest:${dep.target.version}")
-					dep.because("hamcrest-library doesn't contain anything")
-				}
-			}
-		}
-	}
-}
-
 dependencies { // test
 	testImplementation(project(":test"))
 	testImplementation("junit:junit:4.13.2") // needed for GradleRunnerRule superclass even when using Extension
@@ -85,21 +60,6 @@ dependencies { // test
 	testImplementation("org.jetbrains:annotations:22.0.0")
 	testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32")
 	testImplementation("com.jakewharton.dex:dex-member-list:4.1.1")
-}
-
-tasks.named<Jar>("jar") {
-	manifest {
-		//noinspection UnnecessaryQualifiedReference
-		attributes(
-			mapOf(
-				"Implementation-Vendor" to project.group,
-				"Implementation-Title" to project.name,
-				"Implementation-Version" to project.version,
-				// parsed in net.twisterrob.gradle.builtDate (Global.kt)
-				"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
-			)
-		)
-	}
 }
 
 tasks.withType<Test> {
@@ -129,35 +89,4 @@ tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
 	// To work around this: prepend the final JAR file on the classpath:
 	val jar = tasks.named<Jar>("jar").get()
 	pluginClasspath.setFrom(files(jar.archiveFile) + pluginClasspath)
-}
-
-tasks.withType<JavaCompile> {
-	targetCompatibility = JavaVersion.VERSION_1_8.toString()
-	sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-	options.compilerArgs.addAll(
-		listOf(
-			// check everything
-			"-Xlint:all",
-			// fail on any warning
-			"-Werror",
-			//warning: [options] bootstrap class path not set in conjunction with -source 1.7
-			"-Xlint:-options",
-			//The following annotation processors were detected on the compile classpath:
-			// 'javaslang.match.PatternsProcessor'
-			// 'com.google.auto.value.extension.memoized.MemoizedValidator'
-			// 'com.google.auto.value.processor.AutoAnnotationProcessor'
-			// 'com.google.auto.value.processor.AutoValueBuilderProcessor'
-			// 'com.google.auto.value.processor.AutoValueProcessor'.
-			// implies "-Xlint:-processing",
-			"-proc:none"
-		)
-	)
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-	kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
-	kotlinOptions.verbose = true
-	kotlinOptions.allWarningsAsErrors = true
-	kotlinOptions.freeCompilerArgs += listOf(
-	)
 }

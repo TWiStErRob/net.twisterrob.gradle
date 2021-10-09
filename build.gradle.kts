@@ -1,11 +1,12 @@
+import Libs.Hamcrest.replaceHamcrestDependencies
+import java.time.format.DateTimeFormatter
+import java.time.Instant
 import Libs.Kotlin.replaceKotlinJre7WithJdk7
 import Libs.Kotlin.replaceKotlinJre8WithJdk8
 import org.gradle.api.tasks.testing.TestOutputEvent.Destination
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.utils.keysToMap
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.EnumSet
 import kotlin.math.absoluteValue
 
@@ -39,6 +40,7 @@ allprojects {
 	configurations.all {
 		replaceKotlinJre7WithJdk7()
 		replaceKotlinJre8WithJdk8()
+		//replaceHamcrestDependencies()
 		resolutionStrategy {
 			// make sure we don't have many versions of Kotlin lying around
 			force(Libs.Kotlin.stdlib)
@@ -145,7 +147,7 @@ allprojects {
 		java.targetCompatibility = Libs.javaVersion
 		(tasks["test"] as Test).testLogging.events("passed", "skipped", "failed")
 		afterEvaluate {
-			with(tasks["jar"] as Jar) {
+			tasks.named<Jar>("jar") {
 				manifest {
 					attributes(
 						mapOf(
@@ -155,7 +157,7 @@ allprojects {
 							"Implementation-Version" to project.version,
 							// TODO Make sure it doesn't change often (skip for SNAPSHOT)
 							// otherwise :jar always re-packages and compilations cascade
-							"Built-Date" to SimpleDateFormat("yyyy-MM-dd'T'00:00:00Z").format(Date())
+							"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
 						)
 					)
 				}
@@ -228,7 +230,7 @@ if (project.property("net.twisterrob.gradle.build.includeExamples").toString().t
 	}
 }
 
-project.tasks.create("tests", TestReport::class.java) {
+project.tasks.create<TestReport>("tests") {
 	destinationDir = file("${buildDir}/reports/tests/all")
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->
