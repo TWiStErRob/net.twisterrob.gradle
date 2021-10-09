@@ -65,11 +65,9 @@ dependencies { // test
 		exclude group: "org.junit", module: "junit"
 	}
 
-	testImplementation "org.jetbrains:annotations:22.0.0"
-	testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32"
-	testImplementation("com.jakewharton.dex:dex-member-list:4.1.1") {
-		exclude group: 'org.jetbrains.kotlin'
-	}
+	testImplementation("org.jetbrains:annotations:22.0.0")
+	testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32")
+	testImplementation("com.jakewharton.dex:dex-member-list:4.1.1")
 }
 
 jar {
@@ -113,6 +111,24 @@ tasks.named("pluginUnderTestMetadata", PluginUnderTestMetadata) {
 	it.pluginClasspath.setFrom(files(jar.archiveFile) + it.pluginClasspath)
 }
 
+tasks.withType(JavaCompile).configureEach {
+	it.targetCompatibility = JavaVersion.VERSION_1_8.toString()
+	it.sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+}
+
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 	it.kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+	it.kotlinOptions.verbose = true
+	it.kotlinOptions.apiVersion = "1.4"
+	it.kotlinOptions.allWarningsAsErrors = true
+	it.kotlinOptions.freeCompilerArgs += [
+			// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
+			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
+			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
+			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
+			// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
+			"-Xno-optimized-callable-references"
+	]
 }
+
+//BuildScriptKt.replaceGradlePluginAutoDependenciesWithoutKotlin(project)
