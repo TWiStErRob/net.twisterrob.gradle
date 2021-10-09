@@ -1,4 +1,4 @@
-group = rootProject.name
+group = "net.twisterrob.gradle"
 
 subprojects {
 	repositories {
@@ -12,9 +12,9 @@ subprojects {
 }
 
 allprojects {
-	replaceGradlePluginAutoDependenciesWithoutKotlin()
-	gradle.projectsEvaluated {
-		val java_opts = listOf(
+	tasks.withType<JavaCompile> {
+		options.compilerArgs.addAll(
+			listOf(
 				// check everything
 				"-Xlint:all",
 				// fail on any warning
@@ -29,17 +29,7 @@ allprojects {
 				// 'com.google.auto.value.processor.AutoValueProcessor'.
 				// implies "-Xlint:-processing",
 				"-proc:none"
+			)
 		)
-		tasks.withType<JavaCompile> {
-			options.compilerArgs.addAll(java_opts)
-		}
-		tasks.withType<GroovyCompile> {
-			options.compilerArgs.addAll(java_opts)
-			options.compilerArgs.addAll(listOf(
-					//warning: Implicitly compiled files were not subject to annotation processing.
-					//Use -implicit to specify a policy for implicit compilation.
-					"-implicit:class"
-			))
-		}
 	}
 }

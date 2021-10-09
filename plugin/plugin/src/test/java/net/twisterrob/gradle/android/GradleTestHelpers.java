@@ -26,7 +26,6 @@ class GradleTestHelpers {
 	static @NotNull String sourceName(@NotNull DexMethod item) {
 		try {
 			Method sourceName = TypeDescriptor.class.getDeclaredMethod("getSourceName-impl", String.class);
-//			sourceName.setAccessible(true);
 			return (String)sourceName.invoke(null, item.getDeclaringType());
 		} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
 			throw new IllegalStateException(e);
