@@ -1,9 +1,23 @@
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
+/*
+dependencies {
+	implementation("net.twisterrob.gradle:twister-gradle-test:0.11")
+	implementation(kotlin("gradle-plugin", version = kotlin_version))
+	implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:${kotlin_version}"))
+	implementation(kotlin("compiler-embeddable", version = kotlin_version))
+}
+subprojects {
+	repositories {
+		maven { name = "Gradle libs (for Kotlin-DSL)"; setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
+	}
+}
+
+ */
 plugins {
 	kotlin
-	id("net.twisterrob.gradle.test")
+	id("java-gradle-plugin")
 }
 
 version = "4.2.2.14-30-30.0"
@@ -33,14 +47,6 @@ dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 configurations.all {
 	resolutionStrategy.eachDependency {
 		val dep: DependencyResolveDetails = this
-		if (dep.requested.group == "org.jetbrains.kotlin" && dep.requested.name == "kotlin-stdlib-jre7") {
-			dep.useTarget("${dep.target.group}:kotlin-stdlib-jdk7:${dep.target.version}")
-			dep.because("https://issuetracker.google.com/issues/72274424")
-		}
-		if (dep.requested.group == "org.jetbrains.kotlin" && dep.requested.name == "kotlin-stdlib-jre8") {
-			dep.useTarget("${dep.target.group}:kotlin-stdlib-jdk8:${dep.target.version}")
-			dep.because("https://issuetracker.google.com/issues/72274424")
-		}
 		// https://github.com/junit-team/junit4/pull/1608#issuecomment-496238766
 		if (dep.requested.group == "org.hamcrest") {
 			when (dep.requested.name) {
@@ -64,6 +70,7 @@ configurations.all {
 }
 
 dependencies { // test
+	testImplementation(project(":test"))
 	testImplementation("junit:junit:4.13.2") // needed for GradleRunnerRule superclass even when using Extension
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
 	testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
@@ -127,6 +134,24 @@ tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
 tasks.withType<JavaCompile> {
 	targetCompatibility = JavaVersion.VERSION_1_8.toString()
 	sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+	options.compilerArgs.addAll(
+		listOf(
+			// check everything
+			"-Xlint:all",
+			// fail on any warning
+			"-Werror",
+			//warning: [options] bootstrap class path not set in conjunction with -source 1.7
+			"-Xlint:-options",
+			//The following annotation processors were detected on the compile classpath:
+			// 'javaslang.match.PatternsProcessor'
+			// 'com.google.auto.value.extension.memoized.MemoizedValidator'
+			// 'com.google.auto.value.processor.AutoAnnotationProcessor'
+			// 'com.google.auto.value.processor.AutoValueBuilderProcessor'
+			// 'com.google.auto.value.processor.AutoValueProcessor'.
+			// implies "-Xlint:-processing",
+			"-proc:none"
+		)
+	)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

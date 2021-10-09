@@ -3,6 +3,7 @@ import org.gradle.util.GradleVersion
 rootProject.name = "net.twisterrob.gradle"
 
 include(":quality")
+include(":plugin"); project(":plugin").projectDir = file("plugin/plugin")
 include(":common")
 include(":test")
 include(":test:internal")
