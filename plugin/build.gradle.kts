@@ -1,15 +1,5 @@
 group = rootProject.name
 
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
-		classpath("net.twisterrob.gradle:twister-gradle-test:0.11")
-	}
-}
-
 subprojects {
 	repositories {
 		mavenCentral()
@@ -22,6 +12,7 @@ subprojects {
 }
 
 allprojects {
+	replaceGradlePluginAutoDependenciesWithoutKotlin()
 	gradle.projectsEvaluated {
 		val java_opts = listOf(
 				// check everything

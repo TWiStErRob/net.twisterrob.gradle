@@ -22,6 +22,7 @@ dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 
 	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
 	api("com.android.tools.build:gradle:4.1.1")
+	api("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
 
 	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
 	implementation("org.gradle:gradle-kotlin-dsl:6.1.1") {
@@ -139,7 +140,10 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
 		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
 		// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
-		"-Xno-optimized-callable-references"
+		"-Xno-optimized-callable-references",
+		// java.lang.NoSuchMethodError: com.jakewharton.dex.DexMethod.getDeclaringType-YNYzXYw()Ljava/lang/String;
+		//     at net.twisterrob.gradle.android.DexMethodTypeSafeMatcher.matchesSafely(GradleTestHelpers.kt:189)
+		"-Xuse-14-inline-classes-mangling-scheme"
 	)
 }
 
