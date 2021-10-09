@@ -70,7 +70,7 @@ open class GITPluginExtension : VCSExtension {
 	// 'git rev-list --count HEAD'.execute([], project.rootDir).text.trim()
 	override val revisionNumber: Int
 		get() = inRepo {
-			walk {
+			walk<Int> {
 				isRetainBody = false
 				markStart(parseCommit(head))
 				return count()

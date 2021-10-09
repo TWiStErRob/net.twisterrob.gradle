@@ -8,9 +8,9 @@ import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.io.FileMatchers.anExistingFile
+import org.junit.jupiter.api.Assertions.assertTrue
 import java.io.File
 import java.util.concurrent.TimeUnit
-import org.junit.jupiter.api.Assertions.assertTrue
 
 internal const val packageName = "net.twisterrob.gradle.test_app"
 internal val packageFolder get() = packageName.replace('.', '/')
@@ -180,8 +180,8 @@ fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =
 			appendText("in class ").appendValue(className)
 		}
 
-		override fun matchesSafely(item: DexMethod) =
-			className == item.declaringType.sourceName && methodName == item.name
+		override fun matchesSafely(item: DexMethod): Boolean =
+			className == GradleTestHelpers.sourceName(item) && methodName == item.name
 	}
 
 fun hasDevices(): Boolean {

@@ -7,7 +7,7 @@ import net.twisterrob.gradle.base.BasePlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
 
-const val VERSION_KOTLIN = "1.3.72"
+const val VERSION_KOTLIN = "1.4.32"
 
 class KotlinPlugin : BasePlugin() {
 
@@ -18,7 +18,7 @@ class KotlinPlugin : BasePlugin() {
 			// CONSIDER https://github.com/griffio/dagger2-kotlin/blob/master/README.md
 			project.plugins.apply("kotlin-android")
 			project.plugins.apply("kotlin-kapt")
-			project.repositories.jcenter()
+			project.repositories.mavenCentral()
 			project.dependencies.add("implementation", kotlin("stdlib-jdk7"))
 			if (project.plugins.hasAndroidTest()) {
 				project.addTestDependencies("implementation")
@@ -31,7 +31,7 @@ class KotlinPlugin : BasePlugin() {
 			}
 		} else {
 			project.plugins.apply("kotlin")
-			project.repositories.jcenter()
+			project.repositories.mavenCentral()
 			project.dependencies.add("implementation", kotlin("stdlib"))
 			project.addTestDependencies("testImplementation")
 		}
