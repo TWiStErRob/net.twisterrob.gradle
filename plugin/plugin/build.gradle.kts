@@ -1,0 +1,146 @@
+import java.time.Instant
+import java.time.format.DateTimeFormatter
+
+plugins {
+	kotlin
+	id("net.twisterrob.gradle.test")
+}
+
+version = "4.1.1.14-29-29.2"
+
+dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
+	implementation(gradleApi())
+
+	// https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
+	implementation("org.tmatesoft.svnkit:svnkit:1.10.3")
+	implementation("org.tmatesoft.svnkit:svnkit-cli:1.10.3")
+
+	// Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
+	// Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
+	// Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
+	implementation("org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r")
+
+	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
+	api("com.android.tools.build:gradle:4.1.1")
+
+	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
+	implementation("org.gradle:gradle-kotlin-dsl:6.1.1") {
+		isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
+	}
+}
+
+configurations.all {
+	resolutionStrategy.eachDependency {
+		val dep: DependencyResolveDetails = this
+		if (dep.requested.group == "org.jetbrains.kotlin" && dep.requested.name == "kotlin-stdlib-jre7") {
+			dep.useTarget("${dep.target.group}:kotlin-stdlib-jdk7:${dep.target.version}")
+			dep.because("https://issuetracker.google.com/issues/72274424")
+		}
+		if (dep.requested.group == "org.jetbrains.kotlin" && dep.requested.name == "kotlin-stdlib-jre8") {
+			dep.useTarget("${dep.target.group}:kotlin-stdlib-jdk8:${dep.target.version}")
+			dep.because("https://issuetracker.google.com/issues/72274424")
+		}
+		// https://github.com/junit-team/junit4/pull/1608#issuecomment-496238766
+		if (dep.requested.group == "org.hamcrest") {
+			when (dep.requested.name) {
+				"java-hamcrest" -> {
+					dep.useTarget("org.hamcrest:hamcrest:2.2")
+					dep.because("2.0.0.0 shouldn't have been published")
+				}
+
+				"hamcrest-core" -> {
+					dep.useTarget("org.hamcrest:hamcrest:${dep.target.version}")
+					dep.because("hamcrest-core doesn't contain anything")
+				}
+
+				"hamcrest-library" -> {
+					dep.useTarget("org.hamcrest:hamcrest:${dep.target.version}")
+					dep.because("hamcrest-library doesn't contain anything")
+				}
+			}
+		}
+	}
+}
+
+dependencies { // test
+	testImplementation("junit:junit:4.13.2") // needed for GradleRunnerRule superclass even when using Extension
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+	testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+
+	testImplementation("org.junit-pioneer:junit-pioneer:1.4.2")
+
+	testImplementation("org.hamcrest:hamcrest:2.2") {
+		exclude(group = "org.junit", module = "junit")
+	}
+
+	testImplementation("org.jetbrains:annotations:22.0.0")
+	testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32")
+	testImplementation("com.jakewharton.dex:dex-member-list:4.1.1")
+}
+
+tasks.named<Jar>("jar") {
+	manifest {
+		//noinspection UnnecessaryQualifiedReference
+		attributes(
+			mapOf(
+				"Implementation-Vendor" to project.group,
+				"Implementation-Title" to project.name,
+				"Implementation-Version" to project.version,
+				// parsed in net.twisterrob.gradle.builtDate (Global.kt)
+				"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+			)
+		)
+	}
+}
+
+tasks.withType<Test> {
+	useJUnitPlatform()
+
+	// Enable verbose test logging, because sometimes AndroidBuildPluginIntgTest hangs, hopefully this will uncover it
+	//noinspection UnnecessaryQualifiedReference
+	testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+	// See GradleTestKitDirRelocator for what enables this!
+	maxParallelForks = 10
+	// Limit memory usage of test forks. Gradle <5 allows 1/4th of total memory to be used, thus forbidding many forks.
+	maxHeapSize = "256M"
+}
+
+tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
+	// In Gradle 6.5.1 to 6.6 upgrade something changed.
+	// The folders on the classpath
+	// classpath files('net.twisterrob.gradle\\plugin\\plugin\\build\\classes\\java\\main')
+	// classpath files('net.twisterrob.gradle\\plugin\\plugin\\build\\classes\\kotlin\\main')
+	// classpath files('net.twisterrob.gradle\\plugin\\plugin\\build\\resources\\main')
+	// are now used as a quickly ZIPped JAR file
+	// file:/Temp/.gradle-test-kit-TWiStEr-6/caches/jars-8/612d2cded1e3015b824ce72a63bd2fb6/main.jar
+	// but this is missing the MANIFEST.MF file, as only the class and resource files are there.
+	// Adding the temporary directory for the manifest is not enough like this:
+	// it.pluginClasspath.from(files(file("build/tmp/jar/")))
+	// because it needs to be in the same JAR file as the class files.
+	// To work around this: prepend the final JAR file on the classpath:
+	val jar = tasks.named<Jar>("jar").get()
+	pluginClasspath.setFrom(files(jar.archiveFile) + pluginClasspath)
+}
+
+tasks.withType<JavaCompile> {
+	targetCompatibility = JavaVersion.VERSION_1_8.toString()
+	sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+	kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+	kotlinOptions.verbose = true
+	kotlinOptions.apiVersion = "1.4"
+	//kotlinOptions.allWarningsAsErrors = true
+	kotlinOptions.freeCompilerArgs += listOf(
+		// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
+		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
+		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
+		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
+		// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
+		"-Xno-optimized-callable-references"
+	)
+}
+
+//BuildScriptKt.replaceGradlePluginAutoDependenciesWithoutKotlin(project)
