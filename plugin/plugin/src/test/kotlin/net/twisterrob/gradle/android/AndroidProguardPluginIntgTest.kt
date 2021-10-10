@@ -15,11 +15,11 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
-import org.hamcrest.assumeThat
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 
 /**
  * @see AndroidProguardPlugin
@@ -27,9 +27,34 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(GradleRunnerRuleExtension::class)
 class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
+	enum class Minification(
+		val debugTaskName: String,
+		val releaseTaskName: String,
+		val gradleProperties: String,
+	) {
+
+		ProGuard(
+			debugTaskName = "minifyDebugWithProguard",
+			releaseTaskName = "minifyReleaseWithProguard",
+			gradleProperties = """
+				android.enableR8=false
+			""".trimIndent()
+		),
+		R8(
+			debugTaskName = "minifyDebugWithR8",
+			releaseTaskName = "minifyReleaseWithR8",
+			gradleProperties = """
+				android.enableR8=true
+			""".trimIndent()
+		),
+	}
+
 	override lateinit var gradle: GradleRunnerRule
 
-	@Test fun `default build setup minifies only release using AndroidX (debug) and (release)`() {
+	@EnumSource(Minification::class)
+	@ParameterizedTest fun `default build setup minifies only release using AndroidX (debug) and (release)`(
+		minification: Minification
+	) {
 		@Language("java")
 		val someClass = """
 			package ${packageName};
@@ -45,6 +70,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("properties")
 		val properties = """
 			android.useAndroidX=true
+			${minification.gradleProperties}
 		""".trimIndent()
 		gradle.root.resolve("gradle.properties").appendText(properties)
 
@@ -58,8 +84,8 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assemble").build()
 
-		result.assertNoTask(":minifyDebugWithProguard")
-		result.assertSuccess(":minifyReleaseWithProguard")
+		result.assertNoTask(":${minification.debugTaskName}")
+		result.assertSuccess(":${minification.releaseTaskName}")
 		result.assertSuccess(":assembleRelease")
 		result.assertSuccess(":assembleDebug")
 		result.assertSuccess(":assemble")
@@ -71,7 +97,10 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		assertThat(releaseMethods, allOf(hasItem(usedMethod), not(hasItem(unusedMethod))))
 	}
 
-	@Test fun `default build setup minifies only release using support library (debug) and (release)`() {
+	@EnumSource(Minification::class)
+	@ParameterizedTest fun `default build setup minifies only release using support library (debug) and (release)`(
+		minification: Minification
+	) {
 		@Language("java")
 		val someClass = """
 			package ${packageName};
@@ -87,6 +116,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("properties")
 		val properties = """
 			android.useAndroidX=true
+			${minification.gradleProperties}
 		""".trimIndent()
 		gradle.root.resolve("gradle.properties").appendText(properties)
 
@@ -100,8 +130,8 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assemble").build()
 
-		result.assertNoTask(":minifyDebugWithProguard")
-		result.assertSuccess(":minifyReleaseWithProguard")
+		result.assertNoTask(":${minification.debugTaskName}")
+		result.assertSuccess(":${minification.releaseTaskName}")
 		result.assertSuccess(":assembleRelease")
 		result.assertSuccess(":assembleDebug")
 		result.assertSuccess(":assemble")
@@ -113,7 +143,12 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		assertThat(releaseMethods, allOf(hasItem(usedMethod), not(hasItem(unusedMethod))))
 	}
 
-	@Test fun `default build setup prints ProGuard config (release)`() {
+	@EnumSource(Minification::class)
+	@ParameterizedTest fun `default build setup prints ProGuard config (release)`(
+		minification: Minification
+	) {
+		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
+
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -121,11 +156,16 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assembleRelease").build()
 
-		result.assertSuccess(":minifyReleaseWithProguard")
+		result.assertSuccess(":${minification.releaseTaskName}")
 		assertThat(gradle.root.resolve("build/outputs/mapping/release/configuration.pro"), anExistingFile())
 	}
 
-	@Test fun `default build setup writes ProGuard mapping file (release)`() {
+	@EnumSource(Minification::class)
+	@ParameterizedTest fun `default build setup writes ProGuard mapping file (release)`(
+		minification: Minification
+	) {
+		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
+
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -133,11 +173,16 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assembleRelease").build()
 
-		result.assertSuccess(":minifyReleaseWithProguard")
-		assumeThat(gradle.root.resolve("build/outputs/mapping/release/mapping.txt"), anExistingFile())
+		result.assertSuccess(":${minification.releaseTaskName}")
+		assertThat(gradle.root.resolve("build/outputs/mapping/release/mapping.txt"), anExistingFile())
 	}
 
-	@Test fun `default build setup dumps (release)`() {
+	@EnumSource(Minification::class)
+	@ParameterizedTest fun `default build setup dumps (release)`(
+		minification: Minification
+	) {
+		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
+
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -145,11 +190,16 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assembleRelease").build()
 
-		result.assertSuccess(":minifyReleaseWithProguard")
-		assumeThat(gradle.root.resolve("build/outputs/mapping/release/dump.txt"), anExistingFile())
+		result.assertSuccess(":${minification.releaseTaskName}")
+		assertThat(gradle.root.resolve("build/outputs/mapping/release/dump.txt"), anExistingFile())
 	}
 
-	@Test fun `extracts and uses custom ProGuard rules (release)`() {
+	@EnumSource(Minification::class)
+	@ParameterizedTest fun `extracts and uses custom ProGuard rules (release)`(
+		minification: Minification
+	) {
+		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
+
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -157,18 +207,31 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assembleRelease", "--info").build()
 
-		result.assertExtractProguardRulesRunsSuccessfully()
-		// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
-		result.assertHasOutputLine("Applying ProGuard configuration file .*android.pro".toRegex())
-		result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob.pro".toRegex())
-		result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob-release.pro".toRegex())
-		result.assertNoOutputLine(".*twisterrob-debug.pro.*".toRegex())
+		result.assertExtractMinificationRulesRunsSuccessfully()
+		when (minification) {
+			Minification.ProGuard -> {
+				// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
+				result.assertHasOutputLine("Applying ProGuard configuration file .*android.pro".toRegex())
+				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob.pro".toRegex())
+				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob-release.pro".toRegex())
+				result.assertNoOutputLine(".*twisterrob-debug.pro.*".toRegex())
+			}
+
+			Minification.R8 -> {
+				// STOPSHIP
+			}
+		}
 		// TODO Cannot test because BasePlugin.builtDate keeps changing
-		//val incrementalResult = gradle.run(null, "extractProguardRules").build()
+		//val incrementalResult = gradle.run(null, "extractMinificationRules").build()
 		//incrementalResult.assertOutcome(":extractProguardRules", TaskOutcome.UP_TO_DATE)
 	}
 
-	@Test fun `extracts and uses custom ProGuard rules (debug)`() {
+	@EnumSource(Minification::class)
+	@ParameterizedTest fun `extracts and uses custom ProGuard rules (debug)`(
+		minification: Minification
+	) {
+		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
+
 		createFileToMakeSureProguardPasses()
 		@Language("gradle")
 		val script = """
@@ -178,15 +241,28 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assembleDebug", "--info").build()
 
-		result.assertExtractProguardRulesRunsSuccessfully()
-		// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
-		result.assertHasOutputLine("Applying ProGuard configuration file .*android.pro".toRegex())
-		result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob.pro".toRegex())
-		result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob-debug.pro".toRegex())
-		result.assertNoOutputLine(".*twisterrob-release.pro.*".toRegex())
+		result.assertExtractMinificationRulesRunsSuccessfully()
+		when (minification) {
+			Minification.ProGuard -> {
+				// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
+				result.assertHasOutputLine("Applying ProGuard configuration file .*android.pro".toRegex())
+				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob.pro".toRegex())
+				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob-debug.pro".toRegex())
+				result.assertNoOutputLine(".*twisterrob-release.pro.*".toRegex())
+			}
+
+			Minification.R8 -> {
+				// STOPSHIP
+			}
+		}
 	}
 
-	@Test fun `uses ProGuard files from submodules via consumerProguardFile (release)`() {
+	@EnumSource(Minification::class)
+	@ParameterizedTest fun `uses ProGuard files from submodules via consumerProguardFile (release)`(
+		minification: Minification
+	) {
+		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
+
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -219,11 +295,19 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assembleRelease", "--info").build()
 
-		// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
-		result.assertHasOutputLine("Applying ProGuard configuration file .*android.pro".toRegex())
-		result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob.pro".toRegex())
-		result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob-release.pro".toRegex())
-		result.assertNoOutputLine(".*twisterrob-debug.pro.*".toRegex())
+		when (minification) {
+			Minification.ProGuard -> {
+				// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
+				result.assertHasOutputLine("Applying ProGuard configuration file .*android.pro".toRegex())
+				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob.pro".toRegex())
+				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob-release.pro".toRegex())
+				result.assertNoOutputLine(".*twisterrob-debug.pro.*".toRegex())
+			}
+
+			Minification.R8 -> {
+				// STOPSHIP
+			}
+		}
 
 		// check if submodule config is included
 		assertThat(
@@ -232,8 +316,8 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
-	private fun BuildResult.assertExtractProguardRulesRunsSuccessfully() {
-		this.assertSuccess(":extractProguardRules")
+	private fun BuildResult.assertExtractMinificationRulesRunsSuccessfully() {
+		this.assertSuccess(":extractMinificationRules")
 		assertThat(gradle.root.resolve("build/intermediates/proguard-rules/android.pro"), anExistingFile())
 		assertThat(gradle.root.resolve("build/intermediates/proguard-rules/twisterrob.pro"), anExistingFile())
 		assertThat(gradle.root.resolve("build/intermediates/proguard-rules/twisterrob-debug.pro"), anExistingFile())

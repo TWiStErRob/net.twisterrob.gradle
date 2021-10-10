@@ -35,12 +35,5 @@ abstract class BaseAndroidIntgTest : BaseIntgTest() {
 			}
 		""".trimIndent()
 		gradle.file(apkContentForProguard, "src/main/java/${packageFolder}/AClassToSatisfyProguard.java")
-
-		@Language("properties")
-		val props = """
-			android.enableR8=false
-
-		""".trimIndent() // extra empty line important, as others may append to this file
-		gradle.file(props, "gradle.properties")
 	}
 }

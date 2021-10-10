@@ -4,7 +4,9 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.tasks.ProguardConfigurableTask
 import com.android.build.gradle.internal.tasks.ProguardTask
+import com.android.build.gradle.internal.tasks.R8Task
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.builtDate
@@ -71,8 +73,8 @@ class AndroidProguardPlugin : BasePlugin() {
 			}
 		}
 
-		val extractProguardRules = project.task<Task>("extractProguardRules") {
-			description = "Extract proguard file from 'net.twisterrob.android' plugin"
+		val extractProguardRules = project.task<Task>("extractMinificationRules") {
+			description = "Extract ProGuard files from 'net.twisterrob.android' plugin"
 			outputs.files(defaultAndroidRules, myProguardRules)
 			outputs.upToDateWhen {
 				defaultAndroidRules.lastModified() == builtDate.toEpochMilli()
@@ -90,21 +92,27 @@ class AndroidProguardPlugin : BasePlugin() {
 
 		project.afterEvaluate {
 			android.variants.all { variant ->
-				val obfuscationTask = project.tasks
-					.withType(ProguardTask::class.java)
-					.matching { it.variantName == variant.name }
-					.singleOrNull()
+				val obfuscationTask =
+					project.findMinificationTaskFor<ProguardTask>(variant)
+						?: project.findMinificationTaskFor<R8Task>(variant)
 				if (obfuscationTask != null) {
 					obfuscationTask.dependsOn(extractProguardRules)
-					obfuscationTask.dependsOn(createGenerateProguardRulesTask(variant, generatedProguardRulesFile))
+					obfuscationTask.dependsOn(createGenerateMinificationRulesTask(variant, generatedProguardRulesFile))
 				}
 			}
 		}
 	}
 
-	private fun createGenerateProguardRulesTask(variant: BaseVariant, outputFile: File): Task =
-		project.task<Task>("generate${variant.name.capitalize()}ProguardRules") {
-			description = "Generates printConfiguration and dump options for ProGoard"
+	private inline fun <reified T : ProguardConfigurableTask> Project.findMinificationTaskFor(variant: BaseVariant): T? =
+		this
+			.tasks
+			.withType(T::class.java)
+			.matching { it.variantName == variant.name }
+			.singleOrNull()
+
+	private fun createGenerateMinificationRulesTask(variant: BaseVariant, outputFile: File): Task =
+		project.task<Task>("generate${variant.name.capitalize()}MinificationRules") {
+			description = "Generates printConfiguration and dump options for ProGuard or R8"
 			val mappingFolder: Provider<File> = variant.mappingFileProvider.map { it.singleFile.parentFile }
 			inputs.property("targetFolder", mappingFolder)
 			outputs.file(outputFile)
