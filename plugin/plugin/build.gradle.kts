@@ -1,17 +1,3 @@
-/*
-dependencies {
-	implementation("net.twisterrob.gradle:twister-gradle-test:0.11")
-	implementation(kotlin("gradle-plugin", version = kotlin_version))
-	implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:${kotlin_version}"))
-	implementation(kotlin("compiler-embeddable", version = kotlin_version))
-}
-subprojects {
-	repositories {
-		maven { name = "Gradle libs (for Kotlin-DSL)"; setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
-	}
-}
-
- */
 plugins {
 	kotlin
 	id("java-gradle-plugin")
@@ -34,8 +20,6 @@ dependencies {
 }
 
 tasks.withType<Test> {
-	useJUnitPlatform()
-
 	// See GradleTestKitDirRelocator for what enables this!
 	maxParallelForks = 10
 	// Limit memory usage of test forks. Gradle <5 allows 1/4th of total memory to be used, thus forbidding many forks.
