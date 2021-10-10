@@ -56,7 +56,7 @@ const val VERSION_SDK_COMPILE_NAME = "10" // Android 10 (Q)
 /**
  * Latest build tools version available, there's no reason to hold back.
  */
-const val VERSION_BUILD_TOOLS = "29.0.2"
+const val VERSION_BUILD_TOOLS = "30.0.2"
 
 class AndroidBuildPlugin : BasePlugin() {
 
