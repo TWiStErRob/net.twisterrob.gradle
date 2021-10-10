@@ -200,7 +200,23 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		val result = gradle.run(script, "assembleRelease").build()
 
 		result.assertSuccess(":${minification.releaseTaskName}")
-		assertThat(gradle.root.resolve("build/outputs/mapping/release/dump.txt"), anExistingFile())
+		when (minification) {
+			Minification.ProGuard -> {
+				assertThat(gradle.root.resolve("build/outputs/mapping/release/dump.txt"), anExistingFile())
+			}
+
+			Minification.R8 -> {
+				// Not supported on R8 at AGP 4.2.
+				result.assertNoOutputLine(""".*WARNING:.* R8: Ignoring option: -dump.*""".toRegex())
+				assertThat(gradle.root.resolve("build/outputs/mapping/release/dump.txt"), not(anExistingFile()))
+			}
+
+			Minification.R8Full -> {
+				// Not supported on R8 at AGP 4.2.
+				result.assertNoOutputLine(""".*WARNING:.* R8: Ignoring option: -dump.*""".toRegex())
+				assertThat(gradle.root.resolve("build/outputs/mapping/release/dump.txt"), not(anExistingFile()))
+			}
+		}
 	}
 
 	@EnumSource(Minification::class)

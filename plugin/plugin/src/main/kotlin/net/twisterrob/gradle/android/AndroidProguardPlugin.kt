@@ -16,7 +16,6 @@ import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.task
 import org.gradle.kotlin.dsl.withType
-import org.intellij.lang.annotations.Language
 import java.io.File
 
 class AndroidProguardPlugin : BasePlugin() {
@@ -92,12 +91,17 @@ class AndroidProguardPlugin : BasePlugin() {
 
 		project.afterEvaluate {
 			android.variants.all { variant ->
-				val obfuscationTask =
-					project.findMinificationTaskFor<ProguardTask>(variant)
-						?: project.findMinificationTaskFor<R8Task>(variant)
+				val proguardTask = project.findMinificationTaskFor<ProguardTask>(variant)
+				val r8Task = project.findMinificationTaskFor<R8Task>(variant)
+				val obfuscationTask = proguardTask ?: r8Task
 				if (obfuscationTask != null) {
 					obfuscationTask.dependsOn(extractProguardRules)
-					obfuscationTask.dependsOn(createGenerateMinificationRulesTask(variant, generatedProguardRulesFile))
+					val generateMinificationRulesTask = createGenerateMinificationRulesTask(
+						variant,
+						generatedProguardRulesFile,
+						proguardTask == obfuscationTask
+					)
+					obfuscationTask.dependsOn(generateMinificationRulesTask)
 				}
 			}
 		}
@@ -110,19 +114,18 @@ class AndroidProguardPlugin : BasePlugin() {
 			.matching { it.variantName == variant.name }
 			.singleOrNull()
 
-	private fun createGenerateMinificationRulesTask(variant: BaseVariant, outputFile: File): Task =
+	private fun createGenerateMinificationRulesTask(variant: BaseVariant, outputFile: File, isProguard: Boolean): Task =
 		project.task<Task>("generate${variant.name.capitalize()}MinificationRules") {
 			description = "Generates printConfiguration and dump options for ProGuard or R8"
 			val mappingFolder: Provider<File> = variant.mappingFileProvider.map { it.singleFile.parentFile }
 			inputs.property("targetFolder", mappingFolder)
 			outputs.file(outputFile)
 			doFirst {
-				@Language("proguard")
-				val proguard = """
-					-printconfiguration ${mappingFolder.get().resolve("configuration.pro")}
-					-dump ${mappingFolder.get().resolve("dump.txt")}
-				""".trimIndent()
-				outputFile.writeText(proguard)
+				outputFile.createNewFile()
+				outputFile.writeText("-printconfiguration ${mappingFolder.get().resolve("configuration.pro")}\n")
+				if (isProguard) {
+					outputFile.writeText("-dump ${mappingFolder.get().resolve("dump.txt")}\n")
+				}
 			}
 		}
 
