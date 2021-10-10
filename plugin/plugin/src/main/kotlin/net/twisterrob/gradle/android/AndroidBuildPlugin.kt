@@ -134,15 +134,16 @@ class AndroidBuildPlugin : BasePlugin() {
 				decorateBuildConfig()
 			}
 		}
+		project.plugins.withType<AppPlugin> {
+			if (twisterrob.decorateBuildConfig) {
+				android.variants.all(::addPackageName)
+			}
+		}
 		project.afterEvaluate {
 			if (project.plugins.hasAndroid()) {
 				android.variants.all(::fixVariantTaskGroups)
 			}
 			project.plugins.withType<AppPlugin> {
-				if (twisterrob.decorateBuildConfig) {
-					android.variants.all(::addPackageName)
-				}
-
 				if (twisterrob.addRunTasks) {
 					android.variants.all { variant -> createRunTask(variant as ApkVariant) }
 				}
