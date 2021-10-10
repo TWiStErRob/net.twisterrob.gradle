@@ -5,6 +5,7 @@
 - Build Tools 30.0.2
 - Gradle 6.9.1
 - Kotlin 1.4.32
+- R8 support
 
 ## 4.1.x
 
