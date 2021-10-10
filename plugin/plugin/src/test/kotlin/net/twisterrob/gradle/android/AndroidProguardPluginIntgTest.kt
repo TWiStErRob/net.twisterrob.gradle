@@ -243,7 +243,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 			}
 
 			Minification.R8, Minification.R8Full -> {
-				// STOPSHIP
+				TODO()
 			}
 		}
 		// TODO Cannot test because BasePlugin.builtDate keeps changing
@@ -277,7 +277,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 			}
 
 			Minification.R8, Minification.R8Full -> {
-				// STOPSHIP
+				TODO()
 			}
 		}
 	}
@@ -330,7 +330,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 			}
 
 			Minification.R8, Minification.R8Full -> {
-				// STOPSHIP
+				TODO()
 			}
 		}
 
