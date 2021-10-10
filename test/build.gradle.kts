@@ -10,7 +10,6 @@ description = "Test: Gradle test plugin."
 dependencies {
 	compileOnly(gradleTestKitWithoutKotlin())
 
-	api(project(":common"))
 	compileOnly(Libs.JUnit4.library)
 	compileOnly(Libs.JUnit5.api)
 	compileOnly(Libs.Annotations.jsr305)
