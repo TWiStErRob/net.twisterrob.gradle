@@ -45,6 +45,15 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 			releaseTaskName = "minifyReleaseWithR8",
 			gradleProperties = """
 				android.enableR8=true
+				android.enableR8.fullMode=false
+			""".trimIndent()
+		),
+		R8Full(
+			debugTaskName = "minifyDebugWithR8",
+			releaseTaskName = "minifyReleaseWithR8",
+			gradleProperties = """
+				android.enableR8=true
+				android.enableR8.fullMode=true
 			""".trimIndent()
 		),
 	}
@@ -217,7 +226,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 				result.assertNoOutputLine(".*twisterrob-debug.pro.*".toRegex())
 			}
 
-			Minification.R8 -> {
+			Minification.R8, Minification.R8Full -> {
 				// STOPSHIP
 			}
 		}
@@ -251,7 +260,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 				result.assertNoOutputLine(".*twisterrob-release.pro.*".toRegex())
 			}
 
-			Minification.R8 -> {
+			Minification.R8, Minification.R8Full -> {
 				// STOPSHIP
 			}
 		}
@@ -304,7 +313,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 				result.assertNoOutputLine(".*twisterrob-debug.pro.*".toRegex())
 			}
 
-			Minification.R8 -> {
+			Minification.R8, Minification.R8Full -> {
 				// STOPSHIP
 			}
 		}
