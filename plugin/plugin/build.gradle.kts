@@ -35,30 +35,16 @@ dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 	implementation("org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r")
 
 	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
-	api("com.android.tools.build:gradle:4.2.2")
-	api("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
+	compileOnly(Libs.Android.plugin)
 
-	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
-	implementation("org.gradle:gradle-kotlin-dsl:6.1.1") {
-		isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
-	}
+	implementation(Libs.Kotlin.gradlePlugin)
 }
 
 dependencies { // test
 	testImplementation(project(":test"))
-	testImplementation("junit:junit:4.13.2") // needed for GradleRunnerRule superclass even when using Extension
-	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-	testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 
 	testImplementation("org.junit-pioneer:junit-pioneer:1.4.2")
 
-	testImplementation("org.hamcrest:hamcrest:2.2") {
-		exclude(group = "org.junit", module = "junit")
-	}
-
-	testImplementation("org.jetbrains:annotations:22.0.0")
-	testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32")
 	testImplementation("com.jakewharton.dex:dex-member-list:4.1.1")
 }
 

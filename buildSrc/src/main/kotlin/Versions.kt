@@ -75,6 +75,7 @@ object Libs {
 		const val test = "org.jetbrains.kotlin:kotlin-test:${version}"
 		const val stdlibJdk7 = "org.jetbrains.kotlin:kotlin-stdlib-jre8:${version}"
 		const val stdlibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
+		const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${version}"
 
 		const val dsl = "org.gradle:gradle-kotlin-dsl:${versionDSL}"
 
@@ -125,7 +126,7 @@ object Libs {
 		/**
 		 * @see <a href="https://junit.org/junit5/docs/current/release-notes/index.html">Changelog</a>
 		 */
-		private const val version = "5.7.2"
+		private const val version = "5.8.1"
 
 		const val api = "org.junit.jupiter:junit-jupiter-api:${version}"
 		const val params = "org.junit.jupiter:junit-jupiter-params:${version}"
