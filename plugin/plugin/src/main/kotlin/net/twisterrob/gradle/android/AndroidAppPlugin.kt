@@ -19,7 +19,7 @@ class AndroidAppPlugin : BaseExposedPlugin() {
 		project.apply<AndroidVersionPlugin>()
 		project.apply<AndroidBuildPlugin>()
 		project.apply<AndroidSigningPlugin>()
-		project.apply<AndroidProguardPlugin>()
+		project.apply<AndroidMinificationPlugin>()
 		project.apply<AndroidReleasePlugin>() // after build, version
 	}
 }

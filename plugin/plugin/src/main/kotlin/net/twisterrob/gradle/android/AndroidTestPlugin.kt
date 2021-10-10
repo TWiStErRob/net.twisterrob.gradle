@@ -18,6 +18,6 @@ class AndroidTestPlugin : BaseExposedPlugin() {
 		project.apply<JavaPlugin>()
 		project.apply<AndroidBuildPlugin>()
 		project.apply<AndroidSigningPlugin>()
-		project.apply<AndroidProguardPlugin>()
+		project.apply<AndroidMinificationPlugin>()
 	}
 }

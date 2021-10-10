@@ -96,7 +96,7 @@ class AndroidReleasePlugin : BasePlugin() {
 	private fun registerReleaseTask(variant: ApkVariant): TaskProvider<Zip> {
 		val releaseVariantTask = project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
-			description = "Assembles and archives apk and its proguard mapping for ${variant.description}"
+			description = "Assembles and archives apk and its ProGuard mapping for ${variant.description}"
 			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
 			archiveFileName.set(
 				android.defaultConfig

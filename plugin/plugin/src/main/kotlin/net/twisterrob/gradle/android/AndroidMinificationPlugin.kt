@@ -18,7 +18,7 @@ import org.gradle.kotlin.dsl.task
 import org.gradle.kotlin.dsl.withType
 import java.io.File
 
-class AndroidProguardPlugin : BasePlugin() {
+class AndroidMinificationPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -30,16 +30,16 @@ class AndroidProguardPlugin : BasePlugin() {
 		 */
 		val proguardBase = project.buildDir.resolve(AndroidProject.FD_INTERMEDIATES).resolve("proguard-rules")
 		// TODO review ExtractProguardFiles task's files
-		val defaultAndroidRules = proguardBase.resolve("android.pro")
-		val myProguardRules = proguardBase.resolve("twisterrob.pro")
-		val myDebugProguardRules = proguardBase.resolve("twisterrob-debug.pro")
-		val myReleaseProguardRules = proguardBase.resolve("twisterrob-release.pro")
+		val defaultAndroidRulesFile = proguardBase.resolve("android.pro")
+		val myProguardRulesFile = proguardBase.resolve("twisterrob.pro")
+		val myDebugProguardRulesFile = proguardBase.resolve("twisterrob-debug.pro")
+		val myReleaseProguardRulesFile = proguardBase.resolve("twisterrob-release.pro")
 		val generatedProguardRulesFile = proguardBase.resolve("generated.pro")
 
 		android.apply {
 			defaultConfig.proguardFiles.add(generatedProguardRulesFile)
-			defaultConfig.proguardFiles.add(defaultAndroidRules)
-			defaultConfig.proguardFiles.add(myProguardRules)
+			defaultConfig.proguardFiles.add(defaultAndroidRulesFile)
+			defaultConfig.proguardFiles.add(myProguardRulesFile)
 
 			project.plugins.withType<AppPlugin> {
 				val release = buildTypes["release"]
@@ -49,9 +49,9 @@ class AndroidProguardPlugin : BasePlugin() {
 			project.afterEvaluate {
 				buildTypes.forEach { buildType ->
 					if (buildType.isDebuggable) {
-						buildType.proguardFiles.add(myDebugProguardRules)
+						buildType.proguardFiles.add(myDebugProguardRulesFile)
 					} else {
-						buildType.proguardFiles.add(myReleaseProguardRules)
+						buildType.proguardFiles.add(myReleaseProguardRulesFile)
 					}
 				}
 			}
@@ -72,20 +72,20 @@ class AndroidProguardPlugin : BasePlugin() {
 			}
 		}
 
-		val extractProguardRules = project.task<Task>("extractMinificationRules") {
+		val extractMinificationRules = project.task<Task>("extractMinificationRules") {
 			description = "Extract ProGuard files from 'net.twisterrob.android' plugin"
-			outputs.files(defaultAndroidRules, myProguardRules)
+			outputs.files(defaultAndroidRulesFile, myProguardRulesFile)
 			outputs.upToDateWhen {
-				defaultAndroidRules.lastModified() == builtDate.toEpochMilli()
-						&& myProguardRules.lastModified() == builtDate.toEpochMilli()
-						&& myDebugProguardRules.lastModified() == builtDate.toEpochMilli()
-						&& myReleaseProguardRules.lastModified() == builtDate.toEpochMilli()
+				defaultAndroidRulesFile.lastModified() == builtDate.toEpochMilli()
+						&& myProguardRulesFile.lastModified() == builtDate.toEpochMilli()
+						&& myDebugProguardRulesFile.lastModified() == builtDate.toEpochMilli()
+						&& myReleaseProguardRulesFile.lastModified() == builtDate.toEpochMilli()
 			}
 			doLast {
-				copy("android.pro", defaultAndroidRules)
-				copy("twisterrob.pro", myProguardRules)
-				copy("twisterrob-debug.pro", myDebugProguardRules)
-				copy("twisterrob-release.pro", myReleaseProguardRules)
+				copy("android.pro", defaultAndroidRulesFile)
+				copy("twisterrob.pro", myProguardRulesFile)
+				copy("twisterrob-debug.pro", myDebugProguardRulesFile)
+				copy("twisterrob-release.pro", myReleaseProguardRulesFile)
 			}
 		}
 
@@ -95,7 +95,7 @@ class AndroidProguardPlugin : BasePlugin() {
 				val r8Task = project.findMinificationTaskFor<R8Task>(variant)
 				val obfuscationTask = proguardTask ?: r8Task
 				if (obfuscationTask != null) {
-					obfuscationTask.dependsOn(extractProguardRules)
+					obfuscationTask.dependsOn(extractMinificationRules)
 					val generateMinificationRulesTask = createGenerateMinificationRulesTask(
 						variant,
 						generatedProguardRulesFile,

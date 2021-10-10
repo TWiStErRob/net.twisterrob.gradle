@@ -23,10 +23,10 @@ import org.junit.jupiter.params.provider.EnumSource
 import java.io.File
 
 /**
- * @see AndroidProguardPlugin
+ * @see AndroidMinificationPlugin
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
+class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
