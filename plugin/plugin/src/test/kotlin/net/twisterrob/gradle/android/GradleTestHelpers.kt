@@ -164,8 +164,8 @@ internal fun assertDefaultBadging(
 					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 					supports-screens: 'small' 'normal' 'large' 'xlarge'
 					supports-any-density: 'true'
-					locales:
-					densities:
+					locales: '--_--'
+					densities: '160'
 				""".trimIndent()
 			}
 		}
