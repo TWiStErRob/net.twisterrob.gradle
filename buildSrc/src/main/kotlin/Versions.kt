@@ -46,6 +46,9 @@ object Libs {
 		@Suppress("KDocUnresolvedReference")
 		private const val versionLint = "27.2.2"
 
+		/**
+		 * @see <a href="https://developer.android.com/studio/releases/gradle-plugin#updating-gradle">Compatibility</a>
+		 */
 		const val plugin = "com.android.tools.build:gradle:${versionAndroidGradlePlugin}"
 
 		const val lint = "com.android.tools.lint:lint:${versionLint}"
@@ -128,6 +131,11 @@ object Libs {
 		 */
 		private const val version = "5.8.1"
 
+		/**
+		 * @see <a href="https://github.com/junit-pioneer/junit-pioneer/releases">GitHub Releases</a>
+		 */
+		private const val pioneerVersion = "1.4.2"
+
 		const val api = "org.junit.jupiter:junit-jupiter-api:${version}"
 		const val params = "org.junit.jupiter:junit-jupiter-params:${version}"
 		/**
@@ -139,6 +147,8 @@ object Libs {
 		 * `runtimeOnly` dependency, because it implements some interfaces from [api], but doesn't need to be visible to user.
 		 */
 		const val vintage = "org.junit.vintage:junit-vintage-engine:${version}"
+
+		const val pioneer = "org.junit-pioneer:junit-pioneer:${pioneerVersion}"
 	}
 
 	object Mockito {
@@ -169,7 +179,7 @@ object Libs {
 
 		/**
 		 * https://github.com/junit-team/junit4/pull/1608#issuecomment-496238766
- 		 */
+		 */
 		private fun DependencyResolveDetails.replaceHamcrestDependencies() {
 			if (requested.group == "org.hamcrest") {
 				when (requested.name) {
@@ -200,6 +210,16 @@ object Libs {
 		const val kotlin = "com.flextrade.jfixture:kfixture:1.0.0"
 	}
 
+	object SVNKit {
+
+		/**
+		 * @see <a href="https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit">Versions</a>
+		 */
+		private const val version = "1.10.3"
+		const val core = "org.tmatesoft.svnkit:svnkit:${version}"
+		const val cli = "org.tmatesoft.svnkit:svnkit-cli:${version}"
+	}
+
 	val javaVersion = JavaVersion.VERSION_1_8
 
 	/**
@@ -217,4 +237,15 @@ object Libs {
 
 	private const val guavaVersion = "22.0"
 	const val guava = "com.google.guava:guava:${guavaVersion}"
+
+	/**
+	 * @see <a href="https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit">Version history</a>
+	 * @see <a href="https://projects.eclipse.org/projects/technology.jgit">Changelog (Full)</a>
+	 * @see <a href="https://wiki.eclipse.org/JGit/New_and_Noteworthy">Changelog (Summary)</a>
+	 */
+	private const val jgitVersion = "5.13.0.202109080827-r"
+	const val jgit = "org.eclipse.jgit:org.eclipse.jgit:${jgitVersion}"
+
+	private const val dexMemberListVersion = "4.1.1"
+	const val dexMemberList = "com.jakewharton.dex:dex-member-list:${dexMemberListVersion}"
 }

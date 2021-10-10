@@ -1,6 +1,3 @@
-import java.time.Instant
-import java.time.format.DateTimeFormatter
-
 /*
 dependencies {
 	implementation("net.twisterrob.gradle:twister-gradle-test:0.11")
@@ -22,30 +19,18 @@ plugins {
 
 version = "4.2.2.14-30-30.0"
 
-dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
-	implementation(gradleApi())
-
-	// https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
-	implementation("org.tmatesoft.svnkit:svnkit:1.10.3")
-	implementation("org.tmatesoft.svnkit:svnkit-cli:1.10.3")
-
-	// Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
-	// Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
-	// Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
-	implementation("org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r")
-
-	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
-	compileOnly(Libs.Android.plugin)
-
+dependencies {
+	implementation(gradleApiWithoutKotlin())
+	implementation(Libs.SVNKit.core)
+	implementation(Libs.SVNKit.cli)
+	implementation(Libs.jgit)
+	implementation(Libs.Android.plugin)
 	implementation(Libs.Kotlin.gradlePlugin)
-}
 
-dependencies { // test
 	testImplementation(project(":test"))
-
-	testImplementation("org.junit-pioneer:junit-pioneer:1.4.2")
-
-	testImplementation("com.jakewharton.dex:dex-member-list:4.1.1")
+	testImplementation(project(":test:internal"))
+	testImplementation(Libs.JUnit5.pioneer)
+	testImplementation(Libs.dexMemberList)
 }
 
 tasks.withType<Test> {
