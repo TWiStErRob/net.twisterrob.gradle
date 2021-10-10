@@ -158,11 +158,11 @@ class AndroidBuildPlugin : BasePlugin() {
 	private fun decorateBuildConfig() {
 		val buildTimeTaskProvider =
 			project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
-		buildTimeTaskProvider.addBuildConfigFields(android)
+		buildTimeTaskProvider.addBuildConfigFields(project)
 
 		val vcsTaskProvider =
 			project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
-		vcsTaskProvider.addBuildConfigFields(android)
+		vcsTaskProvider.addBuildConfigFields(project)
 	}
 
 	companion object {

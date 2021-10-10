@@ -21,7 +21,7 @@ dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 	implementation("org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r")
 
 	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
-	api("com.android.tools.build:gradle:4.1.1")
+	api("com.android.tools.build:gradle:4.2.1")
 	api("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
 
 	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")

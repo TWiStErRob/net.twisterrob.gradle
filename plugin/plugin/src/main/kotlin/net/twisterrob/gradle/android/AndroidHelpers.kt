@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.extension.ApplicationAndroidComponentsExtension
+import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.BuildConfigField
-import com.android.build.api.variant.VariantProperties
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
@@ -17,10 +17,12 @@ import com.android.build.gradle.internal.dsl.BuildType
 import com.android.builder.model.AndroidProject
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
+import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.PluginContainer
+import org.gradle.kotlin.dsl.getByName
 import java.io.Serializable
 
 fun PluginContainer.hasAndroid(): Boolean =
@@ -30,8 +32,21 @@ fun PluginContainer.hasAndroid(): Boolean =
 
 fun PluginContainer.hasAndroidTest() = hasPlugin(TestPlugin::class.java)
 
-fun BaseExtension.onVariantProperties(action: VariantProperties.() -> Unit) {
-	(this as CommonExtension<*, *, *, *, *, *, *, *>).onVariantProperties(action)
+/**
+ * @see https://android-developers.googleblog.com/2020/12/announcing-android-gradle-plugin.html
+ */
+@Suppress("UnstableApiUsage") // added in 4.2
+fun Project.onVariantProperties(action: ApplicationVariant.() -> Unit) {
+	//if (< 4.2.0) {
+	//	val android: BaseExtension =
+	//		this.extensions.getByName<BaseExtension>("android")
+	//	fun BaseExtension.onVariantProperties(action: VariantProperties.() -> Unit) {
+	//		(this as CommonExtension<*, *, *, *, *, *, *, *>).onVariantProperties(action)
+	//	}
+	//}
+	val androidComponents: ApplicationAndroidComponentsExtension =
+		this.extensions.getByName<ApplicationAndroidComponentsExtension>("androidComponents")
+	androidComponents.onVariants { action(it) }
 }
 
 val BaseExtension.variants: DomainObjectSet<out BaseVariant>
