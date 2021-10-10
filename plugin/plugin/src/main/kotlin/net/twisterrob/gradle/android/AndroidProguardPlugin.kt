@@ -122,8 +122,8 @@ class AndroidProguardPlugin : BasePlugin() {
 			outputs.file(outputFile)
 			doFirst {
 				outputFile.createNewFile()
-				outputFile.appendText("-printconfiguration ${mappingFolder.get().resolve("configuration.pro")}\n")
 				if (isProguard) {
+					outputFile.appendText("-printconfiguration ${mappingFolder.get().resolve("configuration.txt")}\n")
 					outputFile.appendText("-dump ${mappingFolder.get().resolve("dump.txt")}\n")
 				}
 			}

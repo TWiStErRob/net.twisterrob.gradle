@@ -42,3 +42,13 @@ fun hasZipEntry(
 			return true
 		}
 	}
+
+fun hasEntryCount(entryCountMatcher: Matcher<Int>): Matcher<File> =
+	object : TypeSafeMatcher<File>() {
+		override fun describeTo(description: Description) {
+			description.appendText("a zip file with entry count ").appendDescriptionOf(entryCountMatcher)
+		}
+
+		override fun matchesSafely(zip: File): Boolean =
+			entryCountMatcher.matches(ZipFile(zip).size())
+	}
