@@ -20,6 +20,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
+import java.io.File
 
 /**
  * @see AndroidProguardPlugin
@@ -166,7 +167,7 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		val result = gradle.run(script, "assembleRelease").build()
 
 		result.assertSuccess(":${minification.releaseTaskName}")
-		assertThat(gradle.root.resolve("build/outputs/mapping/release/configuration.pro"), anExistingFile())
+		assertThat(gradle.mergedProguardConfiguration, anExistingFile())
 	}
 
 	@EnumSource(Minification::class)
@@ -233,19 +234,10 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		val result = gradle.run(script, "assembleRelease", "--info").build()
 
 		result.assertExtractMinificationRulesRunsSuccessfully()
-		when (minification) {
-			Minification.ProGuard -> {
-				// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
-				result.assertHasOutputLine("Applying ProGuard configuration file .*android.pro".toRegex())
-				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob.pro".toRegex())
-				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob-release.pro".toRegex())
-				result.assertNoOutputLine(".*twisterrob-debug.pro.*".toRegex())
-			}
-
-			Minification.R8, Minification.R8Full -> {
-				TODO()
-			}
-		}
+		result.assertAppliedProguardFile("android.pro", minification)
+		result.assertAppliedProguardFile("twisterrob.pro", minification)
+		result.assertAppliedProguardFile("twisterrob-release.pro", minification)
+		result.assertNotAppliedProguardFile("twisterrob-debug.pro", minification)
 		// TODO Cannot test because BasePlugin.builtDate keeps changing
 		//val incrementalResult = gradle.run(null, "extractMinificationRules").build()
 		//incrementalResult.assertOutcome(":extractProguardRules", TaskOutcome.UP_TO_DATE)
@@ -267,19 +259,10 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		val result = gradle.run(script, "assembleDebug", "--info").build()
 
 		result.assertExtractMinificationRulesRunsSuccessfully()
-		when (minification) {
-			Minification.ProGuard -> {
-				// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
-				result.assertHasOutputLine("Applying ProGuard configuration file .*android.pro".toRegex())
-				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob.pro".toRegex())
-				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob-debug.pro".toRegex())
-				result.assertNoOutputLine(".*twisterrob-release.pro.*".toRegex())
-			}
-
-			Minification.R8, Minification.R8Full -> {
-				TODO()
-			}
-		}
+		result.assertAppliedProguardFile("android.pro", minification)
+		result.assertAppliedProguardFile("twisterrob.pro", minification)
+		result.assertAppliedProguardFile("twisterrob-debug.pro", minification)
+		result.assertNotAppliedProguardFile("twisterrob-release.pro", minification)
 	}
 
 	@EnumSource(Minification::class)
@@ -320,25 +303,13 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assembleRelease", "--info").build()
 
-		when (minification) {
-			Minification.ProGuard -> {
-				// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
-				result.assertHasOutputLine("Applying ProGuard configuration file .*android.pro".toRegex())
-				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob.pro".toRegex())
-				result.assertHasOutputLine("Applying ProGuard configuration file .*twisterrob-release.pro".toRegex())
-				result.assertNoOutputLine(".*twisterrob-debug.pro.*".toRegex())
-			}
-
-			Minification.R8, Minification.R8Full -> {
-				TODO()
-			}
-		}
+		result.assertAppliedProguardFile("android.pro", minification)
+		result.assertAppliedProguardFile("twisterrob.pro", minification)
+		result.assertAppliedProguardFile("twisterrob-release.pro", minification)
+		result.assertNotAppliedProguardFile("twisterrob-debug.pro", minification)
 
 		// check if submodule config is included
-		assertThat(
-			gradle.root.resolve("build/outputs/mapping/release/configuration.pro").readText(),
-			containsString(dummyProguardClass)
-		)
+		assertThat(gradle.mergedProguardConfiguration.readText(), containsString(dummyProguardClass))
 	}
 
 	private fun BuildResult.assertExtractMinificationRulesRunsSuccessfully() {
@@ -348,4 +319,47 @@ class AndroidProguardPluginIntgTest : BaseAndroidIntgTest() {
 		assertThat(gradle.root.resolve("build/intermediates/proguard-rules/twisterrob-debug.pro"), anExistingFile())
 		assertThat(gradle.root.resolve("build/intermediates/proguard-rules/twisterrob-release.pro"), anExistingFile())
 	}
+
+	private fun BuildResult.assertAppliedProguardFile(fileName: String, minification: Minification) {
+		when (minification) {
+			Minification.ProGuard -> {
+				// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
+				assertHasOutputLine("Applying ProGuard configuration file .*${Regex.escape(fileName)}".toRegex())
+			}
+
+			Minification.R8,
+			Minification.R8Full -> {
+				val configFile = gradle.root.resolve("build/intermediates/proguard-rules/${fileName}")
+				assertThat(
+					gradle.mergedProguardConfiguration.readText(),
+					containsString("# The proguard configuration file for the following section is ${configFile.absolutePath}")
+				)
+				assertThat(
+					gradle.mergedProguardConfiguration.readText(),
+					containsString("### -- twister-plugin-gradle/${fileName} -- ###")
+				)
+				assertThat(
+					gradle.mergedProguardConfiguration.readText(),
+					containsString("# End of content from ${configFile.absolutePath}")
+				)
+			}
+		}
+	}
+
+	private fun BuildResult.assertNotAppliedProguardFile(fileName: String, minification: Minification) {
+		when (minification) {
+			Minification.ProGuard -> {
+				// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
+				assertNoOutputLine(".*${Regex.escape(fileName)}.*".toRegex())
+			}
+
+			Minification.R8,
+			Minification.R8Full -> {
+				assertThat(gradle.mergedProguardConfiguration.readText(), not(containsString(fileName)))
+			}
+		}
+	}
 }
+
+private val GradleRunnerRule.mergedProguardConfiguration: File
+	get() = this.root.resolve("build/outputs/mapping/release/configuration.pro")
