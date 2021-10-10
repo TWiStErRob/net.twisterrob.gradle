@@ -345,12 +345,12 @@ jobs:
             instant-api: 29
           - name: "Android Gradle Plugin 4.2.x, Gradle 6.7.1+"
             gradle: 6.7.1
-            agp: 4.2.1
+            agp: 4.2.2
             build-tools: 30.0.2
             instant-api: 30
           - name: "Android Gradle Plugin 4.2.x, Gradle 6.x"
             gradle: 6.9.1
-            agp: 4.2.1
+            agp: 4.2.2
             build-tools: 30.0.2
             instant-api: 30
 

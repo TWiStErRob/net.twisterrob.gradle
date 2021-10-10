@@ -8,6 +8,7 @@
 
 ### New
  * Android Gradle Plugin 4.2.1 compatible (#126)
+ * Android Gradle Plugin 4.2.2 compatible (#145)
 
 ### Fixes
  * ...
