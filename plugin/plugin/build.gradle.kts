@@ -65,9 +65,6 @@ dependencies { // test
 tasks.withType<Test> {
 	useJUnitPlatform()
 
-	// Enable verbose test logging, because sometimes AndroidBuildPluginIntgTest hangs, hopefully this will uncover it
-	//noinspection UnnecessaryQualifiedReference
-	testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
 	// See GradleTestKitDirRelocator for what enables this!
 	maxParallelForks = 10
 	// Limit memory usage of test forks. Gradle <5 allows 1/4th of total memory to be used, thus forbidding many forks.
