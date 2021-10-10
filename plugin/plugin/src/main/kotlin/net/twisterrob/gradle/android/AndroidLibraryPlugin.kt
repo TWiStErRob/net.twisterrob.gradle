@@ -19,6 +19,6 @@ class AndroidLibraryPlugin : BaseExposedPlugin() {
 		project.apply<AndroidBuildPlugin>()
 		//project.apply<AndroidVersionPlugin>()
 		//project.apply<AndroidSigningPlugin>()
-		project.apply<AndroidProguardPlugin>()
+		project.apply<AndroidMinificationPlugin>()
 	}
 }

@@ -6,14 +6,20 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoTask
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
+import net.twisterrob.test.zip.hasEntryCount
 import net.twisterrob.test.zip.hasZipEntry
+import net.twisterrob.test.zip.withSize
 import org.gradle.testkit.runner.BuildResult
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.greaterThanOrEqualTo
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import org.junitpioneer.jupiter.ClearEnvironmentVariable
 import java.io.File
 import java.time.Instant
@@ -66,7 +72,12 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertHasOutputLine(""".*Please set RELEASE_HOME environment variable to an existing directory\.""".toRegex())
 	}
 
-	@Test fun `test (release)`() {
+	@EnumSource(Minification::class)
+	@ParameterizedTest fun `test (release)`(
+		minification: Minification
+	) {
+		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
+
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -80,21 +91,33 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 		result.assertSuccess(":releaseRelease")
-		assertReleaseArchive(result)
+		assertReleaseArchive(result, minification)
 	}
 
-	private fun assertReleaseArchive(result: BuildResult) {
+	private fun assertReleaseArchive(result: BuildResult, minification: Minification) {
 		val releasesDir = gradle.root.resolve("releases/release")
 		assertArchive(releasesDir.resolve("${packageName}@10203004-v1.2.3#4+archive.zip")) { archive ->
 			assertThat(archive, hasZipEntry("${packageName}@10203004-v1.2.3#4+release.apk"))
-			assertThat(archive, hasZipEntry("proguard_configuration.pro"))
-			assertThat(archive, hasZipEntry("proguard_dump.txt"))
-			assertThat(archive, hasZipEntry("proguard_mapping.txt"))
+			assertThat(archive, hasZipEntry("proguard_configuration.txt"))
+			when (minification) {
+				Minification.ProGuard -> {
+					assertThat(archive, hasZipEntry("proguard_dump.txt"))
+					assertThat(archive, hasZipEntry("proguard_mapping.txt"))
+				}
+				Minification.R8 -> {
+					assertThat(archive, hasZipEntry("proguard_mapping.txt"))
+				}
+				Minification.R8Full -> {
+					// TODO for some reason the full R8 doesn't output the mapping. Probably because nothing was renamed.
+					assertThat(archive, hasZipEntry("proguard_mapping.txt", withSize(greaterThanOrEqualTo(0L))))
+				}
+			}
 			assertThat(archive, hasZipEntry("proguard_seeds.txt"))
 			assertThat(archive, hasZipEntry("proguard_usage.txt"))
 			assertThat(archive, not(hasZipEntry("output.json")))
 			assertThat(archive, not(hasZipEntry("metadata.json")))
 			assertThat(archive, not(hasZipEntry("output-metadata.json")))
+			assertThat(archive, hasEntryCount(equalTo(if (minification == Minification.ProGuard) 6 else 5)))
 			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
 		}
 	}
@@ -122,7 +145,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		assertArchive(releasesDir.resolve("${packageName}.debug@10203004-v1.2.3#4d+archive.zip")) { archive ->
 			assertThat(archive, hasZipEntry("${packageName}.debug@10203004-v1.2.3#4d+debug.apk"))
 			assertThat(archive, hasZipEntry("${packageName}.debug.test@10203004-v1.2.3#4d+debug-androidTest.apk"))
-			assertThat(archive, not(hasZipEntry("proguard_configuration.pro")))
+			assertThat(archive, not(hasZipEntry("proguard_configuration.txt")))
 			assertThat(archive, not(hasZipEntry("proguard_dump.txt")))
 			assertThat(archive, not(hasZipEntry("proguard_mapping.txt")))
 			assertThat(archive, not(hasZipEntry("proguard_seeds.txt")))
@@ -130,11 +153,17 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, not(hasZipEntry("output.json")))
 			assertThat(archive, not(hasZipEntry("metadata.json")))
 			assertThat(archive, not(hasZipEntry("output-metadata.json")))
+			assertThat(archive, hasEntryCount(equalTo(2)))
 			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
 		}
 	}
 
-	@Test fun `test (debug) and (release)`() {
+	@EnumSource(Minification::class)
+	@ParameterizedTest fun `test (debug) and (release)`(
+		minification: Minification
+	) {
+		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
+
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -152,7 +181,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebugAndroidTest")
 		result.assertSuccess(":releaseRelease")
 		result.assertSuccess(":releaseDebug")
-		assertReleaseArchive(result)
+		assertReleaseArchive(result, minification)
 		assertDebugArchive(result)
 	}
 
