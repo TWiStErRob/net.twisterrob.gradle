@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.api.extension.ApplicationAndroidComponentsExtension
-import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.extension.AndroidComponentsExtension
 import com.android.build.api.variant.BuildConfigField
+import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
@@ -36,7 +36,7 @@ fun PluginContainer.hasAndroidTest() = hasPlugin(TestPlugin::class.java)
  * @see https://android-developers.googleblog.com/2020/12/announcing-android-gradle-plugin.html
  */
 @Suppress("UnstableApiUsage") // added in 4.2
-fun Project.onVariantProperties(action: ApplicationVariant.() -> Unit) {
+fun Project.onVariantProperties(action: Variant.() -> Unit) {
 	//if (< 4.2.0) {
 	//	val android: BaseExtension =
 	//		this.extensions.getByName<BaseExtension>("android")
@@ -44,8 +44,8 @@ fun Project.onVariantProperties(action: ApplicationVariant.() -> Unit) {
 	//		(this as CommonExtension<*, *, *, *, *, *, *, *>).onVariantProperties(action)
 	//	}
 	//}
-	val androidComponents: ApplicationAndroidComponentsExtension =
-		this.extensions.getByName<ApplicationAndroidComponentsExtension>("androidComponents")
+	val androidComponents: AndroidComponentsExtension<*,*> =
+		this.extensions.getByName<AndroidComponentsExtension<*,*>>("androidComponents")
 	androidComponents.onVariants { action(it) }
 }
 
