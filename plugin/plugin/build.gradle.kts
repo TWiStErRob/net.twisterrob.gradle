@@ -6,7 +6,7 @@ plugins {
 	id("net.twisterrob.gradle.test")
 }
 
-version = "4.1.1.14-29-29.2"
+version = "4.2.2.14-30-30.0"
 
 dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 	implementation(gradleApi())
@@ -21,7 +21,7 @@ dependencies { // last checked 2020-11-04 (all latest, except Gradle+Kotlin)
 	implementation("org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r")
 
 	// https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle
-	api("com.android.tools.build:gradle:4.1.1")
+	api("com.android.tools.build:gradle:4.2.2")
 	api("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
 
 	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")

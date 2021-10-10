@@ -108,6 +108,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
 			android.defaultConfig.targetSdkVersion = 19
+			android.lintOptions.disable("ExpiredTargetSdkVersion")
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()

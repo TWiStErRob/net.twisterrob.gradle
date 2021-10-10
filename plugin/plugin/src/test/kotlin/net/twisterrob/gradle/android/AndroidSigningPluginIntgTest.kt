@@ -11,6 +11,7 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.emptyString
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
@@ -84,7 +85,17 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 
 		verifyWithApkSigner(gradle.root.apk("release").absolutePath).also {
-			assertThat(it, emptyString())
+			// REPORT this should be empty, AGP 4.2.0 introduced this file.
+			assertEquals(
+				"WARNING: "
+						+ "META-INF/com/android/build/gradle/app-metadata.properties not protected by signature."
+						+ " "
+						+ "Unauthorized modifications to this JAR entry will not be detected."
+						+ " "
+						+ "Delete or move the entry outside of META-INF/."
+						+ System.lineSeparator(),
+				it
+			)
 		}
 		verifyWithJarSigner(gradle.root.apk("release").absolutePath).also {
 			assertThat(it, allOf(containsString("jar verified."), containsString(generationParams["-dname"])))

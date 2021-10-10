@@ -69,7 +69,7 @@ class AndroidLifecyclePlugin : BasePlugin() {
 		}
 		// just to make sure we're in the right module (see lazy initializer of android)
 		project.afterEvaluate { project.android }
-		project.plugins.withType<com.android.build.gradle.internal.plugins.BasePlugin<*, *>> {
+		project.plugins.withType<com.android.build.gradle.internal.plugins.BasePlugin<*, *, *>> {
 			project.android.extensions.create<AndroidLifecycleExtension>(AndroidLifecycleExtension.NAME)
 		}
 		// when we detect that an Android plugin is going to be applied

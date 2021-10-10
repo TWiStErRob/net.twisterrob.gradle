@@ -41,22 +41,22 @@ const val VERSION_SDK_MINIMUM = 14
 /**
  * Latest SDK version available, Google Play Store has stringent rules, so keep up to date.
  */
-const val VERSION_SDK_TARGET = 29
+const val VERSION_SDK_TARGET = 30
 
 /**
  * Latest SDK version available, useful for discovering deprecated methods and getting new features like `.findViewById<T>()`.
  */
-const val VERSION_SDK_COMPILE = 29
+const val VERSION_SDK_COMPILE = 30
 
 /**
  * Note: format changed at 9 Pie, was 8.1.0 Oreo.
  */
-const val VERSION_SDK_COMPILE_NAME = "10" // Android 10 (Q)
+const val VERSION_SDK_COMPILE_NAME = "11" // Android 11 (R)
 
 /**
  * Latest build tools version available, there's no reason to hold back.
  */
-const val VERSION_BUILD_TOOLS = "29.0.2"
+const val VERSION_BUILD_TOOLS = "30.0.2"
 
 class AndroidBuildPlugin : BasePlugin() {
 
@@ -134,15 +134,16 @@ class AndroidBuildPlugin : BasePlugin() {
 				decorateBuildConfig()
 			}
 		}
+		project.plugins.withType<AppPlugin> {
+			if (twisterrob.decorateBuildConfig) {
+				android.variants.all(::addPackageName)
+			}
+		}
 		project.afterEvaluate {
 			if (project.plugins.hasAndroid()) {
 				android.variants.all(::fixVariantTaskGroups)
 			}
 			project.plugins.withType<AppPlugin> {
-				if (twisterrob.decorateBuildConfig) {
-					android.variants.all(::addPackageName)
-				}
-
 				if (twisterrob.addRunTasks) {
 					android.variants.all { variant -> createRunTask(variant as ApkVariant) }
 				}
@@ -158,11 +159,11 @@ class AndroidBuildPlugin : BasePlugin() {
 	private fun decorateBuildConfig() {
 		val buildTimeTaskProvider =
 			project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
-		buildTimeTaskProvider.addBuildConfigFields(android)
+		buildTimeTaskProvider.addBuildConfigFields(project)
 
 		val vcsTaskProvider =
 			project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
-		vcsTaskProvider.addBuildConfigFields(android)
+		vcsTaskProvider.addBuildConfigFields(project)
 	}
 
 	companion object {
