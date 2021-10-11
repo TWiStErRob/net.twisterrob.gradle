@@ -25,12 +25,29 @@ import org.gradle.api.plugins.PluginContainer
 import org.gradle.kotlin.dsl.getByName
 import java.io.Serializable
 
+/**
+ * Checks if there are Android plugins applied.
+ *
+ * Note using the `META-INF/gradle-plugins/\*.properties` Plugin ID representations
+ * to not require Android to be on classpath just to see if it's applied.
+ * @see AppPlugin
+ * @see LibraryPlugin
+ * @see TestPlugin
+ */
 fun PluginContainer.hasAndroid(): Boolean =
-	hasPlugin(AppPlugin::class.java) ||
-			hasPlugin(LibraryPlugin::class.java) ||
-			hasAndroidTest()
+	hasPlugin("com.android.application")
+			|| hasPlugin("com.android.library")
+			|| hasAndroidTest()
 
-fun PluginContainer.hasAndroidTest() = hasPlugin(TestPlugin::class.java)
+/**
+ * Checks if there is an Android test plugin applied.
+ *
+ * Note using the `META-INF/gradle-plugins/\*.properties` Plugin ID representations
+ * to not require Android to be on classpath just to see if it's applied.
+ * @see TestPlugin
+ */
+fun PluginContainer.hasAndroidTest(): Boolean =
+	hasPlugin("com.android.test")
 
 /**
  * @see https://android-developers.googleblog.com/2020/12/announcing-android-gradle-plugin.html
