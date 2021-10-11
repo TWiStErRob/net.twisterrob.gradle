@@ -11,7 +11,7 @@ dependencies {
 	implementation(Libs.SVNKit.cli)
 	implementation(Libs.jgit)
 	implementation(Libs.Android.plugin)
-	implementation(Libs.Kotlin.gradlePlugin)
+	compileOnly(Libs.Kotlin.gradlePlugin)
 
 	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))
