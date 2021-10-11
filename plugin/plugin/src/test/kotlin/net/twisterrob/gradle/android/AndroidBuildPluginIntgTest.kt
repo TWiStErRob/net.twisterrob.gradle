@@ -214,6 +214,8 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `can disable buildConfig decoration (debug)`() {
+		gradle.basedOn("kotlin-plugin_app")
+
 		@Language("kotlin")
 		val kotlinTestClass = """
 			import ${packageName}.BuildConfig
@@ -284,6 +286,8 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `adds custom resources and BuildConfig values`() {
+		gradle.basedOn("kotlin-plugin_app")
+
 		@Language("kotlin")
 		val kotlinTestClass = """
 			import ${packageName}.BuildConfig
@@ -359,6 +363,8 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `can customize build time`() {
+		gradle.basedOn("kotlin-plugin_app")
+
 		@Language("kotlin")
 		val kotlinTestClass = """
 			import ${packageName}.BuildConfig

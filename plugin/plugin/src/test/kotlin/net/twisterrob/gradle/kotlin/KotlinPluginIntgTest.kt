@@ -19,6 +19,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `can compile Kotlin`() {
+		gradle.basedOn("kotlin-plugin_app")
 		gradle.generateKotlinCompilationCheck()
 
 		@Language("gradle")
@@ -32,6 +33,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `can test Kotlin with TestNG`() {
+		gradle.basedOn("kotlin-plugin_app")
 		gradle.generateKotlinCompilationCheck()
 		gradle.generateKotlinCompilationCheckTest()
 
@@ -50,6 +52,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `can test Kotlin with JUnit`() {
+		gradle.basedOn("kotlin-plugin_app")
 		gradle.generateKotlinCompilationCheck()
 		gradle.generateKotlinCompilationCheckTest()
 
