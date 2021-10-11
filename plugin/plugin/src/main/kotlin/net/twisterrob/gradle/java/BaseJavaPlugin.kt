@@ -91,7 +91,7 @@ private fun JavaCompile.fixClasspath(compileVersion: JavaVersion) {
 		)
 		return
 	}
-	logger.info("Java Compatiblity: using rt.jar from $rt")
+	logger.info("Java Compatibility: using rt.jar from $rt")
 	options.bootstrapClasspath = project.files(rt.absolutePath)
 }
 

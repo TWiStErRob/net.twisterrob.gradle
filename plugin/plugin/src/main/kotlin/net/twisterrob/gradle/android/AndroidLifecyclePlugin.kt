@@ -76,7 +76,7 @@ class AndroidLifecyclePlugin : BasePlugin() {
 		project.plugins.withType<AndroidBasePlugin> {
 			// enqueue afterEvaluate, so it runs before BasePlugin.createAndroidTasks /*[A5]*/
 			// see BasePlugin.createTasks /*[C2]*/ as to how createAndroidTasks is called.
-			// Enables using project.beforeAndroidEvalute { ... }
+			// Enables using project.beforeAndroidEvaluate { ... }
 			project.afterEvaluate {
 				project.lifecycle.beforeAndroidEvaluateActions.forEach { it() }
 			}

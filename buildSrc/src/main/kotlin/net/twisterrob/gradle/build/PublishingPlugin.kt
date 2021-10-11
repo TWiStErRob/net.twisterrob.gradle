@@ -134,13 +134,13 @@ private fun MavenPublication.setupLinks(project: Project) {
 
 private fun MavenPublication.reorderNodes(project: Project) {
 	fun Node.getChildren(localName: String): NodeList =
-		get(localName) as NodeList
+		this.get(localName) as NodeList
 
 	fun NodeList.nodes(): List<Node> =
-		filterIsInstance<Node>()
+		(this as Iterable<*>).filterIsInstance<Node>()
 
 	fun Node.getChild(localName: String): Node =
-		getChildren(localName).nodes().single()
+		this.getChildren(localName).nodes().single()
 
 	project.afterEvaluate {
 		pom.withXml {
