@@ -8,11 +8,7 @@ import org.junit.jupiter.api.TestInfo
 abstract class BaseAndroidIntgTest : BaseIntgTest() {
 
 	@BeforeEach fun setUp(testInfo : TestInfo) {
-		@Language("xml")
-		val androidManifest = """
-			<manifest package="${packageName}" />
-		""".trimIndent()
-		gradle.file(androidManifest, "src/main/AndroidManifest.xml")
+		gradle.basedOn("android-plugin_app")
 
 		@Language("properties")
 		val versionProperties = """

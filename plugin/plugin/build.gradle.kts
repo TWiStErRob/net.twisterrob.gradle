@@ -10,13 +10,14 @@ dependencies {
 	implementation(Libs.SVNKit.core)
 	implementation(Libs.SVNKit.cli)
 	implementation(Libs.jgit)
-	implementation(Libs.Android.plugin)
+	compileOnly(Libs.Android.plugin)
 	compileOnly(Libs.Kotlin.gradlePlugin)
 
 	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))
 	testImplementation(Libs.JUnit5.pioneer)
 	testImplementation(Libs.dexMemberList)
+	testCompileOnly(Libs.Android.plugin)
 }
 
 tasks.withType<Test> {

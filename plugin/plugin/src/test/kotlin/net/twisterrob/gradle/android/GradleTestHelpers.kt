@@ -12,7 +12,11 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+/**
+ * @see /android-plugin_app/src/main/AndroidManifest.xml
+ */
 internal const val packageName = "net.twisterrob.gradle.test_app"
+
 internal val packageFolder get() = packageName.replace('.', '/')
 
 internal fun File.apk(

@@ -1,0 +1,23 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		google()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:@net.twisterrob.test.android.pluginVersion@'
+	}
+}
+
+repositories {
+	google() // for aapt2 internal binary
+	mavenCentral()
+}
+
+// Need to delay configuration of android extension to the point where the plugin is applied.
+// This is because it's not possible to apply the `com.android.application` plugin in advance.
+// Each test will apply it if and when necessary through net.twisterrob.android-* plugins.
+project.plugins.withType(com.android.build.gradle.internal.plugins.BasePlugin).configureEach {
+	android {
+		compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
+	}
+}
