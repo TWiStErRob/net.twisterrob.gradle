@@ -1,9 +1,10 @@
 package net.twisterrob.test.process
 
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.opentest4j.AssertionFailedError
 import java.io.File
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.MINUTES
-import org.junit.jupiter.api.Assertions.assertEquals
 
 internal fun String.normalize() =
 	trim().replace("\r?\n".toRegex(), System.lineSeparator())
@@ -30,7 +31,14 @@ internal fun assertOutput(command: List<Any>, expected: String) {
 		val output = command.map(Any?::toString).runCommand()
 		assertEquals(expected.normalize(), output.normalize())
 	} catch (ex: Throwable) {
-		generateSequence(ex) { it.cause }.last().initCause(IllegalArgumentException("Command: $command"))
+		val err = generateSequence(ex) { it.cause }.last()
+		val cause = IllegalArgumentException("Command: $command")
+		if (err is AssertionFailedError) {
+			// Workaround for https://github.com/ota4j-team/opentest4j/issues/5#issuecomment-940474063.
+			AssertionFailedError(err.message, err.expected, err.actual, cause)
+		} else {
+			err.initCause(cause)
+		}
 		throw ex
 	}
 }
