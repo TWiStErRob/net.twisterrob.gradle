@@ -83,14 +83,14 @@ class PublishingPlugin : Plugin<Project> {
 private fun MavenPublication.setupModuleIdentity(project: Project) {
 	project.afterEvaluate {
 		artifactId = project.base.archivesBaseName
-	}
-	version = project.version as String
-	project.afterEvaluate {
-		@Suppress("UnstableApiUsage")
+		version = project.version as String
+
 		pom {
 			val projectDescription = project.description?.takeIf { it.contains(':') }
 				?: error("$project must have a description with format: \"Module Display Name: Module description.\"")
+			@Suppress("UnstableApiUsage")
 			name.set(projectDescription.substringBefore(": ").also { check(it.isNotBlank()) })
+			@Suppress("UnstableApiUsage")
 			description.set(projectDescription.substringAfter(": ").also { check(it.isNotBlank()) })
 		}
 	}
