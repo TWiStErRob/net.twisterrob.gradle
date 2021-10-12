@@ -90,6 +90,7 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
+          -x :plugin:publishReleasePublicationToSonatypeRepository
           publishReleasePublicationToSonatypeRepository
           -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}
           -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
