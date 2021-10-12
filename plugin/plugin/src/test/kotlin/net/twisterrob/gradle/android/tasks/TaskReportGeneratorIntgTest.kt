@@ -22,6 +22,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `generator runs with empty input`() {
+		gradle.basedOn("android-plugin_app")
 		gradle.root.resolve("my_test_input").mkdirs()
 
 		@Language("gradle")
@@ -41,6 +42,8 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `missing output`() {
+		gradle.basedOn("android-plugin_app")
+
 		@Language("gradle")
 		val script = """
 			//noinspection GroovyAssignabilityCheck
@@ -55,6 +58,8 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `missing input`() {
+		gradle.basedOn("android-plugin_app")
+
 		@Language("gradle")
 		val script = """
 			//noinspection GroovyAssignabilityCheck
