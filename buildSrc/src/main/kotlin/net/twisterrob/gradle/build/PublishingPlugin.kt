@@ -88,8 +88,10 @@ private fun MavenPublication.setupModuleIdentity(project: Project) {
 	project.afterEvaluate {
 		@Suppress("UnstableApiUsage")
 		pom {
-			name.set(project.description!!.substringBefore(": ").also { check(it.isNotBlank()) })
-			description.set(project.description!!.substringAfter(": ").also { check(it.isNotBlank()) })
+			val projectDescription = project.description?.takeIf { it.contains(':') }
+				?: error("$project must have a description with format: \"Module Display Name: Module description.\"")
+			name.set(projectDescription.substringBefore(": ").also { check(it.isNotBlank()) })
+			description.set(projectDescription.substringAfter(": ").also { check(it.isNotBlank()) })
 		}
 	}
 }
