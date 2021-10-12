@@ -1,14 +1,8 @@
-import Libs.Hamcrest.replaceHamcrestDependencies
-import java.time.format.DateTimeFormatter
-import java.time.Instant
 import Libs.Kotlin.replaceKotlinJre7WithJdk7
 import Libs.Kotlin.replaceKotlinJre8WithJdk8
-import org.gradle.api.tasks.testing.TestOutputEvent.Destination
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.utils.keysToMap
-import java.util.EnumSet
-import kotlin.math.absoluteValue
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 plugins {
 //	kotlin("jvm") apply false
