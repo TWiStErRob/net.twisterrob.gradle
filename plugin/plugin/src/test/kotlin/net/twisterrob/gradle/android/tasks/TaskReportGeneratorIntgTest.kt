@@ -23,6 +23,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 
 	@Test fun `generator runs with empty input`() {
 		gradle.root.resolve("my_test_input").mkdirs()
+
 		@Language("gradle")
 		val script = """
 			//noinspection GroovyAssignabilityCheck

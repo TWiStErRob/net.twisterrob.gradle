@@ -18,6 +18,11 @@ dependencies {
 	testImplementation(Libs.JUnit5.pioneer)
 	testImplementation(Libs.dexMemberList)
 	testCompileOnly(Libs.Android.plugin)
+	// GradleTestHelpersKt.hasDevices uses com.android.ddmlib.AndroidDebugBridge.
+	testImplementation(Libs.Android.toolsDddmlib)
+	// AndroidInstallRunnerTaskTest calls production code directly,
+	// so need com.android.xml.AndroidXPathFactory for AndroidInstallRunnerTask.Companion.getMainActivity$plugin.
+	testImplementation(Libs.Android.toolsCommon)
 }
 
 tasks.withType<Test> {
