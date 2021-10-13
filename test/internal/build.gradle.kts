@@ -13,7 +13,7 @@ dependencies {
 	api(Libs.JUnit5.params)
 	runtimeOnly(Libs.JUnit5.engine)
 
-	api(Libs.Hamcrest.new)
+	api(Libs.Hamcrest.best)
 
 	api(Libs.Mockito.core)
 	api(Libs.Mockito.junit5)

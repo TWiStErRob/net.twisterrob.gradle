@@ -171,9 +171,9 @@ object Libs {
 	}
 
 	object Hamcrest {
-		private const val versionNew = "2.0.0.0"
+		private const val version = "2.2"
 
-		const val new = "org.hamcrest:java-hamcrest:${versionNew}"
+		const val best = "org.hamcrest:hamcrest:${version}"
 
 		fun Configuration.replaceHamcrestDependencies() {
 			resolutionStrategy.eachDependency { replaceHamcrestDependencies() }
@@ -186,15 +186,15 @@ object Libs {
 			if (requested.group == "org.hamcrest") {
 				when (requested.name) {
 					"java-hamcrest" -> {
-						useTarget("org.hamcrest:hamcrest:2.2")
+						useTarget("org.hamcrest:hamcrest:${version}")
 						because("2.0.0.0 shouldn't have been published")
 					}
-					"hamcrest-core" -> {
-						useTarget("org.hamcrest:hamcrest:${target.version}")
+					"hamcrest-core" -> { // Could be 1.3 (JUnit 4) or 2.x too.
+						useTarget("org.hamcrest:hamcrest:${version}")
 						because("hamcrest-core doesn't contain anything")
 					}
 					"hamcrest-library" -> {
-						useTarget("org.hamcrest:hamcrest:${target.version}")
+						useTarget("org.hamcrest:hamcrest:${version}")
 						because("hamcrest-library doesn't contain anything")
 					}
 				}

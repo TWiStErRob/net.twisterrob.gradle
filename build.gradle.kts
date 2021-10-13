@@ -1,3 +1,4 @@
+import Libs.Hamcrest.replaceHamcrestDependencies
 import Libs.Kotlin.replaceKotlinJre7WithJdk7
 import Libs.Kotlin.replaceKotlinJre8WithJdk8
 import org.jetbrains.kotlin.utils.keysToMap
@@ -34,7 +35,7 @@ allprojects {
 	configurations.all {
 		replaceKotlinJre7WithJdk7()
 		replaceKotlinJre8WithJdk8()
-		//replaceHamcrestDependencies()
+		replaceHamcrestDependencies()
 		resolutionStrategy {
 			// make sure we don't have many versions of Kotlin lying around
 			force(Libs.Kotlin.stdlib)
