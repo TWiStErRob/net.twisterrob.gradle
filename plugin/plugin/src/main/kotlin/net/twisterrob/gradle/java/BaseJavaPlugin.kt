@@ -57,11 +57,7 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 			}
 
 			val compileVersion = JavaVersion.toVersion(sourceCompatibility)
-			logger.warn("XXXXX $this $compileVersion, ${JavaVersion.current()}, ${compileVersion < JavaVersion.current()}")
-			if (compileVersion < JavaVersion.current()) {
-				// prevent :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
-				fixClasspath(compileVersion)
-			}
+			fixClasspathIfNecessary(compileVersion)
 			if (isTestTask && isAndroidUnitTest) {
 				doFirst {
 					if (isTestTask && !isAndroidTest) {
@@ -69,7 +65,8 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 						changeCompatibility(JavaVersion.VERSION_1_8)
 					}
 					classpath += project.files(options.bootstrapClasspath)
-					fixClasspath(JavaVersion.toVersion(sourceCompatibility))
+					logger.warn("XXXXX $this $compileVersion, ${JavaVersion.current()}, ${compileVersion < JavaVersion.current()}")
+					fixClasspathIfNecessary(JavaVersion.toVersion(sourceCompatibility))
 				}
 			}
 
@@ -78,7 +75,15 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 	}
 }
 
-private fun JavaCompile.fixClasspath(compileVersion: JavaVersion) {
+/**
+ * Prevent this warning for compileJava and compileTestJava and others.
+ * > :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
+ */
+private fun JavaCompile.fixClasspathIfNecessary(compileVersion: JavaVersion) {
+	if (JavaVersion.current() == compileVersion) {
+		// Same version is set as the one running Gradle, nothing to do.
+		return
+	}
 	val envVar = "JAVA${compileVersion.majorVersion}_HOME"
 	val root = System.getenv(envVar)
 	var rt = project.file("$root/jre/lib/rt.jar")
