@@ -26,10 +26,10 @@ internal fun Iterable<String>.runCommand(
 		.run { inputStream.bufferedReader().readText() }
 }
 
-internal fun assertOutput(command: List<Any>, expected: String) {
+internal fun assertOutput(command: List<Any>, expected: String, message: String? = null) {
 	try {
 		val output = command.map(Any?::toString).runCommand()
-		assertEquals(expected.normalize(), output.normalize())
+		assertEquals(expected.normalize(), output.normalize(), message)
 	} catch (ex: Throwable) {
 		val err = generateSequence(ex) { it.cause }.last()
 		val cause = IllegalArgumentException("Command: $command")

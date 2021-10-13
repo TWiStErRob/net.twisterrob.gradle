@@ -123,10 +123,10 @@ internal fun assertDefaultBadging(
 			)
 		}"
 	assertThat(fileNamesMessage, apk, anExistingFile())
-	val expectedOutput =
+	val (expectation, expectedOutput) =
 		if (compileSdkVersion < 28) {
 			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2
-			"""
+			"compileSdkVersion < 28" to """
 				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName'
 				sdkVersion:'$minSdkVersion'
 				targetSdkVersion:'$targetSdkVersion'
@@ -141,7 +141,7 @@ internal fun assertDefaultBadging(
 			""".trimIndent()
 		} else {
 			if (!isAndroidTestApk) {
-				"""
+				"compileSdkVersion >= 28 && !isAndroidTestApk" to """
 					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
 					targetSdkVersion:'$targetSdkVersion'
@@ -156,7 +156,7 @@ internal fun assertDefaultBadging(
 				""".trimIndent()
 			} else {
 				// TODO versionCode and versionName is not verified!
-				"""
+				"compileSdkVersion >= 28 && isAndroidTestApk" to """
 					package: name='$applicationId' versionCode='' versionName='' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
 					targetSdkVersion:'$targetSdkVersion'
@@ -173,7 +173,7 @@ internal fun assertDefaultBadging(
 				""".trimIndent()
 			}
 		}
-	assertOutput(listOf(resolveFromAndroidSDK("aapt"), "dump", "badging", apk), expectedOutput)
+	assertOutput(listOf(resolveFromAndroidSDK("aapt"), "dump", "badging", apk), expectedOutput, expectation)
 }
 
 fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =
