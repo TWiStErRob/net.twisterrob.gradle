@@ -57,6 +57,7 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 			}
 
 			val compileVersion = JavaVersion.toVersion(sourceCompatibility)
+			logger.warn("XXXXX $this $compileVersion, ${JavaVersion.current()}, ${compileVersion < JavaVersion.current()}")
 			if (compileVersion < JavaVersion.current()) {
 				// prevent :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
 				fixClasspath(compileVersion)
