@@ -9,6 +9,7 @@ description = "Private Plugin: Gradle Plugin used by my hobby projects."
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
+	implementation(project(":common"))
 	implementation(Libs.SVNKit.core)
 	implementation(Libs.SVNKit.cli)
 	implementation(Libs.jgit)

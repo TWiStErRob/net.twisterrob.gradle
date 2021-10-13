@@ -85,17 +85,21 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 
 		verifyWithApkSigner(gradle.root.apk("release").absolutePath).also {
-			// REPORT this should be empty, AGP 4.2.0 introduced this file.
-			assertEquals(
-				"WARNING: "
-						+ "META-INF/com/android/build/gradle/app-metadata.properties not protected by signature."
-						+ " "
-						+ "Unauthorized modifications to this JAR entry will not be detected."
-						+ " "
-						+ "Delete or move the entry outside of META-INF/."
-						+ System.lineSeparator(),
-				it
-			)
+			if (System.getProperty("net.twisterrob.test.android.pluginVersion").matches("""4\.2\.\d+""".toRegex())) {
+				// REPORT this should be empty, AGP 4.2.0 introduced this file.
+				assertEquals(
+					"WARNING: "
+							+ "META-INF/com/android/build/gradle/app-metadata.properties not protected by signature."
+							+ " "
+							+ "Unauthorized modifications to this JAR entry will not be detected."
+							+ " "
+							+ "Delete or move the entry outside of META-INF/."
+							+ System.lineSeparator(),
+					it
+				)
+			} else {
+				assertThat(it, emptyString())
+			}
 		}
 		verifyWithJarSigner(gradle.root.apk("release").absolutePath).also {
 			assertThat(it, allOf(containsString("jar verified."), containsString(generationParams["-dname"])))
