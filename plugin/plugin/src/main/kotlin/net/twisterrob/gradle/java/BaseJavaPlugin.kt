@@ -88,7 +88,8 @@ private fun JavaCompile.fixClasspath(compileVersion: JavaVersion) {
 	if (!rt.exists()) {
 		logger.warn(
 			"Java Compatibility: javac needs a bootclasspath, "
-					+ "but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root)."
+					+ "but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root).\n"
+					+ "Make sure $envVar is set to a distribution of JDK ${compileVersion.majorVersion}."
 		)
 		return
 	}
