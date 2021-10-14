@@ -96,8 +96,8 @@ class AndroidVersionPlugin : BasePlugin() {
 	 */
 	private fun configure() {
 		if (version.autoVersion) {
-			android.defaultConfig.versionCode = calculateVersionCode()
-			android.defaultConfig.versionName = calculateVersionName(null)
+			android.defaultConfig.setVersionCode(calculateVersionCode())
+			android.defaultConfig.setVersionName(calculateVersionName(null))
 		}
 		if (version.renameAPK) {
 			android.applicationVariants.all { renameAPK(it, it) }

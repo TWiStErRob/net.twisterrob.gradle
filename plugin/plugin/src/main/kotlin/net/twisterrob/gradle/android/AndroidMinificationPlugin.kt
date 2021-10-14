@@ -43,7 +43,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 
 			project.plugins.withType<AppPlugin> {
 				val release = buildTypes["release"]
-				release.isMinifyEnabled = true
+				release.setMinifyEnabled(true)
 			}
 
 			project.afterEvaluate {

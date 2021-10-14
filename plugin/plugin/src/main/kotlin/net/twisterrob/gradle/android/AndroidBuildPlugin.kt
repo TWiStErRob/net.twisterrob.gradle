@@ -86,17 +86,17 @@ class AndroidBuildPlugin : BasePlugin() {
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
 
 			with(defaultConfig) {
-				minSdkVersionCompat = DefaultApiVersion(VERSION_SDK_MINIMUM)
-				targetSdkVersionCompat = DefaultApiVersion(VERSION_SDK_TARGET)
+				minSdkVersion(VERSION_SDK_MINIMUM)
+				targetSdkVersion(VERSION_SDK_TARGET)
 				vectorDrawables.useSupportLibrary = true
 			}
 
 			buildTypes.configure("debug") { debug ->
 				project.plugins.withType<AppPlugin> {
 					// TODO make debug buildTypes configurable, use name of buildType as suffix
-					debug.applicationIdSuffix = ".${debug.name}"
+					debug.setApplicationIdSuffix(".${debug.name}")
 				}
-				debug.versionNameSuffix = "d"
+				debug.setVersionNameSuffix("d")
 				debug.resValue("bool", "in_test", "true")
 				debug.resValue("bool", "in_prod", "false")
 			}
