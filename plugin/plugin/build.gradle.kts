@@ -33,6 +33,9 @@ tasks.withType<Test> {
 	maxParallelForks = 10
 	// Limit memory usage of test forks. Gradle <5 allows 1/4th of total memory to be used, thus forbidding many forks.
 	maxHeapSize = "256M"
+	onlyIf {
+		it.project.findProperty("net.twisterrob.test.android.pluginVersion").toString() >= "4.0.0"
+	}
 }
 
 tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
