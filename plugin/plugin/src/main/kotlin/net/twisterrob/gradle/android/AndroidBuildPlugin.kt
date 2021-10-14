@@ -86,8 +86,8 @@ class AndroidBuildPlugin : BasePlugin() {
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
 
 			with(defaultConfig) {
-				minSdkVersion = DefaultApiVersion(VERSION_SDK_MINIMUM)
-				targetSdkVersion = DefaultApiVersion(VERSION_SDK_TARGET)
+				minSdkVersionCompat = DefaultApiVersion(VERSION_SDK_MINIMUM)
+				targetSdkVersionCompat = DefaultApiVersion(VERSION_SDK_TARGET)
 				vectorDrawables.useSupportLibrary = true
 			}
 
