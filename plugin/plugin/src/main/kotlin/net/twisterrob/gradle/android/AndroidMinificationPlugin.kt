@@ -10,6 +10,7 @@ import com.android.build.gradle.internal.tasks.R8Task
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.builtDate
+import net.twisterrob.gradle.common.ANDROID_GRADLE_PLUGIN_VERSION
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.provider.Provider
@@ -122,7 +123,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 			outputs.file(outputFile)
 			doFirst {
 				outputFile.createNewFile()
-				if (isProguard) {
+				if (isProguard || ANDROID_GRADLE_PLUGIN_VERSION < "4.1.0") {
 					outputFile.appendText("-printconfiguration ${mappingFolder.get().resolve("configuration.txt")}\n")
 					outputFile.appendText("-dump ${mappingFolder.get().resolve("dump.txt")}\n")
 				}
