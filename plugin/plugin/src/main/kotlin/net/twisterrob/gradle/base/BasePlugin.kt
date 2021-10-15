@@ -8,7 +8,6 @@ import org.gradle.util.GradleVersion
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.lang.management.ManagementFactory
 
 open class BasePlugin : Plugin<Project> {
 
@@ -23,7 +22,6 @@ open class BasePlugin : Plugin<Project> {
 		this.project = target
 
 		LOG.debug("Applying to ${target}")
-		dumpJvm
 		project = target
 
 		checkGradleVersion(GradleVersion.current())
@@ -43,18 +41,6 @@ open class BasePlugin : Plugin<Project> {
 					null as Throwable?
 				)
 			}
-		}
-
-		private val dumpJvm by lazy {
-			LoggerFactory
-				.getLogger("HACK")
-				.warn(
-					"Gradle ${GradleVersion.current()} at ${ManagementFactory.getRuntimeMXBean().name}\n" +
-							"Started with: ${ManagementFactory.getRuntimeMXBean().inputArguments}\n" +
-							ManagementFactory.getMemoryPoolMXBeans()
-								.sortedBy { it.name }
-								.joinToString("\n") { it.name + ": " + it.usage }
-				)
 		}
 	}
 }
