@@ -14,7 +14,10 @@ import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.VersionedVariant
 import com.android.build.gradle.internal.dsl.BuildType
+import com.android.build.gradle.internal.scope.TaskContainer
+import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.model.AndroidProject
+import net.twisterrob.gradle.common.ANDROID_GRADLE_PLUGIN_VERSION
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Task
@@ -73,3 +76,18 @@ fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
 		set(project.layout.buildDirectory
 			.map { it.file("${AndroidProject.FD_INTERMEDIATES}/$relativePath") })
 	}
+
+val BaseVariantData.taskContainerCompat: TaskContainer
+	get() =
+		when {
+			ANDROID_GRADLE_PLUGIN_VERSION >= "4.1.0" ->
+				taskContainer
+			ANDROID_GRADLE_PLUGIN_VERSION >= "4.0.0" ->
+				// Call reflectively, because return type changed
+				// from TaskContainer interface to MutableTaskContainer class.
+				BaseVariantData::class.java
+					.getDeclaredMethod("getTaskContainer")
+					.invoke(this) as TaskContainer
+			else ->
+				TODO("3.x not supported")
+		}

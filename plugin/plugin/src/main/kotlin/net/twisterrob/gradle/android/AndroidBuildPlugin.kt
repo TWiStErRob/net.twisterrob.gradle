@@ -8,7 +8,6 @@ import com.android.build.gradle.internal.api.androidTestVariantData
 import com.android.build.gradle.internal.api.unitTestVariantData
 import com.android.build.gradle.internal.api.variantData
 import com.android.build.gradle.internal.variant.BaseVariantData
-import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addBuildConfigFields
@@ -182,11 +181,11 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		private fun fixVariantTaskGroups(variant: BaseVariant) {
 			fun BaseVariantData.fixTaskMetadata() {
-				taskContainer.compileTask.configure { task ->
+				taskContainerCompat.compileTask.configure { task ->
 					task.group = "Build"
 					task.description = "Compiles sources for ${description}."
 				}
-				taskContainer.javacTask.configure { task ->
+				taskContainerCompat.javacTask.configure { task ->
 					task.group = "Build"
 					task.description = "Compiles Java sources for ${description}."
 				}
