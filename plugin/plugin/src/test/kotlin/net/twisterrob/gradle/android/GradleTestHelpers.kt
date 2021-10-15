@@ -168,8 +168,8 @@ internal fun assertDefaultBadging(
 					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 					supports-screens: 'small' 'normal' 'large' 'xlarge'
 					supports-any-density: 'true'
-					locales:${if (System.getProperty("net.twisterrob.test.android.pluginVersion") < "4.2.0") "" else " '--_--'" }
-					densities:${if (System.getProperty("net.twisterrob.test.android.pluginVersion") < "4.2.0") "" else " '160'" }
+					locales:${if (System.getProperty("net.twisterrob.test.android.pluginVersion").startsWith("4.1.")) "" else " '--_--'" }
+					densities:${if (System.getProperty("net.twisterrob.test.android.pluginVersion").startsWith("4.1.")) "" else " '160'" }
 				""".trimIndent()
 			}
 		}
