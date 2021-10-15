@@ -3,7 +3,6 @@
 
 package net.twisterrob.gradle.android
 
-import com.android.build.api.variant.BuildConfigField
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
@@ -19,10 +18,8 @@ import com.android.builder.model.AndroidProject
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Task
-import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.PluginContainer
-import java.io.Serializable
 
 /**
  * Checks if there are Android plugins applied.
@@ -70,16 +67,6 @@ fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType)
 		if (it.name == name)
 			block(it)
 	}
-
-fun <T : Serializable> RegularFile.asBuildConfigField(
-	type: String,
-	valueMapper: (String) -> T
-): BuildConfigField<T> =
-	BuildConfigField(
-		type = type,
-		value = valueMapper(this.asFile.readText()),
-		comment = null
-	)
 
 fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
 	project.objects.fileProperty().apply {

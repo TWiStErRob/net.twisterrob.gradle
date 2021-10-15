@@ -1,8 +1,7 @@
 package net.twisterrob.gradle.android.tasks
 
-import net.twisterrob.gradle.android.asBuildConfigField
+import net.twisterrob.gradle.android.addBuildConfigField
 import net.twisterrob.gradle.android.intermediateRegularFile
-import net.twisterrob.gradle.android.onVariantProperties
 import net.twisterrob.gradle.writeText
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -47,18 +46,15 @@ open class CalculateBuildTimeTask : DefaultTask() {
 	companion object {
 
 		fun TaskProvider<CalculateBuildTimeTask>.addBuildConfigFields(project: Project) {
-			val buildTimeField = flatMap(CalculateBuildTimeTask::buildTimeFile).map {
-				it.asBuildConfigField("java.util.Date") { date ->
-					fun dateFormat(date: Long): String =
-						DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(date))
+			val buildTimeField = this.flatMap(CalculateBuildTimeTask::buildTimeFile).map {
+				fun dateFormat(date: Long): String =
+					DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(date))
 
-					val buildTime = date.toLong()
-					"new java.util.Date(${buildTime}L) /* ${dateFormat(buildTime)} */"
-				}
+				val buildTime = it.asFile.readText().toLong()
+
+				return@map "new java.util.Date(${buildTime}L) /* ${dateFormat(buildTime)} */"
 			}
-			project.onVariantProperties {
-				buildConfigFields.put("BUILD_TIME", buildTimeField)
-			}
+			project.addBuildConfigField("BUILD_TIME", "java.util.Date", buildTimeField)
 		}
 	}
 }
