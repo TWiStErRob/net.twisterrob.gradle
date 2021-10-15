@@ -2,6 +2,7 @@ package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.addBuildConfigField
 import net.twisterrob.gradle.android.intermediateRegularFile
+import net.twisterrob.gradle.common.ANDROID_GRADLE_PLUGIN_VERSION
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import net.twisterrob.gradle.writeText
 import org.gradle.api.DefaultTask
@@ -34,6 +35,8 @@ open class CalculateVCSRevisionInfoTask : DefaultTask() {
 	companion object {
 
 		fun TaskProvider<CalculateVCSRevisionInfoTask>.addBuildConfigFields(project: Project) {
+			if (ANDROID_GRADLE_PLUGIN_VERSION < "4.1.0") get().writeVCS()
+
 			val revisionField = this.flatMap { it.revisionFile }.map {
 				""""${it.asFile.readText()}""""
 			}

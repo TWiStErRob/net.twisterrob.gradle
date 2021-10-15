@@ -30,7 +30,7 @@ fun Project.addBuildConfigField(name: String, type: String, value: Provider<out 
 @Suppress("UnstableApiUsage")
 private fun Project.addBuildConfigField400(name: String, type: String, value: Provider<out Any?>) {
 	val android: BaseExtension = this.extensions.getByName<BaseExtension>("android")
-	android.defaultConfig.buildConfigField(name, type, value.map { it.toString() }.get())
+	android.defaultConfig.buildConfigField(name = name, type = type, value = value.map { it.toString() }.get())
 }
 
 @Suppress("UnstableApiUsage")

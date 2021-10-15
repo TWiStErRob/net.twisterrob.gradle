@@ -2,6 +2,7 @@ package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.addBuildConfigField
 import net.twisterrob.gradle.android.intermediateRegularFile
+import net.twisterrob.gradle.common.ANDROID_GRADLE_PLUGIN_VERSION
 import net.twisterrob.gradle.writeText
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -46,6 +47,8 @@ open class CalculateBuildTimeTask : DefaultTask() {
 	companion object {
 
 		fun TaskProvider<CalculateBuildTimeTask>.addBuildConfigFields(project: Project) {
+			if (ANDROID_GRADLE_PLUGIN_VERSION < "4.1.0") get().writeBuildTime()
+
 			val buildTimeField = this.flatMap(CalculateBuildTimeTask::buildTimeFile).map {
 				fun dateFormat(date: Long): String =
 					DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(date))
