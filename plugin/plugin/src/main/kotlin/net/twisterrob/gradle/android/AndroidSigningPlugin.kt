@@ -29,13 +29,13 @@ class AndroidSigningPlugin : BasePlugin() {
 			LOG.info("Attaching release.signingConfig.{} using '{}'", SIGNING_CONFIG_NAME, keyStoreFile)
 			val android = project.extensions["android"] as BaseExtension
 			val sign = SigningConfig(SIGNING_CONFIG_NAME).apply {
-				storeFile = keyStoreFile
-				storePassword = mandatoryProp(STORE_PASSWORD)
-				keyAlias = optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS
-				keyPassword = mandatoryProp(KEY_PASSWORD)
+				setStoreFile(keyStoreFile)
+				setStorePassword(mandatoryProp(STORE_PASSWORD))
+				setKeyAlias(optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS)
+				setKeyPassword(mandatoryProp(KEY_PASSWORD))
 			}
 			//android.signingConfigs.add(sign)
-			android.buildTypes["release"].signingConfig = sign
+			android.buildTypes["release"].setSigningConfig(sign)
 		} else if (project.hasProperty(STORE_FILE)) {
 			LOG.error("Keystore file (from {}) '{}' is not valid.", STORE_FILE, keyStoreFile.absolutePath)
 		}
