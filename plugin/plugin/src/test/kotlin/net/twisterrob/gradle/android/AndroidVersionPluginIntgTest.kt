@@ -5,9 +5,9 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
-import net.twisterrob.gradle.vcs.doCommitSingleFile
 import net.twisterrob.gradle.vcs.createTestFileToCommit
 import net.twisterrob.gradle.vcs.doCheckout
+import net.twisterrob.gradle.vcs.doCommitSingleFile
 import net.twisterrob.gradle.vcs.doCreateRepository
 import net.twisterrob.gradle.vcs.git
 import net.twisterrob.gradle.vcs.svn
@@ -54,10 +54,20 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val result = gradle.run(script, "assembleDebug").build()
 
 		result.assertSuccess(":assembleDebug")
+		val fileName = when {
+			System.getProperty("net.twisterrob.test.android.pluginVersion") >= "4.1.0" -> "${packageName}.debug@1234-vnull+debug.apk"
+			System.getProperty("net.twisterrob.test.android.pluginVersion") >= "4.0.0" -> "${packageName}.debug@1234-vd+debug.apk"
+			else -> error("AGP 3.x not supported")
+		}
+		val noVersionNameSet = when {
+			System.getProperty("net.twisterrob.test.android.pluginVersion") >= "4.1.0" -> ""
+			System.getProperty("net.twisterrob.test.android.pluginVersion") >= "4.0.0" -> "d"
+			else -> error("AGP 3.x not supported")
+		}
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", "${packageName}.debug@1234-vnull+debug.apk"),
+			apk = gradle.root.apk("debug", fileName),
 			versionCode = "1234",
-			versionName = ""
+			versionName = noVersionNameSet
 		)
 	}
 
@@ -90,11 +100,21 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val result = gradle.run(script, "assembleDebugAndroidTest").build()
 
 		result.assertSuccess(":assembleDebugAndroidTest")
+		val fileName = when {
+			System.getProperty("net.twisterrob.test.android.pluginVersion") >= "4.1.0" -> "${packageName}.debug.test@1234-vnull+debug-androidTest.apk"
+			System.getProperty("net.twisterrob.test.android.pluginVersion") >= "4.0.0" -> "${packageName}.debug.test@1234-vd+debug-androidTest.apk"
+			else -> error("AGP 3.x not supported")
+		}
+		val noVersionNameSet = when {
+			System.getProperty("net.twisterrob.test.android.pluginVersion") >= "4.1.0" -> ""
+			System.getProperty("net.twisterrob.test.android.pluginVersion") >= "4.0.0" -> "d"
+			else -> error("AGP 3.x not supported")
+		}
 		assertDefaultBadging(
 			applicationId = "${packageName}.debug.test",
-			apk = gradle.root.apk("androidTest/debug", "${packageName}.debug.test@1234-vnull+debug-androidTest.apk"),
+			apk = gradle.root.apk("androidTest/debug", fileName),
 			versionCode = "1234",
-			versionName = "",
+			versionName = noVersionNameSet,
 			isAndroidTestApk = true
 		)
 	}
