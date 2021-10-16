@@ -2,6 +2,7 @@ package net.twisterrob.gradle.android
 
 import com.android.ddmlib.AndroidDebugBridge
 import com.jakewharton.dex.DexMethod
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.test.process.assertOutput
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -168,8 +169,8 @@ internal fun assertDefaultBadging(
 					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 					supports-screens: 'small' 'normal' 'large' 'xlarge'
 					supports-any-density: 'true'
-					locales:${if (System.getProperty("net.twisterrob.test.android.pluginVersion").startsWith("4.1.")) "" else " '--_--'" }
-					densities:${if (System.getProperty("net.twisterrob.test.android.pluginVersion").startsWith("4.1.")) "" else " '160'" }
+					locales:${if (AGPVersions.v41x compatible AGPVersions.UNDER_TEST) "" else " '--_--'" }
+					densities:${if (AGPVersions.v41x compatible AGPVersions.UNDER_TEST) "" else " '160'" }
 				""".trimIndent()
 			}
 		}

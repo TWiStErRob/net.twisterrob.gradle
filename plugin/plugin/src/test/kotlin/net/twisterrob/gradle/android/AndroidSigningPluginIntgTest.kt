@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -85,7 +86,7 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 
 		verifyWithApkSigner(gradle.root.apk("release").absolutePath).also {
-			if (System.getProperty("net.twisterrob.test.android.pluginVersion").matches("""4\.2\.\d+""".toRegex())) {
+			if (AGPVersions.v42x compatible AGPVersions.UNDER_TEST) {
 				// REPORT this should be empty, AGP 4.2.0 introduced this file.
 				assertEquals(
 					"WARNING: "
