@@ -34,6 +34,7 @@ val builtDate: Instant by lazy {
 fun <R> systemProperty(name: String) = object : ReadWriteProperty<R, String> {
 	override fun getValue(thisRef: R, property: KProperty<*>): String =
 		System.getProperty(name)
+			?: error("Cannot find System property value for ${name}.")
 
 	override fun setValue(thisRef: R, property: KProperty<*>, value: String) {
 		System.setProperty(name, value)
