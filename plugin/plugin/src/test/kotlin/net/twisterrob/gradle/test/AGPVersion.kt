@@ -8,9 +8,12 @@ data class AGPVersion(
 ) : Comparable<AGPVersion> {
 
 	init {
-		if (patch != null) checkNotNull(type) { "If a patch release is given, you must specify its type." }
-		if (patch != null) checkNotNull(minor) { "Cannot specify a patch version without minor." }
-		if (type != null) checkNotNull(minor) { "Cannot specify a release type without minor." }
+		require(major >= 0)
+		require((minor ?: 0) >= 0)
+		require((patch ?: 0) >= 0)
+		if (patch != null) requireNotNull(type) { "If a patch release is given, you must specify its type." }
+		if (patch != null) requireNotNull(minor) { "Cannot specify a patch version without minor." }
+		if (type != null) requireNotNull(minor) { "Cannot specify a release type without minor." }
 	}
 
 	enum class ReleaseType : Comparable<ReleaseType> {
@@ -20,8 +23,8 @@ data class AGPVersion(
 		Stable,
 	}
 
-	infix fun compatible(other: AGPVersion) : Boolean {
-		require(this.patch == null || this.minor == null || this.type == null) { "LHS must be a joker" }
+	infix fun compatible(other: AGPVersion): Boolean {
+		require(this.minor == null || this.type == null || this.patch == null) { "${this} must be a joker." }
 		if (this.major != other.major) return false
 		if (this.minor != null && this.minor != other.minor) return false
 		if (this.type != null && this.type != other.type) return false
@@ -30,7 +33,7 @@ data class AGPVersion(
 	}
 
 	override fun toString(): String =
-		listOfNotNull(major, minor, type, patch).joinToString(separator = ".")
+		listOfNotNull(major, minor ?: "*", type ?: "*", patch ?: "*").joinToString(separator = ".")
 
 	companion object {
 		val AGP_VERSION_UNDER_TEST: AGPVersion

@@ -387,6 +387,24 @@ class AGPVersionTest {
 				Arguments.of("0.2", AGPVersion(0, 2, Stable, null)),
 				Arguments.of("0.1", AGPVersion(0, 1, Stable, null)),
 			)
+
+		@JvmStatic
+		fun lowerTypes(): List<Arguments> =
+			ReleaseType.values()
+				.flatMap { type ->
+					ReleaseType.values()
+						.filter { it < type }
+						.map { Arguments.of(type, it) }
+				}
+
+		@JvmStatic
+		fun higherTypes(): List<Arguments> =
+			ReleaseType.values()
+				.flatMap { type ->
+					ReleaseType.values()
+						.filter { it > type }
+						.map { Arguments.of(type, it) }
+				}
 	}
 
 	@MethodSource("mavenCentral", "mavenGoogle")
@@ -412,7 +430,7 @@ class AGPVersionTest {
 
 		val majorJoker = AGPVersion(4, null, null, null)
 		val minorJoker = AGPVersion(4, 1, null, null)
-		val patchJoker = AGPVersion(4, 1, type, null)
+		val typeJoker = AGPVersion(4, 1, type, null)
 		val majorLower = AGPVersion(3, 1, type, 0)
 		val majorHigher = AGPVersion(5, 2, type, 0)
 		val minorLower = AGPVersion(4, 0, type, 0)
@@ -421,7 +439,7 @@ class AGPVersionTest {
 
 		assertThat(majorJoker, comparesEqualTo(majorJoker))
 		assertThat(minorJoker, comparesEqualTo(minorJoker))
-		assertThat(patchJoker, comparesEqualTo(patchJoker))
+		assertThat(typeJoker, comparesEqualTo(typeJoker))
 		assertThat(majorLower, comparesEqualTo(majorLower))
 		assertThat(majorHigher, comparesEqualTo(majorHigher))
 		assertThat(minorLower, comparesEqualTo(minorLower))
@@ -429,8 +447,8 @@ class AGPVersionTest {
 		assertThat(patchRange, comparesEqualTo(patchRange))
 
 		majorJoker assertLessThan minorJoker
-		minorJoker assertLessThan patchJoker
-		majorJoker assertLessThan patchJoker
+		minorJoker assertLessThan typeJoker
+		majorJoker assertLessThan typeJoker
 
 		majorLower assertLessThan majorHigher
 		minorLower assertLessThan minorHigher
@@ -439,30 +457,30 @@ class AGPVersionTest {
 
 		majorLower assertLessThan majorJoker
 		majorLower assertLessThan minorJoker
-		majorLower assertLessThan patchJoker
+		majorLower assertLessThan typeJoker
 
 		majorJoker assertLessThan majorHigher
 		minorJoker assertLessThan majorHigher
-		patchJoker assertLessThan majorHigher
+		typeJoker assertLessThan majorHigher
 
 		majorJoker assertLessThan minorLower
 		minorLower assertLessThan minorJoker
-		minorLower assertLessThan patchJoker
+		minorLower assertLessThan typeJoker
 
 		majorJoker assertLessThan minorHigher
 		minorJoker assertLessThan minorHigher
-		patchJoker assertLessThan minorHigher
+		typeJoker assertLessThan minorHigher
 
 		majorJoker assertLessThan patchRange
 		minorJoker assertLessThan patchRange
-		patchJoker assertLessThan patchRange
+		typeJoker assertLessThan patchRange
 	}
 
 	@EnumSource(ReleaseType::class)
 	@ParameterizedTest fun compatibility(type: ReleaseType) {
 		val majorJoker = AGPVersion(4, null, null, null)
 		val minorJoker = AGPVersion(4, 1, null, null)
-		val patchJoker = AGPVersion(4, 1, type, null)
+		val typeJoker = AGPVersion(4, 1, type, null)
 		val majorLower = AGPVersion(3, 1, type, 0)
 		val majorHigher = AGPVersion(5, 2, type, 0)
 		val minorLower = AGPVersion(4, 0, type, 0)
@@ -471,7 +489,7 @@ class AGPVersionTest {
 
 		assertTrue(majorJoker compatible majorJoker)
 		assertTrue(minorJoker compatible minorJoker)
-		assertTrue(patchJoker compatible patchJoker)
+		assertTrue(typeJoker compatible typeJoker)
 		assertThrows<IllegalArgumentException> { majorLower compatible majorLower }
 		assertThrows<IllegalArgumentException> { majorHigher compatible majorHigher }
 		assertThrows<IllegalArgumentException> { minorLower compatible minorLower }
@@ -479,11 +497,11 @@ class AGPVersionTest {
 		assertThrows<IllegalArgumentException> { patchRange compatible patchRange }
 
 		assertTrue(majorJoker compatible minorJoker)
-		assertTrue(majorJoker compatible patchJoker)
-		assertTrue(minorJoker compatible patchJoker)
+		assertTrue(majorJoker compatible typeJoker)
+		assertTrue(minorJoker compatible typeJoker)
 		assertFalse(minorJoker compatible majorJoker)
-		assertFalse(patchJoker compatible majorJoker)
-		assertFalse(patchJoker compatible minorJoker)
+		assertFalse(typeJoker compatible majorJoker)
+		assertFalse(typeJoker compatible minorJoker)
 
 		val stables = listOf(majorLower, majorHigher, minorLower, minorHigher, patchRange)
 		stables.forEach { first ->
@@ -505,10 +523,35 @@ class AGPVersionTest {
 		assertFalse(minorJoker compatible minorHigher)
 		assertFalse(minorJoker compatible majorHigher)
 
-		assertFalse(patchJoker compatible majorLower)
-		assertFalse(patchJoker compatible minorLower)
-		assertTrue(patchJoker compatible patchRange)
-		assertFalse(patchJoker compatible minorHigher)
-		assertFalse(patchJoker compatible majorHigher)
+		assertFalse(typeJoker compatible majorLower)
+		assertFalse(typeJoker compatible minorLower)
+		assertTrue(typeJoker compatible patchRange)
+		assertFalse(typeJoker compatible minorHigher)
+		assertFalse(typeJoker compatible majorHigher)
+	}
+
+	@MethodSource("lowerTypes")
+	@ParameterizedTest fun `compatibility of lower types`(type: ReleaseType, other: ReleaseType) {
+		assertThat(other, lessThan(type))
+		val typeJoker = AGPVersion(4, 1, type, null)
+		val typeLower = AGPVersion(4, 1, other, 0)
+		assertFalse(typeJoker compatible typeLower)
+	}
+
+	@EnumSource(ReleaseType::class)
+	@ParameterizedTest fun `compatibility of patch`(type: ReleaseType) {
+		val typeJoker = AGPVersion(4, 1, type, null)
+		(0..3).forEach { patch ->
+			val typeSame = AGPVersion(4, 1, type, patch)
+			assertTrue(typeJoker compatible typeSame)
+		}
+	}
+
+	@MethodSource("higherTypes")
+	@ParameterizedTest fun `compatibility of higher types`(type: ReleaseType, other: ReleaseType) {
+		assertThat(other, greaterThan(type))
+		val typeJoker = AGPVersion(4, 1, type, null)
+		val typeHigher = AGPVersion(4, 1, other, 0)
+		assertFalse(typeJoker compatible typeHigher)
 	}
 }
