@@ -16,13 +16,19 @@ import com.android.build.gradle.api.VersionedVariant
 import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.scope.TaskContainer
 import com.android.build.gradle.internal.variant.BaseVariantData
+import com.android.build.gradle.tasks.ManifestProcessorTask
+import com.android.build.gradle.tasks.ProcessApplicationManifest
+import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.common.ANDROID_GRADLE_PLUGIN_VERSION
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Task
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.PluginContainer
+import org.gradle.api.provider.Provider
+import java.io.File
 
 /**
  * Checks if there are Android plugins applied.
@@ -90,4 +96,26 @@ val BaseVariantData.taskContainerCompat: TaskContainer
 					.invoke(this) as TaskContainer
 			else ->
 				TODO("3.x not supported")
+		}
+
+val ManifestProcessorTask.manifestFile: Provider<File>
+	get() =
+		when {
+			ANDROID_GRADLE_PLUGIN_VERSION >= "4.1.0" ->
+				when (this) {
+					is ProcessApplicationManifest -> mergedManifest.asFile
+					is ProcessMultiApkApplicationManifest -> mainMergedManifest.asFile
+					else -> error("$this is an unsupported ${ManifestProcessorTask::class}")
+				}
+			ANDROID_GRADLE_PLUGIN_VERSION >= "4.0.0" -> {
+				val manifestOutputDirectory =
+					Class.forName("com.android.build.gradle.tasks.ManifestProcessorTask")
+						.getDeclaredMethod("getManifestOutputDirectory")
+						.invoke(this) as DirectoryProperty
+				manifestOutputDirectory
+					.file("AndroidManifest.xml")
+					.map { it.asFile }
+			}
+			else ->
+				error("AGP 3.x is not supported")
 		}
