@@ -129,7 +129,7 @@ class AndroidBuildPlugin : BasePlugin() {
 		}
 
 		project.beforeAndroidTasksCreated {
-			if (twisterrob.decorateBuildConfig) {
+			if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
 				decorateBuildConfig()
 			}
 		}
