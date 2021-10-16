@@ -29,7 +29,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@BeforeEach fun setMemory() {
-		// Force creating a new daemon every time.
 		// TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/147
 		gradle.file("org.gradle.jvmargs=-Xmx256M\n", "gradle.properties")
 	}
