@@ -16,6 +16,7 @@ import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companio
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
@@ -128,9 +129,14 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 		}
 
+		val buildTimeTaskProvider =
+			project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
+		val vcsTaskProvider =
+			project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
+
 		project.beforeAndroidTasksCreated {
 			if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
-				decorateBuildConfig()
+				decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
 			}
 		}
 		project.plugins.withType<AppPlugin> {
@@ -155,13 +161,11 @@ class AndroidBuildPlugin : BasePlugin() {
 	 * @see https://issuetracker.google.com/issues/172657565
 	 * @see https://github.com/android/gradle-recipes/blob/8d0c14d6fed86726df60fb8c8f79e5a03c66fdee/Kotlin/addCustomFieldWithValueFromTask/app/build.gradle.kts
 	 */
-	private fun decorateBuildConfig() {
-		val buildTimeTaskProvider =
-			project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
+	private fun decorateBuildConfig(
+		buildTimeTaskProvider: TaskProvider<CalculateBuildTimeTask>,
+		vcsTaskProvider: TaskProvider<CalculateVCSRevisionInfoTask>
+	) {
 		buildTimeTaskProvider.addBuildConfigFields(project)
-
-		val vcsTaskProvider =
-			project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
 		vcsTaskProvider.addBuildConfigFields(project)
 	}
 

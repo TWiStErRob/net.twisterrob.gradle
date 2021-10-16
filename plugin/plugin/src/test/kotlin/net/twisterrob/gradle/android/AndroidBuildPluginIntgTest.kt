@@ -416,9 +416,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				//noinspection UnnecessaryQualifiedReference
 				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
 			}
-			afterEvaluate {
-				tasks.named("calculateBuildConfigBuildTime").configure { getBuildTime = { 1234567890 } }
-			}
+			tasks.named("calculateBuildConfigBuildTime").configure { getBuildTime = { 1234567890 } }
 		""".trimIndent()
 
 		val result = gradle.run(script, "testReleaseUnitTest").build()
