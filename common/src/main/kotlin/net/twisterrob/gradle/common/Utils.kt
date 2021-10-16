@@ -106,16 +106,16 @@ private val LintBaseTask.isFatalOnly
  */
 val LintBaseTask.androidVariantName: String?
 	get() = when {
-		"3.3.0" <= ANDROID_GRADLE_PLUGIN_VERSION && @Suppress("USELESS_IS_CHECK") (this is VariantAwareTask) ->
+		AGPVersions.v33x < AGPVersions.CLASSPATH && @Suppress("USELESS_IS_CHECK") (this is VariantAwareTask) ->
 			// USELESS_IS_CHECK: Need to check for interface explicitly,
 			// because before 4.2.0 LintGlobalTask/LintFixTask didn't implement the interface.
 			// Force compile time binding to the interface, because a super of LintBaseTask may override the property.
 			(this as VariantAwareTask).variantName
-		ANDROID_GRADLE_PLUGIN_VERSION <= "3.3.0" && this is AndroidVariantTask ->
+		AGPVersions.CLASSPATH < AGPVersions.v33x && this is AndroidVariantTask ->
 			@Suppress("CAST_NEVER_SUCCEEDS") // Historical binding to inherited property.
 			(this as AndroidVariantTask).variantName
 		this is LintGlobalTask -> null
-		"3.2.0" <= ANDROID_GRADLE_PLUGIN_VERSION && this is LintFixTask -> null
+		AGPVersions.v32x < AGPVersions.CLASSPATH && this is LintFixTask -> null
 		else -> null
 	}
 

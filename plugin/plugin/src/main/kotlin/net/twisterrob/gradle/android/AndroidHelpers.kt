@@ -20,7 +20,7 @@ import com.android.build.gradle.tasks.ManifestProcessorTask
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.android.builder.model.AndroidProject
-import net.twisterrob.gradle.common.ANDROID_GRADLE_PLUGIN_VERSION
+import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Task
@@ -86,28 +86,27 @@ fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
 val BaseVariantData.taskContainerCompat: TaskContainer
 	get() =
 		when {
-			ANDROID_GRADLE_PLUGIN_VERSION >= "4.1.0" ->
+			AGPVersions.CLASSPATH >= AGPVersions.v41x ->
 				taskContainer
-			ANDROID_GRADLE_PLUGIN_VERSION >= "4.0.0" ->
+			AGPVersions.CLASSPATH >= AGPVersions.v40x ->
 				// Call reflectively, because return type changed
 				// from TaskContainer interface to MutableTaskContainer class.
 				BaseVariantData::class.java
 					.getDeclaredMethod("getTaskContainer")
 					.invoke(this) as TaskContainer
-			else ->
-				TODO("3.x not supported")
+			else -> AGPVersions.olderThan4NotSupported()
 		}
 
 val ManifestProcessorTask.manifestFile: Provider<File>
 	get() =
 		when {
-			ANDROID_GRADLE_PLUGIN_VERSION >= "4.1.0" ->
+			AGPVersions.CLASSPATH >= AGPVersions.v41x ->
 				when (this) {
 					is ProcessApplicationManifest -> mergedManifest.asFile
 					is ProcessMultiApkApplicationManifest -> mainMergedManifest.asFile
 					else -> error("$this is an unsupported ${ManifestProcessorTask::class}")
 				}
-			ANDROID_GRADLE_PLUGIN_VERSION >= "4.0.0" -> {
+			AGPVersions.CLASSPATH >= AGPVersions.v40x -> {
 				val manifestOutputDirectory =
 					Class.forName("com.android.build.gradle.tasks.ManifestProcessorTask")
 						.getDeclaredMethod("getManifestOutputDirectory")
@@ -116,6 +115,5 @@ val ManifestProcessorTask.manifestFile: Provider<File>
 					.file("AndroidManifest.xml")
 					.map { it.asFile }
 			}
-			else ->
-				error("AGP 3.x is not supported")
+			else -> AGPVersions.olderThan4NotSupported()
 		}

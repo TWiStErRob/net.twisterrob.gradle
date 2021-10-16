@@ -7,7 +7,7 @@ import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.extension.AndroidComponentsExtension
 import com.android.build.api.variant.BuildConfigField
 import com.android.build.gradle.BaseExtension
-import net.twisterrob.gradle.common.ANDROID_GRADLE_PLUGIN_VERSION
+import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.provider.MapProperty
@@ -20,10 +20,10 @@ import java.io.Serializable
  */
 fun Project.addBuildConfigField(name: String, type: String, value: Provider<out Serializable>) {
 	when {
-		ANDROID_GRADLE_PLUGIN_VERSION >= "4.2.0" -> addBuildConfigField420(name, type, value)
-		ANDROID_GRADLE_PLUGIN_VERSION >= "4.1.0" -> addBuildConfigField410(name, type, value)
-		ANDROID_GRADLE_PLUGIN_VERSION >= "4.0.0" -> addBuildConfigField400(name, type, value)
-		else -> error("AGP 3.x not supported")
+		AGPVersions.CLASSPATH >= AGPVersions.v42x -> addBuildConfigField420(name, type, value)
+		AGPVersions.CLASSPATH >= AGPVersions.v41x -> addBuildConfigField410(name, type, value)
+		AGPVersions.CLASSPATH >= AGPVersions.v40x -> addBuildConfigField400(name, type, value)
+		else -> AGPVersions.olderThan4NotSupported()
 	}
 }
 
