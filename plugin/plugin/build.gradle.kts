@@ -32,9 +32,9 @@ tasks.withType<Test> {
 	// See GradleTestKitDirRelocator for what enables this!
 	maxParallelForks = 10
 	// Limit memory usage of test forks. Gradle <5 allows 1/4th of total memory to be used, thus forbidding many forks.
-	// Note: 256M was enough for a long time, but GitHub Actions quite consistently fails with
-	// java.lang.OutOfMemoryError: Metaspace in AndroidBuildPluginIntgTest.`can override minSdkVersion (release)`()
-	maxHeapSize = "384M"
+	// Memory limit for the :plugin:test task running JUnit tests.
+	// The Gradle builds use the default in DaemonParameters.
+	maxHeapSize = "256M"
 	onlyIf {
 		it.project.findProperty("net.twisterrob.test.android.pluginVersion").toString() >= "4.0.0"
 	}
