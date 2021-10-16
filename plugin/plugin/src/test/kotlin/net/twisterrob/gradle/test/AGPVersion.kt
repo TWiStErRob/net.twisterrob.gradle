@@ -20,6 +20,15 @@ data class AGPVersion(
 		Stable,
 	}
 
+	infix fun compatible(other: AGPVersion) : Boolean {
+		require(this.patch == null || this.minor == null || this.type == null) { "LHS must be a joker" }
+		if (this.major != other.major) return false
+		if (this.minor != null && this.minor != other.minor) return false
+		if (this.type != null && this.type != other.type) return false
+		if (this.patch != null && this.patch != other.patch) return false
+		return true
+	}
+
 	override fun toString(): String =
 		listOfNotNull(major, minor, type, patch).joinToString(separator = ".")
 

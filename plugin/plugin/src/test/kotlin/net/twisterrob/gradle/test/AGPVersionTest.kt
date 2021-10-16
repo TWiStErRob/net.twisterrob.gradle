@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.test
 
+import net.twisterrob.gradle.test.AGPVersion.ReleaseType
 import net.twisterrob.gradle.test.AGPVersion.ReleaseType.Alpha
 import net.twisterrob.gradle.test.AGPVersion.ReleaseType.Beta
 import net.twisterrob.gradle.test.AGPVersion.ReleaseType.Candidate
@@ -10,9 +11,13 @@ import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.lessThan
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.MethodSource
 
 class AGPVersionTest {
@@ -453,4 +458,57 @@ class AGPVersionTest {
 		patchJoker assertLessThan patchRange
 	}
 
+	@EnumSource(ReleaseType::class)
+	@ParameterizedTest fun compatibility(type: ReleaseType) {
+		val majorJoker = AGPVersion(4, null, null, null)
+		val minorJoker = AGPVersion(4, 1, null, null)
+		val patchJoker = AGPVersion(4, 1, type, null)
+		val majorLower = AGPVersion(3, 1, type, 0)
+		val majorHigher = AGPVersion(5, 2, type, 0)
+		val minorLower = AGPVersion(4, 0, type, 0)
+		val minorHigher = AGPVersion(4, 2, type, 0)
+		val patchRange = AGPVersion(4, 1, type, 2)
+
+		assertTrue(majorJoker compatible majorJoker)
+		assertTrue(minorJoker compatible minorJoker)
+		assertTrue(patchJoker compatible patchJoker)
+		assertThrows<IllegalArgumentException> { majorLower compatible majorLower }
+		assertThrows<IllegalArgumentException> { majorHigher compatible majorHigher }
+		assertThrows<IllegalArgumentException> { minorLower compatible minorLower }
+		assertThrows<IllegalArgumentException> { minorHigher compatible minorHigher }
+		assertThrows<IllegalArgumentException> { patchRange compatible patchRange }
+
+		assertTrue(majorJoker compatible minorJoker)
+		assertTrue(majorJoker compatible patchJoker)
+		assertTrue(minorJoker compatible patchJoker)
+		assertFalse(minorJoker compatible majorJoker)
+		assertFalse(patchJoker compatible majorJoker)
+		assertFalse(patchJoker compatible minorJoker)
+
+		val stables = listOf(majorLower, majorHigher, minorLower, minorHigher, patchRange)
+		stables.forEach { first ->
+			stables.forEach { second ->
+				if (first != second) {
+					assertThrows<IllegalArgumentException> { first compatible second }
+				}
+			}
+		}
+		assertFalse(majorJoker compatible majorLower)
+		assertTrue(majorJoker compatible minorLower)
+		assertTrue(majorJoker compatible patchRange)
+		assertTrue(majorJoker compatible minorHigher)
+		assertFalse(majorJoker compatible majorHigher)
+
+		assertFalse(minorJoker compatible majorLower)
+		assertFalse(minorJoker compatible minorLower)
+		assertTrue(minorJoker compatible patchRange)
+		assertFalse(minorJoker compatible minorHigher)
+		assertFalse(minorJoker compatible majorHigher)
+
+		assertFalse(patchJoker compatible majorLower)
+		assertFalse(patchJoker compatible minorLower)
+		assertTrue(patchJoker compatible patchRange)
+		assertFalse(patchJoker compatible minorHigher)
+		assertFalse(patchJoker compatible majorHigher)
+	}
 }
