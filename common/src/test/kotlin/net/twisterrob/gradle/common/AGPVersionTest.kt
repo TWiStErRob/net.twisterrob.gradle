@@ -1,10 +1,10 @@
-package net.twisterrob.gradle.test
+package net.twisterrob.gradle.common
 
-import net.twisterrob.gradle.test.AGPVersion.ReleaseType
-import net.twisterrob.gradle.test.AGPVersion.ReleaseType.Alpha
-import net.twisterrob.gradle.test.AGPVersion.ReleaseType.Beta
-import net.twisterrob.gradle.test.AGPVersion.ReleaseType.Candidate
-import net.twisterrob.gradle.test.AGPVersion.ReleaseType.Stable
+import net.twisterrob.gradle.common.AGPVersion.ReleaseType
+import net.twisterrob.gradle.common.AGPVersion.ReleaseType.Alpha
+import net.twisterrob.gradle.common.AGPVersion.ReleaseType.Beta
+import net.twisterrob.gradle.common.AGPVersion.ReleaseType.Candidate
+import net.twisterrob.gradle.common.AGPVersion.ReleaseType.Stable
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.comparesEqualTo
 import org.hamcrest.Matchers.contains
@@ -409,7 +409,7 @@ class AGPVersionTest {
 
 	@MethodSource("mavenCentral", "mavenGoogle")
 	@ParameterizedTest fun parsing(input: String, expected: AGPVersion) {
-		val version = AGPVersion.ofAGP(input)
+		val version = AGPVersion.parse(input)
 		assertEquals(expected, version)
 	}
 

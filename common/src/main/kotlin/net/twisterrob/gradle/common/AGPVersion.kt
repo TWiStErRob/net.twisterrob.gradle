@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.test
+package net.twisterrob.gradle.common
 
 data class AGPVersion(
 	val major: Int,
@@ -36,13 +36,11 @@ data class AGPVersion(
 		listOfNotNull(major, minor ?: "*", type ?: "*", patch ?: "*").joinToString(separator = ".")
 
 	companion object {
-		val AGP_VERSION_UNDER_TEST: AGPVersion
-			get() = ofAGP(System.getProperty("net.twisterrob.test.android.pluginVersion"))
 
 		private val AGP_VERSION_REGEX =
 			"""^(?<major>\d+)(?:\.(?<minor>\d+)(?:\.(?<patch>\d+))?(?:-(?<type>alpha|beta|rc)(?<iteration>\d+))?)?$""".toRegex()
 
-		fun ofAGP(version: String): AGPVersion {
+		fun parse(version: String): AGPVersion {
 			val match = AGP_VERSION_REGEX.matchEntire(version)
 				?: error("Unrecognised Android Gradle Plugin version: ${version}, only ${AGP_VERSION_REGEX} are supported.")
 			val major = match.groups["major"]!!.value.toInt()
