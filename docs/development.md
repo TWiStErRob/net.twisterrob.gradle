@@ -92,7 +92,7 @@ The project is using a modular architecture to reduce coupling and so it's possi
 | **checkstyle** ([`/checkers/checkstyle`](../checkers/checkstyle)):<br>Checkstyle setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-checkstyle:+'`<br>`apply plugin: 'net.twisterrob.checkstyle'`<br>`import net.twisterrob.gradle.checkstyle;` |
 | **pmd** ([`/checkers/pmd`](../checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-pmd:+'`<br>`apply plugin: 'net.twisterrob.pmd'`<br>`import net.twisterrob.gradle.pmd;` |
 | **test** ([`/test`](../test)):<br>[Gradle test plugin and resources.](../test/README.md) | `classpath 'net.twisterrob.gradle:twister-gradle-test:+'`<br>`apply plugin: 'net.twisterrob.gradle.test'`<br>`import net.twisterrob.gradle.test;` |
-| **plugin** ([`/plugin`](../plugin/plugin)):<br>[Gradle Android plugin conventions.](../plugin/plugin/README.md) | `classpath 'net.twisterrob.gradle:plugin:+'`<br>`apply plugin: 'net.twisterrob.android-app'`<br>`apply plugin: 'net.twisterrob.root'`<br>`import net.twisterrob.gradle.android;` |
+| **plugin** ([`/plugin`](../plugin)):<br>[Gradle Android plugin conventions.](../plugin/README.md) | `classpath 'net.twisterrob.gradle:plugin:+'`<br>`apply plugin: 'net.twisterrob.android-app'`<br>`apply plugin: 'net.twisterrob.root'`<br>`import net.twisterrob.gradle.android;` |
 
 
 ## Used languages
