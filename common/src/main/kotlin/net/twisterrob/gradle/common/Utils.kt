@@ -1,6 +1,7 @@
 @file:JvmName("Utils")
 
 package net.twisterrob.gradle.common
+
 import com.android.SdkConstants
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.AndroidVariantTask
@@ -11,6 +12,7 @@ import com.android.build.gradle.tasks.LintBaseTask
 import com.android.build.gradle.tasks.LintFixTask
 import com.android.build.gradle.tasks.LintGlobalTask
 import com.android.build.gradle.tasks.LintPerVariantTask
+import com.android.builder.core.BuilderConstants
 import org.gradle.api.DefaultTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
@@ -136,6 +138,6 @@ fun LintOptions_createOutputPath(
 	}.toString()
 	return when {
 		reportsDir != null -> File(reportsDir, base)
-		else -> File(project.buildDir, "reports" + File.separator + base)
+		else -> File(project.buildDir, BuilderConstants.FD_REPORTS + File.separator + base)
 	}
 }
