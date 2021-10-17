@@ -32,9 +32,10 @@
 				<xsl:copy-of select="$script" />
 			</head>
 			<body>
-				<h1>Violations report for
+				<h1 id="top">Violations report for
 					<xsl:value-of select="@project" />
 				</h1>
+				<a class="back-to-top" href="#top">↸ Back to top</a>
 
 				<div id="toc">
 					<xsl:call-template name="toc" />
@@ -309,6 +310,15 @@
 
 	a.file {
 		font-size: smaller;
+	}
+
+	a.back-to-top {
+		position: fixed;
+		right: 0;
+		bottom: 0;
+		/* Make sure it's above hljs blocks. */
+		z-index: 1;
+		margin: 16px;
 	}
 
 	.violation {
