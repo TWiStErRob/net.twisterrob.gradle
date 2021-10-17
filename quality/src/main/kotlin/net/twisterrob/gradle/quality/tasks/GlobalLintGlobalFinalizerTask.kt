@@ -42,7 +42,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	fun failOnFailures() {
 		val gatherer = LintReportGatherer("lint", LintGlobalTask::class.java)
 		val violationsByFile = xmlReports
-//			.filter(File::exists)
+			.filter(File::exists)
 			.associateBy({ it }) { gatherer.findViolations(it) }
 		val totalCount = violationsByFile.values.sumBy { violations: List<Violation> -> violations.size }
 		if (totalCount > 0) {
