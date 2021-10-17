@@ -105,9 +105,12 @@ val LintBaseTask.androidVariantName: String?
 		AGPVersions.CLASSPATH < AGPVersions.v33x && this is AndroidVariantTask ->
 			@Suppress("CAST_NEVER_SUCCEEDS") // Historical binding to inherited property.
 			(this as AndroidVariantTask).variantName
-		this is LintGlobalTask -> null
-		AGPVersions.v32x < AGPVersions.CLASSPATH && this is LintFixTask -> null
-		else -> null
+		this is LintGlobalTask ->
+			null
+		AGPVersions.v32x < AGPVersions.CLASSPATH && this is LintFixTask ->
+			null
+		else ->
+			null
 	}
 
 private val LintGlobalTask.variantInputMap: Map<String, *>
