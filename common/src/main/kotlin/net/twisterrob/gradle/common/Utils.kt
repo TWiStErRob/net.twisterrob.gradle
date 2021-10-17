@@ -118,14 +118,15 @@ val LintBaseTask.htmlOutput: File
 		project, androidVariantName, ".html", reportsDir, isFatalOnly
 	)
 
-// TODO figure out where to find com.android.tools.lint.gradle.SyncOptions#createOutputPath
+// lint-gradle:26.1.0: com.android.tools.lint.gradle.SyncOptions.createOutputPath
+// lint-gradle:27.2.1: com.android.tools.lint.gradle.SyncOptionsKt.createOutputPath
 @Suppress("FunctionName")
 fun LintOptions_createOutputPath(
 	project: Project, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean
 ): File {
-	val base = StringBuilder().apply {
+	val base = buildString {
 		append("lint-results")
-		if (!variantName.isNullOrEmpty()) {
+		if (!variantName.isNullOrBlank()) {
 			append("-")
 			append(variantName)
 		}
@@ -135,7 +136,7 @@ fun LintOptions_createOutputPath(
 		}
 
 		append(extension)
-	}.toString()
+	}
 	return when {
 		reportsDir != null -> File(reportsDir, base)
 		else -> File(project.buildDir, BuilderConstants.FD_REPORTS + File.separator + base)
