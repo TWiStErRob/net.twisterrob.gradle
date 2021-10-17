@@ -221,7 +221,7 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
-          check tests
+          check ${{ matrix.test-task }}
           -Pnet.twisterrob.gradle.build.verboseReports=true
           -Pnet.twisterrob.test.android.pluginVersion=${{ matrix.agp }}
           -Pnet.twisterrob.gradle.runner.gradleVersion=${{ matrix.gradle }}
@@ -272,6 +272,8 @@ jobs:
         #build-tools: []
         # See android-all_kinds/build.gradle for more info.
         #instant-api: []
+        # Potential to run specific test tasks, e.g. :plugin can be run separately.
+        #test-task: []
         include:
           # Disabled, fails too many tests, see https://github.com/TWiStErRob/net.twisterrob.gradle/issues/111.
           #- name: "Android Gradle Plugin 3.0.x, Gradle 4.1+"
@@ -284,76 +286,127 @@ jobs:
             agp: 3.1.4
             build-tools: 27.0.3
             instant-api: 26
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 3.2.x, Gradle 4.6+"
             gradle: 4.9
             agp: 3.2.1
             build-tools: 28.0.3
             instant-api: 27
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 3.3.x, Gradle 4.10.1+"
             gradle: 4.10.3
             agp: 3.3.3
             build-tools: 28.0.3
             instant-api: 27
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 3.3.x, Gradle 5.x"
             gradle: 5.4.1
             agp: 3.3.3
             build-tools: 28.0.3
             instant-api: 27
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 3.4.x, Gradle 5.1.1+"
             gradle: 5.6.4
             agp: 3.4.3
             build-tools: 28.0.3
             instant-api: 28
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 3.5.x, Gradle 5.4.1-5.6.4"
             gradle: 5.6.4
             agp: 3.5.4
             build-tools: 28.0.3
             instant-api: 28
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 3.5.x, Gradle 6.x"
             gradle: 6.7.1
             agp: 3.5.4
             build-tools: 28.0.3
             instant-api: 28
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 3.6.x, Gradle 5.6.4+"
             gradle: 5.6.4
             agp: 3.6.4
             build-tools: 28.0.3
             instant-api: 28
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 3.6.x, Gradle 6.x"
             gradle: 6.7.1
             agp: 3.6.4
             build-tools: 28.0.3
             instant-api: 28
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 4.0.x, Gradle 6.1.1+"
             gradle: 6.1.1
             agp: 4.0.2
             build-tools: 29.0.2
             instant-api: 29
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 4.0.x, Gradle 6.x"
             gradle: 6.7.1
             agp: 4.0.2
             build-tools: 29.0.2
             instant-api: 29
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 4.1.x, Gradle 6.5+"
             gradle: 6.5.1
             agp: 4.1.3
             build-tools: 29.0.2
             instant-api: 29
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 4.1.x, Gradle 6.x"
             gradle: 6.7.1
             agp: 4.1.3
             build-tools: 29.0.2
             instant-api: 29
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 4.2.x, Gradle 6.7.1+"
             gradle: 6.7.1
             agp: 4.2.2
             build-tools: 30.0.2
             instant-api: 30
+            test-task: tests -x :plugin:test
           - name: "Android Gradle Plugin 4.2.x, Gradle 6.x"
             gradle: 6.9.1
             agp: 4.2.2
             build-tools: 30.0.2
             instant-api: 30
+            test-task: tests -x :plugin:test
+          - name: "Android Gradle Plugin 4.0.x, Gradle 6.1.1+ - plugin"
+            gradle: 6.1.1
+            agp: 4.0.2
+            build-tools: 29.0.2
+            instant-api: 29
+            test-task: tests -x :common:test -x :quality:test -x :checkstyle:test -x :pmd:test -x :test:test -x :test:internal:test
+          - name: "Android Gradle Plugin 4.0.x, Gradle 6.x - plugin"
+            gradle: 6.7.1
+            agp: 4.0.2
+            build-tools: 29.0.2
+            instant-api: 29
+            test-task: tests -x :common:test -x :quality:test -x :checkstyle:test -x :pmd:test -x :test:test -x :test:internal:test
+          - name: "Android Gradle Plugin 4.1.x, Gradle 6.5+ - plugin"
+            gradle: 6.5.1
+            agp: 4.1.3
+            build-tools: 29.0.2
+            instant-api: 29
+            test-task: tests -x :common:test -x :quality:test -x :checkstyle:test -x :pmd:test -x :test:test -x :test:internal:test
+          - name: "Android Gradle Plugin 4.1.x, Gradle 6.x - plugin"
+            gradle: 6.7.1
+            agp: 4.1.3
+            build-tools: 29.0.2
+            instant-api: 29
+            test-task: tests -x :common:test -x :quality:test -x :checkstyle:test -x :pmd:test -x :test:test -x :test:internal:test
+          - name: "Android Gradle Plugin 4.2.x, Gradle 6.7.1+ - plugin"
+            gradle: 6.7.1
+            agp: 4.2.2
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: tests -x :common:test -x :quality:test -x :checkstyle:test -x :pmd:test -x :test:test -x :test:internal:test
+          - name: "Android Gradle Plugin 4.2.x, Gradle 6.x - plugin"
+            gradle: 6.9.1
+            agp: 4.2.2
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: tests -x :common:test -x :quality:test -x :checkstyle:test -x :pmd:test -x :test:test -x :test:internal:test
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
