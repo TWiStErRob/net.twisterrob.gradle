@@ -1,17 +1,17 @@
 @file:JvmName("Utils")
 
 package net.twisterrob.gradle.common
-import com.android.build.gradle.internal.tasks.VariantAwareTask
-import com.android.build.gradle.internal.tasks.NonIncrementalGlobalTask
-import org.gradle.api.DefaultTask
 import com.android.SdkConstants
-import com.android.build.gradle.internal.tasks.BaseTask
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.AndroidVariantTask
+import com.android.build.gradle.internal.tasks.BaseTask
+import com.android.build.gradle.internal.tasks.NonIncrementalGlobalTask
+import com.android.build.gradle.internal.tasks.VariantAwareTask
 import com.android.build.gradle.tasks.LintBaseTask
 import com.android.build.gradle.tasks.LintFixTask
 import com.android.build.gradle.tasks.LintGlobalTask
 import com.android.build.gradle.tasks.LintPerVariantTask
+import org.gradle.api.DefaultTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -55,19 +55,6 @@ val Task.wasLaunchedOnly: Boolean
 
 val Task.wasLaunchedExplicitly: Boolean
 	get() = path in project.gradle.startParameter.taskNames
-
-val ANDROID_GRADLE_PLUGIN_VERSION: String
-	get() {
-		val versionClass: Class<*> =
-			try {
-				// Introduced in AGP 3.6.x.
-				Class.forName("com.android.Version")
-			} catch (ex: Throwable) {
-				// Deprecated in AGP 3.6.x and removed in AGP 4.x.
-				Class.forName("com.android.builder.model.Version")
-			}
-		return versionClass.getDeclaredField("ANDROID_GRADLE_PLUGIN_VERSION").get(null) as String
-	}
 
 // TODO find globalScope.reportsDir and task.isFatalOnly
 private val LintBaseTask.reportsDir get() = project.buildDir.resolve("reports")
