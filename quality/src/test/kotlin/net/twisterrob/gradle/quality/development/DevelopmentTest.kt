@@ -11,6 +11,9 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.io.File
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.stream.StreamResult
+import javax.xml.transform.stream.StreamSource
 import kotlin.test.assertEquals
 
 /**
@@ -22,6 +25,21 @@ class DevelopmentTest {
 
 	private lateinit var gradle: GradleRunnerRule
 	private val resources = DevelopmentTestResources()
+
+	//	@Test
+	fun `manual test for running XSL on XML output`() {
+		val originalViolationsXml =
+			File("P:\\projects\\workspace\\net.twisterrob.gradle\\temp\\examples\\ColorFilters\\build\\reports\\violations.xml")
+
+		val violationsHtml = gradle.runner.projectDir.resolve("violations.html")
+
+		TransformerFactory
+			.newInstance()
+			.newTransformer(StreamSource(HtmlReportTask::class.java.getResourceAsStream("/violations.xsl")!!.reader()))
+			.transform(StreamSource(originalViolationsXml.reader()), StreamResult(violationsHtml))
+
+		openHtml(violationsHtml)
+	}
 
 	//	@Test
 	fun `manual test for HTML output`() {
