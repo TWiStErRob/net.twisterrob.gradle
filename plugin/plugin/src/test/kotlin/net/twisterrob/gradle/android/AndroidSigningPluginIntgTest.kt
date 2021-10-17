@@ -86,7 +86,7 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 
 		verifyWithApkSigner(gradle.root.apk("release").absolutePath).also {
-			if (AGPVersions.v42x compatible AGPVersions.UNDER_TEST) {
+			if (AGPVersions.UNDER_TEST compatible AGPVersions.v42x) {
 				// REPORT this should be empty, AGP 4.2.0 introduced this file.
 				assertEquals(
 					"WARNING: "

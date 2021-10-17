@@ -496,12 +496,12 @@ class AGPVersionTest {
 		assertThrows<IllegalArgumentException> { minorHigher compatible minorHigher }
 		assertThrows<IllegalArgumentException> { patchRange compatible patchRange }
 
-		assertTrue(majorJoker compatible minorJoker)
-		assertTrue(majorJoker compatible typeJoker)
-		assertTrue(minorJoker compatible typeJoker)
-		assertFalse(minorJoker compatible majorJoker)
-		assertFalse(typeJoker compatible majorJoker)
-		assertFalse(typeJoker compatible minorJoker)
+		assertTrue(minorJoker compatible majorJoker)
+		assertTrue(typeJoker compatible majorJoker)
+		assertTrue(typeJoker compatible minorJoker)
+		assertFalse(majorJoker compatible minorJoker)
+		assertFalse(majorJoker compatible typeJoker)
+		assertFalse(minorJoker compatible typeJoker)
 
 		val stables = listOf(majorLower, majorHigher, minorLower, minorHigher, patchRange)
 		stables.forEach { first ->
@@ -511,23 +511,23 @@ class AGPVersionTest {
 				}
 			}
 		}
-		assertFalse(majorJoker compatible majorLower)
-		assertTrue(majorJoker compatible minorLower)
-		assertTrue(majorJoker compatible patchRange)
-		assertTrue(majorJoker compatible minorHigher)
-		assertFalse(majorJoker compatible majorHigher)
+		assertFalse(majorLower compatible majorJoker)
+		assertTrue(minorLower compatible majorJoker)
+		assertTrue(patchRange compatible majorJoker)
+		assertTrue(minorHigher compatible majorJoker)
+		assertFalse(majorHigher compatible majorJoker)
 
-		assertFalse(minorJoker compatible majorLower)
-		assertFalse(minorJoker compatible minorLower)
-		assertTrue(minorJoker compatible patchRange)
-		assertFalse(minorJoker compatible minorHigher)
-		assertFalse(minorJoker compatible majorHigher)
+		assertFalse(majorLower compatible minorJoker)
+		assertFalse(minorLower compatible minorJoker)
+		assertTrue(patchRange compatible minorJoker)
+		assertFalse(minorHigher compatible minorJoker)
+		assertFalse(majorHigher compatible minorJoker)
 
-		assertFalse(typeJoker compatible majorLower)
-		assertFalse(typeJoker compatible minorLower)
-		assertTrue(typeJoker compatible patchRange)
-		assertFalse(typeJoker compatible minorHigher)
-		assertFalse(typeJoker compatible majorHigher)
+		assertFalse(majorLower compatible typeJoker)
+		assertFalse(minorLower compatible typeJoker)
+		assertTrue(patchRange compatible typeJoker)
+		assertFalse(minorHigher compatible typeJoker)
+		assertFalse(majorHigher compatible typeJoker)
 	}
 
 	@MethodSource("lowerTypes")
@@ -535,7 +535,7 @@ class AGPVersionTest {
 		assertThat(other, lessThan(type))
 		val typeJoker = AGPVersion(4, 1, type, null)
 		val typeLower = AGPVersion(4, 1, other, 0)
-		assertFalse(typeJoker compatible typeLower)
+		assertFalse(typeLower compatible typeJoker)
 	}
 
 	@EnumSource(ReleaseType::class)
@@ -543,7 +543,7 @@ class AGPVersionTest {
 		val typeJoker = AGPVersion(4, 1, type, null)
 		(0..3).forEach { patch ->
 			val typeSame = AGPVersion(4, 1, type, patch)
-			assertTrue(typeJoker compatible typeSame)
+			assertTrue(typeSame compatible typeJoker)
 		}
 	}
 
@@ -552,6 +552,6 @@ class AGPVersionTest {
 		assertThat(other, greaterThan(type))
 		val typeJoker = AGPVersion(4, 1, type, null)
 		val typeHigher = AGPVersion(4, 1, other, 0)
-		assertFalse(typeJoker compatible typeHigher)
+		assertFalse(typeHigher compatible typeJoker)
 	}
 }

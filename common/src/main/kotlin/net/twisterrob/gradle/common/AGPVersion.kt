@@ -24,11 +24,11 @@ data class AGPVersion(
 	}
 
 	infix fun compatible(other: AGPVersion): Boolean {
-		require(this.minor == null || this.type == null || this.patch == null) { "${this} must be a joker." }
+		require(other.minor == null || other.type == null || other.patch == null) { "${other} must be a joker." }
 		if (this.major != other.major) return false
-		if (this.minor != null && this.minor != other.minor) return false
-		if (this.type != null && this.type != other.type) return false
-		if (this.patch != null && this.patch != other.patch) return false
+		if (other.minor != null && this.minor != other.minor) return false
+		if (other.type != null && this.type != other.type) return false
+		if (other.patch != null && this.patch != other.patch) return false
 		return true
 	}
 
