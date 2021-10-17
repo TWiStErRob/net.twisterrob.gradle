@@ -146,9 +146,12 @@
 			<a name="{details/@category}-{source/@reporter}-{details/@rule}" />
 		</xsl:if>
 		<div class="violation" xml:space="preserve">
-			<!-- @formatter:off -->
-			<b><code class="rule copyable" title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!" onClick="copyToClipboard(`{details/@suppress}`)"><xsl:value-of select="details/@rule" /></code>: <xsl:value-of select="details/title" /></b><br />
-			<!-- @formatter:on -->
+			<span class="title">
+				<!-- @formatter:off -->
+				<b><code class="rule copyable" title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!" onClick="copyToClipboard(`{details/@suppress}`)"><xsl:value-of select="details/@rule" /></code>: <script>render.markdown(`<xsl:value-of select="details/title" />`)</script></b>
+				<!-- @formatter:on -->
+			</span>
+			<br />
 			<details class="location">
 				<xsl:if test="details/context/@type != 'archive' or string-length(details/context) - string-length(translate(details/context, '&#x0A;', '')) &lt; 25">
 					<xsl:attribute name="open">open</xsl:attribute>
@@ -344,6 +347,7 @@
 		max-width: 900px;
 	}
 
+	.violation .title p,
 	.violation > details.description > summary > p {
 		display: inline;
 	}
