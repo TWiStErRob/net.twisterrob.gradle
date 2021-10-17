@@ -18,7 +18,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	/**
 	 * This should only contain files that will definitely generate (i.e. `if (subTask.enabled)` in [mustRunAfter]).
-	 * Currently it is not the case if the submodules are configured from a parent project (see tests).
+	 * Currently, it is not the case if the submodules are configured from a parent project (see tests).
 	 * At the usage we need to double-check if the file existed,
 	 * otherwise it'll spam the logs with [java.io.FileNotFoundException]s.
 	 */
@@ -42,7 +42,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	fun failOnFailures() {
 		val gatherer = LintReportGatherer("lint", LintGlobalTask::class.java)
 		val violationsByFile = xmlReports
-			.filter(File::exists)
+//			.filter(File::exists)
 			.associateBy({ it }) { gatherer.findViolations(it) }
 		val totalCount = violationsByFile.values.sumBy { violations: List<Violation> -> violations.size }
 		if (totalCount > 0) {
