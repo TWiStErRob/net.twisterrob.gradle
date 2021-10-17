@@ -218,7 +218,7 @@ class GlobalLintGlobalFinalizerTaskTest {
 
 		assertEquals(TaskOutcome.FAILED, result.task(":lintGlobal")!!.outcome)
 		result.assertNoOutputLine(Regex("""Error when parsing.* as ANDROIDLINT"""))
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: 1 issues found."""))
+		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: 1 issues found\."""))
 	}
 
 	@Test fun `fails the build on explicit invocation`() {

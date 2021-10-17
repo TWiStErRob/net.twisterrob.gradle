@@ -95,6 +95,8 @@ private val LintBaseTask.isFatalOnly
  */
 val LintBaseTask.androidVariantName: String?
 	get() = when {
+		this is LintGlobalTask ->
+			this.variantInputMap.keys.singleOrNull()
 		AGPVersions.v33x < AGPVersions.CLASSPATH && @Suppress("USELESS_IS_CHECK") (this is VariantAwareTask) ->
 			// USELESS_IS_CHECK: Need to check for interface explicitly,
 			// because before 4.2.0 LintGlobalTask/LintFixTask didn't implement the interface.
@@ -107,6 +109,12 @@ val LintBaseTask.androidVariantName: String?
 		AGPVersions.v32x < AGPVersions.CLASSPATH && this is LintFixTask -> null
 		else -> null
 	}
+
+private val LintGlobalTask.variantInputMap: Map<String, *>
+	@Suppress("UNCHECKED_CAST")
+	get() = LintGlobalTask::class.java.getDeclaredField("variantInputMap")
+		.apply { isAccessible = true }
+		.get(this) as Map<String, *>
 
 val LintBaseTask.xmlOutput: File
 	get() = lintOptions.xmlOutput ?: LintOptions_createOutputPath(
