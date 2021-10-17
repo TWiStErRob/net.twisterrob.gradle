@@ -56,7 +56,7 @@ object Libs {
 		const val lintGradle = "com.android.tools.lint:lint-gradle:${versionLint}"
 		const val lintGradleApi = "com.android.tools.lint:lint-gradle-api:${versionLint}"
 		const val lintChecks = "com.android.tools.lint:lint-checks:${versionLint}"
-		const val toolsDddmlib = "com.android.tools.ddms:ddmlib:${versionLint}"
+		const val toolsDdmLib = "com.android.tools.ddms:ddmlib:${versionLint}"
 		const val toolsCommon = "com.android.tools:common:${versionLint}"
 	}
 

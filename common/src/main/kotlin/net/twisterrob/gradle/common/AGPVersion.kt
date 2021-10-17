@@ -33,11 +33,11 @@ data class AGPVersion(
 	}
 
 	override fun toString(): String =
-		listOfNotNull(major, minor ?: "*", type ?: "*", patch ?: "*").joinToString(separator = ".")
+		"${major}.${minor ?: "*"}.${type ?: "*"}.${patch ?: "*"}"
 
 	companion object {
 
-		private val AGP_VERSION_REGEX =
+		private val AGP_VERSION_REGEX: Regex =
 			"""^(?<major>\d+)(?:\.(?<minor>\d+)(?:\.(?<patch>\d+))?(?:-(?<type>alpha|beta|rc)(?<iteration>\d+))?)?$""".toRegex()
 
 		fun parse(version: String): AGPVersion {

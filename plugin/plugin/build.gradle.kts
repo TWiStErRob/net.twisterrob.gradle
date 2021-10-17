@@ -22,7 +22,7 @@ dependencies {
 	testImplementation(Libs.dexMemberList)
 	testCompileOnly(Libs.Android.plugin)
 	// GradleTestHelpersKt.hasDevices uses com.android.ddmlib.AndroidDebugBridge.
-	testImplementation(Libs.Android.toolsDddmlib)
+	testImplementation(Libs.Android.toolsDdmLib)
 	// AndroidInstallRunnerTaskTest calls production code directly,
 	// so need com.android.xml.AndroidXPathFactory for AndroidInstallRunnerTask.Companion.getMainActivity$plugin.
 	testImplementation(Libs.Android.toolsCommon)

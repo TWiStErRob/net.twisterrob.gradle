@@ -65,7 +65,6 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 						changeCompatibility(JavaVersion.VERSION_1_8)
 					}
 					classpath += project.files(options.bootstrapClasspath)
-					logger.warn("XXXXX $this $compileVersion, ${JavaVersion.current()}, ${compileVersion < JavaVersion.current()}")
 					fixClasspathIfNecessary(JavaVersion.toVersion(sourceCompatibility))
 				}
 			}

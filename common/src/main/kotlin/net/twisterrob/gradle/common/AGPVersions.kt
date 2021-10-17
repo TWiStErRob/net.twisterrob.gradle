@@ -12,13 +12,18 @@ object AGPVersions {
 	}
 
 	/**
+	 * The version AGP on the classpath of the build running this plugin.
+	 * Not to be confused with the one used to compile this plugin, which is the latest supported.
+	 * In tests, the one on classpath comes from `testImplementation` or `testRuntimeOnly`, use [UNDER_TEST] in that case.
 	 *
+	 * @see com.android.Version
 	 */
 	val CLASSPATH: AGPVersion
 		get() = AGPVersion.parse(ANDROID_GRADLE_PLUGIN_VERSION)
 
 	/**
 	 * The test framework is executed with a specific AGP version.
+	 * Used for backwards compatibility testing.
 	 */
 	val UNDER_TEST: AGPVersion
 		@TestOnly
