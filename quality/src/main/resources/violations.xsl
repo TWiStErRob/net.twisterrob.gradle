@@ -358,7 +358,7 @@
 	}
 
 	details.location > summary > pre {
-		 display: inline-block;
+		display: inline-block;
 	}
 
 	ul {
