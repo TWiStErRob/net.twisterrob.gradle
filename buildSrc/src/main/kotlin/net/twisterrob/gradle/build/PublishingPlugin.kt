@@ -83,13 +83,15 @@ class PublishingPlugin : Plugin<Project> {
 private fun MavenPublication.setupModuleIdentity(project: Project) {
 	project.afterEvaluate {
 		artifactId = project.base.archivesBaseName
-	}
-	version = project.version as String
-	project.afterEvaluate {
-		@Suppress("UnstableApiUsage")
+		version = project.version as String
+
 		pom {
-			name.set(project.description!!.substringBefore(": ").also { check(it.isNotBlank()) })
-			description.set(project.description!!.substringAfter(": ").also { check(it.isNotBlank()) })
+			val projectDescription = project.description?.takeIf { it.contains(':') }
+				?: error("$project must have a description with format: \"Module Display Name: Module description.\"")
+			@Suppress("UnstableApiUsage")
+			name.set(projectDescription.substringBefore(": ").also { check(it.isNotBlank()) })
+			@Suppress("UnstableApiUsage")
+			description.set(projectDescription.substringAfter(": ").also { check(it.isNotBlank()) })
 		}
 	}
 }
@@ -134,13 +136,13 @@ private fun MavenPublication.setupLinks(project: Project) {
 
 private fun MavenPublication.reorderNodes(project: Project) {
 	fun Node.getChildren(localName: String): NodeList =
-		get(localName) as NodeList
+		this.get(localName) as NodeList
 
 	fun NodeList.nodes(): List<Node> =
-		filterIsInstance<Node>()
+		(this as Iterable<*>).filterIsInstance<Node>()
 
 	fun Node.getChild(localName: String): Node =
-		getChildren(localName).nodes().single()
+		this.getChildren(localName).nodes().single()
 
 	project.afterEvaluate {
 		pom.withXml {

@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.pmd
 
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -89,7 +90,7 @@ class PmdPluginTest {
 		""".trimIndent()
 		// ":instant" is not supported yet, and won't be since it's deprecated in 3.6.x.
 		val modules = arrayOf(":app", ":library", ":library:nested", ":test") +
-				if (System.getProperty("net.twisterrob.test.android.pluginVersion") < "3.4.0")
+				if (AGPVersions.UNDER_TEST < AGPVersions.v34x)
 					arrayOf(":feature", ":base")
 				else
 					emptyArray() // TODO arrayOf(":dynamic-feature")

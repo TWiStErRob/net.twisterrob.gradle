@@ -8,7 +8,6 @@ import com.android.build.gradle.internal.api.androidTestVariantData
 import com.android.build.gradle.internal.api.unitTestVariantData
 import com.android.build.gradle.internal.api.variantData
 import com.android.build.gradle.internal.variant.BaseVariantData
-import com.android.builder.core.DefaultApiVersion
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addBuildConfigFields
@@ -17,6 +16,7 @@ import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companio
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
@@ -86,17 +86,17 @@ class AndroidBuildPlugin : BasePlugin() {
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
 
 			with(defaultConfig) {
-				minSdkVersion = DefaultApiVersion(VERSION_SDK_MINIMUM)
-				targetSdkVersion = DefaultApiVersion(VERSION_SDK_TARGET)
+				minSdkVersion(VERSION_SDK_MINIMUM)
+				targetSdkVersion(VERSION_SDK_TARGET)
 				vectorDrawables.useSupportLibrary = true
 			}
 
 			buildTypes.configure("debug") { debug ->
 				project.plugins.withType<AppPlugin> {
 					// TODO make debug buildTypes configurable, use name of buildType as suffix
-					debug.applicationIdSuffix = ".${debug.name}"
+					debug.setApplicationIdSuffix(".${debug.name}")
 				}
-				debug.versionNameSuffix = "d"
+				debug.setVersionNameSuffix("d")
 				debug.resValue("bool", "in_test", "true")
 				debug.resValue("bool", "in_prod", "false")
 			}
@@ -129,9 +129,14 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 		}
 
+		val buildTimeTaskProvider =
+			project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
+		val vcsTaskProvider =
+			project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
+
 		project.beforeAndroidTasksCreated {
-			if (twisterrob.decorateBuildConfig) {
-				decorateBuildConfig()
+			if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
+				decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
 			}
 		}
 		project.plugins.withType<AppPlugin> {
@@ -156,13 +161,11 @@ class AndroidBuildPlugin : BasePlugin() {
 	 * @see https://issuetracker.google.com/issues/172657565
 	 * @see https://github.com/android/gradle-recipes/blob/8d0c14d6fed86726df60fb8c8f79e5a03c66fdee/Kotlin/addCustomFieldWithValueFromTask/app/build.gradle.kts
 	 */
-	private fun decorateBuildConfig() {
-		val buildTimeTaskProvider =
-			project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
+	private fun decorateBuildConfig(
+		buildTimeTaskProvider: TaskProvider<CalculateBuildTimeTask>,
+		vcsTaskProvider: TaskProvider<CalculateVCSRevisionInfoTask>
+	) {
 		buildTimeTaskProvider.addBuildConfigFields(project)
-
-		val vcsTaskProvider =
-			project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
 		vcsTaskProvider.addBuildConfigFields(project)
 	}
 
@@ -182,11 +185,11 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		private fun fixVariantTaskGroups(variant: BaseVariant) {
 			fun BaseVariantData.fixTaskMetadata() {
-				taskContainer.compileTask.configure { task ->
+				taskContainerCompat.compileTask.configure { task ->
 					task.group = "Build"
 					task.description = "Compiles sources for ${description}."
 				}
-				taskContainer.javacTask.configure { task ->
+				taskContainerCompat.javacTask.configure { task ->
 					task.group = "Build"
 					task.description = "Compiles Java sources for ${description}."
 				}

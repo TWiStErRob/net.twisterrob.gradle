@@ -61,7 +61,11 @@ open class GradleRunnerRule : TestRule {
 	lateinit var buildFile: File
 		private set
 
-	val settingsFile get() = File(runner.projectDir, "settings.gradle")
+	val settingsFile: File
+		get() = File(runner.projectDir, "settings.gradle")
+
+	val propertiesFile: File
+		get() = File(runner.projectDir, "gradle.properties")
 
 	//region TestRule
 	override fun apply(base: Statement, description: Description): Statement {
@@ -190,6 +194,10 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	fun file(contents: String, vararg path: String) {
 		if (path.size == 1 && path[0] == "build.gradle") {
 			buildFile.appendText(contents)
+			return
+		}
+		if (path.size == 1 && path[0] == "gradle.properties") {
+			propertiesFile.appendText(contents)
 			return
 		}
 		if (1 < path.size) {

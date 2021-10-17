@@ -82,8 +82,8 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 			result.assertSuccess(":packageDebug")
 			result.assertSkipped(":installDebug")
 			result.assertFailed(":runDebug")
-			// line is output to stderr, so no control over being on a new line
-			result.assertHasOutputLine(""".*adb.exe: no devices/emulators found.*""".toRegex())
+			// The line is output to stderr, so no control over being on a new line after capturing Gradle output.
+			result.assertHasOutputLine(""".*adb(\.exe)?: no devices/emulators found.*""".toRegex())
 		}
 	}
 

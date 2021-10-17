@@ -10,6 +10,7 @@ import com.android.build.gradle.internal.tasks.R8Task
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.builtDate
+import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.provider.Provider
@@ -43,7 +44,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 
 			project.plugins.withType<AppPlugin> {
 				val release = buildTypes["release"]
-				release.isMinifyEnabled = true
+				release.setMinifyEnabled(true)
 			}
 
 			project.afterEvaluate {
@@ -122,7 +123,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 			outputs.file(outputFile)
 			doFirst {
 				outputFile.createNewFile()
-				if (isProguard) {
+				if (isProguard || AGPVersions.CLASSPATH < AGPVersions.v41x) {
 					outputFile.appendText("-printconfiguration ${mappingFolder.get().resolve("configuration.txt")}\n")
 					outputFile.appendText("-dump ${mappingFolder.get().resolve("dump.txt")}\n")
 				}

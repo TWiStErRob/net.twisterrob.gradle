@@ -33,7 +33,7 @@
         set ORG_GRADLE_PROJECT_signingKey=...
         set ORG_GRADLE_PROJECT_signingPassword=...
         ```
-    * `gradlew publishReleasePublicationToSonatypeRepository`  
+    * `gradlew publishReleasePublicationToSonatypeRepository -x :plugin:publishReleasePublicationToSonatypeRepository`  
      _If this fails, fix and amend last commit._
     * Open URL, log in and close staging repository to validate.
  1. Archive and final integration test.

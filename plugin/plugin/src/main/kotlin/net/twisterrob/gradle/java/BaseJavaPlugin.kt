@@ -57,10 +57,7 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 			}
 
 			val compileVersion = JavaVersion.toVersion(sourceCompatibility)
-			if (compileVersion < JavaVersion.current()) {
-				// prevent :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
-				fixClasspath(compileVersion)
-			}
+			fixClasspathIfNecessary(compileVersion)
 			if (isTestTask && isAndroidUnitTest) {
 				doFirst {
 					if (isTestTask && !isAndroidTest) {
@@ -68,7 +65,7 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 						changeCompatibility(JavaVersion.VERSION_1_8)
 					}
 					classpath += project.files(options.bootstrapClasspath)
-					fixClasspath(JavaVersion.toVersion(sourceCompatibility))
+					fixClasspathIfNecessary(JavaVersion.toVersion(sourceCompatibility))
 				}
 			}
 
@@ -77,7 +74,15 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 	}
 }
 
-private fun JavaCompile.fixClasspath(compileVersion: JavaVersion) {
+/**
+ * Prevent this warning for compileJava and compileTestJava and others.
+ * > :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
+ */
+private fun JavaCompile.fixClasspathIfNecessary(compileVersion: JavaVersion) {
+	if (JavaVersion.current() == compileVersion) {
+		// Same version is set as the one running Gradle, nothing to do.
+		return
+	}
 	val envVar = "JAVA${compileVersion.majorVersion}_HOME"
 	val root = System.getenv(envVar)
 	var rt = project.file("$root/jre/lib/rt.jar")
@@ -87,11 +92,12 @@ private fun JavaCompile.fixClasspath(compileVersion: JavaVersion) {
 	if (!rt.exists()) {
 		logger.warn(
 			"Java Compatibility: javac needs a bootclasspath, "
-					+ "but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root)."
+					+ "but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root).\n"
+					+ "Make sure $envVar is set to a distribution of JDK ${compileVersion.majorVersion}."
 		)
 		return
 	}
-	logger.info("Java Compatiblity: using rt.jar from $rt")
+	logger.info("Java Compatibility: using rt.jar from $rt")
 	options.bootstrapClasspath = project.files(rt.absolutePath)
 }
 

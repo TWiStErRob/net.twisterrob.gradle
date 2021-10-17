@@ -1,13 +1,9 @@
+import Libs.Hamcrest.replaceHamcrestDependencies
 import Libs.Kotlin.replaceKotlinJre7WithJdk7
 import Libs.Kotlin.replaceKotlinJre8WithJdk8
-import org.gradle.api.tasks.testing.TestOutputEvent.Destination
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.utils.keysToMap
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.EnumSet
-import kotlin.math.absoluteValue
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 plugins {
 //	kotlin("jvm") apply false
@@ -39,6 +35,7 @@ allprojects {
 	configurations.all {
 		replaceKotlinJre7WithJdk7()
 		replaceKotlinJre8WithJdk8()
+		replaceHamcrestDependencies()
 		resolutionStrategy {
 			// make sure we don't have many versions of Kotlin lying around
 			force(Libs.Kotlin.stdlib)
@@ -143,9 +140,9 @@ allprojects {
 		val java = convention.getPluginByName<JavaPluginConvention>("java")
 		java.sourceCompatibility = Libs.javaVersion
 		java.targetCompatibility = Libs.javaVersion
-		(tasks["test"] as Test).testLogging.events("passed", "skipped", "failed")
+		tasks.named<Test>("test") { testLogging.events("passed", "skipped", "failed") }
 		afterEvaluate {
-			with(tasks["jar"] as Jar) {
+			tasks.named<Jar>("jar") {
 				manifest {
 					attributes(
 						mapOf(
@@ -155,7 +152,7 @@ allprojects {
 							"Implementation-Version" to project.version,
 							// TODO Make sure it doesn't change often (skip for SNAPSHOT)
 							// otherwise :jar always re-packages and compilations cascade
-							"Built-Date" to SimpleDateFormat("yyyy-MM-dd'T'00:00:00Z").format(Date())
+							"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
 						)
 					)
 				}
@@ -165,55 +162,7 @@ allprojects {
 
 	if (project.property("net.twisterrob.gradle.build.verboseReports").toString().toBoolean()) {
 		tasks.withType<Test> {
-			testLogging {
-				// disable all events, output handled by custom callbacks below
-				events = EnumSet.noneOf(TestLogEvent::class.java)
-				//events = TestLogEvent.values().toSet() - TestLogEvent.STARTED
-				exceptionFormat = TestExceptionFormat.FULL
-				showExceptions = true
-				showCauses = true
-				showStackTraces = true
-			}
-			class TestInfo(
-				val descriptor: TestDescriptor,
-				val stdOut: StringBuilder = StringBuilder(),
-				val stdErr: StringBuilder = StringBuilder()
-			)
-
-			val lookup = mutableMapOf<TestDescriptor, TestInfo>()
-			beforeTest(KotlinClosure1<TestDescriptor, Any>({
-				lookup.put(this, TestInfo(this))
-			}))
-			onOutput(KotlinClosure2({ descriptor: TestDescriptor, event: TestOutputEvent ->
-				val info = lookup.getValue(descriptor)
-				when (event.destination!!) {
-					Destination.StdOut -> info.stdOut.append(event.message)
-					Destination.StdErr -> info.stdErr.append(event.message)
-				}
-			}))
-			afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->
-				val info = lookup.remove(descriptor)!!
-				fun fold(type: String, condition: Boolean, output: () -> Unit) {
-					val id = descriptor.toString().hashCode().absoluteValue
-					if (condition) {
-						println("::group::test_${type}_${id}")
-						output()
-						println("::endgroup:: ")
-					}
-				}
-				println("${descriptor.className} > ${descriptor.name} ${result.resultType}")
-				fold("ex", result.exception != null) {
-					result.exception!!.printStackTrace()
-				}
-				fold("out", info.stdOut.isNotEmpty()) {
-					println("STANDARD_OUT")
-					println(info.stdOut)
-				}
-				fold("err", info.stdErr.isNotEmpty()) {
-					println("STANDARD_ERR")
-					println(info.stdErr)
-				}
-			}))
+			configureVerboseReportsForGithubActions()
 		}
 	}
 }
@@ -228,7 +177,7 @@ if (project.property("net.twisterrob.gradle.build.includeExamples").toString().t
 	}
 }
 
-project.tasks.create("tests", TestReport::class.java) {
+project.tasks.create<TestReport>("tests") {
 	destinationDir = file("${buildDir}/reports/tests/all")
 	project.evaluationDependsOnChildren()
 	allprojects.forEach { subproject ->

@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.android.tasks
 
-import net.twisterrob.gradle.android.asBuildConfigField
+import net.twisterrob.gradle.android.addBuildConfigField
 import net.twisterrob.gradle.android.intermediateRegularFile
-import net.twisterrob.gradle.android.onVariantProperties
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import net.twisterrob.gradle.writeText
 import org.gradle.api.DefaultTask
@@ -35,16 +35,17 @@ open class CalculateVCSRevisionInfoTask : DefaultTask() {
 	companion object {
 
 		fun TaskProvider<CalculateVCSRevisionInfoTask>.addBuildConfigFields(project: Project) {
-			val revisionField = flatMap { it.revisionFile }.map {
-				it.asBuildConfigField("String") { """"${it}"""" }
+			if (AGPVersions.CLASSPATH < AGPVersions.v41x) get().writeVCS()
+
+			val revisionField = this.flatMap { it.revisionFile }.map {
+				""""${it.asFile.readText()}""""
 			}
-			val revisionNumberField = flatMap { it.revisionNumberFile }.map {
-				it.asBuildConfigField("int") { it.toInt() }
+			project.addBuildConfigField("REVISION", "String", revisionField)
+
+			val revisionNumberField = this.flatMap { it.revisionNumberFile }.map {
+				it.asFile.readText().toInt()
 			}
-			project.onVariantProperties {
-				buildConfigFields.put("REVISION", revisionField)
-				buildConfigFields.put("REVISION_NUMBER", revisionNumberField)
-			}
+			project.addBuildConfigField("REVISION_NUMBER", "int", revisionNumberField)
 		}
 	}
 }

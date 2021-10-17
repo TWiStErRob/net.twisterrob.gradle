@@ -3,17 +3,13 @@ package net.twisterrob.gradle.android.tasks
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.internal.TaskManager
-import com.android.build.gradle.tasks.ManifestProcessorTask
-import com.android.build.gradle.tasks.ProcessApplicationManifest
-import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.android.xml.AndroidXPathFactory
 import com.google.common.annotations.VisibleForTesting
-import org.gradle.api.provider.Provider
+import net.twisterrob.gradle.android.manifestFile
 import org.gradle.api.tasks.Exec
 import org.gradle.kotlin.dsl.getByName
 import org.intellij.lang.annotations.Language
 import org.xml.sax.InputSource
-import java.io.File
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPathConstants
@@ -78,11 +74,3 @@ open class AndroidInstallRunnerTask : Exec() {
 		}
 	}
 }
-
-private val ManifestProcessorTask.manifestFile: Provider<File>
-	get() =
-		when (this) {
-			is ProcessApplicationManifest -> mergedManifest.asFile
-			is ProcessMultiApkApplicationManifest -> mainMergedManifest.asFile
-			else -> error("$this is an unsupported ${ManifestProcessorTask::class}")
-		}

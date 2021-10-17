@@ -2,6 +2,7 @@ package net.twisterrob.gradle.android
 
 import com.android.ddmlib.AndroidDebugBridge
 import com.jakewharton.dex.DexMethod
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.test.process.assertOutput
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -12,7 +13,11 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+/**
+ * @see /android-plugin_app/src/main/AndroidManifest.xml
+ */
 internal const val packageName = "net.twisterrob.gradle.test_app"
+
 internal val packageFolder get() = packageName.replace('.', '/')
 
 internal fun File.apk(
@@ -119,10 +124,10 @@ internal fun assertDefaultBadging(
 			)
 		}"
 	assertThat(fileNamesMessage, apk, anExistingFile())
-	val expectedOutput =
+	val (expectation, expectedOutput) =
 		if (compileSdkVersion < 28) {
 			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2
-			"""
+			"compileSdkVersion < 28" to """
 				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName'
 				sdkVersion:'$minSdkVersion'
 				targetSdkVersion:'$targetSdkVersion'
@@ -137,7 +142,7 @@ internal fun assertDefaultBadging(
 			""".trimIndent()
 		} else {
 			if (!isAndroidTestApk) {
-				"""
+				"compileSdkVersion >= 28 && !isAndroidTestApk" to """
 					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
 					targetSdkVersion:'$targetSdkVersion'
@@ -152,7 +157,7 @@ internal fun assertDefaultBadging(
 				""".trimIndent()
 			} else {
 				// TODO versionCode and versionName is not verified!
-				"""
+				"compileSdkVersion >= 28 && isAndroidTestApk" to """
 					package: name='$applicationId' versionCode='' versionName='' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
 					targetSdkVersion:'$targetSdkVersion'
@@ -164,12 +169,12 @@ internal fun assertDefaultBadging(
 					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 					supports-screens: 'small' 'normal' 'large' 'xlarge'
 					supports-any-density: 'true'
-					locales: '--_--'
-					densities: '160'
+					locales:${if (AGPVersions.UNDER_TEST compatible AGPVersions.v41x) "" else " '--_--'" }
+					densities:${if (AGPVersions.UNDER_TEST compatible AGPVersions.v41x) "" else " '160'" }
 				""".trimIndent()
 			}
 		}
-	assertOutput(listOf(resolveFromAndroidSDK("aapt"), "dump", "badging", apk), expectedOutput)
+	assertOutput(listOf(resolveFromAndroidSDK("aapt"), "dump", "badging", apk), expectedOutput, expectation)
 }
 
 fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =

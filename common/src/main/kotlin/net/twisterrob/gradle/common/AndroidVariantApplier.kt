@@ -32,7 +32,7 @@ class AndroidVariantApplier(val project: Project) {
 		//project.plugins.withId("com.android.feature", callback)
 		project.plugins.withId("com.android.dynamic-feature", callback)
 		project.plugins.withId("com.android.test", callback)
-		if (ANDROID_GRADLE_PLUGIN_VERSION < "3.6.0") {
+		if (AGPVersions.CLASSPATH < AGPVersions.v36x) {
 			project.plugins.withId("com.android.instantapp", callback)
 		}
 	}

@@ -2,8 +2,6 @@ package net.twisterrob.gradle
 
 import net.twisterrob.gradle.base.BasePlugin
 import org.gradle.api.file.RegularFileProperty
-import org.jetbrains.kotlin.gradle.internal.ensureParentDirsCreated
-import java.io.File
 import java.net.JarURLConnection
 import java.nio.charset.Charset
 import java.time.Instant
@@ -36,6 +34,7 @@ val builtDate: Instant by lazy {
 fun <R> systemProperty(name: String) = object : ReadWriteProperty<R, String> {
 	override fun getValue(thisRef: R, property: KProperty<*>): String =
 		System.getProperty(name)
+			?: error("Cannot find System property value for ${name}.")
 
 	override fun setValue(thisRef: R, property: KProperty<*>, value: String) {
 		System.setProperty(name, value)
@@ -43,5 +42,5 @@ fun <R> systemProperty(name: String) = object : ReadWriteProperty<R, String> {
 }
 
 fun RegularFileProperty.writeText(text: String, charset: Charset = Charsets.UTF_8) {
-	this.get().asFile.also(File::ensureParentDirsCreated).writeText(text, charset)
+	this.get().asFile.also { if (!it.parentFile.exists()) check(it.parentFile.mkdirs()) }.writeText(text, charset)
 }
