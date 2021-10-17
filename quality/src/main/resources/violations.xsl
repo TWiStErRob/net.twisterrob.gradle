@@ -318,7 +318,18 @@
 		bottom: 0;
 		/* Make sure it's above hljs blocks. */
 		z-index: 1;
-		margin: 16px;
+		padding: 16px 16px 12px 16px;
+		/* Design */
+		transition: all 0.2s ease 0s;
+		border-radius: 32px 0 0 0;
+		background: rgba(255, 255, 255, 0.5);
+		box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
+	}
+
+	a.back-to-top:hover {
+		text-decoration: none;
+		background: white;
+		box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
 	}
 
 	.violation {
