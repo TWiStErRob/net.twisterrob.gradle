@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="5" by="lint 4.2.2">
+
+    <issue
+        id="SecureRandom"
+        severity="Warning"
+        message="Do not call `setSeed()` on a `SecureRandom` with a fixed seed: it is not secure. Use `getSeed()`."
+        category="Security"
+        priority="9"
+        summary="Using a fixed seed with `SecureRandom`"
+        explanation="Specifying a fixed seed will cause the instance to return a predictable sequence of numbers. This may be useful for testing but it is not appropriate for secure use."
+        url="https://developer.android.com/reference/java/security/SecureRandom.html"
+        urls="https://developer.android.com/reference/java/security/SecureRandom.html"
+        errorLine1="  new SecureRandom().setSeed(0);"
+        errorLine2="  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Users\TWiStEr\AppData\Local\Temp\junit9141543391964979463\src\main\java\LintFailure.java"
+            line="5"
+            column="3"/>
+    </issue>
+
+</issues>

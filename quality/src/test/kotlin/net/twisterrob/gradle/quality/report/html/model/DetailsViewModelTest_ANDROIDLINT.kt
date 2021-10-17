@@ -49,9 +49,9 @@ class DetailsViewModelTest_ANDROIDLINT {
 		val model = DetailsViewModel(fixture.build<Violation>().apply {
 			val input = """&, &amp;, `&amp;`, text: &#188;, code: `&#188;`"""
 			val lintMessage = """
-				Title: $input
-				Message: $input
-				Description: $input
+				Title: ${input}
+				Message: ${input}
+				Description: ${input}
 			""".trimIndent()
 			setField("message", lintMessage)
 		})
@@ -60,18 +60,10 @@ class DetailsViewModelTest_ANDROIDLINT {
 
 		// The real expectation would be different, but that would require full syntactic parsing of lint's markdown.
 		// See https://github.com/TWiStErRob/net.twisterrob.gradle/issues/65#issuecomment-860275509.
-		assertEquals(
-			"""Title: &amp;, &amp;amp;, `&amp;amp;`, text: &amp;#188;, code: `&amp;#188;`""",
-			result.title
-		)
-		assertEquals(
-			"""Message: &amp;, &amp;amp;, \`&amp;amp;\`, text: &amp;#188;, code: \`&amp;#188;\`""",
-			result.message
-		)
-		assertEquals(
-			"""Description: &amp;, &amp;amp;, \`&amp;amp;\`, text: &amp;#188;, code: \`&amp;#188;\`""",
-			result.description
-		)
+		val expected = """&amp;, &amp;amp;, \`&amp;amp;\`, text: &amp;#188;, code: \`&amp;#188;\`"""
+		assertEquals("Title: ${expected}", result.title)
+		assertEquals("Message: ${expected}", result.message)
+		assertEquals("Description: ${expected}", result.description)
 	}
 
 	companion object {

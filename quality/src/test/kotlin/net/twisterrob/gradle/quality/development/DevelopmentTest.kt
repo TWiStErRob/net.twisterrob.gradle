@@ -64,12 +64,12 @@ class DevelopmentTest {
 	//	@Test
 	fun `manual test for a specific lint failure`() {
 		gradle.basedOn("android-root_app")
-		val stringsXml = resources.customLint.typographyFractions.violation
-		gradle.file(stringsXml, "src", "main", "res", "values", "strings.xml")
+		val violationContents = resources.customLint.secureRandom.violation
+		gradle.file(violationContents, "src", "main", "java", "LintFailure.java")
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			android.lintOptions.checkOnly("TypographyFractions")
+			android.lintOptions.checkOnly("SecureRandom")
 			task('htmlReport', type: ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 

@@ -28,7 +28,7 @@ class DetailsViewModel(private val v: Violation) {
 						.replace("""&""", """&amp;""")
 
 					val details = LintMessageDetailsSplitter().split(v)
-					title = details.title.preprocessLintMarkdown()
+					title = details.title.preprocessLintMarkdown().escapeMarkdownForJSTemplate()
 					message = details.message.preprocessLintMarkdown().escapeMarkdownForJSTemplate()
 					description = details.description.preprocessLintMarkdown().escapeMarkdownForJSTemplate()
 				}

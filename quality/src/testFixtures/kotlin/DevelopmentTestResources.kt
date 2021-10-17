@@ -24,6 +24,16 @@ class DevelopmentTestResources {
 			val xmlReport: String
 				get() = read("custom-lint/TypographyFractions/lint-results.xml")
 		}
+
+		val secureRandom get() = object : SecureRandom {}
+
+		interface SecureRandom {
+			val violation: String
+				get() = read("custom-lint/SecureRandom/LintFailure.java")
+
+			val xmlReport: String
+				get() = read("custom-lint/SecureRandom/lint-results.xml")
+		}
 	}
 
 	companion object {
