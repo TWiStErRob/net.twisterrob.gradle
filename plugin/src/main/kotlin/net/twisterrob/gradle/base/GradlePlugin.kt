@@ -2,14 +2,14 @@ package net.twisterrob.gradle.base
 
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.register
 
 class GradlePlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
 
-		project.tasks.create<Task>("debugWrapper") {
+		project.tasks.register<Task>("debugWrapper") {
 			val debugFile = project.file("gradled.bat")
 			description = "Generates a ${debugFile.name} script to start a Gradle task in debug mode."
 			group = "Build Setup"
