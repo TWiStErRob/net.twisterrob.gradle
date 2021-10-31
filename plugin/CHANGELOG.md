@@ -1,6 +1,11 @@
+## Future
+All future versions and changes will be listed in root [CHANGELOG.md](../CHANGELOG.md).
+
 ## 4.2.x
 
-### 4.2.2.14-30-30.0
+### 4.2.2.14-30-30.0 -> 0.12
+See [CHANGELOG.md](../CHANGELOG.md)
+
 - AGP 4.2.2
 - Build Tools 30.0.2
 - Gradle 6.9.1
