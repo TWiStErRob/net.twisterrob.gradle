@@ -26,6 +26,8 @@ Android Gradle Plugin 3.1.4 — 4.2.2 on Gradle 4.9 — 6.9 as listed in [AGP's 
 
 Gradle 4.4 — 4.9 is not supported, because it's hard to backport the lazy task configuration APIs.
 
+Convention plugins only support Android Gradle Plugin 4.0.0 — 4.2.2 on Gradle 6.1.1+, because it's really hard to backport all the features to 3.x with no need for this.
+
 ## Quick setup
 ```gradle
 buildscript {

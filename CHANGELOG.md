@@ -1,17 +1,29 @@
 # Change Log
 
 
-## 0.12 *(2021-06-06 --- )*
+## 0.12 *(2021-06-06 --- 2021-11-??)*
 
 ### Breaking
  * ...
 
 ### New
- * Android Gradle Plugin 4.2.1 compatible (#126)
- * Android Gradle Plugin 4.2.2 compatible (#145)
+ * quality: Android Gradle Plugin 4.2.1 compatible (#126)
+ * quality: Android Gradle Plugin 4.2.2 compatible (#145)
+ * New artifact: `twister-convention-plugins`  
+   Private plugins integrated (#95, #149, #142, #148), 
+   for history see [CHANGELOG](plugin/CHANGELOG.md).
+ * convention: use latest versions of things  
+   AGP 4.2.2 / Build Tools 30.0.2 (#143) / Gradle 6.9.1 (#141) / Kotlin 1.4.32 / JUnit 5 (#133)
+ * convention: R8 support (#144)
+ * reports: auto-expand all code blocks (#127)
+ * reports: Custom output for LintError (#27/#123)
+ * reports: Add back to top button (#59/#152)
+ * reports: Render lint title as markdown (#130/#153)
 
 ### Fixes
- * ...
+ * quality: Fix `&amp;` escaping in lint (#65/#129)
+ * quality: Mention violationReport* tasks from :lint output (#24/#125)
+ * convention: migrate release task configuration to be lazy (#104/#134)
 
 ### Deprecations
 
@@ -19,7 +31,9 @@
  * ...
 
 ### Internal
- * ...
+ * tests: lintOptions.check syntax (#124/#128)
+ * convention: Move from GrGit to JGit direct usage (#131/#132)
+ * Improve GitHub actions: (#135, #136, #150)
 
 
 ## 0.11 *(2020-11-22 --- 2021-06-06)*

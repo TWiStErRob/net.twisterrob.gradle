@@ -12,7 +12,7 @@ plugins {
 
 val projectVersion: String by project
 
-description = "Quality plugin for Gradle that supports Android flavors."
+description = "Plugins for Gradle that support Android flavors."
 allprojects {
 	group = rootProject.name
 	version = projectVersion
