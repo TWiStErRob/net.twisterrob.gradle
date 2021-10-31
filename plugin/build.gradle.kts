@@ -4,7 +4,8 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-description = "Private Plugin: Gradle Plugin used by my hobby projects."
+base.archivesBaseName = "twister-convention-plugins"
+description = "Convention Plugins: Gradle Plugins used by my hobby projects."
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
