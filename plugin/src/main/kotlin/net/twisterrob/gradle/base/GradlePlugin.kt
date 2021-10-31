@@ -19,7 +19,10 @@ class GradlePlugin : BasePlugin() {
 			}
 			doLast {
 				debugFile.outputStream().use { out ->
-					GradlePlugin::class.java.classLoader.getResourceAsStream("gradled.bat").copyTo(out)
+					val resourceName = "gradled.bat"
+					val gradled = GradlePlugin::class.java.classLoader.getResourceAsStream(resourceName)
+						?: error("Cannot find $resourceName on the classpath of ${GradlePlugin::class}.")
+					gradled.use { inp -> inp.copyTo(out) }
 				}
 			}
 		}
