@@ -1,5 +1,24 @@
 # Change Log
 
+## 0.13 *(2021-11-01 --- )*
+
+### Breaking
+ * ...
+
+### New
+ * ...
+
+### Fixes
+ * ...
+
+### Deprecations
+
+#### `net.twisterrob.gradle:artifact-name`
+ * ...
+
+### Internal
+ * ...
+
 
 ## 0.12 *(2021-06-06 --- 2021-11-01)*
 

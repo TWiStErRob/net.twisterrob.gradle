@@ -37,9 +37,10 @@
         ```
     * `gradlew publishReleasePublicationToSonatypeRepository`  
      _If this fails, fix and amend last commit._
-    * Open URL, log in and close staging repository to validate.
+    * Open [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories), log in and close staging repository output at console to validate.
  1. Archive and final integration test.
-    * Run `p:\repos\release\net.twisterrob.gradle\download-repo.bat`
+    * Run `p:\repos\release\net.twisterrob.gradle\download-repo.bat`  
+      Need to change mvn2get.json's `remote_repo_urls`.
     * Use it in a real project from staging repository:
       ```gradle
       repositories {
