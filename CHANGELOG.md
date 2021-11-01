@@ -1,10 +1,7 @@
 # Change Log
 
 
-## 0.12 *(2021-06-06 --- 2021-11-??)*
-
-### Breaking
- * ...
+## 0.12 *(2021-06-06 --- 2021-11-01)*
 
 ### New
  * quality: Android Gradle Plugin 4.2.1 compatible (#126)
@@ -24,11 +21,6 @@
  * quality: Fix `&amp;` escaping in lint (#65/#129)
  * quality: Mention violationReport* tasks from :lint output (#24/#125)
  * convention: migrate release task configuration to be lazy (#104/#134)
-
-### Deprecations
-
-#### `net.twisterrob.gradle:artifact-name`
- * ...
 
 ### Internal
  * tests: lintOptions.check syntax (#124/#128)
