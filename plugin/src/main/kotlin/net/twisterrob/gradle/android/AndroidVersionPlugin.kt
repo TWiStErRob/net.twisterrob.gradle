@@ -7,7 +7,7 @@ import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.TestedVariant
 import net.twisterrob.gradle.base.BasePlugin
-import net.twisterrob.gradle.kotlin.dsl.base
+import net.twisterrob.gradle.compat.archivesBaseNameCompat
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId
 import net.twisterrob.gradle.vcs.VCSExtension
@@ -55,7 +55,7 @@ open class AndroidVersionExtension {
 	var formatArtifactName: (Project, String, String, Long, String?) -> String =
 		{ project, baseName, applicationId, versionCode, versionName ->
 			// strip project name, leave only variant
-			val strippedBaseName = baseName.replace("${project.base.archivesBaseName}-", "")
+			val strippedBaseName = baseName.replace("${project.archivesBaseNameCompat}-", "")
 			"${applicationId}@${versionCode}-v${versionName}+${strippedBaseName}"
 		}
 }

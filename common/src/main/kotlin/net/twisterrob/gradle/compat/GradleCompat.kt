@@ -10,7 +10,10 @@ import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.provider.Provider
+import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.getPluginByName
 import org.gradle.util.GradleVersion
 import java.io.File
 
@@ -215,3 +218,27 @@ fun ProjectLayout.directoryProperty(): DirectoryProperty {
 	val directoryProperty = ProjectLayout::class.java.getDeclaredMethod("directoryProperty")
 	return directoryProperty(this) as DirectoryProperty
 }
+
+/**
+ * Gradle 4.3-7.3 compatible version of [BasePluginExtension.getArchivesName].
+ *
+ * @see org.gradle.api.plugins.BasePluginExtension.getArchivesBaseName
+ * @see org.gradle.api.plugins.BasePluginConvention.getArchivesBaseName
+ */
+val Project.archivesBaseNameCompat: String
+	get() =
+		when {
+			GradleVersion.current().baseVersion < GradleVersion.version("7.1") -> {
+				@Suppress("DEPRECATION")
+				this.convention
+					.getPluginByName<org.gradle.api.plugins.BasePluginConvention>("base")
+					.archivesBaseName
+			}
+			else -> {
+				// New in Gradle 7.0.
+				this.extensions
+					.getByName<BasePluginExtension>("base")
+					.archivesName
+					.get()
+			}
+		}
