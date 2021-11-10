@@ -183,7 +183,7 @@ project.tasks.create<TestReport>("tests") {
 	allprojects.forEach { subproject ->
 		subproject.tasks.withType<Test> {
 			ignoreFailures = true
-			reports.junitXml.isEnabled = true
+			reports.junitXml.required.set(true)
 			this@create.reportOn(this@withType)
 		}
 	}
