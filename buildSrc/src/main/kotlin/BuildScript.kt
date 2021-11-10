@@ -69,18 +69,17 @@ val Project.gradlePlugin: GradlePluginDevelopmentExtension
  */
 fun Project.replaceGradlePluginAutoDependenciesWithoutKotlin() {
 	plugins.withId("org.gradle.java-gradle-plugin") {
-		@Suppress("DEPRECATION")
 		dependencies {
 			// Undo org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin.applyDependencies
-			if (configurations[JavaPlugin.COMPILE_CONFIGURATION_NAME].dependencies.remove(gradleApi())) {
-				add(JavaPlugin.COMPILE_CONFIGURATION_NAME, gradleApiWithoutKotlin())
+			if (configurations[JavaPlugin.API_CONFIGURATION_NAME].dependencies.remove(gradleApi())) {
+				add(JavaPlugin.API_CONFIGURATION_NAME, gradleApiWithoutKotlin())
 			}
 
 			// Undo org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin.TestKitAndPluginClasspathDependenciesAction
 			afterEvaluate {
 				gradlePlugin.testSourceSets.forEach {
-					if (configurations[it.compileConfigurationName].dependencies.remove(gradleTestKit())) {
-						add(it.compileConfigurationName, gradleTestKitWithoutKotlin())
+					if (configurations[it.implementationConfigurationName].dependencies.remove(gradleTestKit())) {
+						add(it.implementationConfigurationName, gradleTestKitWithoutKotlin())
 					}
 				}
 			}
