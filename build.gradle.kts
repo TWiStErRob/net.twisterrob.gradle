@@ -137,7 +137,7 @@ allprojects {
 	}
 
 	plugins.withId("java") {
-		val java = convention.getPluginByName<JavaPluginConvention>("java")
+		val java = extensions.getByName<JavaPluginExtension>("java")
 		java.sourceCompatibility = Libs.javaVersion
 		java.targetCompatibility = Libs.javaVersion
 		tasks.named<Test>("test") { testLogging.events("passed", "skipped", "failed") }
