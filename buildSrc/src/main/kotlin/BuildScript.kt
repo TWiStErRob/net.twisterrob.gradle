@@ -11,14 +11,13 @@ import org.gradle.api.internal.HasConvention
 import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
 import org.gradle.api.internal.artifacts.dsl.dependencies.DependencyFactory.ClassPathNotation
 import org.gradle.api.internal.file.FileCollectionInternal
-import org.gradle.api.plugins.BasePluginConvention
+import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSet
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
-import org.gradle.kotlin.dsl.getPluginByName
 import org.gradle.kotlin.dsl.gradleKotlinDsl
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
@@ -55,11 +54,11 @@ private fun Project.pullTestResourcesFrom(project: Project) {
 /**
  * @see <a href="file://.../gradle-kotlin-dsl-accessors/.../src/org/gradle/kotlin/dsl/accessors.kt">Generated code</a>
  */
-val Project.java: JavaPluginConvention
-	get() = convention.getPluginByName("java")
+val Project.java: JavaPluginExtension
+	get() = this.extensions.getByName<JavaPluginExtension>("java")
 
-val Project.base: BasePluginConvention
-	get() = convention.getPluginByName("base")
+val Project.base: BasePluginExtension
+	get() = this.extensions.getByName<BasePluginExtension>("base")
 
 val Project.gradlePlugin: GradlePluginDevelopmentExtension
 	get() = this.extensions.getByName<GradlePluginDevelopmentExtension>("gradlePlugin")
