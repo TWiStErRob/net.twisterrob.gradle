@@ -15,6 +15,10 @@ plugins {
 	`java-gradle-plugin`
 }
 
+kotlinDslPluginOptions {
+	jvmTarget.set(provider { java.targetCompatibility.toString() })
+}
+
 repositories {
 	mavenCentral()
 	// Note on `plugins { }`: when the version is declared in the plugins block (`plugins { id(...) version "..." }`),
@@ -35,7 +39,8 @@ dependencies {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-	// TODO Using kotlin incremental compilation shows up regardless of verbose
+	// Do not use, no effect; will be overridden by kotlinDslPluginOptions.jvmTarget, see KotlinDslCompilerPlugins.
+	//kotlinOptions.jvmTarget = *
 	kotlinOptions.verbose = true
 //	kotlinOptions.allWarningsAsErrors = true
 	kotlinOptions.freeCompilerArgs += listOf(
