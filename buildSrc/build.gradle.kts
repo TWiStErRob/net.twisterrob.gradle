@@ -42,7 +42,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 	// Do not use, no effect; will be overridden by kotlinDslPluginOptions.jvmTarget, see KotlinDslCompilerPlugins.
 	//kotlinOptions.jvmTarget = *
 	kotlinOptions.verbose = true
-//	kotlinOptions.allWarningsAsErrors = true
+	kotlinOptions.allWarningsAsErrors = true
 	kotlinOptions.freeCompilerArgs += listOf(
 		// w: Some JAR files in the classpath have the Kotlin Runtime library bundled into them.
 		// This may cause difficult to debug problems if there's a different version of the Kotlin Runtime library in the classpath.
