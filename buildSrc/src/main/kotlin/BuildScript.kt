@@ -7,7 +7,6 @@ import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.internal.HasConvention
 import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
 import org.gradle.api.internal.artifacts.dsl.dependencies.DependencyFactory.ClassPathNotation
 import org.gradle.api.internal.file.FileCollectionInternal
@@ -25,10 +24,12 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 /**
  * @see <a href="https://github.com/JetBrains/kotlin/blob/v1.2.20/buildSrc/src/main/kotlin/sourceSets.kt#L45-L54">sourceSets.kt</a>
  * @see <a href="https://github.com/gradle/kotlin-dsl/issues/343#issuecomment-331636906">DSL</a>
+ * @see <a href="https://youtrack.jetbrains.com/issue/KT-47047">Replacement not ready</a>
  */
+@Suppress("DEPRECATION")
 val SourceSet.kotlin: SourceDirectorySet
 	get() =
-		(this as HasConvention)
+		(this as org.gradle.api.internal.HasConvention)
 			.convention
 			.getPlugin(KotlinSourceSet::class.java)
 			.kotlin
