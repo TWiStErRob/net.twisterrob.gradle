@@ -37,7 +37,7 @@ class PublishingPlugin : Plugin<Project> {
 		project.tasks {
 			val dokkaJavadoc = named<DokkaTask>("dokkaJavadoc") {
 				// TODO https://github.com/Kotlin/dokka/issues/1894
-				moduleName.set(this.project.base.archivesBaseName)
+				moduleName.set(this.project.base.archivesName)
 				dokkaSourceSets {
 					configureEach {
 						reportUndocumented.set(false)
@@ -82,7 +82,7 @@ class PublishingPlugin : Plugin<Project> {
 
 private fun MavenPublication.setupModuleIdentity(project: Project) {
 	project.afterEvaluate {
-		artifactId = project.base.archivesBaseName
+		artifactId = project.base.archivesName.get()
 		version = project.version as String
 
 		pom {
