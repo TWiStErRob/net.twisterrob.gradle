@@ -4,7 +4,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesBaseName = "twister-convention-plugins"
+base.archivesName.set("twister-convention-plugins")
 description = "Convention Plugins: Gradle Plugins used by my hobby projects."
 
 gradlePlugin {

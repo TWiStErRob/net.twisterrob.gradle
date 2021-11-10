@@ -5,7 +5,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesBaseName = "twister-quality"
+base.archivesName.set("twister-quality")
 description = "Quality: All quality plugins bundled in one."
 
 gradlePlugin {

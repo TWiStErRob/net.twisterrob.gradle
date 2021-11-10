@@ -148,7 +148,7 @@ allprojects {
 						mapOf(
 							// Implementation-* used by TestPlugin
 							"Implementation-Vendor" to project.group,
-							"Implementation-Title" to project.base.archivesBaseName,
+							"Implementation-Title" to project.base.archivesName.get(),
 							"Implementation-Version" to project.version,
 							// TODO Make sure it doesn't change often (skip for SNAPSHOT)
 							// otherwise :jar always re-packages and compilations cascade

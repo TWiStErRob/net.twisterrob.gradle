@@ -4,7 +4,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesBaseName = "twister-gradle-test"
+base.archivesName.set("twister-gradle-test")
 description = "Test: Gradle test plugin."
 
 gradlePlugin {
