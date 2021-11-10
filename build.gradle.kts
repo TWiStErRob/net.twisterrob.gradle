@@ -191,7 +191,8 @@ project.tasks.create<TestReport>("tests") {
 		val reportFile = File(destinationDir, "index.html")
 		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
 		if (!successRegex.containsMatchIn(reportFile.readText())) {
-			throw GradleException("There were failing tests. See the report at: ${reportFile.toURI()}")
+			val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
+			throw GradleException("There were failing tests. See the report at: ${reportPath}")
 		}
 	}
 }
