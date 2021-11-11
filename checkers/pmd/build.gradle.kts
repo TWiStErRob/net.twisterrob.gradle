@@ -13,7 +13,6 @@ dependencies {
 
 	compileOnly(Libs.Android.plugin)
 
-	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))
 
 	testFixturesImplementation(project(":test:internal"))
