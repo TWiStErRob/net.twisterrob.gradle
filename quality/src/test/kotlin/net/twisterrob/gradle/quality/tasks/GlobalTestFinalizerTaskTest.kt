@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality.tasks
 
 import junit.runner.Version
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -11,10 +12,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
+/**
+ * @see GlobalTestFinalizerTask
+ */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class GlobalTestFinalizerTaskTest {
+class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `gathers results from root app`() {
 		@Language("java")

@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
+	api(project(":test"))
+
 	api(gradleApiWithoutKotlin())
 	api(gradleTestKitWithoutKotlin())
 

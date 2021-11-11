@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality
 
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.quality.tasks.GlobalLintGlobalFinalizerTask
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -16,10 +17,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
+/**
+ * @see QualityPlugin
+ */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class QualityPluginTest {
+class QualityPluginTest : BaseIntgTest() {
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `apply violationReportConsole only on root project`() {
 		@Language("gradle")

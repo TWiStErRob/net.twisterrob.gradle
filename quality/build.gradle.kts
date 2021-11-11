@@ -17,7 +17,6 @@ dependencies {
 //	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")
 	api(Libs.violations)
 
-	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))
 	testRuntimeOnly(Libs.Android.plugin)
 

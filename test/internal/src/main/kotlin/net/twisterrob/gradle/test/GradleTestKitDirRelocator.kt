@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.test
 
-import net.twisterrob.gradle.systemProperty
 import org.gradle.api.internal.tasks.testing.worker.TestWorker
 import org.gradle.internal.SystemProperties
 import org.gradle.testkit.runner.internal.DefaultGradleRunner
@@ -33,7 +32,7 @@ class GradleTestKitDirRelocator : BeforeEachCallback {
 
 	companion object {
 
-		private val workerId by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
-		private var testKitDir by systemProperty(DefaultGradleRunner.TEST_KIT_DIR_SYS_PROP)
+		private val workerId: String by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
+		private var testKitDir: String by systemProperty(DefaultGradleRunner.TEST_KIT_DIR_SYS_PROP)
 	}
 }

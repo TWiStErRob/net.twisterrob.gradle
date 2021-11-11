@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.checkstyle
 
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -23,7 +24,7 @@ import kotlin.test.assertEquals
  * @see CheckStyleTaskCreator
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class CheckStyleTaskTest_ConfigLocation {
+class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 
 	companion object {
 		val CONFIG_PATH = arrayOf("config", "checkstyle", "checkstyle.xml")
@@ -39,7 +40,7 @@ class CheckStyleTaskTest_ConfigLocation {
 		""".trimIndent()
 	}
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 	private val checkstyle = CheckstyleTestResources()
 
 	@Test fun `uses rootProject checkstyle config as a fallback`() {

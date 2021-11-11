@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.pmd
 
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -18,8 +19,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
+/**
+ * @see PmdTask
+ */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class PmdTaskTest_ConfigLocation {
+class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 
 	companion object {
 
@@ -44,7 +48,7 @@ class PmdTaskTest_ConfigLocation {
 		""".trimIndent()
 	}
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 
 	private val pmd = PmdTestResources { gradle.gradleVersion }
 

@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.development
 
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.quality.tasks.HtmlReportTask
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -21,9 +22,9 @@ import kotlin.test.assertEquals
  */
 @Suppress("unused")
 @ExtendWith(GradleRunnerRuleExtension::class)
-class DevelopmentTest {
+class DevelopmentTest : BaseIntgTest() {
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 	private val resources = DevelopmentTestResources()
 
 	//	@Test

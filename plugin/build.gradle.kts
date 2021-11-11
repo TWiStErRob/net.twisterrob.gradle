@@ -16,7 +16,6 @@ dependencies {
 	compileOnly(Libs.Android.plugin)
 	compileOnly(Libs.Kotlin.gradlePlugin)
 
-	testImplementation(project(":test"))
 	testImplementation(project(":test:internal"))
 	testImplementation(Libs.JUnit5.pioneer)
 	testImplementation(Libs.dexMemberList)

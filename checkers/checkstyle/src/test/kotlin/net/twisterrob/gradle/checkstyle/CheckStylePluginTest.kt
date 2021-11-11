@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.checkstyle
 
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.TaskConfigurator
@@ -27,14 +28,14 @@ import kotlin.test.assertEquals
  * @see CheckStylePlugin
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class CheckStylePluginTest {
+class CheckStylePluginTest : BaseIntgTest() {
 
 	companion object {
 
 		private val endl = System.lineSeparator()
 	}
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 	private val checkstyle = CheckstyleTestResources()
 
 	@Test fun `does not apply to empty project`() {
