@@ -5,8 +5,11 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginContainer
 
-// TODEL if https://github.com/gradle/kotlin-dsl/issues/1154 goes through
-internal val Any.extensions: ExtensionContainer get() = (this as ExtensionAware).extensions
+/**
+ * See https://github.com/gradle/kotlin-dsl/issues/1154
+ */
+internal val Any.extensions: ExtensionContainer
+	get() = (this as ExtensionAware).extensions
 
 /**
  * Configures the [Plugin] with the given [pluginId] using [action], similar to [PluginContainer.withId], but type safe.
