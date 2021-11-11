@@ -53,13 +53,13 @@ buildscript {
 		def repoRoot = file($/P:\projects\workspace\net.twisterrob.gradle-quality/$).toURI()
 		ivy {
 			url = repoRoot
-			layout('pattern') {
+			patternLayout {
 				artifact '[artifact]/build/libs/[artifact]-[revision](-[classifier]).[ext]'
 			}
 		}
 		ivy {
 			url = repoRoot
-			layout('pattern') {
+			patternLayout {
 				artifact 'checkers/[artifact]/build/libs/[artifact]-[revision](-[classifier]).[ext]'
 			}
 		}
