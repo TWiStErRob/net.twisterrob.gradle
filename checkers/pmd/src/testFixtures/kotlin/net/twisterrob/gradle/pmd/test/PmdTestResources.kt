@@ -41,10 +41,16 @@ class PmdTestResources(
 
 		val message: Regex
 			get() =
-				if (gradleVersion() < GradleVersion.version("5.6.0")) {
-					Regex(""".*src.main.java.Pmd\.java:1:\s+All classes and interfaces must belong to a named package""")
-				} else {
-					Regex(""".*src.main.java.Pmd\.java:1:\s+All classes, interfaces, enums and annotations must belong to a named package""")
+				when {
+					gradleVersion() < GradleVersion.version("5.6.0") -> {
+						Regex(""".*src.main.java.Pmd\.java:1:\tAll classes and interfaces must belong to a named package""")
+					}
+					gradleVersion() < GradleVersion.version("7.0.0") -> {
+						Regex(""".*src.main.java.Pmd\.java:1:\tAll classes, interfaces, enums and annotations must belong to a named package""")
+					}
+					else -> {
+						Regex(""".*src.main.java.Pmd\.java:1:\tNoPackage:\tAll classes, interfaces, enums and annotations must belong to a named package""")
+					}
 				}
 	}
 
