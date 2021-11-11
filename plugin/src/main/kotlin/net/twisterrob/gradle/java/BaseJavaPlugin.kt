@@ -7,11 +7,13 @@ import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.base.BaseExposedPlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.getPlugin
 import org.gradle.kotlin.dsl.withType
+import org.gradle.util.GradleVersion
 
 private const val DEFAULT_ENCODING = "UTF-8"
 
@@ -35,11 +37,24 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 		}
 
 		if (project.plugins.hasPlugin(org.gradle.api.plugins.JavaPlugin::class.java)) {
-			with(project.convention.getPlugin<JavaPluginConvention>()) {
-				sourceCompatibility = JavaVersion.VERSION_1_7
-				targetCompatibility = JavaVersion.VERSION_1_8
+			when {
+				GradleVersion.current().baseVersion < GradleVersion.version("7.1") -> {
+					@Suppress("DEPRECATION")
+					with(project.convention.getPlugin<org.gradle.api.plugins.JavaPluginConvention>()) {
+						sourceCompatibility = JavaVersion.VERSION_1_7
+						targetCompatibility = JavaVersion.VERSION_1_8
 
-				sourceSets["main"].compileClasspath += project.configurations.maybeCreate("provided")
+						sourceSets["main"].compileClasspath += project.configurations.maybeCreate("provided")
+					}
+				}
+				else -> {
+					with(project.extensions.getByName<JavaPluginExtension>("java")) {
+						sourceCompatibility = JavaVersion.VERSION_1_7
+						targetCompatibility = JavaVersion.VERSION_1_8
+
+						sourceSets["main"].compileClasspath += project.configurations.maybeCreate("provided")
+					}
+				}
 			}
 		}
 
