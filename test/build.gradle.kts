@@ -31,9 +31,10 @@ dependencies {
 
 // Need to depend on the real artifact so TestPluginTest can work
 tasks.named<Test>("test") {
-	dependsOn("jar")
+	val jarOutput = tasks.jar.get().outputs.files
+	inputs.files(jarOutput).withPathSensitivity(PathSensitivity.RELATIVE)
 	doFirst {
-		val jarArtifactPath = tasks.jar.get().outputs.files.singleFile.parentFile
+		val jarArtifactPath = jarOutput.singleFile.parentFile
 		(this as Test).jvmArgs("-Dnet.twisterrob.gradle.test.artifactPath=${jarArtifactPath}")
 	}
 }
