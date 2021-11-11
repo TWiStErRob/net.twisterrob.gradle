@@ -3,6 +3,8 @@ package net.twisterrob.gradle.common
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.SourceKind
 import com.android.builder.model.AndroidProject.FD_GENERATED
+import net.twisterrob.gradle.compat.setOutputLocationCompat
+import net.twisterrob.gradle.compat.setRequired
 import org.gradle.api.Action
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
@@ -158,16 +160,17 @@ T : VerificationTask {
 			// stop the build only if user wanted this task, otherwise we'll gather the results at once for reporting
 			task.ignoreFailures = !task.wasLaunchedOnly
 			// TODO too soon?
-			val reporting = task.project.extensions.findByType(ReportingExtension::class.java)
-			val reportsDir = reporting!!.baseDir
+			val reporting: ReportingExtension = task.project.extensions.findByType(ReportingExtension::class.java)
+				?: error("Cannot find reporting extension, did you apply `reporting` plugin?")
+			val reportsDir = reporting.baseDirectory
 			with(task.reports) {
 				with(getByName("xml")) {
-					isEnabled = true
-					destination = File(reportsDir, "${baseName}${fullSuffix}.xml")
+					setRequired(true)
+					setOutputLocationCompat(reportsDir.file("${baseName}${fullSuffix}.xml"))
 				}
 				with(getByName("html")) {
-					isEnabled = true
-					destination = File(reportsDir, "${baseName}${fullSuffix}.html")
+					setRequired(true)
+					setOutputLocationCompat(reportsDir.file("${baseName}${fullSuffix}.html"))
 				}
 			}
 		}

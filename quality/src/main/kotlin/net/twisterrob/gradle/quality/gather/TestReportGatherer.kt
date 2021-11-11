@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality.gather
 
 import net.twisterrob.gradle.common.listFilesInDirectory
+import net.twisterrob.gradle.compat.getOutputLocationCompat
 import net.twisterrob.gradle.quality.parsers.JUnitParser
 import org.gradle.api.tasks.testing.Test
 import se.bjurr.violations.lib.model.Violation
@@ -15,10 +16,10 @@ class TestReportGatherer<T>(
 	private val parser: ViolationsParser = JUnitParser()
 
 	override fun getParsableReportLocation(task: T): File =
-		task.reports.junitXml.destination
+		task.reports.junitXml.getOutputLocationCompat()
 
 	override fun getHumanReportLocation(task: T): File =
-		task.reports.html.destination
+		task.reports.html.getOutputLocationCompat()
 
 	override fun getName(task: T): String =
 		task.path
