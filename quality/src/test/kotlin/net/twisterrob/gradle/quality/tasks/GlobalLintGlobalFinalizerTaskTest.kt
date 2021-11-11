@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -15,10 +16,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
+/**
+ * @see GlobalLintGlobalFinalizerTask
+ */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class GlobalLintGlobalFinalizerTaskTest {
+class GlobalLintGlobalFinalizerTaskTest : BaseIntgTest() {
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `passes when no lint violations found`() {
 		val modules: Array<String> = arrayOf(

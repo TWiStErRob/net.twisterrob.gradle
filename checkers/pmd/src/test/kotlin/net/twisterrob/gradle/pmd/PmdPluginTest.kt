@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.pmd
 
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -25,14 +26,14 @@ import kotlin.test.assertEquals
  * @see PmdPlugin
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class PmdPluginTest {
+class PmdPluginTest : BaseIntgTest() {
 
 	companion object {
 
 		private val endl = System.lineSeparator()
 	}
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 
 	private val pmd = PmdTestResources { gradle.gradleVersion }
 

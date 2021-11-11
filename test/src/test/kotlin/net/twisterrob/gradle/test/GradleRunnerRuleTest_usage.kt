@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.test
 
+import net.twisterrob.gradle.BaseIntgTest
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
@@ -10,10 +11,13 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import kotlin.test.assertEquals
 
+/**
+ * @see GradleRunnerRule
+ */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class GradleRunnerRuleTest_usage {
+class GradleRunnerRuleTest_usage : BaseIntgTest() {
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `gradle script test`() {
 		@Language("gradle")

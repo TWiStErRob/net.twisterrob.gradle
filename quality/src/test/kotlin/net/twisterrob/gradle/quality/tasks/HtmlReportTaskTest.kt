@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.runBuild
@@ -20,9 +21,9 @@ import kotlin.test.assertEquals
  * @see HtmlReportTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class HtmlReportTaskTest {
+class HtmlReportTaskTest : BaseIntgTest() {
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `runs on empty project`() {
 		gradle.basedOn("android-root_app")

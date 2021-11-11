@@ -1,16 +1,20 @@
 package net.twisterrob.gradle.test
 
 import junit.runner.Version
+import net.twisterrob.gradle.BaseIntgTest
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
+/**
+ * @see TestPlugin
+ */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class TestPluginTest {
+class TestPluginTest : BaseIntgTest() {
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 
 	/**
 	 * Set up a full Gradle project in a test that has a test to test the plugin that helps testing Gradle.

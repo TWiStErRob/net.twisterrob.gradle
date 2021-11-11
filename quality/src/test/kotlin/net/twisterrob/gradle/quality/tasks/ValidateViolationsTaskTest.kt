@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -15,8 +16,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
+/**
+ * @see ValidateViolationsTask
+ */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class ValidateViolationsTaskTest {
+class ValidateViolationsTaskTest : BaseIntgTest() {
 
 	companion object {
 		val CONFIG_PATH_CS = arrayOf("config", "checkstyle", "checkstyle.xml")
@@ -27,7 +31,7 @@ class ValidateViolationsTaskTest {
 		val VIOLATION_PATTERN = Regex("""([A-Z][a-zA-Z0-9_]+?)_(\d)\.java""")
 	}
 
-	private lateinit var gradle: GradleRunnerRule
+	override lateinit var gradle: GradleRunnerRule
 
 	private val checkstyle = CheckstyleTestResources()
 	private val pmd = PmdTestResources { gradle.gradleVersion }
