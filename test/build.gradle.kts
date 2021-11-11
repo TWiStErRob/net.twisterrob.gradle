@@ -39,11 +39,12 @@ tasks.named<Test>("test") {
 }
 
 tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
-	val jarArtifact = tasks.jar.get().outputs.files.singleFile
+	val jarOutput = tasks.jar.get().outputs.files
+	inputs.files(jarOutput).withPathSensitivity(PathSensitivity.RELATIVE)
 	pluginClasspath.apply {
 		setFrom()
 		from(configurations.runtimeClasspath - configurations.compileOnly)
-		from(jarArtifact)
+		from(jarOutput.singleFile)
 	}
 }
 
