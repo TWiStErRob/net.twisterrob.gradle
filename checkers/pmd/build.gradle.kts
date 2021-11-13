@@ -19,3 +19,12 @@ dependencies {
 }
 
 pullTestResourcesFrom(":test")
+
+gradlePlugin {
+	plugins {
+		create("net.twisterrob.pmd") {
+			id = "net.twisterrob.pmd"
+			implementationClass = "net.twisterrob.gradle.pmd.PmdPlugin"
+		}
+	}
+}
