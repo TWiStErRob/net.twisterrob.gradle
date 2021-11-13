@@ -19,3 +19,12 @@ dependencies {
 }
 
 pullTestResourcesFrom(":test")
+
+gradlePlugin {
+	plugins {
+		create("net.twisterrob.checkstyle") {
+			id = "net.twisterrob.checkstyle"
+			implementationClass = "net.twisterrob.gradle.checkstyle.CheckStylePlugin"
+		}
+	}
+}
