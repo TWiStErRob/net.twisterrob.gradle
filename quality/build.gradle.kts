@@ -33,4 +33,4 @@ dependencies {
 	testImplementation(testFixtures(projects.checkstyle))
 }
 
-pullTestResourcesFrom(":test")
+pullTestResourcesFrom(projects.test)

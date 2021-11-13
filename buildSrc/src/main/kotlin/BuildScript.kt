@@ -4,6 +4,7 @@
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.FileCollectionDependency
+import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.file.SourceDirectorySet
@@ -44,7 +45,9 @@ fun SourceSet.kotlin(action: SourceDirectorySet.() -> Unit) {
 /**
  * Pull in resources from other modules' `src/test/resources` folders.
  */
-fun Project.pullTestResourcesFrom(projectPath: String) = pullTestResourcesFrom(evaluationDependsOn(projectPath))
+fun Project.pullTestResourcesFrom(project: ProjectDependency) {
+	pullTestResourcesFrom(evaluationDependsOn(project.dependencyProject.path))
+}
 
 private fun Project.pullTestResourcesFrom(project: Project) {
 	val myResources = this.java.sourceSets["test"].resources

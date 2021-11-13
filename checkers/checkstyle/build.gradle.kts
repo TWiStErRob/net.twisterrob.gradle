@@ -27,4 +27,4 @@ dependencies {
 	testFixturesImplementation(projects.test.internal)
 }
 
-pullTestResourcesFrom(":test")
+pullTestResourcesFrom(projects.test)
