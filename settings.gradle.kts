@@ -1,6 +1,8 @@
 // TODEL https://github.com/gradle/gradle/issues/18971
 rootProject.name = "net-twisterrob-gradle"
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 include(":quality")
 include(":plugin")
 include(":common")
@@ -11,8 +13,6 @@ listOf("checkstyle", "pmd").forEach {
 	include(":${it}")
 	project(":${it}").projectDir = file("checkers/${it}")
 }
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toBoolean()) {
 	includeBuild("docs/examples/local")
