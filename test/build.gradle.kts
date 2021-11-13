@@ -7,6 +7,15 @@ plugins {
 base.archivesBaseName = "twister-gradle-test"
 description = "Test: Gradle test plugin."
 
+gradlePlugin {
+	plugins {
+		create("net.twisterrob.gradle.test") {
+			id = "net.twisterrob.gradle.test"
+			implementationClass = "net.twisterrob.gradle.test.TestPlugin"
+		}
+	}
+}
+
 dependencies {
 	compileOnly(gradleTestKitWithoutKotlin())
 
