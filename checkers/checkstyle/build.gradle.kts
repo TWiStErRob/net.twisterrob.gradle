@@ -8,6 +8,15 @@ plugins {
 base.archivesBaseName = "twister-quality-checkstyle"
 description = "Checkstyle: Checkstyle quality setup plugin for Gradle."
 
+gradlePlugin {
+	plugins {
+		create("net.twisterrob.checkstyle") {
+			id = "net.twisterrob.checkstyle"
+			implementationClass = "net.twisterrob.gradle.checkstyle.CheckStylePlugin"
+		}
+	}
+}
+
 dependencies {
 	api(project(":common"))
 
@@ -19,12 +28,3 @@ dependencies {
 }
 
 pullTestResourcesFrom(":test")
-
-gradlePlugin {
-	plugins {
-		create("net.twisterrob.checkstyle") {
-			id = "net.twisterrob.checkstyle"
-			implementationClass = "net.twisterrob.gradle.checkstyle.CheckStylePlugin"
-		}
-	}
-}
