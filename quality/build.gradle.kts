@@ -8,6 +8,15 @@ plugins {
 base.archivesBaseName = "twister-quality"
 description = "Quality: All quality plugins bundled in one."
 
+gradlePlugin {
+	plugins {
+		create("net.twisterrob.quality") {
+			id = "net.twisterrob.quality"
+			implementationClass = "net.twisterrob.gradle.quality.QualityPlugin"
+		}
+	}
+}
+
 dependencies {
 	api(project(":common"))
 	api(project(":checkstyle"))

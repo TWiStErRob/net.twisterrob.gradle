@@ -8,6 +8,15 @@ plugins {
 base.archivesBaseName = "twister-quality-pmd"
 description = "PMD: PMD quality setup plugin for Gradle."
 
+gradlePlugin {
+	plugins {
+		create("net.twisterrob.pmd") {
+			id = "net.twisterrob.pmd"
+			implementationClass = "net.twisterrob.gradle.pmd.PmdPlugin"
+		}
+	}
+}
+
 dependencies {
 	api(project(":common"))
 

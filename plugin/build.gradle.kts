@@ -7,6 +7,45 @@ plugins {
 base.archivesBaseName = "twister-convention-plugins"
 description = "Convention Plugins: Gradle Plugins used by my hobby projects."
 
+gradlePlugin {
+	plugins {
+		create("net.twisterrob.root") {
+			id = "net.twisterrob.root"
+			implementationClass = "net.twisterrob.gradle.base.BaseExposedPlugin"
+		}
+		create("net.twisterrob.vcs") {
+			id = "net.twisterrob.vcs"
+			implementationClass = "net.twisterrob.gradle.vcs.VCSPlugin"
+		}
+
+		create("net.twisterrob.java") {
+			id = "net.twisterrob.java"
+			implementationClass = "net.twisterrob.gradle.java.JavaPlugin"
+		}
+		create("net.twisterrob.java-library") {
+			id = "net.twisterrob.java-library"
+			implementationClass = "net.twisterrob.gradle.java.JavaLibPlugin"
+		}
+		create("net.twisterrob.kotlin") {
+			id = "net.twisterrob.kotlin"
+			implementationClass = "net.twisterrob.gradle.kotlin.KotlinPlugin"
+		}
+
+		create("net.twisterrob.android-app") {
+			id = "net.twisterrob.android-app"
+			implementationClass = "net.twisterrob.gradle.android.AndroidAppPlugin"
+		}
+		create("net.twisterrob.android-library") {
+			id = "net.twisterrob.android-library"
+			implementationClass = "net.twisterrob.gradle.android.AndroidLibraryPlugin"
+		}
+		create("net.twisterrob.android-test") {
+			id = "net.twisterrob.android-test"
+			implementationClass = "net.twisterrob.gradle.android.AndroidTestPlugin"
+		}
+	}
+}
+
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	implementation(project(":common"))
