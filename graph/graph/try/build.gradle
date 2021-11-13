@@ -35,9 +35,8 @@ android {
 project.afterEvaluate {
 	def newTask = { String name, Closure action ->
 		def t = project.task(name)
-		t.outputs.upToDateWhen {
-			false
-		}
+		t.doNotTrackState("Only has side effects on build execution.")
+		t.outputs.upToDateWhen { false }
 		t.doLast action
 		tasks.preBuild.dependsOn t
 		return t;

@@ -7,18 +7,16 @@ import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.internal.HasConvention
 import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
 import org.gradle.api.internal.artifacts.dsl.dependencies.DependencyFactory.ClassPathNotation
 import org.gradle.api.internal.file.FileCollectionInternal
-import org.gradle.api.plugins.BasePluginConvention
+import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSet
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
-import org.gradle.kotlin.dsl.getPluginByName
 import org.gradle.kotlin.dsl.gradleKotlinDsl
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
@@ -26,10 +24,12 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 /**
  * @see <a href="https://github.com/JetBrains/kotlin/blob/v1.2.20/buildSrc/src/main/kotlin/sourceSets.kt#L45-L54">sourceSets.kt</a>
  * @see <a href="https://github.com/gradle/kotlin-dsl/issues/343#issuecomment-331636906">DSL</a>
+ * @see <a href="https://youtrack.jetbrains.com/issue/KT-47047">Replacement not ready</a>
  */
+@Suppress("DEPRECATION")
 val SourceSet.kotlin: SourceDirectorySet
 	get() =
-		(this as HasConvention)
+		(this as org.gradle.api.internal.HasConvention)
 			.convention
 			.getPlugin(KotlinSourceSet::class.java)
 			.kotlin
@@ -55,11 +55,11 @@ private fun Project.pullTestResourcesFrom(project: Project) {
 /**
  * @see <a href="file://.../gradle-kotlin-dsl-accessors/.../src/org/gradle/kotlin/dsl/accessors.kt">Generated code</a>
  */
-val Project.java: JavaPluginConvention
-	get() = convention.getPluginByName("java")
+val Project.java: JavaPluginExtension
+	get() = this.extensions.getByName<JavaPluginExtension>("java")
 
-val Project.base: BasePluginConvention
-	get() = convention.getPluginByName("base")
+val Project.base: BasePluginExtension
+	get() = this.extensions.getByName<BasePluginExtension>("base")
 
 val Project.gradlePlugin: GradlePluginDevelopmentExtension
 	get() = this.extensions.getByName<GradlePluginDevelopmentExtension>("gradlePlugin")
@@ -69,18 +69,17 @@ val Project.gradlePlugin: GradlePluginDevelopmentExtension
  */
 fun Project.replaceGradlePluginAutoDependenciesWithoutKotlin() {
 	plugins.withId("org.gradle.java-gradle-plugin") {
-		@Suppress("DEPRECATION")
 		dependencies {
 			// Undo org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin.applyDependencies
-			if (configurations[JavaPlugin.COMPILE_CONFIGURATION_NAME].dependencies.remove(gradleApi())) {
-				add(JavaPlugin.COMPILE_CONFIGURATION_NAME, gradleApiWithoutKotlin())
+			if (configurations[JavaPlugin.API_CONFIGURATION_NAME].dependencies.remove(gradleApi())) {
+				add(JavaPlugin.API_CONFIGURATION_NAME, gradleApiWithoutKotlin())
 			}
 
 			// Undo org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin.TestKitAndPluginClasspathDependenciesAction
 			afterEvaluate {
 				gradlePlugin.testSourceSets.forEach {
-					if (configurations[it.compileConfigurationName].dependencies.remove(gradleTestKit())) {
-						add(it.compileConfigurationName, gradleTestKitWithoutKotlin())
+					if (configurations[it.implementationConfigurationName].dependencies.remove(gradleTestKit())) {
+						add(it.implementationConfigurationName, gradleTestKitWithoutKotlin())
 					}
 				}
 			}

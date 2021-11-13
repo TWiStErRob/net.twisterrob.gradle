@@ -137,7 +137,7 @@ allprojects {
 	}
 
 	plugins.withId("java") {
-		val java = convention.getPluginByName<JavaPluginConvention>("java")
+		val java = extensions.getByName<JavaPluginExtension>("java")
 		java.sourceCompatibility = Libs.javaVersion
 		java.targetCompatibility = Libs.javaVersion
 		tasks.named<Test>("test") { testLogging.events("passed", "skipped", "failed") }
@@ -148,7 +148,7 @@ allprojects {
 						mapOf(
 							// Implementation-* used by TestPlugin
 							"Implementation-Vendor" to project.group,
-							"Implementation-Title" to project.base.archivesBaseName,
+							"Implementation-Title" to project.base.archivesName.get(),
 							"Implementation-Version" to project.version,
 							// TODO Make sure it doesn't change often (skip for SNAPSHOT)
 							// otherwise :jar always re-packages and compilations cascade
@@ -183,7 +183,7 @@ project.tasks.create<TestReport>("tests") {
 	allprojects.forEach { subproject ->
 		subproject.tasks.withType<Test> {
 			ignoreFailures = true
-			reports.junitXml.isEnabled = true
+			reports.junitXml.required.set(true)
 			this@create.reportOn(this@withType)
 		}
 	}
@@ -191,7 +191,8 @@ project.tasks.create<TestReport>("tests") {
 		val reportFile = File(destinationDir, "index.html")
 		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
 		if (!successRegex.containsMatchIn(reportFile.readText())) {
-			throw GradleException("There were failing tests. See the report at: ${reportFile.toURI()}")
+			val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
+			throw GradleException("There were failing tests. See the report at: ${reportPath}")
 		}
 	}
 }

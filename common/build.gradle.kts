@@ -4,7 +4,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesBaseName = "twister-quality-common"
+base.archivesName.set("twister-quality-common")
 description = "Common: Shared classes between checkers. (Not to be consumed directly.)"
 
 dependencies {

@@ -25,6 +25,7 @@ open class CheckStyleTask : Checkstyle(), TargetChecker {
 			"basedir" to project.projectDir, // TODO or rootDir?
 			"project_loc" to project.rootDir,
 			"workspace_loc" to project.rootDir
+			// Note: https://docs.gradle.org/current/userguide/upgrading_version_6.html#setting_the_config_loc_config_property_on_the_checkstyle_plugin_is_now_an_error
 			//"config_loc" to configFile.parentFile // set via setConfigDir
 			//"samedir" to /*use config_loc instead (until I figure out how to do doFirst properly)*/
 		)

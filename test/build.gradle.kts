@@ -4,7 +4,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesBaseName = "twister-gradle-test"
+base.archivesName.set("twister-gradle-test")
 description = "Test: Gradle test plugin."
 
 gradlePlugin {
@@ -31,19 +31,21 @@ dependencies {
 
 // Need to depend on the real artifact so TestPluginTest can work
 tasks.named<Test>("test") {
-	dependsOn("jar")
+	val jarOutput = tasks.jar.get().outputs.files
+	inputs.files(jarOutput).withPathSensitivity(PathSensitivity.RELATIVE)
 	doFirst {
-		val jarArtifactPath = tasks.jar.get().outputs.files.singleFile.parentFile
+		val jarArtifactPath = jarOutput.singleFile.parentFile
 		(this as Test).jvmArgs("-Dnet.twisterrob.gradle.test.artifactPath=${jarArtifactPath}")
 	}
 }
 
 tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
-	val jarArtifact = tasks.jar.get().outputs.files.singleFile
+	val jarOutput = tasks.jar.get().outputs.files
+	inputs.files(jarOutput).withPathSensitivity(PathSensitivity.RELATIVE)
 	pluginClasspath.apply {
 		setFrom()
 		from(configurations.runtimeClasspath - configurations.compileOnly)
-		from(jarArtifact)
+		from(jarOutput.singleFile)
 	}
 }
 

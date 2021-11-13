@@ -61,6 +61,7 @@ class TestPluginTest : BaseIntgTest() {
 		val artifactPath = System.getProperties()["net.twisterrob.gradle.test.artifactPath"].toString()
 		@Language("gradle")
 		val script = """
+			import org.gradle.util.GradleVersion
 			apply plugin: 'groovy'
 			apply plugin: 'net.twisterrob.gradle.test'
 
@@ -68,10 +69,17 @@ class TestPluginTest : BaseIntgTest() {
 				ivy {
 					// make /test/build/libs/X-0.0.jar available as 'net.twisterrob.gradle:X:0.0'
 					url '${artifactPath.replace("\\", "\\\\")}'
-					// Using layout(String, Closure) instead of patternLayout(Action) for backwards compatibility with Gradle 4.x
-					layout('pattern') {
-						artifact '[artifact]-[revision].[ext]'
-						m2compatible = true
+					// patternLayout(Action) was introduced in 5.0, layout(String, Closure) was removed in 7.0.
+					if (GradleVersion.current() < GradleVersion.version("5.0.0")) {
+						layout('pattern') {
+							artifact '[artifact]-[revision].[ext]'
+							m2compatible = true
+						}
+					} else {
+						patternLayout {
+							artifact '[artifact]-[revision].[ext]'
+							m2compatible = true
+						}
 					}
 					// https://docs.gradle.org/nightly/userguide/upgrading_version_5.html#maven_or_ivy_repositories_are_no_longer_queried_for_artifacts_without_metadata_by_default
 					metadataSources {

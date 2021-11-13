@@ -6,11 +6,19 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.provider.Provider
+import org.gradle.api.reporting.ConfigurableReport
+import org.gradle.api.reporting.DirectoryReport
+import org.gradle.api.reporting.Report
+import org.gradle.api.reporting.SingleFileReport
+import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.getPluginByName
 import org.gradle.util.GradleVersion
 import java.io.File
 
@@ -214,4 +222,96 @@ fun ProjectLayout.fileProperty(): RegularFileProperty {
 fun ProjectLayout.directoryProperty(): DirectoryProperty {
 	val directoryProperty = ProjectLayout::class.java.getDeclaredMethod("directoryProperty")
 	return directoryProperty(this) as DirectoryProperty
+}
+
+/**
+ * Gradle 4.3-7.3 compatible version of [BasePluginExtension.getArchivesName].
+ *
+ * @see org.gradle.api.plugins.BasePluginExtension.getArchivesBaseName
+ * @see org.gradle.api.plugins.BasePluginConvention.getArchivesBaseName
+ */
+// TODO Provider<String> ?
+val Project.archivesBaseNameCompat: String
+	get() =
+		when {
+			GradleVersion.current().baseVersion < GradleVersion.version("7.1") -> {
+				@Suppress("DEPRECATION")
+				this.convention
+					.getPluginByName<org.gradle.api.plugins.BasePluginConvention>("base")
+					.archivesBaseName
+			}
+			else -> {
+				// New in Gradle 7.0.
+				this.extensions
+					.getByName<BasePluginExtension>("base")
+					.archivesName
+					.get()
+			}
+		}
+
+/**
+ * Gradle 4.3-7.3 compatible version of [Report.getOutputLocation].get().
+ *
+ * @see Report.getDestination
+ * @see Report.getOutputLocation
+ */
+fun Report.getOutputLocationCompat(): File =
+	when {
+		GradleVersion.current().baseVersion < GradleVersion.version("6.1") -> {
+			@Suppress("DEPRECATION")
+			this.destination
+		}
+		else -> {
+			// New in Gradle 6.1.
+			this.outputLocation.get().asFile
+		}
+	}
+
+/**
+ * Gradle 4.3-7.3 compatible version of [ConfigurableReport.getOutputLocation].set().
+ *
+ * @see ConfigurableReport.setDestination
+ * @see ConfigurableReport.getOutputLocation
+ */
+fun ConfigurableReport.setOutputLocationCompat(destination: Provider<out FileSystemLocation>) {
+	when {
+		GradleVersion.current().baseVersion < GradleVersion.version("6.1") -> {
+			when (this) {
+				is SingleFileReport -> {
+					@Suppress("DEPRECATION")
+					this.destination = destination.get().asFile
+				}
+				is DirectoryReport -> {
+					@Suppress("DEPRECATION")
+					this.destination = destination.get().asFile
+				}
+			}
+		}
+		else -> {
+			// New in Gradle 6.1.
+			@Suppress("UNCHECKED_CAST")
+			when (this) {
+				is SingleFileReport -> outputLocation.set(destination as Provider<RegularFile>)
+				is DirectoryReport -> outputLocation.set(destination as Provider<Directory>)
+			}
+		}
+	}
+}
+
+/**
+ * Gradle 4.3-7.3 compatible version of [Report.getOutputLocation].
+ *
+ * @see ConfigurableReport.setRequired
+ * @see ConfigurableReport.setEnabled
+ */
+fun ConfigurableReport.setRequired(enabled: Boolean) {
+	when {
+		GradleVersion.current().baseVersion < GradleVersion.version("6.1") -> {
+			@Suppress("DEPRECATION")
+			isEnabled = enabled
+		}
+		else -> {
+			required.set(enabled)
+		}
+	}
 }

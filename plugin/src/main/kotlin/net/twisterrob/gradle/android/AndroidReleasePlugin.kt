@@ -57,13 +57,13 @@ class AndroidReleasePlugin : BasePlugin() {
 
 	private fun registerReleaseAllTask(): TaskProvider<Task> =
 		project.tasks.register<Task>("release") {
-			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
+			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives all builds"
 		}
 
 	private fun registerReleaseTasks(buildType: BuildType): TaskProvider<Task> {
 		val allBuildTypeTask = project.tasks.register<Task>("releaseAll${buildType.name.capitalize()}") {
-			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
+			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives all ${buildType.name} builds"
 		}
 		LOG.debug("Creating tasks for {}", buildType.name)
@@ -95,7 +95,7 @@ class AndroidReleasePlugin : BasePlugin() {
 
 	private fun registerReleaseTask(variant: ApkVariant): TaskProvider<Zip> {
 		val releaseVariantTask = project.tasks.register<Zip>("release${variant.name.capitalize()}") {
-			group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
+			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.description}"
 			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
 			archiveFileName.set(
@@ -158,7 +158,7 @@ class AndroidReleasePlugin : BasePlugin() {
 		}
 		if (releaseFlavorTask == null) {
 			releaseFlavorTask = project.tasks.register<Task>(releaseFlavorTaskName) {
-				group = org.gradle.api.plugins.BasePlugin.UPLOAD_GROUP
+				group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 				description = "Assembles and archives all builds for flavor ${flavor.name}"
 			}
 		}

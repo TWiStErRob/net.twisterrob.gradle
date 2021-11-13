@@ -5,7 +5,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesBaseName = "twister-quality-pmd"
+base.archivesName.set("twister-quality-pmd")
 description = "PMD: PMD quality setup plugin for Gradle."
 
 gradlePlugin {

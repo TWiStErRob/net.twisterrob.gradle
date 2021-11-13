@@ -5,7 +5,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesBaseName = "twister-quality-checkstyle"
+base.archivesName.set("twister-quality-checkstyle")
 description = "Checkstyle: Checkstyle quality setup plugin for Gradle."
 
 gradlePlugin {

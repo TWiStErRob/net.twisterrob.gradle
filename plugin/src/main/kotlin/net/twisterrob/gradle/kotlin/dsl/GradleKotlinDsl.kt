@@ -1,17 +1,15 @@
 package net.twisterrob.gradle.kotlin.dsl
 
 import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.api.plugins.BasePluginConvention
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginContainer
-import org.gradle.kotlin.dsl.getPluginByName
 
-// TODEL if https://github.com/gradle/kotlin-dsl/issues/1154 goes through
-internal val Any.extensions: ExtensionContainer get() = (this as ExtensionAware).extensions
-
-internal val Project.base: BasePluginConvention get() = convention.getPluginByName("base")
+/**
+ * See https://github.com/gradle/kotlin-dsl/issues/1154
+ */
+internal val Any.extensions: ExtensionContainer
+	get() = (this as ExtensionAware).extensions
 
 /**
  * Configures the [Plugin] with the given [pluginId] using [action], similar to [PluginContainer.withId], but type safe.

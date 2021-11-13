@@ -11,11 +11,13 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.UntrackedTask
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
+@UntrackedTask(because = "Input of this task is the current time.")
 open class CalculateBuildTimeTask : DefaultTask() {
 
 	/**
