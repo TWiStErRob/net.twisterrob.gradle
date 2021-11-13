@@ -1,4 +1,5 @@
-rootProject.name = "net.twisterrob.gradle"
+// TODEL https://github.com/gradle/gradle/issues/18971
+rootProject.name = "net-twisterrob-gradle"
 
 include(":quality")
 include(":plugin")
