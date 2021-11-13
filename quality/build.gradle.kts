@@ -18,19 +18,19 @@ gradlePlugin {
 }
 
 dependencies {
-	api(project(":common"))
-	api(project(":checkstyle"))
-	api(project(":pmd"))
+	api(projects.common)
+	api(projects.checkstyle)
+	api(projects.pmd)
 
 	compileOnly(Libs.Android.plugin)
 //	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")
 	api(Libs.violations)
 
-	testImplementation(project(":test:internal"))
+	testImplementation(projects.test.internal)
 	testRuntimeOnly(Libs.Android.plugin)
 
-	testImplementation(testFixtures(project(":pmd")))
-	testImplementation(testFixtures(project(":checkstyle")))
+	testImplementation(testFixtures(projects.pmd))
+	testImplementation(testFixtures(projects.checkstyle))
 }
 
 pullTestResourcesFrom(":test")

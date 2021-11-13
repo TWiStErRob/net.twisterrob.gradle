@@ -26,7 +26,7 @@ dependencies {
 
 	testImplementation(gradleApiWithoutKotlin())
 	testImplementation(gradleTestKitWithoutKotlin())
-	testImplementation(project(":test:internal"))
+	testImplementation(projects.test.internal)
 }
 
 // Need to depend on the real artifact so TestPluginTest can work

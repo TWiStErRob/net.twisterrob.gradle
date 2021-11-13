@@ -13,7 +13,7 @@ dependencies {
 	compileOnly(Libs.Android.plugin)
 	compileOnly(Libs.Annotations.jsr305)
 
-	testImplementation(project(":test:internal"))
+	testImplementation(projects.test.internal)
 	testImplementation(Libs.guava)
 }
 

@@ -11,6 +11,8 @@ listOf("checkstyle", "pmd").forEach {
 	project(":${it}").projectDir = file("checkers/${it}")
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toBoolean()) {
 	includeBuild("docs/examples/local")
 	includeBuild("docs/examples/snapshot")

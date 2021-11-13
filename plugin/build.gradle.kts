@@ -48,14 +48,14 @@ gradlePlugin {
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
-	implementation(project(":common"))
+	implementation(projects.common)
 	implementation(Libs.SVNKit.core)
 	implementation(Libs.SVNKit.cli)
 	implementation(Libs.jgit)
 	compileOnly(Libs.Android.plugin)
 	compileOnly(Libs.Kotlin.gradlePlugin)
 
-	testImplementation(project(":test:internal"))
+	testImplementation(projects.test.internal)
 	testImplementation(Libs.JUnit5.pioneer)
 	testImplementation(Libs.dexMemberList)
 	testCompileOnly(Libs.Android.plugin)

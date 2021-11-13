@@ -18,13 +18,13 @@ gradlePlugin {
 }
 
 dependencies {
-	api(project(":common"))
+	api(projects.common)
 
 	compileOnly(Libs.Android.plugin)
 
-	testImplementation(project(":test:internal"))
+	testImplementation(projects.test.internal)
 
-	testFixturesImplementation(project(":test:internal"))
+	testFixturesImplementation(projects.test.internal)
 }
 
 pullTestResourcesFrom(":test")
