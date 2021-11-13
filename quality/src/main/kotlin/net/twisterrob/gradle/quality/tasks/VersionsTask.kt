@@ -5,7 +5,9 @@ import org.gradle.api.plugins.quality.CheckstyleExtension
 import org.gradle.api.plugins.quality.CodeQualityExtension
 import org.gradle.api.plugins.quality.PmdExtension
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.UntrackedTask
 
+@UntrackedTask(because = "It is used to inspect Gradle state, output is console.")
 open class VersionsTask : DefaultTask() {
 
 	init {

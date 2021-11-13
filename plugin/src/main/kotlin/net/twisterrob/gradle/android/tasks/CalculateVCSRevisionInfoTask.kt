@@ -11,8 +11,11 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.UntrackedTask
 import org.gradle.kotlin.dsl.getByName
 
+// https://docs.gradle.org/7.3/release-notes.html#plugin-development-improvements
+@UntrackedTask(because = "Input of this task is .git or .svn folder.")
 open class CalculateVCSRevisionInfoTask : DefaultTask() {
 
 	@get:OutputFile
