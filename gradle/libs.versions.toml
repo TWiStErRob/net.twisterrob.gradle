@@ -13,6 +13,50 @@ kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
 kotlin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "kotlin" }
 nexus = { module = "io.github.gradle-nexus:publish-plugin", version.ref = "nexus" }
+# @see <a href="https://www.jetbrains.com/help/idea/annotating-source-code.html">Documentation</a>
+jetbrains = { module = "org.jetbrains:annotations", version.ref = "jetbrains" }
+# @see <a href="https://developer.android.com/studio/releases/gradle-plugin#updating-gradle">Compatibility</a>
+agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+lint = { module = "com.android.tools.lint:lint", version.ref = "lint" }
+lintApi = { module = "com.android.tools.lint:lint-api", version.ref = "lint" }
+lintGradle = { module = "com.android.tools.lint:lint-gradle", version.ref = "lint" }
+lintGradleApi = { module = "com.android.tools.lint:lint-gradle-api", version.ref = "lint" }
+lintChecks = { module = "com.android.tools.lint:lint-checks", version.ref = "lint" }
+toolsDdmLib = { module = "com.android.tools.ddms:ddmlib", version.ref = "lint" }
+toolsCommon = { module = "com.android.tools:common", version.ref = "lint" }
+kotlin.stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin.reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin.test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin.stdlib.jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre8", version.ref = "kotlin" }
+kotlin.stdlib.jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin.gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin.dsl = { module = "org.gradle:gradle-kotlin-dsl", version.ref = "kotlin-dsl" }
+# @Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk7"))
+kotlin.stdlib.jre7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre7", version.ref = "kotlin" }
+# @Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk8"))
+kotlin.stdlib.jre8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre8", version.ref = "kotlin" }
+junit4 = { module = "junit:junit", version.ref = "version" }
+junit.api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
+junit.params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit5" }
+# `runtimeOnly` dependency, because it implements some interfaces from api, but doesn't need to be visible to user.
+# @see <a href="https://junit.org/junit5/docs/current/user-guide/index.html#running-tests-build-gradle-engines-configure">Engines</a>
+junit.engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5" }
+# `runtimeOnly` dependency, because it implements some interfaces from junit-api, but doesn't need to be visible to user.
+junit.vintage = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit5" }
+junit.pioneer = { module = "org.junit-pioneer:junit-pioneer", version.ref = "junit5.pioneer" }
+mockito.core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito.junit5 = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+mockito.kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito.kotlin" }
+hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
+jfixture.java = { module = "com.flextrade.jfixture:jfixture", version.ref = "jfixture" }
+jfixture.kotlin = { module = "com.flextrade.jfixture:kfixture", version.ref = "1.0.0" }
+svnkit = { module = "org.tmatesoft.svnkit:svnkit", version.ref = "svnkit" }
+svnkit.cli = { module = "org.tmatesoft.svnkit:svnkit-cli", version.ref = "svnkit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+violations = { module = "se.bjurr.violations:violations-lib", version.ref = "violations" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
+dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = "dexMemberList" }
 
 [bundles]
 

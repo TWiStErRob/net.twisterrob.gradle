@@ -10,20 +10,20 @@ dependencies {
 
 	api(Libs.Annotations.jetbrains)
 
-	api(Libs.JUnit4.library) // needed for GradleRunnerRule superclass even when using Extension
-	api(Libs.JUnit5.api)
-	api(Libs.JUnit5.params)
-	runtimeOnly(Libs.JUnit5.engine)
+	api(Libs.JUnit4.junit4) // needed for GradleRunnerRule superclass even when using Extension
+	api(Libs.JUnit5.`junit.api`)
+	api(Libs.JUnit5.`junit.params`)
+	runtimeOnly(Libs.JUnit5.`junit.engine`)
 
-	api(Libs.Hamcrest.best)
+	api(Libs.Hamcrest.hamcrest)
 
-	api(Libs.Mockito.core)
-	api(Libs.Mockito.junit5)
-	api(Libs.Mockito.kotlin)
+	api(Libs.Mockito.`mockito.core`)
+	api(Libs.Mockito.`mockito.junit5`)
+	api(Libs.Mockito.`mockito.kotlin`)
 
 	api(Libs.mockk)
 
-	api(Libs.JFixture.java)
+	api(Libs.JFixture.`jfixture.java`)
 
 	// TODO use buildSrc sourceOnly configuration
 	// only here so IDEA can browse the source files of this dependency when getting a stack trace or finding usages

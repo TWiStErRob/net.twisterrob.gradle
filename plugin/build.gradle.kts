@@ -49,16 +49,16 @@ gradlePlugin {
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	implementation(projects.common)
-	implementation(Libs.SVNKit.core)
-	implementation(Libs.SVNKit.cli)
+	implementation(Libs.SVNKit.svnkit)
+	implementation(Libs.SVNKit.`svnkit.cli`)
 	implementation(Libs.jgit)
-	compileOnly(Libs.Android.plugin)
-	compileOnly(Libs.Kotlin.gradlePlugin)
+	compileOnly(Libs.Android.agp)
+	compileOnly(Libs.Kotlin.`kotlin.gradle`)
 
 	testImplementation(projects.test.internal)
-	testImplementation(Libs.JUnit5.pioneer)
+	testImplementation(Libs.JUnit5.`junit.pioneer`)
 	testImplementation(Libs.dexMemberList)
-	testCompileOnly(Libs.Android.plugin)
+	testCompileOnly(Libs.Android.agp)
 	// GradleTestHelpersKt.hasDevices uses com.android.ddmlib.AndroidDebugBridge.
 	testImplementation(Libs.Android.toolsDdmLib)
 	// AndroidInstallRunnerTaskTest calls production code directly,

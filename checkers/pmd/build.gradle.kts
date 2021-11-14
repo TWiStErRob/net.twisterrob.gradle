@@ -20,7 +20,7 @@ gradlePlugin {
 dependencies {
 	api(projects.common)
 
-	compileOnly(Libs.Android.plugin)
+	compileOnly(Libs.Android.agp)
 
 	testImplementation(projects.test.internal)
 
