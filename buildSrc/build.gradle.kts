@@ -34,7 +34,7 @@ dependencies {
 	implementation(kotlin("gradle-plugin", version = kotlin_version))
 	implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:${kotlin_version}"))
 	implementation(kotlin("compiler-embeddable", version = kotlin_version))
-	implementation("org.jetbrains.dokka:dokka-gradle-plugin:${kotlin_version}")
+	implementation(deps.kotlin.dokka)
 	implementation("io.github.gradle-nexus:publish-plugin:${nexus_version}")
 }
 
