@@ -1,8 +1,70 @@
 [versions]
 # https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/
 jsr305 = "3.0.2"
-kotlin = "1.4.32"
 nexus = "1.1.0"
+
+# @see <a href="https://github.com/JetBrains/java-annotations">Repository</a>
+# @see <a href="https://repo1.maven.org/maven2/org/jetbrains/annotations/">Artifacts</a>
+jetbrains = "21.0.0"
+
+# @see lint which is affected by this
+agp = "4.2.2"
+
+# = 23.0.0 + [agp].
+# @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
+# @see `builder-model//version.properties`
+lint = "27.2.2"
+
+# @see <a href="https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md">Changelog</a>
+# @see kotlin_version in buildSrc/gradle.properties
+kotlin = "1.4.32"
+
+# @see <a href="https://github.com/gradle/kotlin-dsl/releases">GitHub Releases</a>
+# @see <a href="https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/">Artifacts</a>
+# TODO there's no later version that 6.1.1, even though Gradle is 6.9 / 7.x already.
+kotlin-dsl = "6.1.1"
+
+# @see <a href="https://github.com/junit-team/junit4/tree/main/doc">Release notes</a>
+# @see <a href="https://github.com/junit-team/junit4/wiki">Major releases</a>
+version = "4.13.2"
+
+
+# JUnit 5 = JUnit Platform (api) + JUnit Jupiter (engine) + JUnit Vintage (vintage)
+# @see <a href="https://junit.org/junit5/docs/current/release-notes/index.html">Changelog</a>
+junit5 = "5.8.1"
+
+# @see <a href="https://github.com/junit-pioneer/junit-pioneer/releases">GitHub Releases</a>
+junit5-pioneer = "1.4.2"
+
+# @see <a href="https://mvnrepository.com/artifact/org.mockito/mockito-core">Artifacts</a>
+# @see <a href="https://github.com/mockito/mockito/blob/release/2.x/doc/release-notes/official.md">Changelog</a>
+mockito = "3.10.0"
+
+# @see <a href="https://github.com/nhaarman/mockito-kotlin/releases">GitHub releases</a>
+mockito-kotlin = "3.2.0"
+hamcrest = "2.2"
+
+# @see <a href="https://github.com/FlexTradeUKLtd/jfixture/releases">GitHub releases</a>
+jfixture = "2.7.2"
+
+# @see <a href="https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit">Versions</a>
+svnkit = "1.10.3"
+
+# @see <a href="https://github.com/mockk/mockk/releases">GitHub releases</a>
+mockk = "1.11.0"
+
+# @see <a href="https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md">Changelog</a>
+# @see <a href="https://github.com/tomasbjerre/violations-lib/releases">GitHub Releases</a>
+violations = "1.81"
+
+guava = "22.0"
+
+# @see <a href="https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit">Version history</a>
+# @see <a href="https://projects.eclipse.org/projects/technology.jgit">Changelog (Full)</a>
+# @see <a href="https://wiki.eclipse.org/JGit/New_and_Noteworthy">Changelog (Summary)</a>
+jgit = "5.13.0.202109080827-r"
+
+dexMemberList = "4.1.1"
 
 [libraries]
 # JSR 305: Annotations for Software Defect Detection
