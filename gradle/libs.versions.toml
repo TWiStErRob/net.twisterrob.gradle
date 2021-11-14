@@ -8,6 +8,7 @@ nexus = "1.1.0"
 # JSR 305: Annotations for Software Defect Detection
 # https://jcp.org/en/jsr/detail?id=305
 jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "kotlin" }
 nexus = { module = "io.github.gradle-nexus:publish-plugin", version.ref = "nexus" }
 

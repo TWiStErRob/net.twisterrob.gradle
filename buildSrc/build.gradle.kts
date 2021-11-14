@@ -32,7 +32,7 @@ val nexus_version: String by project
 
 dependencies {
 	implementation(kotlin("gradle-plugin", version = kotlin_version))
-	implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:${kotlin_version}"))
+	implementation(enforcedPlatform(deps.kotlin.bom))
 	implementation(kotlin("compiler-embeddable", version = kotlin_version))
 	implementation(deps.kotlin.dokka)
 	compileOnly(deps.nexus)
