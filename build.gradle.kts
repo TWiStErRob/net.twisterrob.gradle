@@ -35,6 +35,7 @@ allprojects {
 	// because com.android.tools.idea.gradle.dsl.model.ext.PropertyUtil.followElement
 	// from idea-2021.1.3\plugins\android-gradle-dsl\lib\android-gradle-dsl-impl.jar
 	// runs into an infinite loop on it.
+	// TODEL Affects anything with Android Plugin < 2020.3.1 (i.e. AS 4.x, and IJ <2021.3)
 	val deps = rootProject.libs
 	replaceGradlePluginAutoDependenciesWithoutKotlin()
 
