@@ -31,7 +31,11 @@ subprojects {
 
 allprojects {
 	// Extension with name 'libs' does not exist. Currently registered extension names: [ext, kotlin, kotlinTestRegistry, base, defaultArtifacts, sourceSets, reporting, java, javaToolchains, testing]
-	val libs = rootProject.libs
+	// Needs to be called different from libs,
+	// because com.android.tools.idea.gradle.dsl.model.ext.PropertyUtil.followElement
+	// from idea-2021.1.3\plugins\android-gradle-dsl\lib\android-gradle-dsl-impl.jar
+	// runs into an infinite loop on it.
+	val deps = rootProject.libs
 	replaceGradlePluginAutoDependenciesWithoutKotlin()
 
 	configurations.all {
@@ -40,14 +44,14 @@ allprojects {
 		replaceHamcrestDependencies()
 		resolutionStrategy {
 			// make sure we don't have many versions of Kotlin lying around
-			force(libs.kotlin.stdlib)
-			force(libs.kotlin.reflect)
+			force(deps.kotlin.stdlib)
+			force(deps.kotlin.reflect)
 			@Suppress("DEPRECATION") // force version so that it's upgraded correctly with useTarget
-			force(libs.kotlin.stdlib.jre7)
-			force(libs.kotlin.stdlib.jdk7)
+			force(deps.kotlin.stdlib.jre7)
+			force(deps.kotlin.stdlib.jdk7)
 			@Suppress("DEPRECATION") // force version so that it's upgraded correctly with useTarget
-			force(libs.kotlin.stdlib.jre8)
-			force(libs.kotlin.stdlib.jdk8)
+			force(deps.kotlin.stdlib.jre8)
+			force(deps.kotlin.stdlib.jdk8)
 		}
 	}
 
@@ -130,11 +134,11 @@ allprojects {
 //			add("compileOnly", libs.kotlin.dsl.toString()) {
 //				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
 //			}
-			add("api", libs.kotlin.stdlib)
-			add("api", libs.kotlin.stdlib.jdk8)
-			add("api", libs.kotlin.reflect)
+			add("api", deps.kotlin.stdlib)
+			add("api", deps.kotlin.stdlib.jdk8)
+			add("api", deps.kotlin.reflect)
 
-			add("testImplementation", libs.kotlin.test)
+			add("testImplementation", deps.kotlin.test)
 		}
 	}
 
