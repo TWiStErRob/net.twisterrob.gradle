@@ -132,9 +132,9 @@ allprojects {
 	plugins.withId("kotlin") {
 		dependencies {
 			//add("implementation", "org.funktionale:funktionale-partials:1.2")
-//			add("compileOnly", libs.kotlin.dsl.toString()) {
-//				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
-//			}
+			add("compileOnly", deps.kotlin.dsl) {
+				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
+			}
 			add("api", deps.kotlin.stdlib)
 			add("api", deps.kotlin.stdlib.jdk8)
 			add("api", deps.kotlin.reflect)
