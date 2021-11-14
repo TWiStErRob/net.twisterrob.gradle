@@ -44,13 +44,13 @@ allprojects {
 		replaceKotlinJre8WithJdk8()
 		replaceHamcrestDependencies()
 		resolutionStrategy {
-			// make sure we don't have many versions of Kotlin lying around
+			// Make sure we don't have many versions of Kotlin lying around.
 			force(deps.kotlin.stdlib)
 			force(deps.kotlin.reflect)
-			@Suppress("DEPRECATION") // force version so that it's upgraded correctly with useTarget
+			// Force version so that it's upgraded correctly with useTarget.
 			force(deps.kotlin.stdlib.jre7)
 			force(deps.kotlin.stdlib.jdk7)
-			@Suppress("DEPRECATION") // force version so that it's upgraded correctly with useTarget
+			// Force version so that it's upgraded correctly with useTarget.
 			force(deps.kotlin.stdlib.jre8)
 			force(deps.kotlin.stdlib.jdk8)
 		}
