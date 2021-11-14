@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 
 plugins {
 //	kotlin("jvm") apply false
-	id("io.github.gradle-nexus.publish-plugin")
+	alias(libs.plugins.nexus)
 }
 
 val projectVersion: String by project

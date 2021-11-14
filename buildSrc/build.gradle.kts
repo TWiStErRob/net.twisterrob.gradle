@@ -35,7 +35,7 @@ dependencies {
 	implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:${kotlin_version}"))
 	implementation(kotlin("compiler-embeddable", version = kotlin_version))
 	implementation(deps.kotlin.dokka)
-	implementation("io.github.gradle-nexus:publish-plugin:${nexus_version}")
+	compileOnly(deps.nexus)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
