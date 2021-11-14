@@ -40,15 +40,15 @@ object Libs {
 			if (requested.group == "org.hamcrest") {
 				when (requested.name) {
 					"java-hamcrest" -> {
-						useTarget("org.hamcrest:hamcrest:${this@Hamcrest.hamcrest}")
+						useTarget("org.hamcrest:hamcrest:2.2")
 						because("2.0.0.0 shouldn't have been published")
 					}
 					"hamcrest-core" -> { // Could be 1.3 (JUnit 4) or 2.x too.
-						useTarget("org.hamcrest:hamcrest:${this@Hamcrest.hamcrest}")
+						useTarget("org.hamcrest:hamcrest:2.2")
 						because("hamcrest-core doesn't contain anything")
 					}
 					"hamcrest-library" -> {
-						useTarget("org.hamcrest:hamcrest:${this@Hamcrest.hamcrest}")
+						useTarget("org.hamcrest:hamcrest:2.2")
 						because("hamcrest-library doesn't contain anything")
 					}
 				}
