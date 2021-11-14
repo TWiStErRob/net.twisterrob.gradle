@@ -30,6 +30,8 @@ subprojects {
 }
 
 allprojects {
+	// Extension with name 'libs' does not exist. Currently registered extension names: [ext, kotlin, kotlinTestRegistry, base, defaultArtifacts, sourceSets, reporting, java, javaToolchains, testing]
+	val libs = rootProject.libs
 	replaceGradlePluginAutoDependenciesWithoutKotlin()
 
 	configurations.all {
@@ -125,9 +127,9 @@ allprojects {
 	plugins.withId("kotlin") {
 		dependencies {
 			//add("implementation", "org.funktionale:funktionale-partials:1.2")
-			add("compileOnly", libs.kotlin.dsl) {
-				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
-			}
+//			add("compileOnly", libs.kotlin.dsl.toString()) {
+//				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
+//			}
 			add("api", libs.kotlin.stdlib)
 			add("api", libs.kotlin.stdlib.jdk8)
 			add("api", libs.kotlin.reflect)
