@@ -21,7 +21,7 @@ dependencies {
 
 	compileOnly(Libs.JUnit4.library)
 	compileOnly(Libs.JUnit5.api)
-	compileOnly(Libs.Annotations.jsr305)
+	compileOnly(libs.jsr305)
 	compileOnly(Libs.Annotations.jetbrains)
 
 	testImplementation(gradleApiWithoutKotlin())

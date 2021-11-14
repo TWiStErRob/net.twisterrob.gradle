@@ -11,7 +11,7 @@ dependencies {
 	implementation(gradleApiWithoutKotlin())
 
 	compileOnly(Libs.Android.plugin)
-	compileOnly(Libs.Annotations.jsr305)
+	compileOnly(libs.jsr305)
 
 	testImplementation(projects.test.internal)
 	testImplementation(Libs.guava)
