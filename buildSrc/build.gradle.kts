@@ -31,9 +31,9 @@ val kotlin_version: String by project
 val nexus_version: String by project
 
 dependencies {
-	implementation(kotlin("gradle-plugin", version = kotlin_version))
+	implementation(deps.kotlin.gradle)
 	implementation(enforcedPlatform(deps.kotlin.bom))
-	implementation(kotlin("compiler-embeddable", version = kotlin_version))
+	implementation(deps.kotlin.compiler)
 	implementation(deps.kotlin.dokka)
 	compileOnly(deps.nexus)
 }
