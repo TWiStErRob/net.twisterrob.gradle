@@ -8,9 +8,9 @@ dependencies {
 	api(gradleApiWithoutKotlin())
 	api(gradleTestKitWithoutKotlin())
 
-	api(libs.jetbrains)
+	api(libs.annotations.jetbrains)
 
-	api(libs.junit4) // needed for GradleRunnerRule superclass even when using Extension
+	api(libs.junit.legacy) // needed for GradleRunnerRule superclass even when using Extension
 	api(libs.junit.api)
 	api(libs.junit.params)
 	runtimeOnly(libs.junit.engine)
@@ -27,9 +27,9 @@ dependencies {
 
 	// TODO use buildSrc sourceOnly configuration
 	// only here so IDEA can browse the source files of this dependency when getting a stack trace or finding usages
-	testRuntimeOnly(libs.lint) { isTransitive = false }
-	testRuntimeOnly(libs.lintApi) { isTransitive = false }
-	testRuntimeOnly(libs.lintGradle) { isTransitive = false }
-	testRuntimeOnly(libs.lintGradleApi) { isTransitive = false }
-	testRuntimeOnly(libs.lintChecks) { isTransitive = false }
+	testRuntimeOnly(libs.android.lint.main) { isTransitive = false }
+	testRuntimeOnly(libs.android.lint.api) { isTransitive = false }
+	testRuntimeOnly(libs.android.lint.gradle) { isTransitive = false }
+	testRuntimeOnly(libs.android.lint.gradleApi) { isTransitive = false }
+	testRuntimeOnly(libs.android.lint.checks) { isTransitive = false }
 }
