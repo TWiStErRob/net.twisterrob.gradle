@@ -38,14 +38,14 @@ allprojects {
 		replaceHamcrestDependencies()
 		resolutionStrategy {
 			// make sure we don't have many versions of Kotlin lying around
-			force(Libs.Kotlin.`kotlin.stdlib`)
-			force(Libs.Kotlin.`kotlin.reflect`)
+			force(libs.kotlin.stdlib)
+			force(libs.kotlin.reflect)
 			@Suppress("DEPRECATION") // force version so that it's upgraded correctly with useTarget
-			force(Libs.Kotlin.stdlibJre7)
-			force(Libs.Kotlin.`kotlin.stdlib.jdk7`)
+			force(libs.kotlin.stdlib.jre7)
+			force(libs.kotlin.stdlib.jdk7)
 			@Suppress("DEPRECATION") // force version so that it's upgraded correctly with useTarget
-			force(Libs.Kotlin.stdlibJre8)
-			force(Libs.Kotlin.`kotlin.stdlib.jdk8`)
+			force(libs.kotlin.stdlib.jre8)
+			force(libs.kotlin.stdlib.jdk8)
 		}
 	}
 
@@ -125,14 +125,14 @@ allprojects {
 	plugins.withId("kotlin") {
 		dependencies {
 			//add("implementation", "org.funktionale:funktionale-partials:1.2")
-			add("compileOnly", Libs.Kotlin.`kotlin.dsl`) {
+			add("compileOnly", libs.kotlin.dsl) {
 				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
 			}
-			add("api", Libs.Kotlin.`kotlin.stdlib`)
-			add("api", Libs.Kotlin.`kotlin.stdlib.jdk8`)
-			add("api", Libs.Kotlin.`kotlin.reflect`)
+			add("api", libs.kotlin.stdlib)
+			add("api", libs.kotlin.stdlib.jdk8)
+			add("api", libs.kotlin.reflect)
 
-			add("testImplementation", Libs.Kotlin.`kotlin.test`)
+			add("testImplementation", libs.kotlin.test)
 		}
 	}
 
