@@ -8,6 +8,7 @@ import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.file.SourceDirectorySet
@@ -83,6 +84,10 @@ val Project.base: BasePluginExtension
 
 val Project.gradlePlugin: GradlePluginDevelopmentExtension
 	get() = this.extensions.getByName<GradlePluginDevelopmentExtension>("gradlePlugin")
+
+@Suppress("UnstableApiUsage")
+internal val Project.versionCatalogs: VersionCatalogsExtension
+	get() = this.extensions.getByName<VersionCatalogsExtension>("versionCatalogs")
 
 /**
  * Alternative solution: https://stackoverflow.com/a/64825340/253468

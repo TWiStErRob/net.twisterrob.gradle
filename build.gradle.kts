@@ -42,7 +42,7 @@ allprojects {
 	configurations.all {
 		replaceKotlinJre7WithJdk7()
 		replaceKotlinJre8WithJdk8()
-		replaceHamcrestDependencies()
+		replaceHamcrestDependencies(project)
 		resolutionStrategy {
 			// Make sure we don't have many versions of Kotlin lying around.
 			force(deps.kotlin.stdlib)

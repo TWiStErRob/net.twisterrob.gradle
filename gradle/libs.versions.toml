@@ -23,8 +23,6 @@ junit5-pioneer = "1.4.2"
 # Changelog: https://github.com/mockito/mockito/blob/release/2.x/doc/release-notes/official.md
 mockito = "3.10.0"
 
-hamcrest = "2.2"
-
 # Versions: https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
 svnkit = "1.10.3"
 
@@ -87,7 +85,7 @@ mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version = "3.2.
 # GitHub releases: https://github.com/mockk/mockk/releases
 mockk = { module = "io.mockk:mockk", version = "1.11.0" }
 
-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
+hamcrest = { module = "org.hamcrest:hamcrest", version = "2.2" }
 
 # GitHub releases: https://github.com/FlexTradeUKLtd/jfixture/releases
 jfixture-java = { module = "com.flextrade.jfixture:jfixture", version = "2.7.2" }
