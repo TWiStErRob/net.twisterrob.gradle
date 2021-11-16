@@ -173,13 +173,11 @@ allprojects {
 	}
 }
 if (project.property("net.twisterrob.gradle.build.includeExamples").toString().toBoolean()) {
-	tasks {
-		register("assembleExamples") {
-			dependsOn(gradle.includedBuilds.map { it.task(":assemble") })
-		}
-		register("checkExamples") {
-			dependsOn(gradle.includedBuilds.map { it.task(":check") })
-		}
+	tasks.register("assembleExamples") {
+		dependsOn(gradle.includedBuilds.map { it.task(":assemble") })
+	}
+	tasks.register("checkExamples") {
+		dependsOn(gradle.includedBuilds.map { it.task(":check") })
 	}
 }
 
