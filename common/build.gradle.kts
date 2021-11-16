@@ -17,7 +17,7 @@ dependencies {
 	testImplementation(libs.guava)
 }
 
-tasks.withType<JavaCompile> {
+tasks.withType<JavaCompile>().configureEach {
 	options.compilerArgs as MutableCollection<String> += listOf(
 		"-proc:none" // disable annotation processing (not used, hides auto-value processors being on classpath)
 	)
