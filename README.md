@@ -74,10 +74,8 @@ rootProject.tasks.register("tests", net.twisterrob.gradle.quality.tasks.GlobalTe
 Note: this changes the `:*:test` test tasks to not fail so a whole project encompassing report can be generated.
 
 ### Global finalizer `:lint` task
-
-Depends on all the other lints and shows a summary of failures to reduce the need to scroll/scan the build logs. If
-invoked explicitly as `gradlew :lint` it'll fail, otherwise (e.g. `gradlew lint`) it just silently adds itself to the
-list of `lint` tasks along with the others and prints the summary at the end.
+Depends on all the other lints and shows a summary of failures to reduce the need to scroll/scan the build logs.
+If invoked explicitly as `gradlew :lint` it'll fail, otherwise (e.g. `gradlew lint`) it just silently adds itself to the list of `lint` tasks along with the others and prints the summary at the end.
 
 To disable:
 
