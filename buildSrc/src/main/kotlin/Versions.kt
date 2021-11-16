@@ -32,6 +32,7 @@ object Libs {
 
 	object Hamcrest {
 		fun Configuration.replaceHamcrestDependencies(project: Project) {
+			// TODEL https://github.com/gradle/gradle/issues/19001
 			@Suppress("UnstableApiUsage")
 			val versionCatalog = project.rootProject.versionCatalogs.single()
 			resolutionStrategy.eachDependency { replaceHamcrestDependencies(versionCatalog) }
