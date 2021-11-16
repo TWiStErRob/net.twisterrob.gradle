@@ -27,10 +27,10 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 
 	companion object {
 
-		val CONFIG_PATH = arrayOf("config", "pmd", "pmd.xml")
+		val CONFIG_PATH: Array<String> = arrayOf("config", "pmd", "pmd.xml")
 
 		@Language("gradle")
-		val SCRIPT_CONFIGURE_PMD = """
+		val SCRIPT_CONFIGURE_PMD: String = """
 			import org.gradle.util.GradleVersion
 			subprojects { // i.e. :module
 				apply plugin: 'net.twisterrob.pmd'

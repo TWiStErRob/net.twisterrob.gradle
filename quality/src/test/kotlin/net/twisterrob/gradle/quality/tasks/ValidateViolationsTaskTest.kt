@@ -23,12 +23,12 @@ import kotlin.test.assertEquals
 class ValidateViolationsTaskTest : BaseIntgTest() {
 
 	companion object {
-		val CONFIG_PATH_CS = arrayOf("config", "checkstyle", "checkstyle.xml")
-		val CONFIG_PATH_PMD = arrayOf("config", "pmd", "pmd.xml")
-		val MANIFEST_PATH = arrayOf("src", "main", "AndroidManifest.xml")
-		val SOURCE_PATH = arrayOf("src", "main", "java")
+		private val CONFIG_PATH_CS: Array<String> = arrayOf("config", "checkstyle", "checkstyle.xml")
+		private val CONFIG_PATH_PMD: Array<String> = arrayOf("config", "pmd", "pmd.xml")
+		private val MANIFEST_PATH: Array<String> = arrayOf("src", "main", "AndroidManifest.xml")
+		private val SOURCE_PATH: Array<String> = arrayOf("src", "main", "java")
 
-		val VIOLATION_PATTERN = Regex("""([A-Z][a-zA-Z0-9_]+?)_(\d)\.java""")
+		private val VIOLATION_PATTERN: Regex = Regex("""([A-Z][a-zA-Z0-9_]+?)_(\d)\.java""")
 	}
 
 	override lateinit var gradle: GradleRunnerRule

@@ -13,14 +13,14 @@ package net.twisterrob.gradle.checkstyle.test
  */
 class CheckstyleTestResources {
 
-	val empty = object : EmptyConfiguration {}
+	val empty: EmptyConfiguration = object : EmptyConfiguration {}
 
 	interface EmptyConfiguration {
 		val config: String
 			get() = read("empty/empty-checkstyle.xml")
 	}
 
-	val simple = object : SimpleFailure {}
+	val simple: SimpleFailure = object : SimpleFailure {}
 
 	interface SimpleFailure {
 		val config: String
@@ -33,7 +33,7 @@ class CheckstyleTestResources {
 			get() = Regex(""".*src.main.java.Checkstyle\.java:1: .*? \[Header]""")
 	}
 
-	val multi = object : MultiFailure {}
+	val multi: MultiFailure = object : MultiFailure {}
 
 	interface MultiFailure {
 		val config: String

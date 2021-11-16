@@ -27,9 +27,9 @@ import kotlin.test.assertEquals
 class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 
 	companion object {
-		val CONFIG_PATH = arrayOf("config", "checkstyle", "checkstyle.xml")
+		private val CONFIG_PATH: Array<String> = arrayOf("config", "checkstyle", "checkstyle.xml")
 		@Language("gradle")
-		val SCRIPT_CONFIGURE_CHECKSTYLE = """
+		private val SCRIPT_CONFIGURE_CHECKSTYLE: String = """
 			subprojects { // i.e. :module
 				apply plugin: 'net.twisterrob.checkstyle'
 				tasks.withType(${Checkstyle::class.java.name}) {

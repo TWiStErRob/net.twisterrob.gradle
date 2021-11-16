@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 class TableGeneratorTest {
 
 	companion object {
-		val INPUT = mapOf(
+		val INPUT: Map<String, Map<String, Map<String, Int?>>> = mapOf(
 			"module1" to mapOf(
 				"variant1" to mapOf(
 					"checkstyle" to 1,
