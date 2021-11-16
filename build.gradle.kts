@@ -78,7 +78,7 @@ allprojects {
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions.verbose = true
 			kotlinOptions.jvmTarget = libs.versions.java.get()
-			kotlinOptions.allWarningsAsErrors = false
+			kotlinOptions.allWarningsAsErrors = true
 			kotlinOptions.freeCompilerArgs += listOf(
 				// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
 				//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
@@ -127,8 +127,6 @@ allprojects {
 	}
 
 	plugins.withId("kotlin") {
-		val kotlin = extensions.getByName<org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension>("kotlin")
-		kotlin.explicitApiWarning()
 		dependencies {
 			//add("implementation", "org.funktionale:funktionale-partials:1.2")
 			add("compileOnly", deps.kotlin.dsl) {
