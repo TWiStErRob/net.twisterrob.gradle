@@ -20,3 +20,14 @@ if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toB
 	includeBuild("docs/examples/snapshot")
 	includeBuild("docs/examples/release")
 }
+
+plugins {
+	id("com.gradle.enterprise") version "3.7.1"
+}
+
+gradleEnterprise {
+	buildScan {
+		termsOfServiceUrl = "https://gradle.com/terms-of-service"
+		termsOfServiceAgree = "yes"
+	}
+}
