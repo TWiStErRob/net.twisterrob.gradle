@@ -1,4 +1,6 @@
 [versions]
+java = "1.8"
+
 nexus = "1.1.0"
 
 # See [lint] which is affected by this.

@@ -1,6 +1,3 @@
-import Libs.Hamcrest.replaceHamcrestDependencies
-import Libs.Kotlin.replaceKotlinJre7WithJdk7
-import Libs.Kotlin.replaceKotlinJre8WithJdk8
 import org.jetbrains.kotlin.utils.keysToMap
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -80,7 +77,7 @@ allprojects {
 		}
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions.verbose = true
-			kotlinOptions.jvmTarget = Libs.javaVersion.toString()
+			kotlinOptions.jvmTarget = libs.versions.java.get()
 			kotlinOptions.allWarningsAsErrors = true
 			kotlinOptions.freeCompilerArgs += listOf(
 				// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
@@ -145,8 +142,8 @@ allprojects {
 
 	plugins.withId("java") {
 		val java = extensions.getByName<JavaPluginExtension>("java")
-		java.sourceCompatibility = Libs.javaVersion
-		java.targetCompatibility = Libs.javaVersion
+		java.sourceCompatibility = JavaVersion.toVersion(deps.versions.java.get())
+		java.targetCompatibility = JavaVersion.toVersion(deps.versions.java.get())
 		tasks.named<Test>("test") { testLogging.events("passed", "skipped", "failed") }
 		afterEvaluate {
 			tasks.named<Jar>("jar") {
