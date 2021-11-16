@@ -55,7 +55,7 @@ allprojects {
 	}
 
 	gradle.projectsEvaluated {
-		tasks.withType<JavaCompile> {
+		tasks.withType<JavaCompile>().configureEach {
 			options.compilerArgs.addAll(
 				listOf(
 					"-Werror", // fail on warnings
@@ -64,7 +64,7 @@ allprojects {
 				)
 			)
 		}
-		tasks.withType<GroovyCompile> {
+		tasks.withType<GroovyCompile>().configureEach {
 			options.compilerArgs.addAll(
 				listOf(
 					"-Werror", // fail on warnings
@@ -76,7 +76,7 @@ allprojects {
 			// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project
 			groovyOptions.optimizationOptions!!["indy"] = true
 		}
-		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
 			kotlinOptions.verbose = true
 			kotlinOptions.jvmTarget = libs.versions.java.get()
 			kotlinOptions.allWarningsAsErrors = true
@@ -90,7 +90,7 @@ allprojects {
 			)
 		}
 
-		tasks.withType<Test> {
+		tasks.withType<Test>().configureEach {
 			useJUnitPlatform()
 
 			if (System.getProperties().containsKey("idea.paths.selector")) {
@@ -112,7 +112,7 @@ allprojects {
 		}
 
 		@Suppress("UnstableApiUsage")
-		tasks.withType<ProcessResources> {
+		tasks.withType<ProcessResources>().configureEach {
 			val propertyNamesToReplace = listOf(
 				"net.twisterrob.test.android.pluginVersion",
 				"net.twisterrob.test.android.compileSdkVersion"
@@ -167,7 +167,7 @@ allprojects {
 	}
 
 	if (project.property("net.twisterrob.gradle.build.verboseReports").toString().toBoolean()) {
-		tasks.withType<Test> {
+		tasks.withType<Test>().configureEach {
 			configureVerboseReportsForGithubActions()
 		}
 	}
