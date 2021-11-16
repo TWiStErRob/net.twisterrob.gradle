@@ -32,7 +32,7 @@ open class SVNPluginExtension : VCSExtension {
 
 	companion object {
 
-		internal const val NAME = "svn"
+		internal const val NAME: String = "svn"
 	}
 
 	internal lateinit var project: Project

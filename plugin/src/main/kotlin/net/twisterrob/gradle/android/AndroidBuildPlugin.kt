@@ -26,7 +26,7 @@ open class AndroidBuildPluginExtension {
 
 	companion object {
 
-		internal const val NAME = "twisterrob"
+		internal const val NAME: String = "twisterrob"
 	}
 
 	var decorateBuildConfig: Boolean = true

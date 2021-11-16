@@ -27,7 +27,7 @@ open class AndroidVersionExtension {
 
 	companion object {
 
-		internal const val NAME = "version"
+		internal const val NAME: String = "version"
 	}
 
 	/** Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648) */

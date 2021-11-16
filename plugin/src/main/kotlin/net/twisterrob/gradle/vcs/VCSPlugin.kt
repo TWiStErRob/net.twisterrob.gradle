@@ -11,7 +11,7 @@ open class VCSPluginExtension : VCSExtension {
 
 	companion object {
 
-		internal const val NAME = "VCS"
+		internal const val NAME: String = "VCS"
 	}
 
 	var current: VCSExtension = DummyVcsExtension
