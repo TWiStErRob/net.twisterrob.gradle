@@ -38,7 +38,7 @@ dependencies {
 	compileOnly(deps.nexus)
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
 	// Do not use, no effect; will be overridden by kotlinDslPluginOptions.jvmTarget, see KotlinDslCompilerPlugins.
 	//kotlinOptions.jvmTarget = *
 	kotlinOptions.verbose = true
