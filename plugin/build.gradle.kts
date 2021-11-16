@@ -91,6 +91,5 @@ tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
 	// it.pluginClasspath.from(files(file("build/tmp/jar/")))
 	// because it needs to be in the same JAR file as the class files.
 	// To work around this: prepend the final JAR file on the classpath:
-	val jar = tasks.named<Jar>("jar").get()
-	pluginClasspath.setFrom(files(jar.archiveFile) + pluginClasspath)
+	pluginClasspath.setFrom(tasks.named<Jar>("jar").map { files(it.archiveFile) + pluginClasspath })
 }
