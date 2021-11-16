@@ -127,6 +127,8 @@ allprojects {
 	}
 
 	plugins.withId("kotlin") {
+		val kotlin = extensions.getByName<org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension>("kotlin")
+		kotlin.explicitApi()
 		dependencies {
 			//add("implementation", "org.funktionale:funktionale-partials:1.2")
 			add("compileOnly", deps.kotlin.dsl) {
