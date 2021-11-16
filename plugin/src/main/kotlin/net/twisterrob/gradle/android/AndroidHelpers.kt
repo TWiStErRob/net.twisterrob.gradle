@@ -65,17 +65,18 @@ val BaseExtension.variants: DomainObjectSet<out BaseVariant>
 		}
 
 @Suppress("unused")
-fun BaseVariant.toDebugString() = (
+fun BaseVariant.toDebugString(): String = (
 		"${this::class}"
 				+ ", name=$name, desc=$description, base=$baseName, dir=$dirName, pkg=$applicationId, flav=$flavorName"
 				+ (if (this is VersionedVariant) ", ver=$versionName, code=$versionCode" else "")
 		)
 
-fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) =
+fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) {
 	configureEach {
 		if (it.name == name)
 			block(it)
 	}
+}
 
 fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
 	project.objects.fileProperty().apply {

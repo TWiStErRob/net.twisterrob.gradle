@@ -22,7 +22,8 @@ class Violations(
 	@JvmField val violations: List<Violation>?
 ) {
 
-	override fun toString() = "${module}:${parser}@${variant} (${result}): ${violations}"
+	override fun toString(): String =
+		"${module}:${parser}@${variant} (${result}): ${violations}"
 }
 
 class Violation(
@@ -35,7 +36,7 @@ class Violation(
 	val source: Source
 ) {
 
-	override fun toString() =
+	override fun toString(): String =
 		"Violation(rule='$rule', category=$category, severity=$severity, message='$message', specifics=$specifics, location=$location, source=$source)"
 
 	enum class Severity {
@@ -53,7 +54,7 @@ class Violation(
 		val endLine: Int,
 		val column: Int
 	) {
-		override fun toString() =
+		override fun toString(): String =
 			"Location(module=$module, task=$task, variant='$variant', file=$file, startLine=$startLine, endLine=$endLine, column=$column)"
 	}
 
@@ -65,7 +66,7 @@ class Violation(
 		val report: File,
 		val humanReport: File?
 	) {
-		override fun toString() =
+		override fun toString(): String =
 			"Source(parser='$parser', gatherer='$gatherer', reporter='$reporter', source='$source', report=$report, humanReport=$humanReport)"
 	}
 }

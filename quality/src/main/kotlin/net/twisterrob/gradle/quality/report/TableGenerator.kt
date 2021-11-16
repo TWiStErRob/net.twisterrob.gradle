@@ -19,8 +19,8 @@ class TableGenerator(
 ) {
 
 	companion object {
-		const val MIN_MODULE_LENGTH = 7 // Summary
-		const val MIN_VARIANT_LENGTH = 9 // (total: x)
+		private const val MIN_MODULE_LENGTH: Int = 7 // Summary
+		private const val MIN_VARIANT_LENGTH: Int = 9 // (total: x)
 	}
 
 	fun build(byModuleByVariantByParserCounts: Map<Module, Map<Variant, Map<Parser, MaybeCount>>>): String {

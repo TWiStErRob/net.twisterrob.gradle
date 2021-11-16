@@ -19,7 +19,7 @@ open class TestReportGenerator : DefaultTask() {
 	lateinit var output: File
 
 	@Input
-	var type = ReportType.SINGLE_FLAVOR
+	var type: ReportType = ReportType.SINGLE_FLAVOR
 
 	@TaskAction
 	fun generate() {

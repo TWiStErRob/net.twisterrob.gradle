@@ -19,55 +19,56 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 	CheckStyleExtension::class.java
 ) {
 
-	override fun taskConfigurator() = object : VariantTaskCreator<CheckStyleTask>.DefaultTaskConfig() {
+	override fun taskConfigurator(): VariantTaskCreator<CheckStyleTask>.DefaultTaskConfig =
+		object : VariantTaskCreator<CheckStyleTask>.DefaultTaskConfig() {
 
-		override fun setupConfigLocations(task: CheckStyleTask) {
-			val subConfig = task.project.file("config/checkstyle/checkstyle.xml")
-			val rootConfig = task.project.rootProject.file("config/checkstyle/checkstyle.xml")
-			if (!task.configFile.exists() || (subConfig.exists() && rootConfig.exists())) {
-				if (!subConfig.exists() && !rootConfig.exists()) {
-					task.doFirst("Warn about missing configuration files.") {
-						task.logger.warn(
-							"""
+			override fun setupConfigLocations(task: CheckStyleTask) {
+				val subConfig = task.project.file("config/checkstyle/checkstyle.xml")
+				val rootConfig = task.project.rootProject.file("config/checkstyle/checkstyle.xml")
+				if (!task.configFile.exists() || (subConfig.exists() && rootConfig.exists())) {
+					if (!subConfig.exists() && !rootConfig.exists()) {
+						task.doFirst("Warn about missing configuration files.") {
+							task.logger.warn(
+								"""
 							While auto-configuring configFile for ${task}, there was no configuration found at:
 								rootProject=${rootConfig}
 								subProject=${subConfig}
 								task=${task.configFile}
 								and there's no configuration location set in Gradle build files either.
 							""".trimIndent()
-						)
+							)
+						}
+					}
+					// if both of them exists, take the subproject's one instead of the rootProject's
+					if (subConfig.exists()) {
+						task.configFile = subConfig
+					} else if (rootConfig.exists()) {
+						task.configFile = rootConfig
 					}
 				}
-				// if both of them exists, take the subproject's one instead of the rootProject's
-				if (subConfig.exists()) {
-					task.configFile = subConfig
-				} else if (rootConfig.exists()) {
-					task.configFile = rootConfig
+				when {
+					GradleVersion.current().baseVersion < GradleVersion.version("6.0") -> {
+						// Keep using Checkstyle.setConfigDir instead of getConfigDirectory() for backward compatibility.
+						// Once it fails to compile because the method is removed, the polyfill below will kick in.
+						@Suppress("DEPRECATION")
+						task.setConfigDir(task.project.provider { task.configFile.parentFile })
+					}
+					else -> {
+						task.configDirectory.set(task.configFile.parentFile)
+					}
 				}
 			}
-			when {
-				GradleVersion.current().baseVersion < GradleVersion.version("6.0") -> {
-					// Keep using Checkstyle.setConfigDir instead of getConfigDirectory() for backward compatibility.
-					// Once it fails to compile because the method is removed, the polyfill below will kick in.
-					@Suppress("DEPRECATION")
-					task.setConfigDir(task.project.provider { task.configFile.parentFile })
-				}
-				else -> {
-					task.configDirectory.set(task.configFile.parentFile)
-				}
-			}
-		}
 
-		override fun setupReports(task: CheckStyleTask, suffix: String?) {
-			super.setupReports(task, suffix)
-			with(task.reports.customHtml) {
-				val xsl = task.project.rootProject.file("config/checkstyle/checkstyle-html.xsl")
-				if (xsl.exists()) {
-					stylesheet = task.project.resources.text.fromFile(xsl)
+			override fun setupReports(task: CheckStyleTask, suffix: String?) {
+				super.setupReports(task, suffix)
+				with(task.reports.customHtml) {
+					val xsl = task.project.rootProject.file("config/checkstyle/checkstyle-html.xsl")
+					if (xsl.exists()) {
+						stylesheet = task.project.resources.text.fromFile(xsl)
+					}
 				}
 			}
 		}
-	}
 }
 
 /**
