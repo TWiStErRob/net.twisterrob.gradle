@@ -16,9 +16,10 @@ import java.util.concurrent.TimeUnit
 /**
  * @see /android-plugin_app/src/main/AndroidManifest.xml
  */
-internal const val packageName = "net.twisterrob.gradle.test_app"
+internal const val packageName: String = "net.twisterrob.gradle.test_app"
 
-internal val packageFolder get() = packageName.replace('.', '/')
+internal val packageFolder: String
+	get() = packageName.replace('.', '/')
 
 internal fun File.apk(
 	variant: String,
@@ -74,16 +75,18 @@ internal fun assertDefaultDebugBadging(
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
-) = assertDefaultBadging(
-	apk,
-	applicationId,
-	versionCode,
-	versionName,
-	compileSdkVersion,
-	compileSdkVersionName,
-	minSdkVersion,
-	targetSdkVersion
-)
+) {
+	assertDefaultBadging(
+		apk,
+		applicationId,
+		versionCode,
+		versionName,
+		compileSdkVersion,
+		compileSdkVersionName,
+		minSdkVersion,
+		targetSdkVersion
+	)
+}
 
 internal fun assertDefaultReleaseBadging(
 	apk: File,
@@ -94,16 +97,18 @@ internal fun assertDefaultReleaseBadging(
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
-) = assertDefaultBadging(
-	apk,
-	applicationId,
-	versionCode,
-	versionName,
-	compileSdkVersion,
-	compileSdkVersionName,
-	minSdkVersion,
-	targetSdkVersion
-)
+) {
+	assertDefaultBadging(
+		apk,
+		applicationId,
+		versionCode,
+		versionName,
+		compileSdkVersion,
+		compileSdkVersionName,
+		minSdkVersion,
+		targetSdkVersion
+	)
+}
 
 internal fun assertDefaultBadging(
 	apk: File,
@@ -124,7 +129,7 @@ internal fun assertDefaultBadging(
 			)
 		}"
 	assertThat(fileNamesMessage, apk, anExistingFile())
-	val (expectation, expectedOutput) =
+	val (expectation: String, expectedOutput: String) =
 		if (compileSdkVersion < 28) {
 			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2
 			"compileSdkVersion < 28" to """
@@ -169,8 +174,8 @@ internal fun assertDefaultBadging(
 					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 					supports-screens: 'small' 'normal' 'large' 'xlarge'
 					supports-any-density: 'true'
-					locales:${if (AGPVersions.UNDER_TEST compatible AGPVersions.v41x) "" else " '--_--'" }
-					densities:${if (AGPVersions.UNDER_TEST compatible AGPVersions.v41x) "" else " '160'" }
+					locales:${if (AGPVersions.UNDER_TEST compatible AGPVersions.v41x) "" else " '--_--'"}
+					densities:${if (AGPVersions.UNDER_TEST compatible AGPVersions.v41x) "" else " '160'"}
 				""".trimIndent()
 			}
 		}
@@ -179,10 +184,12 @@ internal fun assertDefaultBadging(
 
 fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =
 	object : TypeSafeMatcher<DexMethod>() {
-		override fun describeTo(description: Description): Unit = with(description) {
-			appendText("method ").appendValue(methodName)
-			appendText(" ")
-			appendText("in class ").appendValue(className)
+		override fun describeTo(description: Description) {
+			with(description) {
+				appendText("method ").appendValue(methodName)
+				appendText(" ")
+				appendText("in class ").appendValue(className)
+			}
 		}
 
 		override fun matchesSafely(item: DexMethod): Boolean =

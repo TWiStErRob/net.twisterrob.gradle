@@ -14,8 +14,8 @@ class BuildResultExtensionsTest {
 
 	companion object {
 
-		val NL = System.lineSeparator()!!
-		val SAMPLE_OUTPUT = (NL
+		val NL: String = System.lineSeparator()!!
+		val SAMPLE_OUTPUT: String = (NL
 				+ "FAILURE: Build failed with an exception." + NL
 				+ "" + NL
 				+ "* What went wrong:" + NL

@@ -20,7 +20,8 @@ internal val Any.extensions: ExtensionContainer
  * @see [org.gradle.kotlin.dsl.withType] for a similar implementation
  * @see [PluginContainer.withId] for the wrapped method
  */
-inline fun <reified P : Plugin<*>> PluginContainer.withId(pluginId: String, crossinline action: P.() -> Unit) =
+inline fun <reified P : Plugin<*>> PluginContainer.withId(pluginId: String, crossinline action: P.() -> Unit) {
 	withId(pluginId) {
 		(it as P).action()
 	}
+}

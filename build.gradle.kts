@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter
 
 plugins {
 //	kotlin("jvm") apply false
+	@Suppress("DSL_SCOPE_VIOLATION", "UnstableApiUsage")
 	alias(libs.plugins.nexus)
 }
 
@@ -110,6 +111,7 @@ allprojects {
 			properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
 		}
 
+		@Suppress("UnstableApiUsage")
 		tasks.withType<ProcessResources> {
 			val propertyNamesToReplace = listOf(
 				"net.twisterrob.test.android.pluginVersion",

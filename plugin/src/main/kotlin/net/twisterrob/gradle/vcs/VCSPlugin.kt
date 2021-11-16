@@ -11,7 +11,7 @@ open class VCSPluginExtension : VCSExtension {
 
 	companion object {
 
-		internal const val NAME = "VCS"
+		internal const val NAME: String = "VCS"
 	}
 
 	var current: VCSExtension = DummyVcsExtension
@@ -23,10 +23,17 @@ open class VCSPluginExtension : VCSExtension {
 		get() = extensions.getByName<GITPluginExtension>(GITPluginExtension.NAME)
 
 	// `: VCSExtension by current` is not possible because `current` is "lateinit"
-	override val isAvailable get() = current.isAvailable
-	override val isAvailableQuick get() = current.isAvailableQuick
-	override val revision get() = current.revision
-	override val revisionNumber get() = current.revisionNumber
+	override val isAvailable: Boolean
+		get() = current.isAvailable
+
+	override val isAvailableQuick: Boolean
+		get() = current.isAvailableQuick
+
+	override val revision: String
+		get() = current.revision
+
+	override val revisionNumber: Int
+		get() = current.revisionNumber
 }
 
 class VCSPlugin : BaseExposedPlugin() {
@@ -34,14 +41,15 @@ class VCSPlugin : BaseExposedPlugin() {
 	companion object {
 
 		@JvmStatic
-		fun VCSPluginExtension.whichVCS(): VCSExtension = when {
-			current != DummyVcsExtension -> current // already determined
-			svn.isAvailableQuick -> svn
-			git.isAvailableQuick -> git
-			svn.isAvailable -> svn
-			git.isAvailable -> git
-			else -> DummyVcsExtension
-		}
+		fun VCSPluginExtension.whichVCS(): VCSExtension =
+			when {
+				current != DummyVcsExtension -> current // already determined
+				svn.isAvailableQuick -> svn
+				git.isAvailableQuick -> git
+				svn.isAvailable -> svn
+				git.isAvailable -> git
+				else -> DummyVcsExtension
+			}
 	}
 
 	override fun apply(target: Project) {

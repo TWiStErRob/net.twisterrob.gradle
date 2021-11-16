@@ -2,8 +2,8 @@ package net.twisterrob.gradle.base
 
 import org.gradle.api.ProjectConfigurationException
 import org.gradle.util.GradleVersion
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 // TODO Parameterize
 class BasePluginTest {

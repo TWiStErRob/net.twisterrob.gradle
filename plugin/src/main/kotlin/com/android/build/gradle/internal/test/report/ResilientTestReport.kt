@@ -43,7 +43,7 @@ class ResilientTestReport(
 		/**
 		 * @see TestReport.loadModel
 		 */
-		private fun TestReport.loadModel() =
+		private fun TestReport.loadModel(): AllTestResults =
 			TestReport::class.java.getDeclaredMethod("loadModel")
 				.apply { isAccessible = true }
 				.invoke(this) as AllTestResults
@@ -51,10 +51,10 @@ class ResilientTestReport(
 		/**
 		 * @see TestReport.generateFiles
 		 */
-		private fun TestReport.generateFiles(model: AllTestResults) =
+		private fun TestReport.generateFiles(model: AllTestResults) {
 			TestReport::class.java.getDeclaredMethod("generateFiles", AllTestResults::class.java)
 				.apply { isAccessible = true }
 				.invoke(this, model)
-				.let { Unit } // "void" method, so let's return Unit
+		}
 	}
 }

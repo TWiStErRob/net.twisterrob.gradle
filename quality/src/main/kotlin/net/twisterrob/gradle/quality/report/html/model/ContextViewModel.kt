@@ -17,7 +17,7 @@ sealed class ContextViewModel {
 	 * After returning from this function, a [ContextViewModel] is considered ready for consumption
 	 * and not expected to fail for any reason.
 	 */
-	open fun resolve() = Unit
+	open fun resolve() {}
 
 	object EmptyContext : ContextViewModel()
 
@@ -56,10 +56,11 @@ sealed class ContextViewModel {
 
 		companion object {
 
-			private fun String.escapeCodeForJSTemplate(): String = this
-				.replace("""\""", """\\""")
-				.replace("""$""", """\$""")
-				.replace("""`""", """\`""")
+			private fun String.escapeCodeForJSTemplate(): String =
+				this
+					.replace("""\""", """\\""")
+					.replace("""$""", """\$""")
+					.replace("""`""", """\`""")
 
 			/**
 			 * Get the code context of the lines that are flagged as failed.
@@ -71,10 +72,11 @@ sealed class ContextViewModel {
 				val loc = v.location
 				val file = loc.file.absoluteFile
 				val lines = file.readLines()
-				fun invalidLocation(): Nothing = error(
-					"Invalid location in ${file}: requested ${loc.startLine} to ${loc.endLine}, " +
-							"but file only has lines 1 to ${lines.size}."
-				)
+				fun invalidLocation(): Nothing =
+					error(
+						"Invalid location in ${file}: requested ${loc.startLine} to ${loc.endLine}, " +
+								"but file only has lines 1 to ${lines.size}."
+					)
 				if (loc.endLine < loc.startLine) invalidLocation()
 				val numContextLines = 2
 				if (lines.size < loc.startLine) invalidLocation()
@@ -96,9 +98,13 @@ sealed class ContextViewModel {
 			listing
 		}
 
-		val listing by lazy {
-			fun <E> Iterable<E>.replace(old: E, new: E) = map { if (it == old) new else it }
-			fun Array<File>.sorted() = sortedWith(compareBy<File> { !it.isDirectory }.thenBy { it.name })
+		val listing: String by lazy {
+			fun <E> Iterable<E>.replace(old: E, new: E): Iterable<E> =
+				map { if (it == old) new else it }
+
+			fun Array<File>.sorted(): Iterable<File> =
+				sortedWith(compareBy<File> { !it.isDirectory }.thenBy { it.name })
+
 			val dir = v.location.file
 			val contents = dir.listFilesInDirectory()
 				.sorted()
@@ -120,7 +126,7 @@ sealed class ContextViewModel {
 			embeddedPixels
 		}
 
-		val embeddedPixels by lazy {
+		val embeddedPixels: String by lazy {
 			val data = Base64.getEncoder().encodeToString(v.location.file.readBytes())
 			"data:image/${v.location.file.extension};base64,${data}"
 		}
@@ -132,7 +138,7 @@ sealed class ContextViewModel {
 			listing
 		}
 
-		val listing by lazy {
+		val listing: String by lazy {
 			val entries = ZipFile(v.location.file).entries().asSequence()
 			entries.map { it.name }.sorted().joinToString("\n")
 		}

@@ -6,7 +6,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.MINUTES
 
-internal fun String.normalize() =
+internal fun String.normalize(): String =
 	trim().replace("\r?\n".toRegex(), System.lineSeparator())
 
 internal fun Iterable<String>.runCommand(

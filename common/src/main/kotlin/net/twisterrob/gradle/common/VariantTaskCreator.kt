@@ -48,13 +48,13 @@ T : VerificationTask {
 		}
 	}
 
-	open fun variantsConfig(variants: Collection<BaseVariant>) =
+	open fun variantsConfig(variants: Collection<BaseVariant>): VariantTaskCreator<T>.DefaultVariantsTaskConfig =
 		DefaultVariantsTaskConfig(taskConfigurator(), variants)
 
-	open fun variantConfig(variant: BaseVariant) =
+	open fun variantConfig(variant: BaseVariant): VariantTaskCreator<T>.DefaultVariantTaskConfig =
 		DefaultVariantTaskConfig(taskConfigurator(), variant)
 
-	open fun taskConfigurator() =
+	open fun taskConfigurator(): VariantTaskCreator<T>.DefaultTaskConfig =
 		DefaultTaskConfig()
 
 	private fun createGlobalTask() {

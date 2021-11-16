@@ -4,18 +4,18 @@ package net.twisterrob.gradle.quality.development
 
 class DevelopmentTestResources {
 
-	val customLint get() = object : CustomLint {}
+	val customLint: CustomLint get() = object : CustomLint {}
 
 	interface CustomLint {
 
-		val lintError get() = object : LintError {}
+		val lintError: LintError get() = object : LintError {}
 
 		interface LintError {
 			val xmlReport: String
 				get() = read("custom-lint/LintError/lint-results.xml")
 		}
 
-		val typographyFractions get() = object : TypographyFractions {}
+		val typographyFractions: TypographyFractions get() = object : TypographyFractions {}
 
 		interface TypographyFractions {
 			val violation: String
@@ -25,7 +25,7 @@ class DevelopmentTestResources {
 				get() = read("custom-lint/TypographyFractions/lint-results.xml")
 		}
 
-		val secureRandom get() = object : SecureRandom {}
+		val secureRandom: SecureRandom get() = object : SecureRandom {}
 
 		interface SecureRandom {
 			val violation: String

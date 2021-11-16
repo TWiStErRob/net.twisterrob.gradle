@@ -7,7 +7,7 @@ import net.twisterrob.gradle.base.BasePlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
 
-const val VERSION_KOTLIN = "1.4.32"
+const val VERSION_KOTLIN: String = "1.4.32"
 
 class KotlinPlugin : BasePlugin() {
 
@@ -39,7 +39,8 @@ class KotlinPlugin : BasePlugin() {
 
 	companion object {
 
-		private fun kotlin(module: String) = "org.jetbrains.kotlin:kotlin-$module:$VERSION_KOTLIN"
+		private fun kotlin(module: String): String =
+			"org.jetbrains.kotlin:kotlin-$module:$VERSION_KOTLIN"
 
 		private fun Project.addTestDependencies(configuration: String) {
 			dependencies.add(configuration, kotlin("test"))

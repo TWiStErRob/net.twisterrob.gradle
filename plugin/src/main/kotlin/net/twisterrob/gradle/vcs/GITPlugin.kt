@@ -32,7 +32,7 @@ open class GITPluginExtension : VCSExtension {
 
 	companion object {
 
-		internal const val NAME = "git"
+		internal const val NAME: String = "git"
 	}
 
 	internal lateinit var project: Project

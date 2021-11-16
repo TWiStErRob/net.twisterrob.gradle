@@ -32,7 +32,7 @@ open class SVNPluginExtension : VCSExtension {
 
 	companion object {
 
-		internal const val NAME = "svn"
+		internal const val NAME: String = "svn"
 	}
 
 	internal lateinit var project: Project
@@ -86,7 +86,7 @@ open class SVNPluginExtension : VCSExtension {
 			// do nothing
 		}
 
-		override fun checkExit(status: Int) =
+		override fun checkExit(status: Int): Nothing =
 			throw SecurityException()
 	}
 }

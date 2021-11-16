@@ -16,7 +16,7 @@ open class AndroidLifecycleExtension {
 
 	companion object {
 
-		internal const val NAME = "lifecycle"
+		internal const val NAME: String = "lifecycle"
 	}
 
 	val beforeAndroidEvaluateActions: MutableList<() -> Unit> = mutableListOf()

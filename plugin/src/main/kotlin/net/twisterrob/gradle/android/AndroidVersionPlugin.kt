@@ -21,13 +21,14 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.util.Locale
+import java.util.Properties
 
 @Suppress("MemberVisibilityCanBePrivate")
 open class AndroidVersionExtension {
 
 	companion object {
 
-		internal const val NAME = "version"
+		internal const val NAME: String = "version"
 	}
 
 	/** Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648) */
@@ -153,7 +154,7 @@ class AndroidVersionPlugin : BasePlugin() {
 				* version.patchMagnitude + version.patch)
 				* version.buildMagnitude + version.build)
 
-	private fun readVersionFromFile(file: File) =
+	private fun readVersionFromFile(file: File): Properties =
 		readVersion(file).apply {
 			getProperty("major")?.let { version.major = it.toInt() }
 			getProperty("minor")?.let { version.minor = it.toInt() }
@@ -161,10 +162,11 @@ class AndroidVersionPlugin : BasePlugin() {
 			getProperty("build")?.let { version.build = it.toInt() }
 		}
 
-	private fun readVersion(file: File) = java.util.Properties().apply {
-		try {
-			FileInputStream(file).use { load(it) }
-		} catch (ignore: FileNotFoundException) {
+	private fun readVersion(file: File): Properties =
+		Properties().apply {
+			try {
+				FileInputStream(file).use { load(it) }
+			} catch (ignore: FileNotFoundException) {
+			}
 		}
-	}
 }

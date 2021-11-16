@@ -17,14 +17,14 @@ class PmdTestResources(
 	private val gradleVersion: () -> GradleVersion
 ) {
 
-	val empty = object : EmptyConfiguration {}
+	val empty: EmptyConfiguration get() = object : EmptyConfiguration {}
 
 	interface EmptyConfiguration {
 		val config: String
 			get() = read("empty/empty-pmd.xml")
 	}
 
-	val simple = SimpleFailure()
+	val simple: SimpleFailure get() = SimpleFailure()
 
 	inner class SimpleFailure {
 		val config: String

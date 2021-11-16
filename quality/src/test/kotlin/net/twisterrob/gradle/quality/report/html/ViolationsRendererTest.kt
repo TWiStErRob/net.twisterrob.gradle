@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.quality.report.html
 
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
 import java.io.StringWriter
 import kotlin.test.assertEquals
 
@@ -48,5 +47,5 @@ class ViolationsRendererTest {
 	}
 }
 
-private fun String.unformat() =
+private fun String.unformat(): String =
 	trimIndent().lines().joinToString(separator = "")

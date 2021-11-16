@@ -8,7 +8,7 @@ import se.bjurr.violations.lib.reports.Parser
 import se.bjurr.violations.lib.util.ViolationParserUtils.getAttribute
 import se.bjurr.violations.lib.util.ViolationParserUtils.getChunks
 import se.bjurr.violations.lib.util.ViolationParserUtils.getContent
-import java.util.*
+import java.util.Collections
 
 class JUnitParser : ViolationsParser {
 

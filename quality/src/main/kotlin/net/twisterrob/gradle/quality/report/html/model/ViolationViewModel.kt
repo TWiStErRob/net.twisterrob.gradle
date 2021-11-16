@@ -10,11 +10,12 @@ class ViolationViewModel(
 ) {
 
 	companion object {
-		fun create(violation: Violation) = ViolationViewModel(
-			LocationViewModel(violation),
-			SourceViewModel(violation),
-			DetailsViewModel(violation),
-			violation.specifics
-		)
+		fun create(violation: Violation): ViolationViewModel =
+			ViolationViewModel(
+				LocationViewModel(violation),
+				SourceViewModel(violation),
+				DetailsViewModel(violation),
+				violation.specifics
+			)
 	}
 }

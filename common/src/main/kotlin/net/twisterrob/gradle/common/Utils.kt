@@ -1,6 +1,7 @@
 @file:JvmName("Utils")
 
 package net.twisterrob.gradle.common
+
 import com.android.SdkConstants
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.AndroidVariantTask
@@ -23,15 +24,17 @@ import java.util.stream.Collectors
 
 typealias Variants = DomainObjectSet<out BaseVariant>
 
-fun safeAdd(a: Int?, b: Int?): Int? = when {
-	a != null && b != null -> a + b
-	a != null && b == null -> a
-	a == null && b != null -> b
-	a == null && b == null -> null
-	else -> throw InternalError("No other possibility")
-}
+fun safeAdd(a: Int?, b: Int?): Int? =
+	when {
+		a != null && b != null -> a + b
+		a != null && b == null -> a
+		a == null && b != null -> b
+		a == null && b == null -> null
+		else -> throw InternalError("No other possibility")
+	}
 
-fun nullSafeSum(): Collector<Int?, *, Int?> = nullSafeSum(Function.identity())
+fun nullSafeSum(): Collector<Int?, *, Int?> =
+	nullSafeSum(Function.identity())
 
 fun <T> nullSafeSum(mapper: Function<T?, Int?>): Collector<T?, *, Int?> {
 	return Collectors.reducing(null, mapper, BinaryOperator(::safeAdd))

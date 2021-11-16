@@ -25,7 +25,7 @@ T : Reporting<out ReportContainer<out SingleFileReport>> {
 	override fun getHumanReportLocation(task: T): File =
 		task.reports.getByName("html").getOutputLocationCompat()
 
-	override fun getName(task: T) =
+	override fun getName(task: T): String =
 		task.checkTargetName
 
 	override fun findViolations(report: File): List<Violation> =

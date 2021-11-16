@@ -338,5 +338,5 @@ private fun tasksIn(modules: Array<String>, vararg taskNames: String): Array<Str
 		.flatMap { module -> taskNames.map { taskName -> "${module}:${taskName}" } }
 		.toTypedArray()
 
-private inline operator fun <reified T> Array<T>.minus(others: Array<T>) =
+private inline operator fun <reified T> Array<T>.minus(others: Array<T>): Array<T> =
 	(this.toList() - others).toTypedArray()

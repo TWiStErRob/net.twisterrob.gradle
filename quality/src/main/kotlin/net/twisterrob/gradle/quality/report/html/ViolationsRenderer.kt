@@ -104,39 +104,41 @@ internal fun renderViolation(to: XMLStreamWriter, vm: ViolationViewModel) {
 	}
 }
 
-private fun render(to: XMLStreamWriter, context: ContextViewModel) = with(to) {
-	when (context) {
-		is EmptyContext -> {
-			attribute("type", "none")
-		}
+private fun render(to: XMLStreamWriter, context: ContextViewModel) {
+	with(to) {
+		when (context) {
+			is EmptyContext -> {
+				attribute("type", "none")
+			}
 
-		is ErrorContext -> {
-			attribute("type", "error")
-			attribute("message", context.message)
-			cdata(context.fullStackTrace)
-		}
+			is ErrorContext -> {
+				attribute("type", "error")
+				attribute("message", context.message)
+				cdata(context.fullStackTrace)
+			}
 
-		is CodeContext -> {
-			attribute("type", "code")
-			attribute("language", context.language)
-			attribute("startLine", context.startLine)
-			attribute("endLine", context.endLine)
-			cdata(context.data)
-		}
+			is CodeContext -> {
+				attribute("type", "code")
+				attribute("language", context.language)
+				attribute("startLine", context.startLine)
+				attribute("endLine", context.endLine)
+				cdata(context.data)
+			}
 
-		is DirectoryContext -> {
-			attribute("type", "archive")
-			cdata(context.listing)
-		}
+			is DirectoryContext -> {
+				attribute("type", "archive")
+				cdata(context.listing)
+			}
 
-		is ArchiveContext -> {
-			attribute("type", "archive")
-			cdata(context.listing)
-		}
+			is ArchiveContext -> {
+				attribute("type", "archive")
+				cdata(context.listing)
+			}
 
-		is ImageContext -> {
-			attribute("type", "image")
-			cdata(context.embeddedPixels)
+			is ImageContext -> {
+				attribute("type", "image")
+				cdata(context.embeddedPixels)
+			}
 		}
 	}
 }

@@ -41,6 +41,9 @@ class AndroidSigningPlugin : BasePlugin() {
 		}
 	}
 
-	private fun optionalProp(name: String): String? = project.properties[name] as String?
-	private fun mandatoryProp(name: String): String = optionalProp(name)!!
+	private fun optionalProp(name: String): String? =
+		project.properties[name] as String?
+
+	private fun mandatoryProp(name: String): String =
+		optionalProp(name)!!
 }

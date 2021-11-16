@@ -30,10 +30,12 @@ open class CalculateBuildTimeTask : DefaultTask() {
 	 * @returns a long representing the UTC time of the build.
 	 */
 	@Input
-	var getBuildTime = { OffsetDateTime.now().truncatedTo(ChronoUnit.DAYS).toInstant().toEpochMilli() }
+	var getBuildTime: () -> Long =
+		{ OffsetDateTime.now().truncatedTo(ChronoUnit.DAYS).toInstant().toEpochMilli() }
 
 	@get:OutputFile
-	val buildTimeFile: RegularFileProperty = intermediateRegularFile("buildConfigDecorations/buildTime.txt")
+	val buildTimeFile: RegularFileProperty =
+		intermediateRegularFile("buildConfigDecorations/buildTime.txt")
 
 	init {
 		description = "Calculates the build time for BuildConfig.java."

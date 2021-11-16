@@ -34,7 +34,7 @@ class QualityPlugin : BaseExposedPlugin() {
 	}
 
 	companion object {
-		const val REPORT_CONSOLE_TASK_NAME = "violationReportConsole"
-		const val REPORT_HTML_TASK_NAME = "violationReportHtml"
+		const val REPORT_CONSOLE_TASK_NAME: String = "violationReportConsole"
+		const val REPORT_HTML_TASK_NAME: String = "violationReportHtml"
 	}
 }

@@ -8,18 +8,20 @@ import org.tmatesoft.svn.core.wc2.SvnOperationFactory
 import org.tmatesoft.svn.core.wc2.SvnTarget
 import java.io.File
 
-fun SvnOperationFactory.doCreateRepository(repoDir: File): SVNURL = createRepositoryCreate()
-	.apply {
-		repositoryRoot = repoDir
-	}
-	.execute { _, result -> println("Repository created at ${result}") }
+fun SvnOperationFactory.doCreateRepository(repoDir: File): SVNURL =
+	createRepositoryCreate()
+		.apply {
+			repositoryRoot = repoDir
+		}
+		.execute { _, result -> println("Repository created at ${result}") }
 
-fun SvnOperationFactory.doCheckout(repoUrl: SVNURL, rootDir: File): Long = createCheckout()
-	.apply {
-		source = SvnTarget.fromURL(repoUrl)
-		setSingleTarget(SvnTarget.fromFile(rootDir))
-	}
-	.execute { op, result -> println("Checked out revision ${result} from ${op.source}") }
+fun SvnOperationFactory.doCheckout(repoUrl: SVNURL, rootDir: File): Long =
+	createCheckout()
+		.apply {
+			source = SvnTarget.fromURL(repoUrl)
+			setSingleTarget(SvnTarget.fromFile(rootDir))
+		}
+		.execute { op, result -> println("Checked out revision ${result} from ${op.source}") }
 
 fun SvnOperationFactory.doCommitSingleFile(file: File, message: String): SVNCommitInfo {
 	val target = SvnTarget.fromFile(file)
@@ -40,25 +42,27 @@ fun SvnOperationFactory.doCommitSingleFile(file: File, message: String): SVNComm
 	return commit
 }
 
-fun SvnOperationFactory.doInfo(file: File): SvnInfo = createGetInfo()
-	.apply {
-		setSingleTarget(SvnTarget.fromFile(file))
-	}
-	.run()
+fun SvnOperationFactory.doInfo(file: File): SvnInfo =
+	createGetInfo()
+		.apply {
+			setSingleTarget(SvnTarget.fromFile(file))
+		}
+		.run()
 
 fun SvnOperationFactory.doUpdateWorkingCopy(file: File): Long {
 	val wcRoot = doInfo(file).wcInfo.wcRoot
 	return doUpdate(wcRoot)
 }
 
-fun SvnOperationFactory.doUpdate(file: File): Long = createUpdate()
-	.apply {
-		setSingleTarget(SvnTarget.fromFile(file))
-	}
-	.execute { op, result ->
-		println("Updated ${op.targets.single()} to ${result.single()}")
-	}
-	.single()
+fun SvnOperationFactory.doUpdate(file: File): Long =
+	createUpdate()
+		.apply {
+			setSingleTarget(SvnTarget.fromFile(file))
+		}
+		.execute { op, result ->
+			println("Updated ${op.targets.single()} to ${result.single()}")
+		}
+		.single()
 
 inline fun svn(block: SvnOperationFactory.() -> Unit) {
 	val factory = SvnOperationFactory()
