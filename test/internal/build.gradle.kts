@@ -8,28 +8,28 @@ dependencies {
 	api(gradleApiWithoutKotlin())
 	api(gradleTestKitWithoutKotlin())
 
-	api(Libs.Annotations.jetbrains)
+	api(libs.annotations.jetbrains)
 
-	api(Libs.JUnit4.library) // needed for GradleRunnerRule superclass even when using Extension
-	api(Libs.JUnit5.api)
-	api(Libs.JUnit5.params)
-	runtimeOnly(Libs.JUnit5.engine)
+	api(libs.junit.legacy) // needed for GradleRunnerRule superclass even when using Extension
+	api(libs.junit.api)
+	api(libs.junit.params)
+	runtimeOnly(libs.junit.engine)
 
-	api(Libs.Hamcrest.best)
+	api(libs.hamcrest)
 
-	api(Libs.Mockito.core)
-	api(Libs.Mockito.junit5)
-	api(Libs.Mockito.kotlin)
+	api(libs.mockito.core)
+	api(libs.mockito.junit5)
+	api(libs.mockito.kotlin)
 
-	api(Libs.mockk)
+	api(libs.mockk)
 
-	api(Libs.JFixture.java)
+	api(libs.jfixture.java)
 
 	// TODO use buildSrc sourceOnly configuration
 	// only here so IDEA can browse the source files of this dependency when getting a stack trace or finding usages
-	testRuntimeOnly(Libs.Android.lint) { isTransitive = false }
-	testRuntimeOnly(Libs.Android.lintApi) { isTransitive = false }
-	testRuntimeOnly(Libs.Android.lintGradle) { isTransitive = false }
-	testRuntimeOnly(Libs.Android.lintGradleApi) { isTransitive = false }
-	testRuntimeOnly(Libs.Android.lintChecks) { isTransitive = false }
+	testRuntimeOnly(libs.android.lint.main) { isTransitive = false }
+	testRuntimeOnly(libs.android.lint.api) { isTransitive = false }
+	testRuntimeOnly(libs.android.lint.gradle) { isTransitive = false }
+	testRuntimeOnly(libs.android.lint.gradleApi) { isTransitive = false }
+	testRuntimeOnly(libs.android.lint.checks) { isTransitive = false }
 }

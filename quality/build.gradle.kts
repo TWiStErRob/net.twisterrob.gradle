@@ -22,12 +22,12 @@ dependencies {
 	api(projects.checkstyle)
 	api(projects.pmd)
 
-	compileOnly(Libs.Android.plugin)
+	compileOnly(libs.android.gradle)
 //	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")
-	api(Libs.violations)
+	api(libs.violations)
 
 	testImplementation(projects.test.internal)
-	testRuntimeOnly(Libs.Android.plugin)
+	testRuntimeOnly(libs.android.gradle)
 
 	testImplementation(testFixtures(projects.pmd))
 	testImplementation(testFixtures(projects.checkstyle))

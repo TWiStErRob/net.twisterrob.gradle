@@ -1,10 +1,14 @@
 // it's used from project's build.gradle.kts files
 @file:Suppress("unused")
 
+import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.FileCollectionDependency
+import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.file.SourceDirectorySet
@@ -14,7 +18,9 @@ import org.gradle.api.internal.file.FileCollectionInternal
 import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSet
+import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
@@ -43,6 +49,18 @@ fun SourceSet.kotlin(action: SourceDirectorySet.() -> Unit) {
 }
 
 /**
+ * Polyfill for not yet added method.
+ * TODEL https://github.com/gradle/gradle/issues/18979
+ */
+fun DependencyHandlerScope.add(
+	configurationName: String,
+	@Suppress("UnstableApiUsage") dependency: Provider<MinimalExternalModuleDependency>,
+	configuration: Action<in ExternalModuleDependency>
+) {
+	this@add.addProvider(configurationName, dependency, configuration)
+}
+
+/**
  * Pull in resources from other modules' `src/test/resources` folders.
  */
 fun Project.pullTestResourcesFrom(project: ProjectDependency) {
@@ -66,6 +84,10 @@ val Project.base: BasePluginExtension
 
 val Project.gradlePlugin: GradlePluginDevelopmentExtension
 	get() = this.extensions.getByName<GradlePluginDevelopmentExtension>("gradlePlugin")
+
+@Suppress("UnstableApiUsage")
+internal val Project.versionCatalogs: VersionCatalogsExtension
+	get() = this.extensions.getByName<VersionCatalogsExtension>("versionCatalogs")
 
 /**
  * Alternative solution: https://stackoverflow.com/a/64825340/253468

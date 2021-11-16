@@ -31,11 +31,11 @@ val kotlin_version: String by project
 val nexus_version: String by project
 
 dependencies {
-	implementation(kotlin("gradle-plugin", version = kotlin_version))
-	implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:${kotlin_version}"))
-	implementation(kotlin("compiler-embeddable", version = kotlin_version))
-	implementation("org.jetbrains.dokka:dokka-gradle-plugin:${kotlin_version}")
-	implementation("io.github.gradle-nexus:publish-plugin:${nexus_version}")
+	implementation(deps.kotlin.gradle)
+	implementation(enforcedPlatform(deps.kotlin.bom))
+	implementation(deps.kotlin.compiler)
+	implementation(deps.kotlin.dokka)
+	compileOnly(deps.nexus)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

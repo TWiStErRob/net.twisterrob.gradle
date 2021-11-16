@@ -1,13 +1,10 @@
-import Libs.Hamcrest.replaceHamcrestDependencies
-import Libs.Kotlin.replaceKotlinJre7WithJdk7
-import Libs.Kotlin.replaceKotlinJre8WithJdk8
 import org.jetbrains.kotlin.utils.keysToMap
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 plugins {
 //	kotlin("jvm") apply false
-	id("io.github.gradle-nexus.publish-plugin")
+	alias(libs.plugins.nexus)
 }
 
 val projectVersion: String by project
@@ -30,22 +27,29 @@ subprojects {
 }
 
 allprojects {
+	// Extension with name 'libs' does not exist. Currently registered extension names: [ext, kotlin, kotlinTestRegistry, base, defaultArtifacts, sourceSets, reporting, java, javaToolchains, testing]
+	// Needs to be called different from libs,
+	// because com.android.tools.idea.gradle.dsl.model.ext.PropertyUtil.followElement
+	// from idea-2021.1.3\plugins\android-gradle-dsl\lib\android-gradle-dsl-impl.jar
+	// runs into an infinite loop on it.
+	// TODEL Affects anything with Android Plugin < 2020.3.1 (i.e. AS 4.x, and IJ <2021.3)
+	val deps = rootProject.libs
 	replaceGradlePluginAutoDependenciesWithoutKotlin()
 
 	configurations.all {
 		replaceKotlinJre7WithJdk7()
 		replaceKotlinJre8WithJdk8()
-		replaceHamcrestDependencies()
+		replaceHamcrestDependencies(project)
 		resolutionStrategy {
-			// make sure we don't have many versions of Kotlin lying around
-			force(Libs.Kotlin.stdlib)
-			force(Libs.Kotlin.reflect)
-			@Suppress("DEPRECATION") // force version so that it's upgraded correctly with useTarget
-			force(Libs.Kotlin.stdlibJre7)
-			force(Libs.Kotlin.stdlibJdk7)
-			@Suppress("DEPRECATION") // force version so that it's upgraded correctly with useTarget
-			force(Libs.Kotlin.stdlibJre8)
-			force(Libs.Kotlin.stdlibJdk8)
+			// Make sure we don't have many versions of Kotlin lying around.
+			force(deps.kotlin.stdlib)
+			force(deps.kotlin.reflect)
+			// Force version so that it's upgraded correctly with useTarget.
+			force(deps.kotlin.stdlib.jre7)
+			force(deps.kotlin.stdlib.jdk7)
+			// Force version so that it's upgraded correctly with useTarget.
+			force(deps.kotlin.stdlib.jre8)
+			force(deps.kotlin.stdlib.jdk8)
 		}
 	}
 
@@ -73,7 +77,7 @@ allprojects {
 		}
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 			kotlinOptions.verbose = true
-			kotlinOptions.jvmTarget = Libs.javaVersion.toString()
+			kotlinOptions.jvmTarget = libs.versions.java.get()
 			kotlinOptions.allWarningsAsErrors = true
 			kotlinOptions.freeCompilerArgs += listOf(
 				// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
@@ -125,21 +129,21 @@ allprojects {
 	plugins.withId("kotlin") {
 		dependencies {
 			//add("implementation", "org.funktionale:funktionale-partials:1.2")
-			add("compileOnly", Libs.Kotlin.dsl) {
+			add("compileOnly", deps.kotlin.dsl) {
 				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
 			}
-			add("api", Libs.Kotlin.stdlib)
-			add("api", Libs.Kotlin.stdlibJdk8)
-			add("api", Libs.Kotlin.reflect)
+			add("api", deps.kotlin.stdlib)
+			add("api", deps.kotlin.stdlib.jdk8)
+			add("api", deps.kotlin.reflect)
 
-			add("testImplementation", Libs.Kotlin.test)
+			add("testImplementation", deps.kotlin.test)
 		}
 	}
 
 	plugins.withId("java") {
 		val java = extensions.getByName<JavaPluginExtension>("java")
-		java.sourceCompatibility = Libs.javaVersion
-		java.targetCompatibility = Libs.javaVersion
+		java.sourceCompatibility = JavaVersion.toVersion(deps.versions.java.get())
+		java.targetCompatibility = JavaVersion.toVersion(deps.versions.java.get())
 		tasks.named<Test>("test") { testLogging.events("passed", "skipped", "failed") }
 		afterEvaluate {
 			tasks.named<Jar>("jar") {

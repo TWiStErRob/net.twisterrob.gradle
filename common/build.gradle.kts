@@ -10,11 +10,11 @@ description = "Common: Shared classes between checkers. (Not to be consumed dire
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 
-	compileOnly(Libs.Android.plugin)
-	compileOnly(Libs.Annotations.jsr305)
+	compileOnly(libs.android.gradle)
+	compileOnly(libs.annotations.jsr305)
 
 	testImplementation(projects.test.internal)
-	testImplementation(Libs.guava)
+	testImplementation(libs.guava)
 }
 
 tasks.withType<JavaCompile> {

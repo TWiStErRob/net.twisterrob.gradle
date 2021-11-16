@@ -19,10 +19,10 @@ gradlePlugin {
 dependencies {
 	compileOnly(gradleTestKitWithoutKotlin())
 
-	compileOnly(Libs.JUnit4.library)
-	compileOnly(Libs.JUnit5.api)
-	compileOnly(Libs.Annotations.jsr305)
-	compileOnly(Libs.Annotations.jetbrains)
+	compileOnly(libs.junit.legacy)
+	compileOnly(libs.junit.api)
+	compileOnly(libs.annotations.jsr305)
+	compileOnly(libs.annotations.jetbrains)
 
 	testImplementation(gradleApiWithoutKotlin())
 	testImplementation(gradleTestKitWithoutKotlin())

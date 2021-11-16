@@ -49,21 +49,21 @@ gradlePlugin {
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	implementation(projects.common)
-	implementation(Libs.SVNKit.core)
-	implementation(Libs.SVNKit.cli)
-	implementation(Libs.jgit)
-	compileOnly(Libs.Android.plugin)
-	compileOnly(Libs.Kotlin.gradlePlugin)
+	implementation(libs.svnkit)
+	implementation(libs.svnkit.cli)
+	implementation(libs.jgit)
+	compileOnly(libs.android.gradle)
+	compileOnly(libs.kotlin.gradle)
 
 	testImplementation(projects.test.internal)
-	testImplementation(Libs.JUnit5.pioneer)
-	testImplementation(Libs.dexMemberList)
-	testCompileOnly(Libs.Android.plugin)
+	testImplementation(libs.junit.pioneer)
+	testImplementation(libs.dexMemberList)
+	testCompileOnly(libs.android.gradle)
 	// GradleTestHelpersKt.hasDevices uses com.android.ddmlib.AndroidDebugBridge.
-	testImplementation(Libs.Android.toolsDdmLib)
+	testImplementation(libs.android.tools.ddmLib)
 	// AndroidInstallRunnerTaskTest calls production code directly,
 	// so need com.android.xml.AndroidXPathFactory for AndroidInstallRunnerTask.Companion.getMainActivity$plugin.
-	testImplementation(Libs.Android.toolsCommon)
+	testImplementation(libs.android.tools.common)
 }
 
 tasks.withType<Test> {
