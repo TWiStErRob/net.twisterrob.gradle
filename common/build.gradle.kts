@@ -27,7 +27,8 @@ tasks.withType<JavaCompile> {
 java.sourceSets.all { kotlin.srcDirs -= java.srcDirs }
 
 // make TFO visible to Groovy
-val groovyTask = tasks["compileTestGroovy"] as org.gradle.api.tasks.compile.GroovyCompile
-val kotlinTask = tasks["compileTestKotlin"] as org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-groovyTask.dependsOn(kotlinTask)
-groovyTask.classpath += files(kotlinTask.destinationDir)
+tasks.named<GroovyCompile>("compileTestGroovy") {
+	val kotlinTask = tasks.named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileTestKotlin")
+	dependsOn(kotlinTask)
+	classpath += files(kotlinTask.get().destinationDir)
+}
