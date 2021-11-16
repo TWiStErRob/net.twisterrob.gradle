@@ -174,7 +174,8 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	//@Test:given/@Before
 	var gradleVersion: GradleVersion = GradleVersion.current()
 		set(value) {
-			val distributionUrl = URI.create("https://services.gradle.org/distributions/gradle-${value.version}-all.zip")
+			val distributionUrl =
+				URI.create("https://services.gradle.org/distributions/gradle-${value.version}-all.zip")
 			runner
 				.withGradleVersion(value.version)
 				.withGradleDistribution(distributionUrl)

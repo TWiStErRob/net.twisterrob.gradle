@@ -1,4 +1,5 @@
 ## Gradle Plugins
+
 ```gradle
 apply plugin: net.twisterrob.<...>
 ```
@@ -22,7 +23,9 @@ Replacement for `java-library`.
 Replacement for `kotlin`, `kotlin-android`, `kotlin-kapt`.
 
 ### net.twisterrob.root
+
 #### `:gradleWrapper`
+
 Generates a `gradled.bat` which can be used instead of `gradlew.bat` to start Gradle in Debug mode.
 It will make sure there's only one instance of Gradle is running, display a console window and wait for the debugger to attach before starting.
 

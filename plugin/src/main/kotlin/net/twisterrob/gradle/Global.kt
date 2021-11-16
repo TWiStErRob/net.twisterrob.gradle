@@ -6,8 +6,6 @@ import java.net.JarURLConnection
 import java.nio.charset.Charset
 import java.time.Instant
 import java.time.format.DateTimeFormatter
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 val builtDate: Instant by lazy {
 	val aClassInJar = BasePlugin::class.java

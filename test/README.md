@@ -1,4 +1,5 @@
 # Gradle test plugin
+
 Helps integration testing of Gradle plugins and tasks.
 
 ## Usage
@@ -15,6 +16,7 @@ dependencies {
 ```
 
 or more explicitly:
+
 ```groovy
 apply plugin: 'java-gradle-plugin'
 
@@ -32,6 +34,7 @@ dependencies {
 ```
 
 ### Basic structure in JUnit (Groovy)
+
 ```groovy
 class MyTest {
 	@Rule public final GradleRunnerRule gradle = new GradleRunnerRule()
@@ -56,6 +59,7 @@ class MyTest {
 	}
 }
 ```
+
 See `net.twisterrob.gradle.test.GradleRunnerRuleTest` for more examples.
 
 ### Running Gradle Test Kit tests
@@ -89,6 +93,7 @@ Running a test in embedded mode allows us to put breakpoints inside the tasks an
 ### Recipes
 
 #### Dump applied `plugins`
+
 ```groovy
 gradle.buildFile << """\
 	allprojects {
@@ -100,6 +105,7 @@ gradle.buildFile << """\
 ```
 
 #### Ignore test for specific Gradle version
+
 ```kotlin
 val gradleVersion: String by systemProperty("net.twisterrob.gradle.runner.gradleVersion")
 assumeTrue(GradleVersion.version(gradleVersion) < GradleVersion.version("5.0")) {

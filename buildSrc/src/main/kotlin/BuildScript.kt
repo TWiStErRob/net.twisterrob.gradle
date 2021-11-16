@@ -150,7 +150,8 @@ private fun DependencyHandler.withoutKotlin(notation: ClassPathNotation): Depend
  */
 class StaticComponentIdentifier(private val displayName: String) : ComponentIdentifier {
 
-	override fun getDisplayName(): String = displayName
+	override fun getDisplayName(): String =
+		displayName
 
 	override fun equals(other: Any?): Boolean =
 		when {
@@ -162,7 +163,9 @@ class StaticComponentIdentifier(private val displayName: String) : ComponentIden
 			else -> false
 		}
 
-	override fun hashCode(): Int = displayName.hashCode()
+	override fun hashCode(): Int =
+		displayName.hashCode()
 
-	override fun toString(): String = displayName
+	override fun toString(): String =
+		displayName
 }

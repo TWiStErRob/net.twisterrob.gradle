@@ -161,10 +161,11 @@ class AndroidVersionPlugin : BasePlugin() {
 			getProperty("build")?.let { version.build = it.toInt() }
 		}
 
-	private fun readVersion(file: File) = java.util.Properties().apply {
-		try {
-			FileInputStream(file).use { load(it) }
-		} catch (ignore: FileNotFoundException) {
+	private fun readVersion(file: File): java.util.Properties =
+		java.util.Properties().apply {
+			try {
+				FileInputStream(file).use { load(it) }
+			} catch (ignore: FileNotFoundException) {
+			}
 		}
-	}
 }

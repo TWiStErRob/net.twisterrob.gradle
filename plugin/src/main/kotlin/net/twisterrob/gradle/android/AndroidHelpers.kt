@@ -65,11 +65,12 @@ val BaseExtension.variants: DomainObjectSet<out BaseVariant>
 		}
 
 @Suppress("unused")
-fun BaseVariant.toDebugString(): String = (
-		"${this::class}"
-				+ ", name=$name, desc=$description, base=$baseName, dir=$dirName, pkg=$applicationId, flav=$flavorName"
-				+ (if (this is VersionedVariant) ", ver=$versionName, code=$versionCode" else "")
-		)
+fun BaseVariant.toDebugString(): String =
+	buildString {
+		append(this@toDebugString::class)
+		append(", name=$name, desc=$description, base=$baseName, dir=$dirName, pkg=$applicationId, flav=$flavorName")
+		append(if (this@toDebugString is VersionedVariant) ", ver=$versionName, code=$versionCode" else "")
+	}
 
 fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) {
 	configureEach {

@@ -23,20 +23,22 @@ inline fun XMLStreamWriter.document(
 	version: String = "1.0",
 	encoding: String = "utf-8",
 	crossinline content: XMLStreamWriter.() -> Unit
-): XMLStreamWriter = apply {
-	writeStartDocument(encoding, version)
-	content()
-	writeEndDocument()
-}
+): XMLStreamWriter =
+	apply {
+		writeStartDocument(encoding, version)
+		content()
+		writeEndDocument()
+	}
 
 inline fun XMLStreamWriter.element(
 	name: String,
 	crossinline content: XMLStreamWriter.() -> Unit
-): XMLStreamWriter = apply {
-	writeStartElement(name)
-	content()
-	writeEndElement()
-}
+): XMLStreamWriter =
+	apply {
+		writeStartElement(name)
+		content()
+		writeEndElement()
+	}
 
 inline fun XMLStreamWriter.element(name: String, content: String) {
 	element(name) {

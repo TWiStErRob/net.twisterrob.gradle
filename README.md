@@ -9,6 +9,7 @@ https://github.com/TWiStErRob/net.twisterrob.gradle/blob/master/LICENCE)
 https://twitter.com/twisterrob)
 
 # Gradle Quality plugins
+
 Plugins that configure the built-in plugins with saner defaults (to be documented).
  * CheckStyle
  * PMD
@@ -29,6 +30,7 @@ Gradle 4.4 — 4.9 is not supported, because it's hard to backport the lazy task
 Convention plugins only support Android Gradle Plugin 4.0.0 — 4.2.2 on Gradle 6.1.1+, because it's really hard to backport all the features to 3.x with no need for this.
 
 ## Quick setup
+
 ```gradle
 buildscript {
 	repositories {
@@ -40,34 +42,45 @@ buildscript {
 }
 apply plugin: "net.twisterrob.quality"
 ```
+
 For more, see the [examples](docs/examples) folder.
 
 ## Features
 
 ### HTML violation report
+
 There's a built-in HTML report that gathers all the results from all the modules into a single HTML file.
+
 ```shell
 gradlew violationReportHtml
 ```
 
 ### Console violation report
+
 There's a built-in console report that gathers all the results from all the modules and outputs results to the console.
+
 ```shell
 gradlew violationReportConsole
 ```
 
 ### Root project test report
+
 Gathers results from submodules and fails if there were errors.
+
 ```groovy
 rootProject.tasks.register("tests", net.twisterrob.gradle.quality.tasks.GlobalTestFinalizerTask)
 ```
+
 Note: this changes the `:*:test` test tasks to not fail so a whole project encompassing report can be generated.
 
 ### Global finalizer `:lint` task
-Depends on all the other lints and shows a summary of failures to reduce the need to scroll/scan the build logs.
-If invoked explicitly as `gradlew :lint` it'll fail, otherwise (e.g. `gradlew lint`) it just silently adds itself to the list of `lint` tasks along with the others and prints the summary at the end.
+
+Depends on all the other lints and shows a summary of failures to reduce the need to scroll/scan the build logs. If
+invoked explicitly as `gradlew :lint` it'll fail, otherwise (e.g. `gradlew lint`) it just silently adds itself to the
+list of `lint` tasks along with the others and prints the summary at the end.
 
 To disable:
+
 ```gradle
 afterEvaluate { tasks.named("lint").configure { it.enabled = false } }
 ```

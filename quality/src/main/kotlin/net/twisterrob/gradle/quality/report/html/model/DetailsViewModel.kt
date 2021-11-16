@@ -18,14 +18,16 @@ class DetailsViewModel(private val v: Violation) {
 		init {
 			when (v.source.reporter) {
 				"ANDROIDLINT" -> {
-					fun String.escapeMarkdownForJSTemplate(): String = this
-						.replace("""\""", """\\""")
-						.replace("""$""", """\$""")
-						.replace("""`""", """\`""")
+					fun String.escapeMarkdownForJSTemplate(): String =
+						this
+							.replace("""\""", """\\""")
+							.replace("""$""", """\$""")
+							.replace("""`""", """\`""")
 
-					fun String.preprocessLintMarkdown(): String = this
-						// https://github.com/TWiStErRob/net.twisterrob.gradle/issues/65#issuecomment-860275509
-						.replace("""&""", """&amp;""")
+					fun String.preprocessLintMarkdown(): String =
+						this
+							// https://github.com/TWiStErRob/net.twisterrob.gradle/issues/65#issuecomment-860275509
+							.replace("""&""", """&amp;""")
 
 					val details = LintMessageDetailsSplitter().split(v)
 					title = details.title.preprocessLintMarkdown().escapeMarkdownForJSTemplate()

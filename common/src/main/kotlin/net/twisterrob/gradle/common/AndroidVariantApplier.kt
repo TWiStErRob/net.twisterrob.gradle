@@ -85,4 +85,5 @@ class AndroidVariantApplier(val project: Project) {
 
 private val NOOP: Action<Variants> = Action { }
 
-private operator fun ExtensionContainer.get(name: String) = getByName(name)
+private operator fun ExtensionContainer.get(name: String): Any =
+	getByName(name)

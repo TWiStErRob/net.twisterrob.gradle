@@ -107,21 +107,23 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		}
 	}
 
-	private fun verifyWithApkSigner(apk: String) = listOf(
-		// apksigner.bat doesn't work with Java 11, even though everything is set up correctly:
-		// it says "No suitable Java found.", "you can define the JAVA_HOME environment variable"
-		// so as an alternative launch the jar file directly
-		resolveFromJDK("java").absolutePath,
-		"-jar",
-		resolveFromAndroidSDK("apksigner").parentFile.resolve("lib/apksigner.jar").absolutePath,
-		"verify",
-		apk
-	).runCommand()
+	private fun verifyWithApkSigner(apk: String): String =
+		listOf(
+			// apksigner.bat doesn't work with Java 11, even though everything is set up correctly:
+			// it says "No suitable Java found.", "you can define the JAVA_HOME environment variable"
+			// so as an alternative launch the jar file directly
+			resolveFromJDK("java").absolutePath,
+			"-jar",
+			resolveFromAndroidSDK("apksigner").parentFile.resolve("lib/apksigner.jar").absolutePath,
+			"verify",
+			apk
+		).runCommand()
 
-	private fun verifyWithJarSigner(apk: String) = listOf(
-		resolveFromJDK("jarsigner").absolutePath,
-		"-verify",
-		"-verbose",
-		apk
-	).runCommand()
+	private fun verifyWithJarSigner(apk: String): String =
+		listOf(
+			resolveFromJDK("jarsigner").absolutePath,
+			"-verify",
+			"-verbose",
+			apk
+		).runCommand()
 }

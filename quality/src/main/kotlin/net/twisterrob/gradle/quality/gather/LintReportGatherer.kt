@@ -17,23 +17,26 @@ class LintReportGatherer<T>(
 	taskType: Class<T>
 ) : TaskReportGatherer<T>(displayName, taskType) where T : LintBaseTask {
 
-	override fun getParsableReportLocation(task: T): File = when (task) {
-		is LintGlobalTask -> task.xmlOutput
-		is LintPerVariantTask -> task.xmlOutput
-		else -> unsupported(task)
-	}
+	override fun getParsableReportLocation(task: T): File =
+		when (task) {
+			is LintGlobalTask -> task.xmlOutput
+			is LintPerVariantTask -> task.xmlOutput
+			else -> unsupported(task)
+		}
 
-	override fun getHumanReportLocation(task: T): File = when (task) {
-		is LintGlobalTask -> task.htmlOutput
-		is LintPerVariantTask -> task.htmlOutput
-		else -> unsupported(task)
-	}
+	override fun getHumanReportLocation(task: T): File =
+		when (task) {
+			is LintGlobalTask -> task.htmlOutput
+			is LintPerVariantTask -> task.htmlOutput
+			else -> unsupported(task)
+		}
 
-	override fun getName(task: T): String = when (task) {
-		is LintGlobalTask -> ALL_VARIANTS_NAME
-		is LintPerVariantTask -> task.androidVariantName!!
-		else -> unsupported(task)
-	}
+	override fun getName(task: T): String =
+		when (task) {
+			is LintGlobalTask -> ALL_VARIANTS_NAME
+			is LintPerVariantTask -> task.androidVariantName!!
+			else -> unsupported(task)
+		}
 
 	override fun findViolations(report: File): List<Violation> =
 		Parser.ANDROIDLINT.findViolations(listOf(report))

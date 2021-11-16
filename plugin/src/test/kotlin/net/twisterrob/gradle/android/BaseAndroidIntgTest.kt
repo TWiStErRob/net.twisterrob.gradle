@@ -7,7 +7,7 @@ import org.junit.jupiter.api.TestInfo
 
 abstract class BaseAndroidIntgTest : BaseIntgTest() {
 
-	@BeforeEach fun setUp(testInfo : TestInfo) {
+	@BeforeEach fun setUp(testInfo: TestInfo) {
 		gradle.basedOn("android-plugin_app")
 
 		@Language("properties")
