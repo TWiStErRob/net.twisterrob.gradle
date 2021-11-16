@@ -26,6 +26,6 @@ open class VersionsTask : DefaultTask() {
 		)
 	}
 
-	private fun getVersion(pluginName: String, type: Class<out CodeQualityExtension>) =
+	private fun getVersion(pluginName: String, type: Class<out CodeQualityExtension>): String =
 		project.extensions.findByType(type)?.toolVersion ?: "'${pluginName}' plugin not applied"
 }

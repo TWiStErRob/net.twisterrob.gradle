@@ -129,7 +129,7 @@ internal fun assertDefaultBadging(
 			)
 		}"
 	assertThat(fileNamesMessage, apk, anExistingFile())
-	val (expectation, expectedOutput) =
+	val (expectation: String, expectedOutput: String) =
 		if (compileSdkVersion < 28) {
 			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2
 			"compileSdkVersion < 28" to """

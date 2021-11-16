@@ -86,7 +86,7 @@ open class SVNPluginExtension : VCSExtension {
 			// do nothing
 		}
 
-		override fun checkExit(status: Int) =
+		override fun checkExit(status: Int): Nothing =
 			throw SecurityException()
 	}
 }

@@ -53,5 +53,5 @@ inline val TaskContainer.jar: TaskProvider<Jar>
 	get() = named<Jar>("jar")
 
 // Polyfill for Gradle 5
-operator fun Provider<Configuration>.minus(other: Provider<Configuration>) =
+operator fun Provider<Configuration>.minus(other: Provider<Configuration>): FileCollection =
 	this.get() - other.get()

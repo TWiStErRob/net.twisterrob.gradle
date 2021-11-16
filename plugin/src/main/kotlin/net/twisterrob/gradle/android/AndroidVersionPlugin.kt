@@ -21,6 +21,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.util.Locale
+import java.util.Properties
 
 @Suppress("MemberVisibilityCanBePrivate")
 open class AndroidVersionExtension {
@@ -153,7 +154,7 @@ class AndroidVersionPlugin : BasePlugin() {
 				* version.patchMagnitude + version.patch)
 				* version.buildMagnitude + version.build)
 
-	private fun readVersionFromFile(file: File) =
+	private fun readVersionFromFile(file: File): Properties =
 		readVersion(file).apply {
 			getProperty("major")?.let { version.major = it.toInt() }
 			getProperty("minor")?.let { version.minor = it.toInt() }
@@ -161,8 +162,8 @@ class AndroidVersionPlugin : BasePlugin() {
 			getProperty("build")?.let { version.build = it.toInt() }
 		}
 
-	private fun readVersion(file: File): java.util.Properties =
-		java.util.Properties().apply {
+	private fun readVersion(file: File): Properties =
+		Properties().apply {
 			try {
 				FileInputStream(file).use { load(it) }
 			} catch (ignore: FileNotFoundException) {
