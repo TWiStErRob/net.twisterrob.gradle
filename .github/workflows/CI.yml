@@ -39,7 +39,8 @@ jobs:
         uses: andymckay/cancel-action@0.2
 
       - name: Publish Gradle Quality plugins to mavenLocal().
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace publishToMavenLocal
+        # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
+        run: ./gradlew --no-daemon --no-build-cache --no-configuration-cache --stacktrace publishToMavenLocal
 
       - name: Upload JARs, Maven and Gradle metadata.
         if: success() || failure()
@@ -85,10 +86,12 @@ jobs:
 
       - name: Publish Gradle Quality plugins to Sonatype Snapshot.
         if: env.SNAPSHOT_VERSION != ''
+        # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
         run: >
           ./gradlew
           --no-daemon
           --no-build-cache
+          --no-configuration-cache
           --stacktrace
           publishReleasePublicationToSonatypeRepository
           -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}

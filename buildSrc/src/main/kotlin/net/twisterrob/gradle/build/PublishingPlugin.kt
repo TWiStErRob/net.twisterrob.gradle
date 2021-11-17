@@ -105,8 +105,8 @@ private fun MavenPublication.setupArtifacts(project: Project) {
 		suppressPomMetadataWarningsFor("testFixturesApiElements")
 		suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
 	}
-	artifact(project.tasks["sourcesJar"]) { classifier = "sources" }
-	artifact(project.tasks["javadocJar"]) { classifier = "javadoc" }
+	artifact(project.tasks.named("sourcesJar")) { classifier = "sources" }
+	artifact(project.tasks.named("javadocJar")) { classifier = "javadoc" }
 }
 
 private fun MavenPublication.setupLinks(project: Project) {

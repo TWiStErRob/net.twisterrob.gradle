@@ -55,7 +55,7 @@ allprojects {
 	}
 
 	gradle.projectsEvaluated {
-		tasks.withType<JavaCompile> {
+		tasks.withType<JavaCompile>().configureEach {
 			options.compilerArgs.addAll(
 				listOf(
 					"-Werror", // fail on warnings
@@ -64,7 +64,7 @@ allprojects {
 				)
 			)
 		}
-		tasks.withType<GroovyCompile> {
+		tasks.withType<GroovyCompile>().configureEach {
 			options.compilerArgs.addAll(
 				listOf(
 					"-Werror", // fail on warnings
@@ -76,9 +76,9 @@ allprojects {
 			// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project
 			groovyOptions.optimizationOptions!!["indy"] = true
 		}
-		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
 			kotlinOptions.verbose = true
-			kotlinOptions.jvmTarget = libs.versions.java.get()
+			kotlinOptions.jvmTarget = deps.versions.java.get()
 			kotlinOptions.allWarningsAsErrors = true
 			kotlinOptions.freeCompilerArgs += listOf(
 				// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
@@ -90,7 +90,7 @@ allprojects {
 			)
 		}
 
-		tasks.withType<Test> {
+		tasks.withType<Test>().configureEach {
 			useJUnitPlatform()
 
 			if (System.getProperties().containsKey("idea.paths.selector")) {
@@ -112,7 +112,7 @@ allprojects {
 		}
 
 		@Suppress("UnstableApiUsage")
-		tasks.withType<ProcessResources> {
+		tasks.withType<ProcessResources>().configureEach {
 			val propertyNamesToReplace = listOf(
 				"net.twisterrob.test.android.pluginVersion",
 				"net.twisterrob.test.android.compileSdkVersion"
@@ -156,9 +156,10 @@ allprojects {
 							"Implementation-Vendor" to project.group,
 							"Implementation-Title" to project.base.archivesName.get(),
 							"Implementation-Version" to project.version,
-							// TODO Make sure it doesn't change often (skip for SNAPSHOT)
-							// otherwise :jar always re-packages and compilations cascade
-							"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+							"Built-Date" to if (projectVersion.endsWith("-SNAPSHOT"))
+								DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(0))
+							else
+								DateTimeFormatter.ISO_INSTANT.format(Instant.now())
 						)
 					)
 				}
@@ -167,34 +168,35 @@ allprojects {
 	}
 
 	if (project.property("net.twisterrob.gradle.build.verboseReports").toString().toBoolean()) {
-		tasks.withType<Test> {
+		tasks.withType<Test>().configureEach {
 			configureVerboseReportsForGithubActions()
 		}
 	}
 }
 if (project.property("net.twisterrob.gradle.build.includeExamples").toString().toBoolean()) {
-	tasks {
-		register("assembleExamples") {
-			dependsOn(gradle.includedBuilds.map { it.task(":assemble") })
-		}
-		register("checkExamples") {
-			dependsOn(gradle.includedBuilds.map { it.task(":check") })
-		}
+	tasks.register("assembleExamples") {
+		dependsOn(gradle.includedBuilds.map { it.task(":assemble") })
+	}
+	tasks.register("checkExamples") {
+		dependsOn(gradle.includedBuilds.map { it.task(":check") })
 	}
 }
 
-project.tasks.create<TestReport>("tests") {
+project.tasks.register<TestReport>("tests") {
+	group = LifecycleBasePlugin.VERIFICATION_GROUP
+	description = "Run and report on all tests in the project. Add -x test to just generate report."
 	destinationDir = file("${buildDir}/reports/tests/all")
-	project.evaluationDependsOnChildren()
-	allprojects.forEach { subproject ->
-		subproject.tasks.withType<Test> {
+	val tests = subprojects.flatMap { it.tasks.withType(Test::class) }
+	reportOn(tests)
+	// reportOn already forced to create the tasks.
+	tests.forEach { test ->
+		test.apply {
 			ignoreFailures = true
 			reports.junitXml.required.set(true)
-			this@create.reportOn(this@withType)
 		}
 	}
 	doLast {
-		val reportFile = File(destinationDir, "index.html")
+		val reportFile = destinationDir.resolve("index.html")
 		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
 		if (!successRegex.containsMatchIn(reportFile.readText())) {
 			val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
