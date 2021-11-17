@@ -78,7 +78,7 @@ allprojects {
 		}
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
 			kotlinOptions.verbose = true
-			kotlinOptions.jvmTarget = libs.versions.java.get()
+			kotlinOptions.jvmTarget = deps.versions.java.get()
 			kotlinOptions.allWarningsAsErrors = true
 			kotlinOptions.freeCompilerArgs += listOf(
 				// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
