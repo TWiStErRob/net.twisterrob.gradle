@@ -156,9 +156,10 @@ allprojects {
 							"Implementation-Vendor" to project.group,
 							"Implementation-Title" to project.base.archivesName.get(),
 							"Implementation-Version" to project.version,
-							// TODO Make sure it doesn't change often (skip for SNAPSHOT)
-							// otherwise :jar always re-packages and compilations cascade
-							"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+							"Built-Date" to if (projectVersion.endsWith("-SNAPSHOT"))
+								DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(0))
+							else
+								DateTimeFormatter.ISO_INSTANT.format(Instant.now())
 						)
 					)
 				}
