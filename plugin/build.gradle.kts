@@ -9,11 +9,6 @@ description = "Convention Plugins: Gradle Plugins used by my hobby projects."
 
 gradlePlugin {
 	plugins {
-		create("net.twisterrob.vcs") {
-			id = "net.twisterrob.vcs"
-			implementationClass = "net.twisterrob.gradle.vcs.VCSPlugin"
-		}
-
 		create("net.twisterrob.java") {
 			id = "net.twisterrob.java"
 			implementationClass = "net.twisterrob.gradle.java.JavaPlugin"

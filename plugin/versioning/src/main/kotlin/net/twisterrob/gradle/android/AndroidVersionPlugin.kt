@@ -15,6 +15,7 @@ import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.withType
 import java.io.File
@@ -85,7 +86,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	private fun init() {
 		readVersionFromFile(project.file("version.properties"))
 
-		val vcs = project.extensions.findByName(VCSPluginExtension.NAME) as VCSPluginExtension?
+		val vcs: VCSPluginExtension? = project.extensions.findByType()
 		if (vcs != null && vcs.current.isAvailable) {
 			version.versionByVCS(vcs.current)
 		}

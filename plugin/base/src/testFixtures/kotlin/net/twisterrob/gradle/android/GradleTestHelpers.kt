@@ -16,12 +16,12 @@ import java.util.concurrent.TimeUnit
 /**
  * @see /android-plugin_app/src/main/AndroidManifest.xml
  */
-internal const val packageName: String = "net.twisterrob.gradle.test_app"
+const val packageName: String = "net.twisterrob.gradle.test_app"
 
-internal val packageFolder: String
+val packageFolder: String
 	get() = packageName.replace('.', '/')
 
-internal fun File.apk(
+fun File.apk(
 	variant: String,
 	fileName: String = {
 		val variantSuffix = if (variant != "release") ".${variant}" else ""
@@ -46,10 +46,10 @@ internal val toolsBinDir: File
 internal val platformToolsDir: File
 	get() = androidSdkDir.resolve("platform-tools")
 
-internal fun resolveFromAndroidSDK(command: String): File =
+fun resolveFromAndroidSDK(command: String): File =
 	resolveFromFolders(command, buildToolsDir, platformToolsDir, toolsDir, toolsBinDir)
 
-internal fun resolveFromJDK(command: String): File {
+fun resolveFromJDK(command: String): File {
 	val jre = File(System.getProperty("java.home"))
 	val dirs = arrayOf(
 		jre.resolve("bin"),
@@ -66,7 +66,7 @@ private fun resolveFromFolders(command: String, vararg dirs: File): File {
 		?: error("Cannot find any of ${variants} in any of these folders:\n${dirs.joinToString("\n")}")
 }
 
-internal fun assertDefaultDebugBadging(
+fun assertDefaultDebugBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "1",
@@ -88,7 +88,7 @@ internal fun assertDefaultDebugBadging(
 	)
 }
 
-internal fun assertDefaultReleaseBadging(
+fun assertDefaultReleaseBadging(
 	apk: File,
 	applicationId: String = packageName,
 	versionCode: String = "1",
@@ -110,7 +110,7 @@ internal fun assertDefaultReleaseBadging(
 	)
 }
 
-internal fun assertDefaultBadging(
+fun assertDefaultBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "1",

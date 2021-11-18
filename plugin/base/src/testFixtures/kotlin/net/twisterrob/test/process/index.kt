@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit.MINUTES
 internal fun String.normalize(): String =
 	trim().replace("\r?\n".toRegex(), System.lineSeparator())
 
-internal fun Iterable<String>.runCommand(
+fun Iterable<String>.runCommand(
 	workingDir: File = File("."),
 	timeout: Long = MINUTES.toMillis(60)
 ): String {

@@ -19,6 +19,7 @@ import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
@@ -100,7 +101,7 @@ class AndroidReleasePlugin : BasePlugin() {
 			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
 			archiveFileName.set(
 				android.defaultConfig
-					.extensions.getByName<AndroidVersionExtension>(AndroidVersionExtension.NAME)
+					.extensions.getByType<AndroidVersionExtension>()
 					.formatArtifactName(
 						project,
 						"archive",

@@ -8,7 +8,7 @@ import org.gradle.api.plugins.PluginContainer
 /**
  * See https://github.com/gradle/kotlin-dsl/issues/1154
  */
-internal val Any.extensions: ExtensionContainer
+val Any.extensions: ExtensionContainer
 	get() = (this as ExtensionAware).extensions
 
 /**

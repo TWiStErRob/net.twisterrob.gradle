@@ -9,6 +9,10 @@ description = "Versioning Convention Plugin: Gradle Plugin to set up versioning 
 
 gradlePlugin {
 	plugins {
+		create("net.twisterrob.vcs") {
+			id = "net.twisterrob.vcs"
+			implementationClass = "net.twisterrob.gradle.vcs.VCSPlugin"
+		}
 	}
 }
 

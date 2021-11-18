@@ -12,7 +12,7 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.UntrackedTask
-import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.getByType
 
 // https://docs.gradle.org/7.3/release-notes.html#plugin-development-improvements
 @UntrackedTask(because = "Input of this task is .git or .svn folder.")
@@ -30,7 +30,7 @@ open class CalculateVCSRevisionInfoTask : DefaultTask() {
 
 	@TaskAction
 	fun writeVCS() {
-		val vcs = project.extensions.getByName<VCSPluginExtension>(VCSPluginExtension.NAME)
+		val vcs: VCSPluginExtension = project.extensions.getByType()
 		revisionFile.writeText(vcs.current.revision)
 		revisionNumberFile.writeText(vcs.current.revisionNumber.toString())
 	}
