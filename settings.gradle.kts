@@ -5,7 +5,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 enableFeaturePreview("VERSION_CATALOGS")
 
 include(":quality")
-include(":plugin")
 include(":common")
 include(":test")
 include(":test:internal")
@@ -14,6 +13,10 @@ listOf("checkstyle", "pmd").forEach {
 	include(":${it}")
 	project(":${it}").projectDir = file("checkers/${it}")
 }
+
+include(":plugin")
+include(":plugin:base")
+include(":plugin:versioning")
 
 if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toBoolean()) {
 	includeBuild("docs/examples/local")
