@@ -11,6 +11,10 @@ description = "Utilities: utility functions and classes to write convention plug
 
 gradlePlugin {
 	plugins {
+		create("net.twisterrob.root") {
+			id = "net.twisterrob.root"
+			implementationClass = "net.twisterrob.gradle.RootPlugin"
+		}
 	}
 }
 
