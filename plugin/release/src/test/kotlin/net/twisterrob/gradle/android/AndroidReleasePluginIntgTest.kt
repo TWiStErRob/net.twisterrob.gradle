@@ -19,7 +19,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.EnumSource
+import org.junit.jupiter.params.provider.MethodSource
 import org.junitpioneer.jupiter.ClearEnvironmentVariable
 import java.io.File
 import java.time.Instant
@@ -72,7 +72,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertHasOutputLine(""".*Please set RELEASE_HOME environment variable to an existing directory\.""".toRegex())
 	}
 
-	@EnumSource(Minification::class)
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `test (release)`(
 		minification: Minification
 	) {
@@ -158,7 +158,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		}
 	}
 
-	@EnumSource(Minification::class)
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `test (debug) and (release)`(
 		minification: Minification
 	) {
