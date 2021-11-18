@@ -22,6 +22,7 @@ import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.internal.android.addBuildConfigField40x
 import net.twisterrob.gradle.internal.android.addBuildConfigField41x
 import net.twisterrob.gradle.internal.android.addBuildConfigField42x
+import net.twisterrob.gradle.internal.android.addBuildConfigField70x
 import net.twisterrob.gradle.internal.android.manifestFile40x
 import net.twisterrob.gradle.internal.android.manifestFile41x
 import net.twisterrob.gradle.internal.android.taskContainerCompat40x
@@ -112,6 +113,7 @@ val ManifestProcessorTask.manifestFile: Provider<File>
  */
 fun Project.addBuildConfigField(name: String, type: String, value: Provider<out Serializable>) {
 	when {
+		AGPVersions.CLASSPATH >= AGPVersions.v70x -> this.addBuildConfigField70x(name, type, value)
 		AGPVersions.CLASSPATH compatible AGPVersions.v42x -> this.addBuildConfigField42x(name, type, value)
 		AGPVersions.CLASSPATH compatible AGPVersions.v41x -> this.addBuildConfigField41x(name, type, value)
 		AGPVersions.CLASSPATH compatible AGPVersions.v40x -> this.addBuildConfigField40x(name, type, value)
