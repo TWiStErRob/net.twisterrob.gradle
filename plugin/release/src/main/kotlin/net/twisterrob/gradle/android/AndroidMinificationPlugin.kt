@@ -5,7 +5,6 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.ProguardConfigurableTask
-import com.android.build.gradle.internal.tasks.ProguardTask
 import com.android.build.gradle.internal.tasks.R8Task
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.base.BasePlugin
@@ -91,8 +90,8 @@ class AndroidMinificationPlugin : BasePlugin() {
 
 		project.afterEvaluate {
 			android.variants.all { variant ->
-				val proguardTask = project.findMinificationTaskFor<ProguardTask>(variant)
-				val r8Task = project.findMinificationTaskFor<R8Task>(variant)
+				val proguardTask = proguardTaskClass?.let { project.findMinificationTaskFor(variant, it) }
+				val r8Task = project.findMinificationTaskFor(variant, R8Task::class.java)
 				val obfuscationTask = proguardTask ?: r8Task
 				if (obfuscationTask != null) {
 					obfuscationTask.dependsOn(extractMinificationRules)
@@ -107,10 +106,25 @@ class AndroidMinificationPlugin : BasePlugin() {
 		}
 	}
 
-	private inline fun <reified T : ProguardConfigurableTask> Project.findMinificationTaskFor(variant: BaseVariant): T? =
+	/**
+	 * AGP 7 fully removed support for this task. This will only return a value in < [AGPVersions.v70x].
+	 */
+	@Suppress("UNCHECKED_CAST")
+	private val proguardTaskClass: Class<out ProguardConfigurableTask>?
+		get() = try {
+			Class.forName("com.android.build.gradle.internal.tasks.ProguardTask")
+					as Class<out ProguardConfigurableTask>
+		} catch (ex: ClassNotFoundException) {
+			null
+		}
+
+	private fun <T : ProguardConfigurableTask> Project.findMinificationTaskFor(
+		variant: BaseVariant,
+		taskClass: Class<T>
+	): T? =
 		this
 			.tasks
-			.withType(T::class.java)
+			.withType(taskClass)
 			.matching { it.variantName == variant.name }
 			.singleOrNull()
 
