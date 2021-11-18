@@ -31,6 +31,5 @@ dependencies {
 	testRuntimeOnly(libs.android.lint.main) { isTransitive = false }
 	testRuntimeOnly(libs.android.lint.api) { isTransitive = false }
 	testRuntimeOnly(libs.android.lint.gradle) { isTransitive = false }
-	testRuntimeOnly(libs.android.lint.gradleApi) { isTransitive = false }
 	testRuntimeOnly(libs.android.lint.checks) { isTransitive = false }
 }
