@@ -22,6 +22,7 @@ dependencies {
 	api(projects.checkstyle)
 	api(projects.pmd)
 
+	compileOnly(libs.annotations.jetbrains)
 	compileOnly(libs.android.gradle)
 //	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")
 	api(libs.violations)

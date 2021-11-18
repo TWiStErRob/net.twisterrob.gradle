@@ -1,10 +1,10 @@
 package net.twisterrob.gradle.base
 
-import com.google.common.annotations.VisibleForTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
 import org.gradle.util.GradleVersion
+import org.jetbrains.annotations.VisibleForTesting
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File

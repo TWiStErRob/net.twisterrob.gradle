@@ -12,6 +12,7 @@ dependencies {
 
 	compileOnly(libs.android.gradle)
 	compileOnly(libs.annotations.jsr305)
+	compileOnly(libs.annotations.jetbrains)
 
 	testImplementation(projects.test.internal)
 	testImplementation(libs.guava)

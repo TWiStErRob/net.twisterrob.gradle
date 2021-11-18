@@ -4,11 +4,11 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.internal.TaskManager
 import com.android.xml.AndroidXPathFactory
-import com.google.common.annotations.VisibleForTesting
 import net.twisterrob.gradle.android.manifestFile
 import org.gradle.api.tasks.Exec
 import org.gradle.kotlin.dsl.getByName
 import org.intellij.lang.annotations.Language
+import org.jetbrains.annotations.VisibleForTesting
 import org.xml.sax.InputSource
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory

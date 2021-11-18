@@ -52,6 +52,7 @@ dependencies {
 	implementation(libs.svnkit)
 	implementation(libs.svnkit.cli)
 	implementation(libs.jgit)
+	compileOnly(libs.annotations.jetbrains)
 	compileOnly(libs.android.gradle)
 	compileOnly(libs.kotlin.gradle)
 

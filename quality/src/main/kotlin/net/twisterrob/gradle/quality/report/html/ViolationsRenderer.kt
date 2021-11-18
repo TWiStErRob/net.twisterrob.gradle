@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.quality.report.html
 
-import com.google.common.annotations.VisibleForTesting
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.ArchiveContext
@@ -10,6 +9,7 @@ import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.EmptyCon
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.ErrorContext
 import net.twisterrob.gradle.quality.report.html.model.ContextViewModel.ImageContext
 import net.twisterrob.gradle.quality.report.html.model.ViolationViewModel
+import org.jetbrains.annotations.VisibleForTesting
 import javax.xml.stream.XMLStreamWriter
 
 internal fun renderXml(
