@@ -25,6 +25,9 @@ dependencies {
 	implementation(libs.jgit)
 	compileOnly(libs.android.gradle)
 
+	// This plugin is part of the net.twisterrob.android-app plugin, not designed to work on its own.
+	runtimeOnly(projects.plugin)
+
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
 }
