@@ -32,6 +32,7 @@ dependencies {
 	api(projects.plugin.signing)
 	api(projects.plugin.languages)
 	api(projects.plugin.release)
+	api(projects.plugin.building)
 
 	compileOnly(libs.annotations.jetbrains)
 	compileOnly(libs.android.gradle)
