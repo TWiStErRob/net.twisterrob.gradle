@@ -9,19 +9,6 @@ description = "Convention Plugins: Gradle Plugins used by my hobby projects."
 
 gradlePlugin {
 	plugins {
-		create("net.twisterrob.java") {
-			id = "net.twisterrob.java"
-			implementationClass = "net.twisterrob.gradle.java.JavaPlugin"
-		}
-		create("net.twisterrob.java-library") {
-			id = "net.twisterrob.java-library"
-			implementationClass = "net.twisterrob.gradle.java.JavaLibPlugin"
-		}
-		create("net.twisterrob.kotlin") {
-			id = "net.twisterrob.kotlin"
-			implementationClass = "net.twisterrob.gradle.kotlin.KotlinPlugin"
-		}
-
 		create("net.twisterrob.android-app") {
 			id = "net.twisterrob.android-app"
 			implementationClass = "net.twisterrob.gradle.android.AndroidAppPlugin"

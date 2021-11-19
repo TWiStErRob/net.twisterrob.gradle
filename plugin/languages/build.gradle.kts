@@ -9,6 +9,18 @@ description = "Languages Convention Plugin: Gradle Plugin to apply Java and Kotl
 
 gradlePlugin {
 	plugins {
+		create("net.twisterrob.java") {
+			id = "net.twisterrob.java"
+			implementationClass = "net.twisterrob.gradle.java.JavaPlugin"
+		}
+		create("net.twisterrob.java-library") {
+			id = "net.twisterrob.java-library"
+			implementationClass = "net.twisterrob.gradle.java.JavaLibPlugin"
+		}
+		create("net.twisterrob.kotlin") {
+			id = "net.twisterrob.kotlin"
+			implementationClass = "net.twisterrob.gradle.kotlin.KotlinPlugin"
+		}
 	}
 }
 
