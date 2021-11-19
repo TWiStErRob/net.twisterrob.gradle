@@ -2,9 +2,9 @@ package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.addBuildConfigField
 import net.twisterrob.gradle.android.intermediateRegularFile
+import net.twisterrob.gradle.android.writeText
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.vcs.VCSPluginExtension
-import net.twisterrob.gradle.writeText
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFileProperty

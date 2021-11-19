@@ -9,7 +9,6 @@ import com.android.build.gradle.internal.tasks.ProguardTask
 import com.android.build.gradle.internal.tasks.R8Task
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.base.BasePlugin
-import net.twisterrob.gradle.builtDate
 import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.Project
 import org.gradle.api.Task

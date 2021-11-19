@@ -1,4 +1,4 @@
-package net.twisterrob.gradle
+package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.base.BasePlugin
 import org.gradle.api.file.RegularFileProperty
