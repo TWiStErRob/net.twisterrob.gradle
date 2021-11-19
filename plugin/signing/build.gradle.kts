@@ -1,16 +1,11 @@
 plugins {
 	kotlin
-	id("java-gradle-plugin")
+	`java-library`
 	id("net.twisterrob.gradle.build.publishing")
 }
 
 base.archivesName.set("twister-convention-signing")
 description = "Signing Convention Plugin: Gradle Plugin to apply Android Signing conventions."
-
-gradlePlugin {
-	plugins {
-	}
-}
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
