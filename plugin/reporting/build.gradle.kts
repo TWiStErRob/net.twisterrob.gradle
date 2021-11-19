@@ -1,6 +1,6 @@
 plugins {
 	kotlin
-	`java-library`
+	id("java-gradle-plugin")
 	`java-test-fixtures`
 	id("net.twisterrob.gradle.build.publishing")
 }
@@ -19,3 +19,5 @@ dependencies {
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
 }
+
+disableGradlePluginValidation()
