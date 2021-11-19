@@ -4,7 +4,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesName.set("twister-convention-plugins-version")
+base.archivesName.set("twister-convention-versioning")
 description = "Versioning Convention Plugin: Gradle Plugin to set up versioning through properties and DSL."
 
 gradlePlugin {
