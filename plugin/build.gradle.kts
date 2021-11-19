@@ -31,6 +31,7 @@ dependencies {
 	api(projects.plugin.versioning)
 	api(projects.plugin.signing)
 	api(projects.plugin.languages)
+	api(projects.plugin.release)
 
 	compileOnly(libs.annotations.jetbrains)
 	compileOnly(libs.android.gradle)
@@ -38,7 +39,6 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
-	testImplementation(libs.junit.pioneer)
 	testCompileOnly(libs.android.gradle)
 	// AndroidInstallRunnerTaskTest calls production code directly,
 	// so need com.android.xml.AndroidXPathFactory for AndroidInstallRunnerTask.Companion.getMainActivity$plugin.

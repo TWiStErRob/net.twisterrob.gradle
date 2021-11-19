@@ -1,9 +1,7 @@
 package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.base.BasePlugin
-import org.gradle.api.file.RegularFileProperty
 import java.net.JarURLConnection
-import java.nio.charset.Charset
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
@@ -27,8 +25,4 @@ val builtDate: Instant by lazy {
 		else ->
 			error("Unknown URL type ${url::class.java}")
 	}
-}
-
-fun RegularFileProperty.writeText(text: String, charset: Charset = Charsets.UTF_8) {
-	this.get().asFile.also { if (!it.parentFile.exists()) check(it.parentFile.mkdirs()) }.writeText(text, charset)
 }
