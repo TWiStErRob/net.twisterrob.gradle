@@ -41,7 +41,10 @@ dependencies {
 	implementation(gradleApiWithoutKotlin())
 	implementation(projects.common)
 	implementation(projects.plugin.base)
+
 	api(projects.plugin.versioning)
+	api(projects.plugin.languages)
+
 	compileOnly(libs.annotations.jetbrains)
 	compileOnly(libs.android.gradle)
 	compileOnly(libs.kotlin.gradle)

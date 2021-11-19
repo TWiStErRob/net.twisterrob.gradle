@@ -17,6 +17,7 @@ listOf("checkstyle", "pmd").forEach {
 include(":plugin")
 include(":plugin:base")
 include(":plugin:versioning")
+include(":plugin:languages")
 
 if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toBoolean()) {
 	includeBuild("docs/examples/local")
