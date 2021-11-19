@@ -5,7 +5,7 @@ plugins {
 }
 
 base.archivesName.set("twister-convention-languages")
-description = "Languages Convention Plugin: Gradle Plugin to apply Java and Kotlin convetions."
+description = "Languages Convention Plugin: Gradle Plugin to apply Java and Kotlin conventions."
 
 gradlePlugin {
 	plugins {
