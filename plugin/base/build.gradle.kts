@@ -26,6 +26,7 @@ dependencies {
 	testImplementation(projects.test.internal)
 
 	testFixturesImplementation(projects.test.internal)
+	testFixturesCompileOnly(projects.test)
 	testFixturesImplementation(projects.common)
 	testFixturesApi(libs.dexMemberList)
 	// GradleTestHelpersKt.hasDevices uses com.android.ddmlib.AndroidDebugBridge.

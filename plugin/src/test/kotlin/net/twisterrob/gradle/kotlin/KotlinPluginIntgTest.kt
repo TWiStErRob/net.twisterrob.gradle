@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.kotlin
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.test.GradleBuildTestResources
+import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSuccess
@@ -19,7 +21,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `can compile Kotlin`() {
-		gradle.basedOn("kotlin-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.generateKotlinCompilationCheck()
 
 		@Language("gradle")
@@ -33,7 +35,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `can test Kotlin with TestNG`() {
-		gradle.basedOn("kotlin-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.generateKotlinCompilationCheck()
 		gradle.generateKotlinCompilationCheckTest()
 
@@ -52,7 +54,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `can test Kotlin with JUnit`() {
-		gradle.basedOn("kotlin-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.generateKotlinCompilationCheck()
 		gradle.generateKotlinCompilationCheckTest()
 

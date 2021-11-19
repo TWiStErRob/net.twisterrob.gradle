@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.test.GradleBuildTestResources
+import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -220,7 +222,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `can disable buildConfig decoration (debug)`() {
-		gradle.basedOn("kotlin-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.kotlin)
 
 		@Language("kotlin")
 		val kotlinTestClass = """
@@ -292,7 +294,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `adds custom resources and BuildConfig values`() {
-		gradle.basedOn("kotlin-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.kotlin)
 
 		@Language("kotlin")
 		val kotlinTestClass = """
@@ -369,7 +371,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `can customize build time`() {
-		gradle.basedOn("kotlin-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.kotlin)
 
 		@Language("kotlin")
 		val kotlinTestClass = """

@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.test.GradleBuildTestResources
+import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.kotlin.KotlinPlugin
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -20,7 +22,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `can test kotlin with JUnit in Android Library`() {
-		gradle.basedOn("kotlin-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.generateKotlinCompilationCheck()
 		gradle.generateKotlinCompilationCheckTest()
 
@@ -40,7 +42,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `can test kotlin with JUnit in Android App`() {
-		gradle.basedOn("kotlin-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.generateKotlinCompilationCheck()
 		gradle.generateKotlinCompilationCheckTest()
 
@@ -60,7 +62,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `can test kotlin with JUnit in Android Test App`() {
-		gradle.basedOn("kotlin-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.generateKotlinCompilationCheck("test")
 		gradle.generateKotlinCompilationCheckTest("test")
 

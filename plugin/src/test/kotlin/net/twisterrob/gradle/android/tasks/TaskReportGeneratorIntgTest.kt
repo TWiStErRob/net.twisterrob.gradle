@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.test.GradleBuildTestResources
+import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSuccess
@@ -22,7 +24,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `generator runs with empty input`() {
-		gradle.basedOn("android-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.android)
 		gradle.root.resolve("my_test_input").mkdirs()
 
 		@Language("gradle")
@@ -42,7 +44,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `missing output`() {
-		gradle.basedOn("android-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.android)
 
 		@Language("gradle")
 		val script = """
@@ -58,7 +60,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `missing input`() {
-		gradle.basedOn("android-plugin_app")
+		gradle.basedOn(GradleBuildTestResources.android)
 
 		@Language("gradle")
 		val script = """
