@@ -18,7 +18,6 @@ gradlePlugin {
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
-	implementation(projects.common)
 	implementation(projects.plugin.base)
 	implementation(libs.svnkit)
 	implementation(libs.svnkit.cli)

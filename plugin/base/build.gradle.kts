@@ -20,6 +20,7 @@ gradlePlugin {
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
+	api(projects.common)
 	compileOnly(libs.android.gradle)
 	compileOnly(libs.annotations.jetbrains)
 
@@ -27,7 +28,6 @@ dependencies {
 
 	testFixturesImplementation(projects.test.internal)
 	testFixturesCompileOnly(projects.test)
-	testFixturesImplementation(projects.common)
 	testFixturesApi(libs.dexMemberList)
 	// GradleTestHelpersKt.hasDevices uses com.android.ddmlib.AndroidDebugBridge.
 	testFixturesImplementation(libs.android.tools.ddmLib)
