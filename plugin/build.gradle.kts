@@ -33,6 +33,7 @@ dependencies {
 	api(projects.plugin.languages)
 	api(projects.plugin.release)
 	api(projects.plugin.building)
+	api(projects.plugin.reporting)
 
 	compileOnly(libs.annotations.jetbrains)
 	compileOnly(libs.android.gradle)
