@@ -6,7 +6,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesName.set("twister-convention-plugins-common")
+base.archivesName.set("twister-convention-base")
 description = "Utilities: utility functions and classes to write convention plugins."
 
 gradlePlugin {
