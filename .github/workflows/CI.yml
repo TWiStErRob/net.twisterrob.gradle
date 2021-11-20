@@ -221,7 +221,7 @@ jobs:
           --no-daemon
           --no-build-cache
           --stacktrace
-          check ${{ matrix.test-task }}
+          ${{ matrix.test-task }}
           -Pnet.twisterrob.gradle.build.verboseReports=true
           -Pnet.twisterrob.test.android.pluginVersion=${{ matrix.agp }}
           -Pnet.twisterrob.gradle.runner.gradleVersion=${{ matrix.gradle }}
