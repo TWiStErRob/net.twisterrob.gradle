@@ -6,17 +6,21 @@ import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.TestedVariant
+import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.compat.archivesBaseNameCompat
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId
 import net.twisterrob.gradle.vcs.VCSExtension
 import net.twisterrob.gradle.vcs.VCSPluginExtension
+import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.withType
 import java.io.File
 import java.io.FileInputStream
@@ -24,6 +28,20 @@ import java.io.FileNotFoundException
 import java.util.Locale
 import java.util.Properties
 
+/**
+ * To use in Kotlin DSL use
+ * ```kotlin
+ * android.defaultConfig.version.…
+ * ```
+ * or
+ * ```kotlin
+ * android.defaultConfig.version {
+ *     …
+ * }
+ * ```
+ * Note: in Groovy DSL this is automatic.
+ * @see version
+ */
 @Suppress("MemberVisibilityCanBePrivate")
 open class AndroidVersionExtension {
 
@@ -170,4 +188,11 @@ class AndroidVersionPlugin : BasePlugin() {
 			} catch (ignore: FileNotFoundException) {
 			}
 		}
+}
+
+val DefaultConfig.version: AndroidVersionExtension
+	get() = (this as ExtensionAware).extensions.getByName<AndroidVersionExtension>("version")
+
+fun DefaultConfig.version(configuration: Action<AndroidVersionExtension>) {
+	configuration.execute(version)
 }
