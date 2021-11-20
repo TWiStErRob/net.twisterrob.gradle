@@ -47,6 +47,10 @@ dependencies {
 	testImplementation(libs.android.tools.common)
 }
 
+tasks.register("tests") {
+	dependsOn(allprojects.map { it.tasks.named("test") })
+}
+
 allprojects {
 	tasks.withType<Test>().configureEach {
 		onlyIf {
