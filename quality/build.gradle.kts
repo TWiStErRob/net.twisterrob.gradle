@@ -34,4 +34,17 @@ dependencies {
 	testImplementation(testFixtures(projects.checkstyle))
 }
 
+tasks.register("tests") {
+	listOf(
+		projects.quality,
+		projects.common,
+		projects.checkstyle,
+		projects.pmd,
+		projects.test,
+		projects.test.internal,
+	).forEach {
+		dependsOn(it.dependencyProject.tasks.named("test"))
+	}
+}
+
 pullTestResourcesFrom(projects.test)
