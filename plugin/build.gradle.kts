@@ -47,15 +47,6 @@ dependencies {
 	testImplementation(libs.android.tools.common)
 }
 
-tasks.withType<Test>().configureEach {
-	// See GradleTestKitDirRelocator for what enables this!
-	maxParallelForks = 10
-	// Limit memory usage of test forks. Gradle <5 allows 1/4th of total memory to be used, thus forbidding many forks.
-	// Memory limit for the :plugin:test task running JUnit tests.
-	// The Gradle builds use the default in DaemonParameters.
-	maxHeapSize = "256M"
-}
-
 allprojects {
 	tasks.withType<Test>().configureEach {
 		onlyIf {
