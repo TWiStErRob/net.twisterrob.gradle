@@ -200,6 +200,27 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
+	@Test fun `can turn off autoVersion before setting versions (debug) and (release)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.version.autoVersion = false
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
+		""".trimIndent()
+
+		val result = gradle.run(script, "assemble").build()
+
+		result.assertSuccess(":assembleDebug")
+		assertDefaultDebugBadging(
+			apk = gradle.root.apk("debug", "${packageName}.debug@-1-vnull+debug.apk")
+		)
+
+		result.assertSuccess(":assembleRelease")
+		assertDefaultReleaseBadging(
+			apk = gradle.root.apk("release", "${packageName}@-1-vnull+release.apk")
+		)
+	}
+
 	@Test fun `can customize version propagates androidTest (debug)`() {
 		@Language("gradle")
 		val script = """
@@ -286,6 +307,24 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			versionCode = "10203004",
 			versionName = "1.2.3#4"
 		)
+	}
+
+	@Test fun `autoVersion turns on when version properties exists, but fails due to no values set`() {
+		@Language("properties")
+		val versionProperties = """
+			# Empty file without versions.
+		""".trimIndent()
+		gradle.file(versionProperties, "version.properties")
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleRelease").buildAndFail()
+
+		result.assertHasOutputLine(""".*android\.defaultConfig\.versionCode is set to 0, but it should be a positive integer\..*""".toRegex())
+		result.assertHasOutputLine(""".*See https://developer\.android\.com/studio/publish/versioning#appversioning for more information\..*""".toRegex())
 	}
 
 	@Test fun `autoVersion can be turned off even when the file exists`() {
