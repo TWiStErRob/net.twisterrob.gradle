@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
 import com.android.utils.SdkUtils
-import com.google.common.annotations.VisibleForTesting
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.compat.conventionCompat
 import net.twisterrob.gradle.compat.flatMapCompat
@@ -15,6 +14,7 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
+import org.jetbrains.annotations.VisibleForTesting
 import java.io.File
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult

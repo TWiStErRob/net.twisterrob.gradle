@@ -22,6 +22,7 @@ dependencies {
 	api(projects.checkstyle)
 	api(projects.pmd)
 
+	compileOnly(libs.annotations.jetbrains)
 	compileOnly(libs.android.gradle)
 //	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")
 	api(libs.violations)
@@ -31,6 +32,19 @@ dependencies {
 
 	testImplementation(testFixtures(projects.pmd))
 	testImplementation(testFixtures(projects.checkstyle))
+}
+
+tasks.register("tests") {
+	listOf(
+		projects.quality,
+		projects.common,
+		projects.checkstyle,
+		projects.pmd,
+		projects.test,
+		projects.test.internal,
+	).forEach {
+		dependsOn(it.dependencyProject.tasks.named("test"))
+	}
 }
 
 pullTestResourcesFrom(projects.test)
