@@ -51,20 +51,53 @@ open class AndroidVersionExtension {
 		internal const val DEFAULT_FILE_NAME: String = "version.properties"
 	}
 
+	private var autoVersionSet: Boolean = false
+
 	/**
 	 * Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648).
 	 * Adjust [minorMagnitude], [patchMagnitude] and [buildMagnitude] to change this.
 	 *
 	 * autoVersion will default to `true` when `version.properties` file exists.
+	 * autoVersion will default to `true` when [major], [minor], [patch] or [build] properties are set.
 	 */
 	var autoVersion: Boolean = false
+		set(value) {
+			field = value
+			autoVersionSet = true
+		}
+
 	var versionNameFormat: String = "%1\$d.%2\$d.%3\$d#%4\$d"
+
 	var major: Int = 0 // M 0..213
+		set(value) {
+			field = value
+			autoVersion()
+		}
+
 	var minor: Int = 0 // N 0..99
+		set(value) {
+			field = value
+			autoVersion()
+		}
 	var minorMagnitude: Int = 100
+
 	var patch: Int = 0 // P 0..99
+		set(value) {
+			field = value
+			autoVersion()
+		}
 	var patchMagnitude: Int = 100
+
 	var build: Int = 0 // B 0..999
+		set(value) {
+			field = value
+			autoVersion()
+		}
+
+	private fun autoVersion() {
+		if (!autoVersionSet) autoVersion = true
+	}
+
 	var buildMagnitude: Int = 1000
 
 	/** VCS versionCode pattern is MMMNPBBBBB (what fits into 2147483648) */

@@ -170,10 +170,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version {
-				autoVersion = true
-				major = 1; minor = 2; patch = 3; build = 4
-			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
@@ -190,10 +187,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version {
-				autoVersion = true
-				major = 1; minor = 2; patch = 3; build = 4
-			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -210,10 +204,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version {
-				autoVersion = true
-				major = 1; minor = 2; patch = 3; build = 4
-			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebugAndroidTest").build()
@@ -235,11 +226,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version {
-				autoVersion = true
-				renameAPK = false
-				major = 1; minor = 2; patch = 3; build = 4
-		}
+			android.defaultConfig.version { renameAPK = false; major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 		val projectName = "gradle-test-project"
 		gradle.settingsFile.appendText("rootProject.name = '$projectName'")
@@ -258,11 +245,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version {
-				autoVersion = true
-				renameAPK = false
-				major = 1; minor = 2; patch = 3; build = 4
-			}
+			android.defaultConfig.version { renameAPK = false; major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 		val projectName = "gradle-test-project"
 		gradle.settingsFile.appendText("rootProject.name = '$projectName'")
@@ -344,10 +327,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version {
-				autoVersion = true
-				major = 1; minor = 2; patch = 3/*; build = 4*/
-			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3/*; build = 4*/ }
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -371,10 +351,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version {
-				autoVersion = true
-				major = 1; minor = 2; patch = 3/*; build = 4*/
-			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3/*; build = 4*/ }
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()

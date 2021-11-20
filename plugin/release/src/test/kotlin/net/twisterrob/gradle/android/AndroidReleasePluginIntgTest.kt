@@ -81,10 +81,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version {
-				autoVersion = true
-				major = 1; minor = 2; patch = 3; build = 4
-			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			afterEvaluate {
 				tasks.named("releaseRelease", Zip) { destinationDirectory.set(file('releases/release')) }
 			}
@@ -129,10 +126,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version {
-				autoVersion = true
-				major = 1; minor = 2; patch = 3; build = 4
-			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			afterEvaluate {
 				tasks.named("releaseDebug", Zip) { destinationDirectory.set(file('releases/debug')) }
 			}
@@ -173,10 +167,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			android.defaultConfig.version {
-				autoVersion = true
-				major = 1; minor = 2; patch = 3; build = 4
-			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			afterEvaluate {
 				tasks.named("releaseRelease", Zip) { destinationDirectory.set(file('releases/release')) }
 				tasks.named("releaseDebug", Zip) { destinationDirectory.set(file('releases/debug')) }
