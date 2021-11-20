@@ -25,8 +25,7 @@ fun File.apk(
 	variant: String,
 	fileName: String = run {
 		val variantSuffix = if (variant != "release") ".${variant}" else ""
-		val variantVersionSuffix = if ("debug" in variant) "d" else ""
-		"${packageName}${variantSuffix}@1-v0.0.0#1${variantVersionSuffix}+${variant}.apk"
+		"${packageName}${variantSuffix}@-1-vnull+${variant}.apk"
 	}
 ): File =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
@@ -69,8 +68,8 @@ private fun resolveFromFolders(command: String, vararg dirs: File): File {
 fun assertDefaultDebugBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
-	versionCode: String = "1",
-	versionName: String = "0.0.0#1d",
+	versionCode: String = "",
+	versionName: String = "",
 	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
@@ -91,8 +90,8 @@ fun assertDefaultDebugBadging(
 fun assertDefaultReleaseBadging(
 	apk: File,
 	applicationId: String = packageName,
-	versionCode: String = "1",
-	versionName: String = "0.0.0#1",
+	versionCode: String = "",
+	versionName: String = "",
 	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
@@ -113,8 +112,8 @@ fun assertDefaultReleaseBadging(
 fun assertDefaultBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
-	versionCode: String = "1",
-	versionName: String = "0.0.0#1d",
+	versionCode: String = "",
+	versionName: String = "",
 	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,

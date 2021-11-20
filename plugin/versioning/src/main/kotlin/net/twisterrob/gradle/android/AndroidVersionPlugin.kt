@@ -48,10 +48,16 @@ open class AndroidVersionExtension {
 	companion object {
 
 		internal const val NAME: String = "version"
+		internal const val DEFAULT_FILE_NAME: String = "version.properties"
 	}
 
-	/** Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648) */
-	var autoVersion: Boolean = true
+	/**
+	 * Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648).
+	 * Adjust [minorMagnitude], [patchMagnitude] and [buildMagnitude] to change this.
+	 *
+	 * autoVersion will default to `true` when `version.properties` file exists.
+	 */
+	var autoVersion: Boolean = false
 	var versionNameFormat: String = "%1\$d.%2\$d.%3\$d#%4\$d"
 	var major: Int = 0 // M 0..213
 	var minor: Int = 0 // N 0..99
@@ -89,9 +95,7 @@ class AndroidVersionPlugin : BasePlugin() {
 		project.extensions["android"] as AppExtension
 	}
 
-	private val version: AndroidVersionExtension by lazy {
-		android.defaultConfig.extensions.create<AndroidVersionExtension>(AndroidVersionExtension.NAME)
-	}
+	private lateinit var version: AndroidVersionExtension
 
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -102,7 +106,8 @@ class AndroidVersionPlugin : BasePlugin() {
 	}
 
 	private fun init() {
-		readVersionFromFile(project.file("version.properties"))
+		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
+		readVersionFromFile(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME))
 
 		val vcs: VCSPluginExtension? = project.extensions.findByType()
 		if (vcs != null && vcs.current.isAvailable) {
@@ -184,7 +189,9 @@ class AndroidVersionPlugin : BasePlugin() {
 	private fun readVersion(file: File): Properties =
 		Properties().apply {
 			try {
-				FileInputStream(file).use { load(it) }
+				FileInputStream(file)
+					.use { load(it) } // Load the properties.
+					.also { version.autoVersion = true } // If the file existed, turn on auto-versioning.
 			} catch (ignore: FileNotFoundException) {
 			}
 		}
