@@ -23,11 +23,11 @@ val packageFolder: String
 
 fun File.apk(
 	variant: String,
-	fileName: String = {
+	fileName: String = run {
 		val variantSuffix = if (variant != "release") ".${variant}" else ""
 		val variantVersionSuffix = if ("debug" in variant) "d" else ""
 		"${packageName}${variantSuffix}@1-v0.0.0#1${variantVersionSuffix}+${variant}.apk"
-	}()
+	}
 ): File =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
 
