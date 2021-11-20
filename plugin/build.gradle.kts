@@ -25,7 +25,6 @@ gradlePlugin {
 }
 
 dependencies {
-	implementation(gradleApiWithoutKotlin())
 	implementation(projects.plugin.base)
 
 	api(projects.plugin.versioning)
@@ -34,17 +33,6 @@ dependencies {
 	api(projects.plugin.release)
 	api(projects.plugin.building)
 	api(projects.plugin.reporting)
-
-	compileOnly(libs.annotations.jetbrains)
-	compileOnly(libs.android.gradle)
-	compileOnly(libs.kotlin.gradle)
-
-	testImplementation(projects.test.internal)
-	testImplementation(testFixtures(projects.plugin.base))
-	testCompileOnly(libs.android.gradle)
-	// AndroidInstallRunnerTaskTest calls production code directly,
-	// so need com.android.xml.AndroidXPathFactory for AndroidInstallRunnerTask.Companion.getMainActivity$plugin.
-	testImplementation(libs.android.tools.common)
 }
 
 tasks.register("tests") {
@@ -59,14 +47,6 @@ allprojects {
 	}
 
 	afterEvaluate {
-		try {
-			addJarToClasspathOfPlugin()
-		} catch (ex: UnknownTaskException) {
-			if (ex.message?.startsWith("Task with name 'pluginUnderTestMetadata' not found in project ") == true) {
-				// All good, ignore.
-			} else {
-				throw ex
-			}
-		}
+		addJarToClasspathOfPlugin()
 	}
 }
