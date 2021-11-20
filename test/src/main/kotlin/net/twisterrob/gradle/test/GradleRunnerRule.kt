@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.test
 
+import org.gradle.api.internal.tasks.testing.worker.TestWorker
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.internal.DefaultGradleRunner
 import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.rules.TemporaryFolder
@@ -128,12 +130,16 @@ open class GradleRunnerRule : TestRule {
 			buildFile.appendText(script)
 		}
 		val args = arrayOf(*tasks, "--stacktrace")
+		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
+		val testKitDir = runner.let { it as? DefaultGradleRunner }?.testKitDirProvider?.dir
 		println(
 			"""
+			Gradle worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
 			Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
 			```gradle
 ${buildFile.readText().prependIndent("\t\t\t")}
 			```
+			Execution output:
 			""".trimIndent()
 		)
 		return runner.withArguments(*args)
