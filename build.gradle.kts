@@ -16,6 +16,8 @@ allprojects {
 	version = projectVersion
 }
 
+resetGradleTestWorkerIdToDefault()
+
 subprojects {
 	apply { plugin("kotlin") }
 
