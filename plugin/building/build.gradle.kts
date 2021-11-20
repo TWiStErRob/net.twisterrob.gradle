@@ -10,7 +10,7 @@ description = "Build Convention Plugin: Gradle Plugin to handle conventional bui
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
-	implementation(projects.plugin.base)
+	api(projects.plugin.base)
 	implementation(projects.plugin.versioning) // TODO decouple
 	compileOnly(libs.android.gradle)
 	compileOnly(libs.annotations.jetbrains)

@@ -26,7 +26,7 @@ gradlePlugin {
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
-	implementation(projects.plugin.base)
+	api(projects.plugin.base)
 	compileOnly(libs.android.gradle)
 
 	// This plugin is part of the net.twisterrob.android-app plugin, not designed to work on its own.

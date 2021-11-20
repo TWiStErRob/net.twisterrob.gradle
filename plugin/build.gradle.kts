@@ -25,8 +25,7 @@ gradlePlugin {
 }
 
 dependencies {
-	implementation(projects.plugin.base)
-
+	api(projects.plugin.base)
 	api(projects.plugin.versioning)
 	api(projects.plugin.signing)
 	api(projects.plugin.languages)

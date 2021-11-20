@@ -10,7 +10,7 @@ description = "Release Convention Plugin: Gradle Plugin to handle conventional r
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
-	implementation(projects.plugin.base)
+	api(projects.plugin.base)
 	implementation(projects.plugin.versioning) // TODO decouple
 	compileOnly(libs.android.gradle)
 
