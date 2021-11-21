@@ -24,6 +24,8 @@ import net.twisterrob.gradle.internal.android.addBuildConfigField40x
 import net.twisterrob.gradle.internal.android.addBuildConfigField41x
 import net.twisterrob.gradle.internal.android.addBuildConfigField42x
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.internal.android.manifestFile40x
+import net.twisterrob.gradle.internal.android.manifestFile41x
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
@@ -107,21 +109,8 @@ val BaseVariantData.taskContainerCompat: TaskContainer
 val ManifestProcessorTask.manifestFile: Provider<File>
 	get() =
 		when {
-			AGPVersions.CLASSPATH >= AGPVersions.v41x ->
-				when (this) {
-					is ProcessApplicationManifest -> mergedManifest.asFile
-					is ProcessMultiApkApplicationManifest -> mainMergedManifest.asFile
-					else -> error("$this is an unsupported ${ManifestProcessorTask::class}")
-				}
-			AGPVersions.CLASSPATH >= AGPVersions.v40x -> {
-				val manifestOutputDirectory =
-					Class.forName("com.android.build.gradle.tasks.ManifestProcessorTask")
-						.getDeclaredMethod("getManifestOutputDirectory")
-						.invoke(this) as DirectoryProperty
-				manifestOutputDirectory
-					.file("AndroidManifest.xml")
-					.map { it.asFile }
-			}
+			AGPVersions.CLASSPATH >= AGPVersions.v41x -> this.manifestFile41x
+			AGPVersions.CLASSPATH >= AGPVersions.v40x -> this.manifestFile40x
 			else -> AGPVersions.olderThan4NotSupported(AGPVersions.CLASSPATH)
 		}
 
