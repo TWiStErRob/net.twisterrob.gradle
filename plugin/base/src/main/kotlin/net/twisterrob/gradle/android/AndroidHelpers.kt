@@ -26,6 +26,8 @@ import net.twisterrob.gradle.internal.android.addBuildConfigField42x
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.internal.android.manifestFile40x
 import net.twisterrob.gradle.internal.android.manifestFile41x
+import net.twisterrob.gradle.internal.android.taskContainerCompat40x
+import net.twisterrob.gradle.internal.android.taskContainerCompat41x
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
@@ -95,14 +97,8 @@ fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
 val BaseVariantData.taskContainerCompat: TaskContainer
 	get() =
 		when {
-			AGPVersions.CLASSPATH >= AGPVersions.v41x ->
-				taskContainer
-			AGPVersions.CLASSPATH >= AGPVersions.v40x ->
-				// Call reflectively, because return type changed
-				// from TaskContainer interface to MutableTaskContainer class.
-				BaseVariantData::class.java
-					.getDeclaredMethod("getTaskContainer")
-					.invoke(this) as TaskContainer
+			AGPVersions.CLASSPATH >= AGPVersions.v41x -> this.taskContainerCompat41x
+			AGPVersions.CLASSPATH >= AGPVersions.v40x -> this.taskContainerCompat40x
 			else -> AGPVersions.olderThan4NotSupported(AGPVersions.CLASSPATH)
 		}
 
