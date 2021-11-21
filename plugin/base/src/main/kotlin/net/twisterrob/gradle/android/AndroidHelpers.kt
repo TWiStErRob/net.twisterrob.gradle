@@ -20,9 +20,9 @@ import com.android.build.gradle.tasks.ManifestProcessorTask
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.android.builder.model.AndroidProject
-import net.twisterrob.gradle.android.internal.addBuildConfigField40x
-import net.twisterrob.gradle.android.internal.addBuildConfigField41x
-import net.twisterrob.gradle.android.internal.addBuildConfigField42x
+import net.twisterrob.gradle.internal.android.addBuildConfigField40x
+import net.twisterrob.gradle.internal.android.addBuildConfigField41x
+import net.twisterrob.gradle.internal.android.addBuildConfigField42x
 import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet

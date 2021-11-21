@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.android.internal
+package net.twisterrob.gradle.internal.android
 
 import com.android.build.api.extension.AndroidComponentsExtension
 import com.android.build.api.variant.BuildConfigField

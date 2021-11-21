@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.android.internal
+package net.twisterrob.gradle.internal.android
 
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.Project
