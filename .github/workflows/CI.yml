@@ -420,6 +420,18 @@ jobs:
             build-tools: 30.0.2
             instant-api: 30
             test-task: testReport :plugin:tests
+          - name: "AGP 7.0.x on Gradle 7.x"
+            gradle: 7.0.2
+            agp: 7.0.3
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: testReport :quality:tests
+          - name: "AGP 7.0.x on Gradle 7.x - plugin"
+            gradle: 7.0.2
+            agp: 7.0.3
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: testReport :plugin:tests
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
@@ -577,6 +589,18 @@ jobs:
         with:
           name: AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.3) Test Results XMLs
           path: artifacts/AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.3) Test Results XMLs
+
+      - name: Download 'AGP 7.0.x on Gradle 7.0+ (7.0.3 on 7.0.2) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.0.x on Gradle 7.0+ (7.0.3 on 7.0.2) Test Results XMLs
+          path: artifacts/AGP 7.0.x on Gradle 7.0+ (7.0.3 on 7.0.2) Test Results XMLs
+
+      - name: Download 'AGP 7.0.x on Gradle 7.0+ - plugin (7.0.3 on 7.0.2) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.0.x on Gradle 7.0+ - plugin (7.0.3 on 7.0.2) Test Results XMLs
+          path: artifacts/AGP 7.0.x on Gradle 7.0+ - plugin (7.0.3 on 7.0.2) Test Results XMLs
 
       #- name: Display structure of downloaded files
       #  run: ls -R
