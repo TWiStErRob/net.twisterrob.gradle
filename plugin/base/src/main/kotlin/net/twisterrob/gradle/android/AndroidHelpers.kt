@@ -17,13 +17,11 @@ import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.scope.TaskContainer
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.build.gradle.tasks.ManifestProcessorTask
-import com.android.build.gradle.tasks.ProcessApplicationManifest
-import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.android.builder.model.AndroidProject
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.internal.android.addBuildConfigField40x
 import net.twisterrob.gradle.internal.android.addBuildConfigField41x
 import net.twisterrob.gradle.internal.android.addBuildConfigField42x
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.internal.android.manifestFile40x
 import net.twisterrob.gradle.internal.android.manifestFile41x
 import net.twisterrob.gradle.internal.android.taskContainerCompat40x
@@ -32,7 +30,6 @@ import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.provider.Provider
