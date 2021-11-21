@@ -115,9 +115,9 @@ val ManifestProcessorTask.manifestFile: Provider<File>
  */
 fun Project.addBuildConfigField(name: String, type: String, value: Provider<out Serializable>) {
 	when {
-		AGPVersions.CLASSPATH compatible AGPVersions.v42x -> addBuildConfigField42x(name, type, value)
-		AGPVersions.CLASSPATH compatible AGPVersions.v41x -> addBuildConfigField41x(name, type, value)
-		AGPVersions.CLASSPATH compatible AGPVersions.v40x -> addBuildConfigField40x(name, type, value)
+		AGPVersions.CLASSPATH compatible AGPVersions.v42x -> this.addBuildConfigField42x(name, type, value)
+		AGPVersions.CLASSPATH compatible AGPVersions.v41x -> this.addBuildConfigField41x(name, type, value)
+		AGPVersions.CLASSPATH compatible AGPVersions.v40x -> this.addBuildConfigField40x(name, type, value)
 		else -> AGPVersions.otherThan4NotSupported(AGPVersions.CLASSPATH)
 	}
 }
