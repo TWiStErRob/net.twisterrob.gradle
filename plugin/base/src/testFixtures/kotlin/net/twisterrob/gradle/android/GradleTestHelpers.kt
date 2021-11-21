@@ -25,7 +25,13 @@ fun File.apk(
 	variant: String,
 	fileName: String = run {
 		val variantSuffix = if (variant != "release") ".${variant}" else ""
-		"${packageName}${variantSuffix}@-1-vnull+${variant}.apk"
+		val versionName = when {
+			AGPVersions.UNDER_TEST compatible AGPVersions.v40x ->
+				if ("debug" in variant) "d" else "null"
+			else ->
+				"null"
+		}
+		"${packageName}${variantSuffix}@-1-v${versionName}+${variant}.apk"
 	}
 ): File =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
@@ -69,7 +75,12 @@ fun assertDefaultDebugBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
-	versionName: String = "",
+	versionName: String = when {
+		AGPVersions.UNDER_TEST compatible AGPVersions.v40x ->
+			"d"
+		else ->
+			"null"
+	},
 	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
