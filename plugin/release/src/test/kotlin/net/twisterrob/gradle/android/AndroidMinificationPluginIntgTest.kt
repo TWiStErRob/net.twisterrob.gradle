@@ -176,14 +176,14 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 			}
 
 			Minification.R8 -> {
-				// Not supported on R8 at AGP 4.2.
-				result.assertNoOutputLine(""".*WARNING:.* R8: Ignoring option: -dump.*""".toRegex())
+				// Not supported on R8 at AGP 4.x.
+				result.assertNoOutputLine(""".*R8: Ignoring option: -dump.*""".toRegex())
 				assertThat(gradle.root.resolve("build/outputs/mapping/release/dump.txt"), not(anExistingFile()))
 			}
 
 			Minification.R8Full -> {
-				// Not supported on R8 at AGP 4.2.
-				result.assertNoOutputLine(""".*WARNING:.* R8: Ignoring option: -dump.*""".toRegex())
+				// Not supported on R8 at AGP 4.x.
+				result.assertNoOutputLine(""".*R8: Ignoring option: -dump.*""".toRegex())
 				assertThat(gradle.root.resolve("build/outputs/mapping/release/dump.txt"), not(anExistingFile()))
 			}
 		}
