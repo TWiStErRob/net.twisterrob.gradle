@@ -3,6 +3,7 @@
 
 package net.twisterrob.gradle.android
 
+import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
@@ -33,7 +34,9 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.PluginContainer
+import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.api.provider.Provider
+import org.gradle.kotlin.dsl.get
 import java.io.File
 import java.io.Serializable
 
@@ -60,6 +63,17 @@ fun PluginContainer.hasAndroid(): Boolean =
  */
 fun PluginContainer.hasAndroidTest(): Boolean =
 	hasPlugin("com.android.test")
+
+/**
+ * New in AGP 4.2, stable in AGP 7.0.
+ */
+val Project.androidComponents: AndroidComponentsExtension<*, *, *>
+	get() {
+		if (!this.plugins.hasPlugin("com.android.base")) {
+			throw PluginInstantiationException("Cannot use this before the Android plugins are applied.")
+		}
+		return this.extensions["androidComponents"] as AndroidComponentsExtension<*, *, *>
+	}
 
 val BaseExtension.variants: DomainObjectSet<out BaseVariant>
 	get() =
