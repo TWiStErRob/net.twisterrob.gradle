@@ -3,9 +3,9 @@ package net.twisterrob.gradle.quality.tasks
 import com.android.build.gradle.tasks.LintGlobalTask
 import net.twisterrob.gradle.common.AndroidVariantApplier
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
-import net.twisterrob.gradle.common.xmlOutput
 import net.twisterrob.gradle.compat.filePropertyCompat
 import net.twisterrob.gradle.compat.fileProviderCompat
+import net.twisterrob.gradle.internal.lint.xmlOutput
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
