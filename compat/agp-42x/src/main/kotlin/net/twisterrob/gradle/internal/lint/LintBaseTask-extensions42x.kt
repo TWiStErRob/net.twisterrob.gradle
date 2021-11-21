@@ -8,6 +8,7 @@ import com.android.build.gradle.internal.tasks.VariantAwareTask
 import com.android.build.gradle.tasks.LintBaseTask
 import com.android.build.gradle.tasks.LintFixTask
 import com.android.build.gradle.tasks.LintGlobalTask
+import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import java.io.File

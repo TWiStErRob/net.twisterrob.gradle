@@ -10,4 +10,6 @@ description = "Compatibility 4.2.x: Compatibility layer for Android Gradle Plugi
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	compileOnly(libs.android.gradle.v42x)
+
+	implementation(projects.compat.agp)
 }

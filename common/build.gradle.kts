@@ -9,6 +9,7 @@ description = "Common: Shared classes between checkers. (Not to be consumed dire
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
+	api(projects.compat.agp)
 	implementation(projects.compat.agp42x)
 
 	compileOnly(libs.android.gradle)
