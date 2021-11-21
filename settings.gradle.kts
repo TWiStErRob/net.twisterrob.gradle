@@ -17,6 +17,7 @@ listOf("checkstyle", "pmd").forEach {
 include(":compat:agp-40x")
 include(":compat:agp-41x")
 include(":compat:agp-42x")
+include(":compat:agp-70x")
 
 include(":plugin")
 include(":plugin:base")

@@ -26,6 +26,7 @@ dependencies {
 	implementation(projects.compat.agp40x)
 	implementation(projects.compat.agp41x)
 	implementation(projects.compat.agp42x)
+	implementation(projects.compat.agp70x)
 
 	testImplementation(projects.test.internal)
 
