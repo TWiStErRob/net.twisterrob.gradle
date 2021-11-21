@@ -1,4 +1,4 @@
-package net.twisterrob.gradle
+package net.twisterrob.gradle.root
 
 import net.twisterrob.gradle.base.BaseExposedPlugin
 
