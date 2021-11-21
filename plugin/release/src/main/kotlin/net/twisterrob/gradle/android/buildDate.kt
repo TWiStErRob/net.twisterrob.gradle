@@ -1,12 +1,11 @@
 package net.twisterrob.gradle.android
 
-import net.twisterrob.gradle.base.BasePlugin
 import java.net.JarURLConnection
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
-val builtDate: Instant by lazy {
-	val aClassInJar = BasePlugin::class.java
+internal val builtDate: Instant by lazy {
+	val aClassInJar = AndroidMinificationPlugin::class.java
 	val aClassName = aClassInJar.simpleName + ".class"
 	val res = aClassInJar.getResource(aClassName) ?: error("Cannot find class file ${aClassName}")
 	val url = res.openConnection() ?: error("Cannot open ${res}")

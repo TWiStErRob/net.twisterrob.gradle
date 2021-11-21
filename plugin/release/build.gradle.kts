@@ -23,3 +23,7 @@ dependencies {
 }
 
 disableGradlePluginValidation()
+
+// net.twisterrob.gradle.android.BuildDateKt.getBuiltDate needs the manifest.
+// The manifest is generated centrally by root build.gradle.kts
+addJarToClasspathOfPlugin()

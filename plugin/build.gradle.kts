@@ -44,8 +44,4 @@ allprojects {
 			it.project.findProperty("net.twisterrob.test.android.pluginVersion").toString() >= "4.0.0"
 		}
 	}
-
-	afterEvaluate {
-		addJarToClasspathOfPlugin()
-	}
 }
