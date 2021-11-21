@@ -4,8 +4,8 @@ plugins {
 	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesName.set("twister-convention-plugins-compat-4.0")
-description = "Compatibility 4.0: Compatibility layer for Android Gradle Plugin 4.0.x."
+base.archivesName.set("twister-compat-agp-4.0.x")
+description = "Compatibility 4.0.x: Compatibility layer for Android Gradle Plugin 4.0.x."
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
