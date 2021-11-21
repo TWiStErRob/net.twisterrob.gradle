@@ -22,6 +22,9 @@ include(":plugin:signing")
 include(":plugin:release")
 include(":plugin:building")
 include(":plugin:reporting")
+include(":plugin:compat-40")
+include(":plugin:compat-41")
+include(":plugin:compat-42")
 
 if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toBoolean()) {
 	includeBuild("docs/examples/local")

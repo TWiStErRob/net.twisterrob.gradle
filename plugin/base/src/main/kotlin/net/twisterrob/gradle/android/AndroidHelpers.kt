@@ -20,15 +20,20 @@ import com.android.build.gradle.tasks.ManifestProcessorTask
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.android.builder.model.AndroidProject
+import net.twisterrob.gradle.android.internal.addBuildConfigField40x
+import net.twisterrob.gradle.android.internal.addBuildConfigField41x
+import net.twisterrob.gradle.android.internal.addBuildConfigField42x
 import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
+import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.provider.Provider
 import java.io.File
+import java.io.Serializable
 
 /**
  * Checks if there are Android plugins applied.
@@ -119,3 +124,15 @@ val ManifestProcessorTask.manifestFile: Provider<File>
 			}
 			else -> AGPVersions.olderThan4NotSupported(AGPVersions.CLASSPATH)
 		}
+
+/**
+ * @see https://android-developers.googleblog.com/2020/12/announcing-android-gradle-plugin.html
+ */
+fun Project.addBuildConfigField(name: String, type: String, value: Provider<out Serializable>) {
+	when {
+		AGPVersions.CLASSPATH compatible AGPVersions.v42x -> addBuildConfigField42x(name, type, value)
+		AGPVersions.CLASSPATH compatible AGPVersions.v41x -> addBuildConfigField41x(name, type, value)
+		AGPVersions.CLASSPATH compatible AGPVersions.v40x -> addBuildConfigField40x(name, type, value)
+		else -> AGPVersions.otherThan4NotSupported(AGPVersions.CLASSPATH)
+	}
+}

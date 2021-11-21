@@ -23,6 +23,9 @@ dependencies {
 	api(projects.common)
 	compileOnly(libs.android.gradle)
 	compileOnly(libs.annotations.jetbrains)
+	implementation(projects.plugin.compat40)
+	implementation(projects.plugin.compat41)
+	implementation(projects.plugin.compat42)
 
 	testImplementation(projects.test.internal)
 
