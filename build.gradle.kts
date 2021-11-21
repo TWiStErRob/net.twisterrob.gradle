@@ -82,8 +82,8 @@ allprojects {
 			kotlinOptions.verbose = true
 			kotlinOptions.jvmTarget = deps.versions.java.get()
 			// STOPSHIP revert this to master state
-			kotlinOptions.suppressWarnings = true
-//			kotlinOptions.allWarningsAsErrors = true
+			kotlinOptions.suppressWarnings = false
+			kotlinOptions.allWarningsAsErrors = false
 			kotlinOptions.freeCompilerArgs += listOf(
 				// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
 				//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
