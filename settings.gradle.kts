@@ -14,6 +14,10 @@ listOf("checkstyle", "pmd").forEach {
 	project(":${it}").projectDir = file("checkers/${it}")
 }
 
+include(":compat:agp-40x")
+include(":compat:agp-41x")
+include(":compat:agp-42x")
+
 include(":plugin")
 include(":plugin:base")
 include(":plugin:versioning")
@@ -22,9 +26,6 @@ include(":plugin:signing")
 include(":plugin:release")
 include(":plugin:building")
 include(":plugin:reporting")
-include(":plugin:compat-40")
-include(":plugin:compat-41")
-include(":plugin:compat-42")
 
 if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toBoolean()) {
 	includeBuild("docs/examples/local")
