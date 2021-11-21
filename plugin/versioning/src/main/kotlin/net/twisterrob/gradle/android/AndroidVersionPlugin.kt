@@ -1,5 +1,10 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.variant.ComponentIdentity
+import com.android.build.api.variant.GeneratesApk
+import com.android.build.api.variant.VariantOutput
+import com.android.build.api.variant.impl.VariantOutputImpl
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.api.ApkVariant
@@ -8,6 +13,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.TestedVariant
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.base.BasePlugin
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.compat.archivesBaseNameCompat
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId
@@ -135,12 +141,38 @@ class AndroidVersionPlugin : BasePlugin() {
 		// When the Android application plugin is applied, we can set up the defaults and the DSL.
 		project.plugins.withId<AppPlugin>("com.android.application") { init() }
 		// Just before the project is finished evaluating, configure a bit more.
-		project.beforeAndroidTasksCreated { configure() }
+		when {
+			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
+				project.androidComponents.finalizeDsl { autoVersion() }
+			}
+			else -> {
+				project.beforeAndroidTasksCreated { autoVersion() }
+			}
+		}
 	}
 
 	private fun init() {
 		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
 		readVersionFromFile(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME))
+
+		when {
+			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
+				project.androidComponents.onVariants {
+					if (version.renameAPK) {
+						renameAPK7(it as ApplicationVariant, it.outputs)
+					}
+				}
+			}
+			else -> {
+				project.beforeAndroidTasksCreated {
+					android.applicationVariants.all {
+						if (version.renameAPK) {
+							renameAPK(it, it)
+						}
+					}
+				}
+			}
+		}
 
 		val vcs: VCSPluginExtension? = project.extensions.findByType()
 		if (vcs != null && vcs.current.isAvailable) {
@@ -159,15 +191,26 @@ class AndroidVersionPlugin : BasePlugin() {
 		}
 	}
 
-	private fun renameAPK() {
-		if (version.renameAPK) {
-			android.applicationVariants.all { renameAPK(it, it) }
+	private fun <T> renameAPK7(variant: T, outputs: List<VariantOutput>) where T : ComponentIdentity, T : GeneratesApk {
+		// Only called for applicationVariants and their testVariants so filter should be safe.
+		outputs.filterIsInstance<VariantOutputImpl>().forEach { output ->
+			val artifactName = version.formatArtifactName(
+				project,
+				variant.name,
+				variant.applicationId.get(),
+				output.versionCode.getOrElse(-1)!!.toLong(),
+				output.versionName.getOrElse(null)
+			)
+			output.outputFileName.set("${artifactName}.apk")
 		}
-	}
-
-	private fun configure() {
-		autoVersion()
-		renameAPK()
+		// Doesn't work, because androidTest doesn't have a versionCode and versionName.
+		// And applicationId is not accessible yet.
+		//if (variant is ApplicationVariant) {
+		//	variant.androidTest?.let { androidTest ->
+		//		androidTest as ComponentCreationConfig
+		//		renameAPK7(androidTest, androidTest.outputs)
+		//	}
+		//}
 	}
 
 	/**
