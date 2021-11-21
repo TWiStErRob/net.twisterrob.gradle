@@ -14,6 +14,7 @@ import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addB
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.BasePlugin
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
@@ -109,9 +110,20 @@ class AndroidBuildPlugin : BasePlugin() {
 		val vcsTaskProvider =
 			project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
 
-		project.beforeAndroidTasksCreated {
-			if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
-				decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
+		when {
+			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
+				project.androidComponents.finalizeDsl {
+					if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
+						decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
+					}
+				}
+			}
+			else -> {
+				project.beforeAndroidTasksCreated {
+					if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
+						decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
+					}
+				}
 			}
 		}
 		project.plugins.withType<AppPlugin> {
