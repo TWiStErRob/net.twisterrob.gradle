@@ -152,14 +152,22 @@ class AndroidVersionPlugin : BasePlugin() {
 	 * This method is called after the DSL has been parsed ([version] is ready),
 	 * but before any of AGP's [Project.afterEvaluate] is executed.
 	 */
-	private fun configure() {
+	private fun autoVersion() {
 		if (version.autoVersion) {
 			android.defaultConfig.setVersionCode(calculateVersionCode())
 			android.defaultConfig.setVersionName(calculateVersionName(null))
 		}
+	}
+
+	private fun renameAPK() {
 		if (version.renameAPK) {
 			android.applicationVariants.all { renameAPK(it, it) }
 		}
+	}
+
+	private fun configure() {
+		autoVersion()
+		renameAPK()
 	}
 
 	/**
