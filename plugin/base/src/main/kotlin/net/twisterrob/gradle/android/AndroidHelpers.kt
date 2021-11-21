@@ -20,15 +20,24 @@ import com.android.build.gradle.tasks.ManifestProcessorTask
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.android.builder.model.AndroidProject
+import net.twisterrob.gradle.internal.android.addBuildConfigField40x
+import net.twisterrob.gradle.internal.android.addBuildConfigField41x
+import net.twisterrob.gradle.internal.android.addBuildConfigField42x
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.internal.android.manifestFile40x
+import net.twisterrob.gradle.internal.android.manifestFile41x
+import net.twisterrob.gradle.internal.android.taskContainerCompat40x
+import net.twisterrob.gradle.internal.android.taskContainerCompat41x
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
+import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.provider.Provider
 import java.io.File
+import java.io.Serializable
 
 /**
  * Checks if there are Android plugins applied.
@@ -88,34 +97,27 @@ fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
 val BaseVariantData.taskContainerCompat: TaskContainer
 	get() =
 		when {
-			AGPVersions.CLASSPATH >= AGPVersions.v41x ->
-				taskContainer
-			AGPVersions.CLASSPATH >= AGPVersions.v40x ->
-				// Call reflectively, because return type changed
-				// from TaskContainer interface to MutableTaskContainer class.
-				BaseVariantData::class.java
-					.getDeclaredMethod("getTaskContainer")
-					.invoke(this) as TaskContainer
-			else -> AGPVersions.olderThan4NotSupported()
+			AGPVersions.CLASSPATH >= AGPVersions.v41x -> this.taskContainerCompat41x
+			AGPVersions.CLASSPATH >= AGPVersions.v40x -> this.taskContainerCompat40x
+			else -> AGPVersions.olderThan4NotSupported(AGPVersions.CLASSPATH)
 		}
 
 val ManifestProcessorTask.manifestFile: Provider<File>
 	get() =
 		when {
-			AGPVersions.CLASSPATH >= AGPVersions.v41x ->
-				when (this) {
-					is ProcessApplicationManifest -> mergedManifest.asFile
-					is ProcessMultiApkApplicationManifest -> mainMergedManifest.asFile
-					else -> error("$this is an unsupported ${ManifestProcessorTask::class}")
-				}
-			AGPVersions.CLASSPATH >= AGPVersions.v40x -> {
-				val manifestOutputDirectory =
-					Class.forName("com.android.build.gradle.tasks.ManifestProcessorTask")
-						.getDeclaredMethod("getManifestOutputDirectory")
-						.invoke(this) as DirectoryProperty
-				manifestOutputDirectory
-					.file("AndroidManifest.xml")
-					.map { it.asFile }
-			}
-			else -> AGPVersions.olderThan4NotSupported()
+			AGPVersions.CLASSPATH >= AGPVersions.v41x -> this.manifestFile41x
+			AGPVersions.CLASSPATH >= AGPVersions.v40x -> this.manifestFile40x
+			else -> AGPVersions.olderThan4NotSupported(AGPVersions.CLASSPATH)
 		}
+
+/**
+ * @see https://android-developers.googleblog.com/2020/12/announcing-android-gradle-plugin.html
+ */
+fun Project.addBuildConfigField(name: String, type: String, value: Provider<out Serializable>) {
+	when {
+		AGPVersions.CLASSPATH compatible AGPVersions.v42x -> this.addBuildConfigField42x(name, type, value)
+		AGPVersions.CLASSPATH compatible AGPVersions.v41x -> this.addBuildConfigField41x(name, type, value)
+		AGPVersions.CLASSPATH compatible AGPVersions.v40x -> this.addBuildConfigField40x(name, type, value)
+		else -> AGPVersions.otherThan4NotSupported(AGPVersions.CLASSPATH)
+	}
+}
