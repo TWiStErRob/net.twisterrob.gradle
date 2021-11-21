@@ -18,7 +18,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	/**
 	 * This should only contain files that will definitely generate (i.e. `if (subTask.enabled)` in [mustRunAfter]).
-	 * Currently it is not the case if the submodules are configured from a parent project (see tests).
+	 * Currently, it is not the case if the submodules are configured from a parent project (see tests).
 	 * At the usage we need to double-check if the file existed,
 	 * otherwise it'll spam the logs with [java.io.FileNotFoundException]s.
 	 */
