@@ -14,6 +14,7 @@ class QualityPlugin : BaseExposedPlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
+		//project.apply<GradlePlugin>()
 		project.extensions.create("quality", QualityExtension::class.java, project)
 		// needed for accessing ReportingExtension to get `build/reporting` folder
 		project.plugins.apply("org.gradle.reporting-base")

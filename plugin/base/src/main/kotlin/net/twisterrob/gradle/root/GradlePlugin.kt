@@ -1,5 +1,6 @@
-package net.twisterrob.gradle.base
+package net.twisterrob.gradle.root
 
+import net.twisterrob.gradle.base.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.register

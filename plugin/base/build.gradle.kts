@@ -13,7 +13,7 @@ gradlePlugin {
 	plugins {
 		create("net.twisterrob.root") {
 			id = "net.twisterrob.root"
-			implementationClass = "net.twisterrob.gradle.RootPlugin"
+			implementationClass = "net.twisterrob.gradle.root.RootPlugin"
 		}
 	}
 }
