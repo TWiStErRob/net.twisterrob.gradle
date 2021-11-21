@@ -79,7 +79,7 @@ fun assertDefaultDebugBadging(
 		AGPVersions.UNDER_TEST compatible AGPVersions.v40x ->
 			"d"
 		else ->
-			"null"
+			""
 	},
 	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
