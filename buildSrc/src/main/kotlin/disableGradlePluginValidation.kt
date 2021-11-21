@@ -4,6 +4,8 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.named
 
 fun Project.disableGradlePluginValidation() {
+	check(gradlePlugin.plugins.isEmpty()) { "There are plugins declared in ${this}, don't disable plugin validation." }
+
 	@Suppress("LocalVariableName")
 	tasks.named<Jar>("jar") {
 		val PluginValidationAction =
