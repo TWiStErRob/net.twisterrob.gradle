@@ -96,7 +96,7 @@ val BaseVariantData.taskContainerCompat: TaskContainer
 				BaseVariantData::class.java
 					.getDeclaredMethod("getTaskContainer")
 					.invoke(this) as TaskContainer
-			else -> AGPVersions.olderThan4NotSupported()
+			else -> AGPVersions.olderThan4NotSupported(AGPVersions.CLASSPATH)
 		}
 
 val ManifestProcessorTask.manifestFile: Provider<File>
@@ -117,5 +117,5 @@ val ManifestProcessorTask.manifestFile: Provider<File>
 					.file("AndroidManifest.xml")
 					.map { it.asFile }
 			}
-			else -> AGPVersions.olderThan4NotSupported()
+			else -> AGPVersions.olderThan4NotSupported(AGPVersions.CLASSPATH)
 		}

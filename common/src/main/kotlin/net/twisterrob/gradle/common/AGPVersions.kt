@@ -7,8 +7,12 @@ import org.jetbrains.annotations.TestOnly
  */
 object AGPVersions {
 
-	fun olderThan4NotSupported(): Nothing {
-		error("AGP $UNDER_TEST is not supported, because it's older than $v4xx")
+	fun olderThan4NotSupported(version: AGPVersion): Nothing {
+		error("AGP ${version} is not supported, because it's older than ${v4xx}")
+	}
+
+	fun otherThan4NotSupported(version: AGPVersion): Nothing {
+		error("AGP ${version} is not supported, because it's not compatible with ${v4xx}")
 	}
 
 	/**

@@ -57,12 +57,12 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val fileName = when {
 			AGPVersions.UNDER_TEST >= AGPVersions.v41x -> "${packageName}.debug@1234-vnull+debug.apk"
 			AGPVersions.UNDER_TEST >= AGPVersions.v40x -> "${packageName}.debug@1234-vd+debug.apk"
-			else -> AGPVersions.olderThan4NotSupported()
+			else -> AGPVersions.olderThan4NotSupported(AGPVersions.UNDER_TEST)
 		}
 		val noVersionNameSet = when {
 			AGPVersions.UNDER_TEST >= AGPVersions.v41x -> ""
 			AGPVersions.UNDER_TEST >= AGPVersions.v40x -> "d"
-			else -> AGPVersions.olderThan4NotSupported()
+			else -> AGPVersions.olderThan4NotSupported(AGPVersions.UNDER_TEST)
 		}
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug", fileName),
@@ -100,12 +100,12 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val fileName = when {
 			AGPVersions.UNDER_TEST >= AGPVersions.v41x -> "${packageName}.debug.test@1234-vnull+debug-androidTest.apk"
 			AGPVersions.UNDER_TEST >= AGPVersions.v40x -> "${packageName}.debug.test@1234-vd+debug-androidTest.apk"
-			else -> AGPVersions.olderThan4NotSupported()
+			else -> AGPVersions.olderThan4NotSupported(AGPVersions.UNDER_TEST)
 		}
 		val noVersionNameSet = when {
 			AGPVersions.UNDER_TEST >= AGPVersions.v41x -> ""
 			AGPVersions.UNDER_TEST >= AGPVersions.v40x -> "d"
-			else -> AGPVersions.olderThan4NotSupported()
+			else -> AGPVersions.olderThan4NotSupported(AGPVersions.UNDER_TEST)
 		}
 		assertDefaultBadging(
 			applicationId = "${packageName}.debug.test",
