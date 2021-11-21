@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.base
+package net.twisterrob.gradle.root
 
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
