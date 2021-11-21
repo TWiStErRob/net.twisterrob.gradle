@@ -124,6 +124,8 @@ class AndroidMinificationPlugin : BasePlugin() {
 				outputFile.createNewFile()
 				if (isProguard || AGPVersions.CLASSPATH < AGPVersions.v41x) {
 					outputFile.appendText("-printconfiguration ${mappingFolder.get().resolve("configuration.txt")}\n")
+				}
+				if (isProguard) {
 					outputFile.appendText("-dump ${mappingFolder.get().resolve("dump.txt")}\n")
 				}
 			}
