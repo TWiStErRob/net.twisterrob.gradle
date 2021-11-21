@@ -11,7 +11,8 @@ internal fun String.normalize(): String =
 
 fun Iterable<String>.runCommand(
 	workingDir: File = File("."),
-	timeout: Long = MINUTES.toMillis(60)
+	timeout: Long = MINUTES.toMillis(60),
+	verifyError: Boolean = true
 ): String {
 	val commandString = this.joinToString(separator = " ") {
 		if (it.contains(" ")) """"$it"""" else it
@@ -23,6 +24,16 @@ fun Iterable<String>.runCommand(
 		.redirectError(ProcessBuilder.Redirect.PIPE)
 		.start()
 		.apply { waitFor(timeout, MILLISECONDS) }
+		.also {
+			if (verifyError && it.exitValue() != 0) {
+				val out = it.inputStream.bufferedReader().readText()
+				val err = it.errorStream.bufferedReader().readText()
+				assertEquals(
+					0, it.exitValue(),
+					"Non-zero exit value:\nstdout:\n${out}\nstderr:\n${err}"
+				)
+			}
+		}
 		.run { inputStream.bufferedReader().readText() }
 }
 

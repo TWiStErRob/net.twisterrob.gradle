@@ -171,7 +171,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			}
 		""".trimIndent()
 		gradle.file(appGradle, "app", "build.gradle")
-		gradle.move("version.properties", "app/version.properties")
 		gradle.move("src/main/AndroidManifest.xml", "app/src/main/AndroidManifest.xml")
 
 		@Language("gradle")

@@ -6,17 +6,21 @@ import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.TestedVariant
+import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.compat.archivesBaseNameCompat
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId
 import net.twisterrob.gradle.vcs.VCSExtension
 import net.twisterrob.gradle.vcs.VCSPluginExtension
+import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.withType
 import java.io.File
 import java.io.FileInputStream
@@ -24,23 +28,76 @@ import java.io.FileNotFoundException
 import java.util.Locale
 import java.util.Properties
 
+/**
+ * To use in Kotlin DSL use
+ * ```kotlin
+ * android.defaultConfig.version.…
+ * ```
+ * or
+ * ```kotlin
+ * android.defaultConfig.version {
+ *     …
+ * }
+ * ```
+ * Note: in Groovy DSL this is automatic.
+ * @see version
+ */
 @Suppress("MemberVisibilityCanBePrivate")
 open class AndroidVersionExtension {
 
 	companion object {
 
 		internal const val NAME: String = "version"
+		internal const val DEFAULT_FILE_NAME: String = "version.properties"
 	}
 
-	/** Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648) */
-	var autoVersion: Boolean = true
+	private var autoVersionSet: Boolean = false
+
+	/**
+	 * Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648).
+	 * Adjust [minorMagnitude], [patchMagnitude] and [buildMagnitude] to change this.
+	 *
+	 * autoVersion will default to `true` when `version.properties` file exists.
+	 * autoVersion will default to `true` when [major], [minor], [patch] or [build] properties are set.
+	 */
+	var autoVersion: Boolean = false
+		set(value) {
+			field = value
+			autoVersionSet = true
+		}
+
 	var versionNameFormat: String = "%1\$d.%2\$d.%3\$d#%4\$d"
+
 	var major: Int = 0 // M 0..213
+		set(value) {
+			field = value
+			autoVersion()
+		}
+
 	var minor: Int = 0 // N 0..99
+		set(value) {
+			field = value
+			autoVersion()
+		}
 	var minorMagnitude: Int = 100
+
 	var patch: Int = 0 // P 0..99
+		set(value) {
+			field = value
+			autoVersion()
+		}
 	var patchMagnitude: Int = 100
+
 	var build: Int = 0 // B 0..999
+		set(value) {
+			field = value
+			autoVersion()
+		}
+
+	private fun autoVersion() {
+		if (!autoVersionSet) autoVersion = true
+	}
+
 	var buildMagnitude: Int = 1000
 
 	/** VCS versionCode pattern is MMMNPBBBBB (what fits into 2147483648) */
@@ -71,9 +128,7 @@ class AndroidVersionPlugin : BasePlugin() {
 		project.extensions["android"] as AppExtension
 	}
 
-	private val version: AndroidVersionExtension by lazy {
-		android.defaultConfig.extensions.create<AndroidVersionExtension>(AndroidVersionExtension.NAME)
-	}
+	private lateinit var version: AndroidVersionExtension
 
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -84,7 +139,8 @@ class AndroidVersionPlugin : BasePlugin() {
 	}
 
 	private fun init() {
-		readVersionFromFile(project.file("version.properties"))
+		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
+		readVersionFromFile(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME))
 
 		val vcs: VCSPluginExtension? = project.extensions.findByType()
 		if (vcs != null && vcs.current.isAvailable) {
@@ -166,8 +222,17 @@ class AndroidVersionPlugin : BasePlugin() {
 	private fun readVersion(file: File): Properties =
 		Properties().apply {
 			try {
-				FileInputStream(file).use { load(it) }
+				FileInputStream(file)
+					.use { load(it) } // Load the properties.
+					.also { version.autoVersion = true } // If the file existed, turn on auto-versioning.
 			} catch (ignore: FileNotFoundException) {
 			}
 		}
+}
+
+val DefaultConfig.version: AndroidVersionExtension
+	get() = (this as ExtensionAware).extensions.getByName<AndroidVersionExtension>("version")
+
+fun DefaultConfig.version(configuration: Action<AndroidVersionExtension>) {
+	configuration.execute(version)
 }

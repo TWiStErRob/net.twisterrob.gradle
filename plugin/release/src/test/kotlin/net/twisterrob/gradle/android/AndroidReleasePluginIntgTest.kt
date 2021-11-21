@@ -186,7 +186,14 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	private inline fun assertArchive(archive: File, crossinline assertions: (File) -> Unit) {
-		assertThat(archive, anExistingFile())
+		val fileNamesMessage =
+			"Wanted: ${archive.absolutePath}${System.lineSeparator()}list: ${
+				archive.parentFile.listFiles().orEmpty().joinToString(
+					prefix = System.lineSeparator(),
+					separator = System.lineSeparator()
+				)
+			}"
+		assertThat(fileNamesMessage, archive, anExistingFile())
 		try {
 			assertions(archive)
 		} catch (ex: Throwable) {

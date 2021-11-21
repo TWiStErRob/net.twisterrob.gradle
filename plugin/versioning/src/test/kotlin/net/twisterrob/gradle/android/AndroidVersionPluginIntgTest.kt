@@ -49,7 +49,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
 			android.defaultConfig.versionCode = 1234
-			android.defaultConfig.version.autoVersion = false
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
@@ -77,7 +76,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
 			android.defaultConfig.versionCode = 1234
-			android.defaultConfig.version.autoVersion = false
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -85,8 +83,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release", "${packageName}@1234-vnull+release.apk"),
-			versionCode = "1234",
-			versionName = ""
+			versionCode = "1234"
 		)
 	}
 
@@ -95,7 +92,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
 			android.defaultConfig.versionCode = 1234
-			android.defaultConfig.version.autoVersion = false
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebugAndroidTest").build()
@@ -125,7 +121,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
 			android.defaultConfig.versionName = "_custom_"
-			android.defaultConfig.version.autoVersion = false
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
@@ -133,7 +128,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug", "${packageName}.debug@-1-v_custom_d+debug.apk"),
-			versionCode = "",
 			versionName = "_custom_d"
 		)
 	}
@@ -143,7 +137,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
 			android.defaultConfig.versionName = "_custom_"
-			android.defaultConfig.version.autoVersion = false
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -151,7 +144,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release", "${packageName}@-1-v_custom_+release.apk"),
-			versionCode = "",
 			versionName = "_custom_"
 		)
 	}
@@ -161,7 +153,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
 			android.defaultConfig.versionName = "_custom_"
-			android.defaultConfig.version.autoVersion = false
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebugAndroidTest").build()
@@ -170,7 +161,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		assertDefaultBadging(
 			applicationId = "${packageName}.debug.test",
 			apk = gradle.root.apk("androidTest/debug", "${packageName}.debug.test@-1-v_custom_d+debug-androidTest.apk"),
-			versionCode = "",
 			versionName = "_custom_d",
 			isAndroidTestApk = true
 		)
@@ -207,6 +197,27 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			apk = gradle.root.apk("release", "${packageName}@10203004-v1.2.3#4+release.apk"),
 			versionCode = "10203004",
 			versionName = "1.2.3#4"
+		)
+	}
+
+	@Test fun `can turn off autoVersion before setting versions (debug) and (release)`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.version.autoVersion = false
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
+		""".trimIndent()
+
+		val result = gradle.run(script, "assemble").build()
+
+		result.assertSuccess(":assembleDebug")
+		assertDefaultDebugBadging(
+			apk = gradle.root.apk("debug")
+		)
+
+		result.assertSuccess(":assembleRelease")
+		assertDefaultReleaseBadging(
+			apk = gradle.root.apk("release")
 		)
 	}
 
@@ -267,6 +278,78 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			apk = gradle.root.apk("release", "${projectName}-release-unsigned.apk"),
 			versionCode = "10203004",
 			versionName = "1.2.3#4"
+		)
+	}
+
+	@Test fun `autoVersion turns on when version properties file exists and overrides defaultConfig`() {
+		@Language("properties")
+		val versionProperties = """
+			# Since AGP 3.3 versionCode must be > 0
+			major=1
+			minor=2
+			patch=3
+			build=4
+		""".trimIndent()
+		gradle.file(versionProperties, "version.properties")
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.versionCode = 6789
+			android.defaultConfig.versionName = "_custom_"
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleRelease").build()
+
+		result.assertSuccess(":assembleRelease")
+		assertDefaultReleaseBadging(
+			apk = gradle.root.apk("release", "${packageName}@10203004-v1.2.3#4+release.apk"),
+			versionCode = "10203004",
+			versionName = "1.2.3#4"
+		)
+	}
+
+	@Test fun `autoVersion turns on when version properties exists, but fails due to no values set`() {
+		@Language("properties")
+		val versionProperties = """
+			# Empty file without versions.
+		""".trimIndent()
+		gradle.file(versionProperties, "version.properties")
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleRelease").buildAndFail()
+
+		result.assertHasOutputLine(""".*android\.defaultConfig\.versionCode is set to 0, but it should be a positive integer\..*""".toRegex())
+		result.assertHasOutputLine(""".*See https://developer\.android\.com/studio/publish/versioning#appversioning for more information\..*""".toRegex())
+	}
+
+	@Test fun `autoVersion can be turned off even when the file exists`() {
+		@Language("properties")
+		val versionProperties = """
+			major=1
+			minor=2
+			patch=3
+			build=4
+		""".trimIndent()
+		gradle.file(versionProperties, "version.properties")
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.version.autoVersion = false
+			android.defaultConfig.versionName = "_custom_"
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleRelease").build()
+
+		result.assertSuccess(":assembleRelease")
+		assertDefaultReleaseBadging(
+			apk = gradle.root.apk("release", "${packageName}@-1-v_custom_+release.apk"),
+			versionName = "_custom_"
 		)
 	}
 
