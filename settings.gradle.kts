@@ -14,6 +14,8 @@ listOf("checkstyle", "pmd").forEach {
 	project(":${it}").projectDir = file("checkers/${it}")
 }
 
+include(":compat:agp-31x")
+include(":compat:agp-33x")
 include(":compat:agp-40x")
 include(":compat:agp-41x")
 include(":compat:agp-42x")
