@@ -1,14 +1,13 @@
 package net.twisterrob.gradle.quality.tasks
 
-import com.android.build.gradle.tasks.LintGlobalTask
-import com.android.build.gradle.tasks.LintPerVariantTask
 import net.twisterrob.gradle.checkstyle.CheckStyleTask
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.common.nullSafeSum
 import net.twisterrob.gradle.pmd.PmdTask
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
-import net.twisterrob.gradle.quality.gather.LintReportGatherer
+import net.twisterrob.gradle.quality.gather.LintGlobalReportGatherer
+import net.twisterrob.gradle.quality.gather.LintVariantReportGatherer
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.TableGenerator
@@ -30,8 +29,8 @@ open class ValidateViolationsTask : DefaultTask() {
 			QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
 			QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
 //			ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
-			LintReportGatherer("lintVariant", LintPerVariantTask::class.java),
-			LintReportGatherer("lint", LintGlobalTask::class.java)
+			LintVariantReportGatherer(),
+			LintGlobalReportGatherer()
 //			TestReportGatherer<>("test", Test)
 		) as List<TaskReportGatherer<Task>>
 	}
