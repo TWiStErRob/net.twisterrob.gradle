@@ -14,6 +14,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItems
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import javax.annotation.CheckReturnValue
@@ -164,15 +165,23 @@ class LintPluginTest : BaseIntgTest() {
 
 	@Test fun `ignores disabled submodule lint tasks (direct setup)`() {
 		val result = `ignores disabled submodule lint tasks` {
-			gradle.buildFile.parentFile.resolve("module2/build.gradle").appendText(
-				"""
-
-				tasks.lint.enabled = false
+			val build2 = gradle.buildFile.parentFile.resolve("module2/build.gradle")
+			build2.appendText(System.lineSeparator())
+			if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) {
+				build2.appendText(
+					"""
+					tasks.lintDebug.enabled = false
 				""".trimIndent()
-			)
+				)
+			} else {
+				build2.appendText(
+					"""
+					tasks.lint.enabled = false
+				""".trimIndent()
+				)
+			}
 			it
 		}
-		assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lint")!!.outcome)
 	}
 
 	@Test fun `ignores disabled variants (direct setup)`() {
@@ -183,15 +192,30 @@ class LintPluginTest : BaseIntgTest() {
 			return
 		}
 		val result = `ignores disabled submodule lint tasks` {
-			gradle.buildFile.parentFile.resolve("module2/build.gradle").appendText(
-				"""
-
-				android.variantFilter { ignore = true }
+			val build2 = gradle.buildFile.parentFile.resolve("module2/build.gradle")
+			build2.appendText(System.lineSeparator())
+			if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) {
+				build2.appendText(
+					"""
+					androidComponents {
+						beforeVariants(selector().all()) { enabled = false }
+					}
 				""".trimIndent()
-			)
+				)
+			} else {
+				build2.appendText(
+					"""
+					android.variantFilter { ignore = true }
+				""".trimIndent()
+				)
+			}
 			it
 		}
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
+		if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) {
+			assertNull(result.task(":module2:lint"))
+		} else {
+			assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
+		}
 		result.assertHasOutputLine(Regex(""".*/module1/build/reports/lint-results\.xml"""))
 		result.assertNoOutputLine(Regex(""".*/module2/build/reports/lint-results\.xml"""))
 		result.assertHasOutputLine(Regex(""".*/module3/build/reports/lint-results\.xml"""))
