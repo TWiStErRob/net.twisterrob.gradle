@@ -8,7 +8,7 @@ import se.bjurr.violations.lib.model.Violation
 import se.bjurr.violations.lib.reports.Parser
 import java.io.File
 
-internal class LintVariantReportGatherer(
+class LintVariantReportGathererPre7(
 ) : TaskReportGatherer<LintPerVariantTask>("lintVariant", LintPerVariantTask::class.java) {
 
 	override fun getParsableReportLocation(task: LintPerVariantTask): File =

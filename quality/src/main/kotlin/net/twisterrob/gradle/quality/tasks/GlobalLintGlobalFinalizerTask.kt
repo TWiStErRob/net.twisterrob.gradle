@@ -8,7 +8,7 @@ import net.twisterrob.gradle.compat.fileProviderCompat
 import net.twisterrob.gradle.internal.lint.xmlOutput
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
-import net.twisterrob.gradle.quality.gather.LintGlobalReportGatherer
+import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFile
@@ -33,7 +33,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	@TaskAction
 	fun failOnFailures() {
-		val gatherer = LintGlobalReportGatherer()
+		val gatherer = LintReportGatherer()
 		val violationsByFile = xmlReports
 			.map { it.get().asFile }
 			.filter(File::exists)

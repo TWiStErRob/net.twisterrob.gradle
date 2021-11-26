@@ -11,5 +11,7 @@ dependencies {
 	implementation(gradleApiWithoutKotlin())
 	compileOnly(libs.android.gradle.v42x)
 
+	compileOnly(libs.violations)
+
 	implementation(projects.compat.agp)
 }
