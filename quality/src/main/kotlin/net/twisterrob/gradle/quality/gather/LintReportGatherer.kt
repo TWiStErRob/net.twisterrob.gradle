@@ -23,5 +23,6 @@ internal class LintReportGatherer(
 		Parser.ANDROIDLINT.findViolations(listOf(report))
 
 	override fun allTasksFrom(project: Project): TaskCollection<AndroidLintTask> =
-		super.allTasksFrom(project).matching { !it.lintFixBuildService.isPresent }
+		super.allTasksFrom(project)
+			.matching { it.xmlReportOutputFile.isPresent }
 }
