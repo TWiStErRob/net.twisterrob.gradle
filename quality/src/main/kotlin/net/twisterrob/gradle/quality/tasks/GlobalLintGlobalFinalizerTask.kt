@@ -2,21 +2,23 @@ package net.twisterrob.gradle.quality.tasks
 
 import com.android.build.api.artifact.impl.ArtifactsImpl
 import com.android.build.api.variant.AndroidComponentsExtension
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
 import net.twisterrob.gradle.common.AndroidVariantApplier
+import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.getByName
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
@@ -66,14 +68,14 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 		}
 	}
 
-	internal companion object : (GlobalLintGlobalFinalizerTask) -> Unit {
-		override fun invoke(task: GlobalLintGlobalFinalizerTask) {
-			task.group = JavaBasePlugin.VERIFICATION_GROUP
-			task.project.allprojects.forEach { subproject ->
+	internal class Creator : TaskCreationConfiguration<GlobalLintGlobalFinalizerTask> {
+
+		override fun preConfigure(project: Project, taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
+			project.allprojects.forEach { subproject ->
 				AndroidVariantApplier(subproject).applyRaw {
-					val android = subproject.extensions.getByName<BaseExtension>("android")
 					val androidComponents =
 						subproject.extensions.getByName<AndroidComponentsExtension<*, *, *>>("androidComponents")
+
 					androidComponents.finalizeDsl {
 						// Make sure we have XML output, otherwise can't figure out if it failed.
 						// Run this in finalizeDsl rather than just after configuration, to override any normal
@@ -82,20 +84,25 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 						it.lint.isAbortOnError = false
 						it.lint.xmlReport = true
 					}
-					androidComponents.onVariants {
-						task.xmlReports +=
-							(it.artifacts as ArtifactsImpl)
-								.get(InternalArtifactType.LINT_XML_REPORT)
-					}
-					subproject.afterEvaluate {
-						// A more specific version of mustRunAfter(subproject.tasks.withType(AndroidLintTask::class.java)).
-						// That would include lintRelease, lintDebug, lintFixDebug, lintFixRelease.
-						task.mustRunAfter(task.xmlReports)
-						// Not a necessity, just a convenience, make sure we run after the :*:lint lifecycle tasks.
-						task.mustRunAfter(subproject.tasks.withType(AndroidLintGlobalTask::class.java))
+					androidComponents.onVariants { variant ->
+						taskProvider.configure { task ->
+							task.xmlReports +=
+								(variant.artifacts as ArtifactsImpl)
+									.get(InternalArtifactType.LINT_XML_REPORT)
+						}
 					}
 				}
 			}
+		}
+
+		override fun configure(task: GlobalLintGlobalFinalizerTask) {
+			task.group = JavaBasePlugin.VERIFICATION_GROUP
+			// A more specific version of mustRunAfter(subproject.tasks.withType(AndroidLintTask::class.java)).
+			// That would include lintRelease, lintDebug, lintFixDebug, lintFixRelease.
+			task.mustRunAfter(task.xmlReports)
+			// Not a necessity, just a convenience, make sure we run after the :*:lint lifecycle tasks.
+			// Using .map {} instead of .flatMap {} to prevent configuration of these tasks.
+			task.mustRunAfter(task.project.allprojects.map { it.tasks.withType(AndroidLintGlobalTask::class.java) })
 		}
 	}
 }
