@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -175,6 +176,12 @@ class LintPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `ignores disabled variants (direct setup)`() {
+		if (AGPVersions.UNDER_TEST <= AGPVersions.v40x) {
+			// Disabling all variants is not supported:
+			// A problem was found with the configuration of task ':module2:lint' (type 'LintGlobalTask').
+			// > No value has been specified for property 'lintClassPath'.
+			return
+		}
 		val result = `ignores disabled submodule lint tasks` {
 			gradle.buildFile.parentFile.resolve("module2/build.gradle").appendText(
 				"""
