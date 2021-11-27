@@ -19,7 +19,6 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
-	testImplementation(libs.junit.pioneer)
 }
 
 disableGradlePluginValidation()

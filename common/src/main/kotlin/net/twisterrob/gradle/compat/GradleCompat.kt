@@ -59,6 +59,24 @@ fun RegularFileProperty.conventionCompat(file: Provider<RegularFile>): RegularFi
 	}
 
 /**
+ * Gradle 4.3-6.9 compatible version of [RegularFileProperty.fileProvider].
+ *
+ * @see RegularFileProperty.set
+ * @see RegularFileProperty.fileProvider
+ */
+fun RegularFileProperty.fileProviderCompat(task: DefaultTask, file: Provider<File>): RegularFileProperty =
+	when {
+		GradleVersion.current().baseVersion < GradleVersion.version("6.0") -> {
+			this.set(file.map { task.project.objects.filePropertyCompat(task, false).apply { set(it) }.get() })
+			this
+		}
+		else -> {
+			// New in Gradle 6.0, https://docs.gradle.org/6.0/release-notes.html#new-convenience-methods-for-bridging-between-a-regularfileproperty-or-directoryproperty-and-a-file.
+			this.fileProvider(file)
+		}
+	}
+
+/**
  * Gradle 4.3-6.9 compatible version of [ObjectFactory.fileProperty].
  * @param task is necessary to because historically this was [DefaultTask.newInputFile] or [DefaultTask.newOutputFile].
  *

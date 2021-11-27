@@ -22,8 +22,9 @@ junit5 = "5.8.1"
 junit5-pioneer = "1.4.2"
 
 # Artifacts: https://mvnrepository.com/artifact/org.mockito/mockito-core
-# Changelog: https://github.com/mockito/mockito/blob/release/2.x/doc/release-notes/official.md
-mockito = "3.10.0"
+# Changelog (1.x, 2.x and 3.x): https://github.com/mockito/mockito/blob/main/doc/release-notes/official.md
+# Changelog (4.x): https://github.com/mockito/mockito/releases
+mockito = "4.1.0"
 
 # Versions: https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
 svnkit = "1.10.3"
@@ -86,7 +87,7 @@ junit-pioneer = { module = "org.junit-pioneer:junit-pioneer", version.ref = "jun
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockito-junit5 = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
 # GitHub releases: https://github.com/nhaarman/mockito-kotlin/releases
-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version = "3.2.0" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version = "4.0.0" }
 # GitHub releases: https://github.com/mockk/mockk/releases
 mockk = { module = "io.mockk:mockk", version = "1.11.0" }
 

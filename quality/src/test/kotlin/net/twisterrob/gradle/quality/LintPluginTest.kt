@@ -1,12 +1,14 @@
-package net.twisterrob.gradle.quality.tasks
+package net.twisterrob.gradle.quality
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -14,13 +16,15 @@ import org.hamcrest.Matchers.hasItems
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import javax.annotation.CheckReturnValue
 import kotlin.test.assertEquals
 
 /**
- * @see GlobalLintGlobalFinalizerTask
+ * @see LintPlugin
+ * @see net.twisterrob.gradle.quality.tasks.GlobalLintGlobalFinalizerTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class GlobalLintGlobalFinalizerTaskTest : BaseIntgTest() {
+class LintPluginTest : BaseIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
@@ -54,7 +58,7 @@ class GlobalLintGlobalFinalizerTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
-			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
+			apply plugin: ${LintPlugin::class.qualifiedName}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -79,7 +83,7 @@ class GlobalLintGlobalFinalizerTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
-			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
+			apply plugin: ${LintPlugin::class.qualifiedName}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -103,7 +107,7 @@ class GlobalLintGlobalFinalizerTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
-			tasks.register('lint', ${GlobalLintGlobalFinalizerTask::class.java.name})
+			apply plugin: ${LintPlugin::class.qualifiedName}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -149,16 +153,17 @@ class GlobalLintGlobalFinalizerTaskTest : BaseIntgTest() {
 	}
 
 	@Test fun `ignores disabled submodule lint tasks (rootProject setup)`() {
-		`ignores disabled submodule lint tasks` {
+		val result = `ignores disabled submodule lint tasks` {
 			it + """
 
 				evaluationDependsOn(':module2').tasks.getByName('lint').enabled = false
 			""".trimIndent()
 		}
+		assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lint")!!.outcome)
 	}
 
 	@Test fun `ignores disabled submodule lint tasks (direct setup)`() {
-		`ignores disabled submodule lint tasks` {
+		val result = `ignores disabled submodule lint tasks` {
 			gradle.buildFile.parentFile.resolve("module2/build.gradle").appendText(
 				"""
 
@@ -167,15 +172,39 @@ class GlobalLintGlobalFinalizerTaskTest : BaseIntgTest() {
 			)
 			it
 		}
+		assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lint")!!.outcome)
 	}
 
-	private fun `ignores disabled submodule lint tasks`(extraSetup: (String) -> String) {
+	@Test fun `ignores disabled variants (direct setup)`() {
+		if (AGPVersions.UNDER_TEST < AGPVersions.v41x) {
+			// Disabling all variants is not supported:
+			// A problem was found with the configuration of task ':module2:lint' (type 'LintGlobalTask').
+			// > No value has been specified for property 'lintClassPath'.
+			return
+		}
+		val result = `ignores disabled submodule lint tasks` {
+			gradle.buildFile.parentFile.resolve("module2/build.gradle").appendText(
+				"""
+
+				android.variantFilter { ignore = true }
+				""".trimIndent()
+			)
+			it
+		}
+		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
+		result.assertHasOutputLine(Regex(""".*/module1/build/reports/lint-results\.xml"""))
+		result.assertNoOutputLine(Regex(""".*/module2/build/reports/lint-results\.xml"""))
+		result.assertHasOutputLine(Regex(""".*/module3/build/reports/lint-results\.xml"""))
+	}
+
+	@CheckReturnValue
+	private fun `ignores disabled submodule lint tasks`(extraSetup: (String) -> String): BuildResult {
 		`set up 3 modules with a lint failures`()
 
 		@Language("gradle")
 		var script = """
 			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
-			task('lint', type: ${GlobalLintGlobalFinalizerTask::class.java.name})
+			apply plugin: ${LintPlugin::class.qualifiedName}
 		""".trimIndent()
 
 		script = extraSetup(script)
@@ -189,12 +218,12 @@ class GlobalLintGlobalFinalizerTaskTest : BaseIntgTest() {
 		assertThat(lintTasks, hasItems(":module1:lint", ":module2:lint", ":module3:lint"))
 		assertThat(lintTasks.last(), equalTo(":lint"))
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module1:lint")!!.outcome)
-		assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
 		// se.bjurr.violations.lib.reports.Parser.findViolations swallows exceptions, so must check logs
 		result.assertNoOutputLine(Regex("""Error when parsing.* as ANDROIDLINT"""))
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${1 + 0 + 1} issues found\."""))
+		return result
 	}
 
 	@Test fun `fails the build on explicit invocation`() {
@@ -203,7 +232,7 @@ class GlobalLintGlobalFinalizerTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
-			tasks.register('lint', ${GlobalLintGlobalFinalizerTask::class.java.name})
+			apply plugin: ${LintPlugin::class.qualifiedName}
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {

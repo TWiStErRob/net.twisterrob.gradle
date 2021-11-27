@@ -133,6 +133,7 @@ jobs:
           # Warning: Observed package id 'ndk;21.4.7075529' in inconsistent location '/usr/local/lib/android/sdk/ndk-bundle' (Expected '/usr/local/lib/android/sdk/ndk/21.4.7075529')
           echo sdkmanager --uninstall "ndk;21.4.7075529"
           sdkmanager --uninstall "ndk;21.4.7075529"
+          echo "ANDROID_NDK_HOME=" >> $GITHUB_ENV
 
           # The following are already done by setup-android@v2 action:
           # sdkmanager --install "cmdline-tools;latest"

@@ -4,12 +4,18 @@ import com.android.build.gradle.tasks.LintGlobalTask
 import net.twisterrob.gradle.common.AndroidVariantApplier
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.common.xmlOutput
+import net.twisterrob.gradle.compat.filePropertyCompat
+import net.twisterrob.gradle.compat.fileProviderCompat
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.file.RegularFile
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
@@ -22,26 +28,14 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	 * At the usage we need to double-check if the file existed,
 	 * otherwise it'll spam the logs with [java.io.FileNotFoundException]s.
 	 */
-	private val xmlReports = mutableListOf<File>()
-
-	init {
-		group = JavaBasePlugin.VERIFICATION_GROUP
-		project.allprojects.forEach { subproject ->
-			AndroidVariantApplier(subproject).applyAfterPluginConfigured {
-				mustRunAfter(subproject.tasks.withType(LintGlobalTask::class.java) { subTask ->
-					subTask.lintOptions.isAbortOnError = subTask.wasLaunchedExplicitly
-					// make sure we have xml output, otherwise can't figure out if it failed
-					subTask.lintOptions.xmlReport = true
-					xmlReports += subTask.xmlOutput
-				})
-			}
-		}
-	}
+	@InputFiles
+	val xmlReports: MutableList<Provider<RegularFile>> = mutableListOf()
 
 	@TaskAction
 	fun failOnFailures() {
 		val gatherer = LintReportGatherer("lint", LintGlobalTask::class.java)
 		val violationsByFile = xmlReports
+			.map { it.get().asFile }
 			.filter(File::exists)
 			.associateBy({ it }) { gatherer.findViolations(it) }
 		val totalCount = violationsByFile.values.sumBy { violations: List<Violation> -> violations.size }
@@ -70,4 +64,26 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			}
 		}
 	}
+
+	internal companion object : (GlobalLintGlobalFinalizerTask) -> Unit {
+		override fun invoke(task: GlobalLintGlobalFinalizerTask) {
+			task.group = JavaBasePlugin.VERIFICATION_GROUP
+			task.project.allprojects.forEach { subproject ->
+				AndroidVariantApplier(subproject).applyAfterPluginConfigured {
+					task.mustRunAfter(subproject.tasks.withType(LintGlobalTask::class.java) { subTask ->
+						subTask.lintOptions.isAbortOnError = subTask.wasLaunchedExplicitly
+						// make sure we have xml output, otherwise can't figure out if it failed
+						subTask.lintOptions.xmlReport = true
+						task.xmlReports.add(subTask.xmlOutputProperty)
+					})
+				}
+			}
+		}
+	}
 }
+
+private val LintGlobalTask.xmlOutputProperty: RegularFileProperty
+	get() =
+		project.objects
+			.filePropertyCompat(this, false)
+			.fileProviderCompat(this, project.provider { xmlOutput })
