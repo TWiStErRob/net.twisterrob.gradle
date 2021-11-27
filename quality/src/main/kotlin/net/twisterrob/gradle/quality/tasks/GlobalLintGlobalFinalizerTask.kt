@@ -5,6 +5,7 @@ import net.twisterrob.gradle.common.AndroidVariantApplier
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.common.xmlOutput
 import net.twisterrob.gradle.compat.filePropertyCompat
+import net.twisterrob.gradle.compat.fileProviderCompat
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
@@ -85,4 +86,4 @@ private val LintGlobalTask.xmlOutputProperty: RegularFileProperty
 	get() =
 		project.objects
 			.filePropertyCompat(this, false)
-			.fileProvider(project.provider { xmlOutput })
+			.fileProviderCompat(project, project.provider { xmlOutput })
