@@ -16,6 +16,7 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 	testImplementation(libs.guava)
+	testRuntimeOnly(libs.android.gradle)
 }
 
 tasks.withType<JavaCompile>().configureEach {
