@@ -176,7 +176,7 @@ class LintPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `ignores disabled variants (direct setup)`() {
-		if (AGPVersions.UNDER_TEST <= AGPVersions.v40x) {
+		if (AGPVersions.UNDER_TEST < AGPVersions.v41x) {
 			// Disabling all variants is not supported:
 			// A problem was found with the configuration of task ':module2:lint' (type 'LintGlobalTask').
 			// > No value has been specified for property 'lintClassPath'.
