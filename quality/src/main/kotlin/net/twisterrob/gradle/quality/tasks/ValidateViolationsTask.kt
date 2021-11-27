@@ -89,7 +89,7 @@ open class ValidateViolationsTask : DefaultTask() {
 	fun validateViolations() {
 		val results = project.allprojects.flatMap { subproject ->
 			GATHERERS.flatMap { gatherer ->
-				subproject.tasks.withType(gatherer.taskType).map { task ->
+				gatherer.allTasksFrom(subproject).map { task ->
 					return@map Violations(
 						parser = gatherer.displayName,
 						module = subproject.path,
@@ -159,7 +159,7 @@ open class ValidateViolationsTask : DefaultTask() {
 		project.allprojects { subproject: Project ->
 			GATHERERS.forEach { gatherer ->
 				// FIXME this should be configureEach or other lazy approach, but doesn't work on 3.3 then
-				subproject.tasks.withType(gatherer.taskType).forEach { reportTask ->
+				gatherer.allTasksFrom(subproject).forEach { reportTask ->
 					try {
 						action(gatherer, reportTask)
 					} catch (ex: RuntimeException) {
