@@ -12,7 +12,7 @@ internal open class LintPlugin : BasePlugin() {
 		super.apply(target)
 
 		if ("lint" !in project.tasks) {
-			project.tasks.register<GlobalLintGlobalFinalizerTask>("lint", GlobalLintGlobalFinalizerTask)
+			project.tasks.register("lint", GlobalLintGlobalFinalizerTask)
 		}
 	}
 }
