@@ -86,4 +86,4 @@ private val LintGlobalTask.xmlOutputProperty: RegularFileProperty
 	get() =
 		project.objects
 			.filePropertyCompat(this, false)
-			.fileProviderCompat(project, project.provider { xmlOutput })
+			.fileProviderCompat(this, project.provider { xmlOutput })

@@ -64,10 +64,10 @@ fun RegularFileProperty.conventionCompat(file: Provider<RegularFile>): RegularFi
  * @see RegularFileProperty.set
  * @see RegularFileProperty.fileProvider
  */
-fun RegularFileProperty.fileProviderCompat(project: Project, file: Provider<File>): RegularFileProperty =
+fun RegularFileProperty.fileProviderCompat(task: DefaultTask, file: Provider<File>): RegularFileProperty =
 	when {
 		GradleVersion.current().baseVersion < GradleVersion.version("6.0") -> {
-			this.set(file.map { project.objects.fileProperty().apply { set(it) }.get() })
+			this.set(file.map { task.project.objects.filePropertyCompat(task, false).apply { set(it) }.get() })
 			this
 		}
 		else -> {
