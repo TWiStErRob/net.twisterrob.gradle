@@ -66,6 +66,31 @@ class AndroidVariantApplier(val project: Project) {
 		}
 	}
 
+	@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+	fun applyRaw(closure: Action<Void>) {
+		project.plugins.withId("com.android.application") {
+			closure.execute(null)
+		}
+		project.plugins.withId("com.android.library") {
+			closure.execute(null)
+		}
+		project.plugins.withId("com.android.feature") {
+			// These types of feature modules were deprecated and removed in AGP 4.x.
+			//closure.execute(null)
+		}
+		project.plugins.withId("com.android.dynamic-feature") {
+			closure.execute(null)
+		}
+		project.plugins.withId("com.android.test") {
+			closure.execute(null)
+		}
+		project.plugins.withId("com.android.instantapp") {
+			//val android = project.extensions["android"] as InstantAppExtension
+			// has no variants, but don't call back, because there's no way to tell if this happened
+			//closure.execute(new DefaultDomainObjectSet<>(BaseVariant))
+		}
+	}
+
 	/**
 	 * Note: due to the way {@link DomainObjectSet#all} works,
 	 * {@code after} is not really after all items have been processed.
