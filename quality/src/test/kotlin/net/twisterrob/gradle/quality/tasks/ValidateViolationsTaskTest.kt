@@ -47,7 +47,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 			apply plugin: 'net.twisterrob.checkstyle'
 			apply plugin: 'net.twisterrob.pmd'
 
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -71,7 +71,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 				apply plugin: 'net.twisterrob.checkstyle'
 				apply plugin: 'net.twisterrob.pmd'
 			}
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -134,7 +134,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 			apply plugin: 'net.twisterrob.checkstyle'
 			apply plugin: 'net.twisterrob.pmd'
 
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		gradle.file(checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")
@@ -154,7 +154,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
 			android.lintOptions.xmlOutput = new File(buildDir, "reports/my-lint/results.xml")
 			android.lintOptions.check = ['UnusedResources']
 		""".trimIndent()
@@ -173,7 +173,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
 			android.lintOptions.check = ['UnusedResources']
 		""".trimIndent()
 
@@ -198,7 +198,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			task('printViolationCount', type: ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
