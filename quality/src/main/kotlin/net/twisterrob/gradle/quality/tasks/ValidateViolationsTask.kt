@@ -64,9 +64,10 @@ open class ValidateViolationsTask : DefaultTask() {
 				forAllReportTasks { gatherer, reportTask ->
 					// make sure external reports are involved in UP-TO-DATE checks
 					val report = gatherer.getParsableReportLocation(reportTask)
-					if (report.exists()) {
-						this.inputs.file(report)
-					} else {
+					// Using files instead of file, because the report might not exist,
+					// see https://github.com/gradle/gradle/issues/2919#issuecomment-981097984.
+					this.inputs.files(report)
+					if (!report.exists()) {
 						logger.info(
 							"Missing report for {} (probably wasn't executed yet after clean): {}",
 							reportTask,
