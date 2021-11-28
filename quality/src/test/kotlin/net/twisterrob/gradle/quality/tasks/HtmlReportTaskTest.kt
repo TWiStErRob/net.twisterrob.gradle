@@ -276,9 +276,10 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
+			File xml = project.file("build/report.xml")
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
+				inputs.file(xml)
 				doFirst {
-					def xml = lint.lintOptions.xmlOutput
 					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
 					xml.withWriterAppend { writer ->
 						// Note: I tried to estimate the number of violations to create by measuring free memory:
@@ -303,7 +304,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			android.lintOptions {
 				//noinspection GroovyAssignabilityCheck
 				check = ['UnusedResources']
-				xmlOutput = project.file("build/report.xml")
+				xmlOutput = xml
 			}
 		""".trimIndent()
 		gradle.runner.projectDir.resolve("gradle.properties")
