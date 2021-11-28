@@ -18,7 +18,7 @@ fun deduplicate(violations: List<Violations>): List<Violations> {
 		.groupBy { it.module as Module }
 		.mapValues { (_, list) ->
 			val byVariant = list.groupBy { it.variant as Variant }
-			val all = byVariant[ALL_VARIANTS_NAME] ?: return list
+			val all = byVariant[ALL_VARIANTS_NAME] ?: return@mapValues list
 			val filtered = byVariant.filterKeys { it != ALL_VARIANTS_NAME }
 			val deduplicated = filtered.flatMap { (_, violations) ->
 				return@flatMap violations.map { removeDuplicates(from = it, using = all) }
@@ -45,7 +45,7 @@ private fun removeDuplicates(from: Violations, using: Violations): Violations {
 
 private fun removeOptionalDuplicates(from: List<Violation>?, using: List<Violation>?): List<Violation>? {
 	if (from == null || using == null) return null
-	return removeDuplicates(from, using)
+	return removeDuplicates(from, using).ifEmpty { null }
 }
 
 private fun removeDuplicates(from: List<Violation>, using: List<Violation>): List<Violation> {

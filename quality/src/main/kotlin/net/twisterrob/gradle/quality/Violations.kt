@@ -23,7 +23,7 @@ class Violations(
 ) {
 
 	override fun toString(): String =
-		"${module}:${parser}@${variant} (${result}): ${violations}"
+		"${module}:${parser}@${variant} (${result}):${violations?.joinToString(prefix = "\n", separator = "\n")}"
 }
 
 class Violation(
