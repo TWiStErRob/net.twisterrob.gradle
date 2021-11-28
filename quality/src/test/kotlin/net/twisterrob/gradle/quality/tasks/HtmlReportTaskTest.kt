@@ -30,7 +30,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name})
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -48,7 +48,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 			    html.set(project.file("my_report/htmldir/htmlname.htmlext"))
 			    xsl.set(project.file("my_report/xsldir/xslname.xslext"))
@@ -70,7 +70,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 			}
 		""".trimIndent()
@@ -91,7 +91,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 			    xsl.set(project.file("my_report/xsldir/xslname.xslext"))
 				xslTemplate.set(project.file("src/input.xsl"))
@@ -120,7 +120,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 				xslTemplate.set(project.file("src/input.xsl"))
 			}
@@ -154,7 +154,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name})
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.defaultConfig.targetSdkVersion 28 // to trigger Autofill
 			android.lintOptions {
@@ -183,7 +183,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name})
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lintOptions {
 				//noinspection GroovyAssignabilityCheck
@@ -205,7 +205,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name})
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lintOptions {
 				//noinspection GroovyAssignabilityCheck
@@ -228,7 +228,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name})
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lintOptions {
 				//noinspection GroovyAssignabilityCheck
@@ -251,7 +251,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name})
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lintOptions {
 				//noinspection GroovyAssignabilityCheck
@@ -276,7 +276,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			task('htmlReport', type: ${HtmlReportTask::class.java.name}) {
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 				doFirst {
 					def xml = lint.lintOptions.xmlOutput
 					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
