@@ -2,6 +2,7 @@ package net.twisterrob.gradle.quality.tasks
 
 import com.android.build.api.artifact.impl.ArtifactsImpl
 import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
 import net.twisterrob.gradle.common.AndroidVariantApplier
@@ -85,6 +86,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 						it.lint.xmlReport = true
 					}
 					androidComponents.onVariants { variant ->
+						if (variant is TestVariant) return@onVariants
 						taskProvider.configure { task ->
 							task.xmlReports +=
 								(variant.artifacts as ArtifactsImpl)
