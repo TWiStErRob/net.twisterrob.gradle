@@ -14,4 +14,5 @@ dependencies {
 	compileOnly(libs.violations)
 
 	implementation(projects.compat.agp)
+	implementation(projects.compat.gradle)
 }
