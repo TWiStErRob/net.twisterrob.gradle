@@ -1,11 +1,11 @@
 package net.twisterrob.gradle.quality.tasks
 
 import com.android.build.api.artifact.impl.ArtifactsImpl
-import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.TestVariant
+import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
-import net.twisterrob.gradle.common.AndroidVariantApplier
+import net.twisterrob.gradle.android.androidComponents
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
@@ -20,7 +20,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.withType
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
 
@@ -73,26 +73,27 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 		override fun preConfigure(project: Project, taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
 			project.allprojects.forEach { subproject ->
-				AndroidVariantApplier(subproject).applyRaw {
-					val androidComponents =
-						subproject.extensions.getByName<AndroidComponentsExtension<*, *, *>>("androidComponents")
+				subproject.plugins.withType<AndroidBasePlugin> {
+					subproject.configureReports(taskProvider)
+				}
+			}
+		}
 
-					androidComponents.finalizeDsl {
-						// Make sure we have XML output, otherwise can't figure out if it failed.
-						// Run this in finalizeDsl rather than just after configuration, to override any normal
-						// `android { lintOptions { ... } }` DSL configuration.
-						// This is also consistently configuring the task, making it up-to-date when possible.
-						it.lint.isAbortOnError = false
-						it.lint.xmlReport = true
-					}
-					androidComponents.onVariants { variant ->
-						if (variant is TestVariant) return@onVariants
-						taskProvider.configure { task ->
-							task.xmlReports +=
-								(variant.artifacts as ArtifactsImpl)
-									.get(InternalArtifactType.LINT_XML_REPORT)
-						}
-					}
+		private fun Project.configureReports(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
+			androidComponents.finalizeDsl {
+				// Make sure we have XML output, otherwise can't figure out if it failed.
+				// Run this in finalizeDsl rather than just after configuration, to override any normal
+				// `android { lintOptions { ... } }` DSL configuration.
+				// This is also consistently configuring the task, making it up-to-date when possible.
+				it.lint.isAbortOnError = false
+				it.lint.xmlReport = true
+			}
+			androidComponents.onVariants { variant ->
+				if (variant is TestVariant) return@onVariants
+				taskProvider.configure { task ->
+					task.xmlReports +=
+						(variant.artifacts as ArtifactsImpl)
+							.get(InternalArtifactType.LINT_XML_REPORT)
 				}
 			}
 		}
