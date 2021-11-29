@@ -259,6 +259,29 @@ class ViolationsDeduplicatorKtTest {
 		assertEquals(expected, actual)
 	}
 
+	/**
+	 * e.g. AGP 4.x debug, release, vitalRelease.
+	 */
+	@Test fun `deduplicate duplicate variants`() {
+		val violationToMerge: Violation = fixture.build()
+		val results = listOf(
+			violations(fixtRoot, "*", "lint", violationToMerge),
+			violations(fixtRoot, "debug", "lint", violationToMerge),
+			violations(fixtRoot, "release", "lint", violationToMerge),
+			violations(fixtRoot, "release", "lint", violationToMerge),
+		)
+		val expected = listOf(
+			violations(fixtRoot, "*", "lint", violationToMerge),
+			violations(fixtRoot, "debug", "lint").noViolations(),
+			violations(fixtRoot, "release", "lint").noViolations(),
+			violations(fixtRoot, "release", "lint").noViolations(),
+		)
+
+		val actual = deduplicate(results)
+
+		assertEquals(expected, actual)
+	}
+
 	private fun assertEquals(
 		expected: List<Violations>,
 		actual: List<Violations>

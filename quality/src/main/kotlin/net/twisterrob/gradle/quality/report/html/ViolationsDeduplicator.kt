@@ -76,7 +76,7 @@ private fun mergeIntersectionsForParser(violations: List<Violations>): List<Viol
 		// Only one variant, don't even try to introduce "all" variants. Also, might be no variants at all.
 		return violations
 	}
-	val intersection = calculateIntersection(filtered.values)
+	val intersection = filtered.values.map { it.violations }.intersect()
 	if (intersection.isEmpty()) {
 		// No common problems, leave everything as it was.
 		return violations
@@ -110,10 +110,11 @@ private fun mergeIntersectionsForParser(violations: List<Violations>): List<Viol
 	}
 }
 
-private fun calculateIntersection(violations: Iterable<List<Violations>>): List<Violation> =
-	violations
-		.map { it.single().violations.orEmpty() }
-		.reduce { acc, it -> intersect(acc, it) }
+private val Iterable<Violations>.violations: List<Violation>
+	get() = this.flatMap { it.violations.orEmpty() }
+
+private fun Iterable<List<Violation>>.intersect(): List<Violation> =
+	this.reduce { acc, it -> intersect(acc, it) }
 
 @Suppress("ConvertArgumentToSet")
 private fun intersect(list1: List<Violation>, list2: List<Violation>): List<Violation> {
