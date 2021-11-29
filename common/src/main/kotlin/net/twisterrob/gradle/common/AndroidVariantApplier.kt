@@ -37,7 +37,7 @@ class AndroidVariantApplier(val project: Project) {
 		}
 	}
 
-	fun apply(variantsClosure: Action<Variants>) {
+	fun applyVariants(variantsClosure: Action<Variants>) {
 		project.plugins.withId("com.android.application") {
 			val android = project.extensions["android"] as AppExtension
 			variantsClosure.execute(android.applicationVariants)
@@ -100,7 +100,7 @@ class AndroidVariantApplier(val project: Project) {
 		before: Action<Variants> = NOOP,
 		after: Action<Variants> = NOOP
 	) {
-		apply { variants: Variants ->
+		applyVariants { variants: Variants ->
 			before.execute(variants)
 			variants.all(variantClosure)
 			after.execute(variants)
