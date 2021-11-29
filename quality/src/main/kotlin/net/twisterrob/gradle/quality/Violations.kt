@@ -22,8 +22,10 @@ class Violations(
 	@JvmField val violations: List<Violation>?
 ) {
 
-	override fun toString(): String =
-		"${module}:${parser}@${variant} (${result}):${violations?.joinToString(prefix = "\n", separator = "\n")}"
+	override fun toString(): String {
+		val violations = this.violations?.joinToString(prefix = "\n", separator = "\n")
+		return "${module}${if (module == ":") "" else ":"}${parser}@${variant} (${result}):$violations"
+	}
 }
 
 class Violation(

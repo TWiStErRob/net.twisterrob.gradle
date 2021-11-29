@@ -11,6 +11,7 @@ import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.io.File
 
 @Suppress("UnnecessaryVariable")
 class ViolationsDeduplicatorKtTest {
@@ -91,17 +92,166 @@ class ViolationsDeduplicatorKtTest {
 		assertEquals(expected, actual)
 	}
 
+	/**
+	 * Removes duplication, but keeps an empty list in place rather than null to signal there was something there.
+	 */
 	@Test fun `AGP4 duplicate lint`() {
-		val violation = fixture.build<Violation>()
+		val violationToMerge: Violation = fixture.build()
 		val results = listOf(
-			violations(fixtRoot, "*", "lint", violation),
-			violations(fixtRoot, "debug", "lint", violation),
-			violations(fixtRoot, "release", "lint", violation),
+			violations(fixtRoot, "*", "lint", violationToMerge),
+			violations(fixtRoot, "debug", "lint", violationToMerge),
+			violations(fixtRoot, "release", "lint", violationToMerge),
 		)
 		val expected = listOf(
-			violations(fixtRoot, "*", "lint", violation),
-			violations(fixtRoot, "debug", "lint"),
-			violations(fixtRoot, "release", "lint"),
+			violations(fixtRoot, "*", "lint", violationToMerge),
+			violations(fixtRoot, "debug", "lint").noViolations(),
+			violations(fixtRoot, "release", "lint").noViolations(),
+		)
+
+		val actual = deduplicate(results)
+
+		assertEquals(expected, actual)
+	}
+
+	@Test fun `duplicate with no 'all' present`() {
+		val violationToMerge: Violation = fixture.build()
+		val results = listOf(
+			violations(fixtRoot, "debug", "lint", violationToMerge),
+			violations(fixtRoot, "release", "lint", violationToMerge.copy()),
+		)
+		val expected = listOf(
+			violations(fixtRoot, "*", "lint", violationToMerge).unknownReports(),
+			violations(fixtRoot, "debug", "lint").noViolations(),
+			violations(fixtRoot, "release", "lint").noViolations(),
+		)
+
+		val actual = deduplicate(results)
+
+		assertEquals(expected, actual)
+	}
+
+	@Test fun `duplicate with 'all' present but no violations`() {
+		val violationToMerge: Violation = fixture.build()
+		val results = listOf(
+			violations(fixtRoot, "*", "lint"),
+			violations(fixtRoot, "debug", "lint", violationToMerge),
+			violations(fixtRoot, "release", "lint", violationToMerge.copy()),
+		)
+		val expected = listOf(
+			violations(fixtRoot, "*", "lint", violationToMerge),
+			violations(fixtRoot, "debug", "lint").noViolations(),
+			violations(fixtRoot, "release", "lint").noViolations(),
+		)
+
+		val actual = deduplicate(results)
+
+		assertEquals(expected, actual)
+	}
+
+	@Test fun `duplicate with 'all' present and has violations`() {
+		val violationToMerge: Violation = fixture.build()
+		val violationToKeep1: Violation = fixture.build()
+		val violationToKeep2: Violation = fixture.build()
+		val results = listOf(
+			violations(fixtRoot, "*", "lint", violationToKeep1, violationToKeep2),
+			violations(fixtRoot, "debug", "lint", violationToMerge),
+			violations(fixtRoot, "release", "lint", violationToMerge.copy()),
+		)
+		val expected = listOf(
+			violations(fixtRoot, "*", "lint", violationToKeep1, violationToKeep2, violationToMerge),
+			violations(fixtRoot, "debug", "lint").noViolations(),
+			violations(fixtRoot, "release", "lint").noViolations(),
+		)
+
+		val actual = deduplicate(results)
+
+		assertEquals(expected, actual)
+	}
+
+	@Test fun `duplicate while keeping others intact`() {
+		val violationToMerge: Violation = fixture.build()
+		val violationToKeep1: Violation = fixture.build()
+		val violationToKeep2: Violation = fixture.build()
+		val violationUnrelated1: Violation = fixture.build()
+		val violationUnrelated2: Violation = fixture.build()
+		val results = listOf(
+			violations(fixtRoot, "debug", "lint", violationToMerge, violationToKeep1),
+			violations(fixtRoot, "release", "lint", violationToMerge.copy(), violationToKeep2),
+			violations(fixtRoot, "debug", "checkstyle", violationUnrelated1),
+			violations(fixtRoot, "release", "checkstyle", violationUnrelated2),
+		)
+		val expected = listOf(
+			violations(fixtRoot, "*", "lint", violationToMerge).unknownReports(),
+			violations(fixtRoot, "debug", "lint", violationToKeep1),
+			violations(fixtRoot, "release", "lint", violationToKeep2),
+			violations(fixtRoot, "debug", "checkstyle", violationUnrelated1),
+			violations(fixtRoot, "release", "checkstyle", violationUnrelated2),
+		)
+
+		val actual = deduplicate(results)
+
+		assertEquals(expected, actual)
+	}
+
+	@Test fun `deduplicates multiple occurrences`() {
+		val toMerge: Violation = fixture.build()
+		val results = listOf(
+			violations(fixtRoot, "debug", "lint", toMerge.copy(), toMerge.copy()),
+			violations(fixtRoot, "release", "lint", toMerge.copy(), toMerge.copy(), toMerge.copy()),
+		)
+		val expected = listOf(
+			violations(fixtRoot, "*", "lint", toMerge).unknownReports(),
+			violations(fixtRoot, "debug", "lint").noViolations(),
+			violations(fixtRoot, "release", "lint").noViolations(),
+		)
+
+		val actual = deduplicate(results)
+
+		assertEquals(expected, actual)
+	}
+
+	@Test fun `duplicate merging while keeping others intact`() {
+		val violationInAll: Violation = fixture.build()
+		val violationToMerge: Violation = fixture.build()
+		val violationUnrelated: Violation = fixture.build()
+		val results = listOf(
+			violations(fixtRoot, "*", "lint", violationInAll),
+			violations(fixtRoot, "debug", "lint", violationToMerge),
+			violations(fixtRoot, "release", "lint", violationToMerge.copy()),
+			violations(fixtRoot, "debug", "checkstyle", violationUnrelated),
+			violations(fixtRoot, "release", "checkstyle"),
+		)
+		val expected = listOf(
+			violations(fixtRoot, "*", "lint", violationInAll, violationToMerge),
+			violations(fixtRoot, "debug", "lint").noViolations(),
+			violations(fixtRoot, "release", "lint").noViolations(),
+			violations(fixtRoot, "debug", "checkstyle", violationUnrelated),
+			violations(fixtRoot, "release", "checkstyle"),
+		)
+
+		val actual = deduplicate(results)
+
+		assertEquals(expected, actual)
+	}
+
+	@Test fun `violations from different modules don't get merged`() {
+		val fixtModule = ProjectBuilder.builder().withName("module").withParent(fixtRoot).build()
+		val violationRootOnly: Violation = fixture.build()
+		val violationModuleOnly: Violation = fixture.build()
+		val violation: Violation = fixture.build()
+		val results = listOf(
+			violations(fixtRoot, "debug", "lint", violationRootOnly),
+			violations(fixtRoot, "release", "lint", violationRootOnly, violation),
+			violations(fixtModule, "debug", "lint", violationModuleOnly, violation),
+			violations(fixtModule, "release", "lint", violationModuleOnly),
+		)
+		val expected = listOf(
+			violations(fixtRoot, "*", "lint", violationRootOnly).unknownReports(),
+			violations(fixtRoot, "debug", "lint").noViolations(),
+			violations(fixtRoot, "release", "lint", violation),
+			violations(fixtModule, "*", "lint", violationModuleOnly).unknownReports(),
+			violations(fixtModule, "debug", "lint", violation),
+			violations(fixtModule, "release", "lint").noViolations(),
 		)
 
 		val actual = deduplicate(results)
@@ -136,3 +286,34 @@ private fun violations(
 		violations = violations.toList().ifEmpty { null },
 	)
 }
+
+private fun Violations.noViolations(): Violations =
+	Violations(
+		parser = this.parser,
+		module = this.module,
+		variant = this.variant,
+		result = this.result,
+		report = this.report,
+		violations = emptyList(),
+	)
+
+private fun Violations.unknownReports(): Violations =
+	Violations(
+		parser = this.parser,
+		module = this.module,
+		variant = this.variant,
+		result = File("."),
+		report = File("."),
+		violations = this.violations?.toList(),
+	)
+
+private fun Violation.copy(): Violation =
+	Violation(
+		rule = this.rule,
+		category = this.category,
+		severity = this.severity,
+		message = this.message,
+		specifics = this.specifics,
+		location = this.location,
+		source = this.source,
+	)

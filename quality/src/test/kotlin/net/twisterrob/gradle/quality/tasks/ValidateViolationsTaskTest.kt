@@ -161,7 +161,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 		""".trimIndent()
 
 		val result = gradle.runBuild {
-			run(script, "lint", "printViolationCount")
+			run(script, "lintDebug", "lintRelease", "printViolationCount")
 		}
 
 		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
