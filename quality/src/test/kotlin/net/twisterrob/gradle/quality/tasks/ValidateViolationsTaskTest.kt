@@ -2,6 +2,7 @@ package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -209,7 +210,9 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 		result.assertNoOutputLine(Regex("""Some problems were found with the configuration of task ':printViolationCount'\..*"""))
 		result.assertNoOutputLine(Regex(""" - File '(.*)' specified for property '.*' does not exist\."""))
 		result.assertHasOutputLine("Summary\t(total: 0)")
-		result.assertHasOutputLine(Regex("""Missing report for task ':lint'.*: .*\blint-results.xml"""))
+		if (AGPVersions.UNDER_TEST < AGPVersions.v70x) {
+			result.assertHasOutputLine(Regex("""Missing report for task ':lint'.*: .*\blint-results.xml"""))
+		}
 		result.assertHasOutputLine(Regex("""Missing report for task ':lintDebug'.*: .*\blint-results-debug.xml"""))
 		result.assertHasOutputLine(Regex("""Missing report for task ':lintRelease'.*: .*\blint-results-release.xml"""))
 	}
