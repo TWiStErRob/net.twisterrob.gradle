@@ -6,10 +6,15 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
 import net.twisterrob.gradle.android.androidComponents
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
+import net.twisterrob.gradle.internal.lint.collectXmlReport
+import net.twisterrob.gradle.internal.lint.configureXmlReport
+import net.twisterrob.gradle.internal.lint.lintGlobalTasks
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
+import net.twisterrob.gradle.quality.gather.LintGlobalReportGathererPre7
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -19,6 +24,7 @@ import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.TaskCollection
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.withType
 import se.bjurr.violations.lib.model.Violation
@@ -37,7 +43,8 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	@TaskAction
 	fun failOnFailures() {
-		val gatherer = LintReportGatherer()
+		val gatherer =
+			if (AGPVersions.CLASSPATH >= AGPVersions.v70x) LintReportGatherer() else LintGlobalReportGathererPre7()
 		val violationsByFile = xmlReports
 			.map { it.get().asFile }
 			.filter(File::exists)
@@ -74,7 +81,21 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 		override fun preConfigure(project: Project, taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
 			project.allprojects.forEach { subproject ->
 				subproject.plugins.withType<AndroidBasePlugin> {
-					subproject.configureReports(taskProvider)
+					if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
+						subproject.configureReports(taskProvider)
+					} else {
+						subproject.configureReportsPre7(taskProvider)
+					}
+				}
+			}
+		}
+
+		private fun Project.configureReportsPre7(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
+			//STOPSHIP remove this comment if all green AndroidVariantApplier(this).applyAfterPluginConfigured {
+			taskProvider.configure { finalizerTask ->
+				lintGlobalTasks.configureXmlReport()
+				lintGlobalTasks.collectXmlReport {
+					finalizerTask.xmlReports.add(it)
 				}
 			}
 		}
@@ -85,7 +106,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
 				// `android { lintOptions { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
-				it.lint.isAbortOnError = false
+				it.lint.isAbortOnError = false // STOPSHIP wasinvokedexplicitly?
 				it.lint.xmlReport = true
 			}
 			androidComponents.onVariants { variant ->
@@ -100,12 +121,23 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 		override fun configure(task: GlobalLintGlobalFinalizerTask) {
 			task.group = JavaBasePlugin.VERIFICATION_GROUP
-			// A more specific version of mustRunAfter(subproject.tasks.withType(AndroidLintTask::class.java)).
-			// That would include lintRelease, lintDebug, lintFixDebug, lintFixRelease.
-			task.mustRunAfter(task.xmlReports)
+			if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
+				// A more specific version of mustRunAfter(subproject.tasks.withType(AndroidLintTask::class.java)).
+				// That would include lintRelease, lintDebug, lintFixDebug, lintFixRelease.
+				task.mustRunAfter(task.xmlReports)
+			}
 			// Not a necessity, just a convenience, make sure we run after the :*:lint lifecycle tasks.
 			// Using .map {} instead of .flatMap {} to prevent configuration of these tasks.
-			task.mustRunAfter(task.project.allprojects.map { it.tasks.withType(AndroidLintGlobalTask::class.java) })
+			task.mustRunAfter(task.project.allprojects.map { it.lintTasks })
 		}
 	}
 }
+
+private val Project.lintTasks: TaskCollection<*>
+	get() =
+		when {
+			AGPVersions.CLASSPATH >= AGPVersions.v70x ->
+				this.tasks.withType(AndroidLintGlobalTask::class.java)
+			else ->
+				this.lintGlobalTasks
+		}

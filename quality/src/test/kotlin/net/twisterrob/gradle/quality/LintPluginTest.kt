@@ -29,6 +29,17 @@ class LintPluginTest : BaseIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
+	/**
+	 * In AGP 7 they removed the Global lint task concept, every lint task analyses a specific variant.
+	 * This means that violations are counted double from AGP 7 onwards.
+	 * This is counteracted in [net.twisterrob.gradle.quality.report.html.deduplicate] by merging duplicate lints.
+	 */
+	private val variantMultiplier: Int =
+		when {
+			AGPVersions.UNDER_TEST > AGPVersions.v70x -> 2
+			else -> 1
+		}
+
 	@Test fun `passes when no lint violations found`() {
 		val modules: Array<String> = arrayOf(
 			"module1",
@@ -99,7 +110,7 @@ class LintPluginTest : BaseIntgTest() {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 1 + 1) + (1 + 1 + 1)} issues found\."""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 1 + 1) * variantMultiplier} issues found\."""))
 	}
 
 	@Test fun `gathers results from submodules (lazy init)`() {
@@ -123,7 +134,7 @@ class LintPluginTest : BaseIntgTest() {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
 		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 1 + 1) + (1 + 1 + 1)} issues found\."""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 1 + 1) * variantMultiplier} issues found\."""))
 	}
 
 	@Test fun `does not suggest violation report if already executing it`() {
@@ -154,14 +165,18 @@ class LintPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `ignores disabled submodule lint tasks (rootProject setup)`() {
+		val lintDebug = if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) "lintDebug" else "lint"
+		val lintRelease = if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) "lintRelease" else "lint"
 		val result = `ignores disabled submodule lint tasks` {
 			it + """
 
-				evaluationDependsOn(':module2').tasks.getByName('lintDebug').enabled = false
+				evaluationDependsOn(':module2').tasks.getByName('${lintDebug}').enabled = false
+				evaluationDependsOn(':module2').tasks.getByName('${lintRelease}').enabled = false
 			""".trimIndent()
 		}
-		assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintDebug")!!.outcome)
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) + (1 + 1 + 1)} issues found\."""))
+		assertEquals(TaskOutcome.SKIPPED, result.task(":module2:${lintDebug}")!!.outcome)
+		assertEquals(TaskOutcome.SKIPPED, result.task(":module2:${lintRelease}")!!.outcome)
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}
 
 	@Test fun `ignores disabled submodule lint tasks (direct setup)`() {
@@ -174,6 +189,7 @@ class LintPluginTest : BaseIntgTest() {
 					afterEvaluate {
 						// Tasks are created after on androidComponents.onVariants { }
 						tasks.lintDebug.enabled = false
+						tasks.lintRelease.enabled = false
 					}
 				""".trimIndent()
 				)
@@ -189,11 +205,11 @@ class LintPluginTest : BaseIntgTest() {
 		if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) {
 			assertEquals(TaskOutcome.UP_TO_DATE, result.task(":module2:lint")!!.outcome)
 			assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintDebug")!!.outcome)
-			assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lintRelease")!!.outcome)
+			assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintRelease")!!.outcome)
 		} else {
 			assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lint")!!.outcome)
 		}
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) + (1 + 1 + 1)} issues found\."""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}
 
 	@Test fun `ignores disabled variants (direct setup)`() {
@@ -230,7 +246,7 @@ class LintPluginTest : BaseIntgTest() {
 		} else {
 			assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
 		}
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) + (1 + 0 + 1)} issues found\."""))
+		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}
 
 	@CheckReturnValue
@@ -276,7 +292,7 @@ class LintPluginTest : BaseIntgTest() {
 		}
 
 		assertEquals(TaskOutcome.FAILED, result.task(":lint")!!.outcome)
-		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${(1 + 1 + 1) + (1 + 1 + 1)} issues found\."""))
+		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${(1 + 1 + 1) * variantMultiplier} issues found\."""))
 	}
 
 	private fun `set up 3 modules with a lint failures`() {
