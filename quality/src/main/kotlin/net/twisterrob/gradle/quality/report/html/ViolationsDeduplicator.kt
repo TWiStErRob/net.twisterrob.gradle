@@ -66,7 +66,7 @@ private fun removeDuplicates(from: List<Violation>, using: List<Violation>): Lis
  */
 private fun mergeIntersections(violations: List<Violations>): List<Violations> =
 	violations
-		.groupBy { it.parser as Parser }
+		.groupBy { it.parser.rewrite() }
 		.flatMap { (_, list) -> mergeIntersectionsForParser(list) }
 
 private fun mergeIntersectionsForParser(violations: List<Violations>): List<Violations> {
@@ -96,10 +96,7 @@ private fun mergeIntersectionsForParser(violations: List<Violations>): List<Viol
 		// Create new * variant with all the common violations.
 		val representative = violations.first()
 		val newAll = Violations(
-			parser = when (representative.parser) {
-				"lintVariant" -> "lint"
-				else -> representative.parser
-			},
+			parser = representative.parser.rewrite(),
 			module = representative.module,
 			variant = ALL_VARIANTS_NAME,
 			result = File("."),
@@ -154,6 +151,9 @@ private class Deduper(val violation: Violation) {
 		return result
 	}
 }
+
+private fun Parser.rewrite(): Parser =
+	if (this == "lintVariant") "lint" else this
 
 /**
  * Required bridge to mirror [kotlin.collections.plus] because overload resolution would match the nullable one.

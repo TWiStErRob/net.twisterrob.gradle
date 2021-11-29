@@ -93,19 +93,21 @@ class ViolationsDeduplicatorKtTest {
 	}
 
 	/**
-	 * Removes duplication, but keeps an empty list in place rather than null to signal there was something there.
+	 * AGP4 and earlier shows the same violation for lint, lintDebug, lintRelease and lintVitalRelease.
 	 */
 	@Test fun `AGP4 duplicate lint`() {
 		val violationToMerge: Violation = fixture.build()
 		val results = listOf(
 			violations(fixtRoot, "*", "lint", violationToMerge),
-			violations(fixtRoot, "debug", "lint", violationToMerge),
-			violations(fixtRoot, "release", "lint", violationToMerge),
+			violations(fixtRoot, "debug", "lintVariant", violationToMerge),
+			violations(fixtRoot, "release", "lintVariant", violationToMerge),
+			violations(fixtRoot, "release", "lintVariant", violationToMerge),
 		)
 		val expected = listOf(
 			violations(fixtRoot, "*", "lint", violationToMerge),
-			violations(fixtRoot, "debug", "lint").noViolations(),
-			violations(fixtRoot, "release", "lint").noViolations(),
+			violations(fixtRoot, "debug", "lintVariant").noViolations(),
+			violations(fixtRoot, "release", "lintVariant").noViolations(),
+			violations(fixtRoot, "release", "lintVariant").noViolations(),
 		)
 
 		val actual = deduplicate(results)
