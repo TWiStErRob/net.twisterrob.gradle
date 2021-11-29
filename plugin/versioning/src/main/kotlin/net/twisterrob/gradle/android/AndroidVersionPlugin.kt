@@ -194,6 +194,8 @@ class AndroidVersionPlugin : BasePlugin() {
 	private fun <T> renameAPK7(variant: T, outputs: List<VariantOutput>) where T : ComponentIdentity, T : GeneratesApk {
 		// Only called for applicationVariants and their testVariants so filter should be safe.
 		outputs.filterIsInstance<VariantOutputImpl>().forEach { output ->
+			// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
+			@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 			val artifactName = version.formatArtifactName(
 				project,
 				variant.name,
