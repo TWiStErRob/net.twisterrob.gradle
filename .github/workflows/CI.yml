@@ -127,7 +127,7 @@ jobs:
           ./gradlew --version
 
       - name: Set up JDK ${{ matrix.gradle-java }}.
-        if: ${{ matrix.gradle-jave }} != 8
+        if: matrix.gradle-jave != 8
         uses: actions/setup-java@v2
         with:
           java-version: 8
