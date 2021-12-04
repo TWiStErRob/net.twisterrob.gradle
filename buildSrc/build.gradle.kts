@@ -23,9 +23,6 @@ repositories {
 	gradlePluginPortal()
 }
 
-val kotlin_version: String by project
-val nexus_version: String by project
-
 dependencies {
 	implementation(deps.kotlin.gradle)
 	implementation(enforcedPlatform(deps.kotlin.bom))
