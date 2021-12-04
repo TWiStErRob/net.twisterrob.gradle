@@ -15,10 +15,6 @@ plugins {
 	`java-gradle-plugin`
 }
 
-kotlinDslPluginOptions {
-	jvmTarget.set(provider { java.targetCompatibility.toString() })
-}
-
 repositories {
 	mavenCentral()
 	// Note on `plugins { }`: when the version is declared in the plugins block (`plugins { id(...) version "..." }`),
