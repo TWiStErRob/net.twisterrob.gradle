@@ -74,7 +74,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
-	@ParameterizedTest fun `test (release)`(
+	@ParameterizedTest fun `test app (release)`(
 		minification: Minification
 	) {
 		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
@@ -123,7 +123,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		}
 	}
 
-	@Test fun `test (debug)`() {
+	@Test fun `test app (debug)`() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -160,7 +160,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
-	@ParameterizedTest fun `test (debug) and (release)`(
+	@ParameterizedTest fun `test app (debug) and (release)`(
 		minification: Minification
 	) {
 		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
