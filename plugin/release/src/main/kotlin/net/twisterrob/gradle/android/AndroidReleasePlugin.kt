@@ -86,6 +86,7 @@ class AndroidReleasePlugin : BasePlugin() {
 			LOG.debug("Found android app, variants with {}: {}", buildType.name, matching)
 			matching.all(::registerReleaseTaskWithDependency)
 		}
+		// This is not active because only AndroidAppPlugin applies AndroidReleasePlugin.
 		project.plugins.withType<LibraryPlugin> {
 			val matching = getVariantsForBuildType()
 			LOG.debug("Found android lib, variants with {}: {}", buildType.name, matching)
