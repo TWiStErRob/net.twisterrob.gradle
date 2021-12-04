@@ -1,10 +1,12 @@
 package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.common.AGPVersions
+import org.intellij.lang.annotations.Language
 
 enum class Minification(
 	val debugTaskName: String,
 	val releaseTaskName: String,
+	@Language("properties")
 	val gradleProperties: String,
 ) {
 
@@ -19,7 +21,7 @@ enum class Minification(
 		debugTaskName = "minifyDebugWithR8",
 		releaseTaskName = "minifyReleaseWithR8",
 		gradleProperties = """
-			android.enableR8=true
+			${if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) "#" else ""}android.enableR8=true
 			android.enableR8.fullMode=false
 		""".trimIndent()
 	),
@@ -27,7 +29,7 @@ enum class Minification(
 		debugTaskName = "minifyDebugWithR8",
 		releaseTaskName = "minifyReleaseWithR8",
 		gradleProperties = """
-			android.enableR8=true
+			${if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) "#" else ""}android.enableR8=true
 			android.enableR8.fullMode=true
 		""".trimIndent()
 	),
