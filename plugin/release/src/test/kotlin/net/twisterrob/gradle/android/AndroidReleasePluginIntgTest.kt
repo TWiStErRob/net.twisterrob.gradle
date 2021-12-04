@@ -23,6 +23,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.junitpioneer.jupiter.ClearEnvironmentVariable
 import java.io.File
 import java.time.Instant
+import java.util.zip.ZipException
 import java.util.zip.ZipFile
 
 /**
@@ -197,13 +198,14 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		try {
 			assertions(archive)
 		} catch (ex: Throwable) {
-			println(ZipFile(archive)
+			val contents = ZipFile(archive)
 				.entries()
 				.asSequence()
 				.sortedBy { it.name }
 				.joinToString(prefix = "'$archive' contents:\n", separator = "\n") {
 					"${it.name} (${it.compressedSize}/${it.size} bytes) @ ${Instant.ofEpochMilli(it.time)}"
-				})
+				}
+			generateSequence(ex) { ex.cause }.last().initCause(ZipException(contents))
 			throw ex
 		}
 	}
