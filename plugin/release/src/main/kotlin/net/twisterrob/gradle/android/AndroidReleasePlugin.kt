@@ -99,17 +99,12 @@ class AndroidReleasePlugin : BasePlugin() {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.description}"
 			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
-			archiveFileName.set(
-				android.defaultConfig
-					.extensions.getByType<AndroidVersionExtension>()
-					.formatArtifactName(
-						project,
-						"archive",
-						variant.applicationId,
-						variant.versionCode.toLong(),
-						variant.versionName
-					) + ".zip"
-			)
+			val archiveFormat =
+				android.defaultConfig.extensions.getByType<AndroidVersionExtension>().formatArtifactName
+			val releaseZipFileName = with(variant) {
+				archiveFormat(project, "archive", applicationId, versionCode.toLong(), versionName) + ".zip"
+			}
+			archiveFileName.set(releaseZipFileName)
 			from(variant.packageApplicationProvider.get().outputDirectory) {
 				it.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 			}
