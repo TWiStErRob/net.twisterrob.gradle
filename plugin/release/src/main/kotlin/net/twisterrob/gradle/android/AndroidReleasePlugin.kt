@@ -76,14 +76,12 @@ class AndroidReleasePlugin : BasePlugin() {
 			}
 		}
 
-		@Suppress("UNCHECKED_CAST")
-		fun getVariantsForBuildType(): DomainObjectCollection<ApkVariant> =
-			android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
-
 		project.plugins.withType<AppPlugin> {
-			val matching = getVariantsForBuildType()
-			LOG.debug("Found android app, variants with {}: {}", buildType.name, matching)
-			matching.all(::registerReleaseTaskWithDependency)
+			@Suppress("UNCHECKED_CAST")
+			val variantsForBuildType: DomainObjectCollection<ApkVariant> =
+				android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
+			LOG.debug("Found android app, variants with {}: {}", buildType.name, variantsForBuildType)
+			variantsForBuildType.all(::registerReleaseTaskWithDependency)
 		}
 		return releaseBuildTypeTask
 	}
