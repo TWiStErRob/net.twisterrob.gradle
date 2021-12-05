@@ -3,7 +3,6 @@ package net.twisterrob.gradle.android
 import com.android.build.api.variant.impl.BuiltArtifactsImpl
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.internal.api.TestedVariant
 import com.android.builder.model.BuildType
@@ -84,12 +83,6 @@ class AndroidReleasePlugin : BasePlugin() {
 		project.plugins.withType<AppPlugin> {
 			val matching = getVariantsForBuildType()
 			LOG.debug("Found android app, variants with {}: {}", buildType.name, matching)
-			matching.all(::registerReleaseTaskWithDependency)
-		}
-		// This is not active because only AndroidAppPlugin applies AndroidReleasePlugin.
-		project.plugins.withType<LibraryPlugin> {
-			val matching = getVariantsForBuildType()
-			LOG.debug("Found android lib, variants with {}: {}", buildType.name, matching)
 			matching.all(::registerReleaseTaskWithDependency)
 		}
 		return releaseBuildTypeTask
