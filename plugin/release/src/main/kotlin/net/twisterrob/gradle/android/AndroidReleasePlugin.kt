@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.variant.impl.BuiltArtifactsImpl
-import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.internal.api.TestedVariant
@@ -21,7 +20,6 @@ import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.register
-import org.gradle.kotlin.dsl.withType
 import java.io.File
 
 private val defaultReleaseDir: File
@@ -76,13 +74,12 @@ class AndroidReleasePlugin : BasePlugin() {
 			}
 		}
 
-		project.plugins.withType<AppPlugin> {
-			@Suppress("UNCHECKED_CAST")
-			val variantsForBuildType: DomainObjectCollection<ApkVariant> =
-				android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
-			LOG.debug("Found android app, variants with {}: {}", buildType.name, variantsForBuildType)
-			variantsForBuildType.all(::registerReleaseTaskWithDependency)
-		}
+		@Suppress("UNCHECKED_CAST")
+		val variantsForBuildType: DomainObjectCollection<ApkVariant> =
+			android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
+		LOG.debug("Found android app, variants with {}: {}", buildType.name, variantsForBuildType)
+		variantsForBuildType.all(::registerReleaseTaskWithDependency)
+
 		return releaseBuildTypeTask
 	}
 
