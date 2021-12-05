@@ -65,7 +65,12 @@ class AndroidReleasePlugin : BasePlugin() {
 			description = "Assembles and archives all ${buildType.name} builds"
 		}
 		LOG.debug("Creating tasks for {}", buildType.name)
-		fun registerReleaseTaskWithDependency(variant: ApkVariant) {
+
+		@Suppress("UNCHECKED_CAST")
+		val variantsForBuildType: DomainObjectCollection<ApkVariant> =
+			android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
+		LOG.debug("Found android app, variants with {}: {}", buildType.name, variantsForBuildType)
+		variantsForBuildType.all { variant ->
 			val releaseVariantTask = registerReleaseTask(variant)
 			releaseBuildTypeTask { dependsOn(releaseVariantTask) }
 			variant.productFlavors.forEach { flavor ->
@@ -73,12 +78,6 @@ class AndroidReleasePlugin : BasePlugin() {
 				releaseFlavorTask { dependsOn(releaseVariantTask) }
 			}
 		}
-
-		@Suppress("UNCHECKED_CAST")
-		val variantsForBuildType: DomainObjectCollection<ApkVariant> =
-			android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
-		LOG.debug("Found android app, variants with {}: {}", buildType.name, variantsForBuildType)
-		variantsForBuildType.all(::registerReleaseTaskWithDependency)
 
 		return releaseBuildTypeTask
 	}
