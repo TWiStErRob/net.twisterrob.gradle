@@ -69,7 +69,6 @@ class AndroidReleasePlugin : BasePlugin() {
 		@Suppress("UNCHECKED_CAST")
 		val variantsForBuildType: DomainObjectCollection<ApkVariant> =
 			android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
-		LOG.debug("Found android app, variants with {}: {}", buildType.name, variantsForBuildType)
 		variantsForBuildType.all { variant ->
 			val releaseVariantTask = registerReleaseTask(variant)
 			releaseBuildTypeTask { dependsOn(releaseVariantTask) }
