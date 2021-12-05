@@ -47,11 +47,11 @@ class AndroidReleasePlugin : BasePlugin() {
 
 		android = project.extensions.getByName<BaseExtension>("android")
 
-		val allTask = registerReleaseAllTask()
+		val releaseAllTask = registerReleaseAllTask()
 		project.afterEvaluate {
 			android.buildTypes.forEach { buildType ->
 				val releaseBuildTypeTask = registerReleaseTasks(buildType)
-				allTask { dependsOn(releaseBuildTypeTask) }
+				releaseAllTask { dependsOn(releaseBuildTypeTask) }
 			}
 		}
 	}
@@ -63,17 +63,17 @@ class AndroidReleasePlugin : BasePlugin() {
 		}
 
 	private fun registerReleaseTasks(buildType: BuildType): TaskProvider<Task> {
-		val allBuildTypeTask = project.tasks.register<Task>("releaseAll${buildType.name.capitalize()}") {
+		val releaseBuildTypeTask = project.tasks.register<Task>("releaseAll${buildType.name.capitalize()}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives all ${buildType.name} builds"
 		}
 		LOG.debug("Creating tasks for {}", buildType.name)
 		fun registerReleaseTaskWithDependency(variant: ApkVariant) {
-			val buildTypeTask = registerReleaseTask(variant)
-			allBuildTypeTask { dependsOn(buildTypeTask) }
+			val releaseVariantTask = registerReleaseTask(variant)
+			releaseBuildTypeTask { dependsOn(releaseVariantTask) }
 			variant.productFlavors.forEach { flavor ->
-				val flavorTask = registerFlavorTask(flavor)
-				flavorTask { dependsOn(buildTypeTask) }
+				val releaseFlavorTask = registerFlavorTask(flavor)
+				releaseFlavorTask { dependsOn(releaseVariantTask) }
 			}
 		}
 
@@ -92,7 +92,7 @@ class AndroidReleasePlugin : BasePlugin() {
 			LOG.debug("Found android lib, variants with {}: {}", buildType.name, matching)
 			matching.all(::registerReleaseTaskWithDependency)
 		}
-		return allBuildTypeTask
+		return releaseBuildTypeTask
 	}
 
 	private fun registerReleaseTask(variant: ApkVariant): TaskProvider<Zip> {
