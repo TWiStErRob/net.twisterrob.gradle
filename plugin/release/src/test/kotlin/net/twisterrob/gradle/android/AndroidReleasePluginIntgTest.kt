@@ -90,7 +90,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "releaseRelease").build()
 
-		result.assertSuccess(":assembleRelease")
+		result.assertSuccess(":packageRelease")
 		result.assertSuccess(":releaseRelease")
 		assertReleaseArchive(result, minification)
 	}
@@ -135,8 +135,8 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "releaseDebug").build()
 
-		result.assertSuccess(":assembleDebug")
-		result.assertSuccess(":assembleDebugAndroidTest")
+		result.assertSuccess(":packageDebug")
+		result.assertSuccess(":packageDebugAndroidTest")
 		result.assertSuccess(":releaseDebug")
 		assertDebugArchive(result)
 	}
@@ -177,9 +177,9 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "release").build()
 
-		result.assertSuccess(":assembleRelease")
-		result.assertSuccess(":assembleDebug")
-		result.assertSuccess(":assembleDebugAndroidTest")
+		result.assertSuccess(":packageRelease")
+		result.assertSuccess(":packageDebug")
+		result.assertSuccess(":packageDebugAndroidTest")
 		result.assertSuccess(":releaseRelease")
 		result.assertSuccess(":releaseDebug")
 		assertReleaseArchive(result, minification)
