@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.impl.ApplicationVariantImpl
 import com.android.build.api.variant.impl.BuiltArtifactsImpl
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariant
@@ -7,6 +9,7 @@ import com.android.build.gradle.internal.api.TestedVariant
 import com.android.builder.model.BuildType
 import com.android.builder.model.ProductFlavor
 import net.twisterrob.gradle.base.BasePlugin
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
@@ -46,10 +49,17 @@ class AndroidReleasePlugin : BasePlugin() {
 		android = project.extensions.getByName<BaseExtension>("android")
 
 		val releaseAllTask = registerReleaseAllTask()
-		project.afterEvaluate {
+		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
 			android.buildTypes.forEach { buildType ->
 				val releaseBuildTypeTask = registerReleaseTasks(buildType)
 				releaseAllTask { dependsOn(releaseBuildTypeTask) }
+			}
+		} else {
+			project.afterEvaluate {
+				android.buildTypes.forEach { buildType ->
+					val releaseBuildTypeTask = registerReleaseTasks(buildType)
+					releaseAllTask { dependsOn(releaseBuildTypeTask) }
+				}
 			}
 		}
 	}
@@ -67,15 +77,22 @@ class AndroidReleasePlugin : BasePlugin() {
 		}
 		LOG.debug("Creating tasks for {}", buildType.name)
 
-		@Suppress("UNCHECKED_CAST")
-		val variantsForBuildType: DomainObjectCollection<ApkVariant> =
-			android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
-		variantsForBuildType.all { variant ->
-			val releaseVariantTask = registerReleaseTask(variant)
-			releaseBuildTypeTask { dependsOn(releaseVariantTask) }
-			variant.productFlavors.forEach { flavor ->
-				val releaseFlavorTask = registerFlavorTask(flavor)
-				releaseFlavorTask { dependsOn(releaseVariantTask) }
+		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
+			project.androidComponents.onVariants(project.androidComponents.selector().withBuildType(buildType.name)) {
+				val releaseVariantTask = registerReleaseTask(it as ApplicationVariantImpl)
+				releaseBuildTypeTask { dependsOn(releaseVariantTask) }
+			}
+		} else {
+			@Suppress("UNCHECKED_CAST")
+			val variantsForBuildType: DomainObjectCollection<ApkVariant> =
+				android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
+			variantsForBuildType.all { variant ->
+				val releaseVariantTask = registerReleaseTask(variant)
+				releaseBuildTypeTask { dependsOn(releaseVariantTask) }
+				variant.productFlavors.forEach { flavor ->
+					val releaseFlavorTask = registerFlavorTask(flavor)
+					releaseFlavorTask { dependsOn(releaseVariantTask) }
+				}
 			}
 		}
 
@@ -153,4 +170,58 @@ class AndroidReleasePlugin : BasePlugin() {
 		}
 		return releaseFlavorTask
 	}
+
+	private fun registerReleaseTask(variant: ApplicationVariantImpl): TaskProvider<Zip> =
+		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
+			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
+			description = "Assembles and archives apk and its ProGuard mapping for ${variant.name} build"
+			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
+			val archiveFormat =
+				android.defaultConfig.extensions.getByType<AndroidVersionExtension>().formatArtifactName
+			val out = variant.outputs.single()
+			inputs.property("variant-applicationId", variant.applicationId)
+			inputs.property("variant-versionName", out.versionName)
+			inputs.property("variant-versionCode", out.versionCode)
+
+			archiveFileName.set(project.provider {
+				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+				val versionCode = out.versionCode.get()!!.toLong()
+				val versionName = out.versionName.get()
+				archiveFormat(project, "archive", variant.applicationId.get(), versionCode, versionName) + ".zip"
+			})
+
+			from(variant.artifacts.get(SingleArtifact.APK)) { copy ->
+				copy.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
+			}
+
+			if (variant.minifiedEnabled) {
+				val mappingFileProvider = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
+				from(mappingFileProvider.map { it.asFile.parentFile }) { copy ->
+					copy.include("*")
+					copy.rename("(.*)", "proguard_$1")
+				}
+			}
+
+			variant.androidTest?.let { androidTest ->
+				from( androidTest.artifacts.get(SingleArtifact.APK)) { copy ->
+					copy.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
+				}
+			}
+
+			doFirst {
+				val outFile = outputs.files.singleFile
+				if (outFile.exists()) {
+					throw StopExecutionException("Target zip file already exists.\nRelease archive: ${outFile}")
+				}
+			}
+
+			doLast {
+				println("Published release artifacts to ${outputs.files.singleFile}:" + ZipFile(outputs.files.singleFile)
+					.entries()
+					.toList()
+					.sortedBy { it.name }
+					.joinToString(prefix = "\n", separator = "\n") { "\t * ${it}" }
+				)
+			}
+		}
 }
