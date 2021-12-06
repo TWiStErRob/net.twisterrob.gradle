@@ -402,4 +402,221 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			versionName = "1.2.3#4"
 		)
 	}
+
+	@Test fun `variant versioning works`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
+			android {
+				testBuildType "staging"
+				buildTypes {
+					staging {
+						initWith debug
+						applicationIdSuffix ".staging"
+						versionNameSuffix "S"
+					}
+				}
+				flavorDimensions "cost", "version"
+				productFlavors {
+					demo {
+						dimension "version"
+						applicationIdSuffix ".demo"
+						versionNameSuffix "-demo"
+					}
+					full {
+						dimension "version"
+						applicationIdSuffix ".full"
+						versionNameSuffix "-full"
+					}
+					paid {
+						dimension "cost"
+						applicationIdSuffix ".paid"
+						versionNameSuffix "-paid"
+					}
+					free {
+						dimension "cost"
+						applicationIdSuffix ".free"
+						versionNameSuffix "-free"
+					}
+				}
+			}
+			androidComponents {
+				beforeVariants(selector().all()) {
+					enabled = true
+					enableAndroidTest = true
+				}
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script, "assemble", "assembleAndroidTest").withDebug(true).build()
+
+		result.assertSuccess(":assemblePaidDemoDebug")
+		result.assertSuccess(":assembleFreeDemoDebug")
+		result.assertSuccess(":assemblePaidFullDebug")
+		result.assertSuccess(":assembleFreeFullDebug")
+		assertDefaultDebugBadging(
+			applicationId = "${packageName}.paid.demo.debug",
+			apk = gradle.root.apk(
+				"paidDemo/debug",
+				"${packageName}.paid.demo.debug@10203004-v1.2.3#4-paid-demod+paidDemoDebug.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-paid-demod"
+		)
+		assertDefaultDebugBadging(
+			applicationId = "${packageName}.free.demo.debug",
+			apk = gradle.root.apk(
+				"freeDemo/debug",
+				"${packageName}.free.demo.debug@10203004-v1.2.3#4-free-demod+freeDemoDebug.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-free-demod"
+		)
+		assertDefaultDebugBadging(
+			applicationId = "${packageName}.paid.full.debug",
+			apk = gradle.root.apk(
+				"paidFull/debug",
+				"${packageName}.paid.full.debug@10203004-v1.2.3#4-paid-fulld+paidFullDebug.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-paid-fulld"
+		)
+		assertDefaultDebugBadging(
+			applicationId = "${packageName}.free.full.debug",
+			apk = gradle.root.apk(
+				"freeFull/debug",
+				"${packageName}.free.full.debug@10203004-v1.2.3#4-free-fulld+freeFullDebug.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-free-fulld"
+		)
+
+		result.assertSuccess(":assemblePaidDemoRelease")
+		result.assertSuccess(":assembleFreeDemoRelease")
+		result.assertSuccess(":assemblePaidFullRelease")
+		result.assertSuccess(":assembleFreeFullRelease")
+		assertDefaultReleaseBadging(
+			applicationId = "${packageName}.paid.demo",
+			apk = gradle.root.apk(
+				"paidDemo/release",
+				"${packageName}.paid.demo@10203004-v1.2.3#4-paid-demo+paidDemoRelease.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-paid-demo"
+		)
+		assertDefaultReleaseBadging(
+			applicationId = "${packageName}.free.demo",
+			apk = gradle.root.apk(
+				"freeDemo/release",
+				"${packageName}.free.demo@10203004-v1.2.3#4-free-demo+freeDemoRelease.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-free-demo"
+		)
+		assertDefaultReleaseBadging(
+			applicationId = "${packageName}.paid.full",
+			apk = gradle.root.apk(
+				"paidFull/release",
+				"${packageName}.paid.full@10203004-v1.2.3#4-paid-full+paidFullRelease.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-paid-full"
+		)
+		assertDefaultReleaseBadging(
+			applicationId = "${packageName}.free.full",
+			apk = gradle.root.apk(
+				"freeFull/release",
+				"${packageName}.free.full@10203004-v1.2.3#4-free-full+freeFullRelease.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-free-full"
+		)
+
+		result.assertSuccess(":assemblePaidDemoStaging")
+		result.assertSuccess(":assembleFreeDemoStaging")
+		result.assertSuccess(":assemblePaidFullStaging")
+		result.assertSuccess(":assembleFreeFullStaging")
+		assertDefaultBadging(
+			applicationId = "${packageName}.paid.demo.staging",
+			apk = gradle.root.apk(
+				"paidDemo/staging",
+				"${packageName}.paid.demo.staging@10203004-v1.2.3#4-paid-demoS+paidDemoStaging.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-paid-demoS"
+		)
+		assertDefaultBadging(
+			applicationId = "${packageName}.free.demo.staging",
+			apk = gradle.root.apk(
+				"freeDemo/staging",
+				"${packageName}.free.demo.staging@10203004-v1.2.3#4-free-demoS+freeDemoStaging.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-free-demoS"
+		)
+		assertDefaultBadging(
+			applicationId = "${packageName}.paid.full.staging",
+			apk = gradle.root.apk(
+				"paidFull/staging",
+				"${packageName}.paid.full.staging@10203004-v1.2.3#4-paid-fullS+paidFullStaging.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-paid-fullS"
+		)
+		assertDefaultBadging(
+			applicationId = "${packageName}.free.full.staging",
+			apk = gradle.root.apk(
+				"freeFull/staging",
+				"${packageName}.free.full.staging@10203004-v1.2.3#4-free-fullS+freeFullStaging.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-free-fullS"
+		)
+
+		result.assertSuccess(":assemblePaidDemoStagingAndroidTest")
+		result.assertSuccess(":assembleFreeDemoStagingAndroidTest")
+		result.assertSuccess(":assemblePaidFullStagingAndroidTest")
+		result.assertSuccess(":assembleFreeFullStagingAndroidTest")
+		assertDefaultBadging(
+			applicationId = "${packageName}.paid.demo.staging.test",
+			apk = gradle.root.apk(
+				"androidTest/paidDemo/staging",
+				"${packageName}.paid.demo.staging.test@10203004-v1.2.3#4-paid-demoS+paidDemoStaging-androidTest.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-paid-demoS",
+			isAndroidTestApk = true
+		)
+		assertDefaultBadging(
+			applicationId = "${packageName}.free.demo.staging.test",
+			apk = gradle.root.apk(
+				"androidTest/freeDemo/staging",
+				"${packageName}.free.demo.staging.test@10203004-v1.2.3#4-free-demoS+freeDemoStaging-androidTest.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-free-demoS",
+			isAndroidTestApk = true
+		)
+		assertDefaultBadging(
+			applicationId = "${packageName}.paid.full.staging.test",
+			apk = gradle.root.apk(
+				"androidTest/paidFull/staging",
+				"${packageName}.paid.full.staging.test@10203004-v1.2.3#4-paid-fullS+paidFullStaging-androidTest.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-paid-fullS",
+			isAndroidTestApk = true
+		)
+		assertDefaultBadging(
+			applicationId = "${packageName}.free.full.staging.test",
+			apk = gradle.root.apk(
+				"androidTest/freeFull/staging",
+				"${packageName}.free.full.staging.test@10203004-v1.2.3#4-free-fullS+freeFullStaging-androidTest.apk"
+			),
+			versionCode = "10203004",
+			versionName = "1.2.3#4-free-fullS",
+			isAndroidTestApk = true
+		)
+	}
 }
