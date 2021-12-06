@@ -124,7 +124,6 @@ jobs:
         run: |
           java -version
           set | grep JAVA
-          ./gradlew --version
 
       - name: Set up JDK ${{ matrix.gradle-java }}.
         if: matrix.gradle-jave != 8
@@ -137,7 +136,6 @@ jobs:
         run: |
           java -version
           set | grep JAVA
-          ./gradlew --version
 
       - name: Set up JDK ${{ matrix.gradle-java }}.
         uses: actions/setup-java@v2
