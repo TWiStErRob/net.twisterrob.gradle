@@ -3,6 +3,7 @@ package net.twisterrob.gradle.android
 import com.android.ddmlib.AndroidDebugBridge
 import com.jakewharton.dex.DexMethod
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.test.withRootCause
 import net.twisterrob.test.process.assertOutput
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -139,8 +140,7 @@ fun assertDefaultBadging(
 			.parentFile
 			.listFiles().orEmpty()
 			.joinToString(prefix = "'${apk.parentFile}' contents:\n", separator = "\n")
-		generateSequence(ex) { ex.cause }.last().initCause(IOException(contents))
-		throw ex
+		throw ex.withRootCause(IOException(contents))
 	}
 	val (expectation: String, expectedOutput: String) =
 		if (compileSdkVersion < 28) {

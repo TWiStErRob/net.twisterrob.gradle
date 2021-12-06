@@ -6,6 +6,7 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoTask
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
+import net.twisterrob.test.withRootCause
 import net.twisterrob.test.zip.hasEntryCount
 import net.twisterrob.test.zip.hasZipEntry
 import net.twisterrob.test.zip.withSize
@@ -195,8 +196,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 				.parentFile
 				.listFiles().orEmpty()
 				.joinToString(prefix = "'${archive.parentFile}' contents:\n", separator = "\n")
-			generateSequence(ex) { ex.cause }.last().initCause(IOException(contents))
-			throw ex
+			throw ex.withRootCause(IOException(contents))
 		}
 		try {
 			assertions(archive)
@@ -208,8 +208,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 				.joinToString(prefix = "'$archive' contents:\n", separator = "\n") {
 					"${it.name} (${it.compressedSize}/${it.size} bytes) @ ${Instant.ofEpochMilli(it.time)}"
 				}
-			generateSequence(ex) { ex.cause }.last().initCause(ZipException(contents))
-			throw ex
+			throw ex.withRootCause(ZipException(contents))
 		}
 	}
 }
