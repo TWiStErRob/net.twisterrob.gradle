@@ -22,6 +22,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.junitpioneer.jupiter.ClearEnvironmentVariable
 import java.io.File
+import java.io.IOException
 import java.time.Instant
 import java.util.zip.ZipException
 import java.util.zip.ZipFile
@@ -187,14 +188,16 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	private inline fun assertArchive(archive: File, crossinline assertions: (File) -> Unit) {
-		val fileNamesMessage =
-			"Wanted: ${archive.absolutePath}${System.lineSeparator()}list: ${
-				archive.parentFile.listFiles().orEmpty().joinToString(
-					prefix = System.lineSeparator(),
-					separator = System.lineSeparator()
-				)
-			}"
-		assertThat(fileNamesMessage, archive, anExistingFile())
+		try {
+			assertThat(archive.absolutePath, archive, anExistingFile())
+		} catch (ex: Throwable) {
+			val contents = archive
+				.parentFile
+				.listFiles().orEmpty()
+				.joinToString(prefix = "'${archive.parentFile}' contents:\n", separator = "\n")
+			generateSequence(ex) { ex.cause }.last().initCause(IOException(contents))
+			throw ex
+		}
 		try {
 			assertions(archive)
 		} catch (ex: Throwable) {

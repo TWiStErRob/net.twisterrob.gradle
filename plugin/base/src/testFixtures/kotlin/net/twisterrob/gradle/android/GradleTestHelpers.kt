@@ -11,6 +11,7 @@ import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.junit.jupiter.api.Assertions.assertTrue
 import java.io.File
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 /**
@@ -131,14 +132,16 @@ fun assertDefaultBadging(
 	targetSdkVersion: Int = VERSION_SDK_TARGET,
 	isAndroidTestApk: Boolean = false
 ) {
-	val fileNamesMessage =
-		"Wanted: ${apk.absolutePath}${System.lineSeparator()}list: ${
-			apk.parentFile.listFiles().orEmpty().joinToString(
-				prefix = System.lineSeparator(),
-				separator = System.lineSeparator()
-			)
-		}"
-	assertThat(fileNamesMessage, apk, anExistingFile())
+	try {
+		assertThat(apk.absolutePath, apk, anExistingFile())
+	} catch (ex: Throwable) {
+		val contents = apk
+			.parentFile
+			.listFiles().orEmpty()
+			.joinToString(prefix = "'${apk.parentFile}' contents:\n", separator = "\n")
+		generateSequence(ex) { ex.cause }.last().initCause(IOException(contents))
+		throw ex
+	}
 	val (expectation: String, expectedOutput: String) =
 		if (compileSdkVersion < 28) {
 			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2
