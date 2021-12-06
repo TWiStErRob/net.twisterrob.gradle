@@ -120,33 +120,22 @@ jobs:
     steps:
       - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
 
-      - name: List JAVAs
+      - name: Set up JDK(s).
         run: |
-          java -version
-          set | grep JAVA
-
-      - name: Set up JDK ${{ matrix.gradle-java }}.
-        if: matrix.gradle-jave != 8
-        uses: actions/setup-java@v2
-        with:
-          java-version: 8
-          distribution: zulu
-
-      - name: List JAVAs
-        run: |
-          java -version
-          set | grep JAVA
-
-      - name: Set up JDK ${{ matrix.gradle-java }}.
-        uses: actions/setup-java@v2
-        with:
-          java-version: ${{ matrix.gradle-java }}
-          distribution: zulu
-
-      - name: List JAVAs
-        run: |
-          java -version
-          set | grep JAVA
+          echo "JAVA8_HOME=$JAVA_HOME_8_X64" | tee --append $GITHUB_ENV
+          echo "JAVA11_HOME=$JAVA_HOME_11_X64" | tee --append $GITHUB_ENV
+          case ${{ matrix.gradle-java }} in
+            8)
+              echo "JAVA_HOME=$JAVA_HOME_8_X64" | tee --append $GITHUB_ENV
+            ;;
+            11)
+              echo "JAVA_HOME=$JAVA_HOME_11_X64" | tee --append $GITHUB_ENV
+            ;;
+            *)
+              echo "Unrecognized matrix.gradle-java=${{ matrix.gradle-java }}."
+              exit 1
+            ;;
+          esac
 
       - name: Set up Android SDK.
         uses: android-actions/setup-android@v2
@@ -204,12 +193,6 @@ jobs:
           ${{ github.workspace }}/gradlew wrapper --gradle-version ${{ matrix.gradle }} --distribution-type all --quiet
           # Run a no-op gradlew command in an empty project with a specific wrapper version.
           ./gradlew --no-daemon --version
-
-      - name: List JAVAs
-        run: |
-          java -version
-          set | grep JAVA
-          ./gradlew --version
 
       - name: Cache Gradle ${{ env.GRADLE_VERSION }} files.
         uses: actions/cache@v2
