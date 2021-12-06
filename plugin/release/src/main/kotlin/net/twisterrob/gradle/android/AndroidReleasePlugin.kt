@@ -21,6 +21,7 @@ import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.register
 import java.io.File
+import java.util.zip.ZipFile
 
 private val defaultReleaseDir: File
 	get() {
@@ -113,7 +114,12 @@ class AndroidReleasePlugin : BasePlugin() {
 				}
 			}
 			doLast {
-				println("Published release artifacts to ${outputs.files.singleFile}")
+				println("Published release artifacts to ${outputs.files.singleFile}:" + ZipFile(outputs.files.singleFile)
+					.entries()
+					.toList()
+					.sortedBy { it.name }
+					.joinToString(prefix = "\n", separator = "\n") { "\t * ${it}" }
+				)
 			}
 		}
 		releaseVariantTask { dependsOn(variant.assembleProvider) }

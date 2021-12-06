@@ -121,7 +121,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, not(hasZipEntry("metadata.json")))
 			assertThat(archive, not(hasZipEntry("output-metadata.json")))
 			assertThat(archive, hasEntryCount(equalTo(if (minification == Minification.ProGuard) 6 else 5)))
-			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
+			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
 		}
 	}
 
@@ -157,7 +157,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, not(hasZipEntry("metadata.json")))
 			assertThat(archive, not(hasZipEntry("output-metadata.json")))
 			assertThat(archive, hasEntryCount(equalTo(2)))
-			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
+			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
 		}
 	}
 
