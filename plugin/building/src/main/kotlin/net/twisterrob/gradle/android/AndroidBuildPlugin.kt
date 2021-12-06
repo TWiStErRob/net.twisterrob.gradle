@@ -78,6 +78,8 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 
 			buildTypes.configure("release") { release ->
+				//release.setApplicationIdSuffix(null)
+				//release.setVersionNameSuffix(null)
 				release.resValue("bool", "in_test", "false")
 				release.resValue("bool", "in_prod", "true")
 			}
