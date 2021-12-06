@@ -1,9 +1,7 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.component.impl.AndroidTestImpl
 import com.android.build.api.variant.ApplicationVariant
-import com.android.build.api.variant.ComponentIdentity
-import com.android.build.api.variant.GeneratesApk
-import com.android.build.api.variant.VariantOutput
 import com.android.build.api.variant.impl.VariantOutputImpl
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
@@ -159,7 +157,7 @@ class AndroidVersionPlugin : BasePlugin() {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
 				project.androidComponents.onVariants {
 					if (version.renameAPK) {
-						renameAPK7(project, version, it as ApplicationVariant, it.outputs)
+						renameAPK7(project, version, it as ApplicationVariant)
 					}
 				}
 			}
@@ -266,32 +264,40 @@ fun DefaultConfig.version(configuration: Action<AndroidVersionExtension>) {
 	configuration.execute(version)
 }
 
-// Note this has to be outside the class, otherwise Gradle reflection will fail on ComponentIdentity missing for AGP <7.
-private fun <T> renameAPK7(
-	project: Project,
-	version: AndroidVersionExtension,
-	variant: T,
-	outputs: List<VariantOutput>
-) where T : ComponentIdentity, T : GeneratesApk {
+// STOPSHIP Note this has to be outside the class, otherwise Gradle reflection will fail on ComponentIdentity missing for AGP <7.
+private fun renameAPK7(project: Project, version: AndroidVersionExtension, variant: ApplicationVariant) {
 	// Only called for applicationVariants and their testVariants so filter should be safe.
-	outputs.filterIsInstance<VariantOutputImpl>().forEach { output ->
+	val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
+	val androidTestOutput = variant.androidTest?.let { androidTest ->
+		androidTest as AndroidTestImpl
+		androidTest.outputs.filterIsInstance<VariantOutputImpl>().single()
+	}
+	variantOutput.outputFileName.set(project.provider {
 		// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
 		@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 		val artifactName = version.formatArtifactName(
 			project,
 			variant.name,
 			variant.applicationId.get(),
-			output.versionCode.getOrElse(-1)!!.toLong(),
-			output.versionName.getOrElse(null)
+			variantOutput.versionCode.getOrElse(-1)!!.toLong(),
+			variantOutput.versionName.getOrElse(null)
 		)
-		output.outputFileName.set("${artifactName}.apk")
+		"${artifactName}.apk"
+	})
+	androidTestOutput?.let { androidTest ->
+		androidTest.outputFileName.set(project.provider {
+			// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
+			val androidTestName: String =
+				variant.androidTest!!.name.removePrefix(variant.name).decapitalize(Locale.ROOT)
+			@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+			val artifactName = version.formatArtifactName(
+				project,
+				"${variant.name}-${androidTestName}",
+				variant.androidTest!!.applicationId.get(),
+				variantOutput.versionCode.getOrElse(-1)!!.toLong(),
+				variantOutput.versionName.getOrElse(null)
+			)
+			"${artifactName}.apk"
+		})
 	}
-	// Doesn't work, because androidTest doesn't have a versionCode and versionName.
-	// And applicationId is not accessible yet.
-	//if (variant is ApplicationVariant) {
-	//	variant.androidTest?.let { androidTest ->
-	//		androidTest as ComponentCreationConfig
-	//		renameAPK7(androidTest, androidTest.outputs)
-	//	}
-	//}
 }
