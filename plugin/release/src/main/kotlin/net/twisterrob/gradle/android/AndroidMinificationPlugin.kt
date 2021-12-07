@@ -12,8 +12,9 @@ import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.task
+import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import java.io.File
 
@@ -71,7 +72,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 			}
 		}
 
-		val extractMinificationRules = project.task<Task>("extractMinificationRules") {
+		val extractMinificationRules = project.tasks.register<Task>("extractMinificationRules") {
 			description = "Extract ProGuard files from 'net.twisterrob.android' plugin"
 			outputs.file(defaultAndroidRulesFile)
 			outputs.file(myProguardRulesFile)
@@ -131,8 +132,8 @@ class AndroidMinificationPlugin : BasePlugin() {
 			.matching { it.variantName == variant.name }
 			.singleOrNull()
 
-	private fun createGenerateMinificationRulesTask(variant: BaseVariant, outputFile: File, isProguard: Boolean): Task =
-		project.task<Task>("generate${variant.name.capitalize()}MinificationRules") {
+	private fun createGenerateMinificationRulesTask(variant: BaseVariant, outputFile: File, isProguard: Boolean): TaskProvider<Task> =
+		project.tasks.register<Task>("generate${variant.name.capitalize()}MinificationRules") {
 			description = "Generates printConfiguration and dump options for ProGuard or R8"
 			val mappingFolder: Provider<File> = variant.mappingFileProvider.map { it.singleFile.parentFile }
 			inputs.property("targetFolder", mappingFolder)
