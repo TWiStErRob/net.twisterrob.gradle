@@ -73,7 +73,10 @@ class AndroidMinificationPlugin : BasePlugin() {
 
 		val extractMinificationRules = project.task<Task>("extractMinificationRules") {
 			description = "Extract ProGuard files from 'net.twisterrob.android' plugin"
-			outputs.files(defaultAndroidRulesFile, myProguardRulesFile)
+			outputs.file(defaultAndroidRulesFile)
+			outputs.file(myProguardRulesFile)
+			outputs.file(myDebugProguardRulesFile)
+			outputs.file(myReleaseProguardRulesFile)
 			outputs.upToDateWhen {
 				defaultAndroidRulesFile.lastModified() == builtDate.toEpochMilli()
 						&& myProguardRulesFile.lastModified() == builtDate.toEpochMilli()
