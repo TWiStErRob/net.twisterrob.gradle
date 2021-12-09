@@ -4,6 +4,8 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
+import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.tasks.ProguardConfigurableTask
 import com.android.build.gradle.internal.tasks.R8Task
 import com.android.builder.model.AndroidProject
@@ -92,6 +94,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 			}
 		}
 
+		lintTasksDependOnProguardRulesTask(extractMinificationRules)
 		project.afterEvaluate {
 			android.variants.all { variant ->
 				val proguardTask = proguardTaskClass?.let { project.findMinificationTaskFor(variant, it) }
@@ -104,9 +107,18 @@ class AndroidMinificationPlugin : BasePlugin() {
 						generatedProguardRulesFile,
 						proguardTask == obfuscationTask
 					)
+					lintTasksDependOnProguardRulesTask(generateMinificationRulesTask)
 					obfuscationTask.dependsOn(generateMinificationRulesTask)
 				}
 			}
+		}
+	}
+
+	private fun lintTasksDependOnProguardRulesTask(task: TaskProvider<Task>) {
+		if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
+			// REPORT allow tasks to generate ProGuard files, this must be possible because aapt generates one.
+			project.tasks.withType<AndroidLintGlobalTask>().configureEach { it.dependsOn(task) }
+			project.tasks.withType<AndroidLintAnalysisTask>().configureEach { it.dependsOn(task) }
 		}
 	}
 
