@@ -85,30 +85,10 @@ class AndroidVariantApplier(val project: Project) {
 			closure.execute(null)
 		}
 		project.plugins.withId("com.android.instantapp") {
-			//val android = project.extensions["android"] as InstantAppExtension
-			// has no variants, but don't call back, because there's no way to tell if this happened
-			//closure.execute(new DefaultDomainObjectSet<>(BaseVariant))
-		}
-	}
-
-	/**
-	 * Note: due to the way {@link DomainObjectSet#all} works,
-	 * {@code after} is not really after all items have been processed.
-	 */
-	fun applyAll(
-		variantClosure: Action<in BaseVariant>,
-		before: Action<Variants> = NOOP,
-		after: Action<Variants> = NOOP
-	) {
-		applyVariants { variants: Variants ->
-			before.execute(variants)
-			variants.all(variantClosure)
-			after.execute(variants)
+			//closure.execute(null)
 		}
 	}
 }
-
-private val NOOP: Action<Variants> = Action { }
 
 private operator fun ExtensionContainer.get(name: String): Any =
 	getByName(name)

@@ -12,7 +12,6 @@ import com.android.build.gradle.TestExtension
 import com.android.build.gradle.TestPlugin
 import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.api.VersionedVariant
 import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.scope.TaskContainer
 import com.android.build.gradle.internal.variant.BaseVariantData
@@ -70,14 +69,6 @@ val BaseExtension.variants: DomainObjectSet<out BaseVariant>
 			is TestedExtension -> testVariants
 			else -> throw IllegalArgumentException("Unknown extension: $this")
 		}
-
-@Suppress("unused")
-fun BaseVariant.toDebugString(): String =
-	buildString {
-		append(this@toDebugString::class)
-		append(", name=$name, desc=$description, base=$baseName, dir=$dirName, pkg=$applicationId, flav=$flavorName")
-		append(if (this@toDebugString is VersionedVariant) ", ver=$versionName, code=$versionCode" else "")
-	}
 
 fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) {
 	configureEach {
