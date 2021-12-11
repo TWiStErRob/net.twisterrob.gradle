@@ -165,9 +165,11 @@ class AndroidBuildPlugin : BasePlugin() {
 			if (install != null) {
 				val project = install.project
 				val name = "run${variant.name.capitalize()}"
-				project.tasks.create<AndroidInstallRunnerTask>(name) {
+				project.tasks.register<AndroidInstallRunnerTask>(name) {
 					dependsOn(install)
-					this.setVariant(variant)
+					this.manifestFile.set(variant.outputs.single().processManifestProvider.flatMap { it.manifestFile })
+					this.applicationId.set(variant.applicationId)
+					this.updateDescription(variant.description)
 				}
 			}
 		}
