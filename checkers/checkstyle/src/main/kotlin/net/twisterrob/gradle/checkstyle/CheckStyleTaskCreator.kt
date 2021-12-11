@@ -96,7 +96,6 @@ private val CheckstyleReports.customHtml: CustomizableHtmlReport
 		return html.invoke(this) as CustomizableHtmlReport
 	}
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER") // prepared polyfill
 @Deprecated(
 	message = "Replaced by [Checkstyle.configDirectory]." +
 			"It was Deprecated in Gradle 6.x, but removed in Gradle 7.x, polyfill here.",
