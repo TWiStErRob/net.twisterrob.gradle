@@ -163,8 +163,9 @@ class AndroidMinificationPlugin : BasePlugin() {
 
 	private fun copy(internalName: String, targetFile: File) {
 		targetFile.parentFile.mkdirs()
-		val classLoader = this::class.java.classLoader!!
-		classLoader.getResourceAsStream(internalName).copyTo(targetFile.outputStream())
+		val resource = this::class.java.getResourceAsStream(internalName)
+			?: error("Cannot find ${internalName} to copy to ${targetFile}.")
+		resource.use { inp -> targetFile.outputStream().use { out -> inp.copyTo(out) } }
 		targetFile.setLastModified(builtDate.toEpochMilli())
 	}
 }
