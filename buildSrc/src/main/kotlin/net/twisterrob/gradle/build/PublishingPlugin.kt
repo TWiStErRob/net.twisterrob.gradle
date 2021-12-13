@@ -10,7 +10,6 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.register
@@ -34,28 +33,29 @@ class PublishingPlugin : Plugin<Project> {
 				isAutomatedPublishing = false
 			}
 		}
-		project.tasks {
-			val dokkaJavadoc = named<DokkaTask>("dokkaJavadoc") {
-				// TODO https://github.com/Kotlin/dokka/issues/1894
-				moduleName.set(this.project.base.archivesName)
-				dokkaSourceSets {
-					configureEach {
-						reportUndocumented.set(false)
-					}
+
+		val dokkaJavadoc = project.tasks.named<DokkaTask>("dokkaJavadoc") {
+			// TODO https://github.com/Kotlin/dokka/issues/1894
+			moduleName.set(this.project.base.archivesName)
+			dokkaSourceSets {
+				configureEach {
+					reportUndocumented.set(false)
 				}
 			}
-			val sourcesJar = register<Jar>("sourcesJar") {
-				archiveClassifier.set("sources")
-				from(project.java.sourceSets["main"].kotlin.sourceDirectories)
-			}
-			project.artifacts.add("archives", sourcesJar)
-
-			val javadocJar = register<Jar>("javadocJar") {
-				archiveClassifier.set("javadoc")
-				from(dokkaJavadoc)
-			}
-			project.artifacts.add("archives", javadocJar)
 		}
+
+		val sourcesJar = project.tasks.register<Jar>("sourcesJar") {
+			archiveClassifier.set("sources")
+			from(project.java.sourceSets["main"].kotlin.sourceDirectories)
+		}
+		project.artifacts.add("archives", sourcesJar)
+
+		val javadocJar = project.tasks.register<Jar>("javadocJar") {
+			archiveClassifier.set("javadoc")
+			from(dokkaJavadoc)
+		}
+		project.artifacts.add("archives", javadocJar)
+
 		project.configure<PublishingExtension> {
 			publications {
 				register<MavenPublication>("release") {
