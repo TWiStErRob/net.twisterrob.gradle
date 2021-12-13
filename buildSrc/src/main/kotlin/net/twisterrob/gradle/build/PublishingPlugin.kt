@@ -37,10 +37,8 @@ class PublishingPlugin : Plugin<Project> {
 		val dokkaJavadoc = project.tasks.named<DokkaTask>("dokkaJavadoc") {
 			// TODO https://github.com/Kotlin/dokka/issues/1894
 			moduleName.set(this.project.base.archivesName)
-			dokkaSourceSets {
-				configureEach {
-					reportUndocumented.set(false)
-				}
+			dokkaSourceSets.configureEach {
+			 	reportUndocumented.set(false)
 			}
 		}
 

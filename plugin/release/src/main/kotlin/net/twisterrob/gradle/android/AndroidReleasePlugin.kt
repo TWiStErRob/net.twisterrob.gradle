@@ -21,7 +21,6 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.getByType
-import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.register
 import java.io.File
 import java.util.zip.ZipFile
@@ -52,13 +51,13 @@ class AndroidReleasePlugin : BasePlugin() {
 		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
 			android.buildTypes.forEach { buildType ->
 				val releaseBuildTypeTask = registerReleaseTasks(buildType)
-				releaseAllTask { dependsOn(releaseBuildTypeTask) }
+				releaseAllTask.configure { it.dependsOn(releaseBuildTypeTask) }
 			}
 		} else {
 			project.afterEvaluate {
 				android.buildTypes.forEach { buildType ->
 					val releaseBuildTypeTask = registerReleaseTasks(buildType)
-					releaseAllTask { dependsOn(releaseBuildTypeTask) }
+					releaseAllTask.configure { it.dependsOn(releaseBuildTypeTask) }
 				}
 			}
 		}
@@ -78,9 +77,10 @@ class AndroidReleasePlugin : BasePlugin() {
 		LOG.debug("Creating tasks for {}", buildType.name)
 
 		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
-			project.androidComponents.onVariants(project.androidComponents.selector().withBuildType(buildType.name)) {
-				val releaseVariantTask = registerReleaseTask(it as ApplicationVariantImpl)
-				releaseBuildTypeTask { dependsOn(releaseVariantTask) }
+			val withBuildType = project.androidComponents.selector().withBuildType(buildType.name)
+			project.androidComponents.onVariants(withBuildType) { variant ->
+				val releaseVariantTask = registerReleaseTask(variant as ApplicationVariantImpl)
+				releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
 			}
 		} else {
 			@Suppress("UNCHECKED_CAST")
@@ -88,10 +88,10 @@ class AndroidReleasePlugin : BasePlugin() {
 				android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
 			variantsForBuildType.all { variant ->
 				val releaseVariantTask = registerReleaseTask(variant)
-				releaseBuildTypeTask { dependsOn(releaseVariantTask) }
+				releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
 				variant.productFlavors.forEach { flavor ->
 					val releaseFlavorTask = registerFlavorTask(flavor)
-					releaseFlavorTask { dependsOn(releaseVariantTask) }
+					releaseFlavorTask.configure { it.dependsOn(releaseVariantTask) }
 				}
 			}
 		}
@@ -139,9 +139,9 @@ class AndroidReleasePlugin : BasePlugin() {
 				)
 			}
 		}
-		releaseVariantTask { dependsOn(variant.assembleProvider) }
+		releaseVariantTask.configure { it.dependsOn(variant.assembleProvider) }
 		if (variant is TestedVariant && variant.testVariant != null) {
-			releaseVariantTask { dependsOn(variant.testVariant.assembleProvider) }
+			releaseVariantTask.configure { it.dependsOn(variant.testVariant.assembleProvider) }
 		}
 		return releaseVariantTask
 		/*val task: AndroidReleaseTask = variant.install.project.tasks.create(
