@@ -3,7 +3,6 @@ package net.twisterrob.gradle.common
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
-import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -37,7 +36,7 @@ class AndroidVariantApplier(val project: Project) {
 		}
 	}
 
-	fun applyVariants(variantsClosure: Action<Variants>) {
+	fun applyVariants(variantsClosure: Action<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) Variants>) {
 		project.plugins.withId("com.android.application") {
 			val android = project.extensions.getByName<AppExtension>("android")
 			variantsClosure.execute(android.applicationVariants)

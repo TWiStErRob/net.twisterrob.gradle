@@ -2,8 +2,6 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.api.ApkVariant
-import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.androidTestVariantData
 import com.android.build.gradle.internal.api.unitTestVariantData
 import com.android.build.gradle.internal.api.variantData
@@ -62,7 +60,9 @@ class AndroidBuildPlugin : BasePlugin() {
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
 
 			with(defaultConfig) {
+				@Suppress("DEPRECATION" /* AGP 7.0 */)
 				minSdkVersion(VERSION_SDK_MINIMUM)
+				@Suppress("DEPRECATION" /* AGP 7.0 */)
 				targetSdkVersion(VERSION_SDK_TARGET)
 				vectorDrawables.useSupportLibrary = true
 			}
@@ -85,6 +85,7 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 
 			// configure files we don't need in APKs
+			@Suppress("DEPRECATION" /* AGP 7.0 */)
 			with(packagingOptions) {
 				// support-annotations-28.0.0.jar contains this file
 				// it's for Android Gradle Plugin at best, if at all used
@@ -139,7 +140,9 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 			project.plugins.withType<AppPlugin> {
 				if (twisterrob.addRunTasks) {
-					android.variants.all { variant -> createRunTask(variant as ApkVariant) }
+					android.variants.all { variant ->
+						createRunTask(variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant)
+					}
 				}
 			}
 		}
@@ -160,7 +163,7 @@ class AndroidBuildPlugin : BasePlugin() {
 
 	companion object {
 
-		private fun createRunTask(variant: ApkVariant) {
+		private fun createRunTask(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.ApkVariant) {
 			val install = variant.installProvider?.get()
 			if (install != null) {
 				val project = install.project
@@ -174,7 +177,7 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 		}
 
-		private fun fixVariantTaskGroups(variant: BaseVariant) {
+		private fun fixVariantTaskGroups(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {
 			fun BaseVariantData.fixTaskMetadata() {
 				taskContainerCompat.compileTask.configure { task ->
 					task.group = "Build"
@@ -190,7 +193,7 @@ class AndroidBuildPlugin : BasePlugin() {
 			variant.unitTestVariantData?.fixTaskMetadata()
 		}
 
-		private fun addPackageName(variant: BaseVariant) {
+		private fun addPackageName(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {
 			// Package name for use e.g. in preferences to launch intent from the right package or for content providers
 			variant.resValue("string", "app_package", variant.applicationId)
 		}

@@ -5,10 +5,6 @@ import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.impl.VariantOutputImpl
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.api.ApkVariant
-import com.android.build.gradle.api.ApkVariantOutput
-import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.internal.api.TestedVariant
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.common.AGPVersions
@@ -163,7 +159,7 @@ class AndroidVersionPlugin : BasePlugin() {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
 				project.androidComponents.onVariants {
 					if (version.renameAPK) {
-						renameAPK7(project, version, it as ApplicationVariant)
+						renameAPKPost7(project, version, it as ApplicationVariant)
 					}
 				}
 			}
@@ -171,7 +167,7 @@ class AndroidVersionPlugin : BasePlugin() {
 				project.beforeAndroidTasksCreated {
 					android.applicationVariants.all {
 						if (version.renameAPK) {
-							renameAPK(it, it)
+							renameAPKPre7(it, it)
 						}
 					}
 				}
@@ -201,22 +197,25 @@ class AndroidVersionPlugin : BasePlugin() {
 	 * @param variant the APK to rename
 	 * @param source the versioned APK
 	 */
-	private fun renameAPK(variant: ApkVariant, source: ApkVariant) {
+	private fun renameAPKPre7(
+		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant,
+		source: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
+	) {
 		// only called for applicationVariants and their testVariants so filter should be safe
-		variant.outputs.withType<ApkVariantOutput> {
+		variant.outputs.withType<@Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariantOutput> {
 			val artifactName = version.formatArtifactName(
 				project, variant.baseName, variant.applicationId, source.versionCode.toLong(), source.versionName
 			)
 			outputFileName = "${artifactName}.apk"
 		}
-		if (variant is TestedVariant) {
+		if (variant is @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.internal.api.TestedVariant) {
 			// TODO this is a Hail Mary trying to propagate version to androidTest APK, but has no effect.
 			// Maybe? https://github.com/android/gradle-recipes/blob/bd8336e32ae512c630911287ea29b45a6bacb73b/BuildSrc/setVersionsFromTask/buildSrc/src/main/kotlin/CustomPlugin.kt
 //			variant.testVariant?.outputs?.withType<ApkVariantOutput> {
 //				versionNameOverride = source.versionName
 //				versionCodeOverride = source.versionCode
 //			}
-			variant.testVariant?.run { renameAPK(this, source) }
+			variant.testVariant?.run { renameAPKPre7(this, source) }
 		}
 	}
 
@@ -247,7 +246,7 @@ fun DefaultConfig.version(configuration: Action<AndroidVersionExtension>) {
 }
 
 // STOPSHIP Note this has to be outside the class, otherwise Gradle reflection will fail on ComponentIdentity missing for AGP <7.
-private fun renameAPK7(project: Project, version: AndroidVersionExtension, variant: ApplicationVariant) {
+private fun renameAPKPost7(project: Project, version: AndroidVersionExtension, variant: ApplicationVariant) {
 	// Only called for applicationVariants and their testVariants so filter should be safe.
 	val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
 	val androidTestOutput = variant.androidTest?.let { androidTest ->

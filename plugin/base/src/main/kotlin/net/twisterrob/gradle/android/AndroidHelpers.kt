@@ -11,7 +11,6 @@ import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.TestExtension
 import com.android.build.gradle.TestPlugin
 import com.android.build.gradle.TestedExtension
-import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.scope.TaskContainer
 import com.android.build.gradle.internal.variant.BaseVariantData
@@ -60,7 +59,7 @@ fun PluginContainer.hasAndroid(): Boolean =
 fun PluginContainer.hasAndroidTest(): Boolean =
 	hasPlugin("com.android.test")
 
-val BaseExtension.variants: DomainObjectSet<out BaseVariant>
+val BaseExtension.variants: DomainObjectSet<out @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant>
 	get() =
 		when (this) {
 			is AppExtension -> applicationVariants

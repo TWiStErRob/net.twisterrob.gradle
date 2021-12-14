@@ -4,8 +4,6 @@ import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.impl.ApplicationVariantImpl
 import com.android.build.api.variant.impl.BuiltArtifactsImpl
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.api.ApkVariant
-import com.android.build.gradle.internal.api.TestedVariant
 import com.android.builder.model.BuildType
 import com.android.builder.model.ProductFlavor
 import net.twisterrob.gradle.base.BasePlugin
@@ -82,7 +80,7 @@ class AndroidReleasePlugin : BasePlugin() {
 			}
 		} else {
 			android.variants.matching { it.buildType.name == buildType.name }.all { variant ->
-				variant as ApkVariant
+				variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
 				val releaseVariantTask = registerReleaseTask(variant)
 				releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
 				variant.productFlavors.forEach { flavor ->
@@ -95,7 +93,9 @@ class AndroidReleasePlugin : BasePlugin() {
 		return releaseBuildTypeTask
 	}
 
-	private fun registerReleaseTask(variant: ApkVariant): TaskProvider<Zip> =
+	private fun registerReleaseTask(
+		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
+	): TaskProvider<Zip> =
 		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.description}"
@@ -107,7 +107,7 @@ class AndroidReleasePlugin : BasePlugin() {
 			}
 			archiveFileName.set(releaseZipFileName)
 
-			fun useOutput(variant: ApkVariant) {
+			fun useOutput(variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant) {
 				dependsOn(variant.assembleProvider)
 				from(variant.packageApplicationProvider.get().outputDirectory) {
 					it.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
@@ -115,7 +115,7 @@ class AndroidReleasePlugin : BasePlugin() {
 			}
 
 			useOutput(variant)
-			if (variant is TestedVariant) {
+			if (variant is @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.internal.api.TestedVariant) {
 				variant.testVariant?.let(::useOutput)
 			}
 			if (variant.buildType.isMinifyEnabled) {

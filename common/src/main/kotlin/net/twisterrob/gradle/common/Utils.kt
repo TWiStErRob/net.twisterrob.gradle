@@ -2,16 +2,15 @@
 
 package net.twisterrob.gradle.common
 
-import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.DomainObjectSet
-import org.gradle.api.Task
 import java.io.File
 import java.util.function.BinaryOperator
 import java.util.function.Function
 import java.util.stream.Collector
 import java.util.stream.Collectors
 
-typealias Variants = DomainObjectSet<out BaseVariant>
+@Suppress("DEPRECATION" /* AGP 7.0 */)
+typealias Variants = DomainObjectSet<out com.android.build.gradle.api.BaseVariant>
 
 fun safeAdd(a: Int?, b: Int?): Int? =
 	when {

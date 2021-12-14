@@ -3,7 +3,6 @@ package net.twisterrob.gradle.android
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
-import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.tasks.ProguardConfigurableTask
@@ -135,7 +134,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 		}
 
 	private fun <T : ProguardConfigurableTask> Project.findMinificationTaskFor(
-		variant: BaseVariant,
+		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
 		taskClass: Class<T>
 	): T? =
 		this
@@ -144,7 +143,11 @@ class AndroidMinificationPlugin : BasePlugin() {
 			.matching { it.variantName == variant.name }
 			.singleOrNull()
 
-	private fun createGenerateMinificationRulesTask(variant: BaseVariant, outputFile: File, isProguard: Boolean): TaskProvider<Task> =
+	private fun createGenerateMinificationRulesTask(
+		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
+		outputFile: File,
+		isProguard: Boolean
+	): TaskProvider<Task> =
 		project.tasks.register<Task>("generate${variant.name.capitalize()}MinificationRules") {
 			description = "Generates printConfiguration and dump options for ProGuard or R8"
 			val mappingFolder: Provider<File> = variant.mappingFileProvider.map { it.singleFile.parentFile }
