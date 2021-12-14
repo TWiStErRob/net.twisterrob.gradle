@@ -80,7 +80,7 @@ T : VerificationTask {
 	) : Action<T> {
 
 		override fun execute(task: T) {
-			val variantNames = variants.joinToString(", ", transform = BaseVariant::getName)
+			val variantNames = variants.joinToString(", ") { it.name }
 			task.description = "Run ${baseName} batched on variants: ${variantNames}"
 			task.checkTargetName = ALL_VARIANTS_NAME
 			configurator.setupConfigLocations(task)
