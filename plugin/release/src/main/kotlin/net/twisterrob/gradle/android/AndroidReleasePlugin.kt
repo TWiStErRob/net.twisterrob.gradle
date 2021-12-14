@@ -99,8 +99,8 @@ class AndroidReleasePlugin : BasePlugin() {
 		return releaseBuildTypeTask
 	}
 
-	private fun registerReleaseTask(variant: ApkVariant): TaskProvider<Zip> {
-		val releaseVariantTask = project.tasks.register<Zip>("release${variant.name.capitalize()}") {
+	private fun registerReleaseTask(variant: ApkVariant): TaskProvider<Zip> =
+		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.description}"
 			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
@@ -110,13 +110,17 @@ class AndroidReleasePlugin : BasePlugin() {
 				archiveFormat(project, "archive", applicationId, versionCode.toLong(), versionName) + ".zip"
 			}
 			archiveFileName.set(releaseZipFileName)
-			from(variant.packageApplicationProvider.get().outputDirectory) {
-				it.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
-			}
-			if (variant is TestedVariant && variant.testVariant != null) {
-				from(variant.testVariant.packageApplicationProvider.get().outputDirectory) {
+
+			fun useOutput(variant: ApkVariant) {
+				dependsOn(variant.assembleProvider)
+				from(variant.packageApplicationProvider.get().outputDirectory) {
 					it.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 				}
+			}
+
+			useOutput(variant)
+			if (variant is TestedVariant) {
+				variant.testVariant?.let(::useOutput)
 			}
 			if (variant.buildType.isMinifyEnabled) {
 				from(variant.mappingFileProvider.map { it.singleFile.parentFile }) {
@@ -139,20 +143,6 @@ class AndroidReleasePlugin : BasePlugin() {
 				)
 			}
 		}
-		releaseVariantTask.configure { it.dependsOn(variant.assembleProvider) }
-		if (variant is TestedVariant && variant.testVariant != null) {
-			releaseVariantTask.configure { it.dependsOn(variant.testVariant.assembleProvider) }
-		}
-		return releaseVariantTask
-		/*val task: AndroidReleaseTask = variant.install.project.tasks.create(
-			mapOf(
-				"name" to "release${variant.name.capitalize()}",
-				"type" to AndroidReleaserTask::class.java,
-				"dependsOn" to variant.assemble
-			)
-		)
-		task.variant = variant*/
-	}
 
 	private fun registerFlavorTask(flavor: ProductFlavor): TaskProvider<Task> {
 		val releaseFlavorTaskName = "release${flavor.name.capitalize()}"
