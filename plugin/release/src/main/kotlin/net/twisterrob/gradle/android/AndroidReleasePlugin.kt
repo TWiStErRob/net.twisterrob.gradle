@@ -11,8 +11,6 @@ import com.android.builder.model.ProductFlavor
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.kotlin.dsl.extensions
-import org.gradle.api.DomainObjectCollection
-import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
@@ -83,10 +81,8 @@ class AndroidReleasePlugin : BasePlugin() {
 				releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
 			}
 		} else {
-			@Suppress("UNCHECKED_CAST")
-			val variantsForBuildType: DomainObjectCollection<ApkVariant> =
-				android.variants.matching { it.buildType.name == buildType.name } as DomainObjectSet<ApkVariant>
-			variantsForBuildType.all { variant ->
+			android.variants.matching { it.buildType.name == buildType.name }.all { variant ->
+				variant as ApkVariant
 				val releaseVariantTask = registerReleaseTask(variant)
 				releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
 				variant.productFlavors.forEach { flavor ->
