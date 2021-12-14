@@ -189,7 +189,7 @@ class AndroidReleasePlugin : BasePlugin() {
 			}
 
 			variant.androidTest?.let { androidTest ->
-				from( androidTest.artifacts.get(SingleArtifact.APK)) { copy ->
+				from(androidTest.artifacts.get(SingleArtifact.APK)) { copy ->
 					copy.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 				}
 			}
