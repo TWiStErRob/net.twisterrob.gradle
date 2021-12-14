@@ -7,7 +7,7 @@ import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.ExtensionContainer
+import org.gradle.kotlin.dsl.getByName
 
 class AndroidVariantApplier(val project: Project) {
 
@@ -39,11 +39,11 @@ class AndroidVariantApplier(val project: Project) {
 
 	fun applyVariants(variantsClosure: Action<Variants>) {
 		project.plugins.withId("com.android.application") {
-			val android = project.extensions["android"] as AppExtension
+			val android = project.extensions.getByName<AppExtension>("android")
 			variantsClosure.execute(android.applicationVariants)
 		}
 		project.plugins.withId("com.android.library") {
-			val android = project.extensions["android"] as LibraryExtension
+			val android = project.extensions.getByName<LibraryExtension>("android")
 			variantsClosure.execute(android.libraryVariants)
 		}
 		project.plugins.withId("com.android.feature") {
@@ -52,15 +52,15 @@ class AndroidVariantApplier(val project: Project) {
 			//variantsClosure.execute(android.featureVariants)
 		}
 		project.plugins.withId("com.android.dynamic-feature") {
-			val android = project.extensions["android"] as AppExtension
+			val android = project.extensions.getByName<AppExtension>("android")
 			variantsClosure.execute(android.applicationVariants)
 		}
 		project.plugins.withId("com.android.test") {
-			val android = project.extensions["android"] as TestExtension
+			val android = project.extensions.getByName<TestExtension>("android")
 			variantsClosure.execute(android.applicationVariants)
 		}
 		project.plugins.withId("com.android.instantapp") {
-			//val android = project.extensions["android"] as InstantAppExtension
+			//val android = project.extensions.getByName<InstantAppExtension>("android")
 			// has no variants, but don't call back, because there's no way to tell if this happened
 			//variantsClosure.execute(new DefaultDomainObjectSet<>(BaseVariant))
 		}
@@ -89,6 +89,3 @@ class AndroidVariantApplier(val project: Project) {
 		}
 	}
 }
-
-private operator fun ExtensionContainer.get(name: String): Any =
-	getByName(name)
