@@ -121,6 +121,12 @@ open class AndroidVersionExtension {
 			val strippedBaseName = baseName.replace("${project.archivesBaseNameCompat}-", "")
 			"${applicationId}@${versionCode}-v${versionName}+${strippedBaseName}"
 		}
+
+	internal fun calculateVersionName(): String =
+		versionNameFormat.format(Locale.ROOT, major, minor, patch, build)
+
+	internal fun calculateVersionCode(): Int =
+		(((major * minorMagnitude + minor) * patchMagnitude + patch) * buildMagnitude + build)
 }
 
 class AndroidVersionPlugin : BasePlugin() {
@@ -184,8 +190,8 @@ class AndroidVersionPlugin : BasePlugin() {
 	 */
 	private fun autoVersion() {
 		if (version.autoVersion) {
-			android.defaultConfig.setVersionCode(calculateVersionCode())
-			android.defaultConfig.setVersionName(calculateVersionName(null))
+			android.defaultConfig.setVersionCode(version.calculateVersionCode())
+			android.defaultConfig.setVersionName(version.calculateVersionName())
 		}
 	}
 
@@ -213,30 +219,6 @@ class AndroidVersionPlugin : BasePlugin() {
 			variant.testVariant?.run { renameAPK(this, source) }
 		}
 	}
-
-	private fun calculateVersionName(variant: BaseVariant?): String {
-		val suffix =
-			if (variant != null)
-				@Suppress("DEPRECATION")
-				// It was changed from DefaultProductFlavor and deprecated in 4.0.0, keep it around until removal or relocation.
-				com.android.builder.core.AbstractProductFlavor.mergeVersionNameSuffix(
-					variant.buildType.versionNameSuffix,
-					variant.mergedFlavor.versionNameSuffix
-				)
-			else
-				""
-		val versionName = version.versionNameFormat.format(
-			Locale.ROOT,
-			version.major, version.minor, version.patch, version.build
-		)
-		return versionName + suffix
-	}
-
-	private fun calculateVersionCode(): Int =
-		(((version.major
-				* version.minorMagnitude + version.minor)
-				* version.patchMagnitude + version.patch)
-				* version.buildMagnitude + version.build)
 
 	private fun readVersionFromFile(file: File): Properties =
 		readVersion(file).apply {
