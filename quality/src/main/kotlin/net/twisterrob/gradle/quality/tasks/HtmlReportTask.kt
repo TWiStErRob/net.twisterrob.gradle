@@ -68,8 +68,9 @@ open class HtmlReportTask : ValidateViolationsTask() {
 			if (xslTemplateFile?.exists() == true) {
 				xslTemplateFile!!.copyTo(xslOutputFile, overwrite = true)
 			} else {
-				val builtIn =
-					this::class.java.getResourceAsStream("/violations.xsl")!!
+				val violationsTransformationResource = "/violations.xsl"
+				val builtIn = this::class.java.getResourceAsStream(violationsTransformationResource)
+					?: error("Cannot find ${violationsTransformationResource} to copy to ${xslOutputFile}.")
 				builtIn.use { input ->
 					xslOutputFile.outputStream().use { output ->
 						input.copyTo(output)

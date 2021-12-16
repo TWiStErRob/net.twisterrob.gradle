@@ -86,10 +86,10 @@ class AndroidMinificationPlugin : BasePlugin() {
 						&& myReleaseProguardRulesFile.lastModified() == builtDate.toEpochMilli()
 			}
 			doLast {
-				copy("android.pro", defaultAndroidRulesFile)
-				copy("twisterrob.pro", myProguardRulesFile)
-				copy("twisterrob-debug.pro", myDebugProguardRulesFile)
-				copy("twisterrob-release.pro", myReleaseProguardRulesFile)
+				copy("/android.pro", defaultAndroidRulesFile)
+				copy("/twisterrob.pro", myProguardRulesFile)
+				copy("/twisterrob-debug.pro", myDebugProguardRulesFile)
+				copy("/twisterrob-release.pro", myReleaseProguardRulesFile)
 			}
 		}
 
