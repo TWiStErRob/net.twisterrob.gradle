@@ -9,4 +9,7 @@ description = "Android Gradle Plugin Compatibility: Support classes for compatib
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
+
+	testImplementation(projects.test.internal)
+	testRuntimeOnly(libs.android.gradle)
 }
