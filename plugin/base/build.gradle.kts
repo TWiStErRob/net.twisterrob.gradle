@@ -23,6 +23,7 @@ dependencies {
 	api(projects.common)
 	compileOnly(libs.android.gradle)
 	compileOnly(libs.annotations.jetbrains)
+	implementation(projects.compat.agp)
 	implementation(projects.compat.agp40x)
 	implementation(projects.compat.agp41x)
 	implementation(projects.compat.agp42x)

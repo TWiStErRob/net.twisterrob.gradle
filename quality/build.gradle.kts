@@ -22,6 +22,8 @@ dependencies {
 	api(projects.checkstyle)
 	api(projects.pmd)
 
+	implementation(projects.compat.gradle)
+	implementation(projects.compat.agp)
 	implementation(projects.compat.agp42x)
 
 	compileOnly(libs.annotations.jetbrains)

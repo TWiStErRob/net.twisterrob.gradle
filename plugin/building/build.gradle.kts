@@ -11,6 +11,7 @@ description = "Build Convention Plugin: Gradle Plugin to handle conventional bui
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	api(projects.plugin.base)
+	implementation(projects.compat.agp)
 	implementation(projects.plugin.versioning) // TODO decouple
 	compileOnly(libs.android.gradle)
 	// Need com.android.xml.AndroidXPathFactory for AndroidInstallRunnerTask.Companion.getMainActivity$plugin.
