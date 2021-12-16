@@ -91,7 +91,6 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 		}
 
 		private fun Project.configureReportsPre7(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
-			//STOPSHIP remove this comment if all green AndroidVariantApplier(this).applyAfterPluginConfigured {
 			taskProvider.configure { finalizerTask ->
 				lintGlobalTasks.configureXmlReport()
 				lintGlobalTasks.collectXmlReport {
