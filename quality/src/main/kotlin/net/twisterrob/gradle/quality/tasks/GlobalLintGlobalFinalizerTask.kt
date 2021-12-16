@@ -7,6 +7,7 @@ import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
 import net.twisterrob.gradle.android.androidComponents
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.internal.lint.collectXmlReport
@@ -44,7 +45,10 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	@TaskAction
 	fun failOnFailures() {
 		val gatherer =
-			if (AGPVersions.CLASSPATH >= AGPVersions.v70x) LintReportGatherer() else LintGlobalReportGathererPre7()
+			if (AGPVersions.CLASSPATH >= AGPVersions.v70x)
+				LintReportGatherer()
+			else
+				LintGlobalReportGathererPre7(ALL_VARIANTS_NAME)
 		val violationsByFile = xmlReports
 			.map { it.get().asFile }
 			.filter(File::exists)

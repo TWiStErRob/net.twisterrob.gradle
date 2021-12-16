@@ -44,6 +44,7 @@ enum class Minification(
 			when {
 				AGPVersions.UNDER_TEST >= AGPVersions.v70x ->
 					// ProGuard support was deprecated in AGP 4.2 and removed in AGP 7.0.
+					// This also means that `android.enableR8` doesn't exist anymore.
 					listOf(R8, R8Full)
 				else ->
 					listOf(ProGuard, R8, R8Full)

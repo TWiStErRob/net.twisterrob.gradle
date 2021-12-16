@@ -2,17 +2,14 @@
 
 package net.twisterrob.gradle.common
 
-import org.gradle.api.DomainObjectSet
 import java.io.File
 import java.util.function.BinaryOperator
 import java.util.function.Function
 import java.util.stream.Collector
 import java.util.stream.Collectors
 
-@Suppress("DEPRECATION" /* AGP 7.0 */)
-typealias Variants = DomainObjectSet<out com.android.build.gradle.api.BaseVariant>
-
 fun safeAdd(a: Int?, b: Int?): Int? =
+	@Suppress("KotlinConstantConditions") // Make it clearly explicit, sadly this is an inspection not exhaustiveness.
 	when {
 		a != null && b != null -> a + b
 		a != null && b == null -> a

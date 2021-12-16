@@ -35,9 +35,9 @@ open class GlobalTestFinalizerTask : TestReport() {
 			gatherer.findViolations(File(it, ".."))
 		}
 		val errors = (violations.groupBy { it.severity })[SEVERITY.ERROR]
-		if (errors?.size ?: 0 > 0) {
+		if (errors.orEmpty().isNotEmpty()) {
 			val report = File(destinationDir, "index.html").toURI()
-			throw  GradleException("There were ${errors!!.size} failing tests. See the report at: ${report}")
+			throw GradleException("There were ${errors!!.size} failing tests. See the report at: ${report}")
 		}
 	}
 }

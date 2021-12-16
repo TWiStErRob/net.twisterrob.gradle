@@ -152,13 +152,15 @@ T : VerificationTask {
 			// include whatever needs to be included
 			@Suppress("DEPRECATION" /* AGP 7.0 */)
 			val java = com.android.build.gradle.api.SourceKind.JAVA
-			task.include(variants
-				.flatMap { it.getSourceFolders(java) }
-				.map { tree ->
-					// build relative path (e.g. src/main/java) and
-					// append a trailing "/" for include to treat it as recursive
-					projectPath.relativize(tree.dir.toPath()).toString() + File.separator
-				})
+			val javaFolders =
+				variants
+					.flatMap { it.getSourceFolders(java) }
+					.map { tree ->
+						// build relative path (e.g. src/main/java) and
+						// append a trailing "/" for include to treat it as recursive
+						projectPath.relativize(tree.dir.toPath()).toString() + File.separator
+					}
+			task.include(javaFolders)
 
 			variants.forEach { variant ->
 				// exclude generated code

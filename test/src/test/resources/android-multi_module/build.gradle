@@ -17,8 +17,8 @@ allprojects {
 			// AndroidBasePlugin is applied whenever the basics are ready.
 			android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
 		} else {
+			// Need to delay setting this, because AndroidBasePlugin is the first plugin to apply.
 			afterEvaluate {
-				// Need to delay setting this, because AndroidBasePlugin is the first plugin to apply.
 				android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
 			}
 		}

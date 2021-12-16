@@ -38,7 +38,7 @@ class PublishingPlugin : Plugin<Project> {
 			// TODO https://github.com/Kotlin/dokka/issues/1894
 			moduleName.set(this.project.base.archivesName)
 			dokkaSourceSets.configureEach {
-			 	reportUndocumented.set(false)
+				reportUndocumented.set(false)
 			}
 		}
 

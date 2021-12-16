@@ -57,7 +57,6 @@ android-gradle-v70x = { module = "com.android.tools.build:gradle", version = "7.
 android-lint-main = { module = "com.android.tools.lint:lint", version.ref = "lint" }
 android-lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "lint" }
 android-lint-gradle = { module = "com.android.tools.lint:lint-gradle", version.ref = "lint" }
-android-lint-gradleApi = { module = "com.android.tools.lint:lint-gradle-api", version.ref = "lint" }
 android-lint-checks = { module = "com.android.tools.lint:lint-checks", version.ref = "lint" }
 android-tools-ddmLib = { module = "com.android.tools.ddms:ddmlib", version.ref = "lint" }
 android-tools-common = { module = "com.android.tools:common", version.ref = "lint" }

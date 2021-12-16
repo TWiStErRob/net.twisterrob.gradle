@@ -4,39 +4,16 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
 import org.gradle.api.Action
-import org.gradle.api.Plugin
+import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByName
 
 class AndroidVariantApplier(val project: Project) {
 
-	fun applyAfterPluginConfigured(pluginClosure: Action<Plugin<Project>>) {
-		val callback = Action { plugin: Plugin<*> ->
-			@Suppress("UNCHECKED_CAST") // withId ensures we have BasePlugin, so let's smart cast for further usage
-			plugin as Plugin<Project>
-			if (project.state.executed) {
-				// if state is executed the project has been evaluated so everything is already configured
-				// This is required because project.afterEvaluate is not executing Closure after this is true:
-				// Notice how org.gradle.configuration.project.LifecycleProjectEvaluator.EvaluateProject.run
-				// only runs LifecycleProjectEvaluator.NotifyAfterEvaluate.run once.
-				pluginClosure.execute(plugin)
-			} else {
-				// afterEvaluate ensures that all tasks, variants, etc. are already configured
-				project.afterEvaluate { pluginClosure.execute(plugin) }
-			}
-		}
-		project.plugins.withId("com.android.application", callback)
-		project.plugins.withId("com.android.library", callback)
-		// These types of feature modules were deprecated and removed in AGP 4.x.
-		//project.plugins.withId("com.android.feature", callback)
-		project.plugins.withId("com.android.dynamic-feature", callback)
-		project.plugins.withId("com.android.test", callback)
-		if (AGPVersions.CLASSPATH < AGPVersions.v36x) {
-			project.plugins.withId("com.android.instantapp", callback)
-		}
-	}
-
-	fun applyVariants(variantsClosure: Action<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) Variants>) {
+	fun applyVariants(
+		@Suppress("DEPRECATION" /* AGP 7.0 */)
+		variantsClosure: Action<DomainObjectSet<out com.android.build.gradle.api.BaseVariant>>
+	) {
 		project.plugins.withId("com.android.application") {
 			val android = project.extensions.getByName<AppExtension>("android")
 			variantsClosure.execute(android.applicationVariants)
@@ -62,29 +39,6 @@ class AndroidVariantApplier(val project: Project) {
 			//val android = project.extensions.getByName<InstantAppExtension>("android")
 			// has no variants, but don't call back, because there's no way to tell if this happened
 			//variantsClosure.execute(new DefaultDomainObjectSet<>(BaseVariant))
-		}
-	}
-
-	@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-	fun applyRaw(closure: Action<Void>) {
-		project.plugins.withId("com.android.application") {
-			closure.execute(null)
-		}
-		project.plugins.withId("com.android.library") {
-			closure.execute(null)
-		}
-		project.plugins.withId("com.android.feature") {
-			// These types of feature modules were deprecated and removed in AGP 4.x.
-			//closure.execute(null)
-		}
-		project.plugins.withId("com.android.dynamic-feature") {
-			closure.execute(null)
-		}
-		project.plugins.withId("com.android.test") {
-			closure.execute(null)
-		}
-		project.plugins.withId("com.android.instantapp") {
-			//closure.execute(null)
 		}
 	}
 }

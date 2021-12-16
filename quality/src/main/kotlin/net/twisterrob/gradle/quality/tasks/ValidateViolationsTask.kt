@@ -2,6 +2,7 @@ package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.checkstyle.CheckStyleTask
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.common.nullSafeSum
 import net.twisterrob.gradle.pmd.PmdTask
@@ -42,7 +43,7 @@ open class ValidateViolationsTask : DefaultTask() {
 				else ->
 					listOf(
 						LintVariantReportGathererPre7(),
-						LintGlobalReportGathererPre7(),
+						LintGlobalReportGathererPre7(ALL_VARIANTS_NAME),
 					)
 			}
 			return@run (gradleGatherers + agpGatherers) as List<TaskReportGatherer<Task>>

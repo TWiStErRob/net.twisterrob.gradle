@@ -13,6 +13,12 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.File
 
+/**
+ * Duplicated to verify contents, but extracted to explain constant.
+ * @see ALL_VARIANTS_NAME
+ */
+private const val ALL = "*"
+
 @Suppress("UnnecessaryVariable")
 class ViolationsDeduplicatorKtTest {
 	private val fixtRoot = ProjectBuilder.builder().build()
@@ -30,7 +36,7 @@ class ViolationsDeduplicatorKtTest {
 			violations(fixtRoot, "release", "lint"),
 			violations(fixtModule, "debug", "lint"),
 			violations(fixtModule, "release", "lint"),
-			violations(fixtModule, "*", "checkstyle", fixture.build()),
+			violations(fixtModule, ALL, "checkstyle", fixture.build()),
 			violations(fixtModule, "debug", "checkstyle"),
 			violations(fixtModule, "release", "checkstyle"),
 		)
@@ -45,7 +51,7 @@ class ViolationsDeduplicatorKtTest {
 		val input = listOf(
 			violations(fixtRoot, "debug", "lint"),
 			violations(fixtRoot, "release", "lint"),
-			violations(fixtRoot, "*", "checkstyle", fixture.build()),
+			violations(fixtRoot, ALL, "checkstyle", fixture.build()),
 			violations(fixtRoot, "debug", "checkstyle"),
 			violations(fixtRoot, "release", "checkstyle"),
 		)
@@ -59,13 +65,13 @@ class ViolationsDeduplicatorKtTest {
 	@Test fun `AGP4 lint vs checkstyle in module`() {
 		val fixtModule = ProjectBuilder.builder().withName("module").withParent(fixtRoot).build()
 		val input = listOf(
-			violations(fixtRoot, "*", "lint"),
+			violations(fixtRoot, ALL, "lint"),
 			violations(fixtRoot, "debug", "lint"),
 			violations(fixtRoot, "release", "lint"),
-			violations(fixtModule, "*", "lint"),
+			violations(fixtModule, ALL, "lint"),
 			violations(fixtModule, "debug", "lint"),
 			violations(fixtModule, "release", "lint"),
-			violations(fixtModule, "*", "checkstyle", fixture.build()),
+			violations(fixtModule, ALL, "checkstyle", fixture.build()),
 			violations(fixtModule, "debug", "checkstyle"),
 			violations(fixtModule, "release", "checkstyle"),
 		)
@@ -78,10 +84,10 @@ class ViolationsDeduplicatorKtTest {
 
 	@Test fun `AGP4 lint vs checkstyle in root`() {
 		val input = listOf(
-			violations(fixtRoot, "*", "lint"),
+			violations(fixtRoot, ALL, "lint"),
 			violations(fixtRoot, "debug", "lint"),
 			violations(fixtRoot, "release", "lint"),
-			violations(fixtRoot, "*", "checkstyle", fixture.build()),
+			violations(fixtRoot, ALL, "checkstyle", fixture.build()),
 			violations(fixtRoot, "debug", "checkstyle"),
 			violations(fixtRoot, "release", "checkstyle"),
 		)
@@ -98,13 +104,13 @@ class ViolationsDeduplicatorKtTest {
 	@Test fun `AGP4 duplicate lint`() {
 		val violationToMerge: Violation = fixture.build()
 		val results = listOf(
-			violations(fixtRoot, "*", "lint", violationToMerge),
+			violations(fixtRoot, ALL, "lint", violationToMerge),
 			violations(fixtRoot, "debug", "lintVariant", violationToMerge),
 			violations(fixtRoot, "release", "lintVariant", violationToMerge),
 			violations(fixtRoot, "release", "lintVariant", violationToMerge),
 		)
 		val expected = listOf(
-			violations(fixtRoot, "*", "lint", violationToMerge),
+			violations(fixtRoot, ALL, "lint", violationToMerge),
 			violations(fixtRoot, "debug", "lintVariant").noViolations(),
 			violations(fixtRoot, "release", "lintVariant").noViolations(),
 			violations(fixtRoot, "release", "lintVariant").noViolations(),
@@ -122,7 +128,7 @@ class ViolationsDeduplicatorKtTest {
 			violations(fixtRoot, "release", "lint", violationToMerge.copy()),
 		)
 		val expected = listOf(
-			violations(fixtRoot, "*", "lint", violationToMerge).unknownReports(),
+			violations(fixtRoot, ALL, "lint", violationToMerge).unknownReports(),
 			violations(fixtRoot, "debug", "lint").noViolations(),
 			violations(fixtRoot, "release", "lint").noViolations(),
 		)
@@ -135,12 +141,12 @@ class ViolationsDeduplicatorKtTest {
 	@Test fun `duplicate with 'all' present but no violations`() {
 		val violationToMerge: Violation = fixture.build()
 		val results = listOf(
-			violations(fixtRoot, "*", "lint"),
+			violations(fixtRoot, ALL, "lint"),
 			violations(fixtRoot, "debug", "lint", violationToMerge),
 			violations(fixtRoot, "release", "lint", violationToMerge.copy()),
 		)
 		val expected = listOf(
-			violations(fixtRoot, "*", "lint", violationToMerge),
+			violations(fixtRoot, ALL, "lint", violationToMerge),
 			violations(fixtRoot, "debug", "lint").noViolations(),
 			violations(fixtRoot, "release", "lint").noViolations(),
 		)
@@ -155,12 +161,12 @@ class ViolationsDeduplicatorKtTest {
 		val violationToKeep1: Violation = fixture.build()
 		val violationToKeep2: Violation = fixture.build()
 		val results = listOf(
-			violations(fixtRoot, "*", "lint", violationToKeep1, violationToKeep2),
+			violations(fixtRoot, ALL, "lint", violationToKeep1, violationToKeep2),
 			violations(fixtRoot, "debug", "lint", violationToMerge),
 			violations(fixtRoot, "release", "lint", violationToMerge.copy()),
 		)
 		val expected = listOf(
-			violations(fixtRoot, "*", "lint", violationToKeep1, violationToKeep2, violationToMerge),
+			violations(fixtRoot, ALL, "lint", violationToKeep1, violationToKeep2, violationToMerge),
 			violations(fixtRoot, "debug", "lint").noViolations(),
 			violations(fixtRoot, "release", "lint").noViolations(),
 		)
@@ -183,7 +189,7 @@ class ViolationsDeduplicatorKtTest {
 			violations(fixtRoot, "release", "checkstyle", violationUnrelated2),
 		)
 		val expected = listOf(
-			violations(fixtRoot, "*", "lint", violationToMerge).unknownReports(),
+			violations(fixtRoot, ALL, "lint", violationToMerge).unknownReports(),
 			violations(fixtRoot, "debug", "lint", violationToKeep1),
 			violations(fixtRoot, "release", "lint", violationToKeep2),
 			violations(fixtRoot, "debug", "checkstyle", violationUnrelated1),
@@ -202,7 +208,7 @@ class ViolationsDeduplicatorKtTest {
 			violations(fixtRoot, "release", "lint", toMerge.copy(), toMerge.copy(), toMerge.copy()),
 		)
 		val expected = listOf(
-			violations(fixtRoot, "*", "lint", toMerge).unknownReports(),
+			violations(fixtRoot, ALL, "lint", toMerge).unknownReports(),
 			violations(fixtRoot, "debug", "lint").noViolations(),
 			violations(fixtRoot, "release", "lint").noViolations(),
 		)
@@ -217,14 +223,14 @@ class ViolationsDeduplicatorKtTest {
 		val violationToMerge: Violation = fixture.build()
 		val violationUnrelated: Violation = fixture.build()
 		val results = listOf(
-			violations(fixtRoot, "*", "lint", violationInAll),
+			violations(fixtRoot, ALL, "lint", violationInAll),
 			violations(fixtRoot, "debug", "lint", violationToMerge),
 			violations(fixtRoot, "release", "lint", violationToMerge.copy()),
 			violations(fixtRoot, "debug", "checkstyle", violationUnrelated),
 			violations(fixtRoot, "release", "checkstyle"),
 		)
 		val expected = listOf(
-			violations(fixtRoot, "*", "lint", violationInAll, violationToMerge),
+			violations(fixtRoot, ALL, "lint", violationInAll, violationToMerge),
 			violations(fixtRoot, "debug", "lint").noViolations(),
 			violations(fixtRoot, "release", "lint").noViolations(),
 			violations(fixtRoot, "debug", "checkstyle", violationUnrelated),
@@ -248,10 +254,10 @@ class ViolationsDeduplicatorKtTest {
 			violations(fixtModule, "release", "lint", violationModuleOnly),
 		)
 		val expected = listOf(
-			violations(fixtRoot, "*", "lint", violationRootOnly).unknownReports(),
+			violations(fixtRoot, ALL, "lint", violationRootOnly).unknownReports(),
 			violations(fixtRoot, "debug", "lint").noViolations(),
 			violations(fixtRoot, "release", "lint", violation),
-			violations(fixtModule, "*", "lint", violationModuleOnly).unknownReports(),
+			violations(fixtModule, ALL, "lint", violationModuleOnly).unknownReports(),
 			violations(fixtModule, "debug", "lint", violation),
 			violations(fixtModule, "release", "lint").noViolations(),
 		)
@@ -267,13 +273,13 @@ class ViolationsDeduplicatorKtTest {
 	@Test fun `deduplicate duplicate variants`() {
 		val violationToMerge: Violation = fixture.build()
 		val results = listOf(
-			violations(fixtRoot, "*", "lint", violationToMerge),
+			violations(fixtRoot, ALL, "lint", violationToMerge),
 			violations(fixtRoot, "debug", "lint", violationToMerge),
 			violations(fixtRoot, "release", "lint", violationToMerge),
 			violations(fixtRoot, "release", "lint", violationToMerge),
 		)
 		val expected = listOf(
-			violations(fixtRoot, "*", "lint", violationToMerge),
+			violations(fixtRoot, ALL, "lint", violationToMerge),
 			violations(fixtRoot, "debug", "lint").noViolations(),
 			violations(fixtRoot, "release", "lint").noViolations(),
 			violations(fixtRoot, "release", "lint").noViolations(),
@@ -301,7 +307,7 @@ private fun violations(
 	type: String,
 	vararg violations: Violation
 ): Violations {
-	val suffix = if (variant == ALL_VARIANTS_NAME) "" else "-$variant"
+	val suffix = if (variant == ALL) "" else "-$variant"
 	return Violations(
 		module = project.path,
 		parser = type,

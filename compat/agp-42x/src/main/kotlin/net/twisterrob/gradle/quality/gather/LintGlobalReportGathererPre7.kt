@@ -8,6 +8,7 @@ import se.bjurr.violations.lib.reports.Parser
 import java.io.File
 
 class LintGlobalReportGathererPre7(
+	private val name: String
 ) : TaskReportGatherer<LintGlobalTask>("lint", LintGlobalTask::class.java) {
 
 	override fun getParsableReportLocation(task: LintGlobalTask): File =
@@ -17,7 +18,7 @@ class LintGlobalReportGathererPre7(
 		task.htmlOutput
 
 	override fun getName(task: LintGlobalTask): String =
-		"*" /*ALL_VARIANTS_NAME*/
+		name
 
 	override fun findViolations(report: File): List<Violation> =
 		Parser.ANDROIDLINT.findViolations(listOf(report))
