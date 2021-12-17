@@ -124,3 +124,6 @@ fun tasksIn(modules: Array<String>, vararg taskNames: String): Array<String> =
 			}
 		}
 		.toTypedArray()
+
+inline operator fun <reified T> Array<T>.minus(others: Array<T>): Array<T> =
+	(this.toList() - @Suppress("ConvertArgumentToSet") others).toTypedArray()

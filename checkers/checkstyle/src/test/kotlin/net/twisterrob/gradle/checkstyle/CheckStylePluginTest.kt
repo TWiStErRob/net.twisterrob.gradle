@@ -9,6 +9,7 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
+import net.twisterrob.gradle.test.minus
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import net.twisterrob.gradle.test.tasksIn
@@ -333,6 +334,3 @@ class CheckStylePluginTest : BaseIntgTest() {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":checkstyleDebug")!!.outcome)
 	}
 }
-
-private inline operator fun <reified T> Array<T>.minus(others: Array<T>): Array<T> =
-	(this.toList() - others).toTypedArray()
