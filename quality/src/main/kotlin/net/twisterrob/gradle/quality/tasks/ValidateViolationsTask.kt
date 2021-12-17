@@ -93,7 +93,7 @@ open class ValidateViolationsTask : DefaultTask() {
 			GATHERERS.flatMap { gatherer ->
 				gatherer.allTasksFrom(subproject).map { task ->
 					return@map Violations(
-						parser = gatherer.displayName,
+						parser = gatherer.getDisplayName(task),
 						module = subproject.path,
 						variant = gatherer.getName(task),
 						result = gatherer.getParsableReportLocation(task),
@@ -139,7 +139,7 @@ open class ValidateViolationsTask : DefaultTask() {
 									column = it.column
 								),
 								source = Violation.Source(
-									gatherer = gatherer.displayName,
+									gatherer = gatherer.getDisplayName(task),
 									parser = it.parser.name,
 									reporter = it.reporter,
 									source = it.source,

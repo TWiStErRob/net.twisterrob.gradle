@@ -29,7 +29,7 @@ open class GlobalTestFinalizerTask : TestReport() {
 	@Suppress("unused")
 	@TaskAction
 	fun failOnFailures() {
-		val gatherer = TestReportGatherer("test", Test::class.java)
+		val gatherer = TestReportGatherer(Test::class.java)
 		val violations = testResultDirs.files.flatMap {
 			// reportOn above added the binary folder, so the XMLs are one up
 			gatherer.findViolations(File(it, ".."))

@@ -7,7 +7,6 @@ import se.bjurr.violations.lib.model.Violation
 import java.io.File
 
 abstract class TaskReportGatherer<T>(
-	val displayName: String,
 	private val taskType: Class<T>
 ) where T : Task {
 
@@ -16,6 +15,8 @@ abstract class TaskReportGatherer<T>(
 	abstract fun getHumanReportLocation(task: T): File
 
 	abstract fun getName(task: T): String
+
+	abstract fun getDisplayName(task: T): String
 
 	fun getViolations(task: T): List<Violation>? {
 		val report = getParsableReportLocation(task)

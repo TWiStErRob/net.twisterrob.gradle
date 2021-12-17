@@ -9,7 +9,7 @@ import java.io.File
 
 class LintGlobalReportGathererPre7(
 	private val name: String
-) : TaskReportGatherer<LintGlobalTask>("lint", LintGlobalTask::class.java) {
+) : TaskReportGatherer<LintGlobalTask>(LintGlobalTask::class.java) {
 
 	override fun getParsableReportLocation(task: LintGlobalTask): File =
 		task.xmlOutput
@@ -19,6 +19,9 @@ class LintGlobalReportGathererPre7(
 
 	override fun getName(task: LintGlobalTask): String =
 		name
+
+	override fun getDisplayName(task: LintGlobalTask): String =
+		"lint"
 
 	override fun findViolations(report: File): List<Violation> =
 		Parser.ANDROIDLINT.findViolations(listOf(report))
