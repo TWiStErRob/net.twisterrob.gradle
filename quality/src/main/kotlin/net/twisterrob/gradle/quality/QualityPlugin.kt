@@ -3,7 +3,9 @@ package net.twisterrob.gradle.quality
 import net.twisterrob.gradle.checkstyle.CheckStylePlugin
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.BaseExposedPlugin
+import net.twisterrob.gradle.common.registerTask
 import net.twisterrob.gradle.pmd.PmdPlugin
+import net.twisterrob.gradle.quality.tasks.GlobalTestFinalizerTask
 import net.twisterrob.gradle.quality.tasks.HtmlReportTask
 import net.twisterrob.gradle.quality.tasks.ValidateViolationsTask
 import org.gradle.api.Project
@@ -27,6 +29,7 @@ class QualityPlugin : BaseExposedPlugin() {
 			if (AGPVersions.isAvailable) {
 				project.plugins.apply(LintPlugin::class.java)
 			}
+			project.registerTask("testReport", GlobalTestFinalizerTask.Creator())
 		}
 	}
 

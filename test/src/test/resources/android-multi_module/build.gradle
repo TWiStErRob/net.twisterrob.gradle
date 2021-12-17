@@ -1,7 +1,7 @@
 buildscript {
 	repositories {
-		mavenCentral()
 		google()
+		mavenCentral()
 	}
 	dependencies {
 		classpath 'com.android.tools.build:gradle:@net.twisterrob.test.android.pluginVersion@'
@@ -10,7 +10,11 @@ buildscript {
 
 allprojects {
 	repositories {
-		mavenCentral() // quality plugin needs to be downloaded in test
+		// Needed for com.android.tools.lint:lint-gradle resolution.
+		// Needed for com.android.tools.build:aapt2 resolution on AGP 3.x.
+		google()
+		// Needed for lint dependencies.
+		mavenCentral()
 	}
 	plugins.withType(com.android.build.gradle.api.AndroidBasePlugin) {
 		if ("@net.twisterrob.test.android.pluginVersion@" >= "7.0.0") {

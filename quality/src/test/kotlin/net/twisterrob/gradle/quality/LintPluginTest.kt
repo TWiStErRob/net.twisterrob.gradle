@@ -69,7 +69,6 @@ class LintPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			apply plugin: ${LintPlugin::class.qualifiedName}
 		""".trimIndent()
 
@@ -94,7 +93,6 @@ class LintPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			apply plugin: ${LintPlugin::class.qualifiedName}
 		""".trimIndent()
 
@@ -118,7 +116,6 @@ class LintPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			apply plugin: ${LintPlugin::class.qualifiedName}
 		""".trimIndent()
 
@@ -143,7 +140,6 @@ class LintPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			apply plugin: 'net.twisterrob.quality'
 		""".trimIndent()
 
@@ -255,7 +251,6 @@ class LintPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		var script = """
-			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			apply plugin: ${LintPlugin::class.qualifiedName}
 		""".trimIndent()
 
@@ -282,7 +277,6 @@ class LintPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			subprojects { repositories { google() } } // Needed for com.android.tools.lint:lint-gradle resolution.
 			apply plugin: ${LintPlugin::class.qualifiedName}
 		""".trimIndent()
 

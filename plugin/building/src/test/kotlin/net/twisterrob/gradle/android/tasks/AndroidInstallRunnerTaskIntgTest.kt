@@ -59,7 +59,6 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
-			//android.twisterrob.addRunTasks = true // default
 			afterEvaluate {
 				// Don't always try to install the APK, as we may have no emulator,
 				// but still assemble the APK, as the run task needs AndroidManifest.xml.
@@ -85,31 +84,5 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 			// The line is output to stderr, so no control over being on a new line after capturing Gradle output.
 			result.assertHasOutputLine(""".*adb(\.exe)?: no devices/emulators found.*""".toRegex())
 		}
-	}
-
-	@Test fun `don't add run tasks (debug)`() {
-		@Language("gradle")
-		val script = """
-			apply plugin: 'net.twisterrob.android-app'
-			android.twisterrob.addRunTasks = false
-		""".trimIndent()
-
-		val result = gradle.run(script, "runDebug").buildAndFail()
-
-		result.assertNoTask(":runDebug")
-		result.assertHasOutputLine("""Task 'runDebug' not found in root project '.*?'\..*""".toRegex())
-	}
-
-	@Test fun `don't add run tasks (release)`() {
-		@Language("gradle")
-		val script = """
-			apply plugin: 'net.twisterrob.android-app'
-			android.twisterrob.addRunTasks = false
-		""".trimIndent()
-
-		val result = gradle.run(script, "runRelease").buildAndFail()
-
-		result.assertNoTask(":runRelease")
-		result.assertHasOutputLine("""Task 'runRelease' not found in root project '.*?'\..*""".toRegex())
 	}
 }

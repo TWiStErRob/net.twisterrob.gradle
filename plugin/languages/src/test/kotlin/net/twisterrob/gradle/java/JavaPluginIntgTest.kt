@@ -172,7 +172,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 			dependencies {
 				testImplementation "junit:junit:4.13.1"
 			}
-			tasks.withType(Test) {
+			tasks.withType(Test).configureEach {
 				//noinspection UnnecessaryQualifiedReference
 				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
 			}

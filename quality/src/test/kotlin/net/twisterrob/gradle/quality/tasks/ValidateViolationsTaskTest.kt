@@ -104,7 +104,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 				apply plugin: 'com.android.library'
 				apply plugin: 'net.twisterrob.checkstyle'
 			}
-			task('printViolationCounts', type: ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCounts', ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {

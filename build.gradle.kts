@@ -22,8 +22,8 @@ subprojects {
 	apply { plugin("kotlin") }
 
 	repositories {
-		mavenCentral()
 		google()
+		mavenCentral()
 		// for Kotlin-DSL
 		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
 	}

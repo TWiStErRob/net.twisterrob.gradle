@@ -109,3 +109,21 @@ inline fun Statement(crossinline block: () -> Unit): Statement =
 			block()
 		}
 	}
+
+/**
+ * See unit tests for examples.
+ */
+fun tasksIn(modules: Array<String>, vararg taskNames: String): Array<String> =
+	modules
+		.flatMap { moduleName ->
+			require(moduleName != "") { "Invalid module" }
+			val separator = if (moduleName == ":") "" else ":"
+			taskNames.map { taskName ->
+				require(taskName != "") { "Invalid task" }
+				"${moduleName}${separator}${taskName}"
+			}
+		}
+		.toTypedArray()
+
+inline operator fun <reified T> Array<T>.minus(others: Array<T>): Array<T> =
+	(this.toList() - @Suppress("ConvertArgumentToSet") others).toTypedArray()
