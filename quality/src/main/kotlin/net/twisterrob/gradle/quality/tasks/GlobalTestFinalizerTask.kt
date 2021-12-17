@@ -54,13 +54,16 @@ open class GlobalTestFinalizerTask : TestReport() {
 					// Let the tests/build finish, to get a final "all" report.
 					it.ignoreFailures = !it.wasLaunchedOnly
 				}
-			// Detach the result directories, simply using reportOn(tests) or the providers, task dependencies will be created.
+			// Detach the result directories to prevent creation on dependsOn relationships.
+			// When simply using reportOn(tests) or reportOn(tasks.map { it.binaryResultDirectory }) task dependencies would be created.
 			task.reportOn(tests.map {
 				if (GradleVersion.current().baseVersion < GradleVersion.version("5.6")) {
-					@Suppress("DEPRECATION")
+					@Suppress("DEPRECATION" /* Gradle 7, to be removed in Gradle 8 */)
 					it.binResultsDir
 				} else {
-					it.binaryResultsDirectory
+					// Need to create an indirection with a provider to keep it lazy,
+					// but also detach from the DirectoryProperty, which references its owning task.
+					task.project.provider { it.binaryResultsDirectory.get() }
 				}
 			})
 			// Force executing tests (if they're in the task graph), before reporting on them.
