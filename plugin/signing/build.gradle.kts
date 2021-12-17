@@ -16,6 +16,7 @@ dependencies {
 	runtimeOnly(projects.plugin)
 
 	testImplementation(projects.test.internal)
+	testImplementation(projects.compat.agp)
 	testImplementation(testFixtures(projects.plugin.base))
 }
 

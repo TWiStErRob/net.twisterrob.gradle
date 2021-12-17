@@ -31,6 +31,7 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 
+	testFixturesImplementation(projects.compat.agp)
 	testFixturesImplementation(projects.test.internal)
 	testFixturesCompileOnly(projects.test)
 	testFixturesApi(libs.dexMemberList)

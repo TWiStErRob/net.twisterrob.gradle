@@ -20,6 +20,8 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
+
+	testFixturesImplementation(projects.compat.agp)
 }
 
 disableGradlePluginValidation()

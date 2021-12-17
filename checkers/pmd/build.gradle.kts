@@ -23,6 +23,7 @@ dependencies {
 	compileOnly(libs.android.gradle)
 
 	testImplementation(projects.test.internal)
+	testImplementation(projects.compat.agp)
 
 	testFixturesImplementation(projects.test.internal)
 }
