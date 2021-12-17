@@ -7,6 +7,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
@@ -44,7 +45,15 @@ class PublishingPlugin : Plugin<Project> {
 
 		val sourcesJar = project.tasks.register<Jar>("sourcesJar") {
 			archiveClassifier.set("sources")
-			from(project.java.sourceSets["main"].kotlin.sourceDirectories)
+			fun sourcesFrom(sourceSet: SourceSet) {
+				from(sourceSet.java.sourceDirectories)
+				from(sourceSet.kotlin.sourceDirectories)
+				from(sourceSet.resources.sourceDirectories)
+			}
+			sourcesFrom(project.java.sourceSets["main"])
+			if ("testFixtures" in project.java.sourceSets.names) {
+				sourcesFrom(project.java.sourceSets["testFixtures"])
+			}
 		}
 		project.artifacts.add("archives", sourcesJar)
 
