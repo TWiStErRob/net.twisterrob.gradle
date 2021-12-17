@@ -17,6 +17,7 @@ import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.containsStringIgnoringCase
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
@@ -119,7 +120,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "checkstyleEach", "checkstyleRelease", "checkstyleDebug") - exceptions
-		assertThat(allTasks - tasks, not(hasItem(containsString("checkstyle"))))
+		assertThat(allTasks - tasks, not(hasItem(containsStringIgnoringCase("checkstyle"))))
 	}
 
 	@Test fun `applies to subprojects from root`() {
@@ -173,7 +174,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "checkstyleEach", "checkstyleRelease", "checkstyleDebug")
-		assertThat(allTasks - tasks, not(hasItem(containsString("checkstyle"))))
+		assertThat(allTasks - tasks, not(hasItem(containsStringIgnoringCase("checkstyle"))))
 	}
 
 	@Test fun `applies to individual subprojects`() {
@@ -219,7 +220,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(applyTo, "checkstyleEach", "checkstyleRelease", "checkstyleDebug")
-		assertThat(allTasks - tasks, not(hasItem(containsString("checkstyle"))))
+		assertThat(allTasks - tasks, not(hasItem(containsStringIgnoringCase("checkstyle"))))
 
 		assertThat(
 			result.taskPaths(TaskOutcome.NO_SOURCE),
