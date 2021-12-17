@@ -2,7 +2,9 @@ package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertNoTask
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
@@ -186,6 +188,34 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":releaseDebug")
 		assertReleaseArchive(result, minification)
 		assertDebugArchive(result)
+	}
+
+	@Test fun `test app fails to release when already exists (debug) and (release)`() {
+		gradle.root.resolve("gradle.properties").appendText(Minification.R8.gradleProperties)
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
+			afterEvaluate {
+				tasks.named("releaseRelease", Zip) { destinationDirectory.set(file('releases/release')) }
+				tasks.named("releaseDebug", Zip) { destinationDirectory.set(file('releases/debug')) }
+			}
+		""".trimIndent()
+
+		val setup = gradle.run(script, "release").build()
+		setup.assertSuccess(":releaseRelease")
+		setup.assertSuccess(":releaseDebug")
+
+		// Make a change to force non-up-to-date packageRelease.
+		gradle.root.resolve("gradle.properties").appendText("\n")
+		gradle.root.resolve("gradle.properties").appendText(Minification.R8Full.gradleProperties)
+
+		val result = gradle.run(null, "releaseRelease").buildAndFail()
+		result.assertFailed(":releaseRelease")
+		result.assertHasOutputLine(Regex(""".*Target zip file already exists\..*"""))
+		result.assertHasOutputLine(Regex(""".*Release archive:.*\+archive\.zip"""))
+		result.assertNoOutputLine(Regex(""".*Published release artifacts.*"""))
 	}
 
 	private inline fun assertArchive(archive: File, crossinline assertions: (File) -> Unit) {

@@ -12,13 +12,13 @@ import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
-import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 import java.io.File
+import java.io.IOException
 import java.util.zip.ZipFile
 
 private val defaultReleaseDir: File
@@ -127,7 +127,7 @@ class AndroidReleasePlugin : BasePlugin() {
 			doFirst {
 				val outFile = outputs.files.singleFile
 				if (outFile.exists()) {
-					throw StopExecutionException("Target zip file already exists, did you run 'svn update'?\nRelease archive: ${outFile}")
+					throw IOException("Target zip file already exists, did you run 'svn update'?\nRelease archive: ${outFile}")
 				}
 			}
 			doLast {
@@ -197,7 +197,7 @@ class AndroidReleasePlugin : BasePlugin() {
 			doFirst {
 				val outFile = outputs.files.singleFile
 				if (outFile.exists()) {
-					throw StopExecutionException("Target zip file already exists.\nRelease archive: ${outFile}")
+					throw IOException("Target zip file already exists.\nRelease archive: ${outFile}")
 				}
 			}
 
