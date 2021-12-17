@@ -24,8 +24,6 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 	companion object {
 
-		private val endl = System.lineSeparator()
-
 		@Suppress("")
 		@Language("java")
 		private val testFile: String = """
