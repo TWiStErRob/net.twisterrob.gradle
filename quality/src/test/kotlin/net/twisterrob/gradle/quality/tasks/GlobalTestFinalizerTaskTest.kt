@@ -18,26 +18,39 @@ import kotlin.test.assertEquals
 @ExtendWith(GradleRunnerRuleExtension::class)
 class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
-	override lateinit var gradle: GradleRunnerRule
+	companion object {
 
-	@Test fun `gathers results from root app`() {
+		private val endl = System.lineSeparator()
+
+		@Suppress("")
 		@Language("java")
-		val testFile = """
+		private val testFile: String = """
 			import org.junit.*;
-
-			@SuppressWarnings({"NewMethodNamingConvention", "ConstantConditions"})
+			
+			@SuppressWarnings({
+				"NewClassNamingConvention", "NewMethodNamingConvention",
+				"ConstantConditions", "JUnitTestMethodInProductSource",
+			})
 			public class Tests {
 				@Test public void success1() {}
 				@Test public void success2() {}
 				@Test public void success3() {}
-
+			
 				@Test(expected = RuntimeException.class) public void fail1() {}
 				@Test public void fail2() { Assert.fail("failure message"); }
-
+			
+				@SuppressWarnings("ResultOfMethodCallIgnored")
+				@Test public void error() { ((String) null).isEmpty(); }
+			
 				@Test @Ignore public void ignored1() { Assert.fail("should not be executed"); }
 				@Test public void ignored2() { Assume.assumeTrue(false); }
 			}
 		""".trimIndent()
+	}
+
+	override lateinit var gradle: GradleRunnerRule
+
+	@Test fun `gathers results from root app`() {
 		gradle.file(testFile, "src", "test", "java", "Tests.java")
 
 		@Language("gradle")
@@ -55,6 +68,6 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
 		assertEquals(TaskOutcome.FAILED, result.task(":testReport")!!.outcome)
-		result.assertHasOutputLine(Regex("""> There were ${2 + 2} failing tests. See the report at: .*"""))
+		result.assertHasOutputLine(Regex("""> There were ${3 + 3} failing tests. See the report at: .*"""))
 	}
 }
