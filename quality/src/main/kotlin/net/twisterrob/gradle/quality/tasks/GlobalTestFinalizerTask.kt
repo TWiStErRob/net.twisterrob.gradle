@@ -12,7 +12,6 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.TestReport
 import org.gradle.kotlin.dsl.withType
 import se.bjurr.violations.lib.model.SEVERITY
-import java.io.File
 
 open class GlobalTestFinalizerTask : TestReport() {
 
@@ -23,9 +22,16 @@ open class GlobalTestFinalizerTask : TestReport() {
 	@TaskAction
 	fun failOnFailures() {
 		val gatherer = TestReportGatherer(Test::class.java)
-		val violations = testResultDirs.files.flatMap {
+		val violations = testResultDirs.files.flatMap { resultDir ->
 			// reportOn above added the binary folder, so the XMLs are one up
-			gatherer.findViolations(File(it, ".."))
+			val xmlDir = resultDir.resolve("..")
+			if (!xmlDir.exists()) {
+				// Info only because not every module will have tests (e.g. grouping modules).
+				logger.info("Skipping $resultDir, because it doesn't exist")
+				return@flatMap emptyList()
+			} else {
+				gatherer.findViolations(xmlDir)
+			}
 		}
 		val errors = (violations.groupBy { it.severity })[SEVERITY.ERROR]
 		if (errors.orEmpty().isNotEmpty()) {

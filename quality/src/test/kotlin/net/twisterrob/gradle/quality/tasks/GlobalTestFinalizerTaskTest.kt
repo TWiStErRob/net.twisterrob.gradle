@@ -5,6 +5,8 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
@@ -49,6 +51,23 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 	}
 
 	override lateinit var gradle: GradleRunnerRule
+
+	@Test fun `gathers results from empty project`() {
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.quality'
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			basedOn("android-root_app")
+			run(script, "test", "testReport")
+		}
+
+		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":test")!!.outcome)
+		assertEquals(TaskOutcome.SUCCESS, result.task(":testReport")!!.outcome)
+		result.assertNoOutputLine(Regex(""".*failing tests.*"""))
+		result.assertNoOutputLine(Regex(""".*See the report at.*"""))
+	}
 
 	@Test fun `gathers results from root app`() {
 		gradle.file(testFile, "src", "test", "java", "Tests.java")
