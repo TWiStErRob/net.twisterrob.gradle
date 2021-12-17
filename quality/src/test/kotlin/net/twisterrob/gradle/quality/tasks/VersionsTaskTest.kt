@@ -23,7 +23,7 @@ class VersionsTaskTest : BaseIntgTest() {
 	@Test fun `print missing versions`() {
 		@Language("gradle")
 		val script = """
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -42,7 +42,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'checkstyle'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -60,7 +60,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'pmd'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -78,7 +78,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'checkstyle'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -96,7 +96,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'pmd'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -114,7 +114,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'checkstyle'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -132,7 +132,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'pmd'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -150,7 +150,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'checkstyle'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -168,7 +168,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'pmd'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -186,7 +186,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'checkstyle'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -204,7 +204,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'pmd'
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -223,7 +223,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			checkstyle {
 				toolVersion = '6.0'
 			}
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -241,7 +241,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			pmd {
 				toolVersion = '5.0.0'
 			}
-			task('qualityVersions', type: ${VersionsTask::class.java.name})
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
