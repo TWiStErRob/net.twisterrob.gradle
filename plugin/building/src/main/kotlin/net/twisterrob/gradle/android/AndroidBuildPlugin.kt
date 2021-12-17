@@ -2,8 +2,6 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.api.ApkVariant
-import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.androidTestVariantData
 import com.android.build.gradle.internal.api.unitTestVariantData
 import com.android.build.gradle.internal.api.variantData
@@ -14,6 +12,7 @@ import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addB
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.BasePlugin
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
@@ -61,7 +60,9 @@ class AndroidBuildPlugin : BasePlugin() {
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
 
 			with(defaultConfig) {
+				@Suppress("DEPRECATION" /* AGP 7.0 */)
 				minSdkVersion(VERSION_SDK_MINIMUM)
+				@Suppress("DEPRECATION" /* AGP 7.0 */)
 				targetSdkVersion(VERSION_SDK_TARGET)
 				vectorDrawables.useSupportLibrary = true
 			}
@@ -77,11 +78,14 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 
 			buildTypes.configure("release") { release ->
+				//release.setApplicationIdSuffix(null)
+				//release.setVersionNameSuffix(null)
 				release.resValue("bool", "in_test", "false")
 				release.resValue("bool", "in_prod", "true")
 			}
 
 			// configure files we don't need in APKs
+			@Suppress("DEPRECATION" /* AGP 7.0 */)
 			with(packagingOptions) {
 				// support-annotations-28.0.0.jar contains this file
 				// it's for Android Gradle Plugin at best, if at all used
@@ -109,9 +113,20 @@ class AndroidBuildPlugin : BasePlugin() {
 		val vcsTaskProvider =
 			project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
 
-		project.beforeAndroidTasksCreated {
-			if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
-				decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
+		when {
+			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
+				project.androidComponents.finalizeDsl {
+					if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
+						decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
+					}
+				}
+			}
+			else -> {
+				project.beforeAndroidTasksCreated {
+					if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
+						decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
+					}
+				}
 			}
 		}
 		project.plugins.withType<AppPlugin> {
@@ -125,7 +140,9 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 			project.plugins.withType<AppPlugin> {
 				if (twisterrob.addRunTasks) {
-					android.variants.all { variant -> createRunTask(variant as ApkVariant) }
+					android.variants.all { variant ->
+						createRunTask(variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant)
+					}
 				}
 			}
 		}
@@ -146,19 +163,21 @@ class AndroidBuildPlugin : BasePlugin() {
 
 	companion object {
 
-		private fun createRunTask(variant: ApkVariant) {
+		private fun createRunTask(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.ApkVariant) {
 			val install = variant.installProvider?.get()
 			if (install != null) {
 				val project = install.project
 				val name = "run${variant.name.capitalize()}"
-				project.tasks.create<AndroidInstallRunnerTask>(name) {
+				project.tasks.register<AndroidInstallRunnerTask>(name) {
 					dependsOn(install)
-					this.setVariant(variant)
+					this.manifestFile.set(variant.outputs.single().processManifestProvider.flatMap { it.manifestFile })
+					this.applicationId.set(variant.applicationId)
+					this.updateDescription(variant.description)
 				}
 			}
 		}
 
-		private fun fixVariantTaskGroups(variant: BaseVariant) {
+		private fun fixVariantTaskGroups(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {
 			fun BaseVariantData.fixTaskMetadata() {
 				taskContainerCompat.compileTask.configure { task ->
 					task.group = "Build"
@@ -174,7 +193,7 @@ class AndroidBuildPlugin : BasePlugin() {
 			variant.unitTestVariantData?.fixTaskMetadata()
 		}
 
-		private fun addPackageName(variant: BaseVariant) {
+		private fun addPackageName(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {
 			// Package name for use e.g. in preferences to launch intent from the right package or for content providers
 			variant.resValue("string", "app_package", variant.applicationId)
 		}

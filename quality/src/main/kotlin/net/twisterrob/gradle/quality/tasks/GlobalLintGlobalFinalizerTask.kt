@@ -1,22 +1,33 @@
 package net.twisterrob.gradle.quality.tasks
 
-import com.android.build.gradle.tasks.LintGlobalTask
-import net.twisterrob.gradle.common.AndroidVariantApplier
+import com.android.build.api.artifact.impl.ArtifactsImpl
+import com.android.build.api.variant.TestVariant
+import com.android.build.gradle.api.AndroidBasePlugin
+import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
+import com.android.build.gradle.internal.scope.InternalArtifactType
+import net.twisterrob.gradle.android.androidComponents
+import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
+import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
-import net.twisterrob.gradle.common.xmlOutput
-import net.twisterrob.gradle.compat.filePropertyCompat
-import net.twisterrob.gradle.compat.fileProviderCompat
+import net.twisterrob.gradle.internal.lint.collectXmlReport
+import net.twisterrob.gradle.internal.lint.configureXmlReport
+import net.twisterrob.gradle.internal.lint.lintGlobalTasks
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
+import net.twisterrob.gradle.quality.gather.LintGlobalReportGathererPre7
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
-import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.TaskCollection
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.withType
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
 
@@ -33,7 +44,11 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	@TaskAction
 	fun failOnFailures() {
-		val gatherer = LintReportGatherer("lint", LintGlobalTask::class.java)
+		val gatherer =
+			if (AGPVersions.CLASSPATH >= AGPVersions.v70x)
+				LintReportGatherer()
+			else
+				LintGlobalReportGathererPre7(ALL_VARIANTS_NAME)
 		val violationsByFile = xmlReports
 			.map { it.get().asFile }
 			.filter(File::exists)
@@ -65,25 +80,67 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 		}
 	}
 
-	internal companion object : (GlobalLintGlobalFinalizerTask) -> Unit {
-		override fun invoke(task: GlobalLintGlobalFinalizerTask) {
-			task.group = JavaBasePlugin.VERIFICATION_GROUP
-			task.project.allprojects.forEach { subproject ->
-				AndroidVariantApplier(subproject).applyAfterPluginConfigured {
-					task.mustRunAfter(subproject.tasks.withType(LintGlobalTask::class.java) { subTask ->
-						subTask.lintOptions.isAbortOnError = subTask.wasLaunchedExplicitly
-						// make sure we have xml output, otherwise can't figure out if it failed
-						subTask.lintOptions.xmlReport = true
-						task.xmlReports.add(subTask.xmlOutputProperty)
-					})
+	internal class Creator : TaskCreationConfiguration<GlobalLintGlobalFinalizerTask> {
+
+		override fun preConfigure(project: Project, taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
+			project.allprojects.forEach { subproject ->
+				subproject.plugins.withType<AndroidBasePlugin> {
+					if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
+						subproject.configureReports(taskProvider)
+					} else {
+						subproject.configureReportsPre7(taskProvider)
+					}
 				}
 			}
+		}
+
+		private fun Project.configureReportsPre7(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
+			taskProvider.configure { finalizerTask ->
+				lintGlobalTasks.configureXmlReport()
+				lintGlobalTasks.collectXmlReport {
+					finalizerTask.xmlReports.add(it)
+				}
+			}
+		}
+
+		private fun Project.configureReports(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
+			androidComponents.finalizeDsl {
+				// Make sure we have XML output, otherwise can't figure out if it failed.
+				// Run this in finalizeDsl rather than just after configuration, to override any normal
+				// `android { lintOptions { ... } }` DSL configuration.
+				// This is also consistently configuring the task, making it up-to-date when possible.
+				it.lint.isAbortOnError = false
+				it.lint.xmlReport = true
+			}
+			androidComponents.onVariants { variant ->
+				if (variant is TestVariant) return@onVariants
+				taskProvider.configure { task ->
+					task.xmlReports +=
+						(variant.artifacts as ArtifactsImpl)
+							.get(InternalArtifactType.LINT_XML_REPORT)
+				}
+			}
+		}
+
+		override fun configure(task: GlobalLintGlobalFinalizerTask) {
+			task.group = JavaBasePlugin.VERIFICATION_GROUP
+			if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
+				// A more specific version of mustRunAfter(subproject.tasks.withType(AndroidLintTask::class.java)).
+				// That would include lintRelease, lintDebug, lintFixDebug, lintFixRelease.
+				task.mustRunAfter(task.xmlReports)
+			}
+			// Not a necessity, just a convenience, make sure we run after the :*:lint lifecycle tasks.
+			// Using .map {} instead of .flatMap {} to prevent configuration of these tasks.
+			task.mustRunAfter(task.project.allprojects.map { it.lintTasks })
 		}
 	}
 }
 
-private val LintGlobalTask.xmlOutputProperty: RegularFileProperty
+private val Project.lintTasks: TaskCollection<*>
 	get() =
-		project.objects
-			.filePropertyCompat(this, false)
-			.fileProviderCompat(this, project.provider { xmlOutput })
+		when {
+			AGPVersions.CLASSPATH >= AGPVersions.v70x ->
+				this.tasks.withType(AndroidLintGlobalTask::class.java)
+			else ->
+				this.lintGlobalTasks
+		}

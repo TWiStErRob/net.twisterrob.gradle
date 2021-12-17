@@ -132,9 +132,17 @@ open class GradleRunnerRule : TestRule {
 		val args = arrayOf(*tasks, "--stacktrace")
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
 		val testKitDir = runner.let { it as? DefaultGradleRunner }?.testKitDirProvider?.dir
+		val javaVendor: String? by systemProperty("java.vendor")
+		val javaVersion: String? by systemProperty("java.version")
+		val javaVersionDate: String? by systemProperty("java.version.date")
+		val javaRuntimeName: String? by systemProperty("java.runtime.name")
+		val javaRuntimeVersion: String? by systemProperty("java.runtime.version")
+		val javaHome: String? by systemProperty("java.home")
+		val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
 		println(
 			"""
-			Gradle worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
+			${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
+			Java: ${java} from ${javaHome}.
 			Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
 			```gradle
 ${buildFile.readText().prependIndent("\t\t\t")}

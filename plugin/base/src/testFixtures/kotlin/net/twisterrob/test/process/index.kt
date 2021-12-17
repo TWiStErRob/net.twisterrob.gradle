@@ -1,5 +1,6 @@
 package net.twisterrob.test.process
 
+import net.twisterrob.test.withRootCause
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.opentest4j.AssertionFailedError
 import java.io.File
@@ -42,14 +43,6 @@ internal fun assertOutput(command: List<Any>, expected: String, message: String?
 		val output = command.map(Any?::toString).runCommand()
 		assertEquals(expected.normalize(), output.normalize(), message)
 	} catch (ex: Throwable) {
-		val err = generateSequence(ex) { it.cause }.last()
-		val cause = IllegalArgumentException("Command: $command")
-		if (err is AssertionFailedError) {
-			// Workaround for https://github.com/ota4j-team/opentest4j/issues/5#issuecomment-940474063.
-			AssertionFailedError(err.message, err.expected, err.actual, cause)
-		} else {
-			err.initCause(cause)
-		}
-		throw ex
+		throw ex.withRootCause(IllegalArgumentException("Command: $command"))
 	}
 }

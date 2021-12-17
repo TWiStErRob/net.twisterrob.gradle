@@ -11,19 +11,16 @@ import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.TestExtension
 import com.android.build.gradle.TestPlugin
 import com.android.build.gradle.TestedExtension
-import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.api.VersionedVariant
 import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.scope.TaskContainer
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.build.gradle.tasks.ManifestProcessorTask
-import com.android.build.gradle.tasks.ProcessApplicationManifest
-import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.android.builder.model.AndroidProject
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.internal.android.addBuildConfigField40x
 import net.twisterrob.gradle.internal.android.addBuildConfigField41x
 import net.twisterrob.gradle.internal.android.addBuildConfigField42x
-import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.internal.android.addBuildConfigField70x
 import net.twisterrob.gradle.internal.android.manifestFile40x
 import net.twisterrob.gradle.internal.android.manifestFile41x
 import net.twisterrob.gradle.internal.android.taskContainerCompat40x
@@ -32,7 +29,6 @@ import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.provider.Provider
@@ -63,7 +59,7 @@ fun PluginContainer.hasAndroid(): Boolean =
 fun PluginContainer.hasAndroidTest(): Boolean =
 	hasPlugin("com.android.test")
 
-val BaseExtension.variants: DomainObjectSet<out BaseVariant>
+val BaseExtension.variants: DomainObjectSet<out @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant>
 	get() =
 		when (this) {
 			is AppExtension -> applicationVariants
@@ -72,14 +68,6 @@ val BaseExtension.variants: DomainObjectSet<out BaseVariant>
 			is TestedExtension -> testVariants
 			else -> throw IllegalArgumentException("Unknown extension: $this")
 		}
-
-@Suppress("unused")
-fun BaseVariant.toDebugString(): String =
-	buildString {
-		append(this@toDebugString::class)
-		append(", name=$name, desc=$description, base=$baseName, dir=$dirName, pkg=$applicationId, flav=$flavorName")
-		append(if (this@toDebugString is VersionedVariant) ", ver=$versionName, code=$versionCode" else "")
-	}
 
 fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) {
 	configureEach {
@@ -115,6 +103,7 @@ val ManifestProcessorTask.manifestFile: Provider<File>
  */
 fun Project.addBuildConfigField(name: String, type: String, value: Provider<out Serializable>) {
 	when {
+		AGPVersions.CLASSPATH >= AGPVersions.v70x -> this.addBuildConfigField70x(name, type, value)
 		AGPVersions.CLASSPATH compatible AGPVersions.v42x -> this.addBuildConfigField42x(name, type, value)
 		AGPVersions.CLASSPATH compatible AGPVersions.v41x -> this.addBuildConfigField41x(name, type, value)
 		AGPVersions.CLASSPATH compatible AGPVersions.v40x -> this.addBuildConfigField40x(name, type, value)

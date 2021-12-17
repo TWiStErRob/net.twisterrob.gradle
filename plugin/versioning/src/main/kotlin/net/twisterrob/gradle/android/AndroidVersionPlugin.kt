@@ -1,13 +1,13 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.component.impl.AndroidTestImpl
+import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.variant.impl.VariantOutputImpl
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.api.ApkVariant
-import com.android.build.gradle.api.ApkVariantOutput
-import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.internal.api.TestedVariant
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.base.BasePlugin
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.compat.archivesBaseNameCompat
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId
@@ -117,6 +117,12 @@ open class AndroidVersionExtension {
 			val strippedBaseName = baseName.replace("${project.archivesBaseNameCompat}-", "")
 			"${applicationId}@${versionCode}-v${versionName}+${strippedBaseName}"
 		}
+
+	internal fun calculateVersionName(): String =
+		versionNameFormat.format(Locale.ROOT, major, minor, patch, build)
+
+	internal fun calculateVersionCode(): Int =
+		(((major * minorMagnitude + minor) * patchMagnitude + patch) * buildMagnitude + build)
 }
 
 class AndroidVersionPlugin : BasePlugin() {
@@ -135,12 +141,38 @@ class AndroidVersionPlugin : BasePlugin() {
 		// When the Android application plugin is applied, we can set up the defaults and the DSL.
 		project.plugins.withId<AppPlugin>("com.android.application") { init() }
 		// Just before the project is finished evaluating, configure a bit more.
-		project.beforeAndroidTasksCreated { configure() }
+		when {
+			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
+				project.androidComponents.finalizeDsl { autoVersion() }
+			}
+			else -> {
+				project.beforeAndroidTasksCreated { autoVersion() }
+			}
+		}
 	}
 
 	private fun init() {
 		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
 		readVersionFromFile(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME))
+
+		when {
+			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
+				project.androidComponents.onVariants {
+					if (version.renameAPK) {
+						renameAPKPost7(it as ApplicationVariant)
+					}
+				}
+			}
+			else -> {
+				project.beforeAndroidTasksCreated {
+					android.applicationVariants.all {
+						if (version.renameAPK) {
+							renameAPKPre7(it, it)
+						}
+					}
+				}
+			}
+		}
 
 		val vcs: VCSPluginExtension? = project.extensions.findByType()
 		if (vcs != null && vcs.current.isAvailable) {
@@ -152,13 +184,46 @@ class AndroidVersionPlugin : BasePlugin() {
 	 * This method is called after the DSL has been parsed ([version] is ready),
 	 * but before any of AGP's [Project.afterEvaluate] is executed.
 	 */
-	private fun configure() {
+	private fun autoVersion() {
 		if (version.autoVersion) {
-			android.defaultConfig.setVersionCode(calculateVersionCode())
-			android.defaultConfig.setVersionName(calculateVersionName(null))
+			android.defaultConfig.setVersionCode(version.calculateVersionCode())
+			android.defaultConfig.setVersionName(version.calculateVersionName())
 		}
-		if (version.renameAPK) {
-			android.applicationVariants.all { renameAPK(it, it) }
+	}
+
+	private fun renameAPKPost7(variant: ApplicationVariant) {
+		val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
+		val androidTestOutput = variant.androidTest?.let { androidTest ->
+			androidTest as AndroidTestImpl
+			androidTest.outputs.filterIsInstance<VariantOutputImpl>().single()
+		}
+		variantOutput.outputFileName.set(project.provider {
+			// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
+			@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+			val artifactName = version.formatArtifactName(
+				project,
+				variant.name,
+				variant.applicationId.get(),
+				variantOutput.versionCode.getOrElse(-1)!!.toLong(),
+				variantOutput.versionName.getOrElse(null)
+			)
+			"${artifactName}.apk"
+		})
+		androidTestOutput?.let { androidTest ->
+			androidTest.outputFileName.set(project.provider {
+				// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
+				val androidTestName: String =
+					variant.androidTest!!.name.removePrefix(variant.name).decapitalize(Locale.ROOT)
+				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+				val artifactName = version.formatArtifactName(
+					project,
+					"${variant.name}-${androidTestName}",
+					variant.androidTest!!.applicationId.get(),
+					variantOutput.versionCode.getOrElse(-1)!!.toLong(),
+					variantOutput.versionName.getOrElse(null)
+				)
+				"${artifactName}.apk"
+			})
 		}
 	}
 
@@ -168,48 +233,27 @@ class AndroidVersionPlugin : BasePlugin() {
 	 * @param variant the APK to rename
 	 * @param source the versioned APK
 	 */
-	private fun renameAPK(variant: ApkVariant, source: ApkVariant) {
+	private fun renameAPKPre7(
+		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant,
+		source: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
+	) {
 		// only called for applicationVariants and their testVariants so filter should be safe
-		variant.outputs.withType<ApkVariantOutput> {
+		variant.outputs.withType<@Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariantOutput> {
 			val artifactName = version.formatArtifactName(
 				project, variant.baseName, variant.applicationId, source.versionCode.toLong(), source.versionName
 			)
 			outputFileName = "${artifactName}.apk"
 		}
-		if (variant is TestedVariant) {
+		if (variant is @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.internal.api.TestedVariant) {
 			// TODO this is a Hail Mary trying to propagate version to androidTest APK, but has no effect.
 			// Maybe? https://github.com/android/gradle-recipes/blob/bd8336e32ae512c630911287ea29b45a6bacb73b/BuildSrc/setVersionsFromTask/buildSrc/src/main/kotlin/CustomPlugin.kt
 //			variant.testVariant?.outputs?.withType<ApkVariantOutput> {
 //				versionNameOverride = source.versionName
 //				versionCodeOverride = source.versionCode
 //			}
-			variant.testVariant?.run { renameAPK(this, source) }
+			variant.testVariant?.run { renameAPKPre7(this, source) }
 		}
 	}
-
-	private fun calculateVersionName(variant: BaseVariant?): String {
-		val suffix =
-			if (variant != null)
-				@Suppress("DEPRECATION")
-				// It was changed from DefaultProductFlavor and deprecated in 4.0.0, keep it around until removal or relocation.
-				com.android.builder.core.AbstractProductFlavor.mergeVersionNameSuffix(
-					variant.buildType.versionNameSuffix,
-					variant.mergedFlavor.versionNameSuffix
-				)
-			else
-				""
-		val versionName = version.versionNameFormat.format(
-			Locale.ROOT,
-			version.major, version.minor, version.patch, version.build
-		)
-		return versionName + suffix
-	}
-
-	private fun calculateVersionCode(): Int =
-		(((version.major
-				* version.minorMagnitude + version.minor)
-				* version.patchMagnitude + version.patch)
-				* version.buildMagnitude + version.build)
 
 	private fun readVersionFromFile(file: File): Properties =
 		readVersion(file).apply {

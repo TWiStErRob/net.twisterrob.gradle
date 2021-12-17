@@ -35,7 +35,9 @@ class AndroidSigningPlugin : BasePlugin() {
 				setKeyPassword(mandatoryProp(KEY_PASSWORD))
 			}
 			//android.signingConfigs.add(sign)
-			android.buildTypes["release"].setSigningConfig(sign)
+			// Use the oldest available overload that exists since AGP 3.1.4 through AGP 7.0.2:
+			// fun setSigningConfig(signingConfig: com.android.builder.model.SigningConfig?): com.android.builder.model.BuildType
+			android.buildTypes["release"].setSigningConfig(sign as com.android.builder.model.SigningConfig)
 		} else if (project.hasProperty(STORE_FILE)) {
 			LOG.error("Keystore file (from {}) '{}' is not valid.", STORE_FILE, keyStoreFile.absolutePath)
 		}

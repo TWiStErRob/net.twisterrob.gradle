@@ -15,10 +15,6 @@ plugins {
 	`java-gradle-plugin`
 }
 
-kotlinDslPluginOptions {
-	jvmTarget.set(provider { java.targetCompatibility.toString() })
-}
-
 repositories {
 	mavenCentral()
 	// Note on `plugins { }`: when the version is declared in the plugins block (`plugins { id(...) version "..." }`),
@@ -26,9 +22,6 @@ repositories {
 	// Declaring all the dependencies in this project resolves this issue.
 	gradlePluginPortal()
 }
-
-val kotlin_version: String by project
-val nexus_version: String by project
 
 dependencies {
 	implementation(deps.kotlin.gradle)

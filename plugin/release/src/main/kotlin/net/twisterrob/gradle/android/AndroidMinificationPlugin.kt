@@ -3,9 +3,9 @@ package net.twisterrob.gradle.android
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
+import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.tasks.ProguardConfigurableTask
-import com.android.build.gradle.internal.tasks.ProguardTask
 import com.android.build.gradle.internal.tasks.R8Task
 import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.base.BasePlugin
@@ -13,8 +13,9 @@ import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.task
+import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import java.io.File
 
@@ -72,9 +73,12 @@ class AndroidMinificationPlugin : BasePlugin() {
 			}
 		}
 
-		val extractMinificationRules = project.task<Task>("extractMinificationRules") {
+		val extractMinificationRules = project.tasks.register<Task>("extractMinificationRules") {
 			description = "Extract ProGuard files from 'net.twisterrob.android' plugin"
-			outputs.files(defaultAndroidRulesFile, myProguardRulesFile)
+			outputs.file(defaultAndroidRulesFile)
+			outputs.file(myProguardRulesFile)
+			outputs.file(myDebugProguardRulesFile)
+			outputs.file(myReleaseProguardRulesFile)
 			outputs.upToDateWhen {
 				defaultAndroidRulesFile.lastModified() == builtDate.toEpochMilli()
 						&& myProguardRulesFile.lastModified() == builtDate.toEpochMilli()
@@ -82,17 +86,18 @@ class AndroidMinificationPlugin : BasePlugin() {
 						&& myReleaseProguardRulesFile.lastModified() == builtDate.toEpochMilli()
 			}
 			doLast {
-				copy("android.pro", defaultAndroidRulesFile)
-				copy("twisterrob.pro", myProguardRulesFile)
-				copy("twisterrob-debug.pro", myDebugProguardRulesFile)
-				copy("twisterrob-release.pro", myReleaseProguardRulesFile)
+				copy("/android.pro", defaultAndroidRulesFile)
+				copy("/twisterrob.pro", myProguardRulesFile)
+				copy("/twisterrob-debug.pro", myDebugProguardRulesFile)
+				copy("/twisterrob-release.pro", myReleaseProguardRulesFile)
 			}
 		}
 
+		lintTasksDependOnProguardRulesTask(extractMinificationRules)
 		project.afterEvaluate {
 			android.variants.all { variant ->
-				val proguardTask = project.findMinificationTaskFor<ProguardTask>(variant)
-				val r8Task = project.findMinificationTaskFor<R8Task>(variant)
+				val proguardTask = proguardTaskClass?.let { project.findMinificationTaskFor(variant, it) }
+				val r8Task = project.findMinificationTaskFor(variant, R8Task::class.java)
 				val obfuscationTask = proguardTask ?: r8Task
 				if (obfuscationTask != null) {
 					obfuscationTask.dependsOn(extractMinificationRules)
@@ -101,21 +106,49 @@ class AndroidMinificationPlugin : BasePlugin() {
 						generatedProguardRulesFile,
 						proguardTask == obfuscationTask
 					)
+					lintTasksDependOnProguardRulesTask(generateMinificationRulesTask)
 					obfuscationTask.dependsOn(generateMinificationRulesTask)
 				}
 			}
 		}
 	}
 
-	private inline fun <reified T : ProguardConfigurableTask> Project.findMinificationTaskFor(variant: BaseVariant): T? =
+	private fun lintTasksDependOnProguardRulesTask(task: TaskProvider<Task>) {
+		if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
+			// REPORT allow tasks to generate ProGuard files, this must be possible because aapt generates one.
+			project.tasks.withType<AndroidLintGlobalTask>().configureEach { it.dependsOn(task) }
+			project.tasks.withType<AndroidLintAnalysisTask>().configureEach { it.dependsOn(task) }
+		}
+	}
+
+	/**
+	 * AGP 7 fully removed support for this task. This will only return a value in < [AGPVersions.v70x].
+	 */
+	@Suppress("UNCHECKED_CAST")
+	private val proguardTaskClass: Class<out ProguardConfigurableTask>?
+		get() = try {
+			Class.forName("com.android.build.gradle.internal.tasks.ProguardTask")
+					as Class<out ProguardConfigurableTask>
+		} catch (ex: ClassNotFoundException) {
+			null
+		}
+
+	private fun <T : ProguardConfigurableTask> Project.findMinificationTaskFor(
+		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
+		taskClass: Class<T>
+	): T? =
 		this
 			.tasks
-			.withType(T::class.java)
+			.withType(taskClass)
 			.matching { it.variantName == variant.name }
 			.singleOrNull()
 
-	private fun createGenerateMinificationRulesTask(variant: BaseVariant, outputFile: File, isProguard: Boolean): Task =
-		project.task<Task>("generate${variant.name.capitalize()}MinificationRules") {
+	private fun createGenerateMinificationRulesTask(
+		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
+		outputFile: File,
+		isProguard: Boolean
+	): TaskProvider<Task> =
+		project.tasks.register<Task>("generate${variant.name.capitalize()}MinificationRules") {
 			description = "Generates printConfiguration and dump options for ProGuard or R8"
 			val mappingFolder: Provider<File> = variant.mappingFileProvider.map { it.singleFile.parentFile }
 			inputs.property("targetFolder", mappingFolder)
@@ -133,8 +166,9 @@ class AndroidMinificationPlugin : BasePlugin() {
 
 	private fun copy(internalName: String, targetFile: File) {
 		targetFile.parentFile.mkdirs()
-		val classLoader = this::class.java.classLoader!!
-		classLoader.getResourceAsStream(internalName).copyTo(targetFile.outputStream())
+		val resource = this::class.java.getResourceAsStream(internalName)
+			?: error("Cannot find ${internalName} to copy to ${targetFile}.")
+		resource.use { inp -> targetFile.outputStream().use { out -> inp.copyTo(out) } }
 		targetFile.setLastModified(builtDate.toEpochMilli())
 	}
 }

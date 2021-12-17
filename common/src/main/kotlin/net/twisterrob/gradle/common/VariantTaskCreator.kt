@@ -1,7 +1,5 @@
 package net.twisterrob.gradle.common
 
-import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.api.SourceKind
 import com.android.builder.model.AndroidProject.FD_GENERATED
 import net.twisterrob.gradle.compat.setOutputLocationCompat
 import net.twisterrob.gradle.compat.setRequired
@@ -18,6 +16,9 @@ import org.gradle.api.reporting.ReportingExtension
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.VerificationTask
 import java.io.File
+
+@Suppress("DEPRECATION" /* AGP 7.0 */)
+private typealias BaseVariant = com.android.build.gradle.api.BaseVariant
 
 open class VariantTaskCreator<T>(
 	private val project: Project,
@@ -39,7 +40,9 @@ T : VerificationTask {
 			return quality.extensions.getByType(extensionClass)
 		}
 
-	fun applyTo(variants: DomainObjectSet<out BaseVariant>) {
+	fun applyTo(
+		variants: DomainObjectSet<out @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
+	) {
 		project.plugins.apply(pluginName)
 		createGlobalTask()
 		variants.all(this::createTaskForVariant)
@@ -48,10 +51,14 @@ T : VerificationTask {
 		}
 	}
 
-	open fun variantsConfig(variants: Collection<BaseVariant>): VariantTaskCreator<T>.DefaultVariantsTaskConfig =
+	open fun variantsConfig(
+		variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
+	): VariantTaskCreator<T>.DefaultVariantsTaskConfig =
 		DefaultVariantsTaskConfig(taskConfigurator(), variants)
 
-	open fun variantConfig(variant: BaseVariant): VariantTaskCreator<T>.DefaultVariantTaskConfig =
+	open fun variantConfig(
+		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant
+	): VariantTaskCreator<T>.DefaultVariantTaskConfig =
 		DefaultVariantTaskConfig(taskConfigurator(), variant)
 
 	open fun taskConfigurator(): VariantTaskCreator<T>.DefaultTaskConfig =
@@ -68,7 +75,9 @@ T : VerificationTask {
 		}
 	}
 
-	private fun createTaskForVariant(variant: BaseVariant) {
+	private fun createTaskForVariant(
+		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant
+	) {
 		val taskName = "${baseName}${variant.name.capitalize()}"
 		val variantTask = project.tasks.create(taskName, taskClass, variantConfig(variant))
 		eachTask.dependsOn(variantTask)
@@ -76,11 +85,11 @@ T : VerificationTask {
 
 	open inner class DefaultVariantsTaskConfig(
 		private val configurator: DefaultTaskConfig,
-		private val variants: Collection<BaseVariant>
+		private val variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
 	) : Action<T> {
 
 		override fun execute(task: T) {
-			val variantNames = variants.joinToString(", ", transform = BaseVariant::getName)
+			val variantNames = variants.joinToString(", ") { it.name }
 			task.description = "Run ${baseName} batched on variants: ${variantNames}"
 			task.checkTargetName = ALL_VARIANTS_NAME
 			configurator.setupConfigLocations(task)
@@ -92,7 +101,7 @@ T : VerificationTask {
 
 	open inner class DefaultVariantTaskConfig(
 		private val configurator: DefaultTaskConfig,
-		private val variant: BaseVariant
+		private val variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant
 	) : Action<T> {
 
 		override fun execute(task: T) {
@@ -118,7 +127,10 @@ T : VerificationTask {
 		 *
 		 * @see <a href="https://github.com/gradle/gradle/issues/3994">gradle/gradle#3994</a>
 		 */
-		open fun setupSources(task: T, variants: Collection<BaseVariant>) {
+		open fun setupSources(
+			task: T,
+			variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
+		) {
 			// TODO classpath
 			val buildPath = task.project.buildDir.toPath()
 			val projectPath = task.project.projectDir.toPath()
@@ -138,13 +150,17 @@ T : VerificationTask {
 			task.source(projectPath)
 
 			// include whatever needs to be included
-			task.include(variants
-				.flatMap { it.getSourceFolders(SourceKind.JAVA) }
-				.map { tree ->
-					// build relative path (e.g. src/main/java) and
-					// append a trailing "/" for include to treat it as recursive
-					projectPath.relativize(tree.dir.toPath()).toString() + File.separator
-				})
+			@Suppress("DEPRECATION" /* AGP 7.0 */)
+			val java = com.android.build.gradle.api.SourceKind.JAVA
+			val javaFolders =
+				variants
+					.flatMap { it.getSourceFolders(java) }
+					.map { tree ->
+						// build relative path (e.g. src/main/java) and
+						// append a trailing "/" for include to treat it as recursive
+						projectPath.relativize(tree.dir.toPath()).toString() + File.separator
+					}
+			task.include(javaFolders)
 
 			variants.forEach { variant ->
 				// exclude generated code

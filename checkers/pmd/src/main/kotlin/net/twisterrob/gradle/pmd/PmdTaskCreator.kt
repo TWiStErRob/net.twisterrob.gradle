@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.pmd
 
-import com.android.build.gradle.api.BaseVariant
 import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.Project
 import java.io.File
@@ -41,7 +40,10 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 						task.project.files(task.ruleSetFiles.map { it.parentFile })
 			}
 
-			override fun setupSources(task: PmdTask, variants: Collection<BaseVariant>) {
+			override fun setupSources(
+				task: PmdTask,
+				variants: Collection<@Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant>
+			) {
 				super.setupSources(task, variants)
 
 				val buildPath = task.project.buildDir.toPath()

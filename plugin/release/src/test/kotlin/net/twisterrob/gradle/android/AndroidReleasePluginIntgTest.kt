@@ -6,6 +6,7 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoTask
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
+import net.twisterrob.test.withRootCause
 import net.twisterrob.test.zip.hasEntryCount
 import net.twisterrob.test.zip.hasZipEntry
 import net.twisterrob.test.zip.withSize
@@ -19,10 +20,12 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.EnumSource
+import org.junit.jupiter.params.provider.MethodSource
 import org.junitpioneer.jupiter.ClearEnvironmentVariable
 import java.io.File
+import java.io.IOException
 import java.time.Instant
+import java.util.zip.ZipException
 import java.util.zip.ZipFile
 
 /**
@@ -72,8 +75,8 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertHasOutputLine(""".*Please set RELEASE_HOME environment variable to an existing directory\.""".toRegex())
 	}
 
-	@EnumSource(Minification::class)
-	@ParameterizedTest fun `test (release)`(
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
+	@ParameterizedTest fun `test app (release)`(
 		minification: Minification
 	) {
 		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
@@ -89,7 +92,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "releaseRelease").build()
 
-		result.assertSuccess(":assembleRelease")
+		result.assertSuccess(":packageRelease")
 		result.assertSuccess(":releaseRelease")
 		assertReleaseArchive(result, minification)
 	}
@@ -118,11 +121,11 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, not(hasZipEntry("metadata.json")))
 			assertThat(archive, not(hasZipEntry("output-metadata.json")))
 			assertThat(archive, hasEntryCount(equalTo(if (minification == Minification.ProGuard) 6 else 5)))
-			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
+			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
 		}
 	}
 
-	@Test fun `test (debug)`() {
+	@Test fun `test app (debug)`() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
@@ -134,8 +137,8 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "releaseDebug").build()
 
-		result.assertSuccess(":assembleDebug")
-		result.assertSuccess(":assembleDebugAndroidTest")
+		result.assertSuccess(":packageDebug")
+		result.assertSuccess(":packageDebugAndroidTest")
 		result.assertSuccess(":releaseDebug")
 		assertDebugArchive(result)
 	}
@@ -154,12 +157,12 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, not(hasZipEntry("metadata.json")))
 			assertThat(archive, not(hasZipEntry("output-metadata.json")))
 			assertThat(archive, hasEntryCount(equalTo(2)))
-			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}")
+			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
 		}
 	}
 
-	@EnumSource(Minification::class)
-	@ParameterizedTest fun `test (debug) and (release)`(
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
+	@ParameterizedTest fun `test app (debug) and (release)`(
 		minification: Minification
 	) {
 		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
@@ -176,9 +179,9 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "release").build()
 
-		result.assertSuccess(":assembleRelease")
-		result.assertSuccess(":assembleDebug")
-		result.assertSuccess(":assembleDebugAndroidTest")
+		result.assertSuccess(":packageRelease")
+		result.assertSuccess(":packageDebug")
+		result.assertSuccess(":packageDebugAndroidTest")
 		result.assertSuccess(":releaseRelease")
 		result.assertSuccess(":releaseDebug")
 		assertReleaseArchive(result, minification)
@@ -186,25 +189,26 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	private inline fun assertArchive(archive: File, crossinline assertions: (File) -> Unit) {
-		val fileNamesMessage =
-			"Wanted: ${archive.absolutePath}${System.lineSeparator()}list: ${
-				archive.parentFile.listFiles().orEmpty().joinToString(
-					prefix = System.lineSeparator(),
-					separator = System.lineSeparator()
-				)
-			}"
-		assertThat(fileNamesMessage, archive, anExistingFile())
+		try {
+			assertThat(archive.absolutePath, archive, anExistingFile())
+		} catch (ex: Throwable) {
+			val contents = archive
+				.parentFile
+				.listFiles().orEmpty()
+				.joinToString(prefix = "'${archive.parentFile}' contents:\n", separator = "\n")
+			throw ex.withRootCause(IOException(contents))
+		}
 		try {
 			assertions(archive)
 		} catch (ex: Throwable) {
-			println(ZipFile(archive)
+			val contents = ZipFile(archive)
 				.entries()
 				.asSequence()
 				.sortedBy { it.name }
 				.joinToString(prefix = "'$archive' contents:\n", separator = "\n") {
 					"${it.name} (${it.compressedSize}/${it.size} bytes) @ ${Instant.ofEpochMilli(it.time)}"
-				})
-			throw ex
+				}
+			throw ex.withRootCause(ZipException(contents))
 		}
 	}
 }

@@ -1,14 +1,16 @@
 package net.twisterrob.gradle.quality.tasks
 
-import com.android.build.gradle.tasks.LintGlobalTask
-import com.android.build.gradle.tasks.LintPerVariantTask
 import net.twisterrob.gradle.checkstyle.CheckStyleTask
+import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.common.nullSafeSum
 import net.twisterrob.gradle.pmd.PmdTask
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
+import net.twisterrob.gradle.quality.gather.LintGlobalReportGathererPre7
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
+import net.twisterrob.gradle.quality.gather.LintVariantReportGathererPre7
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.TableGenerator
@@ -26,14 +28,26 @@ open class ValidateViolationsTask : DefaultTask() {
 
 	companion object {
 		@Suppress("UNCHECKED_CAST")
-		private val GATHERERS = listOf(
-			QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
-			QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
+		private val GATHERERS: List<TaskReportGatherer<Task>> = run {
+			val gradleGatherers = listOf(
+				QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
+				QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
 //			ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
-			LintReportGatherer("lintVariant", LintPerVariantTask::class.java),
-			LintReportGatherer("lint", LintGlobalTask::class.java)
 //			TestReportGatherer<>("test", Test)
-		) as List<TaskReportGatherer<Task>>
+			)
+			val agpGatherers = when {
+				AGPVersions.CLASSPATH >= AGPVersions.v70x ->
+					listOf(
+						LintReportGatherer(),
+					)
+				else ->
+					listOf(
+						LintVariantReportGathererPre7(),
+						LintGlobalReportGathererPre7(ALL_VARIANTS_NAME),
+					)
+			}
+			return@run (gradleGatherers + agpGatherers) as List<TaskReportGatherer<Task>>
+		}
 	}
 
 	init {
@@ -51,9 +65,10 @@ open class ValidateViolationsTask : DefaultTask() {
 				forAllReportTasks { gatherer, reportTask ->
 					// make sure external reports are involved in UP-TO-DATE checks
 					val report = gatherer.getParsableReportLocation(reportTask)
-					if (report.exists()) {
-						this.inputs.file(report)
-					} else {
+					// Using files instead of file, because the report might not exist,
+					// see https://github.com/gradle/gradle/issues/2919#issuecomment-981097984.
+					this.inputs.files(report)
+					if (!report.exists()) {
 						logger.info(
 							"Missing report for {} (probably wasn't executed yet after clean): {}",
 							reportTask,
@@ -76,9 +91,9 @@ open class ValidateViolationsTask : DefaultTask() {
 	fun validateViolations() {
 		val results = project.allprojects.flatMap { subproject ->
 			GATHERERS.flatMap { gatherer ->
-				subproject.tasks.withType(gatherer.taskType).map { task ->
+				gatherer.allTasksFrom(subproject).map { task ->
 					return@map Violations(
-						parser = gatherer.displayName,
+						parser = gatherer.getDisplayName(task),
 						module = subproject.path,
 						variant = gatherer.getName(task),
 						result = gatherer.getParsableReportLocation(task),
@@ -124,7 +139,7 @@ open class ValidateViolationsTask : DefaultTask() {
 									column = it.column
 								),
 								source = Violation.Source(
-									gatherer = gatherer.displayName,
+									gatherer = gatherer.getDisplayName(task),
 									parser = it.parser.name,
 									reporter = it.reporter,
 									source = it.source,
@@ -145,8 +160,8 @@ open class ValidateViolationsTask : DefaultTask() {
 	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
 		project.allprojects { subproject: Project ->
 			GATHERERS.forEach { gatherer ->
-				// FIXME this should be configureEach or other lazy approach, but doesn't work on 3.3 then
-				subproject.tasks.withType(gatherer.taskType).forEach { reportTask ->
+				// FIXME this should be configureEach or other lazy approach, but doesn't work on AGP 3.3 then
+				gatherer.allTasksFrom(subproject).forEach { reportTask ->
 					try {
 						action(gatherer, reportTask)
 					} catch (ex: RuntimeException) {

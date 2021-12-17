@@ -19,7 +19,7 @@ import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.EnumSource
+import org.junit.jupiter.params.provider.MethodSource
 import java.io.File
 
 /**
@@ -30,7 +30,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
-	@EnumSource(Minification::class)
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `default build setup minifies only release using AndroidX (debug) and (release)`(
 		minification: Minification
 	) {
@@ -76,7 +76,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		assertThat(releaseMethods, allOf(hasItem(usedMethod), not(hasItem(unusedMethod))))
 	}
 
-	@EnumSource(Minification::class)
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `default build setup minifies only release using support library (debug) and (release)`(
 		minification: Minification
 	) {
@@ -122,7 +122,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		assertThat(releaseMethods, allOf(hasItem(usedMethod), not(hasItem(unusedMethod))))
 	}
 
-	@EnumSource(Minification::class)
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `default build setup prints ProGuard config (release)`(
 		minification: Minification
 	) {
@@ -139,7 +139,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		assertThat(gradle.mergedProguardConfiguration("release"), anExistingFile())
 	}
 
-	@EnumSource(Minification::class)
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `default build setup writes ProGuard mapping file (release)`(
 		minification: Minification
 	) {
@@ -156,7 +156,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		assertThat(gradle.root.resolve("build/outputs/mapping/release/mapping.txt"), anExistingFile())
 	}
 
-	@EnumSource(Minification::class)
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `default build setup dumps (release)`(
 		minification: Minification
 	) {
@@ -189,7 +189,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		}
 	}
 
-	@EnumSource(Minification::class)
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `extracts and uses custom ProGuard rules (release)`(
 		minification: Minification
 	) {
@@ -212,7 +212,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		//incrementalResult.assertOutcome(":extractProguardRules", TaskOutcome.UP_TO_DATE)
 	}
 
-	@EnumSource(Minification::class)
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `extracts and uses custom ProGuard rules (debug)`(
 		minification: Minification
 	) {
@@ -234,7 +234,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertNoAppliedProguardFile(minification, "debug", "twisterrob-release.pro")
 	}
 
-	@EnumSource(Minification::class)
+	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `uses ProGuard files from submodules via consumerProguardFile (release)`(
 		minification: Minification
 	) {

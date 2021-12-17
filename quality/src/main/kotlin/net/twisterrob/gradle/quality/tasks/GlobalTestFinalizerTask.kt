@@ -29,15 +29,15 @@ open class GlobalTestFinalizerTask : TestReport() {
 	@Suppress("unused")
 	@TaskAction
 	fun failOnFailures() {
-		val gatherer = TestReportGatherer("test", Test::class.java)
+		val gatherer = TestReportGatherer(Test::class.java)
 		val violations = testResultDirs.files.flatMap {
 			// reportOn above added the binary folder, so the XMLs are one up
 			gatherer.findViolations(File(it, ".."))
 		}
 		val errors = (violations.groupBy { it.severity })[SEVERITY.ERROR]
-		if (errors?.size ?: 0 > 0) {
+		if (errors.orEmpty().isNotEmpty()) {
 			val report = File(destinationDir, "index.html").toURI()
-			throw  GradleException("There were ${errors!!.size} failing tests. See the report at: ${report}")
+			throw GradleException("There were ${errors!!.size} failing tests. See the report at: ${report}")
 		}
 	}
 }

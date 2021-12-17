@@ -9,9 +9,8 @@ import se.bjurr.violations.lib.parsers.ViolationsParser
 import java.io.File
 
 class TestReportGatherer<T>(
-	displayName: String,
 	taskType: Class<T>
-) : TaskReportGatherer<T>(displayName, taskType) where T : Test {
+) : TaskReportGatherer<T>(taskType) where T : Test {
 
 	private val parser: ViolationsParser = JUnitParser()
 
@@ -23,6 +22,9 @@ class TestReportGatherer<T>(
 
 	override fun getName(task: T): String =
 		task.path
+
+	override fun getDisplayName(task: T): String =
+		"test"
 
 	override fun findViolations(report: File): List<Violation> =
 		report

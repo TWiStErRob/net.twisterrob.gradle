@@ -76,7 +76,7 @@ class QualityPluginTest : BaseIntgTest() {
 		val script = """
 			allprojects {
 				apply plugin: 'net.twisterrob.quality'
-				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}) {
+				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}).configureEach {
 					println("Added " + it)
 				}
 			}
@@ -97,7 +97,7 @@ class QualityPluginTest : BaseIntgTest() {
 		val script = """
 			allprojects {
 				apply plugin: 'net.twisterrob.quality'
-				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}) {
+				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}).configureEach {
 					println("Added " + it)
 				}
 			}
