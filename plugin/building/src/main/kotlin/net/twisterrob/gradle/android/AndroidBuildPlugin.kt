@@ -41,10 +41,10 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
-		// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
-		project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
 		// most of Android's stuff is distributed here, so add by default
 		project.repositories.google() // https://maven.google.com
+		// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
+		project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
 
 		with(android) {
 			with(lintOptions) {
