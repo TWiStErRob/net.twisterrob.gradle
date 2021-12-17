@@ -248,7 +248,7 @@ class PmdPluginTest : BaseIntgTest() {
 					incrementalAnalysis.set(false)
 				}
 			}
-			tasks.withType(${Pmd::class.java.name}) {
+			tasks.withType(${Pmd::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				consoleOutput = true
 			}

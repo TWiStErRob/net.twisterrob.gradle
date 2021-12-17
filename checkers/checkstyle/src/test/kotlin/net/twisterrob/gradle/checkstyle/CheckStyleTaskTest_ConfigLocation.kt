@@ -32,7 +32,7 @@ class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 		private val SCRIPT_CONFIGURE_CHECKSTYLE: String = """
 			subprojects { // i.e. :module
 				apply plugin: 'net.twisterrob.checkstyle'
-				tasks.withType(${Checkstyle::class.java.name}) {
+				tasks.withType(${Checkstyle::class.java.name}).configureEach {
 					// output all violations to the console so that we can parse the results
 					showViolations = true
 				}

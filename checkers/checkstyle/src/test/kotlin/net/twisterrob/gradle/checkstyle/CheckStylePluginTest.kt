@@ -241,7 +241,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val applyCheckstyle = """
 			apply plugin: 'net.twisterrob.checkstyle'
-			tasks.withType(${Checkstyle::class.java.name}) {
+			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
 			}
@@ -264,7 +264,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val build = """
 			apply plugin: 'net.twisterrob.checkstyle'
-			tasks.withType(${Checkstyle::class.java.name}) {
+			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
 			}
@@ -293,7 +293,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val build = """
 			apply plugin: 'net.twisterrob.checkstyle'
-			tasks.withType(${Checkstyle::class.java.name}) {
+			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
 			}
