@@ -14,6 +14,7 @@ import org.gradle.api.reporting.ReportContainer
 import org.gradle.api.reporting.Reporting
 import org.gradle.api.reporting.ReportingExtension
 import org.gradle.api.tasks.SourceTask
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.VerificationTask
 import java.io.File
 
@@ -32,7 +33,7 @@ T : Reporting<out ReportContainer<out ConfigurableReport>>,
 T : TargetChecker,
 T : VerificationTask {
 
-	private lateinit var eachTask: Task
+	private lateinit var eachTask: TaskProvider<*>
 
 	private val checkerExtension: BaseQualityExtension<T>
 		get() {
@@ -47,7 +48,7 @@ T : VerificationTask {
 		createGlobalTask()
 		variants.all(this::createTaskForVariant)
 		project.afterEvaluate {
-			project.tasks.create("${baseName}All", taskClass, variantsConfig(variants))
+			project.tasks.register("${baseName}All", taskClass, variantsConfig(variants))
 		}
 	}
 
@@ -66,10 +67,10 @@ T : VerificationTask {
 
 	private fun createGlobalTask() {
 		val globalTaskName = "${baseName}Each"
-		if (project.tasks.findByName(globalTaskName) != null) {
+		if (globalTaskName in project.tasks.names) {
 			return
 		}
-		eachTask = project.tasks.create(globalTaskName) { task: Task ->
+		eachTask = project.tasks.register(globalTaskName) { task: Task ->
 			task.group = JavaBasePlugin.VERIFICATION_GROUP
 			task.description = "Run ${baseName} on each variant separately"
 		}
@@ -79,8 +80,8 @@ T : VerificationTask {
 		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant
 	) {
 		val taskName = "${baseName}${variant.name.capitalize()}"
-		val variantTask = project.tasks.create(taskName, taskClass, variantConfig(variant))
-		eachTask.dependsOn(variantTask)
+		val variantTask = project.tasks.register(taskName, taskClass, variantConfig(variant))
+		eachTask.configure { it.dependsOn(variantTask) }
 	}
 
 	open inner class DefaultVariantsTaskConfig(
