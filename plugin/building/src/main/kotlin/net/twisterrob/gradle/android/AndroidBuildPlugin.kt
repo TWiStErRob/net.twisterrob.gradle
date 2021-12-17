@@ -29,7 +29,6 @@ open class AndroidBuildPluginExtension {
 	}
 
 	var decorateBuildConfig: Boolean = true
-	var addRunTasks: Boolean = true
 }
 
 class AndroidBuildPlugin : BasePlugin() {
@@ -139,10 +138,8 @@ class AndroidBuildPlugin : BasePlugin() {
 				android.variants.all(::fixVariantTaskGroups)
 			}
 			project.plugins.withType<AppPlugin> {
-				if (twisterrob.addRunTasks) {
-					android.variants.all { variant ->
-						createRunTask(variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant)
-					}
+				android.variants.all { variant ->
+					createRunTask(variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant)
 				}
 			}
 		}
