@@ -11,6 +11,7 @@ import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
+import net.twisterrob.gradle.test.tasksIn
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
@@ -332,11 +333,6 @@ class CheckStylePluginTest : BaseIntgTest() {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":checkstyleDebug")!!.outcome)
 	}
 }
-
-private fun tasksIn(modules: Array<String>, vararg taskNames: String): Array<String> =
-	modules
-		.flatMap { module -> taskNames.map { taskName -> "${module}:${taskName}" } }
-		.toTypedArray()
 
 private inline operator fun <reified T> Array<T>.minus(others: Array<T>): Array<T> =
 	(this.toList() - others).toTypedArray()
