@@ -109,7 +109,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
 				// `android { lintOptions { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
-				it.lint.isAbortOnError = false // STOPSHIP wasinvokedexplicitly?
+				it.lint.isAbortOnError = false
 				it.lint.xmlReport = true
 			}
 			androidComponents.onVariants { variant ->
