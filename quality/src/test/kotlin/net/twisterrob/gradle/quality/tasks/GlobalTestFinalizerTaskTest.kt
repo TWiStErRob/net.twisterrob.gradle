@@ -7,13 +7,18 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertNoTask
+import net.twisterrob.gradle.test.minus
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
+import net.twisterrob.gradle.test.tasksIn
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.either
+import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.startsWith
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -26,6 +31,8 @@ import kotlin.test.assertEquals
 class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 	companion object {
+
+		private val endl = System.lineSeparator()
 
 		@Suppress("")
 		@Language("java")
@@ -158,5 +165,62 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 		)
 		result.assertNoTask(":testReport")
 		result.assertHasOutputLine(Regex("""> There were failing tests. See the report at: .*"""))
+	}
+
+	@Test fun `gathers results from subprojects`() {
+		val modules = arrayOf(
+			":module1",
+			":module2",
+			":module2:sub1",
+			":module2:sub2",
+			":module3:sub1",
+			":module3:sub2"
+		)
+		val applyTo = arrayOf(":module1", ":module2", ":module2:sub1", ":module3:sub2")
+		modules.forEach {
+			gradle.settingsFile.appendText("include '${it}'${endl}")
+
+			@Language("gradle")
+			val subProject = """
+				apply plugin: 'com.android.library'
+				dependencies {
+					testImplementation 'junit:junit:${Version.id()}'
+				}
+			""".trimIndent()
+			@Language("xml")
+			val manifest = """
+				<manifest package="project${it.replace(":", ".")}" />
+			""".trimIndent()
+
+			val subPath = it.split(":").toTypedArray()
+			gradle.file(subProject, *subPath, "build.gradle")
+			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
+			if (it in applyTo) {
+				gradle.file(testFile, *subPath, "src", "test", "java", "Tests.java")
+			}
+		}
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.quality'
+		""".trimIndent()
+
+		val result = gradle.runFailingBuild {
+			basedOn("android-multi_module")
+			run(script, "testDebugUnitTest", "testReport")
+		}
+
+		applyTo.forEach { module ->
+			assertEquals(TaskOutcome.SUCCESS, result.task("$module:testDebugUnitTest")!!.outcome)
+		}
+		(modules - applyTo).forEach { module ->
+			assertEquals(TaskOutcome.NO_SOURCE, result.task("$module:testDebugUnitTest")!!.outcome)
+		}
+		assertEquals(TaskOutcome.FAILED, result.task(":testReport")!!.outcome)
+		result.assertHasOutputLine(Regex("""> There were ${applyTo.size * 3} failing tests. See the report at: .*"""))
+
+		val allTasks = result.tasks.map { it.path }
+		val tasks = tasksIn(modules, "testDebugUnitTest")
+		assertThat(allTasks - tasks - ":testReport", not(hasItem(startsWith("test"))))
 	}
 }
