@@ -4,6 +4,7 @@ import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
 import net.twisterrob.gradle.vcs.createTestFileToCommit
@@ -451,6 +452,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assemble", "assembleAndroidTest").withDebug(true).build()
 
+		result.assertNoOutputLine(Regex(""".*Gradle detected a problem with the following location.*"""))
 		result.assertSuccess(":assemblePaidDemoDebug")
 		result.assertSuccess(":assembleFreeDemoDebug")
 		result.assertSuccess(":assemblePaidFullDebug")
