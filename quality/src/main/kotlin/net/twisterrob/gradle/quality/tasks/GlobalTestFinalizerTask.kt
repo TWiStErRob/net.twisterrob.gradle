@@ -11,6 +11,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.TestReport
 import org.gradle.kotlin.dsl.withType
+import org.gradle.util.GradleVersion
 import se.bjurr.violations.lib.model.SEVERITY
 
 open class GlobalTestFinalizerTask : TestReport() {
@@ -54,7 +55,14 @@ open class GlobalTestFinalizerTask : TestReport() {
 					it.ignoreFailures = !it.wasLaunchedOnly
 				}
 			// Detach the result directories, simply using reportOn(tests) or the providers, task dependencies will be created.
-			task.reportOn(tests.map { it.binaryResultsDirectory.get() })
+			task.reportOn(tests.map {
+				if (GradleVersion.current().baseVersion < GradleVersion.version("5.6")) {
+					@Suppress("DEPRECATION")
+					it.binResultsDir
+				} else {
+					it.binaryResultsDirectory
+				}
+			})
 			// Force executing tests (if they're in the task graph), before reporting on them.
 			task.mustRunAfter(tests)
 		}
