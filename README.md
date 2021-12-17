@@ -52,7 +52,7 @@ For more, see the [examples](docs/examples) folder.
 There's a built-in HTML report that gathers all the results from all the modules into a single HTML file.
 
 ```shell
-gradlew violationReportHtml
+gradlew :violationReportHtml
 ```
 
 ### Console violation report
@@ -60,7 +60,7 @@ gradlew violationReportHtml
 There's a built-in console report that gathers all the results from all the modules and outputs results to the console.
 
 ```shell
-gradlew violationReportConsole
+gradlew :violationReportConsole
 ```
 
 ### Root project test report
@@ -68,7 +68,7 @@ gradlew violationReportConsole
 Gathers results from submodules and fails if there were errors.
 
 ```groovy
-rootProject.tasks.register("tests", net.twisterrob.gradle.quality.tasks.GlobalTestFinalizerTask)
+gradlew :testReport
 ```
 
 Note: this changes the `:*:test` test tasks to not fail so a whole project encompassing report can be generated.

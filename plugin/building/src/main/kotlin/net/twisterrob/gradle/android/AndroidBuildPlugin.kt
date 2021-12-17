@@ -29,7 +29,6 @@ open class AndroidBuildPluginExtension {
 	}
 
 	var decorateBuildConfig: Boolean = true
-	var addRunTasks: Boolean = true
 }
 
 class AndroidBuildPlugin : BasePlugin() {
@@ -42,10 +41,10 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
-		// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
-		project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
 		// most of Android's stuff is distributed here, so add by default
 		project.repositories.google() // https://maven.google.com
+		// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
+		project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
 
 		with(android) {
 			with(lintOptions) {
@@ -139,10 +138,11 @@ class AndroidBuildPlugin : BasePlugin() {
 				android.variants.all(::fixVariantTaskGroups)
 			}
 			project.plugins.withType<AppPlugin> {
-				if (twisterrob.addRunTasks) {
-					android.variants.all { variant ->
-						createRunTask(variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant)
-					}
+				android.variants.all { variant ->
+					registerRunTask(
+						project,
+						variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
+					)
 				}
 			}
 		}
@@ -163,17 +163,16 @@ class AndroidBuildPlugin : BasePlugin() {
 
 	companion object {
 
-		private fun createRunTask(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.ApkVariant) {
-			val install = variant.installProvider?.get()
-			if (install != null) {
-				val project = install.project
-				val name = "run${variant.name.capitalize()}"
-				project.tasks.register<AndroidInstallRunnerTask>(name) {
-					dependsOn(install)
-					this.manifestFile.set(variant.outputs.single().processManifestProvider.flatMap { it.manifestFile })
-					this.applicationId.set(variant.applicationId)
-					this.updateDescription(variant.description)
-				}
+		private fun registerRunTask(
+			project: Project,
+			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.ApkVariant
+		) {
+			val install = variant.installProvider ?: return
+			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize()}") {
+				dependsOn(install)
+				this.manifestFile.set(variant.outputs.single().processManifestProvider.flatMap { it.manifestFile })
+				this.applicationId.set(variant.applicationId)
+				this.updateDescription(variant.description)
 			}
 		}
 

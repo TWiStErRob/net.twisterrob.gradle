@@ -279,7 +279,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				testImplementation 'androidx.test:core:1.3.0'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
-			tasks.withType(Test) {
+			tasks.withType(Test).configureEach {
 				//noinspection UnnecessaryQualifiedReference
 				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
 			}
@@ -343,7 +343,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				testImplementation 'androidx.test:core:1.3.0'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
-			tasks.withType(Test) {
+			tasks.withType(Test).configureEach {
 				//noinspection UnnecessaryQualifiedReference
 				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
 			}
@@ -412,7 +412,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				testImplementation 'org.robolectric:robolectric:4.4'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
-			tasks.withType(Test) {
+			tasks.withType(Test).configureEach {
 				//noinspection UnnecessaryQualifiedReference
 				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
 			}

@@ -136,7 +136,7 @@ private fun JavaCompile.changeCompatibility(ver: JavaVersion) {
  *
  * Usage:
  * ```
- * tasks.withType(JavaCompile) { doFirst { removeDuplicateCompilerArgs(it) } }
+ * tasks.withType(JavaCompile).configureEach { doFirst { removeDuplicateCompilerArgs(it) } }
  * ```
  *
  * Since the suggested usage is [org.gradle.api.Task.doFirst],
@@ -163,7 +163,7 @@ private fun JavaCompile.removeDuplicateCompilerArgs() {
  *
  * Usage:
  * ```
- * tasks.withType(JavaCompile) { doFirst { removeDuplicateCompilerArgs2(it) } }
+ * tasks.withType(JavaCompile).configureEach { doFirst { removeDuplicateCompilerArgs2(it) } }
  * ```
  *
  * Since the suggested usage is [org.gradle.api.Task.doFirst],

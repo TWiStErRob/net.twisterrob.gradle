@@ -7,12 +7,16 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.failReason
+import net.twisterrob.gradle.test.minus
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
+import net.twisterrob.gradle.test.tasksIn
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.containsStringIgnoringCase
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
@@ -117,7 +121,7 @@ class PmdPluginTest : BaseIntgTest() {
 		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "pmdEach", "pmdRelease", "pmdDebug") - exceptions
-		assertThat(allTasks - tasks, not(hasItem(containsString("pmd"))))
+		assertThat(allTasks - tasks, not(hasItem(containsStringIgnoringCase("pmd"))))
 	}
 
 	@Test fun `applies to subprojects from root`() {
@@ -171,7 +175,7 @@ class PmdPluginTest : BaseIntgTest() {
 		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "pmdEach", "pmdRelease", "pmdDebug")
-		assertThat(allTasks - tasks, not(hasItem(containsString("pmd"))))
+		assertThat(allTasks - tasks, not(hasItem(containsStringIgnoringCase("pmd"))))
 	}
 
 	@Test fun `applies to individual subprojects`() {
@@ -217,7 +221,7 @@ class PmdPluginTest : BaseIntgTest() {
 
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(applyTo, "pmdEach", "pmdRelease", "pmdDebug")
-		assertThat(allTasks - tasks, not(hasItem(containsString("pmd"))))
+		assertThat(allTasks - tasks, not(hasItem(containsStringIgnoringCase("pmd"))))
 
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),
@@ -244,7 +248,7 @@ class PmdPluginTest : BaseIntgTest() {
 					incrementalAnalysis.set(false)
 				}
 			}
-			tasks.withType(${Pmd::class.java.name}) {
+			tasks.withType(${Pmd::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				consoleOutput = true
 			}
@@ -277,11 +281,3 @@ class PmdPluginTest : BaseIntgTest() {
 		)
 	}
 }
-
-private fun tasksIn(modules: Array<String>, vararg taskNames: String): Array<String> =
-	modules
-		.flatMap { module -> taskNames.map { taskName -> "${module}:${taskName}" } }
-		.toTypedArray()
-
-private inline operator fun <reified T> Array<T>.minus(others: Array<T>): Array<T> =
-	(this.toList() - others).toTypedArray()
