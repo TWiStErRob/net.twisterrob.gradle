@@ -139,7 +139,10 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 			project.plugins.withType<AppPlugin> {
 				android.variants.all { variant ->
-					createRunTask(variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant)
+					registerRunTask(
+						project,
+						variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
+					)
 				}
 			}
 		}
@@ -160,17 +163,16 @@ class AndroidBuildPlugin : BasePlugin() {
 
 	companion object {
 
-		private fun createRunTask(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.ApkVariant) {
-			val install = variant.installProvider?.get()
-			if (install != null) {
-				val project = install.project
-				val name = "run${variant.name.capitalize()}"
-				project.tasks.register<AndroidInstallRunnerTask>(name) {
-					dependsOn(install)
-					this.manifestFile.set(variant.outputs.single().processManifestProvider.flatMap { it.manifestFile })
-					this.applicationId.set(variant.applicationId)
-					this.updateDescription(variant.description)
-				}
+		private fun registerRunTask(
+			project: Project,
+			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.ApkVariant
+		) {
+			val install = variant.installProvider ?: return
+			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize()}") {
+				dependsOn(install)
+				this.manifestFile.set(variant.outputs.single().processManifestProvider.flatMap { it.manifestFile })
+				this.applicationId.set(variant.applicationId)
+				this.updateDescription(variant.description)
 			}
 		}
 
