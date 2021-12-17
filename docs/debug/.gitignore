@@ -1,0 +1,10 @@
+# Include Remote Debug Run Configuration
+!/*/.idea/
+/*/.idea/*
+!/*/.idea/runConfigurations/
+/*/.idea/runConfigurations/*
+!/*/.idea/runConfigurations/Remote_Debug.xml
+
+# Ignore build files.
+/*/build/
+/*/buildSrc/build/
