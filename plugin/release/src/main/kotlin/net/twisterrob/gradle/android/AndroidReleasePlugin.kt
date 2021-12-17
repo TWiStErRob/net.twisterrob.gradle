@@ -12,13 +12,14 @@ import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
-import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
+import org.gradle.kotlin.dsl.closureOf
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 import java.io.File
+import java.io.IOException
 import java.util.zip.ZipFile
 
 private val defaultReleaseDir: File
@@ -124,20 +125,9 @@ class AndroidReleasePlugin : BasePlugin() {
 					it.rename("(.*)", "proguard_$1")
 				}
 			}
-			doFirst {
-				val outFile = outputs.files.singleFile
-				if (outFile.exists()) {
-					throw StopExecutionException("Target zip file already exists, did you run 'svn update'?\nRelease archive: ${outFile}")
-				}
-			}
-			doLast {
-				println("Published release artifacts to ${outputs.files.singleFile}:" + ZipFile(outputs.files.singleFile)
-					.entries()
-					.toList()
-					.sortedBy { it.name }
-					.joinToString(prefix = "\n", separator = "\n") { "\t * ${it}" }
-				)
-			}
+
+			doFirst(closureOf<Zip> { failIfAlreadyArchived() })
+			doLast(closureOf<Zip> { printResultingArchive() })
 		}
 
 	private fun registerFlavorTask(flavor: ProductFlavor): TaskProvider<Task> {
@@ -194,20 +184,23 @@ class AndroidReleasePlugin : BasePlugin() {
 				}
 			}
 
-			doFirst {
-				val outFile = outputs.files.singleFile
-				if (outFile.exists()) {
-					throw StopExecutionException("Target zip file already exists.\nRelease archive: ${outFile}")
-				}
-			}
-
-			doLast {
-				println("Published release artifacts to ${outputs.files.singleFile}:" + ZipFile(outputs.files.singleFile)
-					.entries()
-					.toList()
-					.sortedBy { it.name }
-					.joinToString(prefix = "\n", separator = "\n") { "\t * ${it}" }
-				)
-			}
+			doFirst(closureOf<Zip> { failIfAlreadyArchived() })
+			doLast(closureOf<Zip> { printResultingArchive() })
 		}
+}
+
+private fun Zip.failIfAlreadyArchived() {
+	val outFile = outputs.files.singleFile
+	if (outFile.exists()) {
+		throw IOException("Target zip file already exists.\nRelease archive: ${outFile}")
+	}
+}
+
+private fun Zip.printResultingArchive() {
+	println("Published release artifacts to ${outputs.files.singleFile}:" + ZipFile(outputs.files.singleFile)
+		.entries()
+		.toList()
+		.sortedBy { it.name }
+		.joinToString(prefix = "\n", separator = "\n") { "\t * ${it}" }
+	)
 }
