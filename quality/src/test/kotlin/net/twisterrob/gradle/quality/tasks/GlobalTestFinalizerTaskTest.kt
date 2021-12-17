@@ -42,19 +42,19 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
+			apply plugin: 'net.twisterrob.quality'
 			dependencies {
 				testImplementation 'junit:junit:${Version.id()}'
 			}
-			task('tests', type: ${GlobalTestFinalizerTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
 			basedOn("android-root_app")
-			run(script, "test", "tests")
+			run(script, "test", "testReport")
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
-		assertEquals(TaskOutcome.FAILED, result.task(":tests")!!.outcome)
+		assertEquals(TaskOutcome.FAILED, result.task(":testReport")!!.outcome)
 		result.assertHasOutputLine(Regex("""> There were ${2 + 2} failing tests. See the report at: .*"""))
 	}
 }
