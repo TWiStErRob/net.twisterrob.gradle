@@ -3,6 +3,7 @@ package net.twisterrob.gradle.vcs
 import net.twisterrob.gradle.base.BaseExposedPlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
@@ -34,6 +35,9 @@ open class VCSPluginExtension : VCSExtension {
 
 	override val revisionNumber: Int
 		get() = current.revisionNumber
+
+	override fun files(project: Project): FileCollection =
+		current.files(project)
 }
 
 class VCSPlugin : BaseExposedPlugin() {

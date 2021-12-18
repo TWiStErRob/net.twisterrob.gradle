@@ -11,6 +11,7 @@ import org.eclipse.jgit.lib.RepositoryCache
 import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.util.FS
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 import java.io.File
@@ -76,6 +77,26 @@ open class GITPluginExtension : VCSExtension {
 				return count()
 			}
 		}
+
+	override fun files(project: Project): FileCollection =
+		project.files(
+			".git/HEAD",
+			project.provider {
+				val headRef = project.rootDir.resolve(".git/HEAD")
+				if (headRef.exists() && headRef.isFile && headRef.canRead()) {
+					val headRaw = headRef.readText().trimEnd()
+					if (headRaw.startsWith("ref: ")) {
+						// HEAD contains a ref, resolve it to a file containing the SHA as the input.
+						project.rootDir.resolve(".git").resolve(headRaw.substringAfter("ref: "))
+					} else {
+						// HEAD contains an SHA, that's the input.
+						headRef
+					}
+				} else {
+					error("Cannot find ${headRef}, consider android.twisterrob.decorateBuildConfig = false")
+				}
+			}
+		)
 }
 
 private inline fun <T> inRepo(dir: File, block: Git.() -> T): T {

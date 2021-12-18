@@ -1,6 +1,7 @@
 plugins {
 	kotlin
 	id("java-gradle-plugin")
+	id("java-test-fixtures")
 	id("net.twisterrob.gradle.build.publishing")
 }
 
@@ -31,4 +32,7 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
+
+	testFixturesApi(libs.svnkit)
+	testFixturesApi(libs.jgit)
 }
