@@ -442,12 +442,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 					}
 				}
 			}
-			androidComponents {
-				beforeVariants(selector().all()) {
-					enabled = true
-					enableAndroidTest = true
-				}
-			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assemble", "assembleAndroidTest").withDebug(true).build()
