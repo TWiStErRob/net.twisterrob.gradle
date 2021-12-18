@@ -24,6 +24,8 @@ import java.time.ZoneOffset
  * [Delete %TEMP%\robolectric-2 folder](https://github.com/robolectric/robolectric/issues/4567#issuecomment-475740375)
  *
  * @see AndroidBuildPlugin
+ * @see net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
+ * @see net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
@@ -416,7 +418,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				//noinspection UnnecessaryQualifiedReference
 				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
 			}
-			tasks.named("calculateBuildConfigBuildTime").configure { getBuildTime = { 1234567890 } }
+			tasks.named("calculateBuildConfigBuildTime").configure { buildTime.set(1234567890L) }
 		""".trimIndent()
 
 		val result = gradle.run(script, "testReleaseUnitTest").build()
