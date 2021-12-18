@@ -3,6 +3,7 @@ package net.twisterrob.gradle.vcs
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 import org.tmatesoft.svn.cli.SVN
@@ -62,6 +63,11 @@ open class SVNPluginExtension : VCSExtension {
 			} catch (ignore: SVNException) {
 				false
 			}
+
+	override fun files(project: Project): FileCollection =
+		project.files(
+			project.rootDir.resolve(".svn/wc.db")
+		)
 
 	// key method/closure - used as: def out = doSvnMain( 'your', 'svn', 'args', 'go', 'here' );
 	@Suppress("unused")
