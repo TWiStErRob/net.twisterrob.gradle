@@ -444,7 +444,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			}
 		""".trimIndent()
 
-		val result = gradle.run(script, "assemble", "assembleAndroidTest").withDebug(true).build()
+		val result = gradle.run(script, "assemble", "assembleAndroidTest").build()
 
 		result.assertNoOutputLine(Regex(""".*Gradle detected a problem with the following location.*"""))
 		result.assertSuccess(":assemblePaidDemoDebug")
