@@ -30,6 +30,9 @@ Gradle 4.4 — 4.9 is not supported, because it's hard to backport the lazy task
 Convention plugins only support Android Gradle Plugin 4.0.0 — 4.2.2 on Gradle 6.1.1+, because it's really hard to backport all the features to 3.x with no need for this.
 
 ## Quick setup
+There are different ways to use a Gradle plugin, choose your poison below.
+<details>
+	<summary>normal build.gradle(.kts) (<code>buildscript</code>)</summary>
 
 ```gradle
 buildscript {
@@ -37,11 +40,70 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath("net.twisterrob.gradle:twister-quality:${VERSION_TWISTER_QUALITY}")
+		classpath("net.twisterrob.gradle:twister-quality:x.y")
 	}
 }
+// Kotlin
+apply(plugin = "net.twisterrob.quality")
+// Groovy
 apply plugin: "net.twisterrob.quality"
 ```
+
+</details>
+
+<details>
+	<summary>buildSrc classpath</summary>
+
+#### `buildSrc/build.gradle(.kts)`
+
+```gradle
+repositories {
+	mavenCentral()
+}
+dependencies {
+	implementation("net.twisterrob.gradle:twister-quality:x.y")
+}
+```
+
+#### `build.gradle(.kts)`
+
+```gradle
+// Kotlin
+apply(plugin = "net.twisterrob.quality")
+// Groovy
+apply plugin: "net.twisterrob.quality"
+```
+
+</details>
+
+<details>
+	<summary><code>plugins</code> block and settings.gradle(.kts)</summary>
+
+See it live at [SNAPSHOT example](docs/examples/snapshot/settings.gradle.kts).
+
+```gradle
+plugins {
+	id("net.twisterrob.quality") version "x.y"
+}
+```
+
+```gradle
+pluginManagement {
+	repositories {
+		mavenCentral()
+	}
+	resolutionStrategy {
+		eachPlugin {
+			when (requested.id.id) {
+				"net.twisterrob.quality" ->
+					useModule("net.twisterrob.gradle:twister-quality:${requested.version}")
+			}
+		}
+	}
+}
+```
+
+</details>
 
 For more, see the [examples](docs/examples) folder.
 
