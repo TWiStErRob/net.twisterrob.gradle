@@ -10,26 +10,27 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.api.tasks.UntrackedTask
 import org.gradle.kotlin.dsl.getByType
 
-// https://docs.gradle.org/7.3/release-notes.html#plugin-development-improvements
-@UntrackedTask(because = "Input of this task is .git or .svn folder.")
-open class CalculateVCSRevisionInfoTask : DefaultTask() {
+abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 
 	@get:OutputFile
-	val revisionFile: RegularFileProperty = intermediateRegularFile("buildConfigDecorations/revision.txt")
+	val revisionFile: RegularFileProperty =
+		intermediateRegularFile("buildConfigDecorations/revision.txt")
 
 	@get:OutputFile
-	val revisionNumberFile: RegularFileProperty = intermediateRegularFile("buildConfigDecorations/revisionNumber.txt")
+	val revisionNumberFile: RegularFileProperty =
+		intermediateRegularFile("buildConfigDecorations/revisionNumber.txt")
 
 	init {
-		outputs.upToDateWhen { false }
+		inputs.files(project.provider { vcs.current.files(project) })
 	}
+
+	private val vcs: VCSPluginExtension
+		get() = project.extensions.getByType()
 
 	@TaskAction
 	fun writeVCS() {
-		val vcs: VCSPluginExtension = project.extensions.getByType()
 		revisionFile.writeText(vcs.current.revision)
 		revisionNumberFile.writeText(vcs.current.revisionNumber.toString())
 	}
