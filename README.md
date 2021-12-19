@@ -63,6 +63,14 @@ There's a built-in console report that gathers all the results from all the modu
 gradlew :violationReportConsole
 ```
 
+### Count violation report to file
+
+It just saves the number of violations into a file. Good for automation.
+
+```shell
+gradlew :violationCountFile
+```
+
 ### Root project test report
 
 Gathers results from submodules and fails if there were errors.
