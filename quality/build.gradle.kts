@@ -38,6 +38,8 @@ dependencies {
 
 	testImplementation(testFixtures(projects.pmd))
 	testImplementation(testFixtures(projects.checkstyle))
+
+	testFixturesImplementation(projects.test.internal)
 }
 
 tasks.register("tests") {
