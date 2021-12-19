@@ -9,6 +9,7 @@ import net.twisterrob.gradle.quality.tasks.ConsoleReportTask
 import net.twisterrob.gradle.quality.tasks.FileCountReportTask
 import net.twisterrob.gradle.quality.tasks.GlobalTestFinalizerTask
 import net.twisterrob.gradle.quality.tasks.HtmlReportTask
+import net.twisterrob.gradle.quality.tasks.ValidateViolationsTask
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 
@@ -28,6 +29,7 @@ class QualityPlugin : BaseExposedPlugin() {
 			project.tasks.register(REPORT_CONSOLE_TASK_NAME, ConsoleReportTask::class.java)
 			project.tasks.register(REPORT_HTML_TASK_NAME, HtmlReportTask::class.java)
 			project.tasks.register(REPORT_COUNT_TASK_NAME, FileCountReportTask::class.java)
+			project.tasks.register(VALIDATE_TASK_NAME, ValidateViolationsTask::class.java)
 			if (AGPVersions.isAvailable) {
 				project.plugins.apply(LintPlugin::class.java)
 			}
@@ -39,5 +41,6 @@ class QualityPlugin : BaseExposedPlugin() {
 		const val REPORT_CONSOLE_TASK_NAME: String = "violationReportConsole"
 		const val REPORT_HTML_TASK_NAME: String = "violationReportHtml"
 		const val REPORT_COUNT_TASK_NAME: String = "violationCountFile"
+		const val VALIDATE_TASK_NAME: String = "validateViolations"
 	}
 }

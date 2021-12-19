@@ -71,6 +71,14 @@ It just saves the number of violations into a file. Good for automation.
 gradlew :violationCountFile
 ```
 
+### Fail the build on violation
+
+It just fails if there are violations.
+
+```shell
+gradlew :validateViolations
+```
+
 ### Root project test report
 
 Gathers results from submodules and fails if there were errors.
