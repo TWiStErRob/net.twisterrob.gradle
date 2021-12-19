@@ -13,7 +13,6 @@ import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import net.twisterrob.gradle.quality.gather.LintVariantReportGathererPre7
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
-import net.twisterrob.gradle.quality.report.TableGenerator
 import net.twisterrob.gradle.quality.report.html.deduplicate
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -24,7 +23,7 @@ import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
 
-open class ValidateViolationsTask : DefaultTask() {
+abstract class ValidateViolationsTask : DefaultTask() {
 
 	companion object {
 		@Suppress("UNCHECKED_CAST")
@@ -86,6 +85,8 @@ open class ValidateViolationsTask : DefaultTask() {
 			this.mustRunAfter(reportTask)
 		}
 	}
+
+	protected abstract fun processViolations(violations: Grouper.Start<Violations>)
 
 	@TaskAction
 	fun validateViolations() {
@@ -171,50 +172,6 @@ open class ValidateViolationsTask : DefaultTask() {
 					}
 				}
 			}
-		}
-	}
-
-	protected open fun processViolations(violations: Grouper.Start<Violations>) {
-		@Suppress("UNCHECKED_CAST")
-		val grouped = violations
-			.count<Int>()
-			.by("module")
-			.by("variant")
-			.by("parser")
-			.group() as Map<String, Map<String, Map<String, Int?>>>
-		val table = TableGenerator(
-			zeroCount = "." /*TODO ✓*/,
-			missingCount = "",
-			printEmptyRows = false,
-			printEmptyColumns = false
-		).build(grouped)
-		val result = violations
-			.list
-			.flatMap { it.violations ?: emptyList() }
-			.map { violation ->
-				val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
-				val loc = violation.location
-				return@map (""
-						+ "\n${loc.file.absolutePath}:${loc.startLine} in ${loc.module}/${loc.variant}"
-						+ "\n\t${violation.source.reporter}/${violation.rule}"
-						+ "\n${message.prependIndent("\t")}"
-						)
-			}
-		val reportLocations = violations
-			.list
-			.filter { (it.violations ?: emptyList()).isNotEmpty() }
-			.map { "${it.module}:${it.parser}@${it.variant} (${it.violations!!.size}): ${it.report}" }
-
-		if (result.isNotEmpty()) {
-			println(result.joinToString(System.lineSeparator() + System.lineSeparator()))
-			println()
-		}
-		if (reportLocations.isNotEmpty()) {
-			println(reportLocations.joinToString(System.lineSeparator()))
-			println()
-		}
-		if (table.isNotBlank()) {
-			println(table)
 		}
 	}
 }

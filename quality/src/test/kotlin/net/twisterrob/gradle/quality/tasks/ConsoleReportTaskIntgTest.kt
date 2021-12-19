@@ -18,10 +18,10 @@ import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
 /**
- * @see ValidateViolationsTask
+ * @see ConsoleReportTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class ValidateViolationsTaskTest : BaseIntgTest() {
+class ConsoleReportTaskIntgTest : BaseIntgTest() {
 
 	companion object {
 		private val CONFIG_PATH_CS: Array<String> = arrayOf("config", "checkstyle", "checkstyle.xml")
@@ -48,7 +48,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 			apply plugin: 'net.twisterrob.checkstyle'
 			apply plugin: 'net.twisterrob.pmd'
 
-			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -72,7 +72,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 				apply plugin: 'net.twisterrob.checkstyle'
 				apply plugin: 'net.twisterrob.pmd'
 			}
-			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -104,7 +104,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 				apply plugin: 'com.android.library'
 				apply plugin: 'net.twisterrob.checkstyle'
 			}
-			tasks.register('printViolationCounts', ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCounts', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -135,7 +135,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 			apply plugin: 'net.twisterrob.checkstyle'
 			apply plugin: 'net.twisterrob.pmd'
 
-			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
 
 		gradle.file(checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")
@@ -155,7 +155,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 			android.lintOptions.xmlOutput = new File(buildDir, "reports/my-lint/results.xml")
 			android.lintOptions.check = ['UnusedResources']
 		""".trimIndent()
@@ -174,7 +174,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 			android.lintOptions.check = ['UnusedResources']
 		""".trimIndent()
 
@@ -199,7 +199,7 @@ class ValidateViolationsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			tasks.register('printViolationCount', ${ValidateViolationsTask::class.java.name})
+			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
