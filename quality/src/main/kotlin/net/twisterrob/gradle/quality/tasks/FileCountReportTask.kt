@@ -9,7 +9,7 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.OutputFile
 import java.io.File
 
-open class FileCountReportTask : ValidateViolationsTask() {
+open class FileCountReportTask : BaseViolationsTask() {
 
 	private val outputFile: File
 		get() = output.asFile.get()

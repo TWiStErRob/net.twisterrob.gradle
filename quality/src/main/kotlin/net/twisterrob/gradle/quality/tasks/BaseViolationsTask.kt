@@ -23,7 +23,7 @@ import org.gradle.api.tasks.TaskAction
 import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
 
-abstract class ValidateViolationsTask : DefaultTask() {
+abstract class BaseViolationsTask : DefaultTask() {
 
 	companion object {
 		@Suppress("UNCHECKED_CAST")
