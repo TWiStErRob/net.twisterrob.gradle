@@ -68,7 +68,7 @@ class FileCountReportTaskIntgTest : BaseIntgTest() {
 			apply plugin: 'net.twisterrob.pmd'
 
 			tasks.register('printViolationCount', ${FileCountReportTask::class.java.name}) {
-				output.set("problems.txt")
+				output.set(file("problems.txt"))
 			}
 		""".trimIndent()
 
