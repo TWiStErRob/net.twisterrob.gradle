@@ -1,12 +1,14 @@
 ## Publish release `x.y`
 
- 1. `git add gradle.properties CHANGELOG.md & git commit -m "Release x.y"`
+ 1. `git add gradle.properties CHANGELOG.md README.md & git commit -m "Release x.y"`
     * `CHANGELOG.md`: review bullet points of what changed
     * `CHANGELOG.md`: add links to PRs/commits for changes
     * `CHANGELOG.md`: remove empty sections
     * `CHANGELOG.md`: update version end date
+    * `CHANGELOG.md`: update version end date
     * `gradle.properties`: remove `-SNAPSHOT` suffix
       Double-check that version is `x.y`
+    * `README.md`: review compatibility table
  1. [Draft a new release](https://github.com/TWiStErRob/net.twisterrob.gradle/releases/new) on GitHub
     * "_Tag version_": `vx.y` @ Target: `master`
     * "_Release title_": `x.y Two Word Summary` (e.g. biggest change / reason for release)
