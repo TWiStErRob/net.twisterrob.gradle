@@ -101,13 +101,20 @@ class AndroidMinificationPlugin : BasePlugin() {
 				val obfuscationTask = proguardTask ?: r8Task
 				if (obfuscationTask != null) {
 					obfuscationTask.dependsOn(extractMinificationRules)
-					val generateMinificationRulesTask = createGenerateMinificationRulesTask(
-						variant,
-						generatedProguardRulesFile,
-						proguardTask == obfuscationTask
-					)
-					lintTasksDependOnProguardRulesTask(generateMinificationRulesTask)
-					obfuscationTask.dependsOn(generateMinificationRulesTask)
+					if (variant.flavorName == "") {
+						val generateMinificationRulesTask = createGenerateMinificationRulesTask(
+							variant,
+							generatedProguardRulesFile,
+							proguardTask == obfuscationTask
+						)
+						lintTasksDependOnProguardRulesTask(generateMinificationRulesTask)
+						obfuscationTask.dependsOn(generateMinificationRulesTask)
+					} else {
+						// Cannot do this simply because AGP doesn't provide a DSL surface for adding proguard rules for variants.
+						// It's possible to add for buildType and flavors, but since the mapping file is for variants,
+						// the generate... task would not be able to create a distinct file.
+						obfuscationTask.logger.warn("This project uses flavors, it's not possible to generate variant based rules for ${variant.name}.")
+					}
 				}
 			}
 		}
