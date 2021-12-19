@@ -8,7 +8,6 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.common.AGPVersions
-import net.twisterrob.gradle.compat.archivesBaseNameCompat
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId
 import net.twisterrob.gradle.vcs.VCSExtension
@@ -112,10 +111,13 @@ open class AndroidVersionExtension {
 	var renameAPK: Boolean = true
 
 	var formatArtifactName: (Project, String, String, Long, String?) -> String =
-		{ project, baseName, applicationId, versionCode, versionName ->
-			// strip project name, leave only variant
-			val strippedBaseName = baseName.replace("${project.archivesBaseNameCompat}-", "")
-			"${applicationId}@${versionCode}-v${versionName}+${strippedBaseName}"
+		{ _, variantName, applicationId, versionCode, versionName ->
+			val variant =
+				if (variantName.endsWith("AndroidTest"))
+					variantName.removeSuffix("AndroidTest") + "-androidTest"
+				else
+					variantName
+			"${applicationId}@${versionCode}-v${versionName}+${variant}"
 		}
 
 	internal fun calculateVersionName(): String =
@@ -212,12 +214,10 @@ class AndroidVersionPlugin : BasePlugin() {
 		androidTestOutput?.let { androidTest ->
 			androidTest.outputFileName.set(project.provider {
 				// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
-				val androidTestName: String =
-					variant.androidTest!!.name.removePrefix(variant.name).decapitalize(Locale.ROOT)
 				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 				val artifactName = version.formatArtifactName(
 					project,
-					"${variant.name}-${androidTestName}",
+					variant.androidTest!!.name,
 					variant.androidTest!!.applicationId.get(),
 					variantOutput.versionCode.getOrElse(-1)!!.toLong(),
 					variantOutput.versionName.getOrElse(null)
@@ -240,7 +240,7 @@ class AndroidVersionPlugin : BasePlugin() {
 		// only called for applicationVariants and their testVariants so filter should be safe
 		variant.outputs.withType<@Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariantOutput> {
 			val artifactName = version.formatArtifactName(
-				project, variant.baseName, variant.applicationId, source.versionCode.toLong(), source.versionName
+				project, variant.name, variant.applicationId, source.versionCode.toLong(), source.versionName
 			)
 			outputFileName = "${artifactName}.apk"
 		}
