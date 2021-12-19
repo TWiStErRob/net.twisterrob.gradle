@@ -20,7 +20,7 @@ import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
-open class HtmlReportTask : ValidateViolationsTask() {
+open class HtmlReportTask : BaseViolationsTask() {
 
 	private val xmlFile: File
 		get() = xml.asFile.get()

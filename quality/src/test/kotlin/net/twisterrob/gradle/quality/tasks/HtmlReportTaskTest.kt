@@ -3,6 +3,7 @@ package net.twisterrob.gradle.quality.tasks
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.projectFile
 import net.twisterrob.gradle.test.runBuild
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.Assertions.assertTimeoutPreemptively
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.function.ThrowingSupplier
-import java.io.File
 import java.time.Duration.ofMinutes
 import kotlin.test.assertEquals
 
@@ -307,7 +307,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 				xmlOutput = xml
 			}
 		""".trimIndent()
-		gradle.runner.projectDir.resolve("gradle.properties")
+		gradle.propertiesFile
 			// useful for manually checking memory usage: -XX:+HeapDumpOnOutOfMemoryError
 			.appendText("org.gradle.jvmargs=-Xmx256M\n")
 
@@ -334,9 +334,3 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			""".trimIndent()
 	}
 }
-
-private fun GradleRunnerRule.projectFile(relative: String): File =
-	this.runner.projectDir.resolve(relative)
-
-private fun GradleRunnerRule.violationsReport(extension: String): File =
-	this.projectFile("build/reports/violations.${extension}")

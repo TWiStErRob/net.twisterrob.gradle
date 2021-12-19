@@ -19,6 +19,9 @@ import java.util.Date
 val GradleRunnerRule.root: File
 	get() = this.settingsFile.parentFile!!
 
+fun GradleRunnerRule.projectFile(relative: String): File =
+	this.runner.projectDir.resolve(relative)
+
 fun GradleRunnerRule.delete(path: String) {
 	val file = root.resolve(path)
 	assertTrue(
