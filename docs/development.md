@@ -22,6 +22,30 @@ See [test/README.md](../test/README.md).
 ### Running tests from IDE
 See [test/README.md](../test/README.md).
 
+
+### Using the `-SNAPSHOT` from Sonatype
+Every commit that's built on CI is deployed to Sonatype. The version is either in `x.y-SNAPSHOT` or `x.y.branch-SNAPSHOT` form.
+
+The two main entry points are:
+ * [twister-convention-plugins](https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/net/twisterrob/gradle/twister-convention-plugins/)
+ * [twister-quality](https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/net/twisterrob/gradle/twister-quality/)
+
+To use the `-SNAPSHOT` builds it's necessary to declare the Sonatype repository:
+```gradle
+// `repositories { }` in build.gradle > buildscript, or settings.gradle > pluginManagement, or buildSrc > build.gradle
+maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+   name = "Sonatype 01: SNAPSHOTs"
+   content {
+       includeGroup("net.twisterrob.gradle")
+   }
+   mavenContent {
+       snapshotsOnly()
+   }
+}
+```
+and then business as usual, see [README.md](../README.md#quick-setup).
+
+
 ### Using the `-SNAPSHOT` from a local repo
 It's possible to deploy a snapshot into the current user's `.m2` folder.
 This is useful for testing on external local projects.
@@ -32,21 +56,23 @@ gradlew publishToMavenLocal
 ```
 
 #### Consume
-```
+```gradle
 buildscript {
 	repositories {
 		mavenLocal() // make sure it's first
 	}
 }
 ```
-and then business as usual (`buildscript { dependencies { classpath "..."` etc. see README.md).
+and then business as usual (e.g. `buildscript { dependencies { classpath "..."` etc. see [README.md](../README.md#quick-setup)).
 
 
 ## Using the `-SNAPSHOT` from a local build
 This bypasses Gradle's dependency management and uses jars directly. The drawback is that each transitive dependency has to be manually added.
 
-Add in root `build.gradle`:
-```groovy
+<details>
+	<summary>Add <code>buildscript</code> block in root `build.gradle`</summary>
+
+```gradle
 buildscript {
 	repositories {
 		mavenCentral()
@@ -76,6 +102,8 @@ buildscript {
 	}
 }
 ```
+</details>
+
 To try it out, add `printViolationCounts` from README.md and run `gradlew checkstyleEach :printViolationCounts`.
 
 

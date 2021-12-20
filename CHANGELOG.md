@@ -1,23 +1,30 @@
 # Change Log
 
-## 0.13 *(2021-11-01 --- )*
+## 0.13 *(2021-11-01 --- 2021-12-20)*
 
 ### Breaking
- * ...
+ * convention: Removed `autoVersion` DSL, it's automatically deciding whether it needs auto-versioning. (#174)
+ * convention: Removed `addRunTasks` DSL, using lazy task creations instead. (#189)
+ * Some internal moves and renames of classes. (#177, #184, #195/#197)
+ * Lazy/up-to-date improvements (#11/#186/#189, #194/#196)
 
 ### New
-* Gradle 7 compatible (up to 7.3) (#163)
+ * Gradle 7 compatible (up to 7.3) (#163)
+ * quality: Android Gradle Plugin 7.0.3 compatible (#180)  
+   (still uses some deprecated code)
+ * New compatibility modules for compile-time checks for old code. (#181)
+ * quality: `validateViolations` and `violationCountFile` tasks (#195/#197)
 
 ### Fixes
- * ...
-
-### Deprecations
-
-#### `net.twisterrob.gradle:artifact-name`
- * ...
+ * convention: `-dump` option is not supported by R8 (#175/#179)
+ * Kotlin, Java, resources are published in -sources.jar (#187/#192)
+ * convention: Fail fast on release (#188/#191)
 
 ### Internal
- * ...
+ * Test improvements (#162, #176, #193)
+ * Build improvements (#166, #167, #146/#168, #171, #173, #178, #182)
+ * convention: plugin is split into multiple pieces. (#173)
+ * Code cleanup (#170, #184, #11/#186/#189)
 
 
 ## 0.12 *(2021-06-06 --- 2021-11-01)*
