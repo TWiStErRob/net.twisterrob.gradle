@@ -1,6 +1,6 @@
 plugins {
 	id("com.android.application") version "4.2.2"
-	id("net.twisterrob.quality") version "0.12"
+	id("net.twisterrob.quality") version "0.13"
 }
 
 android {
