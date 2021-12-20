@@ -5,7 +5,6 @@
     * `CHANGELOG.md`: add links to PRs/commits for changes
     * `CHANGELOG.md`: remove empty sections
     * `CHANGELOG.md`: update version end date
-    * `CHANGELOG.md`: update version end date
     * `gradle.properties`: remove `-SNAPSHOT` suffix
       Double-check that version is `x.y`
     * `README.md`: review compatibility table
