@@ -1,10 +1,6 @@
 ## Publish release `x.y`
 
- 1. `git add gradle.properties CHANGELOG.md README.md & git commit -m "Release x.y"`
-    * `CHANGELOG.md`: review bullet points of what changed
-    * `CHANGELOG.md`: add links to PRs/commits for changes
-    * `CHANGELOG.md`: remove empty sections
-    * `CHANGELOG.md`: update version end date
+ 1. `git add gradle.properties README.md & git commit -m "Release x.y"`
     * `gradle.properties`: remove `-SNAPSHOT` suffix
       Double-check that version is `x.y`
     * `README.md`: review compatibility table
@@ -46,32 +42,11 @@
 
 ## Prepare next release `x.z`
 
- 1. `git add gradle.properties CHANGELOG.md docs/examples/*/build.gradle.kts & git commit -m "Pre-Release x.z"`
+ 1. `git add gradle.properties docs/examples/*/build.gradle.kts & git commit -m "Pre-Release x.z"`
     * `gradle.properties`: version number `x.z-SNAPSHOT`
     * `docs/examples/local/build.gradle.kts`: plugin version `x.z-SNAPSHOT`
     * `docs/examples/snapshot/build.gradle.kts`: plugin version `x.z-SNAPSHOT`
     * `docs/examples/release/build.gradle.kts`: plugin version `x.y`
-    * `CHANGELOG.md`: add history section:
-    ```markdown
-    ## x.z *(YYYY-MM-DD --- )*
-
-    ### Breaking
-     * ...
-
-    ### New
-     * ...
-
-    ### Fixes
-     * ...
-
-    ### Deprecations
-
-    #### `net.twisterrob.gradle:artifact-name`
-     * ...
-
-    ### Internal
-     * ...
-    ```
  1. Push commit to `origin/master`.
  1. [Create milestone](https://github.com/TWiStErRob/net.twisterrob.gradle/milestones/new) `vx.z`, if doesn't exist yet.
 
