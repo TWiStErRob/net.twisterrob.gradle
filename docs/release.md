@@ -64,6 +64,7 @@
     * "Due date": release date
     * "Description": https://github.com/TWiStErRob/net.twisterrob.gradle/releases/tag/vx.y
  1. Release staging repository at [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories)
+ 1. Watch [Maven Central](https://repo1.maven.org/maven2/net/twisterrob/gradle/twister-quality/) for the artifact to appear. May take a few minutes.
 
 ## Prepare next release `x.z`
 
@@ -93,4 +94,5 @@
     ### Internal
      * ...
     ```
+ 1. Push commit to `origin/master`.
  1. [Create milestone](https://github.com/TWiStErRob/net.twisterrob.gradle/milestones/new) `vx.z`, if doesn't exist yet.
