@@ -8,21 +8,7 @@
     * `gradle.properties`: remove `-SNAPSHOT` suffix
       Double-check that version is `x.y`
     * `README.md`: review compatibility table
- 1. [Draft a new release](https://github.com/TWiStErRob/net.twisterrob.gradle/releases/new) on GitHub
-    * "_Tag version_": `vx.y` @ Target: `master`
-    * "_Release title_": `x.y Two Word Summary` (e.g. biggest change / reason for release)
-    * "_Describe this release_":
-    ```markdown
-    * TODO important change 1 from change log
-    * TODO important change 2 from change log
-    
-    For full list of changes see [change log][1], [release milestone][2] and [diff][3].
-
-    <!-- TODO update these links to latest -->
-    [1]: https://github.com/TWiStErRob/net.twisterrob.gradle/blob/v0.5/CHANGELOG.md#05-2018-04-02-----2018-04-16
-    [2]: https://github.com/TWiStErRob/net.twisterrob.gradle/milestone/1?closed=1
-    [3]: https://github.com/TWiStErRob/net.twisterrob.gradle/compare/v0.4...v0.5
-    ```
+ 1. Follow the steps at [Central Release Process][1].
  1. Upload
     * Set up credentials
         * `sonatypeUsername` is the account name of https://s01.oss.sonatype.org/
@@ -53,16 +39,8 @@
       ```
  1. Repeat previous steps as necessary.
  1. `git push origin master:master` to get the "Release x.y" commit published.
- 1. Publish [drafted release](https://github.com/TWiStErRob/net.twisterrob.gradle/releases) on GitHub  
-    Note: _this will create a tag on `master`, equivalent to:_
-    ```shell
-    git checkout master
-    git tag vx.y
-    git push origin vx.y # or --tags
-    ```
- 1. Close `x.y` [milestone](https://github.com/TWiStErRob/net.twisterrob.gradle/milestones)
-    * "Due date": release date
-    * "Description": https://github.com/TWiStErRob/net.twisterrob.gradle/releases/tag/vx.y
+ 1. Publish [drafted release](https://github.com/TWiStErRob/net.twisterrob.gradle/releases) on GitHub
+ 1. Close `x.y` [milestone](https://github.com/TWiStErRob/net.twisterrob.gradle/milestones) as described in [release process][1].
  1. Release staging repository at [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories)
  1. Watch [Maven Central](https://repo1.maven.org/maven2/net/twisterrob/gradle/twister-quality/) for the artifact to appear. May take a few minutes.
 
@@ -96,3 +74,5 @@
     ```
  1. Push commit to `origin/master`.
  1. [Create milestone](https://github.com/TWiStErRob/net.twisterrob.gradle/milestones/new) `vx.z`, if doesn't exist yet.
+
+[1]: https://github.com/TWiStErRob/.github/blob/main/RELEASE.md#release-process
