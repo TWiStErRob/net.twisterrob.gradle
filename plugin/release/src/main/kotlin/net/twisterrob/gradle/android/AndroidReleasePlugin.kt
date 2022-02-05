@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.Variant
 import com.android.build.api.variant.impl.ApplicationVariantImpl
 import com.android.build.api.variant.impl.BuiltArtifactsImpl
 import com.android.build.gradle.BaseExtension
@@ -8,6 +9,7 @@ import com.android.builder.model.BuildType
 import com.android.builder.model.ProductFlavor
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -76,7 +78,7 @@ class AndroidReleasePlugin : BasePlugin() {
 		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
 			val withBuildType = project.androidComponents.selector().withBuildType(buildType.name)
 			project.androidComponents.onVariants(withBuildType) { variant ->
-				val releaseVariantTask = registerReleaseTask(variant as ApplicationVariantImpl)
+				val releaseVariantTask = registerReleaseTask(variant.unwrapCast<Variant, ApplicationVariantImpl>())
 				releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
 			}
 		} else {
