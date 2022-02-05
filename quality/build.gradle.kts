@@ -25,6 +25,7 @@ dependencies {
 	implementation(projects.compat.gradle)
 	implementation(projects.compat.agp)
 	implementation(projects.compat.agp42x)
+	implementation(projects.compat.agpLatest)
 
 	compileOnly(libs.annotations.jetbrains)
 	compileOnly(libs.android.gradle)

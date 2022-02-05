@@ -19,6 +19,7 @@ include(":compat:agp-40x")
 include(":compat:agp-41x")
 include(":compat:agp-42x")
 include(":compat:agp-70x")
+include(":compat:agp-latest")
 include(":compat:gradle")
 
 include(":plugin")
