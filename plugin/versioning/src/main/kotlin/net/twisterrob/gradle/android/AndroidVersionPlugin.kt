@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.component.analytics.AnalyticsEnabledAndroidTest
 import com.android.build.api.component.impl.AndroidTestImpl
+import com.android.build.api.variant.AndroidTest
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.impl.VariantOutputImpl
 import com.android.build.gradle.AppExtension
@@ -196,8 +198,14 @@ class AndroidVersionPlugin : BasePlugin() {
 	private fun renameAPKPost7(variant: ApplicationVariant) {
 		val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
 		val androidTestOutput = variant.androidTest?.let { androidTest ->
-			androidTest as AndroidTestImpl
-			androidTest.outputs.filterIsInstance<VariantOutputImpl>().single()
+			fun AndroidTest.findImpl(): AndroidTest =
+				when (this) {
+					is AnalyticsEnabledAndroidTest -> this.delegate.findImpl()
+					else -> this
+				}
+
+			val impl = androidTest.findImpl() as? AndroidTestImpl ?: return@let null
+			impl.outputs.filterIsInstance<VariantOutputImpl>().single()
 		}
 		variantOutput.outputFileName.set(project.provider {
 			// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
