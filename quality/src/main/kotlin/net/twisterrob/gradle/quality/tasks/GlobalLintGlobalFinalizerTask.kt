@@ -10,6 +10,7 @@ import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
+import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.internal.lint.collectXmlReport
 import net.twisterrob.gradle.internal.lint.configureXmlReport
 import net.twisterrob.gradle.internal.lint.lintGlobalTasks
@@ -35,7 +36,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	/**
 	 * This should only contain files that will definitely generate (i.e. `if (subTask.enabled)` in [mustRunAfter]).
-	 * Currently it is not the case if the submodules are configured from a parent project (see tests).
+	 * Currently, it is not the case if the submodules are configured from a parent project (see tests).
 	 * At the usage we need to double-check if the file existed,
 	 * otherwise it'll spam the logs with [java.io.FileNotFoundException]s.
 	 */
@@ -115,9 +116,8 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			androidComponents.onVariants { variant ->
 				if (variant is TestVariant) return@onVariants
 				taskProvider.configure { task ->
-					task.xmlReports +=
-						(variant.artifacts as ArtifactsImpl)
-							.get(InternalArtifactType.LINT_XML_REPORT)
+					task.xmlReports += variant.artifacts.unwrapCast<ArtifactsImpl>()
+						.get(InternalArtifactType.LINT_XML_REPORT)
 				}
 			}
 		}
