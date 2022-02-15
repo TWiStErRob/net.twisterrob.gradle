@@ -187,7 +187,8 @@ if (project.property("net.twisterrob.gradle.build.includeExamples").toString().t
 project.tasks.register<TestReport>("testReport") {
 	group = LifecycleBasePlugin.VERIFICATION_GROUP
 	description = "Run and report on all tests in the project. Add -x test to just generate report."
-	destinationDir = file("${buildDir}/reports/tests/all")
+	@Suppress("UnstableApiUsage")
+	destinationDirectory.set(file("${buildDir}/reports/tests/all"))
 
 	val tests = subprojects
 		.flatMap { it.tasks.withType(Test::class) } // Forces to create the tasks.
@@ -198,7 +199,8 @@ project.tasks.register<TestReport>("testReport") {
 	mustRunAfter(tests)
 
 	doLast {
-		val reportFile = destinationDir.resolve("index.html")
+		@Suppress("UnstableApiUsage")
+		val reportFile = destinationDirectory.file("index.html").get().asFile
 		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
 		if (!successRegex.containsMatchIn(reportFile.readText())) {
 			val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
