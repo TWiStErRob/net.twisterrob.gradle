@@ -37,7 +37,8 @@ if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toB
 }
 
 plugins {
-	id("com.gradle.enterprise") version "3.7.1"
+	// https://docs.gradle.com/enterprise/gradle-plugin/#release_history
+	id("com.gradle.enterprise") version "3.8.1"
 }
 
 gradleEnterprise {
