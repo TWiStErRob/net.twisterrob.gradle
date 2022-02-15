@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.dsl.Lint
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.api.androidTestVariantData
@@ -46,14 +47,31 @@ class AndroidBuildPlugin : BasePlugin() {
 		// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
 		project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
 
-		with(android) {
-			with(lintOptions) {
-				xmlReport = false
-				isCheckAllWarnings = true
-				isAbortOnError = true
-				disable("Assert", "GoogleAppIndexingWarning")
-				fatal("StopShip") // http://stackoverflow.com/q/33504186/253468
+		when {
+			AGPVersions.v71x < AGPVersions.CLASSPATH -> {
+				// See com.android.build.gradle.LintPlugin.createExtension
+				val lint = project.extensions.getByName<Lint>("lint")
+				with(lint) {
+					xmlReport = false
+					checkAllWarnings = true
+					abortOnError = true
+					disable.add("Assert")
+					disable.add("GoogleAppIndexingWarning")
+					fatal.add("StopShip") // http://stackoverflow.com/q/33504186/253468
+				}
 			}
+			else -> {
+				@Suppress("DEPRECATION")
+				with(android.lintOptions) {
+					xmlReport = false
+					isCheckAllWarnings = true
+					isAbortOnError = true
+					disable("Assert", "GoogleAppIndexingWarning")
+					fatal("StopShip") // http://stackoverflow.com/q/33504186/253468
+				}
+			}
+		}
+		with(android) {
 			// TODO intentionally mismatching the versions to get latest features, but still have sources available for compiled version.
 			buildToolsVersion = VERSION_BUILD_TOOLS
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"

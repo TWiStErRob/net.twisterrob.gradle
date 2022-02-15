@@ -28,7 +28,7 @@ class AndroidSigningPlugin : BasePlugin() {
 		if (keyStoreFile.isFile && keyStoreFile.exists() && keyStoreFile.canRead()) {
 			LOG.info("Attaching release.signingConfig.{} using '{}'", SIGNING_CONFIG_NAME, keyStoreFile)
 			val android = project.extensions["android"] as BaseExtension
-			val sign = SigningConfig(SIGNING_CONFIG_NAME).apply {
+			val sign: SigningConfig = android.signingConfigs.create(SIGNING_CONFIG_NAME).apply {
 				setStoreFile(keyStoreFile)
 				setStorePassword(mandatoryProp(STORE_PASSWORD))
 				setKeyAlias(optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS)
