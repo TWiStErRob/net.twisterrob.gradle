@@ -114,8 +114,7 @@ allprojects {
 			properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
 		}
 
-		@Suppress("UnstableApiUsage")
-		tasks.withType<ProcessResources>().configureEach {
+		tasks.withType<@Suppress("UnstableApiUsage") ProcessResources>().configureEach {
 			val propertyNamesToReplace = listOf(
 				"net.twisterrob.test.android.pluginVersion",
 				"net.twisterrob.test.android.compileSdkVersion"

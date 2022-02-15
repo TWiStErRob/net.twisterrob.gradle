@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package net.twisterrob.gradle.compat
 
 import org.gradle.api.DefaultTask
