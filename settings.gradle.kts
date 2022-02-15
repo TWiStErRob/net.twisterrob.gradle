@@ -2,7 +2,6 @@
 rootProject.name = "net-twisterrob-gradle"
 
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
-enableFeaturePreviewQuietly("VERSION_CATALOGS", "Type-safe dependency accessors")
 
 include(":quality")
 include(":common")
