@@ -13,6 +13,7 @@ listOf("checkstyle", "pmd").forEach {
 	project(":${it}").projectDir = file("checkers/${it}")
 }
 
+include(":compat:agp")
 include(":compat:agp-base")
 include(":compat:agp-40x")
 include(":compat:agp-41x")
