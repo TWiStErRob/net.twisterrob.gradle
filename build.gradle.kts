@@ -193,8 +193,10 @@ project.tasks.register<TestReport>("testReport") {
 	val tests = subprojects
 		.flatMap { it.tasks.withType(Test::class) } // Forces to create the tasks.
 		.onEach { it.ignoreFailures = true } // Let the tests finish, to get a final "all" report.
-	// Detach the result directories, simply using reportOn(tests) or the providers, task dependencies will be created.
-	reportOn(tests.map { it.binaryResultsDirectory.get() })
+	// Detach (.get()) the result directories,
+	// simply using reportOn(tests) or the binaryResultsDirectory providers, task dependencies would be created.
+	@Suppress("UnstableApiUsage")
+	testResults.from(tests.map { it.binaryResultsDirectory.get() })
 	// Force executing tests (if they're in the task graph), before reporting on them.
 	mustRunAfter(tests)
 
