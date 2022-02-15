@@ -2,7 +2,6 @@
 rootProject.name = "net-twisterrob-gradle"
 
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
-enableFeaturePreviewQuietly("VERSION_CATALOGS", "Type-safe dependency accessors")
 
 include(":quality")
 include(":common")
@@ -38,7 +37,8 @@ if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toB
 }
 
 plugins {
-	id("com.gradle.enterprise") version "3.7.1"
+	// https://docs.gradle.com/enterprise/gradle-plugin/#release_history
+	id("com.gradle.enterprise") version "3.8.1"
 }
 
 gradleEnterprise {

@@ -24,11 +24,11 @@ repositories {
 }
 
 dependencies {
-	implementation(deps.kotlin.gradle)
-	implementation(enforcedPlatform(deps.kotlin.bom))
-	implementation(deps.kotlin.compiler)
-	implementation(deps.kotlin.dokka)
-	compileOnly(deps.nexus)
+	implementation(projectLibs.kotlin.gradle)
+	implementation(enforcedPlatform(projectLibs.kotlin.bom))
+	implementation(projectLibs.kotlin.compiler)
+	implementation(projectLibs.kotlin.dokka)
+	compileOnly(projectLibs.nexus)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
