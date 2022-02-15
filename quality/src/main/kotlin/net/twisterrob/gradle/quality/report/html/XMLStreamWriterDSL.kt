@@ -3,10 +3,29 @@
 package net.twisterrob.gradle.quality.report.html
 
 import java.io.Writer
+import javax.xml.stream.XMLOutputFactory
 import javax.xml.stream.XMLStreamWriter
 
 fun Writer.xmlWriter(): XMLStreamWriter =
-	javax.xml.stream.XMLOutputFactory.newInstance().createXMLStreamWriter(this)
+	XMLOutputFactory
+		.newInstance()
+		.apply {
+			// AGP 7.1.1 pulls in Dokka which pulls in woodstox, so let's configure it to match test style.
+			// https://github.com/FasterXML/woodstox#configuration
+			// WstxOutputProperties.P_USE_DOUBLE_QUOTES_IN_XML_DECL
+			safeSetProperty("com.ctc.wstx.useDoubleQuotesInXmlDecl", true)
+			// WstxOutputProperties.P_ADD_SPACE_AFTER_EMPTY_ELEM
+			safeSetProperty("com.ctc.wstx.addSpaceAfterEmptyElem", true)
+			// org.codehaus.stax2.XMLOutputFactory2.P_AUTOMATIC_EMPTY_ELEMENTS
+			safeSetProperty("org.codehaus.stax2.automaticEmptyElements", false)
+		}
+		.createXMLStreamWriter(this)
+
+private fun XMLOutputFactory.safeSetProperty(name: String, value: Any?) {
+	if (this.isPropertySupported(name)) {
+		this.setProperty(name, value)
+	}
+}
 
 fun XMLStreamWriter.use(block: (XMLStreamWriter) -> Unit) {
 	AutoCloseable {
