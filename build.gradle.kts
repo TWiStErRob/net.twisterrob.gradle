@@ -210,7 +210,6 @@ project.tasks.register<TestReport>("testReport") {
 
 nexusPublishing {
 	repositories {
-		@Suppress("UnstableApiUsage")
 		sonatype {
 			// For :publishReleasePublicationToSonatypeRepository, projectVersion suffix chooses repo.
 			nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
