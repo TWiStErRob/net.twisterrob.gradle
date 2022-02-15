@@ -23,7 +23,7 @@ dependencies {
 	api(projects.pmd)
 
 	implementation(projects.compat.gradle)
-	implementation(projects.compat.agpCommon)
+	implementation(projects.compat.agpBase)
 	implementation(projects.compat.agp42x)
 	implementation(projects.compat.agpLatest)
 
