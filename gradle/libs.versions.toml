@@ -5,12 +5,12 @@ java = "1.8"
 nexus = "1.1.0"
 
 # See [lint] which is affected by this.
-agp = "7.0.3"
+agp = "7.1.1"
 
 # = 23.0.0 + [agp].
 # @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
 # @see builder-model//version.properties
-lint = "30.0.3"
+lint = "30.1.1"
 
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # @see kotlin_version in buildSrc/gradle.properties
