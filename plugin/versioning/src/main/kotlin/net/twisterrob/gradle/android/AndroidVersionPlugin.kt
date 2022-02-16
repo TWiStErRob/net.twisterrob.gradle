@@ -197,7 +197,7 @@ class AndroidVersionPlugin : BasePlugin() {
 
 	private fun renameAPKPost7(variant: ApplicationVariant) {
 		val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
-		val androidTestOutput = variant.androidTest?.let { androidTest ->
+		val androidTestOutput = variant.androidTestCompat?.let { androidTest ->
 			val androidTestImpl = androidTest.unwrapCast<AndroidTest, AndroidTestImpl>()
 			androidTestImpl.outputs.filterIsInstance<VariantOutputImpl>().single()
 		}
