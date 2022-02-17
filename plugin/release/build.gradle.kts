@@ -14,6 +14,7 @@ dependencies {
 	implementation(projects.plugin.versioning) // TODO decouple
 	compileOnly(libs.android.gradle)
 	implementation(projects.compat.agpBase)
+	implementation(projects.compat.agp)
 
 	// This plugin is part of the net.twisterrob.android-app plugin, not designed to work on its own.
 	runtimeOnly(projects.plugin)
