@@ -1,10 +1,8 @@
 package net.twisterrob.gradle.quality.report.html
 
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import io.mockk.runs
 import io.mockk.verify
 import net.twisterrob.gradle.common.grouper.Grouper.Start
 import net.twisterrob.gradle.quality.Violation
@@ -61,7 +59,7 @@ class XmlProducerTest {
 
 		fun stubGroupIsRendered() {
 			mockkStatic(::renderXml.javaMethod!!.declaringClass.name)
-			every { renderXml(any(), grouped, any(), any()) } just runs
+			every { renderXml(any(), grouped, any(), any()) } answers { callOriginal() }
 		}
 
 		fun verifyXmlWritten() {

@@ -25,6 +25,16 @@ class AGPVersionsTest {
 		assertEquals("AGP 1.2.Stable.4 is not supported, because it's older than 4.*.*.*", ex.message)
 	}
 
+	@Test fun `olderThan7NotSupported returns the right message`() {
+		val version = AGPVersion(1, 2, AGPVersion.ReleaseType.Stable, 4)
+
+		val ex = assertThrows<IllegalStateException> {
+			AGPVersions.olderThan7NotSupported(version)
+		}
+
+		assertEquals("AGP 1.2.Stable.4 is not supported, because it's older than 7.*.*.*", ex.message)
+	}
+
 	@Test fun `otherThan4NotSupported returns the right message`() {
 		val version = AGPVersion(1, 2, AGPVersion.ReleaseType.Stable, 4)
 
@@ -36,7 +46,7 @@ class AGPVersionsTest {
 	}
 
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
-		val expected = AGPVersion(7, 0, AGPVersion.ReleaseType.Stable, 3)
+		val expected = AGPVersion(7, 1, AGPVersion.ReleaseType.Stable, 1)
 
 		val actual = AGPVersions.CLASSPATH
 
@@ -79,7 +89,9 @@ class AGPVersionsTest {
 		"4, 0",
 		"4, 1",
 		"4, 2",
+		"7, ",
 		"7, 0",
+		"7, 1",
 	)
 	@ParameterizedTest(name = "[$INDEX_PLACEHOLDER] v{0}.{1}.x")
 	fun `vXXX constants have the right version`(major: Int, minor: Int?) {

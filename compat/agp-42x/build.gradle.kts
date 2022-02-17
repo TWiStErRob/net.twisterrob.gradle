@@ -13,6 +13,6 @@ dependencies {
 
 	compileOnly(libs.violations)
 
-	implementation(projects.compat.agp)
+	implementation(projects.compat.agpBase)
 	implementation(projects.compat.gradle)
 }
