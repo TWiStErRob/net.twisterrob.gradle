@@ -161,17 +161,24 @@ class LintPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `ignores disabled submodule lint tasks (rootProject setup)`() {
-		val lintDebug = if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) "lintDebug" else "lint"
-		val lintRelease = if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) "lintRelease" else "lint"
-		val result = `ignores disabled submodule lint tasks` {
-			it + """
-
-				evaluationDependsOn(':module2').tasks.getByName('${lintDebug}').enabled = false
-				evaluationDependsOn(':module2').tasks.getByName('${lintRelease}').enabled = false
-			""".trimIndent()
+		val disabledTasks = when {
+			AGPVersions.v71x <= AGPVersions.UNDER_TEST ->
+				// REPORT "lintRelease" seems to be not executed when calling lint.
+				// lintReportRelease executes because of :lint depending on the artifact.
+				listOf("lintDebug", "lintReportDebug", "lintReportRelease")
+			AGPVersions.v70x <= AGPVersions.UNDER_TEST ->
+				listOf("lintDebug", "lintRelease")
+			else ->
+				listOf("lint")
 		}
-		assertEquals(TaskOutcome.SKIPPED, result.task(":module2:${lintDebug}")!!.outcome)
-		assertEquals(TaskOutcome.SKIPPED, result.task(":module2:${lintRelease}")!!.outcome)
+		val result = `ignores disabled submodule lint tasks` {
+			it + System.lineSeparator() + disabledTasks.joinToString(separator = System.lineSeparator()) { taskName ->
+				"evaluationDependsOn(':module2').tasks.getByName('${taskName}').enabled = false"
+			}
+		}
+		disabledTasks.forEach { taskName ->
+			assertEquals(TaskOutcome.SKIPPED, result.task(":module2:${taskName}")!!.outcome)
+		}
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}
 
@@ -179,31 +186,51 @@ class LintPluginTest : BaseIntgTest() {
 		val result = `ignores disabled submodule lint tasks` {
 			val build2 = gradle.buildFile.parentFile.resolve("module2/build.gradle")
 			build2.appendText(System.lineSeparator())
-			if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) {
-				build2.appendText(
-					"""
-					afterEvaluate {
-						// Tasks are created after on androidComponents.onVariants { }
-						tasks.lintDebug.enabled = false
-						tasks.lintRelease.enabled = false
+			build2.appendText(
+				when {
+					AGPVersions.v71x <= AGPVersions.UNDER_TEST -> {
+						"""
+							afterEvaluate {
+								// Tasks are created after on androidComponents.onVariants { }
+								tasks.lintDebug.enabled = false
+								tasks.lintReportDebug.enabled = false
+								tasks.lintRelease.enabled = false
+								tasks.lintReportRelease.enabled = false
+							}
+						"""
 					}
-				""".trimIndent()
-				)
-			} else {
-				build2.appendText(
-					"""
-					tasks.lint.enabled = false
-				""".trimIndent()
-				)
-			}
+					AGPVersions.v70x <= AGPVersions.UNDER_TEST -> {
+						"""
+							afterEvaluate {
+								// Tasks are created after on androidComponents.onVariants { }
+								tasks.lintDebug.enabled = false
+								tasks.lintRelease.enabled = false
+							}
+						"""
+					}
+					else -> {
+						"""
+							tasks.lint.enabled = false
+						"""
+					}
+				}.trimIndent()
+			)
 			it
 		}
-		if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) {
-			assertEquals(TaskOutcome.UP_TO_DATE, result.task(":module2:lint")!!.outcome)
-			assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintDebug")!!.outcome)
-			assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintRelease")!!.outcome)
-		} else {
-			assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lint")!!.outcome)
+		when {
+			AGPVersions.v71x <= AGPVersions.UNDER_TEST -> {
+				assertEquals(TaskOutcome.UP_TO_DATE, result.task(":module2:lint")!!.outcome)
+				assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintDebug")!!.outcome)
+				assertEquals(null, result.task(":module2:lintRelease"))
+			}
+			AGPVersions.v70x <= AGPVersions.UNDER_TEST -> {
+				assertEquals(TaskOutcome.UP_TO_DATE, result.task(":module2:lint")!!.outcome)
+				assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintDebug")!!.outcome)
+				assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintRelease")!!.outcome)
+			}
+			else -> {
+				assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lint")!!.outcome)
+			}
 		}
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}
