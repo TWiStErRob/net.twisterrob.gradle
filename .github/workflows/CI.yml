@@ -698,6 +698,30 @@ jobs:
           name: AGP 7.0.x on Gradle 7.x - plugin (7.0.3 on 7.4) Test Results XMLs
           path: artifacts/AGP 7.0.x on Gradle 7.x - plugin (7.0.3 on 7.4) Test Results XMLs
 
+      - name: Download 'AGP 7.1.x on Gradle 7.2+ (7.1.1 on 7.2) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.1.x on Gradle 7.2+ (7.1.1 on 7.2) Test Results XMLs
+          path: artifacts/AGP 7.1.x on Gradle 7.2+ (7.1.1 on 7.2) Test Results XMLs
+
+      - name: Download 'AGP 7.1.x on Gradle 7.2+ - plugin (7.1.1 on 7.2) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.1.x on Gradle 7.2+ - plugin (7.1.1 on 7.2) Test Results XMLs
+          path: artifacts/AGP 7.1.x on Gradle 7.2+ - plugin (7.1.1 on 7.2) Test Results XMLs
+
+      - name: Download 'AGP 7.1.x on Gradle 7.x (7.1.1 on 7.4) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.1.x on Gradle 7.x (7.1.1 on 7.4) Test Results XMLs
+          path: artifacts/AGP 7.1.x on Gradle 7.x (7.1.1 on 7.4) Test Results XMLs
+
+      - name: Download 'AGP 7.1.x on Gradle 7.x - plugin (7.1.1 on 7.4) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.1.x on Gradle 7.x - plugin (7.1.1 on 7.4) Test Results XMLs
+          path: artifacts/AGP 7.1.x on Gradle 7.x - plugin (7.1.1 on 7.4) Test Results XMLs
+
       #- name: Display structure of downloaded files
       #  run: ls -R
       #  working-directory: artifacts
