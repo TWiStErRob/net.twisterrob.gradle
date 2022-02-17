@@ -218,11 +218,11 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 			AGPVersions.v70x <= AGPVersions.UNDER_TEST -> {
 				result.assertHasOutputLine(Regex("""Missing report for task ':lintDebug'.*: .*\blint-results-debug.xml"""))
 				result.assertHasOutputLine(Regex("""Missing report for task ':lintRelease'.*: .*\blint-results-release.xml"""))
-				result.assertHasOutputLine(Regex("""Missing report for task ':lint'.*: .*\blint-results.xml"""))
 			}
 			else -> {
 				result.assertHasOutputLine(Regex("""Missing report for task ':lintDebug'.*: .*\blint-results-debug.xml"""))
 				result.assertHasOutputLine(Regex("""Missing report for task ':lintRelease'.*: .*\blint-results-release.xml"""))
+				result.assertHasOutputLine(Regex("""Missing report for task ':lint'.*: .*\blint-results.xml"""))
 			}
 		}
 	}
