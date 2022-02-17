@@ -3,6 +3,7 @@
 
 package net.twisterrob.gradle.android
 
+import com.android.SdkConstants
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
@@ -15,7 +16,6 @@ import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.scope.TaskContainer
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.build.gradle.tasks.ManifestProcessorTask
-import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.internal.android.addBuildConfigField40x
 import net.twisterrob.gradle.internal.android.addBuildConfigField41x
@@ -79,7 +79,7 @@ fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType)
 fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
 	project.objects.fileProperty().apply {
 		set(project.layout.buildDirectory
-			.map { it.file("${AndroidProject.FD_INTERMEDIATES}/$relativePath") })
+			.map { it.file("${SdkConstants.FD_INTERMEDIATES}/$relativePath") })
 	}
 
 val BaseVariantData.taskContainerCompat: TaskContainer

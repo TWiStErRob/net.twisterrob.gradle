@@ -22,6 +22,8 @@ dependencies {
 	implementation(gradleApiWithoutKotlin())
 	api(projects.common)
 	compileOnly(libs.android.gradle)
+	// SdkConstants.FD_INTERMEDIATES
+	compileOnly(libs.android.tools.common)
 	compileOnly(libs.annotations.jetbrains)
 	implementation(projects.compat.agpBase)
 	implementation(projects.compat.agp40x)

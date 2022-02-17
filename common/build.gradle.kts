@@ -13,6 +13,8 @@ dependencies {
 	implementation(projects.compat.gradle)
 
 	compileOnly(libs.android.gradle)
+	// com.android.SdkConstants.FD_GENERATED
+	compileOnly(libs.android.tools.common)
 	compileOnly(libs.annotations.jsr305)
 	compileOnly(libs.annotations.jetbrains)
 
