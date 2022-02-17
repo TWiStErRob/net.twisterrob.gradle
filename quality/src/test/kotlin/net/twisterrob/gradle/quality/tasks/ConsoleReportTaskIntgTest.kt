@@ -210,10 +210,20 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		result.assertNoOutputLine(Regex("""Some problems were found with the configuration of task ':printViolationCount'\..*"""))
 		result.assertNoOutputLine(Regex(""" - File '(.*)' specified for property '.*' does not exist\."""))
 		result.assertHasOutputLine("Summary\t(total: 0)")
-		if (AGPVersions.UNDER_TEST < AGPVersions.v70x) {
-			result.assertHasOutputLine(Regex("""Missing report for task ':lint'.*: .*\blint-results.xml"""))
+		when {
+			AGPVersions.v71x <= AGPVersions.UNDER_TEST -> {
+				result.assertHasOutputLine(Regex("""Missing report for task ':lintReportDebug'.*: .*\blint-results-debug.xml"""))
+				result.assertHasOutputLine(Regex("""Missing report for task ':lintReportRelease'.*: .*\blint-results-release.xml"""))
+			}
+			AGPVersions.v70x <= AGPVersions.UNDER_TEST -> {
+				result.assertHasOutputLine(Regex("""Missing report for task ':lintDebug'.*: .*\blint-results-debug.xml"""))
+				result.assertHasOutputLine(Regex("""Missing report for task ':lintRelease'.*: .*\blint-results-release.xml"""))
+				result.assertHasOutputLine(Regex("""Missing report for task ':lint'.*: .*\blint-results.xml"""))
+			}
+			else -> {
+				result.assertHasOutputLine(Regex("""Missing report for task ':lintDebug'.*: .*\blint-results-debug.xml"""))
+				result.assertHasOutputLine(Regex("""Missing report for task ':lintRelease'.*: .*\blint-results-release.xml"""))
+			}
 		}
-		result.assertHasOutputLine(Regex("""Missing report for task ':lintDebug'.*: .*\blint-results-debug.xml"""))
-		result.assertHasOutputLine(Regex("""Missing report for task ':lintRelease'.*: .*\blint-results-release.xml"""))
 	}
 }
