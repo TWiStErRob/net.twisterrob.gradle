@@ -46,7 +46,7 @@ class AGPVersionsTest {
 	}
 
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
-		val expected = AGPVersion(7, 2, AGPVersion.ReleaseType.Beta, 2)
+		val expected = AGPVersion(7, 3, AGPVersion.ReleaseType.Alpha, 3)
 
 		val actual = AGPVersions.CLASSPATH
 
