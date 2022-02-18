@@ -25,4 +25,4 @@ const val VERSION_SDK_COMPILE_NAME: String = "11" // Android 11 (R)
 /**
  * Latest build tools version available, there's no reason to hold back.
  */
-const val VERSION_BUILD_TOOLS: String = "30.0.2"
+const val VERSION_BUILD_TOOLS: String = "32.0.0"
