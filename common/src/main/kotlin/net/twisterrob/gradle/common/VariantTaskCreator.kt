@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.common
 
-import com.android.builder.model.AndroidProject.FD_GENERATED
+import com.android.SdkConstants.FD_GENERATED
 import net.twisterrob.gradle.compat.setOutputLocationCompat
 import net.twisterrob.gradle.compat.setRequired
 import org.gradle.api.Action

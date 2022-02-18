@@ -13,6 +13,8 @@ dependencies {
 	api(projects.plugin.base)
 	implementation(projects.plugin.versioning) // TODO decouple
 	compileOnly(libs.android.gradle)
+	// SdkConstants.FD_INTERMEDIATES
+	compileOnly(libs.android.tools.common)
 	implementation(projects.compat.agpBase)
 	implementation(projects.compat.agp)
 
