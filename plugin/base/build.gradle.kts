@@ -22,8 +22,10 @@ dependencies {
 	implementation(gradleApiWithoutKotlin())
 	api(projects.common)
 	compileOnly(libs.android.gradle)
+	// SdkConstants.FD_INTERMEDIATES
+	compileOnly(libs.android.tools.common)
 	compileOnly(libs.annotations.jetbrains)
-	implementation(projects.compat.agp)
+	implementation(projects.compat.agpBase)
 	implementation(projects.compat.agp40x)
 	implementation(projects.compat.agp41x)
 	implementation(projects.compat.agp42x)
@@ -32,7 +34,7 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 
-	testFixturesImplementation(projects.compat.agp)
+	testFixturesImplementation(projects.compat.agpBase)
 	testFixturesImplementation(projects.test.internal)
 	testFixturesCompileOnly(projects.test)
 	testFixturesApi(libs.dexMemberList)

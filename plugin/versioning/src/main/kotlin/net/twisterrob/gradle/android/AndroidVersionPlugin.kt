@@ -197,7 +197,7 @@ class AndroidVersionPlugin : BasePlugin() {
 
 	private fun renameAPKPost7(variant: ApplicationVariant) {
 		val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
-		val androidTestOutput = variant.androidTest?.let { androidTest ->
+		val androidTestOutput = variant.androidTestCompat?.let { androidTest ->
 			val androidTestImpl = androidTest.unwrapCast<AndroidTest, AndroidTestImpl>()
 			androidTestImpl.outputs.filterIsInstance<VariantOutputImpl>().single()
 		}
@@ -219,8 +219,8 @@ class AndroidVersionPlugin : BasePlugin() {
 				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 				val artifactName = version.formatArtifactName(
 					project,
-					variant.androidTest!!.name,
-					variant.androidTest!!.applicationId.get(),
+					variant.androidTestCompat!!.name,
+					variant.androidTestCompat!!.applicationId.get(),
 					variantOutput.versionCode.getOrElse(-1)!!.toLong(),
 					variantOutput.versionName.getOrElse(null)
 				)

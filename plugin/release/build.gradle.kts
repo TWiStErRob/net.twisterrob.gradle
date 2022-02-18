@@ -13,6 +13,9 @@ dependencies {
 	api(projects.plugin.base)
 	implementation(projects.plugin.versioning) // TODO decouple
 	compileOnly(libs.android.gradle)
+	// SdkConstants.FD_INTERMEDIATES
+	compileOnly(libs.android.tools.common)
+	implementation(projects.compat.agpBase)
 	implementation(projects.compat.agp)
 
 	// This plugin is part of the net.twisterrob.android-app plugin, not designed to work on its own.
@@ -21,7 +24,7 @@ dependencies {
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
 
-	testFixturesImplementation(projects.compat.agp)
+	testFixturesImplementation(projects.compat.agpBase)
 }
 
 disableGradlePluginValidation()

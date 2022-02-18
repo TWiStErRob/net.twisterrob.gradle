@@ -54,7 +54,7 @@ fun SourceSet.kotlin(action: SourceDirectorySet.() -> Unit) {
  */
 fun DependencyHandlerScope.add(
 	configurationName: String,
-	@Suppress("UnstableApiUsage") dependency: Provider<MinimalExternalModuleDependency>,
+	dependency: Provider<MinimalExternalModuleDependency>,
 	configuration: Action<in ExternalModuleDependency>
 ) {
 	this@add.addProvider(configurationName, dependency, configuration)
@@ -85,7 +85,6 @@ val Project.base: BasePluginExtension
 val Project.gradlePlugin: GradlePluginDevelopmentExtension
 	get() = this.extensions.getByName<GradlePluginDevelopmentExtension>("gradlePlugin")
 
-@Suppress("UnstableApiUsage")
 internal val Project.versionCatalogs: VersionCatalogsExtension
 	get() = this.extensions.getByName<VersionCatalogsExtension>("versionCatalogs")
 

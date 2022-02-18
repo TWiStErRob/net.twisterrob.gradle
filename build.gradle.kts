@@ -114,8 +114,7 @@ allprojects {
 			properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
 		}
 
-		@Suppress("UnstableApiUsage")
-		tasks.withType<ProcessResources>().configureEach {
+		tasks.withType<@Suppress("UnstableApiUsage") ProcessResources>().configureEach {
 			val propertyNamesToReplace = listOf(
 				"net.twisterrob.test.android.pluginVersion",
 				"net.twisterrob.test.android.compileSdkVersion"
@@ -188,18 +187,22 @@ if (project.property("net.twisterrob.gradle.build.includeExamples").toString().t
 project.tasks.register<TestReport>("testReport") {
 	group = LifecycleBasePlugin.VERIFICATION_GROUP
 	description = "Run and report on all tests in the project. Add -x test to just generate report."
-	destinationDir = file("${buildDir}/reports/tests/all")
+	@Suppress("UnstableApiUsage")
+	destinationDirectory.set(file("${buildDir}/reports/tests/all"))
 
 	val tests = subprojects
 		.flatMap { it.tasks.withType(Test::class) } // Forces to create the tasks.
 		.onEach { it.ignoreFailures = true } // Let the tests finish, to get a final "all" report.
-	// Detach the result directories, simply using reportOn(tests) or the providers, task dependencies will be created.
-	reportOn(tests.map { it.binaryResultsDirectory.get() })
+	// Detach (.get()) the result directories,
+	// simply using reportOn(tests) or the binaryResultsDirectory providers, task dependencies would be created.
+	@Suppress("UnstableApiUsage")
+	testResults.from(tests.map { it.binaryResultsDirectory.get() })
 	// Force executing tests (if they're in the task graph), before reporting on them.
 	mustRunAfter(tests)
 
 	doLast {
-		val reportFile = destinationDir.resolve("index.html")
+		@Suppress("UnstableApiUsage")
+		val reportFile = destinationDirectory.file("index.html").get().asFile
 		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
 		if (!successRegex.containsMatchIn(reportFile.readText())) {
 			val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
@@ -210,7 +213,6 @@ project.tasks.register<TestReport>("testReport") {
 
 nexusPublishing {
 	repositories {
-		@Suppress("UnstableApiUsage")
 		sonatype {
 			// For :publishReleasePublicationToSonatypeRepository, projectVersion suffix chooses repo.
 			nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))

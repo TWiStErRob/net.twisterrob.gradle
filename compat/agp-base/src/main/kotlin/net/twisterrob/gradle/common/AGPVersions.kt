@@ -13,6 +13,11 @@ object AGPVersions {
 	}
 
 	@Throws(IllegalStateException::class)
+	fun olderThan7NotSupported(version: AGPVersion): Nothing {
+		error("AGP ${version} is not supported, because it's older than ${v7xx}")
+	}
+
+	@Throws(IllegalStateException::class)
 	fun otherThan4NotSupported(version: AGPVersion): Nothing {
 		error("AGP ${version} is not supported, because it's not compatible with ${v4xx}")
 	}
@@ -51,7 +56,9 @@ object AGPVersions {
 	val v40x: AGPVersion = AGPVersion(4, 0, null, null)
 	val v41x: AGPVersion = AGPVersion(4, 1, null, null)
 	val v42x: AGPVersion = AGPVersion(4, 2, null, null)
+	val v7xx: AGPVersion = AGPVersion(7, null, null, null)
 	val v70x: AGPVersion = AGPVersion(7, 0, null, null)
+	val v71x: AGPVersion = AGPVersion(7, 1, null, null)
 
 	/**
 	 * Is there an Android Gradle Plugin on the classpath?

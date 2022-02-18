@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.quality.report.html
 
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import java.io.StringWriter
 import kotlin.test.assertEquals
@@ -47,5 +48,5 @@ class ViolationsRendererTest {
 	}
 }
 
-private fun String.unformat(): String =
+private fun @receiver:Language("xml") String.unformat(): String =
 	trimIndent().lines().joinToString(separator = "")

@@ -2,7 +2,6 @@
 rootProject.name = "net-twisterrob-gradle"
 
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
-enableFeaturePreviewQuietly("VERSION_CATALOGS", "Type-safe dependency accessors")
 
 include(":quality")
 include(":common")
@@ -15,10 +14,12 @@ listOf("checkstyle", "pmd").forEach {
 }
 
 include(":compat:agp")
+include(":compat:agp-base")
 include(":compat:agp-40x")
 include(":compat:agp-41x")
 include(":compat:agp-42x")
 include(":compat:agp-70x")
+include(":compat:agp-71x")
 include(":compat:agp-latest")
 include(":compat:gradle")
 
@@ -38,7 +39,8 @@ if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toB
 }
 
 plugins {
-	id("com.gradle.enterprise") version "3.7.1"
+	// https://docs.gradle.com/enterprise/gradle-plugin/#release_history
+	id("com.gradle.enterprise") version "3.8.1"
 }
 
 gradleEnterprise {

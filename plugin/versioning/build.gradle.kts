@@ -21,6 +21,7 @@ dependencies {
 	implementation(gradleApiWithoutKotlin())
 	implementation(projects.plugin.base)
 	implementation(projects.compat.gradle)
+	implementation(projects.compat.agpBase)
 	implementation(projects.compat.agp)
 	implementation(libs.svnkit)
 	implementation(libs.svnkit.cli)

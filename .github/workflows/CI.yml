@@ -443,14 +443,14 @@ jobs:
             instant-api: 30
             test-task: testReport :plugin:tests
           - name: "AGP 4.2.x on Gradle 7.x"
-            gradle: 7.3
+            gradle: 7.4
             gradle-java: 8
             agp: 4.2.2
             build-tools: 30.0.2
             instant-api: 30
             test-task: testReport :quality:tests
           - name: "AGP 4.2.x on Gradle 7.x - plugin"
-            gradle: 7.3
+            gradle: 7.4
             gradle-java: 8
             agp: 4.2.2
             build-tools: 30.0.2
@@ -475,16 +475,72 @@ jobs:
             instant-api: 30
             test-task: testReport :plugin:tests
           - name: "AGP 7.0.x on Gradle 7.x"
-            gradle: 7.3
+            gradle: 7.4
             gradle-java: 11
             agp: 7.0.3
             build-tools: 30.0.2
             instant-api: 30
             test-task: testReport :quality:tests
           - name: "AGP 7.0.x on Gradle 7.x - plugin"
-            gradle: 7.3
+            gradle: 7.4
             gradle-java: 11
             agp: 7.0.3
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: testReport :plugin:tests
+          - name: "AGP 7.1.x on Gradle 7.2+"
+            gradle: 7.2
+            gradle-java: 11
+            agp: 7.1.1
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: testReport :quality:tests
+          - name: "AGP 7.1.x on Gradle 7.2+ - plugin"
+            gradle: 7.2
+            gradle-java: 11
+            agp: 7.1.1
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: testReport :plugin:tests
+          - name: "AGP 7.1.x on Gradle 7.x"
+            gradle: 7.4
+            gradle-java: 11
+            agp: 7.1.1
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: testReport :quality:tests
+          - name: "AGP 7.1.x on Gradle 7.x - plugin"
+            gradle: 7.4
+            gradle-java: 11
+            agp: 7.1.1
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: testReport :plugin:tests
+          - name: "AGP 7.2.x on Gradle 7.3+"
+            gradle: 7.3.3
+            gradle-java: 11
+            agp: 7.2.0-beta02
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: testReport :quality:tests
+          - name: "AGP 7.2.x on Gradle 7.3+ - plugin"
+            gradle: 7.3.3
+            gradle-java: 11
+            agp: 7.2.0-beta02
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: testReport :plugin:tests
+          - name: "AGP 7.2.x on Gradle 7.x"
+            gradle: 7.4
+            gradle-java: 11
+            agp: 7.2.0-beta02
+            build-tools: 30.0.2
+            instant-api: 30
+            test-task: testReport :quality:tests
+          - name: "AGP 7.2.x on Gradle 7.x - plugin"
+            gradle: 7.4
+            gradle-java: 11
+            agp: 7.2.0-beta02
             build-tools: 30.0.2
             instant-api: 30
             test-task: testReport :plugin:tests
@@ -634,17 +690,17 @@ jobs:
           name: AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.1) Test Results XMLs
           path: artifacts/AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.1) Test Results XMLs
 
-      - name: Download 'AGP 4.2.x on Gradle 7.x (4.2.2 on 7.3) Test Results XMLs'
+      - name: Download 'AGP 4.2.x on Gradle 7.x (4.2.2 on 7.4) Test Results XMLs'
         uses: actions/download-artifact@v2
         with:
-          name: AGP 4.2.x on Gradle 7.x (4.2.2 on 7.3) Test Results XMLs
-          path: artifacts/AGP 4.2.x on Gradle 7.x (4.2.2 on 7.3) Test Results XMLs
+          name: AGP 4.2.x on Gradle 7.x (4.2.2 on 7.4) Test Results XMLs
+          path: artifacts/AGP 4.2.x on Gradle 7.x (4.2.2 on 7.4) Test Results XMLs
 
-      - name: Download 'AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.3) Test Results XMLs'
+      - name: Download 'AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.4) Test Results XMLs'
         uses: actions/download-artifact@v2
         with:
-          name: AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.3) Test Results XMLs
-          path: artifacts/AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.3) Test Results XMLs
+          name: AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.4) Test Results XMLs
+          path: artifacts/AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.4) Test Results XMLs
 
       - name: Download 'AGP 7.0.x on Gradle 7.0+ (7.0.3 on 7.0.2) Test Results XMLs'
         uses: actions/download-artifact@v2
@@ -658,17 +714,65 @@ jobs:
           name: AGP 7.0.x on Gradle 7.0+ - plugin (7.0.3 on 7.0.2) Test Results XMLs
           path: artifacts/AGP 7.0.x on Gradle 7.0+ - plugin (7.0.3 on 7.0.2) Test Results XMLs
 
-      - name: Download 'AGP 7.0.x on Gradle 7.x (7.0.3 on 7.3) Test Results XMLs'
+      - name: Download 'AGP 7.0.x on Gradle 7.x (7.0.3 on 7.4) Test Results XMLs'
         uses: actions/download-artifact@v2
         with:
-          name: AGP 7.0.x on Gradle 7.x (7.0.3 on 7.3) Test Results XMLs
-          path: artifacts/AGP 7.0.x on Gradle 7.x (7.0.3 on 7.3) Test Results XMLs
+          name: AGP 7.0.x on Gradle 7.x (7.0.3 on 7.4) Test Results XMLs
+          path: artifacts/AGP 7.0.x on Gradle 7.x (7.0.3 on 7.4) Test Results XMLs
 
-      - name: Download 'AGP 7.0.x on Gradle 7.x - plugin (7.0.3 on 7.3) Test Results XMLs'
+      - name: Download 'AGP 7.0.x on Gradle 7.x - plugin (7.0.3 on 7.4) Test Results XMLs'
         uses: actions/download-artifact@v2
         with:
-          name: AGP 7.0.x on Gradle 7.x - plugin (7.0.3 on 7.3) Test Results XMLs
-          path: artifacts/AGP 7.0.x on Gradle 7.x - plugin (7.0.3 on 7.3) Test Results XMLs
+          name: AGP 7.0.x on Gradle 7.x - plugin (7.0.3 on 7.4) Test Results XMLs
+          path: artifacts/AGP 7.0.x on Gradle 7.x - plugin (7.0.3 on 7.4) Test Results XMLs
+
+      - name: Download 'AGP 7.1.x on Gradle 7.2+ (7.1.1 on 7.2) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.1.x on Gradle 7.2+ (7.1.1 on 7.2) Test Results XMLs
+          path: artifacts/AGP 7.1.x on Gradle 7.2+ (7.1.1 on 7.2) Test Results XMLs
+
+      - name: Download 'AGP 7.1.x on Gradle 7.2+ - plugin (7.1.1 on 7.2) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.1.x on Gradle 7.2+ - plugin (7.1.1 on 7.2) Test Results XMLs
+          path: artifacts/AGP 7.1.x on Gradle 7.2+ - plugin (7.1.1 on 7.2) Test Results XMLs
+
+      - name: Download 'AGP 7.1.x on Gradle 7.x (7.1.1 on 7.4) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.1.x on Gradle 7.x (7.1.1 on 7.4) Test Results XMLs
+          path: artifacts/AGP 7.1.x on Gradle 7.x (7.1.1 on 7.4) Test Results XMLs
+
+      - name: Download 'AGP 7.1.x on Gradle 7.x - plugin (7.1.1 on 7.4) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.1.x on Gradle 7.x - plugin (7.1.1 on 7.4) Test Results XMLs
+          path: artifacts/AGP 7.1.x on Gradle 7.x - plugin (7.1.1 on 7.4) Test Results XMLs
+
+      - name: Download 'AGP 7.2.x on Gradle 7.3+ (7.2.0-beta02 on 7.3.3) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.2.x on Gradle 7.3+ (7.2.0-beta02 on 7.3.3) Test Results XMLs
+          path: artifacts/AGP 7.2.x on Gradle 7.3+ (7.2.0-beta02 on 7.3.3) Test Results XMLs
+
+      - name: Download 'AGP 7.2.x on Gradle 7.3+ - plugin (7.2.0-beta02 on 7.3.3) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.2.x on Gradle 7.3+ - plugin (7.2.0-beta02 on 7.3.3) Test Results XMLs
+          path: artifacts/AGP 7.2.x on Gradle 7.3+ - plugin (7.2.0-beta02 on 7.3.3) Test Results XMLs
+
+      - name: Download 'AGP 7.2.x on Gradle 7.x (7.2.0-beta02 on 7.4) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.2.x on Gradle 7.x (7.2.0-beta02 on 7.4) Test Results XMLs
+          path: artifacts/AGP 7.2.x on Gradle 7.x (7.2.0-beta02 on 7.4) Test Results XMLs
+
+      - name: Download 'AGP 7.2.x on Gradle 7.x - plugin (7.2.0-beta02 on 7.4) Test Results XMLs'
+        uses: actions/download-artifact@v2
+        with:
+          name: AGP 7.2.x on Gradle 7.x - plugin (7.2.0-beta02 on 7.4) Test Results XMLs
+          path: artifacts/AGP 7.2.x on Gradle 7.x - plugin (7.2.0-beta02 on 7.4) Test Results XMLs
 
       #- name: Display structure of downloaded files
       #  run: ls -R

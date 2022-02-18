@@ -21,7 +21,6 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import java
 import kotlin
 
-@Suppress("UnstableApiUsage")
 class PublishingPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
@@ -95,9 +94,7 @@ private fun MavenPublication.setupModuleIdentity(project: Project) {
 		pom {
 			val projectDescription = project.description?.takeIf { it.contains(':') }
 				?: error("$project must have a description with format: \"Module Display Name: Module description.\"")
-			@Suppress("UnstableApiUsage")
 			name.set(projectDescription.substringBefore(": ").also { check(it.isNotBlank()) })
-			@Suppress("UnstableApiUsage")
 			description.set(projectDescription.substringAfter(": ").also { check(it.isNotBlank()) })
 		}
 	}
@@ -117,7 +114,6 @@ private fun MavenPublication.setupArtifacts(project: Project) {
 }
 
 private fun MavenPublication.setupLinks(project: Project) {
-	@Suppress("UnstableApiUsage")
 	pom {
 		url.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
 		scm {

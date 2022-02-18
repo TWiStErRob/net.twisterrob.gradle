@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import com.android.SdkConstants
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
@@ -7,7 +8,6 @@ import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.tasks.ProguardConfigurableTask
 import com.android.build.gradle.internal.tasks.R8Task
-import com.android.builder.model.AndroidProject
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.Project
@@ -29,7 +29,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 		/**
 		 * @see com.android.build.gradle.ProguardFiles#getDefaultProguardFile
 		 */
-		val proguardBase = project.buildDir.resolve(AndroidProject.FD_INTERMEDIATES).resolve("proguard-rules")
+		val proguardBase = project.buildDir.resolve(SdkConstants.FD_INTERMEDIATES).resolve("proguard-rules")
 		// TODO review ExtractProguardFiles task's files
 		val defaultAndroidRulesFile = proguardBase.resolve("android.pro")
 		val myProguardRulesFile = proguardBase.resolve("twisterrob.pro")
@@ -47,13 +47,11 @@ class AndroidMinificationPlugin : BasePlugin() {
 				release.setMinifyEnabled(true)
 			}
 
-			project.afterEvaluate {
-				buildTypes.forEach { buildType ->
-					if (buildType.isDebuggable) {
-						buildType.proguardFiles.add(myDebugProguardRulesFile)
-					} else {
-						buildType.proguardFiles.add(myReleaseProguardRulesFile)
-					}
+			buildTypes.all { buildType ->
+				if (buildType.isDebuggable) {
+					buildType.proguardFiles.add(myDebugProguardRulesFile)
+				} else {
+					buildType.proguardFiles.add(myReleaseProguardRulesFile)
 				}
 			}
 
