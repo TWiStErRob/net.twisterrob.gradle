@@ -23,26 +23,29 @@ For details on what was changed in different versions, see [CHANGELOG](CHANGELOG
 
 ## Compatibility
 
-Android Gradle Plugin 3.1.4 — 7.0.x on Gradle 4.9 — 7.4.x as listed in [AGP's compatibility guide](https://developer.android.com/studio/releases/gradle-plugin#updating-gradle).
+Android Gradle Plugin 3.1.4 — 7.3.x on Gradle 4.9 — 7.4.x as listed in [AGP's compatibility guide](https://developer.android.com/studio/releases/gradle-plugin#updating-gradle).
 
-| AGP →<br/>Gradle ↓ |   3.1.x   |  3.2.x  |  3.3.x  |  3.4.x  |  3.5.x   |  3.6.x   |  4.0.x   |  4.1.x   |  4.2.x   |  7.0.x   | 7.1.x | 7.2.x |
-|:-------------------|:---------:|:-------:|:-------:|:-------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-----:|:-----:|
-| 4.4 - 4.8.1        | 0.5 - 0.7 |   ^1    |    ❌    |    ❌    |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |   ❌   |   ❌   |
-| 4.9 - 4.10         |  0.8 - ∞  | 0.7 - ∞ |    ❌    |    ❌    |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |   ❌   |   ❌   |
-| 4.10.1 - 5.1       |     ❓     | 0.8 - ∞ | 0.8 - ∞ |    ❌    |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |   ❌   |   ❌   |
-| 5.1.1 - 5.4        |     ❓     |    ❓    | 0.9 - ∞ | 0.9 - ∞ |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |   ❌   |   ❌   |
-| 5.4.1 - 5.6.3      |     ❓     |    ❓    |    ❓    | 0.9 - ∞ |   sup.   |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |   ❌   |   ❌   |
-| 5.6.4              |     ❓     |    ❓    |    ❓    |    ❓    | 0.10 - ∞ | 0.10 - ∞ |    ❌     |    ❌     |    ❌     |    ❌     |   ❌   |   ❌   |
-| 6.0 - 6.1          |     ❓     |    ❓    |    ❓    |    ❓    | 0.11 - ∞ | 0.11 - ∞ |    ❌     |    ❌     |    ❌     |    ❌     |   ❌   |   ❌   |
-| 6.1.1 - 6.4.1      |     ❓     |    ❓    |    ❓    |    ❓    | 0.11 - ∞ | 0.11 - ∞ | 0.11 - ∞ |    ❌     |    ❌     |    ❌     |   ❌   |   ❌   | 
-| 6.5 - 6.7          |     ❓     |    ❓    |    ❓    |    ❓    | 0.11 - ∞ | 0.11 - ∞ | 0.11 - ∞ | 0.11 - ∞ |    ❌     |    ❌     |   ❌   |   ❌   | 
-| 6.7.1 - 6.9.2      |     ❓     |    ❓    |    ❓    |    ❓    |    ❓     |    ❓     |    ❓     | 0.11 - ∞ | 0.11 - ∞ |    ❌     |   ❌   |   ❌   | 
-| 7.0 - 7.3.2        |     ❓     |    ❓    |    ❓    |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.13 - ∞ | 0.13 - ∞ |  N/A  |  N/A  |
+| AGP →<br/>Gradle ↓ |   3.1.x   |  3.2.x  |  3.3.x  |  3.4.x  |  3.5.x   |  3.6.x   |  4.0.x   |  4.1.x   |  4.2.x   |  7.0.x   |  7.1.x   | 7.2.0-b2 | 7.3.0-a3 |
+|:-------------------|:---------:|:-------:|:-------:|:-------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
+| 4.4 - 4.8.1        | 0.5 - 0.7 |   ^1    |    ❌    |    ❌    |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
+| 4.9 - 4.10         |  0.8 - ∞  | 0.7 - ∞ |    ❌    |    ❌    |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
+| 4.10.1 - 5.1       |     ❓     | 0.8 - ∞ | 0.8 - ∞ |    ❌    |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
+| 5.1.1 - 5.4        |     ❓     |    ❓    | 0.9 - ∞ | 0.9 - ∞ |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
+| 5.4.1 - 5.6.3      |     ❓     |    ❓    |    ❓    | 0.9 - ∞ |   sup.   |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
+| 5.6.4              |     ❓     |    ❓    |    ❓    |    ❓    | 0.10 - ∞ | 0.10 - ∞ |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
+| 6.0 - 6.1          |     ❓     |    ❓    |    ❓    |    ❓    | 0.11 - ∞ | 0.11 - ∞ |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
+| 6.1.1 - 6.4.1      |     ❓     |    ❓    |    ❓    |    ❓    | 0.11 - ∞ | 0.11 - ∞ | 0.11 - ∞ |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
+| 6.5 - 6.7          |     ❓     |    ❓    |    ❓    |    ❓    | 0.11 - ∞ | 0.11 - ∞ | 0.11 - ∞ | 0.11 - ∞ |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
+| 6.7.1 - 6.9.2      |     ❓     |    ❓    |    ❓    |    ❓    |    ❓     |    ❓     |    ❓     | 0.11 - ∞ | 0.11 - ∞ |    ❌     |    ❌     |    ❌     |    ❌     |
+| 7.0 - 7.1.1        |     ❓     |    ❓    |    ❓    |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.13 - ∞ | 0.13 - ∞ |    ❌     |    ❌     |    ❌     |
+| 7.2                |     ❓     |    ❓    |    ❓    |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.13 - ∞ | 0.13 - ∞ | 0.14 - ∞ |    ❌     |    ❌     |
+| 7.3 - 7.3.3        |     ❓     |    ❓    |    ❓    |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.13 - ∞ | 0.13 - ∞ | 0.14 - ∞ | 0.14 - ∞ |    ❌     |
+| 7.4                |     ❓     |    ❓    |    ❓    |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ |
 
  * ❓ = not sure if it's supported by AGP, never tested.
  * ❌ = incompatible based on AGP compatibility.
  * sup. = supported based on AGP compatibility, but not tested.
- * N/A = not available yet
+ * N/A = full support not available yet, only preliminary support based on alpha/beta builds of AGP.
  * ∞ = latest version
  * ^1 = Gradle 4.4 — 4.9 is not supported, because it's hard to backport the lazy task configuration APIs.
  * ^2 = Convention plugins only support Android Gradle Plugin 4.0.0 — 4.2.2 on Gradle 6.1.1+, because it's really hard to backport all the features to 3.x with no need for this.

@@ -1,5 +1,7 @@
 ## Publish release `x.y`
 
+ 1. Make sure local copy is on latest `master`  
+    `git fetch -p & git checkout master & git reset --hard origin/master`
  1. `git add gradle.properties README.md & git commit -m "Release x.y"`
     * `gradle.properties`: remove `-SNAPSHOT` suffix
       Double-check that version is `x.y`
