@@ -4,6 +4,7 @@ import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.android.hasAndroidTest
 import net.twisterrob.gradle.base.BasePlugin
+import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
 
@@ -18,7 +19,9 @@ class KotlinPlugin : BasePlugin() {
 			// CONSIDER https://github.com/griffio/dagger2-kotlin/blob/master/README.md
 			project.plugins.apply("kotlin-android")
 			project.plugins.apply("kotlin-kapt")
-			project.repositories.mavenCentral()
+			if (shouldAddAutoRepositoriesTo(project)) {
+				project.repositories.mavenCentral()
+			}
 			project.dependencies.add("implementation", kotlin("stdlib-jdk7"))
 			if (project.plugins.hasAndroidTest()) {
 				project.addTestDependencies("implementation")
@@ -31,7 +34,9 @@ class KotlinPlugin : BasePlugin() {
 			}
 		} else {
 			project.plugins.apply("kotlin")
-			project.repositories.mavenCentral()
+			if (shouldAddAutoRepositoriesTo(project)) {
+				project.repositories.mavenCentral()
+			}
 			project.dependencies.add("implementation", kotlin("stdlib"))
 			project.addTestDependencies("testImplementation")
 		}
