@@ -6,7 +6,7 @@ import org.gradle.api.initialization.resolve.RepositoriesMode
 import org.gradle.util.GradleVersion
 
 fun shouldAddAutoRepositoriesTo(project: Project): Boolean {
-	if (GradleVersion.version("6.8") <= GradleVersion.current()) {
+	if (GradleVersion.version("6.8") <= GradleVersion.current().baseVersion) {
 		@Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA", "UnstableApiUsage")
 		return when (project.settings.dependencyResolutionManagement.repositoriesMode.get()) {
 			RepositoriesMode.PREFER_PROJECT -> {

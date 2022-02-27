@@ -24,6 +24,10 @@ When running integration tests, the same is true, but `GradleRunnerRule` will us
 
 This version is accessible from JUnit test code via `val gradle: GradleRunnerRule`'s `gradle.gradleVersion` property. This will contain what's in the property, if any.
 
+### GradleVersion.current()
+When accessing this, it should be done with `GradleVersion.current().baseVersion`, so that `<=` and similar comparisons work correctly.
+They would otherwise break on rc/snapshot versons.
+
 ### Testception
 There's some craziness happening in `TestPluginTest`, it uses `GradleRunnerRule` to set up a Gradle project that uses `GradleRunnerRule`. This applies `TestPlugin` which adds `gradleApi()` to the classpath. Since this test build is running via an outer `GradleRunnerRule`, that project's Gradle version will be added to the inner build's classpath.
 

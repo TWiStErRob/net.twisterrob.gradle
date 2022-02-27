@@ -36,7 +36,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 				apply plugin: 'net.twisterrob.pmd'
 				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
 				pmd {
-					if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
+					if (GradleVersion.version("6.0.0") <= GradleVersion.current().baseVersion) {
 						incrementalAnalysis.set(false)
 					}
 				}
