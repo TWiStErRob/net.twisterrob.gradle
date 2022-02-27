@@ -20,13 +20,6 @@ resetGradleTestWorkerIdToDefault()
 
 subprojects {
 	apply { plugin("kotlin") }
-
-	repositories {
-		google()
-		mavenCentral()
-		// for Kotlin-DSL
-		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
-	}
 }
 
 allprojects {

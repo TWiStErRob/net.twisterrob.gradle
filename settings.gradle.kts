@@ -38,6 +38,17 @@ if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toB
 	includeBuild("docs/examples/release")
 }
 
+@Suppress("UnstableApiUsage")
+dependencyResolutionManagement {
+	repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+	repositories {
+		google()
+		mavenCentral()
+		// for Kotlin-DSL
+		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
+	}
+}
+
 plugins {
 	// https://docs.gradle.com/enterprise/gradle-plugin/#release_history
 	id("com.gradle.enterprise") version "3.8.1"
