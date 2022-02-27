@@ -80,7 +80,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 		// See https://docs.gradle.org/6.8/release-notes.html#central-declaration-of-repositories.
 		assumeThat(
 			"Feature added in Gradle 6.8",
-			GradleVersion.current(),
+			gradle.gradleVersion.baseVersion,
 			greaterThanOrEqualTo(GradleVersion.version("6.8"))
 		)
 
