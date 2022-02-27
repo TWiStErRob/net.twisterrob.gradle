@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.common
+package net.twisterrob.gradle.ext
 
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
