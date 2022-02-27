@@ -9,6 +9,9 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.test.compile.generateKotlinCompilationCheck
 import net.twisterrob.test.compile.generateKotlinCompilationCheckTest
+import org.gradle.util.GradleVersion
+import org.hamcrest.Matchers.greaterThanOrEqualTo
+import org.hamcrest.assumeThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -74,6 +77,13 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `does not add repositories when it would fail`() {
+		// See https://docs.gradle.org/6.8/release-notes.html#central-declaration-of-repositories.
+		assumeThat(
+			"Feature added in Gradle 6.8",
+			GradleVersion.current(),
+			greaterThanOrEqualTo(GradleVersion.version("6.8"))
+		)
+
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 
 		@Language("gradle")
