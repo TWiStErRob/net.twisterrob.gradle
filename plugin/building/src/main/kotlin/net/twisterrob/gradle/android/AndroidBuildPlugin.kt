@@ -14,13 +14,16 @@ import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.common.settings
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
+import org.gradle.api.initialization.resolve.RepositoriesMode
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import org.gradle.util.GradleVersion
 
 open class AndroidBuildPluginExtension {
 
@@ -42,10 +45,12 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
-		// most of Android's stuff is distributed here, so add by default
-		project.repositories.google() // https://maven.google.com
-		// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
-		project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
+		if (shouldAddAutoRepositoriesTo(project)) {
+			// most of Android's stuff is distributed here, so add by default
+			project.repositories.google() // https://maven.google.com
+			// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
+			project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
+		}
 
 		when {
 			AGPVersions.v71x < AGPVersions.CLASSPATH -> {
@@ -211,6 +216,30 @@ class AndroidBuildPlugin : BasePlugin() {
 		private fun addPackageName(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {
 			// Package name for use e.g. in preferences to launch intent from the right package or for content providers
 			variant.resValue("string", "app_package", variant.applicationId)
+		}
+
+		private fun shouldAddAutoRepositoriesTo(project: Project): Boolean {
+			if (GradleVersion.version("6.8") <= GradleVersion.current()) {
+				@Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA", "UnstableApiUsage")
+				return when (project.settings.dependencyResolutionManagement.repositoriesMode.get()) {
+					RepositoriesMode.PREFER_PROJECT -> {
+						// Project is using defaults, or explicitly preferring these repositories.
+						true
+					}
+					RepositoriesMode.PREFER_SETTINGS -> {
+						// Automatic repositories will be ignored, don't even try.
+						false
+					}
+					RepositoriesMode.FAIL_ON_PROJECT_REPOS -> {
+						// Automatic repositories will fail the build, respect the user.
+						false
+					}
+				}
+			} else {
+				// Legacy behavior is the same as RepositoriesMode.PREFER_PROJECT,
+				// because there's no way to define in settings.gradle.
+				return true
+			}
 		}
 	}
 }

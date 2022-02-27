@@ -9,6 +9,8 @@ import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.move
 import net.twisterrob.gradle.test.root
+import org.gradle.api.artifacts.ArtifactRepositoryContainer
+import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -35,6 +37,53 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@BeforeEach fun setMemory() {
 		// TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/147
 		gradle.file("org.gradle.jvmargs=-Xmx256M\n", "gradle.properties")
+	}
+
+	@Test fun `adds automatic repositories`() {
+		gradle.buildFile.writeText(gradle.buildFile.readText().removeTopLevelRepositoryBlock())
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			afterEvaluate {
+				println("repoNames=" + repositories.names)
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleDebug").build()
+
+		result.assertHasOutputLine("repoNames=[${GOOGLE}, ${MAVEN_CENTRAL}]")
+		result.assertSuccess(":assembleDebug")
+	}
+
+	@Test fun `does not add repositories automatically when it would fail`() {
+		gradle.buildFile.writeText(gradle.buildFile.readText().removeTopLevelRepositoryBlock())
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.android-app'
+			afterEvaluate {
+				println("repoNames=" + repositories.names)
+			}
+		""".trimIndent()
+
+		@Language("gradle")
+		val settingsGradle = """
+			dependencyResolutionManagement {
+				repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+				repositories {
+					google()
+					mavenCentral()
+				}
+			}
+		""".trimIndent()
+		gradle.file(settingsGradle, "settings.gradle")
+
+		val result = gradle.run(script, "assembleDebug").build()
+
+		result.assertHasOutputLine("repoNames=[]")
+		// Build is successful without repos, because they come from settings.gradle.
+		result.assertSuccess(":assembleDebug")
 	}
 
 	@Test fun `default build setup is simple and produces default output (debug)`() {
@@ -487,5 +536,14 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":javaPreCompileDebug")
 		result.assertNoOutputLine(""".*annotationProcessor.*""".toRegex())
+	}
+
+	companion object {
+		private const val GOOGLE: String = DefaultRepositoryHandler.GOOGLE_REPO_NAME
+		private const val MAVEN_CENTRAL: String = ArtifactRepositoryContainer.DEFAULT_MAVEN_CENTRAL_REPO_NAME
+
+		/** Remove default from [GradleBuildTestResources.AndroidProject.build]. */
+		private fun String.removeTopLevelRepositoryBlock(): String =
+			this.replace("""(?s)\nrepositories \{.*?\n\}""".toRegex(), "")
 	}
 }
