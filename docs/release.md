@@ -26,12 +26,15 @@
  1. Archive and final integration test.
     * Run `p:\repos\release\net.twisterrob.gradle\download-repo.bat`  
       Need to change mvn2get.json's `remote_repo_urls`.
-    * Use it in a real project from staging repository:
+    * Use it in a real project from staging repository:  
+      Place it first to make sure Gradle resolves it, and update URL and version number exactly.
       ```gradle
       repositories {
-          maven {
+          maven("https://s01.oss.sonatype.org/service/local/repositories/nettwisterrob-####/content/") {
               name = "Sonatype Staging for net.twisterrob"
-              setUrl("https://s01.oss.sonatype.org/service/local/repositories/nettwisterrob-####/content/")
+              content {
+                  includeVersionByRegex("""^net\.twisterrob\.gradle$""", ".*", "^${Regex.escape("x.y")}$")
+              }
           }
       }
       ```
