@@ -13,6 +13,7 @@ import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addB
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.BasePlugin
+import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
@@ -42,10 +43,12 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
-		// most of Android's stuff is distributed here, so add by default
-		project.repositories.google() // https://maven.google.com
-		// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
-		project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
+		if (shouldAddAutoRepositoriesTo(project)) {
+			// most of Android's stuff is distributed here, so add by default
+			project.repositories.google() // https://maven.google.com
+			// :lintVitalRelease trying to resolve :lintClassPath that has Groovy, Kotlin and some libs
+			project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
+		}
 
 		when {
 			AGPVersions.v71x < AGPVersions.CLASSPATH -> {

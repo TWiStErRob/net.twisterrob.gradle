@@ -244,7 +244,7 @@ class PmdPluginTest : BaseIntgTest() {
 			apply plugin: 'net.twisterrob.pmd'
 			pmd {
 				toolVersion = '5.6.1'
-				if (GradleVersion.version("6.0.0") <= GradleVersion.current()) {
+				if (GradleVersion.version("6.0.0") <= GradleVersion.current().baseVersion) {
 					incrementalAnalysis.set(false)
 				}
 			}

@@ -70,7 +70,7 @@ class TestPluginTest : BaseIntgTest() {
 					// make /test/build/libs/X-0.0.jar available as 'net.twisterrob.gradle:X:0.0'
 					url '${artifactPath.replace("\\", "\\\\")}'
 					// patternLayout(Action) was introduced in 5.0, layout(String, Closure) was removed in 7.0.
-					if (GradleVersion.current() < GradleVersion.version("5.0.0")) {
+					if (GradleVersion.current().baseVersion < GradleVersion.version("5.0.0")) {
 						layout('pattern') {
 							artifact '[artifact]-[revision].[ext]'
 							m2compatible = true

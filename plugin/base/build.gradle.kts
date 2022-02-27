@@ -25,6 +25,7 @@ dependencies {
 	// SdkConstants.FD_INTERMEDIATES
 	compileOnly(libs.android.tools.common)
 	compileOnly(libs.annotations.jetbrains)
+	implementation(projects.compat.gradle)
 	implementation(projects.compat.agpBase)
 	implementation(projects.compat.agp40x)
 	implementation(projects.compat.agp41x)
