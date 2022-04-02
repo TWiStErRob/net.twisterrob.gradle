@@ -25,7 +25,7 @@ For details on what was changed in different versions, see [CHANGELOG](CHANGELOG
 
 Android Gradle Plugin 3.1.4 — 7.3.x on Gradle 4.9 — 7.4.x as listed in [AGP's compatibility guide](https://developer.android.com/studio/releases/gradle-plugin#updating-gradle).
 
-| AGP →<br/>Gradle ↓ |   3.1.x   |  3.2.x  |  3.3.x  |  3.4.x  |  3.5.x   |  3.6.x   |  4.0.x   |  4.1.x   |  4.2.x   |  7.0.x   |  7.1.x   | 7.2.0-b4 | 7.3.0-a3 |
+| AGP →<br/>Gradle ↓ |   3.1.x   |  3.2.x  |  3.3.x  |  3.4.x  |  3.5.x   |  3.6.x   |  4.0.x   |  4.1.x   |  4.2.x   |  7.0.x   |  7.1.x   | 7.2.0-b4 | 7.3.0-a7 |
 |:-------------------|:---------:|:-------:|:-------:|:-------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
 | 4.4 - 4.8.1        | 0.5 - 0.7 |   ^1    |    ❌    |    ❌    |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
 | 4.9 - 4.10         |  0.8 - ∞  | 0.7 - ∞ |    ❌    |    ❌    |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |    ❌     |
