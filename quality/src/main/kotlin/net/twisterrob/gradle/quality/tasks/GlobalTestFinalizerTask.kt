@@ -34,10 +34,10 @@ open class GlobalTestFinalizerTask : TestReport() {
 				gatherer.findViolations(xmlDir)
 			}
 		}
-		val errors = (violations.groupBy { it.severity })[SEVERITY.ERROR]
-		if (errors.orEmpty().isNotEmpty()) {
+		val errors = violations.filter { it.severity == SEVERITY.ERROR }
+		if (errors.isNotEmpty()) {
 			val report = destinationDir.resolve("index.html").toURI()
-			throw GradleException("There were ${errors!!.size} failing tests. See the report at: ${report}")
+			throw GradleException("There were ${errors.size} failing tests. See the report at: ${report}")
 		}
 	}
 
