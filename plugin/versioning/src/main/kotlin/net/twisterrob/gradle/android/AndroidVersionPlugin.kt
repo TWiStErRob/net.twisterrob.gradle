@@ -26,7 +26,6 @@ import org.gradle.kotlin.dsl.withType
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
-import java.util.Locale
 import java.util.Properties
 
 /**
@@ -67,7 +66,15 @@ open class AndroidVersionExtension {
 			autoVersionSet = true
 		}
 
-	var versionNameFormat: String = "%1\$d.%2\$d.%3\$d#%4\$d"
+	var versionNameFormat: (version: AndroidVersionExtension) -> String =
+		{ version ->
+			with(version) { "${major}.${minor}.${patch}#${build}" }
+		}
+
+	var versionCodeFormat: (version: AndroidVersionExtension) -> Int =
+		{ version ->
+			with(version) { (((major * minorMagnitude + minor) * patchMagnitude + patch) * buildMagnitude + build) }
+		}
 
 	var major: Int = 0 // M 0..213
 		set(value) {
@@ -108,6 +115,9 @@ open class AndroidVersionExtension {
 		patchMagnitude = 10 // P 0..9
 		buildMagnitude = 100000 // B 0..99999
 		build = vcs.revisionNumber
+		versionNameFormat = { version ->
+			with(version) { "${major}.${minor}.${patch}#${vcs.revision}" }
+		}
 	}
 
 	var renameAPK: Boolean = true
@@ -121,12 +131,6 @@ open class AndroidVersionExtension {
 					variantName
 			"${applicationId}@${versionCode}-v${versionName}+${variant}"
 		}
-
-	internal fun calculateVersionName(): String =
-		versionNameFormat.format(Locale.ROOT, major, minor, patch, build)
-
-	internal fun calculateVersionCode(): Int =
-		(((major * minorMagnitude + minor) * patchMagnitude + patch) * buildMagnitude + build)
 }
 
 class AndroidVersionPlugin : BasePlugin() {
@@ -190,8 +194,8 @@ class AndroidVersionPlugin : BasePlugin() {
 	 */
 	private fun autoVersion() {
 		if (version.autoVersion) {
-			android.defaultConfig.setVersionCode(version.calculateVersionCode())
-			android.defaultConfig.setVersionName(version.calculateVersionName())
+			android.defaultConfig.setVersionCode(version.versionCodeFormat(version))
+			android.defaultConfig.setVersionName(version.versionNameFormat(version))
 		}
 	}
 
