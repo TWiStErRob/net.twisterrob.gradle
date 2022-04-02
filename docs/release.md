@@ -1,3 +1,5 @@
+For the full process see [.github/release.md](https://github.com/TWiStErRob/.github/blob/main/RELEASE.md).
+
 ## Publish release `x.y`
 
  1. Make sure local copy is on latest `master`  
@@ -6,7 +8,6 @@
     * `gradle.properties`: remove `-SNAPSHOT` suffix
       Double-check that version is `x.y`
     * `README.md`: review compatibility table
- 1. Follow the steps at [Central Release Process][1].
  1. Upload
     * Set up credentials
         * `sonatypeUsername` is the account name of https://s01.oss.sonatype.org/
@@ -40,8 +41,6 @@
       ```
  1. Repeat previous steps as necessary.
  1. `git push origin master:master` to get the "Release x.y" commit published.
- 1. Publish [drafted release](https://github.com/TWiStErRob/net.twisterrob.gradle/releases) on GitHub
- 1. Close `x.y` [milestone](https://github.com/TWiStErRob/net.twisterrob.gradle/milestones) as described in [release process][1].
  1. Release staging repository at [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories)
  1. Watch [Maven Central](https://repo1.maven.org/maven2/net/twisterrob/gradle/twister-quality/) for the artifact to appear. May take a few minutes.
 
