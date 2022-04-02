@@ -121,7 +121,7 @@ jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version = "5.13.0.2021090
 
 # Changelog: https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md
 # GitHub Releases: https://github.com/tomasbjerre/violations-lib/tags
-violations = { module = "se.bjurr.violations:violations-lib", version = "1.81" }
+violations = { module = "se.bjurr.violations:violations-lib", version = "1.148.3" }
 guava = { module = "com.google.guava:guava", version = "22.0" }
 # Explicitly using an outdated version of diffuse, don't remember why.
 # Versions: https://github.com/JakeWharton/diffuse/tags

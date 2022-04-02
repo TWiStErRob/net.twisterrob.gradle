@@ -32,5 +32,5 @@ T : Reporting<out ReportContainer<out SingleFileReport>> {
 		displayName
 
 	override fun findViolations(report: File): List<Violation> =
-		parser.findViolations(listOf(report))
+		parser.findViolations(NoOpLogger, listOf(report)).toList()
 }

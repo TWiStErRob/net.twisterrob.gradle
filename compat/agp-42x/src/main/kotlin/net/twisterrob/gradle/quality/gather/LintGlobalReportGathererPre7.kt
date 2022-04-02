@@ -24,5 +24,5 @@ class LintGlobalReportGathererPre7(
 		"lint"
 
 	override fun findViolations(report: File): List<Violation> =
-		Parser.ANDROIDLINT.findViolations(listOf(report))
+		Parser.ANDROIDLINT.findViolations(NoOpLogger, listOf(report)).toList()
 }
