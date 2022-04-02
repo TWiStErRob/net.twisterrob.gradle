@@ -399,9 +399,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
-			apk = gradle.root.apk("release", "${packageName}@12300004-v1.2.3#${rev}.4+release.apk"),
+			apk = gradle.root.apk("release", "${packageName}@12300004-v1.2.3#4-${rev}+release.apk"),
 			versionCode = "12300004",
-			versionName = "1.2.3#${rev}.4"
+			versionName = "1.2.3#4-${rev}"
 		)
 	}
 

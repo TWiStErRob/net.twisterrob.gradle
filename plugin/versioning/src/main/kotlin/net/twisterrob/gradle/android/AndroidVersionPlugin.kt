@@ -123,10 +123,10 @@ open class AndroidVersionExtension {
 				append(".")
 				append(version.patch)
 				append("#")
-				append(vcs.revision)
+				append(version.build)
 				if (vcs.revision != version.build.toString()) {
-					append(".")
-					append(version.build)
+					append("-")
+					append(vcs.revision)
 				}
 			}
 		}
