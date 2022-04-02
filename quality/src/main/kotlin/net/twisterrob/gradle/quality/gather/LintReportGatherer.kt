@@ -23,7 +23,7 @@ internal class LintReportGatherer(
 		"lintVariant"
 
 	override fun findViolations(report: File): List<Violation> =
-		Parser.ANDROIDLINT.findViolations(NoOpLogger(), listOf(report)).toList()
+		Parser.ANDROIDLINT.findViolations(NoOpLogger, listOf(report)).toList()
 
 	override fun allTasksFrom(project: Project): TaskCollection<AndroidLintTask> =
 		super.allTasksFrom(project)
