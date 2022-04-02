@@ -381,11 +381,12 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `build version is used from GIT revision number (release)`() {
+		lateinit var rev: String
 		git(gradle.root) {
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 1")
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 2")
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 3")
-			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 4")
+			rev = doCommitSingleFile(gradle.root.createTestFileToCommit(), "Commit 4").abbreviate(7).name()
 		}
 
 		@Language("gradle")
@@ -398,9 +399,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
-			apk = gradle.root.apk("release", "${packageName}@12300004-v1.2.3#4+release.apk"),
+			apk = gradle.root.apk("release", "${packageName}@12300004-v1.2.3#${rev}.4+release.apk"),
 			versionCode = "12300004",
-			versionName = "1.2.3#4"
+			versionName = "1.2.3#${rev}.4"
 		)
 	}
 

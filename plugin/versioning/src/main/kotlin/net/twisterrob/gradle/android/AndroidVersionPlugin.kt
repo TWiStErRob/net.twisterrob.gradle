@@ -116,7 +116,19 @@ open class AndroidVersionExtension {
 		buildMagnitude = 100000 // B 0..99999
 		build = vcs.revisionNumber
 		versionNameFormat = { version ->
-			with(version) { "${major}.${minor}.${patch}#${vcs.revision}.${build}" }
+			buildString {
+				append(version.major)
+				append(".")
+				append(version.minor)
+				append(".")
+				append(version.patch)
+				append("#")
+				append(vcs.revision)
+				if (vcs.revision != version.build.toString()) {
+					append(".")
+					append(version.build)
+				}
+			}
 		}
 	}
 
