@@ -5,8 +5,8 @@
     ":disableDependencyDashboard"
   ],
   "ignorePaths": [
-    "/docs/debug/",
-    "/graph/"
+    "docs/debug/",
+    "graph/"
   ],
   "packageRules": [
     {
