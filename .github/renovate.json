@@ -1,0 +1,20 @@
+{
+  "extends": [
+    "config:base",
+    "group:allNonMajor",
+    ":disableDependencyDashboard"
+  ],
+  "ignorePaths": [
+    "docs/debug/",
+    "graph/"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "passed:skipped",
+        "net.twisterrob.gradle.runner.gradleVersion:net.twisterrob.test.android.pluginVersion"
+      ],
+      "enabled": false
+    }
+  ]
+}
