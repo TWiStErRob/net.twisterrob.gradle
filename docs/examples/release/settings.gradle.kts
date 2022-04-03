@@ -1,12 +1,18 @@
 pluginManagement {
 	repositories {
-		google {
-			content {
-				includeGroup("com.android.tools.build")
-			}
-		}
 		mavenCentral()
 		//gradlePluginPortal() // not used
+		exclusiveContent {
+			forRepository {
+				google()
+			}
+			filter {
+				includeGroupByRegex("""^com\.android(\..*)?$""")
+				includeGroupByRegex("""^com\.google\.android\..*$""")
+				includeGroupByRegex("""^com\.google\.testing\.platform$""")
+				includeGroupByRegex("""^androidx\..*$""")
+			}
+		}
 	}
 	resolutionStrategy {
 		eachPlugin {

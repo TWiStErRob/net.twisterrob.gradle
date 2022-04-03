@@ -1,21 +1,31 @@
 pluginManagement {
 	repositories {
-		maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-			name = "Sonatype 01"
-			content {
-				includeGroup("net.twisterrob.gradle")
-			}
-			mavenContent {
-				snapshotsOnly()
-			}
-		}
-		google {
-			content {
-				includeGroup("com.android.tools.build")
-			}
-		}
 		mavenCentral()
 		//gradlePluginPortal() // not used
+		exclusiveContent {
+			forRepository {
+				maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+					name = "Sonatype 01"
+					mavenContent {
+						snapshotsOnly()
+					}
+				}
+			}
+			filter {
+				includeGroup("net.twisterrob.gradle")
+			}
+		}
+		exclusiveContent {
+			forRepository {
+				google()
+			}
+			filter {
+				includeGroupByRegex("""^com\.android(\..*)?$""")
+				includeGroupByRegex("""^com\.google\.android\..*$""")
+				includeGroupByRegex("""^com\.google\.testing\.platform$""")
+				includeGroupByRegex("""^androidx\..*$""")
+			}
+		}
 	}
 	resolutionStrategy {
 		eachPlugin {
