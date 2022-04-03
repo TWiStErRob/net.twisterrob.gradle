@@ -4,7 +4,10 @@
     "group:allNonMajor",
     ":disableDependencyDashboard"
   ],
-  "ignorePaths": [],
+  "ignorePaths": [
+    "/docs/debug/",
+    "/graph/"
+  ],
   "packageRules": [
     {
       "matchPackageNames": [
