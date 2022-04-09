@@ -14,7 +14,7 @@
 				"+(docs/debug/agp*-gradle*/**/build.gradle)",
 				"+(docs/debug/agp*-gradle*/**/build.gradle.kts)",
 				"+(docs/debug/agp*-gradle*/**/settings.gradle)",
-				"+(docs/debug/agp*-gradle*/**/settings.gradle.kts)",
+				"+(docs/debug/agp*-gradle*/**/settings.gradle.kts)"
 			],			
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
