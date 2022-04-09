@@ -1,5 +1,52 @@
 {
-  "extends": [
-    "config:base"
-  ]
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"github>TWiStErRob/renovate-config"
+	],
+	"packageRules": [
+		{
+			"Disable updating AGP in debug projects, they have a specific version. Allow patches.",
+			"matchPackageNames": [
+				"com.android.tools.build:gradle"
+				"com.android.application"
+			],
+			"matchPaths": [
+				"+(docs/debug/agp*-gradle*/**/build.gradle)",
+				"+(docs/debug/agp*-gradle*/**/build.gradle.kts)",
+				"+(docs/debug/agp*-gradle*/**/settings.gradle)",
+				"+(docs/debug/agp*-gradle*/**/settings.gradle.kts)",
+			],			
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		},
+		{
+			"Disable updating Gradle in debug projects, they have a specific version. Allow minors.",
+			"matchPaths": [
+				"+(docs/debug/agp*-gradle*/gradle/wrapper/gradle-wrapper.properties)"
+			],
+			"matchUpdateTypes": ["major"],
+			"enabled": false
+		},
+		{
+			"Disable updating AGP in compatibility modules, they need a specific version. Allow patches.",
+			"matchPackageNames": [
+				"com.android.tools.build:gradle",
+				"com.android.application"
+			],
+			"matchPaths": [
+				"+(compat/agp-*x/build.gradle.kts)"
+			],
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		},
+		{
+			"matchPackageNames": [
+				"com.android.tools.build:gradle",
+				"com.android.application"
+			],
+			"matchCurrentVersion": "/^3\\.\\d+\\./",
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		}
+	]
 }
