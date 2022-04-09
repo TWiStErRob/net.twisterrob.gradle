@@ -6,7 +6,7 @@
 	"packageRules": [
 		{
 			"description": "Disable updating AGP in debug projects, they have a specific version. Allow patches.",
-			"matchPackageName": [
+			"matchPackageNames": [
 				"com.android.tools.build:gradle",
 				"com.android.application"
 			],
