@@ -5,9 +5,9 @@
 	],
 	"packageRules": [
 		{
-			"Disable updating AGP in debug projects, they have a specific version. Allow patches.",
+			"description": "Disable updating AGP in debug projects, they have a specific version. Allow patches.",
 			"matchPackageName": [
-				"com.android.tools.build:gradle",
+				"com.android.tools.build:gradle"
 				"com.android.application"
 			],
 			"matchPaths": [
@@ -20,7 +20,7 @@
 			"enabled": false
 		},
 		{
-			"Disable updating Gradle in debug projects, they have a specific version. Allow minors.",
+			"description": "Disable updating Gradle in debug projects, they have a specific version. Allow minors.",
 			"matchPaths": [
 				"+(docs/debug/agp*-gradle*/gradle/wrapper/gradle-wrapper.properties)"
 			],
@@ -28,7 +28,7 @@
 			"enabled": false
 		},
 		{
-			"Disable updating AGP in compatibility modules, they need a specific version. Allow patches.",
+			"description": "Disable updating AGP in compatibility modules, they need a specific version. Allow patches.",
 			"matchPackageNames": [
 				"com.android.tools.build:gradle",
 				"com.android.application"
