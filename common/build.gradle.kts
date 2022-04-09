@@ -19,7 +19,6 @@ dependencies {
 	compileOnly(libs.annotations.jetbrains)
 
 	testImplementation(projects.test.internal)
-	testImplementation(libs.guava)
 	testRuntimeOnly(libs.android.gradle)
 }
 
