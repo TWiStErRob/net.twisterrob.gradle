@@ -5,8 +5,6 @@ java = "1.8"
 # GitHub Releases: https://github.com/tomasbjerre/violations-lib/tags
 violations = "1.148.3"
 
-guava = "22.0"
-
 # JSR 305: Annotations for Software Defect Detection
 # Documentation: https://jcp.org/en/jsr/detail?id=305
 # Artifacts: https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/
@@ -143,7 +141,6 @@ svnkit = { module = "org.tmatesoft.svnkit:svnkit", version.ref = "svnkit" }
 svnkit-cli = { module = "org.tmatesoft.svnkit:svnkit-cli", version.ref = "svnkit" }
 jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
 violations = { module = "se.bjurr.violations:violations-lib", version.ref = "violations" }
-guava = { module = "com.google.guava:guava", version.ref = "guava" }
 dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = "diffuse" }
 
 [bundles]
