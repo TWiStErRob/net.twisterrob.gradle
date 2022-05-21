@@ -31,8 +31,11 @@ class AGPVersionTest {
 		fun mavenGoogle(): List<Arguments> =
 			listOf(
 				Arguments.of("7.4.0-alpha02", AGPVersion(7, 4, Alpha, 2)),
+				Arguments.of("7.3.0-alpha09", AGPVersion(7, 3, Alpha, 9)),
 				Arguments.of("7.3.0-alpha07", AGPVersion(7, 3, Alpha, 7)),
+				Arguments.of("7.2.0", AGPVersion(7, 2, Stable, 0)),
 				Arguments.of("7.2.0-alpha01", AGPVersion(7, 2, Alpha, 1)),
+				Arguments.of("7.1.0", AGPVersion(7, 1, Stable, 0)),
 				Arguments.of("7.1.0-beta01", AGPVersion(7, 1, Beta, 1)),
 				Arguments.of("7.1.0-alpha13", AGPVersion(7, 1, Alpha, 13)),
 				Arguments.of("7.1.0-alpha12", AGPVersion(7, 1, Alpha, 12)),
