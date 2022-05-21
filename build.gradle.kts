@@ -179,7 +179,7 @@ if (project.property("net.twisterrob.gradle.build.includeExamples").toString().t
 
 project.tasks.register<TestReport>("testReport") {
 	group = LifecycleBasePlugin.VERIFICATION_GROUP
-	description = "Run and report on all tests in the project. Add -x test to just generate report."
+	description = "Run and report on all tests in the project. Add `-x test` to just generate report."
 	@Suppress("UnstableApiUsage")
 	destinationDirectory.set(file("${buildDir}/reports/tests/all"))
 
