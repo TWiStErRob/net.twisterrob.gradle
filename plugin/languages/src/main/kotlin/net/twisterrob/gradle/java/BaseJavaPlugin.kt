@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.java
 
 import com.android.build.gradle.BaseExtension
-import com.android.builder.core.VariantTypeImpl.ANDROID_TEST
-import com.android.builder.core.VariantTypeImpl.UNIT_TEST
+import com.android.builder.core.VariantType.Companion.ANDROID_TEST_SUFFIX
+import com.android.builder.core.VariantType.Companion.UNIT_TEST_SUFFIX
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.base.BaseExposedPlugin
 import org.gradle.api.JavaVersion
@@ -61,8 +61,8 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 		project.tasks.withType<JavaCompile> {
 			options.encoding = DEFAULT_ENCODING
 			val isTestTask = name.contains("Test")
-			val isAndroidTest = name.endsWith("${ANDROID_TEST.suffix}JavaWithJavac")
-			val isAndroidUnitTest = name.endsWith("${UNIT_TEST.suffix}JavaWithJavac")
+			val isAndroidTest = name.endsWith("${ANDROID_TEST_SUFFIX}JavaWithJavac")
+			val isAndroidUnitTest = name.endsWith("${UNIT_TEST_SUFFIX}JavaWithJavac")
 			if (!isTestTask) {
 				options.compilerArgs.add("-Xlint:unchecked")
 				options.compilerArgs.add("-Xlint:deprecation")
