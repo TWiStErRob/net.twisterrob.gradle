@@ -555,14 +555,14 @@ jobs:
           - name: "AGP 7.3.x on Gradle 7.4+"
             gradle: 7.4.2
             gradle-java: 11
-            agp: 7.3.0-alpha09
+            agp: 7.3.0-beta01
             build-tools: 30.0.3
             instant-api: 30
             test-task: testReport :quality:tests
           - name: "AGP 7.3.x on Gradle 7.4+ - plugin"
             gradle: 7.4.2
             gradle-java: 11
-            agp: 7.3.0-alpha09
+            agp: 7.3.0-beta01
             build-tools: 32.0.0
             instant-api: 30
             test-task: testReport :plugin:tests
@@ -846,19 +846,19 @@ jobs:
           name: AGP 7.2.x on Gradle 7.x - plugin (7.2.0 on 7.4.2) Test Results XMLs
           path: artifacts/AGP 7.2.x on Gradle 7.x - plugin (7.2.0 on 7.4.2) Test Results XMLs
 
-      - name: Download 'AGP 7.3.x on Gradle 7.4+ (7.3.0-alpha09 on 7.4.2) Test Results XMLs'
+      - name: Download 'AGP 7.3.x on Gradle 7.4+ (7.3.0-beta01 on 7.4.2) Test Results XMLs'
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.3.x on Gradle 7.4+ (7.3.0-alpha09 on 7.4.2) Test Results XMLs
-          path: artifacts/AGP 7.3.x on Gradle 7.4+ (7.3.0-alpha09 on 7.4.2) Test Results XMLs
+          name: AGP 7.3.x on Gradle 7.4+ (7.3.0-beta01 on 7.4.2) Test Results XMLs
+          path: artifacts/AGP 7.3.x on Gradle 7.4+ (7.3.0-beta01 on 7.4.2) Test Results XMLs
 
-      - name: Download 'AGP 7.3.x on Gradle 7.4+ - plugin (7.3.0-alpha09 on 7.4.2) Test Results XMLs'
+      - name: Download 'AGP 7.3.x on Gradle 7.4+ - plugin (7.3.0-beta01 on 7.4.2) Test Results XMLs'
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.3.x on Gradle 7.4+ - plugin (7.3.0-alpha09 on 7.4.2) Test Results XMLs
-          path: artifacts/AGP 7.3.x on Gradle 7.4+ - plugin (7.3.0-alpha09 on 7.4.2) Test Results XMLs
+          name: AGP 7.3.x on Gradle 7.4+ - plugin (7.3.0-beta01 on 7.4.2) Test Results XMLs
+          path: artifacts/AGP 7.3.x on Gradle 7.4+ - plugin (7.3.0-beta01 on 7.4.2) Test Results XMLs
 
       - name: Download 'AGP 7.4.x on Gradle 7.4+ (7.4.0-alpha02 on 7.4.2) Test Results XMLs'
         if: success() || failure()

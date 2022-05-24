@@ -94,7 +94,7 @@ android-gradle-v42x = { module = "com.android.tools.build:gradle", version = "4.
 android-gradle-v70x = { module = "com.android.tools.build:gradle", version = "7.0.4" }
 android-gradle-v71x = { module = "com.android.tools.build:gradle", version = "7.1.2" }
 android-gradle-v72x = { module = "com.android.tools.build:gradle", version = "7.2.0" }
-android-gradle-v73x = { module = "com.android.tools.build:gradle", version = "7.3.0-alpha09" }
+android-gradle-v73x = { module = "com.android.tools.build:gradle", version = "7.3.0-beta01" }
 android-gradle-v74x = { module = "com.android.tools.build:gradle", version = "7.4.0-alpha02" }
 android-lint-main = { module = "com.android.tools.lint:lint", version.ref = "lint" }
 android-lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "lint" }
