@@ -86,6 +86,10 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 		)
 
 		gradle.basedOn(GradleBuildTestResources.kotlin)
+		// Somewhere after Kotlin 1.4.32 and before 1.5.32 there was a behavior change:
+		// Not having a source code would trigger compileKotlin to be NO-SOURCE.
+		// This means it doesn't try to resolve classpath, so th expected failure would never come.
+		gradle.file("", "src", "main", "java", "triggerCompilation.kt")
 
 		@Language("gradle")
 		val settings = """
