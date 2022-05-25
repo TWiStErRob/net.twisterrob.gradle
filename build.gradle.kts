@@ -179,7 +179,7 @@ if (project.property("net.twisterrob.gradle.build.includeExamples").toString().t
 
 project.tasks.register<TestReport>("testReport") {
 	group = LifecycleBasePlugin.VERIFICATION_GROUP
-	description = "Run and report on all tests in the project. Add -x test to just generate report."
+	description = "Run and report on all tests in the project. Add `-x test` to just generate report."
 	@Suppress("UnstableApiUsage")
 	destinationDirectory.set(file("${buildDir}/reports/tests/all"))
 
@@ -196,10 +196,16 @@ project.tasks.register<TestReport>("testReport") {
 	doLast {
 		@Suppress("UnstableApiUsage")
 		val reportFile = destinationDirectory.file("index.html").get().asFile
-		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
-		if (!successRegex.containsMatchIn(reportFile.readText())) {
-			val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
-			throw GradleException("There were failing tests. See the report at: ${reportPath}")
+		val failureRegex = """(?s).*<div class="infoBox" id="failures">\s*<div class="counter">(\d+)<\/div>.*""".toRegex()
+		val failureMatch = failureRegex.matchEntire(reportFile.readText())
+		val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
+		if (failureMatch == null) {
+			throw GradleException("Cannot determine if the tests failed. See the report at: ${reportPath}")
+		} else {
+			val failCount = failureMatch.groups[1]!!.value
+			if (failCount != "0") {
+				throw GradleException("There were ${failCount} failing tests. See the report at: ${reportPath}")
+			}
 		}
 	}
 }

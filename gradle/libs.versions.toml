@@ -19,13 +19,13 @@ nexus = "1.1.0"
 
 # See [lint] which is affected by this.
 # Versions: https://maven.google.com/web/index.html#com.android.tools.build:gradle
-agp = "7.2.0-beta04"
+agp = "7.2.1"
 
 # = 23.0.0 + [agp].
 # @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
 # @see builder-model//version.properties
 # Versions: https://maven.google.com/web/index.html#com.android.tools.lint:lint
-lint = "30.2.0-beta04"
+lint = "30.2.1"
 
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # @see kotlin_version in buildSrc/gradle.properties
@@ -93,8 +93,9 @@ android-gradle-v41x = { module = "com.android.tools.build:gradle", version = "4.
 android-gradle-v42x = { module = "com.android.tools.build:gradle", version = "4.2.2" }
 android-gradle-v70x = { module = "com.android.tools.build:gradle", version = "7.0.4" }
 android-gradle-v71x = { module = "com.android.tools.build:gradle", version = "7.1.2" }
-android-gradle-v72x = { module = "com.android.tools.build:gradle", version = "7.2.0-beta04" }
-android-gradle-v73x = { module = "com.android.tools.build:gradle", version = "7.3.0-alpha07" }
+android-gradle-v72x = { module = "com.android.tools.build:gradle", version = "7.2.1" }
+android-gradle-v73x = { module = "com.android.tools.build:gradle", version = "7.3.0-beta01" }
+android-gradle-v74x = { module = "com.android.tools.build:gradle", version = "7.4.0-alpha02" }
 android-lint-main = { module = "com.android.tools.lint:lint", version.ref = "lint" }
 android-lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "lint" }
 android-lint-gradle = { module = "com.android.tools.lint:lint-gradle", version.ref = "lint" }
