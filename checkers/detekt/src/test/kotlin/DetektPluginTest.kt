@@ -2,6 +2,7 @@ package net.twisterrob.gradle.detekt
 
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.common.TaskConfigurator
+import net.twisterrob.gradle.detekt.test.DetektTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertFailed
@@ -26,7 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 /**
  * @see DetektPlugin
  */
-@Suppress("DEPRECATION")
 @ExtendWith(GradleRunnerRuleExtension::class)
 class DetektPluginTest : BaseIntgTest() {
 
@@ -36,7 +36,7 @@ class DetektPluginTest : BaseIntgTest() {
 	}
 
 	override lateinit var gradle: GradleRunnerRule
-//	private val detekt = DetektTestResources()
+	private val detekt = DetektTestResources()
 
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
@@ -78,7 +78,7 @@ class DetektPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applies to all types of subprojects`() {
-		gradle.file(gradle.templateFile("detekt-empty.xml").readText(), "config", "detekt", "detekt.xml")
+		gradle.file(detekt.empty.config, "config", "detekt", "detekt.yml")
 		@Language("gradle")
 		val script = """
 			allprojects {
@@ -131,7 +131,7 @@ class DetektPluginTest : BaseIntgTest() {
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
-		gradle.file(gradle.templateFile("detekt-empty.xml").readText(), "config", "detekt", "detekt.xml")
+		gradle.file(detekt.empty.config, "config", "detekt", "detekt.yml")
 
 		@Language("gradle")
 		val rootProject = """
@@ -188,7 +188,7 @@ class DetektPluginTest : BaseIntgTest() {
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
-		gradle.file(gradle.templateFile("detekt-empty.xml").readText(), "config", "detekt", "detekt.xml")
+		gradle.file(detekt.empty.config, "config", "detekt", "detekt.yml")
 
 		val result = gradle
 				.basedOn("android-multi_module")
@@ -229,8 +229,8 @@ class DetektPluginTest : BaseIntgTest() {
 
 	@Test fun `custom source sets folders are picked up`() {
 		gradle.basedOn("android-root_app")
-		gradle.file(gradle.templateFile("detekt-simple_failure.xml").readText(), "config", "detekt", "detekt.xml")
-		gradle.file(gradle.templateFile("detekt-simple_failure.java").readText(), "custom", "Checkstyle.java")
+		gradle.file(detekt.simple.config, "config", "detekt", "detekt.yml")
+		gradle.file(detekt.simple.content, "custom", "Detekt.kt")
 
 		@Language("gradle")
 		val build = """
@@ -246,18 +246,15 @@ class DetektPluginTest : BaseIntgTest() {
 
 		result.assertFailed(":detektDebug")
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
-		result.assertHasOutputLine(""".*custom.Checkstyle\.java:1: .*? \[Header]""".toRegex())
+		result.assertHasOutputLine(detekt.simple.message)
 	}
 
 	@Test fun `exclusions are configurable per variant`() {
 		gradle.basedOn("android-root_app")
-		gradle.file(gradle.templateFile("detekt-simple_failure.xml").readText(), "config", "detekt", "detekt.xml")
-		gradle.file(gradle.templateFile("detekt-simple_failure.java").readText(),
-				"src", "main", "java", "com", "example", "foo", "Checkstyle.java")
-		gradle.file(gradle.templateFile("detekt-simple_failure.java").readText(),
-				"src", "main", "java", "com", "example", "bar", "Checkstyle.java")
-		gradle.file(gradle.templateFile("detekt-simple_failure.java").readText(),
-				"src", "main", "java", "com", "example", "bar", "baz", "Checkstyle.java")
+		gradle.file(detekt.simple.config, "config", "detekt", "detekt.yml")
+		gradle.file(detekt.simple.content, "src", "main", "java", "com", "example", "foo", "Detekt.kt")
+		gradle.file(detekt.simple.content, "src", "main", "java", "com", "example", "bar", "Detekt.kt")
+		gradle.file(detekt.simple.content, "src", "main", "java", "com", "example", "bar", "baz", "Detekt.kt")
 
 		@Language("gradle")
 		val build = """

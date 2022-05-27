@@ -6,7 +6,7 @@ plugins {
 }
 
 base.archivesName.set("twister-quality-detekt")
-description = "Checkstyle: Checkstyle quality setup plugin for Gradle."
+description = "Detekt: Detekt quality setup plugin for Gradle."
 
 gradlePlugin {
 	plugins {
