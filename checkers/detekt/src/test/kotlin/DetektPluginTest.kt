@@ -1,86 +1,83 @@
+package net.twisterrob.gradle.detekt
+
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.common.TaskConfigurator
-import net.twisterrob.gradle.detekt.DetektExtension
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertNoSource
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.assertUpToDate
 import net.twisterrob.gradle.test.failReason
 import org.gradle.api.plugins.quality.Checkstyle
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
 import org.hamcrest.Matchers.startsWith
 import org.intellij.lang.annotations.Language
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
-class DetektPluginTest {
+/**
+ * @see DetektPlugin
+ */
+@Suppress("DEPRECATION")
+@ExtendWith(GradleRunnerRuleExtension::class)
+class DetektPluginTest : BaseIntgTest() {
 
 	companion object {
 
 		private val endl = System.lineSeparator()
 	}
 
-	@Rule @JvmField val gradle = GradleRunnerRule(false)
+	override lateinit var gradle: GradleRunnerRule
+//	private val detekt = DetektTestResources()
 
 	@Test fun `does not apply to empty project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.detekt'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(script, "detekt").buildAndFail()
+		val result = gradle.run(script, "detekt").buildAndFail()
 
-		`then`@
 		assertThat(result.failReason, startsWith("Task 'detekt' not found"))
 	}
 
 	@Test fun `does not apply to a Java project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			apply plugin: 'java'
 			apply plugin: 'net.twisterrob.detekt'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
-				.run(script, "detekt").buildAndFail()
+		val result = gradle.run(script, "detekt").buildAndFail()
 
-		`then`@
 		assertThat(result.failReason, startsWith("Task 'detekt' not found"))
 	}
 
 	@Test fun `applies without a hitch to an Android project`() {
-		`given`@
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.detekt'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
+		val result = gradle
 				.basedOn("android-root_app")
 				.run(script, "detektEach")
 				.build()
 
-		`then`@
-		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":detektEach")!!.outcome)
-		assertEquals(TaskOutcome.NO_SOURCE, result.task(":detektDebug")!!.outcome)
-		assertEquals(TaskOutcome.NO_SOURCE, result.task(":detektRelease")!!.outcome)
+		result.assertUpToDate(":detektEach")
+		result.assertNoSource(":detektDebug")
+		result.assertNoSource(":detektRelease")
 	}
 
 	@Test fun `applies to all types of subprojects`() {
-		`given`@
 		gradle.file(gradle.templateFile("detekt-empty.xml").readText(), "config", "detekt", "detekt.xml")
 		@Language("gradle")
 		val script = """
@@ -88,19 +85,16 @@ class DetektPluginTest {
 				apply plugin: 'net.twisterrob.detekt'
 			}
 		""".trimIndent()
-		// ":instant" is not supported yet 
+		// ":instant" is not supported yet
 		val modules = arrayOf(":app", ":feature", ":base", ":library", ":library:nested", ":test")
 
-		val result: BuildResult
-		`when`@
-		result = gradle
+		val result = gradle
 				.basedOn("android-all_kinds")
 				.run(script, "detektEach")
 				.build()
 
 		// these tasks are not generated because their modules are special
 		val exceptions = arrayOf(":test:detektRelease")
-		`then`@
 		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
 				hasItems(*(tasksIn(modules, "detektRelease", "detektDebug") - exceptions)))
 		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
@@ -119,9 +113,8 @@ class DetektPluginTest {
 				":module3:sub1",
 				":module3:sub2"
 		)
-		`given`@
 		modules.forEach {
-			gradle.settingsFile().appendText("include '${it}'${endl}")
+			gradle.settingsFile.appendText("include '${it}'${endl}")
 
 			@Language("gradle")
 			val subProject = """
@@ -147,14 +140,11 @@ class DetektPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle
+		val result = gradle
 				.basedOn("android-multi_module")
 				.run(rootProject, "detektEach")
 				.build()
 
-		`then`@
 		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
 				hasItems(*tasksIn(modules, "detektRelease", "detektDebug")))
 		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
@@ -165,7 +155,6 @@ class DetektPluginTest {
 	}
 
 	@Test fun `applies to individual subprojects`() {
-		`given`@
 		@Language("gradle")
 		val subProjectNotApplied = """
 			apply plugin: 'com.android.library'
@@ -186,7 +175,7 @@ class DetektPluginTest {
 		)
 		val applyTo = arrayOf(":module2", ":module2:sub1", ":module3:sub2")
 		modules.forEach { module ->
-			gradle.settingsFile().appendText("include '${module}'${endl}")
+			gradle.settingsFile.appendText("include '${module}'${endl}")
 
 			val subProject = if (module in applyTo) subProjectApplied else subProjectNotApplied
 			@Language("xml")
@@ -201,16 +190,13 @@ class DetektPluginTest {
 
 		gradle.file(gradle.templateFile("detekt-empty.xml").readText(), "config", "detekt", "detekt.xml")
 
-		val result: BuildResult
-		`when`@
-		result = gradle
+		val result = gradle
 				.basedOn("android-multi_module")
 				.run(null, "detektEach")
 				.build()
 
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(applyTo, "detektEach", "detektRelease", "detektDebug")
-		`then`@
 		assertThat(allTasks - tasks, not(hasItem(containsString("detekt"))))
 
 		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
@@ -221,7 +207,6 @@ class DetektPluginTest {
 
 	// TODO add more tests for modules
 	@Test fun `basedir truncates folder names`() {
-		`given`@
 		gradle
 				.basedOn("android-root_app")
 				.basedOn("detekt-basedir")
@@ -235,18 +220,14 @@ class DetektPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(applyCheckstyle, ":detektDebug").buildAndFail()
+		val result = gradle.run(applyCheckstyle, ":detektDebug").buildAndFail()
 
-		`then`@
-		assertEquals(TaskOutcome.FAILED, result.task(":detektDebug")!!.outcome)
+		result.assertFailed(":detektDebug")
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
 		result.assertHasOutputLine(""".*\[ERROR] src.main.java.Checkstyle\.java:1: .*? \[Header]""".toRegex())
 	}
 
 	@Test fun `custom source sets folders are picked up`() {
-		`given`@
 		gradle.basedOn("android-root_app")
 		gradle.file(gradle.templateFile("detekt-simple_failure.xml").readText(), "config", "detekt", "detekt.xml")
 		gradle.file(gradle.templateFile("detekt-simple_failure.java").readText(), "custom", "Checkstyle.java")
@@ -261,18 +242,14 @@ class DetektPluginTest {
 			android.sourceSets.main.java.srcDir 'custom'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(build, ":detektDebug").buildAndFail()
+		val result = gradle.run(build, ":detektDebug").buildAndFail()
 
-		`then`@
-		assertEquals(TaskOutcome.FAILED, result.task(":detektDebug")!!.outcome)
+		result.assertFailed(":detektDebug")
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
 		result.assertHasOutputLine(""".*custom.Checkstyle\.java:1: .*? \[Header]""".toRegex())
 	}
 
 	@Test fun `exclusions are configurable per variant`() {
-		`given`@
 		gradle.basedOn("android-root_app")
 		gradle.file(gradle.templateFile("detekt-simple_failure.xml").readText(), "config", "detekt", "detekt.xml")
 		gradle.file(gradle.templateFile("detekt-simple_failure.java").readText(),
@@ -298,12 +275,9 @@ class DetektPluginTest {
 			}
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(build, ":detektDebug").buildAndFail()
+		val result = gradle.run(build, ":detektDebug").buildAndFail()
 
-		`then`@
-		assertEquals(TaskOutcome.FAILED, result.task(":detektDebug")!!.outcome)
+		result.assertFailed(":detektDebug")
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
 		result.assertHasOutputLine(""".*com.example.foo.Checkstyle\.java:1: .*? \[Header]""".toRegex())
 		result.assertNoOutputLine(""".*com.example.bar.Checkstyle\.java.*""".toRegex())
@@ -312,7 +286,6 @@ class DetektPluginTest {
 
 	// TODO test other properties
 	@Test fun `config_loc allows to use local files`() {
-		`given`@
 		gradle
 				.basedOn("android-root_app")
 				.basedOn("detekt-config_loc")
@@ -322,12 +295,9 @@ class DetektPluginTest {
 			apply plugin: 'net.twisterrob.detekt'
 		""".trimIndent()
 
-		val result: BuildResult
-		`when`@
-		result = gradle.run(applyCheckstyle, ":detektDebug").build()
+		val result = gradle.run(applyCheckstyle, ":detektDebug").build()
 
-		`then`@
-		assertEquals(TaskOutcome.SUCCESS, result.task(":detektDebug")!!.outcome)
+		result.assertSuccess(":detektDebug")
 	}
 }
 
@@ -336,5 +306,5 @@ private fun tasksIn(modules: Array<String>, vararg taskNames: String): Array<Str
 				.flatMap { module -> taskNames.map { taskName -> "${module}:${taskName}" } }
 				.toTypedArray()
 
-private inline operator fun <reified T> Array<T>.minus(others: Array<T>) =
+private inline operator fun <reified T> Array<T>.minus(others: Array<T>): Array<T> =
 		(this.toList() - others).toTypedArray()

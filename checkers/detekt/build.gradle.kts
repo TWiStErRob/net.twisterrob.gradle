@@ -1,32 +1,35 @@
 plugins {
 //	kotlin("jvm")
 	`java-gradle-plugin`
+	`java-test-fixtures`
+	id("net.twisterrob.gradle.build.publishing")
 }
 
-base.archivesBaseName = "twister-quality-detekt"
+base.archivesName.set("twister-quality-detekt")
+description = "Checkstyle: Checkstyle quality setup plugin for Gradle."
 
-val VERSION_ANDROID_PLUGIN by project
-val VERSION_DETEKT_PLUGIN by project
-val VERSION_JUNIT by project
-val VERSION_HAMCREST by project
-val VERSION_JETBRAINS_ANNOTATIONS by project
-
-repositories {
-	// Detekt plugin
-	maven { setUrl("https://plugins.gradle.org/m2/") }
+gradlePlugin {
+	plugins {
+		create("net.twisterrob.detekt") {
+			id = "net.twisterrob.detekt"
+			implementationClass = "net.twisterrob.gradle.detekt.DetektPlugin"
+		}
+	}
 }
 
 dependencies {
-	implementation(project(":common"))
+	api(projects.common)
 
-	compileOnly("com.android.tools.build:gradle:${VERSION_ANDROID_PLUGIN}")
-	implementation("gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${VERSION_DETEKT_PLUGIN}")
+	compileOnly(libs.android.gradle)
+	compileOnly(libs.detekt.gradle)
 
-	testImplementation(project(":test"))
-	testImplementation("junit:junit:${VERSION_JUNIT}")
-	testImplementation("org.mockito:mockito-core:+")
-	testImplementation("org.hamcrest:hamcrest-all:${VERSION_HAMCREST}")
-	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
+	testImplementation(projects.test.internal)
+	testImplementation(projects.compat.agpBase)
+
+	testFixturesImplementation(projects.test.internal)
+
+	testImplementation(projects.test.internal)
+	testRuntimeOnly(libs.detekt.gradle)
 }
 
-pullTestResourcesFrom(":test")
+pullTestResourcesFrom(projects.test)
