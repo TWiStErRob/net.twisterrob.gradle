@@ -68,9 +68,9 @@ class DetektPluginTest : BaseIntgTest() {
 		""".trimIndent()
 
 		val result = gradle
-				.basedOn("android-root_app")
-				.run(script, "detektEach")
-				.build()
+			.basedOn("android-root_app")
+			.run(script, "detektEach")
+			.build()
 
 		result.assertUpToDate(":detektEach")
 		result.assertNoSource(":detektDebug")
@@ -89,16 +89,20 @@ class DetektPluginTest : BaseIntgTest() {
 		val modules = arrayOf(":app", ":feature", ":base", ":library", ":library:nested", ":test")
 
 		val result = gradle
-				.basedOn("android-all_kinds")
-				.run(script, "detektEach")
-				.build()
+			.basedOn("android-all_kinds")
+			.run(script, "detektEach")
+			.build()
 
 		// these tasks are not generated because their modules are special
 		val exceptions = arrayOf(":test:detektRelease")
-		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
-				hasItems(*(tasksIn(modules, "detektRelease", "detektDebug") - exceptions)))
-		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
-				hasItems(*tasksIn(modules, "detektEach")))
+		assertThat(
+			result.taskPaths(TaskOutcome.NO_SOURCE),
+			hasItems(*(tasksIn(modules, "detektRelease", "detektDebug") - exceptions))
+		)
+		assertThat(
+			result.taskPaths(TaskOutcome.UP_TO_DATE),
+			hasItems(*tasksIn(modules, "detektEach"))
+		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "detektEach", "detektRelease", "detektDebug") - exceptions
 		assertThat(allTasks - tasks, not(hasItem(containsString("detekt"))))
@@ -106,12 +110,12 @@ class DetektPluginTest : BaseIntgTest() {
 
 	@Test fun `applies to subprojects from root`() {
 		val modules = arrayOf(
-				":module1",
-				":module2",
-				":module2:sub1",
-				":module2:sub2",
-				":module3:sub1",
-				":module3:sub2"
+			":module1",
+			":module2",
+			":module2:sub1",
+			":module2:sub2",
+			":module3:sub1",
+			":module3:sub2"
 		)
 		modules.forEach {
 			gradle.settingsFile.appendText("include '${it}'${endl}")
@@ -141,14 +145,18 @@ class DetektPluginTest : BaseIntgTest() {
 		""".trimIndent()
 
 		val result = gradle
-				.basedOn("android-multi_module")
-				.run(rootProject, "detektEach")
-				.build()
+			.basedOn("android-multi_module")
+			.run(rootProject, "detektEach")
+			.build()
 
-		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
-				hasItems(*tasksIn(modules, "detektRelease", "detektDebug")))
-		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
-				hasItems(*tasksIn(modules, "detektEach")))
+		assertThat(
+			result.taskPaths(TaskOutcome.NO_SOURCE),
+			hasItems(*tasksIn(modules, "detektRelease", "detektDebug"))
+		)
+		assertThat(
+			result.taskPaths(TaskOutcome.UP_TO_DATE),
+			hasItems(*tasksIn(modules, "detektEach"))
+		)
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(modules, "detektEach", "detektRelease", "detektDebug")
 		assertThat(allTasks - tasks, not(hasItem(containsString("detekt"))))
@@ -166,12 +174,12 @@ class DetektPluginTest : BaseIntgTest() {
 		""".trimIndent()
 
 		val modules = arrayOf(
-				":module1",
-				":module2",
-				":module2:sub1",
-				":module2:sub2",
-				":module3:sub1",
-				":module3:sub2"
+			":module1",
+			":module2",
+			":module2:sub1",
+			":module2:sub2",
+			":module3:sub1",
+			":module3:sub2"
 		)
 		val applyTo = arrayOf(":module2", ":module2:sub1", ":module3:sub2")
 		modules.forEach { module ->
@@ -191,25 +199,29 @@ class DetektPluginTest : BaseIntgTest() {
 		gradle.file(detekt.empty.config, "config", "detekt", "detekt.yml")
 
 		val result = gradle
-				.basedOn("android-multi_module")
-				.run(null, "detektEach")
-				.build()
+			.basedOn("android-multi_module")
+			.run(null, "detektEach")
+			.build()
 
 		val allTasks = result.tasks.map { it.path }
 		val tasks = tasksIn(applyTo, "detektEach", "detektRelease", "detektDebug")
 		assertThat(allTasks - tasks, not(hasItem(containsString("detekt"))))
 
-		assertThat(result.taskPaths(TaskOutcome.NO_SOURCE),
-				hasItems(*tasksIn(applyTo, "detektRelease", "detektDebug")))
-		assertThat(result.taskPaths(TaskOutcome.UP_TO_DATE),
-				hasItems(*tasksIn(applyTo, "detektEach")))
+		assertThat(
+			result.taskPaths(TaskOutcome.NO_SOURCE),
+			hasItems(*tasksIn(applyTo, "detektRelease", "detektDebug"))
+		)
+		assertThat(
+			result.taskPaths(TaskOutcome.UP_TO_DATE),
+			hasItems(*tasksIn(applyTo, "detektEach"))
+		)
 	}
 
 	// TODO add more tests for modules
 	@Test fun `basedir truncates folder names`() {
 		gradle
-				.basedOn("android-root_app")
-				.basedOn("detekt-basedir")
+			.basedOn("android-root_app")
+			.basedOn("detekt-basedir")
 
 		@Language("gradle")
 		val applyCheckstyle = """
@@ -284,8 +296,8 @@ class DetektPluginTest : BaseIntgTest() {
 	// TODO test other properties
 	@Test fun `config_loc allows to use local files`() {
 		gradle
-				.basedOn("android-root_app")
-				.basedOn("detekt-config_loc")
+			.basedOn("android-root_app")
+			.basedOn("detekt-config_loc")
 
 		@Language("gradle")
 		val applyCheckstyle = """
@@ -299,9 +311,9 @@ class DetektPluginTest : BaseIntgTest() {
 }
 
 private fun tasksIn(modules: Array<String>, vararg taskNames: String): Array<String> =
-		modules
-				.flatMap { module -> taskNames.map { taskName -> "${module}:${taskName}" } }
-				.toTypedArray()
+	modules
+		.flatMap { module -> taskNames.map { taskName -> "${module}:${taskName}" } }
+		.toTypedArray()
 
 private inline operator fun <reified T> Array<T>.minus(others: Array<T>): Array<T> =
-		(this.toList() - others).toTypedArray()
+	(this.toList() - others).toTypedArray()

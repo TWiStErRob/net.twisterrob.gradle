@@ -6,7 +6,6 @@ import io.gitlab.arturbosch.detekt.Detekt
 import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.TargetChecker
 import org.gradle.api.Action
-import org.gradle.api.Incubating
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.reporting.Reporting
