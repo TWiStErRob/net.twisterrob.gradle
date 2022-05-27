@@ -1,0 +1,45 @@
+# How to upgrade AGP in the project?
+
+ 1. Update compile AGP version:
+    * `libs.versions.toml`: change `agp` and `lint` to the latest stable.
+    * Run `gradlew jar` to make things compile.
+    * Change `net.twisterrob.test.android.pluginVersion` to the same as `agp`.
+ 2. Update AGP compat versions
+    * Change all `android-gradle-v__x` to the latest patch version.
+    * If there's a new alpha/beta/rc/stable release, create a new module: `:compat:agp-__x`.  
+      This will be empty, but will allow immediate browsing of source code.
+ 3. Add compatibility checks via `AGPVersions` if necessary.
+    * Review `AGPVersionsTest` to bump latest classpath version.
+    * Review `AGPVersionsTest` if there's a new constant.
+ 4. Add new CI matrix based on AGP compatibility guide.
+    * For example if AGP 7.2.1 requires Gradle 7.3.1 and latest stable is 7.4.2, create the following combinations:
+      ```yaml
+      - name: "AGP 7.2.x on Gradle 7.3+"
+      - name: "AGP 7.2.x on Gradle 7.3+ - plugin"
+      - name: "AGP 7.2.x on Gradle 7.x"
+      - name: "AGP 7.2.x on Gradle 7.x - plugin"
+      ```
+      Comment out the 7.x version if there's no newer stable yet.
+    * After pushing CI changes:
+       * Add conversation to add new CI jobs to branch protection rules just before merging.
+ 5. Update `README.md` table and surrounding text.
+ 6. Review this document if something was missing.
+
+
+# How to upgrade Gradle in the project?
+
+ 1. Update the gradle wrapper:
+    * Run `gradlew wrapper --distribution-type=all --gradle-version=...`.
+      * in root
+      * in `docs/examples/...`
+ 2. Update `net.twisterrob.gradle.runner.gradleVersion` to the same as `gradle-wrapper.properties`.
+ 3. Review `VersionsTaskTest`
+ 4. Review this document if something was missing.
+
+
+# How to upgrade other libraries?
+(Future)
+
+ 1. Let Renovate open a PR.
+ 2. Wait for CI, which auto-merges.
+ 3. Check Release notes just in case.

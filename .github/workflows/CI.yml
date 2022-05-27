@@ -566,6 +566,20 @@ jobs:
             build-tools: 32.0.0
             instant-api: 30
             test-task: testReport :plugin:tests
+#          - name: "AGP 7.3.x on Gradle 7.x"
+#            gradle: 7.4.2
+#            gradle-java: 11
+#            agp: 7.3.0-beta01
+#            build-tools: 30.0.3
+#            instant-api: 30
+#            test-task: testReport :quality:tests
+#          - name: "AGP 7.3.x on Gradle 7.x - plugin"
+#            gradle: 7.4.2
+#            gradle-java: 11
+#            agp: 7.3.0-beta01
+#            build-tools: 32.0.0
+#            instant-api: 30
+#            test-task: testReport :plugin:tests
           - name: "AGP 7.4.x on Gradle 7.4+"
             gradle: 7.4.2
             gradle-java: 11
@@ -580,6 +594,20 @@ jobs:
             build-tools: 32.0.0
             instant-api: 30
             test-task: testReport :plugin:tests
+#          - name: "AGP 7.4.x on Gradle 7.x"
+#            gradle: 7.4.2
+#            gradle-java: 11
+#            agp: 7.4.0-alpha02
+#            build-tools: 30.0.3
+#            instant-api: 30
+#            test-task: testReport :quality:tests
+#          - name: "AGP 7.4.x on Gradle 7.x - plugin"
+#            gradle: 7.4.2
+#            gradle-java: 11
+#            agp: 7.4.0-alpha02
+#            build-tools: 32.0.0
+#            instant-api: 30
+#            test-task: testReport :plugin:tests
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
