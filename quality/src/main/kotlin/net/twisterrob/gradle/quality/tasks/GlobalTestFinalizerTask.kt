@@ -28,7 +28,12 @@ open class GlobalTestFinalizerTask : TestReport() {
 	@TaskAction
 	fun failOnFailures() {
 		val gatherer = TestReportGatherer(Test::class.java)
-		val violations = testResultDirs.files.flatMap { resultDir ->
+		val dirs = if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
+			testResultDirs.files
+		} else {
+			testResults.files
+		}
+		val violations = dirs.flatMap { resultDir ->
 			// reportOn above added the binary folder, so the XMLs are one up
 			val xmlDir = resultDir.resolve("..")
 			if (!xmlDir.exists()) {
