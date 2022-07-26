@@ -129,7 +129,13 @@ open class GradleRunnerRule : TestRule {
 		if (script != null) {
 			buildFile.appendText(script)
 		}
-		val args = arrayOf(*tasks, "--stacktrace", "--warning-mode=fail")
+		val argsWarnings =
+			if (gradleVersion < GradleVersion.version("5.6"))
+				emptyArray() // "fail" was not a valid option for --warning-mode before Gradle 5.6.
+			else
+				// https://docs.gradle.org/5.6/release-notes.html#fail-the-build-on-deprecation-warnings
+				arrayOf("--warning-mode=fail")
+		val args = arrayOf(*tasks, "--stacktrace", *argsWarnings)
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
 		val testKitDir = runner.let { it as? DefaultGradleRunner }?.testKitDirProvider?.dir
 		val javaVendor: String? by systemProperty("java.vendor")
