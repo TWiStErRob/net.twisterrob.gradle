@@ -68,7 +68,7 @@ class DetektPluginTest : BaseIntgTest() {
 		""".trimIndent()
 
 		val result = gradle
-			.basedOn("android-root_app")
+			.basedOn("kotlin-android_app")
 			.run(script, "detektEach")
 			.build()
 
@@ -220,7 +220,7 @@ class DetektPluginTest : BaseIntgTest() {
 	// TODO add more tests for modules
 	@Test fun `basedir truncates folder names`() {
 		gradle
-			.basedOn("android-root_app")
+			.basedOn("kotlin-android_app")
 			.basedOn("detekt-basedir")
 
 		@Language("gradle")
@@ -240,7 +240,7 @@ class DetektPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `custom source sets folders are picked up`() {
-		gradle.basedOn("android-root_app")
+		gradle.basedOn("kotlin-android_app")
 		gradle.file(detekt.simple.config, "config", "detekt", "detekt.yml")
 		gradle.file(detekt.simple.content, "custom", "Detekt.kt")
 
@@ -262,7 +262,7 @@ class DetektPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `exclusions are configurable per variant`() {
-		gradle.basedOn("android-root_app")
+		gradle.basedOn("kotlin-android_app", detekt)
 		gradle.file(detekt.simple.config, "config", "detekt", "detekt.yml")
 		gradle.file(detekt.simple.content, "src", "main", "java", "com", "example", "foo", "Detekt.kt")
 		gradle.file(detekt.simple.content, "src", "main", "java", "com", "example", "bar", "Detekt.kt")
@@ -296,7 +296,7 @@ class DetektPluginTest : BaseIntgTest() {
 	// TODO test other properties
 	@Test fun `config_loc allows to use local files`() {
 		gradle
-			.basedOn("android-root_app")
+			.basedOn("kotlin-android_app")
 			.basedOn("detekt-config_loc")
 
 		@Language("gradle")

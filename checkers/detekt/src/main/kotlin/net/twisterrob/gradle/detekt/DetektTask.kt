@@ -25,7 +25,6 @@ open class DetektTask @Inject constructor(
 		group = JavaBasePlugin.VERIFICATION_GROUP
 		_reports = objects.newInstance(DetektReportsImpl::class.java, this)
 		classpath.from(project.files())
-//		isShowViolations = false
 	}
 
 	override fun getReports() =

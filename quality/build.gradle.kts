@@ -30,6 +30,7 @@ dependencies {
 
 	compileOnly(libs.annotations.jetbrains)
 	compileOnly(libs.android.gradle)
+	compileOnly(libs.detekt.gradle)
 	// Need com.android.utils.FileUtils for HtmlReportTask.
 	compileOnly(libs.android.tools.common)
 //	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")

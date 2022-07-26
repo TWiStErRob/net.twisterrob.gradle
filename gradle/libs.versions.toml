@@ -44,7 +44,7 @@ kotlin-build = "1.7.10"
 kotlin-dsl = "6.1.1"
 
 # Changelog: https://detekt.dev/docs/introduction/changelog
-detekt = "1.19.0"
+detekt = "1.20.0"
 
 # Release notes: https://github.com/junit-team/junit4/tree/main/doc
 # Major releases: https://github.com/junit-team/junit4/wiki
@@ -134,6 +134,7 @@ kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotl
 kotlin-dsl = { module = "org.gradle:gradle-kotlin-dsl", version.ref = "kotlin-dsl" }
 
 detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+detekt-cli = { module = "io.gitlab.arturbosch.detekt:detekt-cli", version.ref = "detekt" }
 
 junit-legacy = { module = "junit:junit", version.ref = "junit4" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }

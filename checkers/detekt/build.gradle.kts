@@ -30,6 +30,8 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 	testRuntimeOnly(libs.detekt.gradle)
+	// For browsing code only. It has to be runtimeOnly, otherwise the transitive runtime dependencies don't resolve.
+	testRuntimeOnly(libs.detekt.cli)
 }
 
 pullTestResourcesFrom(projects.test)
