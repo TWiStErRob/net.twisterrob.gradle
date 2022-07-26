@@ -129,7 +129,7 @@ open class GradleRunnerRule : TestRule {
 		if (script != null) {
 			buildFile.appendText(script)
 		}
-		val args = arrayOf(*tasks, "--stacktrace")
+		val args = arrayOf(*tasks, "--stacktrace", "--warning-mode=fail")
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
 		val testKitDir = runner.let { it as? DefaultGradleRunner }?.testKitDirProvider?.dir
 		val javaVendor: String? by systemProperty("java.vendor")
