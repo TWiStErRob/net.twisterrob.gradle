@@ -104,6 +104,43 @@ open class GradleRunnerRule : TestRule {
 	//@Before(automatic with @Rule)
 	protected fun setUp() {
 		buildFile = temp.newFile("build.gradle")
+		@Language("groovy")
+		val doNotNag = """
+			/**
+			 * Surgically ignoring messages like this will prevent actual executions from triggering
+			 * stack traces and warnings, which means that even with some warnings,
+			 * it's possible to use org.gradle.warning.mode=fail.
+			 */
+			void doNotNagAbout(String message) {
+				java.lang.reflect.Field x = org.gradle.internal.deprecation.DeprecationLogger.class
+					.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
+				x.setAccessible(true)
+				Object logger = x.get(null)
+			
+				java.lang.reflect.Field y = org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler.class
+						.getDeclaredField("messages")
+				y.setAccessible(true)
+				Set<String> messages = y.get(logger) as Set<String>
+
+				messages.add(message)
+			}
+			// net.twisterrob.test.android.pluginVersion=7.0.4
+			// net.twisterrob.gradle.runner.gradleVersion=7.4.2
+			// > Task :compileDebugRenderscript NO-SOURCE
+			doNotNagAbout("Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceDirs with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree")
+			// > Task :compileDebugAidl NO-SOURCE
+			doNotNagAbout("Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree")
+			// > Task :stripDebugDebugSymbols NO-SOURCE
+			doNotNagAbout("Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property inputFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree")
+			// > Task :bundleLibResDebug NO-SOURCE
+			doNotNagAbout("Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property resources with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree")
+			// net.twisterrob.test.android.pluginVersion=4.2.2
+			// net.twisterrob.gradle.runner.gradleVersion=7.4.2
+			// > Task :mergeDebugNativeLibs NO-SOURCE
+			doNotNagAbout("Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property projectNativeLibs with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree")
+
+			"""
+		buildFile.appendText(doNotNag.trimIndent())
 		runner = GradleRunner
 			.create()
 			//.forwardOutput() // need to customize forwarding because of test output
