@@ -56,7 +56,7 @@ open class GlobalTestFinalizerTask : TestReport() {
 				}
 			// Detach the result directories to prevent creation on dependsOn relationships.
 			// When simply using reportOn(tests) or reportOn(tasks.map { it.binaryResultDirectory }) task dependencies would be created.
-			task.reportOn(tests.map {
+			task.testResults.from(tests.map {
 				if (GradleVersion.current().baseVersion < GradleVersion.version("5.6")) {
 					@Suppress("DEPRECATION" /* Gradle 7, to be removed in Gradle 8 */)
 					it.binResultsDir
