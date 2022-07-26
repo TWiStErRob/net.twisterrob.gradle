@@ -17,7 +17,12 @@ import se.bjurr.violations.lib.model.SEVERITY
 open class GlobalTestFinalizerTask : TestReport() {
 
 	init {
-		destinationDir = project.buildDir.resolve("reports/tests/allTests")
+		val allTestsReports = project.buildDir.resolve("reports/tests/allTests")
+		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
+			destinationDir = allTestsReports
+		} else {
+			destinationDirectory.set(allTestsReports)
+		}
 	}
 
 	@TaskAction
@@ -36,7 +41,12 @@ open class GlobalTestFinalizerTask : TestReport() {
 		}
 		val errors = violations.filter { it.severity == SEVERITY.ERROR }
 		if (errors.isNotEmpty()) {
-			val report = destinationDir.resolve("index.html").toURI()
+			val dir = if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
+				destinationDir
+			} else {
+				destinationDirectory.get().asFile
+			}
+			val report = dir.resolve("index.html").toURI()
 			throw GradleException("There were ${errors.size} failing tests. See the report at: ${report}")
 		}
 	}
