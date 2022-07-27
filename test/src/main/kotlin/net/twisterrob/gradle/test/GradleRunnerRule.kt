@@ -124,7 +124,7 @@ open class GradleRunnerRule : TestRule {
 		// not used yet, but useful for debugging
 	}
 
-	var extraArgs: Array<String> = DEFAULT_EXTRA_ARGS
+	open val extraArgs: Array<String> = arrayOf("--stacktrace")
 
 	//@Test:when
 	fun run(@Language("gradle") script: String?, vararg tasks: String): GradleRunner {
@@ -273,9 +273,4 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 		return this
 	}
 	//endregion
-	
-	companion object {
-
-		val DEFAULT_EXTRA_ARGS = arrayOf("--stacktrace")
-	}
 }

@@ -9,17 +9,17 @@ import org.junit.jupiter.api.extension.TestInstancePostProcessor
 open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback {
 
 	private val rule = object : GradleRunnerRule() {
-		override fun setUp() {
-			super.setUp()
-			extraArgs = DEFAULT_EXTRA_ARGS +
-					if (gradleVersion < GradleVersion.version("5.6")) {
-						emptyArray() // "fail" was not a valid option for --warning-mode before Gradle 5.6.
-					} else {
-						file(readInitGradle(), "init.gradle.kts")
-						// https://docs.gradle.org/5.6/release-notes.html#fail-the-build-on-deprecation-warnings
-						arrayOf("--warning-mode=fail", "--init-script=init.gradle.kts")
-					}
-		}
+		override val extraArgs: Array<String>
+			get() = super.extraArgs + strictWarningMode()
+
+		private fun strictWarningMode(): Array<String> =
+			if (GradleVersion.version("5.6") <= gradleVersion) {
+				file(readInitGradle(), "init.gradle.kts")
+				// https://docs.gradle.org/5.6/release-notes.html#fail-the-build-on-deprecation-warnings
+				arrayOf("--warning-mode=fail", "--init-script=init.gradle.kts")
+			} else {
+				emptyArray() // "fail" was not a valid option for --warning-mode before Gradle 5.6.
+			}
 
 		private fun readInitGradle(): String {
 			val initGradle = GradleRunnerRuleExtension::class.java.getResourceAsStream("init.gradle.kts")
