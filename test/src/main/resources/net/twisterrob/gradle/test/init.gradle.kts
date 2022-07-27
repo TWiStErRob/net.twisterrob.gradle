@@ -10,18 +10,36 @@ fun doNotNagAbout(message: String) {
 }
 
 fun doNotNagAbout(message: Regex) {
-	val logger: Any = org.gradle.internal.deprecation.DeprecationLogger::class.java
-		.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
-		.apply { isAccessible = true }
-		.get(null)
+	// "fail" was not a valid option for --warning-mode before Gradle 5.6.0.
+	// In Gradle 4.7.0 (c633542) org.gradle.util.SingleMessageLogger#deprecatedFeatureHandler came to be in a refactor.
+	// In Gradle 6.2.0 it was split (247fd32) to org.gradle.util.DeprecationLogger#deprecatedFeatureHandler
+	// and then further split (308086a) to org.gradle.internal.deprecation.DeprecationLogger#deprecatedFeatureHandler
+	// and then renamed (a75aedd) to #DEPRECATED_FEATURE_HANDLER.
+	val loggerField =
+		if (GradleVersion.version("6.2.0") < GradleVersion.current().baseVersion) {
+			Class.forName("org.gradle.internal.deprecation.DeprecationLogger")
+				.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
+				.apply { isAccessible = true }
+		} else {
+			Class.forName("org.gradle.util.SingleMessageLogger")
+				.getDeclaredField("deprecatedFeatureHandler")
+				.apply { isAccessible = true }
+		}
+	val logger: Any = loggerField.get(null)
 
+	// LoggingDeprecatedFeatureHandler#messages was added in Gradle 1.8.
 	val messagesField = org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler::class.java
 		.getDeclaredField("messages")
 		.apply { isAccessible = true }
 	@Suppress("UNCHECKED_CAST")
 	val messages: MutableSet<String> = messagesField.get(logger) as MutableSet<String>
 
-	val ignore = if (messages is IgnoringSet) messages as IgnoringSet else IgnoringSet(messages)
+	val ignore =
+		if (messages is IgnoringSet) {
+			messages as IgnoringSet
+		} else {
+			IgnoringSet(messages)
+		}
 	messagesField.set(logger, ignore)
 	println("Ignoring deprecation: $message")
 	ignore.ignorePattern(message)
