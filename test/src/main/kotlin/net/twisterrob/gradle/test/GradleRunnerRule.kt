@@ -219,13 +219,15 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 
 	fun file(contents: String, vararg path: String) {
+		getFile(*path).appendText(contents)
+	}
+
+	protected fun getFile(vararg path: String): File {
 		if (path.size == 1 && path[0] == "build.gradle") {
-			buildFile.appendText(contents)
-			return
+			return buildFile
 		}
 		if (path.size == 1 && path[0] == "gradle.properties") {
-			propertiesFile.appendText(contents)
-			return
+			return propertiesFile
 		}
 		if (1 < path.size) {
 			val folders = path.sliceArray(0..path.size - 2)
@@ -233,7 +235,9 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 				temp.newFolder(*folders)
 			}
 		}
-		temp.newFile(path.joinToString(File.separator)).appendText(contents)
+		val existing = temp.root.resolve(path.joinToString(File.separator))
+		if (existing.exists()) return existing
+		return temp.newFile(path.joinToString(File.separator))
 	}
 
 	//@Test:given/@Before

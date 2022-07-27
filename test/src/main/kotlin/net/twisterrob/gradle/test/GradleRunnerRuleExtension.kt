@@ -14,6 +14,7 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 
 		private fun strictWarningMode(): Array<String> =
 			if (GradleVersion.version("5.6") <= gradleVersion) {
+				getFile("init.gradle.kts").delete()
 				file(readInitGradle(), "init.gradle.kts")
 				// https://docs.gradle.org/5.6/release-notes.html#fail-the-build-on-deprecation-warnings
 				arrayOf("--warning-mode=fail", "--init-script=init.gradle.kts")
