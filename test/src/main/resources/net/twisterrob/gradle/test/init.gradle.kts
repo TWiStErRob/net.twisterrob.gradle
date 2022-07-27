@@ -6,20 +6,42 @@ import org.gradle.util.GradleVersion
  * it's possible to use org.gradle.warning.mode=fail.
  */
 fun doNotNagAbout(message: String) {
+	doNotNagAbout(Regex.fromLiteral(message))
+}
+
+fun doNotNagAbout(message: Regex) {
 	val logger: Any = org.gradle.internal.deprecation.DeprecationLogger::class.java
 		.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
 		.apply { isAccessible = true }
 		.get(null)
 
+	val messagesField = org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler::class.java
+		.getDeclaredField("messages")
+		.apply { isAccessible = true }
 	@Suppress("UNCHECKED_CAST")
-	val messages: MutableSet<String> =
-		org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler::class.java
-			.getDeclaredField("messages")
-			.apply { isAccessible = true }
-			.get(logger) as MutableSet<String>
+	val messages: MutableSet<String> = messagesField.get(logger) as MutableSet<String>
 
+	val ignore = if (messages is IgnoringSet) messages as IgnoringSet else IgnoringSet(messages)
+	messagesField.set(logger, ignore)
 	println("Ignoring deprecation: $message")
-	messages.add(message)
+	ignore.ignorePattern(message)
+}
+
+private class IgnoringSet(
+	private val backingSet: MutableSet<String>
+) : MutableSet<String> by backingSet {
+
+	private val ignores: MutableSet<Regex> = mutableSetOf()
+
+	fun ignorePattern(regex: Regex) {
+		ignores.add(regex)
+	}
+
+	override fun add(element: String): Boolean {
+		val isIgnored = ignores.any { it.matches(element) }
+		val isNew = backingSet.add(element)
+		return !isIgnored && isNew
+	}
 }
 
 val agpVersion: String = System.getProperty("net.twisterrob.test.android.pluginVersion")
@@ -50,9 +72,10 @@ if (GradleVersion.current().baseVersion == GradleVersion.version("6.7.1")) {
 		// AndroidVersionPluginIntgTest
 		doNotNagAbout("Querying the mapped value of flatmap(provider(task 'calculateBuildConfigBuildTime', class net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask)) before task ':calculateBuildConfigBuildTime' has completed has been deprecated. This will fail with an error in Gradle 7.0. Consult the upgrading guide for further information: https://docs.gradle.org/6.7.1/userguide/upgrading_version_6.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed")
 		doNotNagAbout("Querying the mapped value of flatmap(provider(task 'calculateBuildConfigVCSRevisionInfo', class net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask)) before task ':calculateBuildConfigVCSRevisionInfo' has completed has been deprecated. This will fail with an error in Gradle 7.0. Consult the upgrading guide for further information: https://docs.gradle.org/6.7.1/userguide/upgrading_version_6.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed")
-		rootProject {
-			//doNotNagAbout("Querying the mapped value of map(java.io.File property(org.gradle.api.file.Directory, fixed(class org.gradle.api.internal.file.DefaultFilePropertyFactory$FixedDirectory, missingValue{it.rootDir.resolve(\\"build/generated/ap_generated_sources/debug/out\\")})) org.gradle.api.internal.file.DefaultFilePropertyFactory$ToFileTransformer@6501aee0) before task ':compileDebugJavaWithJavac' has completed has been deprecated. This will fail with an error in Gradle 7.0. Consult the upgrading guide for further information: https://docs.gradle.org/6.7.1/userguide/upgrading_version_6.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed")
-		}
+		doNotNagAbout(
+			Regex(
+				"""Querying the mapped value of map\(java\.io\.File property\(org\.gradle\.api\.file\.Directory, fixed\(class org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}FixedDirectory, .*\)\) org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}ToFileTransformer@[0-9a-f]{1,8}\) before task ':compile(Debug|Release|.*)JavaWithJavac' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
+			)
+		)
 	}
 }
-
