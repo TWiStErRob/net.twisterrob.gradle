@@ -101,27 +101,27 @@ doNotNagAbout(
 	"""^(3\.5\.\d|3\.6\.\d)$""",
 	"Internal API constructor DefaultDomainObjectSet(Class<T>) has been deprecated. This is scheduled to be removed in Gradle 7.0. Please use ObjectFactory.domainObjectSet(Class<T>) instead. See https://docs.gradle.org/6.7.1/userguide/custom_gradle_types.html#domainobjectset for more details."
 )
-doNotNagAboutPattern(
+doNotNagAboutPattern( // Task path might be in sub-module, memory address of transformer changes, task name changes based on variant.
 	"6.7.1",
 	"""^3\.6\.\d+$""",
 	"""Querying the mapped value of map\(java\.io\.File property\(org\.gradle\.api\.file\.Directory, property\(org\.gradle\.api\.file\.Directory, fixed\(class org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}FixedDirectory, .*\)\)\) org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}ToFileTransformer@[0-9a-f]{1,8}\) before task ':.*?compile(Debug|Release|.*)JavaWithJavac' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
 )
-doNotNagAboutPattern(
+doNotNagAboutPattern( // Task path might be in sub-module, memory address of transformer changes, task name changes based on variant.
+	"6.7.1",
+	"""^4\.0\.\d$""",
+	"""Querying the mapped value of map\(java\.io\.File property\(org\.gradle\.api\.file\.Directory, fixed\(class org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}FixedDirectory, .*\)\) org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}ToFileTransformer@[0-9a-f]{1,8}\) before task '(:.+?)?:compile(Debug|Release|.*)JavaWithJavac' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
+)
+doNotNagAboutPattern( // Task path might be in sub-module.
 	"6.7.1",
 	"""^4\.0\.\d$""",
 	// e.g. AndroidVersionPluginIntgTest
-	"""Querying the mapped value of flatmap\(provider\(task 'calculateBuildConfigBuildTime', class net\.twisterrob\.gradle\.android\.tasks\.CalculateBuildTimeTask\)\) before task '(:.+)?:calculateBuildConfigBuildTime' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
+	"""Querying the mapped value of flatmap\(provider\(task 'calculateBuildConfigBuildTime', class net\.twisterrob\.gradle\.android\.tasks\.CalculateBuildTimeTask\)\) before task '(:.+?)?:calculateBuildConfigBuildTime' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
 )
-doNotNagAboutPattern(
+doNotNagAboutPattern( // Task path might be in sub-module.
 	"6.7.1",
 	"""^4\.0\.\d$""",
 	// e.g. AndroidVersionPluginIntgTest
-	"""Querying the mapped value of flatmap\(provider\(task 'calculateBuildConfigVCSRevisionInfo', class net\.twisterrob\.gradle\.android\.tasks\.CalculateVCSRevisionInfoTask\)\) before task '(:.+)?:calculateBuildConfigVCSRevisionInfo' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
-)
-doNotNagAboutPattern(
-	"6.7.1",
-	"""^4\.0\.\d$""",
-	"""Querying the mapped value of map\(java\.io\.File property\(org\.gradle\.api\.file\.Directory, fixed\(class org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}FixedDirectory, .*\)\) org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}ToFileTransformer@[0-9a-f]{1,8}\) before task ':.*?compile(Debug|Release|.*)JavaWithJavac' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
+	"""Querying the mapped value of flatmap\(provider\(task 'calculateBuildConfigVCSRevisionInfo', class net\.twisterrob\.gradle\.android\.tasks\.CalculateVCSRevisionInfoTask\)\) before task '(:.+?)?:calculateBuildConfigVCSRevisionInfo' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
 )
 doNotNagAbout(
 	"7.4.2",
