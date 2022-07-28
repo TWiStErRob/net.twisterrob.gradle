@@ -89,39 +89,16 @@ private class IgnoringSet(
 
 val agpVersion: String = System.getProperty("net.twisterrob.test.android.pluginVersion")
 	?: error("Property 'net.twisterrob.test.android.pluginVersion' is not set.")
+// Sorted by (Gradle, AGP) below here.
+
 doNotNagAbout(
-	"7.4.2",
-	"""^7\.0\.\d$""",
-	// > Task :compileDebugRenderscript NO-SOURCE
-	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceDirs with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree"
-)
-doNotNagAbout(
-	"7.4.2",
-	"""^7\.0\.\d$""",
-	// > Task :compileDebugAidl NO-SOURCE
-	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree"
-)
-doNotNagAbout(
-	"7.4.2",
-	"""^7\.0\.\d$""",
-	// > Task :stripDebugDebugSymbols NO-SOURCE
-	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property inputFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree"
-)
-doNotNagAbout(
-	"7.4.2",
-	"""^7\.0\.\d$""",
-	// > Task :bundleLibResDebug NO-SOURCE
-	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property resources with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree"
-)
-doNotNagAbout(
-	"7.4.2",
-	"""^4\.2\.\d$""",
-	// > Task :mergeDebugNativeLibs NO-SOURCE
-	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property projectNativeLibs with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree"
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	"The BuildListener.buildStarted(Gradle) method has been deprecated. This is scheduled to be removed in Gradle 7.0. Consult the upgrading guide for further information: https://docs.gradle.org/6.7.1/userguide/upgrading_version_5.html#apis_buildlistener_buildstarted_and_gradle_buildstarted_have_been_deprecated"
 )
 doNotNagAbout(
 	"6.7.1",
-	"""^3\.6\.\d$""",
+	"""^3\.[56]\.\d$""",
 	"Internal API constructor DefaultDomainObjectSet(Class<T>) has been deprecated. This is scheduled to be removed in Gradle 7.0. Please use ObjectFactory.domainObjectSet(Class<T>) instead. See https://docs.gradle.org/6.7.1/userguide/custom_gradle_types.html#domainobjectset for more details."
 )
 doNotNagAboutPattern(
@@ -145,4 +122,34 @@ doNotNagAboutPattern(
 	"6.7.1",
 	"""^4\.0\.\d$""",
 	"""Querying the mapped value of map\(java\.io\.File property\(org\.gradle\.api\.file\.Directory, fixed\(class org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}FixedDirectory, .*\)\) org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}ToFileTransformer@[0-9a-f]{1,8}\) before task ':.*?compile(Debug|Release|.*)JavaWithJavac' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
+)
+doNotNagAbout(
+	"7.4.2",
+	"""^4\.2\.\d$""",
+	// > Task :mergeDebugNativeLibs NO-SOURCE
+	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property projectNativeLibs with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree"
+)
+doNotNagAbout(
+	"7.4.2",
+	"""^(4\.2\.\d|7\.0\.\d)$""",
+	// > Task :compileDebugRenderscript NO-SOURCE
+	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceDirs with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree"
+)
+doNotNagAbout(
+	"7.4.2",
+	"""^(4\.2\.\d|7\.0\.\d)$""",
+	// > Task :compileDebugAidl NO-SOURCE
+	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree"
+)
+doNotNagAbout(
+	"7.4.2",
+	"""^(4\.2\.\d|7\.0\.\d)$""",
+	// > Task :stripDebugDebugSymbols NO-SOURCE
+	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property inputFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree"
+)
+doNotNagAbout(
+	"7.4.2",
+	"""^(4\.2\.\d|7\.0\.\d)$""",
+	// > Task :bundleLibResDebug NO-SOURCE
+	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property resources with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/7.4.2/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
