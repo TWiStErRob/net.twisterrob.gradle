@@ -98,7 +98,7 @@ doNotNagAbout(
 )
 doNotNagAbout(
 	"6.7.1",
-	"""^3\.[56]\.\d$""",
+	"""^(3\.5\.\d|3\.6\.\d)$""",
 	"Internal API constructor DefaultDomainObjectSet(Class<T>) has been deprecated. This is scheduled to be removed in Gradle 7.0. Please use ObjectFactory.domainObjectSet(Class<T>) instead. See https://docs.gradle.org/6.7.1/userguide/custom_gradle_types.html#domainobjectset for more details."
 )
 doNotNagAboutPattern(
