@@ -98,18 +98,91 @@ doNotNagAbout(
 )
 doNotNagAbout(
 	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 17 failures of Task :checkDebugManifest in various tests.
+	"Property 'manifest' has @Input annotation used on property of type 'File'. This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0. See https://docs.gradle.org/6.7.1/userguide/more_about_tasks.html#sec:up_to_date_checks for more details."
+)
+doNotNagAbout(
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 35 failures of Task :compileDebugJavaWithJavac in various tests.
+	"Extending the JavaCompile task has been deprecated. This is scheduled to be removed in Gradle 7.0. Configure the task instead."
+)
+doNotNagAbout(
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 15 failures of Task :lint in various tests.
+	"Property 'lintOptions' is not annotated with an input or output annotation. This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0. See https://docs.gradle.org/6.7.1/userguide/more_about_tasks.html#sec:up_to_date_checks for more details."
+)
+doNotNagAbout(
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 35 failures of Task :packageDebugResources in various tests.
+	"Property 'resourcesComputer' is not annotated with an input or output annotation. This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0. See https://docs.gradle.org/6.7.1/userguide/more_about_tasks.html#sec:up_to_date_checks for more details."
+)
+doNotNagAbout(
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 25 failures of Task :generateReleaseRFile and Task :processDebugResources in various tests.
+	"Property 'manifestFile' is not annotated with an input or output annotation. This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0. See https://docs.gradle.org/6.7.1/userguide/more_about_tasks.html#sec:up_to_date_checks for more details."
+)
+doNotNagAboutPattern( // Task path might be in sub-module, memory address of transformer changes, task name changes based on variant.
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 50 failures of Task :generateReleaseRFile and Task :generateDebugRFile
+	// and Task :javaPreCompileDebug and Task :javaPreCompileRelease in various tests.
+	"""Querying the mapped value of map\(java.io.File task '(:.+?)?:compile(Debug|Release|.+)JavaWithJavac' property 'annotationProcessorSourcesDirectory' org.gradle.api.internal.file.DefaultFilePropertyFactory\${'$'}ToFileTransformer@[0-9a-f]{1,8}\) before task '(:.+?)?:compile(Debug|Release|.+)JavaWithJavac' has completed has been deprecated. This will fail with an error in Gradle 7.0. Consult the upgrading guide for further information: https://docs.gradle.org/6.7.1/userguide/upgrading_version_6.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
+)
+doNotNagAbout(
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 14 failures of Task :generateReleaseRFile in various tests.
+	"Property 'sourceOutputDir' is not annotated with an input or output annotation. This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0. See https://docs.gradle.org/6.7.1/userguide/more_about_tasks.html#sec:up_to_date_checks for more details."
+)
+doNotNagAbout(
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 17 failures of Task :parseDebugLibraryResources in various tests.
+	"Injecting the input artifact of a transform as a File has been deprecated. This is scheduled to be removed in Gradle 7.0. Declare the input artifact as Provider<FileSystemLocation> instead. See https://docs.gradle.org/6.7.1/userguide/artifact_transforms.html#sec:implementing-artifact-transforms for more details."
+)
+doNotNagAbout(
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 24 failures of Task :createDebugCompatibleScreenManifests in various tests.
+	"Property 'outputScope' is not annotated with an input or output annotation. This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0. See https://docs.gradle.org/6.7.1/userguide/more_about_tasks.html#sec:up_to_date_checks for more details."
+)
+doNotNagAbout(
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 16 failures of Task :processDebugManifest in various tests.
+	"Type 'ProcessApplicationManifest': static method 'getArtifactName()' should not be annotated with: @Internal. This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0. See https://docs.gradle.org/6.7.1/userguide/more_about_tasks.html#sec:up_to_date_checks for more details."
+)
+doNotNagAbout(
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 16 failures of Task :processDebugManifest in various tests.
+	"Type 'ProcessApplicationManifest': static method 'getNameFromAutoNamespacedManifest()' should not be annotated with: @Internal. This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0. See https://docs.gradle.org/6.7.1/userguide/more_about_tasks.html#sec:up_to_date_checks for more details."
+)
+doNotNagAbout(
+	"6.7.1",
+	"""^3\.5\.\d$""",
+	// There were about 25 failures of Task :processDebugResources and :processReleaseResources in various tests.
+	"Type 'LinkApplicationAndroidResourcesTask': non-property method 'canHaveSplits()' should not be annotated with: @Input. This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0. See https://docs.gradle.org/6.7.1/userguide/more_about_tasks.html#sec:up_to_date_checks for more details."
+)
+doNotNagAbout(
+	"6.7.1",
 	"""^(3\.5\.\d|3\.6\.\d)$""",
 	"Internal API constructor DefaultDomainObjectSet(Class<T>) has been deprecated. This is scheduled to be removed in Gradle 7.0. Please use ObjectFactory.domainObjectSet(Class<T>) instead. See https://docs.gradle.org/6.7.1/userguide/custom_gradle_types.html#domainobjectset for more details."
 )
 doNotNagAboutPattern( // Task path might be in sub-module, memory address of transformer changes, task name changes based on variant.
 	"6.7.1",
 	"""^3\.6\.\d+$""",
-	"""Querying the mapped value of map\(java\.io\.File property\(org\.gradle\.api\.file\.Directory, property\(org\.gradle\.api\.file\.Directory, fixed\(class org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}FixedDirectory, .*\)\)\) org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}ToFileTransformer@[0-9a-f]{1,8}\) before task ':.*?compile(Debug|Release|.*)JavaWithJavac' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
+	"""Querying the mapped value of map\(java\.io\.File property\(org\.gradle\.api\.file\.Directory, property\(org\.gradle\.api\.file\.Directory, fixed\(class org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}FixedDirectory, .*\)\)\) org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}ToFileTransformer@[0-9a-f]{1,8}\) before task '(:.+?)?:compile(Debug|Release|.+)JavaWithJavac' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
 )
 doNotNagAboutPattern( // Task path might be in sub-module, memory address of transformer changes, task name changes based on variant.
 	"6.7.1",
 	"""^4\.0\.\d$""",
-	"""Querying the mapped value of map\(java\.io\.File property\(org\.gradle\.api\.file\.Directory, fixed\(class org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}FixedDirectory, .*\)\) org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}ToFileTransformer@[0-9a-f]{1,8}\) before task '(:.+?)?:compile(Debug|Release|.*)JavaWithJavac' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
+	"""Querying the mapped value of map\(java\.io\.File property\(org\.gradle\.api\.file\.Directory, fixed\(class org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}FixedDirectory, .*\)\) org\.gradle\.api\.internal\.file\.DefaultFilePropertyFactory\${'$'}ToFileTransformer@[0-9a-f]{1,8}\) before task '(:.+?)?:compile(Debug|Release|.+)JavaWithJavac' has completed has been deprecated\. This will fail with an error in Gradle 7\.0\. Consult the upgrading guide for further information: https://docs\.gradle\.org/6\.7\.1/userguide/upgrading_version_6\.html#querying_a_mapped_output_property_of_a_task_before_the_task_has_completed"""
 )
 doNotNagAboutPattern( // Task path might be in sub-module.
 	"6.7.1",
