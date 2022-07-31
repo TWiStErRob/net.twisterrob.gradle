@@ -173,7 +173,7 @@
 		<div class="violation" xml:space="preserve">
 			<span class="title">
 				<!-- @formatter:off -->
-				<b><code class="rule copyable" title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!" onClick="copyToClipboard(`{details/@suppress}`)"><xsl:value-of select="details/@rule" /></code>: <script>render.markdown(`<xsl:value-of select="details/title" />`)</script></b>
+				<b><xsl:value-of select="details/@rule" />&#160;|&#160;<span class="copyable" title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!" onClick="copyToClipboard(`{details/@suppress}`)"><code>🤫</code></span>: <script>render.markdown(`<xsl:value-of select="details/title" />`)</script></b>
 				<!-- @formatter:on -->
 			</span>
 			<br />
@@ -381,7 +381,7 @@
 		margin-bottom: 0;
 	}
 
-	code.rule.copyable {
+	.copyable {
 		cursor: pointer;
 	}
 
