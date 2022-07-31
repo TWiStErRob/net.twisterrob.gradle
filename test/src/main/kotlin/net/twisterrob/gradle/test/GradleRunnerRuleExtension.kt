@@ -10,14 +10,18 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 
 	private val rule = object : GradleRunnerRule() {
 		override val extraArgs: Array<String>
-			get() = super.extraArgs + strictWarningMode()
+			get() = super.extraArgs + arrayOf("--init-script=init.gradle.kts") + strictWarningMode()
+
+		override fun setUp() {
+			super.setUp()
+			getFile("init.gradle.kts").delete()
+			file(readInitGradle(), "init.gradle.kts")
+		}
 
 		private fun strictWarningMode(): Array<String> =
 			if (GradleVersion.version("5.6") <= gradleVersion) {
-				getFile("init.gradle.kts").delete()
-				file(readInitGradle(), "init.gradle.kts")
 				// https://docs.gradle.org/5.6/release-notes.html#fail-the-build-on-deprecation-warnings
-				arrayOf("--warning-mode=fail", "--init-script=init.gradle.kts")
+				arrayOf("--warning-mode=fail")
 			} else {
 				emptyArray() // "fail" was not a valid option for --warning-mode before Gradle 5.6.
 			}

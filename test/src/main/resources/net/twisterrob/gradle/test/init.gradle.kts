@@ -50,23 +50,26 @@ fun _doNotNagAboutPattern(message: Regex) {
 			Class.forName("org.gradle.internal.deprecation.DeprecationLogger")
 				.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
 				.apply { isAccessible = true }
-		} else {
+		} else if (GradleVersion.version("4.7.0") < GradleVersion.current().baseVersion) {
 			Class.forName("org.gradle.util.SingleMessageLogger")
 				.getDeclaredField("deprecatedFeatureHandler")
 				.apply { isAccessible = true }
+		} else {
+			logger.warn("Cannot ignore deprecation (Gradle ${GradleVersion.current()} too old): $message")
+			return
 		}
-	val logger: Any = loggerField.get(null)
+	val deprecationLogger: Any = loggerField.get(null)
 
 	// LoggingDeprecatedFeatureHandler#messages was added in Gradle 1.8.
 	val messagesField = org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler::class.java
 		.getDeclaredField("messages")
 		.apply { isAccessible = true }
 	@Suppress("UNCHECKED_CAST")
-	val messages: MutableSet<String> = messagesField.get(logger) as MutableSet<String>
+	val messages: MutableSet<String> = messagesField.get(deprecationLogger) as MutableSet<String>
 
 	val ignore = if (messages is IgnoringSet) messages else IgnoringSet(messages)
-	messagesField.set(logger, ignore)
-	println("Ignoring deprecation: $message")
+	messagesField.set(deprecationLogger, ignore)
+	logger.lifecycle("Ignoring deprecation: $message")
 	ignore.ignorePattern(message)
 }
 

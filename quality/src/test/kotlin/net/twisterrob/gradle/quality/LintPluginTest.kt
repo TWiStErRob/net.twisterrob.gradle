@@ -145,6 +145,7 @@ class LintPluginTest : BaseIntgTest() {
 			doNotNagAbout(
 				"5.6.4",
 				"^3\\.5\\.\\d\${'$'}",
+				// This warning only seems to come up because this test is first in the build, but not 100% sure.
 				"Injecting the input artifact of a transform as a File has been deprecated. This is scheduled to be removed in Gradle 6.0. Declare the input artifact as Provider<FileSystemLocation> instead."
 			)
 			apply plugin: 'net.twisterrob.quality'
