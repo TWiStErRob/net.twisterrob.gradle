@@ -122,8 +122,9 @@
 					/location/@module
 				">
 					<xsl:sort />
+					<xsl:variable name="module" select="." />
 					<code class="module">
-						<xsl:value-of select="." />
+						<xsl:value-of select="$module" />
 					</code>
 					<xsl:if test="position() != last()" xml:space="preserve">, </xsl:if>
 				</xsl:for-each>
