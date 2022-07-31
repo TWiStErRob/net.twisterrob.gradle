@@ -160,14 +160,14 @@
 	</xsl:template>
 
 	<xsl:template match="violation">
-		<xsl:if test="details/@rule != concat(preceding-sibling::violation[1]/details/@rule, '')">
-			<!-- concat in test makes sure the first violation (which has no preceding nodes)
-				 is also `true` and not `no node` coerced to `false`) -->
+		<!-- concat makes sure the first violation (which has no preceding nodes)
+			 is also `true` and not `no node` coerced to `false`) -->
+		<xsl:variable name="prevRule" select="concat(preceding-sibling::violation[1]/details/@rule, '')" />
+		<xsl:variable name="prevModule" select="concat(preceding-sibling::violation[1]/location/@module, '')" />
+		<xsl:if test="details/@rule != $prevRule">
 			<a name="{details/@category}-{source/@reporter}-{details/@rule}" />
 		</xsl:if>
-		<xsl:if test="details/@rule != concat(preceding-sibling::violation[1]/details/@rule, '') or location/@module != concat(preceding-sibling::violation[1]/location/@module, '')">
-			<!-- concat in test makes sure the first violation (which has no preceding nodes)
-				 is also `true` and not `no node` coerced to `false`) -->
+		<xsl:if test="details/@rule != $prevRule or location/@module != $prevModule">
 			<a name="{details/@category}-{source/@reporter}-{details/@rule}-{location/@module}" />
 		</xsl:if>
 		<div class="violation" xml:space="preserve">
@@ -194,7 +194,11 @@
 			</span>
 			<br />
 			<details class="location">
-				<xsl:if test="details/context/@type != 'archive' or string-length(details/context) - string-length(translate(details/context, '&#x0A;', '')) &lt; 25">
+				<xsl:variable name="contentLength" select="string-length(details/context)" />
+				<xsl:variable name="contentLengthWithoutNewLines"
+					select="string-length(translate(details/context, '&#x0A;', ''))" />
+				<xsl:variable name="numberOfLines" select="$contentLength - $contentLengthWithoutNewLines" />
+				<xsl:if test="details/context/@type != 'archive' or $numberOfLines &lt; 25">
 					<xsl:attribute name="open">open</xsl:attribute>
 				</xsl:if>
 				<summary>
