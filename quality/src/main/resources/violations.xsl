@@ -123,14 +123,17 @@
 				">
 					<xsl:sort />
 					<xsl:variable name="module" select="." />
+					<xsl:variable name="moduleId" select="concat($ruleId, '-', $module)" />
 					<xsl:variable name="moduleCount" select="count($sameRuleViolations[location/@module = $module])" />
 					<span class="toc-count">
 						<xsl:value-of select="$moduleCount" />
 					</span>
 					×
-					<code class="module">
-						<xsl:value-of select="$module" />
-					</code>
+					<a href="#{$moduleId}">
+						<code class="module" data-id="toc-{$moduleId}">
+							<xsl:value-of select="$module" />
+						</code>
+					</a>
 					<xsl:if test="position() != last()" xml:space="preserve">, </xsl:if>
 				</xsl:for-each>
 				)
@@ -161,6 +164,11 @@
 			<!-- concat in test makes sure the first violation (which has no preceding nodes)
 				 is also `true` and not `no node` coerced to `false`) -->
 			<a name="{details/@category}-{source/@reporter}-{details/@rule}" />
+		</xsl:if>
+		<xsl:if test="details/@rule != concat(preceding-sibling::violation[1]/details/@rule, '') or location/@module != concat(preceding-sibling::violation[1]/location/@module, '')">
+			<!-- concat in test makes sure the first violation (which has no preceding nodes)
+				 is also `true` and not `no node` coerced to `false`) -->
+			<a name="{details/@category}-{source/@reporter}-{details/@rule}-{location/@module}" />
 		</xsl:if>
 		<div class="violation" xml:space="preserve">
 			<span class="title">
