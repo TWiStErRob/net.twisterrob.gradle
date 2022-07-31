@@ -1,0 +1,5 @@
+# Ignore build files.
+/*/build/
+/*/buildSrc/build/
+/*/*/build/
+/*/local.properties
