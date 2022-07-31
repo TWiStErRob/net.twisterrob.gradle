@@ -173,7 +173,23 @@
 		<div class="violation" xml:space="preserve">
 			<span class="title">
 				<!-- @formatter:off -->
-				<b><xsl:value-of select="details/@rule" />&#160;|&#160;<span class="copyable" title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!" onClick="copyToClipboard(`{details/@suppress}`)"><code>🤫</code></span>: <script>render.markdown(`<xsl:value-of select="details/title" />`)</script></b>
+				<xsl:choose>
+					<xsl:when test="details/@documentation">
+						<a href="{details/@documentation}" target="_blank">
+							<xsl:value-of select="details/@rule" />
+						</a>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="details/@rule" />
+					</xsl:otherwise>
+				</xsl:choose>
+				&#160;|&#160;
+				<span class="action"
+					title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!"
+					onClick="copyToClipboard(`{details/@suppress}`)"
+				><code>🤫</code></span>
+				:
+				<script>render.markdown(`<xsl:value-of select="details/title" />`)</script>
 				<!-- @formatter:on -->
 			</span>
 			<br />
@@ -368,6 +384,10 @@
 		box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
 	}
 
+	.violation > .title {
+		font-weight: bold;
+	}
+
 	.violation > details.description > section {
 		max-width: 900px;
 	}
@@ -381,7 +401,7 @@
 		margin-bottom: 0;
 	}
 
-	.copyable {
+	.action {
 		cursor: pointer;
 	}
 
