@@ -123,6 +123,11 @@
 				">
 					<xsl:sort />
 					<xsl:variable name="module" select="." />
+					<xsl:variable name="moduleCount" select="count($sameRuleViolations[location/@module = $module])" />
+					<span class="toc-count">
+						<xsl:value-of select="$moduleCount" />
+					</span>
+					×
 					<code class="module">
 						<xsl:value-of select="$module" />
 					</code>
