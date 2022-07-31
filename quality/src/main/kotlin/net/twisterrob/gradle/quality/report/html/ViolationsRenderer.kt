@@ -78,6 +78,7 @@ internal fun renderViolation(to: XMLStreamWriter, vm: ViolationViewModel) {
 				suppression?.let { attribute("suppress", it) }
 				attribute("category", category)
 				attribute("severity", severity)
+				documentation?.let { attribute("documentation", it.toASCIIString()) }
 				messaging.title?.let { element("title") { cdata(it) } }
 				messaging.message?.let { element("message") { cdata(it) } }
 				messaging.description?.let { element("description") { cdata(it) } }
