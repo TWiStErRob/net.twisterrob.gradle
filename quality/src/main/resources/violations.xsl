@@ -88,6 +88,7 @@
 	</xsl:template>
 
 	<xsl:template name="toc-rules">
+		<!-- This is the XSLT way of saying `unique(//violations/details/@rule)`. -->
 		<xsl:for-each select=".//violation[not(details/@rule = preceding-sibling::violation/details/@rule)]">
 			<xsl:variable name="rule" select="details/@rule" />
 			<xsl:variable name="sameRuleViolations" select="../violation[details/@rule = $rule]" />
@@ -103,13 +104,23 @@
 					</code>
 				</a>
 				(
-				<xsl:for-each select="$sameRuleViolations[
-							not(location/@module = preceding-sibling::violation[
-								details/@rule = $rule
-							]
-							/location/@module)
-						]
-						/location/@module">
+				<!--
+					This is the XSLT way of saying `unique($sameRuleViolations/location/@module)`.
+					Using it `!=` would match multiple nodes and therefore output each module multiple times.
+				-->
+				<xsl:for-each select="
+					$sameRuleViolations
+					[
+						not(
+							location/@module
+							=
+							preceding-sibling::violation
+								[details/@rule = $rule]
+								/location/@module
+						)
+					]
+					/location/@module
+				">
 					<xsl:sort />
 					<code class="module">
 						<xsl:value-of select="." />
