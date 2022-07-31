@@ -188,8 +188,10 @@
 					title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!"
 					onClick="copyToClipboard(`{details/@suppress}`)"
 				><code>🤫</code></span>
-				:
-				<script>render.markdown(`<xsl:value-of select="details/title" />`)</script>
+				<xsl:if test="details/title">
+					: 
+					<script>render.markdown(`<xsl:value-of select="details/title" />`)</script>
+				</xsl:if>
 				<!-- @formatter:on -->
 			</span>
 			<br />
