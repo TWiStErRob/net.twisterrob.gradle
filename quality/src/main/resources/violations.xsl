@@ -92,13 +92,13 @@
 		<xsl:for-each select=".//violation[not(details/@rule = preceding-sibling::violation/details/@rule)]">
 			<xsl:variable name="rule" select="details/@rule" />
 			<xsl:variable name="sameRuleViolations" select="../violation[details/@rule = $rule]" />
-			<xsl:variable name="id" select="concat(details/@category, '-', source/@reporter, '-', $rule)" />
-			<li data-id="toc-{$id}">
+			<xsl:variable name="ruleId" select="concat(details/@category, '-', source/@reporter, '-', $rule)" />
+			<li data-id="toc-{$ruleId}">
 				<span class="toc-count">
 					<xsl:value-of select="count($sameRuleViolations)" />
 				</span>
 				×
-				<a href="#{$id}">
+				<a href="#{$ruleId}">
 					<code class="rule">
 						<xsl:value-of select="$rule" />
 					</code>
