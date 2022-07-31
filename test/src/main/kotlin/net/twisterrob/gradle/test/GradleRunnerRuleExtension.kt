@@ -14,7 +14,6 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 
 		override fun setUp() {
 			super.setUp()
-			getFile("init.gradle.kts").delete()
 			file(readInitGradle(), "init.gradle.kts")
 		}
 
