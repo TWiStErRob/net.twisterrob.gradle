@@ -178,18 +178,18 @@
 						<a href="{details/@documentation}" target="_blank">
 							<xsl:value-of select="details/@rule" />
 						</a>
+						<xsl:if test="details/title" xml:space="preserve">: </xsl:if>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:value-of select="details/@rule" />
+						<xsl:if test="details/title" xml:space="preserve">: </xsl:if>
 					</xsl:otherwise>
 				</xsl:choose>
-				&#160;|&#160;
 				<span class="action"
 					title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!"
 					onClick="copyToClipboard(`{details/@suppress}`)"
 				><code>🤫</code></span>
 				<xsl:if test="details/title">
-					: 
 					<script>render.markdown(`<xsl:value-of select="details/title" />`)</script>
 				</xsl:if>
 				<!-- @formatter:on -->
@@ -409,6 +409,7 @@
 
 	.action {
 		cursor: pointer;
+		float: right;
 	}
 
 	details:first-of-type {
