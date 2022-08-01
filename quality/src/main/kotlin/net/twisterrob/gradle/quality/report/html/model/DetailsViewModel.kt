@@ -43,6 +43,8 @@ class DetailsViewModel(private val v: Violation) {
 					description = run {
 						lines
 							.drop(1) // already used 0 above
+							// Drop documentation line in favor of [../@documentation]. 
+							.filterNot { DocumentationGenerator.PMD_DOC_LINK_LINE.matches(it) }
 							.joinToString("\n")
 					}
 				}

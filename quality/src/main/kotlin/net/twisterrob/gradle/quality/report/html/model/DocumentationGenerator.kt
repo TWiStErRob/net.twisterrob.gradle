@@ -20,10 +20,20 @@ class DocumentationGenerator {
 				URI.create("https://checkstyle.sourceforge.io/config_${category}.html#${check}")
 			}
 			"PMD" -> {
-				val rule = v.rule.toLowerCase(Locale.ROOT).toLowerCase(Locale.ROOT)
-				val ruleSet = "java".toLowerCase(Locale.ROOT)
-				val category = v.category!!.toLowerCase(Locale.ROOT)
-				URI.create("https://pmd.github.io/latest/pmd_rules_${ruleSet}_${category}.html#${rule}")
+				if (v.category == "Custom") {
+					null
+				} else {
+					val match = PMD_DOC_LINK_LINE.find(v.message)
+					if (match != null) {
+						val url = match.groups[1]!!.value
+						URI.create(url)
+					} else {
+						val rule = v.rule.toLowerCase(Locale.ROOT).toLowerCase(Locale.ROOT)
+						val ruleSet = "java".toLowerCase(Locale.ROOT)
+						val category = v.category!!.toLowerCase(Locale.ROOT).replace(" ", "")
+						URI.create("https://pmd.github.io/latest/pmd_rules_${ruleSet}_${category}.html#${rule}")
+					}
+				}
 			}
 			"DETEKT" -> {
 				val category = v.category!!.toLowerCase(Locale.ROOT)
@@ -32,4 +42,9 @@ class DocumentationGenerator {
 			}
 			else -> null
 		}
+
+	companion object {
+		internal val PMD_DOC_LINK_LINE: Regex =
+			Regex("""^.+ (https://pmd\.github\.io/[^/]+/pmd_rules_.*)$""", RegexOption.MULTILINE)
+	}
 }
