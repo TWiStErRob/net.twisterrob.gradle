@@ -1,0 +1,1297 @@
+<!DOCTYPE html><html>
+    <head>
+        <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>junit12252005098066695430
+					&mdash; Violations Report
+				</title>
+        <style type="text/css">/*<![CDATA[*/
+	body {
+		background-color: #f5f5f5;
+		font-family: sans-serif;
+	}
+
+	code, pre {
+		padding: 0;
+		margin: 0;
+		white-space: pre-wrap;
+	}
+
+	a {
+		color: rgb(83, 109, 254);
+		text-decoration: none;
+	}
+
+	a:focus {
+		text-decoration: underline;
+	}
+
+	a:active {
+		color: rgb(83, 109, 254);
+		text-decoration: underline;
+	}
+
+	a.file {
+		font-size: smaller;
+	}
+
+	a.back-to-top {
+		position: fixed;
+		right: 0;
+		bottom: 0;
+		/* Make sure it's above hljs blocks. */
+		z-index: 1;
+		padding: 16px 16px 12px 16px;
+		/* Design */
+		transition: all 0.2s ease 0s;
+		border-radius: 32px 0 0 0;
+		background: rgba(255, 255, 255, 0.5);
+		box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
+	}
+
+	a.back-to-top:hover {
+		text-decoration: none;
+		background: white;
+		box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+	}
+
+	.violation {
+		padding: 8px;
+		margin-bottom: 8px;
+		background: #fff;
+		border-radius: 2px;
+		box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
+	}
+
+	.violation > .title {
+		font-weight: bold;
+	}
+
+	.violation > details.description > section {
+		max-width: 900px;
+	}
+
+	.violation .title p,
+	.violation > details.description > summary > p {
+		display: inline;
+	}
+
+	.violation .description p:last-of-type {
+		margin-bottom: 0;
+	}
+
+	.action {
+		cursor: pointer;
+		float: right;
+	}
+
+	details:first-of-type {
+		margin-top: 4px;
+	}
+
+	details + details {
+		margin-top: 8px;
+	}
+
+	details > summary:hover {
+		cursor: pointer;
+	}
+
+	details > summary:focus {
+		outline: 0;
+	}
+
+	details > summary + * {
+		margin-left: 16px;
+		border-left: 4px solid #ddd;
+		padding-left: 8px;
+	}
+
+	details.location > summary > pre {
+		display: inline-block;
+	}
+
+	ul {
+		/* match start padding to balance backgrounds */
+		padding-inline-end: 40px;
+	}
+
+	.hljs {
+		/* space for .hljs .line */
+		padding-left: 40px !important;
+		position: relative;
+	}
+
+	.hljs .line {
+		display: inline-block;
+		position: absolute;
+		left: 0;
+		width: 30px;
+		text-align: right;
+	}
+
+	.hljs .line.highlight {
+		background: #ffdddd;
+		font-weight: bold;
+		color: red;
+	}
+
+	/*]]>*/</style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/gradle.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/java.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/kotlin.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/xml.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.4.2/markdown-it.min.js"></script><script>/*<![CDATA[*/
+		var md = window.markdownit({
+			linkify: true,
+			highlight: function (str, lang) {
+				if (lang && hljs.getLanguage(lang)) {
+					try {
+						return hljs.highlight(lang, str).value;
+					} catch (__) {
+					}
+				}
+				return ''; // use external default escaping
+			}
+		});
+
+		function copyToClipboard(text) {
+			var $temp = $("<textarea>");
+			$("body").append($temp);
+			$temp.val(text).select();
+			document.execCommand("copy");
+			$temp.remove();
+		}
+
+		var render = {
+			markdown: function (text) {
+				var html = md.render(text);
+				document.write(html);
+			},
+			code: function (text, options) {
+				options = options || {};
+				var lang = options.language || 'text';
+				var html = hljs.highlight(lang, text).value;
+				html = addSourceLineNumbers(
+					html,
+					options.firstLine || 1,
+					options.highlightStart || -1,
+					options.highlightEnd || -1
+				);
+				document.write(html);
+			}
+		};
+
+		// based on http://bellido.us/blog/07-06-2014-Adding-LineNumbers-highlight-js.html
+		function addSourceLineNumbers(html, start, highlightStart, highlightEnd) {
+			var prefix = 'prefix';
+			var current = start;
+
+			function line(number) {
+				var classes = 'line';
+				if (highlightStart === number) classes += ' start';
+				if (highlightEnd === number) classes += ' end';
+				if (highlightStart <= number && number <= highlightEnd) classes += ' highlight';
+				return '<a class="' + classes + '" name="' + prefix + number + '">' + number + '</a>'
+			}
+
+			var result = html.replace(/\n/g, function () {
+				return "\n" + line(++current);
+			});
+
+			return line(start) + result;
+		}
+
+		/*]]>*/</script>
+    </head>
+    <body>
+        <h1 id="top">Violations report for
+					junit12252005098066695430</h1>
+        <a class="back-to-top" href="#top">↸ Back to top</a>
+        <div id="toc">
+            <h2 id="toc">Summary</h2>
+            <ul id="toc-categories">
+                <li data-id="toc-Best Practices">
+                    <span class="toc-count">1</span>
+			&times;
+			<a href="#Best Practices">Best Practices</a>
+                    <ul id="Best Practices-reporters">
+                        <li data-id="toc-Best Practices-PMD">
+                            <span class="toc-count">1</span>
+			&times;
+			<a href="#Best Practices-PMD">PMD</a>
+                            <ul id="Best Practices-PMD-rules">
+                                <li data-id="toc-Best Practices-PMD-AvoidPrintStackTrace">
+                                    <span class="toc-count">1</span>
+				&times;
+				<a href="#Best Practices-PMD-AvoidPrintStackTrace"><code class="rule">AvoidPrintStackTrace</code></a>
+				(
+				
+				<span class="toc-count">1</span>
+					&times;
+					<a href="#Best Practices-PMD-AvoidPrintStackTrace-:"><code class="module" data-id="toc-Best Practices-PMD-AvoidPrintStackTrace-:">:</code></a>
+				)
+			
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li data-id="toc-Blocks">
+                    <span class="toc-count">3</span>
+			&times;
+			<a href="#Blocks">Blocks</a>
+                    <ul id="Blocks-reporters">
+                        <li data-id="toc-Blocks-CHECKSTYLE">
+                            <span class="toc-count">3</span>
+			&times;
+			<a href="#Blocks-CHECKSTYLE">CHECKSTYLE</a>
+                            <ul id="Blocks-CHECKSTYLE-rules">
+                                <li data-id="toc-Blocks-CHECKSTYLE-EmptyBlock">
+                                    <span class="toc-count">3</span>
+				&times;
+				<a href="#Blocks-CHECKSTYLE-EmptyBlock"><code class="rule">EmptyBlock</code></a>
+				(
+				
+				<span class="toc-count">3</span>
+					&times;
+					<a href="#Blocks-CHECKSTYLE-EmptyBlock-:"><code class="module" data-id="toc-Blocks-CHECKSTYLE-EmptyBlock-:">:</code></a>
+				)
+			
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li data-id="toc-Code Style">
+                    <span class="toc-count">1</span>
+			&times;
+			<a href="#Code Style">Code Style</a>
+                    <ul id="Code Style-reporters">
+                        <li data-id="toc-Code Style-PMD">
+                            <span class="toc-count">1</span>
+			&times;
+			<a href="#Code Style-PMD">PMD</a>
+                            <ul id="Code Style-PMD-rules">
+                                <li data-id="toc-Code Style-PMD-NoPackage">
+                                    <span class="toc-count">1</span>
+				&times;
+				<a href="#Code Style-PMD-NoPackage"><code class="rule">NoPackage</code></a>
+				(
+				
+				<span class="toc-count">1</span>
+					&times;
+					<a href="#Code Style-PMD-NoPackage-:"><code class="module" data-id="toc-Code Style-PMD-NoPackage-:">:</code></a>
+				)
+			
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li data-id="toc-Imports">
+                    <span class="toc-count">4</span>
+			&times;
+			<a href="#Imports">Imports</a>
+                    <ul id="Imports-reporters">
+                        <li data-id="toc-Imports-CHECKSTYLE">
+                            <span class="toc-count">4</span>
+			&times;
+			<a href="#Imports-CHECKSTYLE">CHECKSTYLE</a>
+                            <ul id="Imports-CHECKSTYLE-rules">
+                                <li data-id="toc-Imports-CHECKSTYLE-UnusedImports">
+                                    <span class="toc-count">4</span>
+				&times;
+				<a href="#Imports-CHECKSTYLE-UnusedImports"><code class="rule">UnusedImports</code></a>
+				(
+				
+				<span class="toc-count">4</span>
+					&times;
+					<a href="#Imports-CHECKSTYLE-UnusedImports-:"><code class="module" data-id="toc-Imports-CHECKSTYLE-UnusedImports-:">:</code></a>
+				)
+			
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li data-id="toc-Misc">
+                    <span class="toc-count">1</span>
+			&times;
+			<a href="#Misc">Misc</a>
+                    <ul id="Misc-reporters">
+                        <li data-id="toc-Misc-CHECKSTYLE">
+                            <span class="toc-count">1</span>
+			&times;
+			<a href="#Misc-CHECKSTYLE">CHECKSTYLE</a>
+                            <ul id="Misc-CHECKSTYLE-rules">
+                                <li data-id="toc-Misc-CHECKSTYLE-NewlineAtEndOfFile">
+                                    <span class="toc-count">1</span>
+				&times;
+				<a href="#Misc-CHECKSTYLE-NewlineAtEndOfFile"><code class="rule">NewlineAtEndOfFile</code></a>
+				(
+				
+				<span class="toc-count">1</span>
+					&times;
+					<a href="#Misc-CHECKSTYLE-NewlineAtEndOfFile-:"><code class="module" data-id="toc-Misc-CHECKSTYLE-NewlineAtEndOfFile-:">:</code></a>
+				)
+			
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li data-id="toc-Naming">
+                    <span class="toc-count">2</span>
+			&times;
+			<a href="#Naming">Naming</a>
+                    <ul id="Naming-reporters">
+                        <li data-id="toc-Naming-CHECKSTYLE">
+                            <span class="toc-count">2</span>
+			&times;
+			<a href="#Naming-CHECKSTYLE">CHECKSTYLE</a>
+                            <ul id="Naming-CHECKSTYLE-rules">
+                                <li data-id="toc-Naming-CHECKSTYLE-MemberName">
+                                    <span class="toc-count">2</span>
+				&times;
+				<a href="#Naming-CHECKSTYLE-MemberName"><code class="rule">MemberName</code></a>
+				(
+				
+				<span class="toc-count">2</span>
+					&times;
+					<a href="#Naming-CHECKSTYLE-MemberName-:"><code class="module" data-id="toc-Naming-CHECKSTYLE-MemberName-:">:</code></a>
+				)
+			
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li data-id="toc-Performance">
+                    <span class="toc-count">4</span>
+			&times;
+			<a href="#Performance">Performance</a>
+                    <ul id="Performance-reporters">
+                        <li data-id="toc-Performance-ANDROIDLINT">
+                            <span class="toc-count">4</span>
+			&times;
+			<a href="#Performance-ANDROIDLINT">ANDROIDLINT</a>
+                            <ul id="Performance-ANDROIDLINT-rules">
+                                <li data-id="toc-Performance-ANDROIDLINT-UnusedIds">
+                                    <span class="toc-count">1</span>
+				&times;
+				<a href="#Performance-ANDROIDLINT-UnusedIds"><code class="rule">UnusedIds</code></a>
+				(
+				
+				<span class="toc-count">1</span>
+					&times;
+					<a href="#Performance-ANDROIDLINT-UnusedIds-:"><code class="module" data-id="toc-Performance-ANDROIDLINT-UnusedIds-:">:</code></a>
+				)
+			
+                                </li>
+                                <li data-id="toc-Performance-ANDROIDLINT-UnusedResources">
+                                    <span class="toc-count">3</span>
+				&times;
+				<a href="#Performance-ANDROIDLINT-UnusedResources"><code class="rule">UnusedResources</code></a>
+				(
+				
+				<span class="toc-count">3</span>
+					&times;
+					<a href="#Performance-ANDROIDLINT-UnusedResources-:"><code class="module" data-id="toc-Performance-ANDROIDLINT-UnusedResources-:">:</code></a>
+				)
+			
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li data-id="toc-Usability">
+                    <span class="toc-count">1</span>
+			&times;
+			<a href="#Usability">Usability</a>
+                    <ul id="Usability-reporters">
+                        <li data-id="toc-Usability-ANDROIDLINT">
+                            <span class="toc-count">1</span>
+			&times;
+			<a href="#Usability-ANDROIDLINT">ANDROIDLINT</a>
+                            <ul id="Usability-ANDROIDLINT-rules">
+                                <li data-id="toc-Usability-ANDROIDLINT-Autofill">
+                                    <span class="toc-count">1</span>
+				&times;
+				<a href="#Usability-ANDROIDLINT-Autofill"><code class="rule">Autofill</code></a>
+				(
+				
+				<span class="toc-count">1</span>
+					&times;
+					<a href="#Usability-ANDROIDLINT-Autofill-:"><code class="module" data-id="toc-Usability-ANDROIDLINT-Autofill-:">:</code></a>
+				)
+			
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li data-id="toc-Usability:Icons">
+                    <span class="toc-count">1</span>
+			&times;
+			<a href="#Usability:Icons">Usability:Icons</a>
+                    <ul id="Usability:Icons-reporters">
+                        <li data-id="toc-Usability:Icons-ANDROIDLINT">
+                            <span class="toc-count">1</span>
+			&times;
+			<a href="#Usability:Icons-ANDROIDLINT">ANDROIDLINT</a>
+                            <ul id="Usability:Icons-ANDROIDLINT-rules">
+                                <li data-id="toc-Usability:Icons-ANDROIDLINT-IconMissingDensityFolder">
+                                    <span class="toc-count">1</span>
+				&times;
+				<a href="#Usability:Icons-ANDROIDLINT-IconMissingDensityFolder"><code class="rule">IconMissingDensityFolder</code></a>
+				(
+				
+				<span class="toc-count">1</span>
+					&times;
+					<a href="#Usability:Icons-ANDROIDLINT-IconMissingDensityFolder-:"><code class="module" data-id="toc-Usability:Icons-ANDROIDLINT-IconMissingDensityFolder-:">:</code></a>
+				)
+			
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div id="categories">
+            <h2 id="Best Practices">Best Practices</h2>
+            <ul class="reporters">
+                <h3 id="Best Practices-PMD">PMD</h3>
+                <ul class="violations">
+                    <a name="Best Practices-PMD-AvoidPrintStackTrace"></a><a name="Best Practices-PMD-AvoidPrintStackTrace-:"></a>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://pmd.github.io/pmd-6.39.0/pmd_rules_java_bestpractices.html#avoidprintstacktrace" target="_blank">AvoidPrintStackTrace</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;PMD.AvoidPrintStackTrace&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;PMD.AvoidPrintStackTrace&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/pmd/PrintStack.java">src\main\java\pmd\<b>PrintStack.java</b>:8</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`			// do something
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}`,
+								{
+									language: 'java',
+									firstLine: 6,
+									highlightStart: 8,
+									highlightEnd: 8
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`Avoid printStackTrace(); use a logger call instead.`)</script>
+                        </div>
+                        		
+                    </div>
+                </ul>
+            </ul>
+            <h2 id="Blocks">Blocks</h2>
+            <ul class="reporters">
+                <h3 id="Blocks-CHECKSTYLE">CHECKSTYLE</h3>
+                <ul class="violations">
+                    <a name="Blocks-CHECKSTYLE-EmptyBlock"></a><a name="Blocks-CHECKSTYLE-EmptyBlock-:"></a>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://checkstyle.sourceforge.io/config_blocks.html#EmptyBlock" target="_blank">EmptyBlock</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/EmptyBlock_3.java">src\main\java\<b>EmptyBlock_3.java</b>:4</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`
+	public EmptyBlock_3() {
+		if (true) {
+			/*trigger empty block check*/
+		}`,
+								{
+									language: 'java',
+									firstLine: 2,
+									highlightStart: 4,
+									highlightEnd: 4
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`Must have at least one statement.`)</script>
+                        </div>
+                        		
+                    </div>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://checkstyle.sourceforge.io/config_blocks.html#EmptyBlock" target="_blank">EmptyBlock</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/EmptyBlock_3.java">src\main\java\<b>EmptyBlock_3.java</b>:8</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`		}
+
+		try {
+			/*trigger empty block check*/
+		} finally {`,
+								{
+									language: 'java',
+									firstLine: 6,
+									highlightStart: 8,
+									highlightEnd: 8
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`Must have at least one statement.`)</script>
+                        </div>
+                        		
+                    </div>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://checkstyle.sourceforge.io/config_blocks.html#EmptyBlock" target="_blank">EmptyBlock</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/EmptyBlock_3.java">src\main\java\<b>EmptyBlock_3.java</b>:10</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`		try {
+			/*trigger empty block check*/
+		} finally {
+			/*trigger empty block check*/
+		}`,
+								{
+									language: 'java',
+									firstLine: 8,
+									highlightStart: 10,
+									highlightEnd: 10
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`Must have at least one statement.`)</script>
+                        </div>
+                        		
+                    </div>
+                </ul>
+            </ul>
+            <h2 id="Code Style">Code Style</h2>
+            <ul class="reporters">
+                <h3 id="Code Style-PMD">PMD</h3>
+                <ul class="violations">
+                    <a name="Code Style-PMD-NoPackage"></a><a name="Code Style-PMD-NoPackage-:"></a>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://pmd.github.io/pmd-6.39.0/pmd_rules_java_codestyle.html#nopackage" target="_blank">NoPackage</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;PMD.NoPackage&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;PMD.NoPackage&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/WithoutPackage.java">src\main\java\<b>WithoutPackage.java</b>:1-3</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`class WithoutPackage {
+
+}`,
+								{
+									language: 'java',
+									firstLine: 1,
+									highlightStart: 1,
+									highlightEnd: 3
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`All classes, interfaces, enums and annotations must belong to a named package`)</script>
+                        </div>
+                        		
+                    </div>
+                </ul>
+            </ul>
+            <h2 id="Imports">Imports</h2>
+            <ul class="reporters">
+                <h3 id="Imports-CHECKSTYLE">CHECKSTYLE</h3>
+                <ul class="violations">
+                    <a name="Imports-CHECKSTYLE-UnusedImports"></a><a name="Imports-CHECKSTYLE-UnusedImports-:"></a>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://checkstyle.sourceforge.io/config_imports.html#UnusedImports" target="_blank">UnusedImports</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:1</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`import java.net.Authenticator;
+import java.awt.font.NumericShaper;
+import java.math.BigDecimal;`,
+								{
+									language: 'java',
+									firstLine: 1,
+									highlightStart: 1,
+									highlightEnd: 1
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`Unused import - java.net.Authenticator.`)</script>
+                        </div>
+                        		
+                    </div>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://checkstyle.sourceforge.io/config_imports.html#UnusedImports" target="_blank">UnusedImports</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:2</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`import java.net.Authenticator;
+import java.awt.font.NumericShaper;
+import java.math.BigDecimal;
+import java.sql.Array;`,
+								{
+									language: 'java',
+									firstLine: 1,
+									highlightStart: 2,
+									highlightEnd: 2
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`Unused import - java.awt.font.NumericShaper.`)</script>
+                        </div>
+                        		
+                    </div>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://checkstyle.sourceforge.io/config_imports.html#UnusedImports" target="_blank">UnusedImports</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:3</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`import java.net.Authenticator;
+import java.awt.font.NumericShaper;
+import java.math.BigDecimal;
+import java.sql.Array;
+`,
+								{
+									language: 'java',
+									firstLine: 1,
+									highlightStart: 3,
+									highlightEnd: 3
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`Unused import - java.math.BigDecimal.`)</script>
+                        </div>
+                        		
+                    </div>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://checkstyle.sourceforge.io/config_imports.html#UnusedImports" target="_blank">UnusedImports</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:4</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`import java.awt.font.NumericShaper;
+import java.math.BigDecimal;
+import java.sql.Array;
+
+public class UnusedImports_4 {`,
+								{
+									language: 'java',
+									firstLine: 2,
+									highlightStart: 4,
+									highlightEnd: 4
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`Unused import - java.sql.Array.`)</script>
+                        </div>
+                        		
+                    </div>
+                </ul>
+            </ul>
+            <h2 id="Misc">Misc</h2>
+            <ul class="reporters">
+                <h3 id="Misc-CHECKSTYLE">CHECKSTYLE</h3>
+                <ul class="violations">
+                    <a name="Misc-CHECKSTYLE-NewlineAtEndOfFile"></a><a name="Misc-CHECKSTYLE-NewlineAtEndOfFile-:"></a>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://checkstyle.sourceforge.io/config_misc.html#NewlineAtEndOfFile" target="_blank">NewlineAtEndOfFile</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;checkstyle:NewlineAtEndOfFile&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:NewlineAtEndOfFile&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:1</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`import java.net.Authenticator;
+import java.awt.font.NumericShaper;
+import java.math.BigDecimal;`,
+								{
+									language: 'java',
+									firstLine: 1,
+									highlightStart: 1,
+									highlightEnd: 1
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`File does not end with a newline.`)</script>
+                        </div>
+                        		
+                    </div>
+                </ul>
+            </ul>
+            <h2 id="Naming">Naming</h2>
+            <ul class="reporters">
+                <h3 id="Naming-CHECKSTYLE">CHECKSTYLE</h3>
+                <ul class="violations">
+                    <a name="Naming-CHECKSTYLE-MemberName"></a><a name="Naming-CHECKSTYLE-MemberName-:"></a>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://checkstyle.sourceforge.io/config_naming.html#MemberName" target="_blank">MemberName</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;checkstyle:MemberName&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:MemberName&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/MemberName_2.java">src\main\java\<b>MemberName_2.java</b>:3</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`public class MemberName_2 {
+
+	int TERIBLEMEMBERNAME;
+	int TERiBLe_member_NAME;
+}`,
+								{
+									language: 'java',
+									firstLine: 1,
+									highlightStart: 3,
+									highlightEnd: 3
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`Name 'TERIBLEMEMBERNAME' must match pattern '^[a-z][a-zA-Z0-9]*$'.`)</script>
+                        </div>
+                        		
+                    </div>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://checkstyle.sourceforge.io/config_naming.html#MemberName" target="_blank">MemberName</a><span class="action" title="To suppress:
+
+@SuppressWarnings(&quot;checkstyle:MemberName&quot;) // TODO explanation
+
+Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:MemberName&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>:
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/java/MemberName_2.java">src\main\java\<b>MemberName_2.java</b>:4</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`
+	int TERIBLEMEMBERNAME;
+	int TERiBLe_member_NAME;
+}`,
+								{
+									language: 'java',
+									firstLine: 2,
+									highlightStart: 4,
+									highlightEnd: 4
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+			
+                        <div class="description">
+                            <script>render.markdown(`Name 'TERiBLe_member_NAME' must match pattern '^[a-z][a-zA-Z0-9]*$'.`)</script>
+                        </div>
+                        		
+                    </div>
+                </ul>
+            </ul>
+            <h2 id="Performance">Performance</h2>
+            <ul class="reporters">
+                <h3 id="Performance-ANDROIDLINT">ANDROIDLINT</h3>
+                <ul class="violations">
+                    <a name="Performance-ANDROIDLINT-UnusedIds"></a><a name="Performance-ANDROIDLINT-UnusedIds-:"></a>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://googlesamples.github.io/android-custom-lint-rules/checks/UnusedIds.md.html" target="_blank">UnusedIds</a>: <span class="action" title="To suppress:
+
+tools:ignore=&quot;UnusedIds&quot;
+
+Click to copy!" onClick="copyToClipboard(`tools:ignore=&quot;UnusedIds&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused id`)</script></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>(debug):
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/res/values/unused_ids.xml">src\main\res\values\<b>unused_ids.xml</b>:4</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`<resources>
+
+	<item name="unused_id" type="id" />
+
+</resources>`,
+								{
+									language: 'xml',
+									firstLine: 2,
+									highlightStart: 4,
+									highlightEnd: 4
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+                        <details class="description">
+                            <summary>
+                                <script>render.markdown(`The resource \`R.id.unused_id\` appears to be unused`)</script>
+                            </summary>
+                            <section>
+                                <script>render.markdown(`This resource id definition appears not to be needed since it is not referenced from anywhere. Having id definitions, even if unused, is not necessarily a bad idea since they make working on layouts and menus easier, so there is not a strong reason to delete these.
+
+The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.
+
+You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests=true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests=true.`)</script>
+                            </section>
+                        </details>
+                        			
+		
+                    </div>
+                    <a name="Performance-ANDROIDLINT-UnusedResources"></a><a name="Performance-ANDROIDLINT-UnusedResources-:"></a>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://googlesamples.github.io/android-custom-lint-rules/checks/UnusedResources.md.html" target="_blank">UnusedResources</a>: <span class="action" title="To suppress:
+
+tools:ignore=&quot;UnusedResources&quot;
+
+Click to copy!" onClick="copyToClipboard(`tools:ignore=&quot;UnusedResources&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused resources`)</script></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>(debug):
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/res/drawable/missing_density.xml">src\main\res\drawable\<b>missing_density.xml</b>:1</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`<selector />`,
+								{
+									language: 'xml',
+									firstLine: 1,
+									highlightStart: 1,
+									highlightEnd: 1
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+                        <details class="description">
+                            <summary>
+                                <script>render.markdown(`The resource \`R.drawable.missing_density\` appears to be unused`)</script>
+                            </summary>
+                            <section>
+                                <script>render.markdown(`Unused resources make applications larger and slow down builds.
+
+The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.
+
+You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests=true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests=true.`)</script>
+                            </section>
+                        </details>
+                        			
+		
+                    </div>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://googlesamples.github.io/android-custom-lint-rules/checks/UnusedResources.md.html" target="_blank">UnusedResources</a>: <span class="action" title="To suppress:
+
+tools:ignore=&quot;UnusedResources&quot;
+
+Click to copy!" onClick="copyToClipboard(`tools:ignore=&quot;UnusedResources&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused resources`)</script></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>(debug):
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/res/layout/autofill.xml">src\main\res\layout\<b>autofill.xml</b>:1</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`<EditText
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"`,
+								{
+									language: 'xml',
+									firstLine: 1,
+									highlightStart: 1,
+									highlightEnd: 1
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+                        <details class="description">
+                            <summary>
+                                <script>render.markdown(`The resource \`R.layout.autofill\` appears to be unused`)</script>
+                            </summary>
+                            <section>
+                                <script>render.markdown(`Unused resources make applications larger and slow down builds.
+
+The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.
+
+You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests=true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests=true.`)</script>
+                            </section>
+                        </details>
+                        			
+		
+                    </div>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://googlesamples.github.io/android-custom-lint-rules/checks/UnusedResources.md.html" target="_blank">UnusedResources</a>: <span class="action" title="To suppress:
+
+tools:ignore=&quot;UnusedResources&quot;
+
+Click to copy!" onClick="copyToClipboard(`tools:ignore=&quot;UnusedResources&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused resources`)</script></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>(debug):
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/res/values/unused.xml">src\main\res\values\<b>unused.xml</b>:3</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`<resources>
+
+	<string name="cdata_string"><![CDATA[nothing special, but definitely unused]]></string>
+
+</resources>`,
+								{
+									language: 'xml',
+									firstLine: 1,
+									highlightStart: 3,
+									highlightEnd: 3
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+                        <details class="description">
+                            <summary>
+                                <script>render.markdown(`The resource \`R.string.cdata_string\` appears to be unused`)</script>
+                            </summary>
+                            <section>
+                                <script>render.markdown(`Unused resources make applications larger and slow down builds.
+
+The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.
+
+You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests=true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests=true.`)</script>
+                            </section>
+                        </details>
+                        			
+		
+                    </div>
+                </ul>
+            </ul>
+            <h2 id="Usability">Usability</h2>
+            <ul class="reporters">
+                <h3 id="Usability-ANDROIDLINT">ANDROIDLINT</h3>
+                <ul class="violations">
+                    <a name="Usability-ANDROIDLINT-Autofill"></a><a name="Usability-ANDROIDLINT-Autofill-:"></a>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://googlesamples.github.io/android-custom-lint-rules/checks/Autofill.md.html" target="_blank">Autofill</a>: <span class="action" title="To suppress:
+
+tools:ignore=&quot;Autofill&quot;
+
+Click to copy!" onClick="copyToClipboard(`tools:ignore=&quot;Autofill&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Use Autofill`)</script></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>(debug):
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/res/layout/autofill.xml">src\main\res\layout\<b>autofill.xml</b>:1</a>
+                            </summary>
+                            <pre class="hljs">
+                                <code><script>
+							// @formatter:off
+							render.code(
+								`<EditText
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"`,
+								{
+									language: 'xml',
+									firstLine: 1,
+									highlightStart: 1,
+									highlightEnd: 1
+								}
+							)
+							// @formatter:on
+						</script></code>
+                            </pre>
+                        </details>
+                        			
+                        <details class="description">
+                            <summary>
+                                <script>render.markdown(`Missing \`autofillHints\` attribute`)</script>
+                            </summary>
+                            <section>
+                                <script>render.markdown(`Specify an \`autofillHints\` attribute when targeting SDK version 26 or higher or explicitly specify that the view is not important for autofill. Your app can help an autofill service classify the data correctly by providing the meaning of each view that could be autofillable, such as views representing usernames, passwords, credit card fields, email addresses, etc.
+
+The hints can have any value, but it is recommended to use predefined values like 'username' for a username or 'creditCardNumber' for a credit card number. For a list of all predefined autofill hint constants, see the \`AUTOFILL_HINT_\` constants in the \`View\` reference at https://developer.android.com/reference/android/view/View.html.
+
+You can mark a view unimportant for autofill by specifying an \`importantForAutofill\` attribute on that view or a parent view. See https://developer.android.com/reference/android/view/View.html#setImportantForAutofill(int).`)</script>
+                            </section>
+                        </details>
+                        			
+		
+                    </div>
+                </ul>
+            </ul>
+            <h2 id="Usability:Icons">Usability:Icons</h2>
+            <ul class="reporters">
+                <h3 id="Usability:Icons-ANDROIDLINT">ANDROIDLINT</h3>
+                <ul class="violations">
+                    <a name="Usability:Icons-ANDROIDLINT-IconMissingDensityFolder"></a><a name="Usability:Icons-ANDROIDLINT-IconMissingDensityFolder-:"></a>
+                    <div class="violation" xml:space="preserve">
+                        			<span class="title"><a href="https://googlesamples.github.io/android-custom-lint-rules/checks/IconMissingDensityFolder.md.html" target="_blank">IconMissingDensityFolder</a>: <span class="action" title="To suppress:
+
+<issue id=&quot;IconMissingDensityFolder&quot; severity=&quot;ignore&quot;>
+    <!-- TODO explanation -->
+    <ignore path=&quot;res&quot; />
+</issue>
+
+Click to copy!" onClick="copyToClipboard(`<issue id=&quot;IconMissingDensityFolder&quot; severity=&quot;ignore&quot;>
+    <!-- TODO explanation -->
+    <ignore path=&quot;res&quot; />
+</issue>`)"><code>&#129323;</code></span><script>render.markdown(`Missing density folder`)</script></span>
+			
+                        <br>
+                        			
+                        <details class="location" open="open">
+                            <summary>
+                                <code class="module">:<b></b></code>(debug):
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430/src/main/res/">src\main\<b>res</b></a>
+                            </summary>
+                            <pre>
+                                <code>main:
+	java
+	res:
+		drawable
+		drawable-xxhdpi
+		layout
+		values
+	AndroidManifest.xml</code>
+                            </pre>
+                        </details>
+                        			
+                        <details class="description">
+                            <summary>
+                                <script>render.markdown(`Missing density variation folders in \`C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit12252005098066695430\\src\\main\\res\`: drawable-hdpi, drawable-mdpi, drawable-xhdpi`)</script>
+                            </summary>
+                            <section>
+                                <script>render.markdown(`Icons will look best if a custom version is provided for each of the major screen density classes (low, medium, high, extra-high, extra-extra-high). This lint check identifies folders which are missing, such as \`drawable-hdpi\`.
+
+Low density is not really used much anymore, so this check ignores the ldpi density. To force lint to include it, set the environment variable \`ANDROID_LINT_INCLUDE_LDPI=true\`. For more information on current density usage, see https://developer.android.com/about/dashboards`)</script>
+                            </section>
+                        </details>
+                        			
+		
+                    </div>
+                </ul>
+            </ul>
+        </div>
+    </body>
+</html>
