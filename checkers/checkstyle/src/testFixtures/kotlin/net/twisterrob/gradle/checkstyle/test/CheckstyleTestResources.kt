@@ -4,7 +4,7 @@ package net.twisterrob.gradle.checkstyle.test
  * Usage:
  * ```
  * private lateinit var gradle: GradleRunnerRule
- * private val pmd = CheckstyleTestResources()
+ * private val checkstyle = CheckstyleTestResources()
  *
  * @Test fun test() {
  *     gradle.file(checkstyle.….config, "config", "checkstyle", "checkstyle.xml")
