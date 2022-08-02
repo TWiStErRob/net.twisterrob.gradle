@@ -268,7 +268,7 @@
 
 	<xsl:variable name="script" xml:space="preserve">
 	<!--suppress JSUnusedLocalSymbols, JSUnresolvedVariable, JSUnresolvedFunction -->
-		<script><![CDATA[/*&lt;![CDATA[*/
+		<script><![CDATA[/*<![CDATA[*/
 		var md = window.markdownit({
 			linkify: true,
 			highlight: function (str, lang) {
@@ -329,10 +329,10 @@
 			return line(start) + result;
 		}
 
-		/*]]&gt;*/]]></script>
+		/*]]]]><![CDATA[>]]>*/</script>
 	</xsl:variable>
 	<xsl:variable name="style" xml:space="preserve">
-	<style type="text/css"><![CDATA[/*&lt;![CDATA[*/
+	<style type="text/css"><![CDATA[/*<![CDATA[*/
 	body {
 		background-color: #f5f5f5;
 		font-family: sans-serif;
@@ -463,7 +463,7 @@
 		color: red;
 	}
 
-	/*]]&gt;*/]]></style>
+	/*]]]]><![CDATA[>]]>*/</style>
 	</xsl:variable>
 
 </xsl:stylesheet>
