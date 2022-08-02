@@ -48,6 +48,9 @@ class ViolationTestResources(
 					"""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\.+)+)(?=\\`)""".toRegex(),
 					Regex.escapeReplacement(rootProject.absolutePath.replace("\\", "\\\\")) + "$1"
 				)
+				// The XSL transformation will produce system-specific separators
+				// (on CI/Unix this is different than the captured Windows line endings).
+				.replace("\r\n", System.lineSeparator())
 
 		/**
 		 * @warning DO NOT EDIT (https://youtrack.jetbrains.com/issue/IDEA-171699)
@@ -76,6 +79,9 @@ class ViolationTestResources(
 					"""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/.+)+)(?=")""".toRegex(),
 					Regex.escapeReplacement(rootProject.toURI().toString().removeSuffix("/")) + "$1"
 				)
+				// The XSL transformation will produce system-specific separators
+				// (on CI/Unix this is different than the captured Windows line endings).
+				.replace("\r\n", System.lineSeparator())
 	}
 
 	companion object {
