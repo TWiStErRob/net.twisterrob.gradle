@@ -34,20 +34,25 @@ class ViolationTestResources(
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <location file="..."
-				.replace(
-					"""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit12252005098066695430((?:\\.+)+)(?=")""".toRegex(),
-					Regex.escapeReplacement(rootProject.absolutePath) + "$1"
-				)
+				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit12252005098066695430((?:\\.+)+)(?=")""".toRegex()) {
+					val group1 = it.groups[1]!!.value
+					rootProject.absolutePath + group1.replace("\\", File.separator)
+				}
 				// <location fileAbsoluteAsUrl="..."
-				.replace(
-					"""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/.+)+)(?=")""".toRegex(),
-					Regex.escapeReplacement(rootProject.toURI().toString().removeSuffix("/")) + "$1"
-				)
+				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/.+)+)(?=")""".toRegex()) {
+					val group1 = it.groups[1]!!.value
+					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
+				}
 				// <violation[details/@rule="IconMissingDensityFolder"]/description
-				.replace(
-					"""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\.+)+)(?=\\`)""".toRegex(),
-					Regex.escapeReplacement(rootProject.absolutePath.replace("\\", "\\\\")) + "$1"
-				)
+				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\.+)+)(?=\\`)""".toRegex()) {
+					val group1 = it.groups[1]!!.value
+					rootProject.absolutePath.replace("\\", "\\\\") + group1.replace("\\", File.separator)
+				}
+				// <location pathRelativeToProject="...\"
+				// <location pathRelativeToModule="...\"
+				.replace("""(?<=(pathRelativeToProject|pathRelativeToModule)=")(?:.+\\)+(?=")""".toRegex()) {
+					it.value.replace("\\", File.separator)
+				}
 				// The XSL transformation will produce system-specific separators
 				// (on CI/Unix this is different than the captured Windows line endings).
 				.replace("\r\n", System.lineSeparator())
@@ -70,15 +75,15 @@ class ViolationTestResources(
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <script>render.markdown(`...\`...\`...`)</script>
-				.replace(
-					"""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\.+)+)(?=\\`)""".toRegex(),
-					Regex.escapeReplacement(rootProject.absolutePath.replace("\\", "\\\\")) + "$1"
-				)
+				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\.+)+)(?=\\`)""".toRegex()) {
+					val group1 = it.groups[1]!!.value
+					rootProject.absolutePath.replace("\\", "\\\\") + group1.replace("\\", File.separator)
+				}
 				// <a class="file" href="file:/..."
-				.replace(
-					"""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/.+)+)(?=")""".toRegex(),
-					Regex.escapeReplacement(rootProject.toURI().toString().removeSuffix("/")) + "$1"
-				)
+				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/.+)+)(?=")""".toRegex()) {
+					val group1 = it.groups[1]!!.value
+					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
+				}
 				// The XSL transformation will produce system-specific separators
 				// (on CI/Unix this is different from the captured Windows line endings).
 				.replace("\r\n", System.lineSeparator())
