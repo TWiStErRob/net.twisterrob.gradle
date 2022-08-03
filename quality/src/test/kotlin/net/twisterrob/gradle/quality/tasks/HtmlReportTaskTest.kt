@@ -357,7 +357,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			"UnusedResources"
 		).forEach { check -> gradle.basedOn("lint-$check") }
 
-		checkstyle.multi.contents.forEach { name, content ->
+		checkstyle.multi.contents.forEach { (name, content) ->
 			gradle.file(content, "src", "main", "java", name)
 		}
 
