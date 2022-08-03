@@ -15,9 +15,13 @@ class DocumentationGenerator {
 				URI.create("https://googlesamples.github.io/android-custom-lint-rules/checks/${check}.md.html")
 			}
 			"CHECKSTYLE" -> {
-				val check = v.rule.removeSuffix("Check")
-				val category = v.category!!.toLowerCase(Locale.ROOT)
-				URI.create("https://checkstyle.sourceforge.io/config_${category}.html#${check}")
+				if (v.category != null) {
+					val check = v.rule.removeSuffix("Check")
+					val category = v.category.toLowerCase(Locale.ROOT)
+					URI.create("https://checkstyle.sourceforge.io/config_${category}.html#${check}")
+				} else {
+					null
+				}
 			}
 			"PMD" -> {
 				if (v.category == "Custom") {
@@ -27,11 +31,13 @@ class DocumentationGenerator {
 					if (match != null) {
 						val url = match.groups[1]!!.value
 						URI.create(url)
-					} else {
+					} else if (v.category != null) {
 						val rule = v.rule.toLowerCase(Locale.ROOT).toLowerCase(Locale.ROOT)
 						val ruleSet = "java".toLowerCase(Locale.ROOT)
-						val category = v.category!!.toLowerCase(Locale.ROOT).replace(" ", "")
+						val category = v.category.toLowerCase(Locale.ROOT).replace(" ", "")
 						URI.create("https://pmd.github.io/latest/pmd_rules_${ruleSet}_${category}.html#${rule}")
+					} else {
+						null
 					}
 				}
 			}

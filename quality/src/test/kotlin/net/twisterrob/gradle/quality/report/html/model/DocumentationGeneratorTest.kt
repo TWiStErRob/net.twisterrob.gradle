@@ -41,7 +41,7 @@ class DocumentationGeneratorTest {
 			"SQLiteString, https://googlesamples.github.io/android-custom-lint-rules/checks/SQLiteString.md.html",
 		]
 	)
-	fun `lint returns the check documentation link`(rule: String, expected: URI) {
+	fun `lint generates the check documentation link`(rule: String, expected: URI) {
 		val fixtViolation: Violation = fixture.build {
 			source.setField("reporter", "ANDROIDLINT")
 			setField("rule", rule)
@@ -62,12 +62,82 @@ class DocumentationGeneratorTest {
 		],
 		nullValues = ["null"],
 	)
-	fun `detekt returns the rule documentation link`(category: String?, rule: String, expected: URI?) {
+	fun `detekt generates the rule documentation link`(category: String?, rule: String, expected: URI?) {
 		val fixtViolation: Violation = fixture.build {
 			source.setField("reporter", "DETEKT")
 			setField("category", category)
 			setField("rule", rule)
 		}
+
+		val docUri = sut.getDocumentationUrl(fixtViolation)
+
+		assertEquals(expected, docUri)
+	}
+
+	@ParameterizedTest
+	@CsvSource(
+		value = [
+			"imports, UnusedImportsCheck,   https://checkstyle.sourceforge.io/config_imports.html#UnusedImports",
+			"metrics, JavaNCSSCheck,        https://checkstyle.sourceforge.io/config_metrics.html#JavaNCSS",
+			"metrics, NPathComplexityCheck, https://checkstyle.sourceforge.io/config_metrics.html#NPathComplexity",
+			"null,    UnknownCheck,         null",
+		],
+		nullValues = ["null"],
+	)
+	fun `checkstyle generates the check documentation link`(category: String?, check: String, expected: URI?) {
+		val fixtViolation: Violation = fixture.build {
+			source.setField("reporter", "CHECKSTYLE")
+			setField("category", category)
+			setField("rule", check)
+		}
+
+		val docUri = sut.getDocumentationUrl(fixtViolation)
+
+		assertEquals(expected, docUri)
+	}
+
+	@ParameterizedTest
+	@CsvSource(
+		value = [
+			"Code Style,  NoPackage,        https://pmd.github.io/latest/pmd_rules_java_codestyle.html#nopackage",
+			"Design,      GodClass,         https://pmd.github.io/latest/pmd_rules_java_design.html#godclass",
+			"Error Prone, AvoidCatchingNPE, https://pmd.github.io/latest/pmd_rules_java_errorprone.html#avoidcatchingnpe",
+			"Custom,      SomethingCustom,  null",
+			"null,        UnknownRule,      null",
+		],
+		nullValues = ["null"],
+	)
+	fun `pmd generates the rule documentation link`(category: String?, check: String, expected: URI?) {
+		val fixtViolation: Violation = fixture.build {
+			source.setField("reporter", "PMD")
+			setField("category", category)
+			setField("rule", check)
+		}
+
+		val docUri = sut.getDocumentationUrl(fixtViolation)
+
+		assertEquals(expected, docUri)
+	}
+
+	@Test
+	fun `pmd returns the rule documentation link from the message`() {
+		val fixtViolation: Violation = fixture.build {
+			source.setField("reporter", "PMD")
+			setField("category", "Does Not Matter")
+			setField("rule", "DoesNotMatter")
+			setField(
+				"message",
+				// Two tabs and newlines are from realistic data.
+				"""
+				Avoid printStackTrace(); use a logger call instead.
+				${"\t\t"}
+				
+				Best Practices https://pmd.github.io/pmd-6.39.0/pmd_rules_java_bestpractices.html#avoidprintstacktrace
+				""".trimIndent()
+			)
+		}
+		val expected =
+			URI.create("https://pmd.github.io/pmd-6.39.0/pmd_rules_java_bestpractices.html#avoidprintstacktrace")
 
 		val docUri = sut.getDocumentationUrl(fixtViolation)
 
