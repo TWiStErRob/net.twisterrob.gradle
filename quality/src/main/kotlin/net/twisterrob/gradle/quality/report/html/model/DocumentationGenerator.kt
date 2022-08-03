@@ -36,9 +36,13 @@ class DocumentationGenerator {
 				}
 			}
 			"DETEKT" -> {
-				val category = v.category!!.toLowerCase(Locale.ROOT)
-				val rule = v.rule.toLowerCase(Locale.ROOT)
-				URI.create("https://detekt.dev/docs/rules/${category}/#${rule}")
+				if (v.category != null) {
+					val category = v.category.toLowerCase(Locale.ROOT)
+					val rule = v.rule.toLowerCase(Locale.ROOT)
+					URI.create("https://detekt.dev/docs/rules/${category}#${rule}")
+				} else {
+					null
+				}
 			}
 			else -> null
 		}

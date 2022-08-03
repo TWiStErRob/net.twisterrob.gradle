@@ -51,4 +51,26 @@ class DocumentationGeneratorTest {
 
 		assertEquals(expected, docUri)
 	}
+
+	@ParameterizedTest
+	@CsvSource(
+		value = [
+			"style,        ForbiddenVoid, https://detekt.dev/docs/rules/style#forbiddenvoid",
+			"empty-blocks, EmptyIfBlock,  https://detekt.dev/docs/rules/empty-blocks#emptyifblock",
+			"formatting,   Wrapping,      https://detekt.dev/docs/rules/formatting#wrapping",
+			"null,         MagicConstant, null",
+		],
+		nullValues = ["null"],
+	)
+	fun `detekt returns the rule documentation link`(category: String?, rule: String, expected: URI?) {
+		val fixtViolation: Violation = fixture.build {
+			source.setField("reporter", "DETEKT")
+			setField("category", category)
+			setField("rule", rule)
+		}
+
+		val docUri = sut.getDocumentationUrl(fixtViolation)
+
+		assertEquals(expected, docUri)
+	}
 }
