@@ -386,7 +386,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		assertThat(gradle.violationsReport("xsl"), anExistingFile())
 		assertThat(gradle.violationsReport("xml"), anExistingFile())
 		assertThat(gradle.violationsReport("html"), anExistingFile())
-		exposeViolationsInReport(test)
+		exposeViolationsInReport(test, violations.everything)
 		assertThat(gradle.violationsReport("xsl"), aFileWithSize(greaterThan(0)))
 		assertEquals(
 			violations.everything.violationsXml,
@@ -400,14 +400,17 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		)
 	}
 
-	private fun exposeViolationsInReport(test: TestInfo) {
+	private fun exposeViolationsInReport(test: TestInfo,everything: ViolationTestResources.Everything) {
+		val baseDir  = File("build/reports/tests/test/outputs").resolve(test.testName)
 		listOf(
 			gradle.violationsReport("xsl"),
 			gradle.violationsReport("xml"),
 			gradle.violationsReport("html")
 		).forEach { file ->
-			file.copyTo(File("build/reports/tests/test/outputs/${test.testName}/${file.name}"))
+			file.copyTo(baseDir.resolve(file.name), overwrite = true)
 		}
+		baseDir.resolve("violations-expected.xml").writeText(everything.violationsXml)
+		baseDir.resolve("violations-expected.html").writeText(everything.violationsHtml)
 	}
 
 	companion object {
