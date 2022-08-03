@@ -80,7 +80,7 @@ class ViolationTestResources(
 					Regex.escapeReplacement(rootProject.toURI().toString().removeSuffix("/")) + "$1"
 				)
 				// The XSL transformation will produce system-specific separators
-				// (on CI/Unix this is different than the captured Windows line endings).
+				// (on CI/Unix this is different from the captured Windows line endings).
 				.replace("\r\n", System.lineSeparator())
 	}
 
