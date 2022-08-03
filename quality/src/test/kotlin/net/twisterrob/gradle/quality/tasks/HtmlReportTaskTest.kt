@@ -20,8 +20,10 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTimeoutPreemptively
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInfo
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.function.ThrowingSupplier
+import java.io.File
 import java.time.Duration.ofMinutes
 
 /**
@@ -345,7 +347,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		//assertEquals(count, """<div class="violation"""".toRegex().findAll(violationsReport).count())
 	}
 
-	@Test fun `runs on multiple reports`() {
+	@Test fun `runs on multiple reports`(test: TestInfo) {
 		val violations = ViolationTestResources(gradle.root)
 		val checkstyle = CheckstyleTestResources()
 		val pmd = PmdTestResources { gradle.gradleVersion }
@@ -382,19 +384,30 @@ class HtmlReportTaskTest : BaseIntgTest() {
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
 		assertThat(gradle.violationsReport("xsl"), anExistingFile())
-		assertThat(gradle.violationsReport("xsl"), aFileWithSize(greaterThan(0)))
 		assertThat(gradle.violationsReport("xml"), anExistingFile())
+		assertThat(gradle.violationsReport("html"), anExistingFile())
+		exposeViolationsInReport(test)
+		assertThat(gradle.violationsReport("xsl"), aFileWithSize(greaterThan(0)))
 		assertEquals(
 			violations.everything.violationsXml,
 			gradle.violationsReport("xml").readText(),
 			gradle.violationsReport("xml").absolutePath
 		)
-		assertThat(gradle.violationsReport("html"), anExistingFile())
 		assertEquals(
 			violations.everything.violationsHtml,
 			gradle.violationsReport("html").readText(),
 			gradle.violationsReport("html").absolutePath
 		)
+	}
+
+	private fun exposeViolationsInReport(test: TestInfo) {
+		listOf(
+			gradle.violationsReport("xsl"),
+			gradle.violationsReport("xml"),
+			gradle.violationsReport("html")
+		).forEach { file ->
+			file.copyTo(File("build/reports/tests/test/outputs/${test.testName}/${file.name}"))
+		}
 	}
 
 	companion object {
@@ -411,3 +424,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			""".trimIndent()
 	}
 }
+
+val TestInfo.testName: String
+	get() = testClass.map { it.name }.orElse("") + "." + testMethod.map { it.name }.orElse("")
