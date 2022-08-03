@@ -54,8 +54,9 @@ class ViolationTestResources(
 					it.value.replace("\\", File.separator)
 				}
 				// The XSL transformation will produce system-specific separators
-				// (on CI/Unix this is different than the captured Windows line endings).
+				// (on CI/Unix this is different from the captured Windows line endings).
 				.replace("\r\n", System.lineSeparator())
+				.replace("&#xa;", "\r")
 
 		/**
 		 * @warning DO NOT EDIT (https://youtrack.jetbrains.com/issue/IDEA-171699)
@@ -77,12 +78,19 @@ class ViolationTestResources(
 				// <script>render.markdown(`...\`...\`...`)</script>
 				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\.+)+)(?=\\`)""".toRegex()) {
 					val group1 = it.groups[1]!!.value
-					rootProject.absolutePath.replace("\\", "\\\\") + group1.replace("\\", File.separator)
+					rootProject.absolutePath.replace("\\", "\\\\") +
+							group1.replace("\\\\", File.separator.replace("\\", "\\\\"))
 				}
-				// <a class="file" href="file:/..."
+				// <a class="file" href="file:/...">src\main\<b>
 				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/.+)+)(?=")""".toRegex()) {
 					val group1 = it.groups[1]!!.value
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
+				}
+				// <a class="file" href="file:/...">...<b>
+				.replace("""(a class="file" href="file:/.+">)((?:.+\\)+)(?=<b>)""".toRegex()) {
+					val group1 = it.groups[1]!!.value
+					val group2 = it.groups[2]!!.value
+					group1 + group2.replace("\\", File.separator)
 				}
 				// The XSL transformation will produce system-specific separators
 				// (on CI/Unix this is different from the captured Windows line endings).
