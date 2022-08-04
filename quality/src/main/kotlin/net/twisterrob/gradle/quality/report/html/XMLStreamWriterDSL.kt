@@ -37,7 +37,9 @@ fun Writer.xmlWriter(): XMLStreamWriter =
 			 */
 			safeSetProperty("com.ctc.wstx.outputValidateContent", false)
 		}
+		.also { println("XMLAPI::xmlWriter.factory = ${it}") }
 		.createXMLStreamWriter(this)
+		.also { println("XMLAPI::xmlWriter() = ${it}") }
 
 private fun XMLOutputFactory.safeSetProperty(name: String, value: Any?) {
 	if (this.isPropertySupported(name)) {

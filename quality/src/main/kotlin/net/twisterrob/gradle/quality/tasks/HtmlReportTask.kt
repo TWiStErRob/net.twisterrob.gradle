@@ -92,7 +92,9 @@ open class HtmlReportTask : BaseViolationsTask() {
 		try {
 			TransformerFactory
 				.newInstance()
+				.also { println("XMLAPI::transform.factory: ${it}") }
 				.newTransformer(StreamSource(xslOutputFile.reader()))
+				.also { println("XMLAPI::transform.transformer: ${it}") }
 				.transform(StreamSource(xmlFile.reader()), StreamResult(htmlFile))
 			println("Wrote HTML report to ${SdkUtils.fileToUrlString(htmlFile.absoluteFile)}")
 			val code = Class.forName("com.ctc.wstx.sw.BufferingXmlWriter").protectionDomain.codeSource.location
