@@ -34,23 +34,23 @@ class ViolationTestResources(
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <location file="..."
-				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit12252005098066695430((?:\\.+)+)(?=")""".toRegex()) {
+				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit12252005098066695430((?:\\[^"]+)+)(?=")""".toRegex()) {
 					val group1 = it.groups[1]!!.value
 					rootProject.absolutePath + group1.replace("\\", File.separator)
 				}
 				// <location fileAbsoluteAsUrl="..."
-				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/.+)+)(?=")""".toRegex()) {
+				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/[^"]+)+)(?=")""".toRegex()) {
 					val group1 = it.groups[1]!!.value
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
 				// <violation[details/@rule="IconMissingDensityFolder"]/description
-				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\.+)+)(?=\\`)""".toRegex()) {
+				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\[^`]+)+)(?=\\`)""".toRegex()) {
 					val group1 = it.groups[1]!!.value
 					rootProject.absolutePath.replace("\\", "\\\\") + group1.replace("\\", File.separator)
 				}
 				// <location pathRelativeToProject="...\"
 				// <location pathRelativeToModule="...\"
-				.replace("""(?<=(pathRelativeToProject|pathRelativeToModule)=")(?:.+\\)+(?=")""".toRegex()) {
+				.replace("""(?<=(pathRelativeToProject|pathRelativeToModule)=")(?:[^"]+\\)+(?=")""".toRegex()) {
 					it.value.replace("\\", File.separator)
 				}
 				// The XSL transformation will produce system-specific separators
@@ -76,18 +76,18 @@ class ViolationTestResources(
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <script>render.markdown(`...\`...\`...`)</script>
-				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\.+)+)(?=\\`)""".toRegex()) {
+				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\[^`]+)+)(?=\\`)""".toRegex()) {
 					val group1 = it.groups[1]!!.value
 					rootProject.absolutePath.replace("\\", "\\\\") +
 							group1.replace("\\\\", File.separator.replace("\\", "\\\\"))
 				}
 				// <a class="file" href="file:/...">src\main\<b>
-				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/.+)+)(?=")""".toRegex()) {
+				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/[^"]+)+)(?=")""".toRegex()) {
 					val group1 = it.groups[1]!!.value
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
 				// <a class="file" href="file:/...">...<b>
-				.replace("""(a class="file" href="file:/.+">)((?:.+\\)+)(?=<b>)""".toRegex()) {
+				.replace("""(a class="file" href="file:/.+">)((?:[^"]+\\)+)(?=<b>)""".toRegex()) {
 					val group1 = it.groups[1]!!.value
 					val group2 = it.groups[2]!!.value
 					group1 + group2.replace("\\", File.separator)
