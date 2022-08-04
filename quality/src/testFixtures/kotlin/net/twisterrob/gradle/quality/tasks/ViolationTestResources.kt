@@ -57,7 +57,16 @@ class ViolationTestResources(
 				// The XSL transformation will produce system-specific separators
 				// (on CI/Unix this is different from the captured Windows line endings).
 				.replace("\r\n", System.lineSeparator())
-				.replace("&#xa;", "\r")
+				// Prepare the expected XML to match behavior of executing environment.
+				.run {
+					if (System.lineSeparator() == "\n") {
+						// On the Unix CI the XML transformation outputs &#xa; instead of new line character.
+						this.replace("&#xa;", "\n")
+					} else {
+						// On local Windows this seems to work fine as is.
+						this
+					}
+				}
 
 		/**
 		 * @warning DO NOT EDIT (https://youtrack.jetbrains.com/issue/IDEA-171699)
