@@ -7,6 +7,12 @@ import kotlin.test.assertEquals
 
 class ViolationsRendererTest {
 
+	@Test fun `xmlWriter produces a supported writer for test`() {
+		val writer = StringWriter().xmlWriter()
+
+		assertEquals("com.ctc.wstx.sw.SimpleNsStreamWriter", writer::class.qualifiedName)
+	}
+
 	@Test fun `renderXml writes preamble`() {
 		val out = StringWriter()
 		out.xmlWriter().use { renderXml(it, emptyMap(), "", "some/path/to.xsl") }
