@@ -9,24 +9,32 @@ import javax.xml.stream.XMLStreamWriter
 fun Writer.xmlWriter(): XMLStreamWriter =
 	XMLOutputFactory
 		.newInstance()
-		.apply {
+		.apply @Suppress("KDocUnresolvedReference") {
 			// AGP 7.1.1 pulls in Dokka which pulls in woodstox, so let's configure it to match test style.
 			// https://github.com/FasterXML/woodstox#configuration
-			// WstxOutputProperties.P_USE_DOUBLE_QUOTES_IN_XML_DECL
-			// Enable to consistently use double quotes for all attributes.
-			// Discovered via ViolationsRendererTest.
+			/**
+			 * Enable to consistently use double quotes for all attributes.
+			 * @see com.ctc.wstx.api.WstxOutputProperties.P_USE_DOUBLE_QUOTES_IN_XML_DECL
+			 * @since Discovered via ViolationsRendererTest.
+			 */
 			safeSetProperty("com.ctc.wstx.useDoubleQuotesInXmlDecl", true)
-			// WstxOutputProperties.P_ADD_SPACE_AFTER_EMPTY_ELEM
-			// Enable to make the output nicer looking.
-			// Discovered via ViolationsRendererTest.
+			/**
+			 * Enable to make the output nicer looking.
+			 * @see com.ctc.wstx.api.WstxOutputProperties.P_ADD_SPACE_AFTER_EMPTY_ELEM
+			 * @since Discovered via ViolationsRendererTest.
+			 */
 			safeSetProperty("com.ctc.wstx.addSpaceAfterEmptyElem", true)
-			// org.codehaus.stax2.XMLOutputFactory2.P_AUTOMATIC_EMPTY_ELEMENTS
-			// Disable to do writeStartElement/writeEndElement as called, no implicit writeEmptyElement.
-			// Discovered via ViolationsRendererTest.
+			/**
+			 * Disable to do writeStartElement/writeEndElement as called, no implicit writeEmptyElement.
+			 * @see org.codehaus.stax2.XMLOutputFactory2.P_AUTOMATIC_EMPTY_ELEMENTS
+			 * @since Discovered via ViolationsRendererTest.
+			 */
 			safeSetProperty("org.codehaus.stax2.automaticEmptyElements", false)
-			// WstxOutputProperties.P_OUTPUT_VALIDATE_CONTENT
-			// Disable to allow writing hand-split <![CDATA[ ... ]]> blocks. See [escapeForCData].
-			// Discovered via HtmlReportTaskTest.
+			/**
+			 * Disable to allow writing hand-split <![CDATA[ ... ]]> blocks. See [escapeForCData].
+			 * @see com.ctc.wstx.api.WstxOutputProperties.P_OUTPUT_VALIDATE_CONTENT
+			 * @since Discovered via HtmlReportTaskTest.
+			 */
 			safeSetProperty("com.ctc.wstx.outputValidateContent", false)
 		}
 		.createXMLStreamWriter(this)
