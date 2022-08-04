@@ -95,6 +95,20 @@ open class HtmlReportTask : BaseViolationsTask() {
 				.newTransformer(StreamSource(xslOutputFile.reader()))
 				.transform(StreamSource(xmlFile.reader()), StreamResult(htmlFile))
 			println("Wrote HTML report to ${SdkUtils.fileToUrlString(htmlFile.absoluteFile)}")
+			val code = Class.forName("com.ctc.wstx.sw.BufferingXmlWriter").protectionDomain.codeSource.location
+			xmlFile.parentFile.resolve("${xmlFile.nameWithoutExtension}.txt1").writeText(code.toString())
+			xmlFile.parentFile.resolve("${xmlFile.nameWithoutExtension}.jar1").outputStream().use { output ->
+				code.openStream().use { input ->
+					input.copyTo(output)
+				}
+			}
+			val code2 = Class.forName("org.codehaus.stax2.XMLOutputFactory2").protectionDomain.codeSource.location
+			xmlFile.parentFile.resolve("${xmlFile.nameWithoutExtension}.txt2").writeText(code2.toString())
+			xmlFile.parentFile.resolve("${xmlFile.nameWithoutExtension}.jar2").outputStream().use { output ->
+				code2.openStream().use { input ->
+					input.copyTo(output)
+				}
+			}
 		} catch (ex: Throwable) {
 			throw GradleException("Cannot transform ${xmlFile}\nto ${htmlFile}\nusing ${xslOutputFile}", ex)
 		}
