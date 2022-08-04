@@ -44,9 +44,10 @@ class ViolationTestResources(
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
 				// <violation[details/@rule="IconMissingDensityFolder"]/description
-				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\[^`]+)+)(?=\\`)""".toRegex()) {
-					val group1 = it.groups[1]!!.value
-					rootProject.absolutePath.replace("\\", "\\\\") + group1.replace("\\", File.separator)
+				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430""".toRegex()) {
+					// Not replacing the rest of the path with File.separator, because this is just text,
+					// but the rootDir is dynamic in the source lint report in test resources.
+					rootProject.absolutePath.replace("\\", "\\\\")
 				}
 				// <location pathRelativeToProject="...\"
 				// <location pathRelativeToModule="...\"
@@ -76,10 +77,10 @@ class ViolationTestResources(
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <script>render.markdown(`...\`...\`...`)</script>
-				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430((?:\\\\[^`]+)+)(?=\\`)""".toRegex()) {
-					val group1 = it.groups[1]!!.value
-					rootProject.absolutePath.replace("\\", "\\\\") +
-							group1.replace("\\\\", File.separator.replace("\\", "\\\\"))
+				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430""".toRegex()) {
+					// Not replacing the rest of the path with File.separator, because this is just text,
+					// but the rootDir is dynamic in the source lint report in test resources.
+					rootProject.absolutePath.replace("\\", "\\\\")
 				}
 				// <a class="file" href="file:/...">src\main\<b>
 				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/[^"]+)+)(?=")""".toRegex()) {
