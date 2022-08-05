@@ -8,6 +8,18 @@ class ViolationTestResources(
 
 	val everything: Everything get() = Everything()
 
+	/**
+	 * How to replace [violationsXml] and [violationsHtml]?
+	 *  1. Run the [net.twisterrob.gradle.quality.tasks.HtmlReportTaskTest.runs on multiple reports] test..
+	 *  1. Check the output in `:quality/build/reports/tests/test/outputs`.
+	 *  1. Overwrite the file in `src/test/resources`.
+	 *  1. Commit the change externally via git command line.
+	 *    * See [Keep different line separators in the file](https://youtrack.jetbrains.com/issue/IDEA-171699)
+	 *    * See [Committing a mixed-EOL will convert all the EOLs](https://youtrack.jetbrains.com/issue/IDEA-79736)
+	 *  1. Replace the project name (junit...) in this file with the new name.
+	 *  1. Run the test again to validate.
+	 *  1. Amend the commit to include changes in this file.
+	 */
 	inner class Everything {
 		val checkstyleReport: String
 			get() = read("ViolationTestResources/everything/checkstyle-multiple.xml")
@@ -24,27 +36,28 @@ class ViolationTestResources(
 		/**
 		 * @warning DO NOT EDIT (https://youtrack.jetbrains.com/issue/IDEA-171699)
 		 * NOR COMMIT THIS FILE IN IDEA (https://youtrack.jetbrains.com/issue/IDEA-79736)
+		 * @see Everything for how to update this.
 		 */
 		@Suppress("MaxLineLength")
 		val violationsXml: String
 			get() = read("ViolationTestResources/everything/violations.xml")
 				// <violations project="..."
 				.replace(
-					"""(?<=project=")junit12252005098066695430(?=")""".toRegex(),
+					"""(?<=project=")junit10604310516655983690(?=")""".toRegex(),
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <location file="..."
-				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit12252005098066695430((?:\\[^"]+)+)(?=")""".toRegex()) {
+				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit10604310516655983690((?:\\[^"]+)+)(?=")""".toRegex()) {
 					val group1 = it.groups[1]!!.value
 					rootProject.absolutePath + group1.replace("\\", File.separator)
 				}
 				// <location fileAbsoluteAsUrl="..."
-				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/[^"]+)+)(?=")""".toRegex()) {
+				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690((?:/[^"]+)+)(?=")""".toRegex()) {
 					val group1 = it.groups[1]!!.value
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
 				// <violation[details/@rule="IconMissingDensityFolder"]/description
-				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430""".toRegex()) {
+				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit10604310516655983690""".toRegex()) {
 					// Not replacing the rest of the path with File.separator, because this is just text,
 					// but the rootDir is dynamic in the source lint report in test resources.
 					rootProject.absolutePath.replace("\\", "\\\\")
@@ -71,28 +84,29 @@ class ViolationTestResources(
 		/**
 		 * @warning DO NOT EDIT (https://youtrack.jetbrains.com/issue/IDEA-171699)
 		 * NOR COMMIT THIS FILE IN IDEA (https://youtrack.jetbrains.com/issue/IDEA-79736)
+		 * @see Everything for how to update this.
 		 */
 		@Suppress("MaxLineLength")
 		val violationsHtml: String
 			get() = read("ViolationTestResources/everything/violations.html")
 				// <title>...
 				.replace(
-					"""(?<=<title>)junit12252005098066695430""".toRegex(),
+					"""(?<=<title>)junit10604310516655983690""".toRegex(),
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <h1 id="top">Violations report for ...</h1>
 				.replace(
-					"""junit12252005098066695430(?=</h1>)""".toRegex(),
+					"""junit10604310516655983690(?=</h1>)""".toRegex(),
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <script>render.markdown(`...\`...\`...`)</script>
-				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit12252005098066695430""".toRegex()) {
+				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit10604310516655983690""".toRegex()) {
 					// Not replacing the rest of the path with File.separator, because this is just text,
 					// but the rootDir is dynamic in the source lint report in test resources.
 					rootProject.absolutePath.replace("\\", "\\\\")
 				}
 				// <a class="file" href="file:/...">src\main\<b>
-				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit12252005098066695430((?:/[^"]+)+)(?=")""".toRegex()) {
+				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690((?:/[^"]+)+)(?=")""".toRegex()) {
 					val group1 = it.groups[1]!!.value
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
