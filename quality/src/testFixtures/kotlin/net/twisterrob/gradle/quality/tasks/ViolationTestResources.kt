@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality.tasks
 
 import java.io.File
+import java.lang.management.ManagementFactory
 
 class ViolationTestResources(
 	private val rootProject: File
@@ -115,6 +116,21 @@ class ViolationTestResources(
 					val group1 = it.groups[1]!!.value
 					val group2 = it.groups[2]!!.value
 					group1 + group2.replace("\\", File.separator)
+				}
+				// The XSL transformation on Java 8 doesn't acknowledge the indent="true" attribute,
+				// so we need to clean up the whitespace to match it.
+				.run {
+					if (ManagementFactory.getRuntimeMXBean().specVersion == "1.8") {
+						this
+							.replace("""(?m)^ +(?=\t*)""".toRegex(), "")
+							.replace("""(?<=\))\r\n\t\t\t\r\n(?=</li>)""".toRegex(), "\r\n\t\t\t")
+							.replace(
+								"""(?<=<div class="violation" xml:space="preserve">)\r\n\t\t\t(?=<span class="title")""".toRegex(),
+								"\r\n\t\t\t\r\n"
+							)
+					} else {
+						this
+					}
 				}
 				// The XSL transformation will produce system-specific separators
 				// (on CI/Unix this is different from the captured Windows line endings).
