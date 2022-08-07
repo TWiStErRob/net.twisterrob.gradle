@@ -406,10 +406,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			gradle.violationsReport("xsl"),
 			gradle.violationsReport("xml"),
 			gradle.violationsReport("html"),
-			gradle.violationsReport("txt1"),
-			gradle.violationsReport("jar1"),
-			gradle.violationsReport("txt2"),
-			gradle.violationsReport("jar2"),
 		).forEach { file ->
 			file.copyTo(baseDir.resolve(file.name), overwrite = true)
 		}
