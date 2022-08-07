@@ -51,9 +51,20 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 	if (defaultImpl.isClassLoadable()) {
 		// return XMLOutputFactory.newFactory(defaultImpl, null as ClassLoader?) is @since Java 6,
 		// BUT see build.gradle.kts too.
-		return XMLOutputFactory::class.staticFunctions
-			.first { it.name == "newFactory" && it.parameters.size == 2 }
-			.call(defaultImpl, null) as XMLOutputFactory
+		val newFactory = XMLOutputFactory::class.staticFunctions
+			.firstOrNull { it.name == "newFactory" && it.parameters.size == 2 }
+		if (newFactory != null) {
+			/**
+			 * This is very silly, instead of providing the class name directly, we have to provide a System property.
+			 */
+			val factoryId = ::bestXMLOutputFactory.name + ".temporary.xml.output.factory"
+			System.setProperty(factoryId, defaultImpl)
+			try {
+				return newFactory.call(factoryId, null) as XMLOutputFactory
+			} finally {
+				System.clearProperty(factoryId)
+			}
+		}
 	}
 	// Useful link: https://stackoverflow.com/questions/11314604/how-to-set-saxon-as-the-xslt-processor-in-java
 	return XMLOutputFactory.newInstance()
@@ -87,7 +98,6 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 		}
 }
 
-
 /**
  * We're aiming to get the default Java writer:
  * [com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl]
@@ -100,7 +110,7 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
  *  * Give up, and use whatever is available.
  */
 internal fun bestXMLTransformerFactory(): TransformerFactory {
-	// >= 9, because running Java 7 is simply not supported for any Gradle / AGP combination.
+	// >= Java 9, because running Java 7 is simply not supported for any Gradle / AGP combination.
 	if (ManagementFactory.getRuntimeMXBean().specVersion != "1.8") {
 		// return TransformerFactory.newDefaultInstance() // which is @since Java 9.
 		return TransformerFactory::class.staticFunctions
