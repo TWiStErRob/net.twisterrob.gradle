@@ -20,6 +20,7 @@ class ViolationTestResources(
 	 *  1. Replace the project name (junit...) in this file with the new name.
 	 *  1. Run the test again to validate.
 	 *  1. Amend the commit to include changes in this file.
+	 *  1. Run the test with Java 8 and Java 11 set in `Settings | Build, Execution, Deployment | Build Tools | Gradle`.
 	 */
 	inner class Everything {
 		val checkstyleReport: String
@@ -138,6 +139,8 @@ class ViolationTestResources(
 				}
 				// The XSL transformation will produce system-specific separators
 				// (on CI/Unix this is different from the captured Windows line endings).
+				// Note: it is convenient that the capture was done on Windows, because it gives an easy target for replacement.
+				// If it was captured on Unix, then the replacement would be more complex.
 				.replace("\r\n", System.lineSeparator())
 	}
 

@@ -6,6 +6,7 @@ import javax.xml.transform.TransformerFactory
 import kotlin.reflect.full.declaredMembers
 import kotlin.reflect.full.staticFunctions
 import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.jvm.javaType
 
 /**
  * We're aiming to get the default Java writer:
@@ -14,7 +15,7 @@ import kotlin.reflect.jvm.isAccessible
  * but without hardcoding it.
  *
  * Strategy:
- *  * Call newDefaultFactory whenever available.
+ *  * Call [XMLOutputFactory.newDefaultFactory] whenever available.
  *  * If it doesn't exist, but the class has a declared default implementation, use that.
  *  * Fall back to hardcoding, which might fail anyway if the default is not there.
  *  * Give up, and use whatever is available.
@@ -28,14 +29,6 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 			.call() as XMLOutputFactory
 	}
 
-	fun String.isClassLoadable(): Boolean =
-		try {
-			Class.forName(this)
-			true
-		} catch (e: ClassNotFoundException) {
-			false
-		}
-
 	val defaultImpl =
 		XMLOutputFactory::class.declaredMembers
 			.singleOrNull { it.name == "DEFAULIMPL" }
@@ -44,12 +37,28 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 			?: "com.sun.xml.internal.stream.XMLOutputFactoryImpl"
 	if (defaultImpl.isClassLoadable()) {
 		// return XMLOutputFactory.newFactory(defaultImpl, null as ClassLoader?) is @since Java 6,
-		// BUT see build.gradle.kts too.
+		// BUT it cannot be compiled because of an old xml-apis:xml-apis dependency.
+		// +--- com.android.tools.build:gradle:7.2.1
+		// |    +--- com.android.tools:sdk-common:30.2.1
+		// |    |    \--- xerces:xercesImpl:2.12.0
+		// |    |         \--- xml-apis:xml-apis:1.4.01
+		// It has a very old incompatible version of javax.xml.stream.XMLOutputFactory
+		// which doesn't have a "newFactory(String, ClassLoader)" method.
+		// I tried to exclude with this but still didn't compile:
+		// configurations.compileOnly { exclude("xml-apis", "xml-apis") }
+		// So stuck with reflection.
 		val newFactory = XMLOutputFactory::class.staticFunctions
-			.firstOrNull { it.name == "newFactory" && it.parameters.size == 2 }
+			.firstOrNull {
+				it.name == "newFactory"
+						&& it.parameters.size == 2
+						&& it.parameters[0].type.javaType == String::class.java
+						&& it.parameters[1].type.javaType == ClassLoader::class.java
+			}
 		if (newFactory != null) {
 			/**
-			 * This is very silly, instead of providing the class name directly, we have to provide a System property.
+			 * This is a very silly (documented) API,
+			 * instead of providing the class name directly (like in other APIs in the same package),
+			 * we have to provide a System property.
 			 */
 			val factoryId = ::bestXMLOutputFactory.name + ".temporary.xml.output.factory"
 			System.setProperty(factoryId, defaultImpl)
@@ -97,6 +106,7 @@ private fun XMLOutputFactory.safeSetProperty(name: String, value: Any?) {
 		this.setProperty(name, value)
 	}
 }
+
 /**
  * We're aiming to get the default Java writer:
  * [com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl]
@@ -113,17 +123,9 @@ internal fun bestXMLTransformerFactory(): TransformerFactory {
 	if (ManagementFactory.getRuntimeMXBean().specVersion != "1.8") {
 		// return TransformerFactory.newDefaultInstance() // which is @since Java 9.
 		return TransformerFactory::class.staticFunctions
-			.first { it.name == "newDefaultInstance" && it.parameters.isEmpty() }
+			.single { it.name == "newDefaultInstance" && it.parameters.isEmpty() }
 			.call() as TransformerFactory
 	}
-
-	fun String.isClassLoadable(): Boolean =
-		try {
-			Class.forName(this)
-			true
-		} catch (e: ClassNotFoundException) {
-			false
-		}
 
 	val defaultImpl = "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl"
 	if (defaultImpl.isClassLoadable()) {
@@ -132,3 +134,11 @@ internal fun bestXMLTransformerFactory(): TransformerFactory {
 	// Useful link: https://stackoverflow.com/questions/11314604/how-to-set-saxon-as-the-xslt-processor-in-java
 	return TransformerFactory.newInstance()
 }
+
+private fun String.isClassLoadable(): Boolean =
+	try {
+		Class.forName(this)
+		/*@return*/ true
+	} catch (e: ClassNotFoundException) {
+		/*@return*/ false
+	}

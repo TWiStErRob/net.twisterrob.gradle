@@ -14,6 +14,9 @@ import org.gradle.util.GradleVersion
  * ```
  */
 class PmdTestResources(
+	/**
+	 * Reasons for conditionals, see embedded PMD versions in [net.twisterrob.gradle.quality.tasks.VersionsTaskTest].
+	 */
 	private val gradleVersion: () -> GradleVersion
 ) {
 
@@ -59,9 +62,6 @@ class PmdTestResources(
 		val message2: Regex
 			get() =
 				when {
-					gradleVersion() < GradleVersion.version("5.6.0") -> {
-						Regex(""".*src.main.java.pmd.PrintStack\.java:8:\tAvoid printStackTrace\(\); use a logger call instead.""")
-					}
 					gradleVersion() < GradleVersion.version("7.0.0") -> {
 						Regex(""".*src.main.java.pmd.PrintStack\.java:8:\tAvoid printStackTrace\(\); use a logger call instead.""")
 					}

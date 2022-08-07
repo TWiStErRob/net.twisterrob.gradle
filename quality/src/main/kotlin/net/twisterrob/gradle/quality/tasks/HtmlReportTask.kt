@@ -93,9 +93,7 @@ open class HtmlReportTask : BaseViolationsTask() {
 			// We're expecting to get [com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl]
 			// Creating [com.sun.org.apache.xalan.internal.xsltc.trax.TransformerImpl].
 			bestXMLTransformerFactory()
-				.also { println("XMLAPI::transform.factory: ${it}") }
 				.newTransformer(StreamSource(xslOutputFile.reader()))
-				.also { println("XMLAPI::transform.transformer: ${it}") }
 				.transform(StreamSource(xmlFile.reader()), StreamResult(htmlFile))
 			println("Wrote HTML report to ${SdkUtils.fileToUrlString(htmlFile.absoluteFile)}")
 		} catch (ex: Throwable) {

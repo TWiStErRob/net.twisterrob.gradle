@@ -8,9 +8,7 @@ import javax.xml.stream.XMLStreamWriter
 
 fun Writer.xmlWriter(): XMLStreamWriter =
 	bestXMLOutputFactory()
-		.also { println("XMLAPI::xmlWriter.factory = ${it}") }
 		.createXMLStreamWriter(this)
-		.also { println("XMLAPI::xmlWriter() = ${it}") }
 
 fun XMLStreamWriter.use(block: (XMLStreamWriter) -> Unit) {
 	AutoCloseable {

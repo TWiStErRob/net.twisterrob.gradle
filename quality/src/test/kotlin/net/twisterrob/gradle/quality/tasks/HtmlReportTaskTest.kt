@@ -9,6 +9,7 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.projectFile
 import net.twisterrob.gradle.test.root
 import net.twisterrob.gradle.test.runBuild
+import net.twisterrob.test.testName
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
@@ -400,8 +401,8 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		)
 	}
 
-	private fun exposeViolationsInReport(test: TestInfo,everything: ViolationTestResources.Everything) {
-		val baseDir  = File("build/reports/tests/test/outputs").resolve(test.testName)
+	private fun exposeViolationsInReport(test: TestInfo, resources: ViolationTestResources.Everything) {
+		val baseDir = File("build/reports/tests/test/outputs").resolve(test.testName)
 		listOf(
 			gradle.violationsReport("xsl"),
 			gradle.violationsReport("xml"),
@@ -409,8 +410,8 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		).forEach { file ->
 			file.copyTo(baseDir.resolve(file.name), overwrite = true)
 		}
-		baseDir.resolve("violations-expected.xml").writeText(everything.violationsXml)
-		baseDir.resolve("violations-expected.html").writeText(everything.violationsHtml)
+		baseDir.resolve("violations-expected.xml").writeText(resources.violationsXml)
+		baseDir.resolve("violations-expected.html").writeText(resources.violationsHtml)
 	}
 
 	companion object {
@@ -427,6 +428,3 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			""".trimIndent()
 	}
 }
-
-val TestInfo.testName: String
-	get() = testClass.map { it.name }.orElse("") + "." + testMethod.map { it.name }.orElse("")
