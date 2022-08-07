@@ -29,7 +29,18 @@ dependencies {
 	implementation(projects.compat.agp)
 
 	compileOnly(libs.annotations.jetbrains)
-	compileOnly(libs.android.gradle)
+	compileOnly(libs.android.gradle) {
+		configurations.compileOnly {
+			// +--- com.android.tools.build:gradle:7.2.1
+			//|    +--- com.android.tools:sdk-common:30.2.1
+			//|    |    \--- xerces:xercesImpl:2.12.0
+			//|    |         \--- xml-apis:xml-apis:1.4.01
+			// Without this exclude, it brings in an incompatible version of javax.xml.stream.XMLOutputFactory
+			// which doesn't have a "newFactory(String, ClassLoader)" method.
+			// See net.twisterrob.gradle.quality.report.html.XMLStreamWriterDSLKt.bestXMLOutputFactory.
+			exclude("xml-apis", "xml-apis") // 1.4.01
+		}
+	}
 	// Need com.android.utils.FileUtils for HtmlReportTask.
 	compileOnly(libs.android.tools.common)
 //	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")
