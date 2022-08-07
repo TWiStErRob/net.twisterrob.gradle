@@ -100,7 +100,11 @@ allprojects {
 				"net.twisterrob.gradle.runner.gradleVersion",
 				// for tests to decide dynamically
 				"net.twisterrob.test.android.pluginVersion",
-				"net.twisterrob.test.android.compileSdkVersion"
+				"net.twisterrob.test.android.compileSdkVersion",
+				// So that command line gradlew -P...=false works.
+				// Will override earlier jvmArgs, if both specified.
+				"net.twisterrob.gradle.runner.clearAfterSuccess",
+				"net.twisterrob.gradle.runner.clearAfterFailure",
 			)
 			val properties = propertyNamesToExposeToJUnitTests.keysToMap { project.findProperty(it) }
 			properties.forEach { (name, value) -> inputs.property(name, value) }
