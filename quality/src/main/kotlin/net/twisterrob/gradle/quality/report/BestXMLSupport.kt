@@ -7,12 +7,6 @@ import kotlin.reflect.full.declaredMembers
 import kotlin.reflect.full.staticFunctions
 import kotlin.reflect.jvm.isAccessible
 
-private fun XMLOutputFactory.safeSetProperty(name: String, value: Any?) {
-	if (this.isPropertySupported(name)) {
-		this.setProperty(name, value)
-	}
-}
-
 /**
  * We're aiming to get the default Java writer:
  * [com.sun.xml.internal.stream.XMLOutputFactoryImpl]
@@ -98,6 +92,11 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 		}
 }
 
+private fun XMLOutputFactory.safeSetProperty(name: String, value: Any?) {
+	if (this.isPropertySupported(name)) {
+		this.setProperty(name, value)
+	}
+}
 /**
  * We're aiming to get the default Java writer:
  * [com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl]
