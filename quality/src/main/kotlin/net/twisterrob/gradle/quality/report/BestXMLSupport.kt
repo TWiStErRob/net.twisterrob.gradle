@@ -5,7 +5,7 @@ import javax.xml.stream.XMLOutputFactory
 import javax.xml.transform.TransformerFactory
 import kotlin.reflect.full.declaredMembers
 import kotlin.reflect.full.staticFunctions
-
+import kotlin.reflect.jvm.isAccessible
 
 private fun XMLOutputFactory.safeSetProperty(name: String, value: Any?) {
 	if (this.isPropertySupported(name)) {
@@ -43,7 +43,10 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 		}
 
 	val defaultImpl =
-		XMLOutputFactory::class.declaredMembers.singleOrNull { it.name == "DEFAULIMPL" }?.call() as String?
+		XMLOutputFactory::class.declaredMembers
+			.singleOrNull { it.name == "DEFAULIMPL" }
+			?.apply { isAccessible = true }
+			?.call() as String?
 			?: "com.sun.xml.internal.stream.XMLOutputFactoryImpl"
 	if (defaultImpl.isClassLoadable()) {
 		// return XMLOutputFactory.newFactory(defaultImpl, null as ClassLoader?) is @since Java 6,
