@@ -222,7 +222,8 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 		getFile(*path).appendText(contents)
 	}
 
-	protected fun getFile(vararg path: String): File {
+	@Suppress("ReturnCount")
+	private fun getFile(vararg path: String): File {
 		if (path.size == 1 && path[0] == "build.gradle") {
 			return buildFile
 		}
@@ -236,7 +237,9 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 			}
 		}
 		val existing = temp.root.resolve(path.joinToString(File.separator))
-		if (existing.exists()) return existing
+		if (existing.exists()) {
+			return existing
+		}
 		return temp.newFile(path.joinToString(File.separator))
 	}
 

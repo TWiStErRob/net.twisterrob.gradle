@@ -46,11 +46,11 @@ fun _doNotNagAboutPattern(message: Regex) {
 	// and then further split (308086a) to org.gradle.internal.deprecation.DeprecationLogger#deprecatedFeatureHandler
 	// and then renamed (a75aedd) to #DEPRECATED_FEATURE_HANDLER.
 	val loggerField =
-		if (GradleVersion.version("6.2.0") < GradleVersion.current().baseVersion) {
+		if (GradleVersion.version("6.2.0") <= GradleVersion.current().baseVersion) {
 			Class.forName("org.gradle.internal.deprecation.DeprecationLogger")
 				.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
 				.apply { isAccessible = true }
-		} else if (GradleVersion.version("4.7.0") < GradleVersion.current().baseVersion) {
+		} else if (GradleVersion.version("4.7.0") <= GradleVersion.current().baseVersion) {
 			Class.forName("org.gradle.util.SingleMessageLogger")
 				.getDeclaredField("deprecatedFeatureHandler")
 				.apply { isAccessible = true }
@@ -97,6 +97,13 @@ val agpVersion: String = System.getProperty("net.twisterrob.test.android.pluginV
 doNotNagAbout(
 	"6.7.1",
 	"""^3\.5\.\d$""",
+	// There were about 33 failures of apply plugin: 'com.android.library' in various tests.
+	// at org.gradle.invocation.DefaultGradle.addBuildListener(DefaultGradle.java:422)
+	// at com.android.build.gradle.internal.BuildSessionImpl.initialize(BuildSessionImpl.java:156)
+	// at com.android.build.gradle.internal.PluginInitializer.initialize(PluginInitializer.java:88)
+	// at com.android.build.gradle.BasePlugin.basePluginApply(BasePlugin.java:236)
+	// at com.android.build.gradle.internal.crash.CrashReporting.runAction(crash_reporting.kt:27)
+	// at com.android.build.gradle.BasePlugin.apply(BasePlugin.java:119)
 	"The BuildListener.buildStarted(Gradle) method has been deprecated. This is scheduled to be removed in Gradle 7.0. Consult the upgrading guide for further information: https://docs.gradle.org/6.7.1/userguide/upgrading_version_5.html#apis_buildlistener_buildstarted_and_gradle_buildstarted_have_been_deprecated"
 )
 doNotNagAbout(
