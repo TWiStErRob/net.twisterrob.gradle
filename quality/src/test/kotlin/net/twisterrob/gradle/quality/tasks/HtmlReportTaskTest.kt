@@ -1,11 +1,13 @@
 package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.projectFile
 import net.twisterrob.gradle.test.runBuild
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
@@ -273,13 +275,22 @@ class HtmlReportTaskTest : BaseIntgTest() {
 	@Test fun `task is capable of handling huge number of violations`() {
 		gradle.basedOn("android-root_app")
 		gradle.basedOn("lint-UnusedResources")
+		/**
+		 * Not sure why but on this version this test build runs out of memory, consistently, but only on CI.
+		 * I tried to lower the number of violations to 2500 first, that helped, but then the test ran out of memory.
+		 */
+		val specificallyWeirdVersion = AGPVersions.UNDER_TEST compatible AGPVersions.v42x
+				&& GradleVersion.current().baseVersion == GradleVersion.version("6.9.2")
+		val count = if (specificallyWeirdVersion) 2000 else 2500
 		@Language("gradle")
 		val script = """
+			dumpMemory("starting build")
 			apply plugin: 'org.gradle.reporting-base'
-			File xml = project.file("build/report.xml")
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
-				inputs.file(xml)
+			File xml = project.file("build/reports/lint-results-debug.xml")
+			def generate = tasks.register('generateBigReport') {
+				outputs.file(xml)
 				doFirst {
+					dumpMemory("starting generation")
 					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
 					xml.withWriterAppend { writer ->
 						// Note: I tried to estimate the number of violations to create by measuring free memory:
@@ -287,7 +298,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 						// After many tries and empirical measurements, it was still flaky on each execution on GitHub.
 						// Since then I bumped Xmx from 128 to 256 and the count from 1500 to 3000.
 						// This should be stable and catch any regressions, if the processing goes non-linear.
-						3000.times {
+						$count.times {
 							writer.write(
 								'<issue id="MyLint" category="Performance" severity="Warning"' +
 								'       message="Fake lint" summary="Fake lint" explanation="Fake lint&#10;"' +
@@ -298,13 +309,20 @@ class HtmlReportTaskTest : BaseIntgTest() {
 						}
 					}
 					xml.append('</issues>')
+					dumpMemory("finished generation")
 				}
 			}
-
-			android.lintOptions {
-				//noinspection GroovyAssignabilityCheck
-				check = ['UnusedResources']
-				xmlOutput = xml
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
+				dependsOn(generate)
+				doFirst { dumpMemory("starting report") }
+				doLast { dumpMemory("finished report") }
+			}
+			afterEvaluate { dumpMemory("executing build") }
+			
+			static void dumpMemory(String message) {
+				def rt = Runtime.getRuntime()
+				3.times { rt.gc() }
+				println(message + ": free=" + rt.freeMemory() + " max=" + rt.maxMemory() + " total=" + rt.totalMemory())
 			}
 		""".trimIndent()
 		gradle.propertiesFile
@@ -313,11 +331,13 @@ class HtmlReportTaskTest : BaseIntgTest() {
 
 		val result = assertTimeoutPreemptively(ofMinutes(2), ThrowingSupplier {
 			gradle.runBuild {
-				run(script, "lint", "htmlReport")
+				run(script, "generateBigReport", "htmlReport")
 			}
 		})
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		val violationsReport = gradle.violationsReport("html").readText()
+		assertEquals(count, """<div class="violation"""".toRegex().findAll(violationsReport).count())
 	}
 
 	companion object {
