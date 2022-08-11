@@ -143,6 +143,10 @@ open class GradleRunnerRule : TestRule {
 			"""
 			${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
 			Java: ${java} from ${javaHome}.
+			Gradle properties:
+			```properties
+${propertiesFileContentForLogging().prependIndent("\t\t\t")}
+			```
 			Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
 			```gradle
 ${buildFile.readText().prependIndent("\t\t\t")}
@@ -152,6 +156,12 @@ ${buildFile.readText().prependIndent("\t\t\t")}
 		)
 		return runner.withArguments(*args)
 	}
+
+	private fun propertiesFileContentForLogging(): String =
+		if (propertiesFile.exists())
+			propertiesFile.readText()
+		else
+			"${propertiesFile.name} does not exist."
 
 	/**
 	 * This is a workaround because runner.withPluginClasspath() doesn't seem to work.

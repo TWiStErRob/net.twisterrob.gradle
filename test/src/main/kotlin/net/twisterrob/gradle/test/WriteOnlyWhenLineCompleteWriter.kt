@@ -11,15 +11,13 @@ import java.io.Writer
  *
  * @see org.gradle.api.internal.tasks.testing.logging.TestEventLogger.onOutput
  */
-internal class WriteOnlyWhenLineCompleteWriter(private val delegate: Writer) : Writer() {
-
-	companion object {
-		private const val MAX_LENGTH = 1 * 1024 * 1024
-	}
+internal class WriteOnlyWhenLineCompleteWriter(
+	private val delegate: Writer
+) : Writer() {
 
 	private val buf = StringWriter()
 
-	override fun write(cbuf: CharArray?, off: Int, len: Int) {
+	override fun write(cbuf: CharArray, off: Int, len: Int) {
 		buf.write(cbuf, off, len)
 		flush()
 	}
@@ -42,5 +40,9 @@ internal class WriteOnlyWhenLineCompleteWriter(private val delegate: Writer) : W
 		delegate.write(buf.toString())
 		delegate.flush()
 		buf.buffer.setLength(0) // reset buffer it was used up
+	}
+
+	companion object {
+		private const val MAX_LENGTH = 1 * 1024 * 1024
 	}
 }
