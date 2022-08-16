@@ -19,5 +19,5 @@ internal fun Any.setField(name: String, value: Any?) {
 	field.set(this, value)
 }
 
-internal inline fun <reified T> JFixture.build(): T =
-	this.create(T::class.java)
+internal inline fun <reified T> JFixture.build(block: T.() -> Unit = {}): T =
+	this.create(T::class.java).apply(block)

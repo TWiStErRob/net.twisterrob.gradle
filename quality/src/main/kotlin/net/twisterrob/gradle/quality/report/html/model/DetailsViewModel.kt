@@ -1,12 +1,14 @@
 package net.twisterrob.gradle.quality.report.html.model
 
 import net.twisterrob.gradle.quality.Violation
+import java.net.URI
 
 class DetailsViewModel(private val v: Violation) {
 	val rule: String get() = v.rule
 	val suppression: String? get() = SuppressionGenerator().getSuppression(v)
 	val category: String get() = v.category ?: "unknown"
 	val severity: String get() = v.severity.toString()
+	val documentation: URI? get() = DocumentationGenerator().getDocumentationUrl(v)
 	val messaging: MessagingViewModel by lazy { MessagingViewModel() }
 	val context: ContextViewModel by lazy { ContextViewModel.create(v) }
 
@@ -41,6 +43,8 @@ class DetailsViewModel(private val v: Violation) {
 					description = run {
 						lines
 							.drop(1) // already used 0 above
+							// Drop documentation line in favor of [../@documentation]. 
+							.filterNot { DocumentationGenerator.PMD_DOC_LINK_LINE.matches(it) }
 							.joinToString("\n")
 					}
 				}

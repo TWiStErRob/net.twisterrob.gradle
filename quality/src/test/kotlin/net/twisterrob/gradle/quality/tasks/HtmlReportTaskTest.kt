@@ -1,23 +1,31 @@
 package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.projectFile
+import net.twisterrob.gradle.test.root
 import net.twisterrob.gradle.test.runBuild
+import net.twisterrob.test.testName
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.not
+import org.hamcrest.io.FileMatchers.aFileWithSize
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTimeoutPreemptively
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInfo
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.function.ThrowingSupplier
+import java.io.File
 import java.time.Duration.ofMinutes
-import kotlin.test.assertEquals
 
 /**
  * @see HtmlReportTask
@@ -338,6 +346,72 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
 		//val violationsReport = gradle.violationsReport("html").readText()
 		//assertEquals(count, """<div class="violation"""".toRegex().findAll(violationsReport).count())
+	}
+
+	@Test fun `runs on multiple reports`(test: TestInfo) {
+		val violations = ViolationTestResources(gradle.root)
+		val checkstyle = CheckstyleTestResources()
+		val pmd = PmdTestResources { gradle.gradleVersion }
+		gradle.basedOn("android-root_app")
+		listOf(
+			"Autofill",
+			"IconMissingDensityFolder",
+			"UnusedIds",
+			"UnusedResources"
+		).forEach { check -> gradle.basedOn("lint-$check") }
+
+		checkstyle.multi.contents.forEach { (name, content) ->
+			gradle.file(content, "src", "main", "java", name)
+		}
+
+		gradle.file(pmd.simple.content1, "src", "main", "java", "WithoutPackage.java")
+		gradle.file(pmd.simple.content2, "src", "main", "java", "pmd", "PrintStack.java")
+
+		gradle.file(violations.everything.lintReport, "build", "reports", "lint-results-debug.xml")
+		gradle.file(violations.everything.checkstyleReport, "build", "reports", "checkstyle.xml")
+		gradle.file(violations.everything.pmdReport, "build", "reports", "pmd.xml")
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'org.gradle.reporting-base'
+			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.pmd'
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "htmlReport")
+		}
+
+		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		assertThat(gradle.violationsReport("xsl"), anExistingFile())
+		assertThat(gradle.violationsReport("xml"), anExistingFile())
+		assertThat(gradle.violationsReport("html"), anExistingFile())
+		exposeViolationsInReport(test, violations.everything)
+		assertThat(gradle.violationsReport("xsl"), aFileWithSize(greaterThan(0)))
+		assertEquals(
+			violations.everything.violationsXml,
+			gradle.violationsReport("xml").readText(),
+			gradle.violationsReport("xml").absolutePath
+		)
+		assertEquals(
+			violations.everything.violationsHtml,
+			gradle.violationsReport("html").readText(),
+			gradle.violationsReport("html").absolutePath
+		)
+	}
+
+	private fun exposeViolationsInReport(test: TestInfo, resources: ViolationTestResources.Everything) {
+		val baseDir = File("build/reports/tests/test/outputs").resolve(test.testName)
+		listOf(
+			gradle.violationsReport("xsl"),
+			gradle.violationsReport("xml"),
+			gradle.violationsReport("html"),
+		).forEach { file ->
+			file.copyTo(baseDir.resolve(file.name), overwrite = true)
+		}
+		baseDir.resolve("violations-expected.xml").writeText(resources.violationsXml)
+		baseDir.resolve("violations-expected.html").writeText(resources.violationsHtml)
 	}
 
 	companion object {

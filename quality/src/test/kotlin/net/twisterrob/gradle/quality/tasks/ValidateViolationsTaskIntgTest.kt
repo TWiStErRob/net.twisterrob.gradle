@@ -33,7 +33,7 @@ class ValidateViolationsTaskIntgTest : BaseIntgTest() {
 	@Test fun `fails when violations`() {
 		gradle.file(checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")
 		gradle.file(checkstyle.simple.config, *CONFIG_PATH_CS)
-		gradle.file(pmd.simple.content, *SOURCE_PATH, "Pmd.java")
+		gradle.file(pmd.simple.content1, *SOURCE_PATH, "Pmd.java")
 		gradle.file(pmd.simple.config, *CONFIG_PATH_PMD)
 
 		@Language("gradle")
