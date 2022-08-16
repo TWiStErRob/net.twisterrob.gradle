@@ -36,7 +36,10 @@
  2. Update `net.twisterrob.gradle.runner.gradleVersion` to the same as `gradle-wrapper.properties`.
  3. Review `VersionsTaskTest`
     * some tests like `(Gradle X latest)` might need updating.
- 4. Review this document if something was missing.
+ 4. Update CI.yml matrix and `publish-test-results` job
+    * Update all Gradle `\d\.x` versions to the latest stable.
+    * Keep all Gradle `\d\.\d\+` version on the latest patch.
+ 5. Review this document if something was missing.
 
 
 # How to upgrade other libraries?
