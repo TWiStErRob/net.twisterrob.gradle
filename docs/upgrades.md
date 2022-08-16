@@ -35,6 +35,7 @@
     * Test each with `gradlew build`.
  2. Update `net.twisterrob.gradle.runner.gradleVersion` to the same as `gradle-wrapper.properties`.
  3. Review `VersionsTaskTest`
+    * some tests like `(Gradle X latest)` might need updating.
  4. Review this document if something was missing.
 
 
