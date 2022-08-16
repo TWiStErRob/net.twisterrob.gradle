@@ -52,7 +52,7 @@ rootProject {
  * stack traces and warnings, which means that even with some warnings,
  * it's possible to use `org.gradle.warning.mode=fail`.
  */
-private fun _doNotNagAboutPattern(message: Regex) {
+/*private*/ fun _doNotNagAboutPattern(message: Regex) {
 	// "fail" was not a valid option for --warning-mode before Gradle 5.6.0.
 	// In Gradle 4.7.0 (c633542) org.gradle.util.SingleMessageLogger#deprecatedFeatureHandler came to be in a refactor.
 	// In Gradle 6.2.0 it was split (247fd32) to org.gradle.util.DeprecationLogger#deprecatedFeatureHandler
