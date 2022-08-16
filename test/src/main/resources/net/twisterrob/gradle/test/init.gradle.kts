@@ -1,9 +1,9 @@
 import org.gradle.util.GradleVersion
 
 /**
- * Surgically ignoring messages like this will prevent actual executions from triggering
- * stack traces and warnings, which means that even with some warnings,
- * it's possible to use org.gradle.warning.mode=fail.
+ * Overload for exact message matching.
+ *
+ * @see _doNotNagAboutPattern for more details
  */
 fun doNotNagAbout(gradle: String, agpRegex: String, message: String) {
 	if (GradleVersion.current().baseVersion == GradleVersion.version(gradle)) {
@@ -13,6 +13,14 @@ fun doNotNagAbout(gradle: String, agpRegex: String, message: String) {
 	}
 }
 
+/**
+ * Overload for more dynamic message matching.
+ *
+ * This method is named with a suffix of `Pattern` to make it easily available,
+ * because method references cannot pick up overloaded methods.
+ *
+ * @see _doNotNagAboutPattern for more details
+ */
 fun doNotNagAboutPattern(gradle: String, agpRegex: String, messageRegex: String) {
 	if (GradleVersion.current().baseVersion == GradleVersion.version(gradle)) {
 		if (Regex(agpRegex) matches agpVersion) {
@@ -39,7 +47,12 @@ rootProject {
 	extensions.extraProperties.set("doNotNagAboutPattern", ::doNotNagAboutPattern)
 }
 
-fun _doNotNagAboutPattern(message: Regex) {
+/**
+ * Surgically ignoring messages like this will prevent actual executions from triggering
+ * stack traces and warnings, which means that even with some warnings,
+ * it's possible to use `org.gradle.warning.mode=fail`.
+ */
+private fun _doNotNagAboutPattern(message: Regex) {
 	// "fail" was not a valid option for --warning-mode before Gradle 5.6.0.
 	// In Gradle 4.7.0 (c633542) org.gradle.util.SingleMessageLogger#deprecatedFeatureHandler came to be in a refactor.
 	// In Gradle 6.2.0 it was split (247fd32) to org.gradle.util.DeprecationLogger#deprecatedFeatureHandler
@@ -90,7 +103,7 @@ private class IgnoringSet(
 	}
 }
 
-val agpVersion: String = System.getProperty("net.twisterrob.test.android.pluginVersion")
+private val agpVersion: String = System.getProperty("net.twisterrob.test.android.pluginVersion")
 	?: error("Property 'net.twisterrob.test.android.pluginVersion' is not set.")
 // Sorted by (Gradle, AGP) below here.
 
