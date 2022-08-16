@@ -6,7 +6,7 @@ import org.gradle.util.GradleVersion
  * Usage:
  * ```
  * private lateinit var gradle: GradleRunnerRule
- * private val pmd = PmdTestResources { gradle.getGradleVersion() }
+ * private val pmd = PmdTestResources { gradle.gradleVersion }
  *
  * @Test fun test() {
  *     gradle.file(pmd.….config, "config", "pmd", "pmd.xml")
@@ -14,6 +14,9 @@ import org.gradle.util.GradleVersion
  * ```
  */
 class PmdTestResources(
+	/**
+	 * Reasons for conditionals, see embedded PMD versions in [net.twisterrob.gradle.quality.tasks.VersionsTaskTest].
+	 */
 	private val gradleVersion: () -> GradleVersion
 ) {
 
@@ -24,32 +27,46 @@ class PmdTestResources(
 			get() = read("empty/empty-pmd.xml")
 	}
 
-	val simple: SimpleFailure get() = SimpleFailure()
+	val simple: SimpleFailures get() = SimpleFailures()
 
-	inner class SimpleFailure {
+	inner class SimpleFailures {
 		val config: String
 			get() =
 				if (gradleVersion() < GradleVersion.version("5.0.0")) {
-					read("simple_failure/simple_old-pmd.xml")
+					read("simple_failures/simple_old-pmd.xml")
 				} else {
 					// Gradle 5+ has PMD 6.x embedded, so they emit a deprecation warning if the old config is used (#81).
-					read("simple_failure/simple-pmd.xml")
+					read("simple_failures/simple-pmd.xml")
 				}
 
-		val content: String
-			get() = read("simple_failure/WithoutPackage.java")
+		val content1: String
+			get() = read("simple_failures/WithoutPackage.java")
 
-		val message: Regex
+		val message1: Regex
 			get() =
 				when {
 					gradleVersion() < GradleVersion.version("5.6.0") -> {
-						Regex(""".*src.main.java.Pmd\.java:1:\tAll classes and interfaces must belong to a named package""")
+						Regex(""".*src.main.java.WithoutPackage\.java:1:\tAll classes and interfaces must belong to a named package""")
 					}
 					gradleVersion() < GradleVersion.version("7.0.0") -> {
-						Regex(""".*src.main.java.Pmd\.java:1:\tAll classes, interfaces, enums and annotations must belong to a named package""")
+						Regex(""".*src.main.java.WithoutPackage\.java:1:\tAll classes, interfaces, enums and annotations must belong to a named package""")
 					}
 					else -> {
-						Regex(""".*src.main.java.Pmd\.java:1:\tNoPackage:\tAll classes, interfaces, enums and annotations must belong to a named package""")
+						Regex(""".*src.main.java.WithoutPackage\.java:1:\tNoPackage:\tAll classes, interfaces, enums and annotations must belong to a named package""")
+					}
+				}
+
+		val content2: String
+			get() = read("simple_failures/PrintStack.java")
+
+		val message2: Regex
+			get() =
+				when {
+					gradleVersion() < GradleVersion.version("7.0.0") -> {
+						Regex(""".*src.main.java.pmd.PrintStack\.java:8:\tAvoid printStackTrace\(\); use a logger call instead.""")
+					}
+					else -> {
+						Regex(""".*src.main.java.pmd.PrintStack\.java:8:\tAvoidPrintStackTrace:\tAvoid printStackTrace\(\); use a logger call instead\.""")
 					}
 				}
 	}

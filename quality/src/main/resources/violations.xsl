@@ -160,25 +160,47 @@
 	</xsl:template>
 
 	<xsl:template match="violation">
-		<xsl:if test="details/@rule != concat(preceding-sibling::violation[1]/details/@rule, '')">
-			<!-- concat in test makes sure the first violation (which has no preceding nodes)
-				 is also `true` and not `no node` coerced to `false`) -->
+		<!-- concat makes sure the first violation (which has no preceding nodes)
+			 is also `true` and not `no node` coerced to `false`) -->
+		<xsl:variable name="prevRule" select="concat(preceding-sibling::violation[1]/details/@rule, '')" />
+		<xsl:variable name="prevModule" select="concat(preceding-sibling::violation[1]/location/@module, '')" />
+		<xsl:if test="details/@rule != $prevRule">
 			<a name="{details/@category}-{source/@reporter}-{details/@rule}" />
 		</xsl:if>
-		<xsl:if test="details/@rule != concat(preceding-sibling::violation[1]/details/@rule, '') or location/@module != concat(preceding-sibling::violation[1]/location/@module, '')">
-			<!-- concat in test makes sure the first violation (which has no preceding nodes)
-				 is also `true` and not `no node` coerced to `false`) -->
+		<xsl:if test="details/@rule != $prevRule or location/@module != $prevModule">
 			<a name="{details/@category}-{source/@reporter}-{details/@rule}-{location/@module}" />
 		</xsl:if>
 		<div class="violation" xml:space="preserve">
 			<span class="title">
 				<!-- @formatter:off -->
-				<b><code class="rule copyable" title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!" onClick="copyToClipboard(`{details/@suppress}`)"><xsl:value-of select="details/@rule" /></code>: <script>render.markdown(`<xsl:value-of select="details/title" />`)</script></b>
+				<xsl:choose>
+					<xsl:when test="details/@documentation">
+						<a href="{details/@documentation}" target="_blank">
+							<xsl:value-of select="details/@rule" />
+						</a>
+						<xsl:if test="details/title" xml:space="preserve">: </xsl:if>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="details/@rule" />
+						<xsl:if test="details/title" xml:space="preserve">: </xsl:if>
+					</xsl:otherwise>
+				</xsl:choose>
+				<span class="action"
+					title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!"
+					onClick="copyToClipboard(`{details/@suppress}`)"
+				><code>🤫</code></span>
+				<xsl:if test="details/title">
+					<script>render.markdown(`<xsl:value-of select="details/title" />`)</script>
+				</xsl:if>
 				<!-- @formatter:on -->
 			</span>
 			<br />
 			<details class="location">
-				<xsl:if test="details/context/@type != 'archive' or string-length(details/context) - string-length(translate(details/context, '&#x0A;', '')) &lt; 25">
+				<xsl:variable name="contentLength" select="string-length(details/context)" />
+				<xsl:variable name="contentLengthWithoutNewLines"
+					select="string-length(translate(details/context, '&#x0A;', ''))" />
+				<xsl:variable name="numberOfLines" select="$contentLength - $contentLengthWithoutNewLines" />
+				<xsl:if test="details/context/@type != 'archive' or $numberOfLines &lt; 25">
 					<xsl:attribute name="open">open</xsl:attribute>
 				</xsl:if>
 				<summary>
@@ -246,7 +268,7 @@
 
 	<xsl:variable name="script" xml:space="preserve">
 	<!--suppress JSUnusedLocalSymbols, JSUnresolvedVariable, JSUnresolvedFunction -->
-		<script><![CDATA[/*&lt;![CDATA[*/
+		<script><![CDATA[/*<![CDATA[*/
 		var md = window.markdownit({
 			linkify: true,
 			highlight: function (str, lang) {
@@ -307,10 +329,10 @@
 			return line(start) + result;
 		}
 
-		/*]]&gt;*/]]></script>
+		/*]]]]><![CDATA[>]]>*/</script>
 	</xsl:variable>
 	<xsl:variable name="style" xml:space="preserve">
-	<style type="text/css"><![CDATA[/*&lt;![CDATA[*/
+	<style type="text/css"><![CDATA[/*<![CDATA[*/
 	body {
 		background-color: #f5f5f5;
 		font-family: sans-serif;
@@ -368,6 +390,10 @@
 		box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
 	}
 
+	.violation > .title {
+		font-weight: bold;
+	}
+
 	.violation > details.description > section {
 		max-width: 900px;
 	}
@@ -381,8 +407,9 @@
 		margin-bottom: 0;
 	}
 
-	code.rule.copyable {
+	.action {
 		cursor: pointer;
+		float: right;
 	}
 
 	details:first-of-type {
@@ -436,7 +463,7 @@
 		color: red;
 	}
 
-	/*]]&gt;*/]]></style>
+	/*]]]]><![CDATA[>]]>*/</style>
 	</xsl:variable>
 
 </xsl:stylesheet>

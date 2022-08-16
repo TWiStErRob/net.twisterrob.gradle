@@ -23,7 +23,7 @@ abstract class TaskReportGatherer<T>(
 		return if (report.exists()) {
 			findViolations(report)
 		} else {
-			//logger.warn "${parser} report: '${report}' does not exist"
+			//println("${this} > report '${report}' does not exist.")
 			null
 		}
 	}

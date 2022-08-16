@@ -106,7 +106,8 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 	}
 
 	private fun executeBuild(): BuildResult {
-		gradle.file(pmd.simple.content, "module", "src", "main", "java", "Pmd.java")
+		gradle.file(pmd.simple.content1, "module", "src", "main", "java", "WithoutPackage.java")
+		gradle.file(pmd.simple.content2, "module", "src", "main", "java", "pmd", "PrintStack.java")
 		// see also @Test/given for configuration file location setup
 
 		return gradle.runFailingBuild {
@@ -119,8 +120,9 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 		// build should only fail if failing config wins the preference,
 		// otherwise it's BUILD SUCCESSFUL or RuleSetNotFoundException: Can't find resource "....xml" for rule "null".
 		assertEquals(TaskOutcome.FAILED, this.task(":module:pmdDebug")!!.outcome)
-		assertThat(this.failReason, containsString("1 PMD rule violations were found."))
-		this.assertHasOutputLine(pmd.simple.message)
+		assertThat(this.failReason, containsString("2 PMD rule violations were found."))
+		this.assertHasOutputLine(pmd.simple.message1)
+		this.assertHasOutputLine(pmd.simple.message2)
 		this.assertNoOutputLine(Regex("""While auto-configuring ruleSetFiles for task '.*"""))
 	}
 }
