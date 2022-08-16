@@ -31,7 +31,8 @@
  1. Update the gradle wrapper:
     * Run `gradlew wrapper --distribution-type=all --gradle-version=...`.
       * in root
-      * in `docs/examples/...`
+      * in `/docs/examples/*/`
+    * Test each with `gradlew build`.
  2. Update `net.twisterrob.gradle.runner.gradleVersion` to the same as `gradle-wrapper.properties`.
  3. Review `VersionsTaskTest`
  4. Review this document if something was missing.

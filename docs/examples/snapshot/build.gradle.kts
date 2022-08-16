@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-	compileSdk = 30
+	compileSdk = 33
 	defaultConfig {
 		minSdk = 14
-		targetSdk = 30
+		targetSdk = 33
 
 		namespace = "net.twisterrob.quality.examples.snapshot"
 		applicationId = "net.twisterrob.quality.examples.snapshot"
