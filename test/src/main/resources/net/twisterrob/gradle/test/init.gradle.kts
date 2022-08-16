@@ -251,7 +251,7 @@ doNotNagAbout(
 )
 doNotNagAbout(
 	"7.5.1",
-	"""^(7\.0\.\d|7\.1\.\d|7\.2\.\d)$""",
+	"""^(4\.2\.\d|7\.0\.\d|7\.1\.\d|7\.2\.\d)$""",
 	// Ignore warning for https://issuetracker.google.com/issues/218478028 since Gradle 7.5, it's going to be fixed in AGP 7.3.
 	"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'IncrementalTask.taskAction\$gradle_core' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/7.5.1/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
 )
