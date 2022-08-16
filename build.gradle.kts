@@ -98,12 +98,6 @@ allprojects {
 		tasks.withType<Test>().configureEach {
 			useJUnitPlatform()
 
-			if (System.getProperties().containsKey("idea.paths.selector")) {
-				logger.debug("Keeping folder contents after test run from IDEA")
-				// see net.twisterrob.gradle.test.GradleRunnerRule
-				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterSuccess=false")
-				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterFailure=false")
-			}
 			val propertyNamesToExposeToJUnitTests = listOf(
 				// for GradleRunnerRule to use a different Gradle version for tests
 				"net.twisterrob.gradle.runner.gradleVersion",
@@ -115,7 +109,15 @@ allprojects {
 				"net.twisterrob.gradle.runner.clearAfterSuccess",
 				"net.twisterrob.gradle.runner.clearAfterFailure",
 			)
-			val properties = propertyNamesToExposeToJUnitTests.keysToMap { project.findProperty(it) }
+			val properties = propertyNamesToExposeToJUnitTests
+				.keysToMap { project.findProperty(it) }
+				.toMutableMap()
+			if (System.getProperties().containsKey("idea.paths.selector")) {
+				logger.debug("Keeping folder contents after test run from IDEA")
+				// see net.twisterrob.gradle.test.GradleRunnerRule
+				properties["net.twisterrob.gradle.runner.clearAfterSuccess"] = "false"
+				properties["net.twisterrob.gradle.runner.clearAfterFailure"] = "false"
+			}
 			properties.forEach { (name, value) -> inputs.property(name, value) }
 			properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
 		}
