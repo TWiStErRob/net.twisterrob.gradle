@@ -9,6 +9,7 @@ android {
 		minSdk = 14
 		targetSdk = 30
 
+		namespace = "net.twisterrob.quality.examples.release"
 		applicationId = "net.twisterrob.quality.examples.release"
 		versionCode = 1
 		versionName = "1.0"
