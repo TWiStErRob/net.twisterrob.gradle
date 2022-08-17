@@ -189,14 +189,6 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 	@Test fun `do not gather non-existent reports`() {
 		gradle.basedOn("android-root_app")
 
-		@Suppress("UnusedProperty")
-		@Language("properties")
-		val props = """
-			org.gradle.warning.mode=all
-			org.gradle.deprecation.trace=true
-		""".trimIndent()
-		gradle.runner.projectDir.resolve("gradle.properties").appendText(props)
-
 		@Language("gradle")
 		val script = """
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
