@@ -36,8 +36,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 	//kotlinOptions.jvmTarget = *
 	kotlinOptions.verbose = true
 	kotlinOptions.allWarningsAsErrors = true
-	kotlinOptions.freeCompilerArgs += listOf(
-	)
 }
 
 gradlePlugin {
