@@ -1,9 +1,10 @@
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.utils.keysToMap
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 plugins {
-//	kotlin("jvm") apply false
+	kotlin("jvm") // Applied so that getKotlinPluginVersion() works, will not be necessary in future Kotlin versions. 
 	@Suppress("DSL_SCOPE_VIOLATION", "UnstableApiUsage")
 	alias(libs.plugins.nexus)
 }
@@ -242,3 +243,15 @@ nexusPublishing {
 		}
 	}
 }
+
+// Cannot fix these yet, as Kotlin is outdated. https://github.com/TWiStErRob/net.twisterrob.gradle/issues/234
+// Ignoring these because it's fixed in 1.6.0 https://youtrack.jetbrains.com/issue/KT-47867.
+if (project.getKotlinPluginVersion()!! >= "1.6.0") {
+	error("Kotlin 1.6.0 fixes the IncrementalTaskInputs deprecation, so these ignores are no longer needed.")
+}
+doNotNagAbout(
+	"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'KaptWithoutKotlincTask.compile' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/7.5.1/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
+)
+doNotNagAbout(
+	"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'AbstractKotlinCompile.execute' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/7.5.1/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
+)
