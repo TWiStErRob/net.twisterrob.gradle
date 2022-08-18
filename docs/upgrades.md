@@ -31,10 +31,15 @@
  1. Update the gradle wrapper:
     * Run `gradlew wrapper --distribution-type=all --gradle-version=...`.
       * in root
-      * in `docs/examples/...`
+      * in `/docs/examples/*/`
+    * Test each with `gradlew build`.
  2. Update `net.twisterrob.gradle.runner.gradleVersion` to the same as `gradle-wrapper.properties`.
  3. Review `VersionsTaskTest`
- 4. Review this document if something was missing.
+    * some tests like `(Gradle X latest)` might need updating.
+ 4. Update CI.yml matrix and `publish-test-results` job
+    * Update all Gradle `\d\.x` versions to the latest stable.
+    * Keep all Gradle `\d\.\d\+` version on the latest patch.
+ 5. Review this document if something was missing.
 
 
 # How to upgrade other libraries?
