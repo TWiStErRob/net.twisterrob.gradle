@@ -59,6 +59,7 @@ pluginManagement {
 plugins {
 	// https://docs.gradle.com/enterprise/gradle-plugin/#release_history
 	id("com.gradle.enterprise") version "3.8.1"
+	// Allows using classes / functions from gradle/plugins project.
 	id("net.twisterrob.gradle.plugins.settings")
 }
 
@@ -67,23 +68,4 @@ gradleEnterprise {
 		termsOfServiceUrl = "https://gradle.com/terms-of-service"
 		termsOfServiceAgree = "yes"
 	}
-}
-
-/**
- * @see <a href="https://github.com/gradle/gradle/issues/19069">Feature request</a>
- */
-fun Settings.enableFeaturePreviewQuietly(name: String, summary: String) {
-	enableFeaturePreview(name)
-	val logger: Any = org.gradle.util.internal.IncubationLogger::class.java
-		.getDeclaredField("INCUBATING_FEATURE_HANDLER")
-		.apply { isAccessible = true }
-		.get(null)
-
-	@Suppress("UNCHECKED_CAST")
-	val features: MutableSet<String> = org.gradle.internal.featurelifecycle.LoggingIncubatingFeatureHandler::class.java
-		.getDeclaredField("features")
-		.apply { isAccessible = true }
-		.get(logger) as MutableSet<String>
-
-	features.add(summary)
 }
