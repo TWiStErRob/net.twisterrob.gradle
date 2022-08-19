@@ -33,10 +33,7 @@ kotlin-target = "1.4.32"
 # Actual Kotlin language and API version for compilcation, it restricts language features and metadata.
 kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
-# Note: this has to be in sync with Gradle's embedded Kotlin version.
-# See EmbeddedKotlinProvider.pinEmbeddedKotlinDependenciesOn,
-# and gradle-kotlin-dsl-embedded-kotlin.properties inside gradle-kotlin-dsl-<gradle-version>.jar.
-kotlin-build = "1.6.21"
+kotlin-build = "1.7.10"
 
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases
 # Artifacts: https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/
