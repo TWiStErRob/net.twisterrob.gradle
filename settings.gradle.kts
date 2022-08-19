@@ -1,6 +1,16 @@
 // TODEL https://github.com/gradle/gradle/issues/18971
 rootProject.name = "net-twisterrob-gradle"
 
+pluginManagement {
+	includeBuild("gradle/plugins")
+}
+
+plugins {
+	//id("com.gradle.enterprise")
+	// Allows using classes / functions from gradle/plugins project.
+	id("net.twisterrob.gradle.plugins.settings")
+}
+
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
 
 include(":quality")
@@ -49,23 +59,5 @@ dependencyResolutionManagement {
 		mavenCentral()
 		// for Kotlin-DSL
 		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
-	}
-}
-
-pluginManagement {
-	includeBuild("gradle/plugins")
-}
-
-plugins {
-	// https://docs.gradle.com/enterprise/gradle-plugin/#release_history
-	id("com.gradle.enterprise") version "3.8.1"
-	// Allows using classes / functions from gradle/plugins project.
-	id("net.twisterrob.gradle.plugins.settings")
-}
-
-gradleEnterprise {
-	buildScan {
-		termsOfServiceUrl = "https://gradle.com/terms-of-service"
-		termsOfServiceAgree = "yes"
 	}
 }

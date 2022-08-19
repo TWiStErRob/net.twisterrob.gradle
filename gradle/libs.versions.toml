@@ -17,6 +17,9 @@ jetbrains = "23.0.0"
 # https://github.com/gradle-nexus/publish-plugin/releases
 nexus = "1.1.0"
 
+# https://docs.gradle.com/enterprise/gradle-plugin/#release_history
+gradle-enterprise = "3.8.1"
+
 # See [lint] which is affected by this.
 # Versions: https://maven.google.com/web/index.html#com.android.tools.build:gradle
 agp = "7.2.1"
@@ -152,3 +155,4 @@ dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = 
 
 [plugins]
 nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus" }
+gradle-enterprise = { id = "com.gradle.enterprise", version.ref = "gradle-enterprise" }

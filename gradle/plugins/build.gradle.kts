@@ -14,4 +14,9 @@ gradlePlugin {
 
 repositories {
 	mavenCentral()
+	gradlePluginPortal()
+}
+
+dependencies {
+	implementation("com.gradle.enterprise:com.gradle.enterprise.gradle.plugin:${libs.versions.gradle.enterprise.get()}")
 }
