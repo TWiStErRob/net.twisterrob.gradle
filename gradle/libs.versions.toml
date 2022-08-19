@@ -32,7 +32,7 @@ lint = "30.2.1"
 kotlin-target = "1.4.32"
 # Actual Kotlin language and API version for compilcation, it restricts language features and metadata.
 kotlin-language = "1.4"
-# Version of Kotlin Gradle Plugin used for compilation and stuff.
+# Version of Kotlin Gradle Plugin used for compilation.
 # Note: this has to be in sync with Gradle's embedded Kotlin version.
 # See EmbeddedKotlinProvider.pinEmbeddedKotlinDependenciesOn,
 # and gradle-kotlin-dsl-embedded-kotlin.properties inside gradle-kotlin-dsl-<gradle-version>.jar.

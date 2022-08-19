@@ -41,6 +41,7 @@ allprojects {
 	configurations.all {
 		replaceHamcrestDependencies(project)
 	}
+	// Make sure we don't have many versions of Kotlin lying around.
 	dependencies {
 		compileOnly(enforcedPlatform(deps.kotlin.bom))
 		testCompileOnly(enforcedPlatform(deps.kotlin.bom))
