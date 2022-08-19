@@ -25,8 +25,7 @@ repositories {
 
 dependencies {
 	implementation(projectLibs.kotlin.gradle)
-	implementation(enforcedPlatform(projectLibs.kotlin.bom))
-	implementation(projectLibs.kotlin.compiler)
+	implementation(enforcedPlatform(projectLibs.kotlin.gradle.bom))
 	implementation(projectLibs.kotlin.dokka)
 	compileOnly(projectLibs.nexus)
 }
