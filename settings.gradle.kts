@@ -52,9 +52,14 @@ dependencyResolutionManagement {
 	}
 }
 
+pluginManagement {
+	includeBuild("gradle/plugins")
+}
+
 plugins {
 	// https://docs.gradle.com/enterprise/gradle-plugin/#release_history
 	id("com.gradle.enterprise") version "3.8.1"
+	id("net.twisterrob.gradle.plugins.settings")
 }
 
 gradleEnterprise {
