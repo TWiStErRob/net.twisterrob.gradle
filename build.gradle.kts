@@ -6,6 +6,12 @@ plugins {
 	kotlin("jvm") // Applied so that getKotlinPluginVersion() works, will not be necessary in future Kotlin versions. 
 	@Suppress("DSL_SCOPE_VIOLATION", "UnstableApiUsage")
 	alias(libs.plugins.nexus)
+	// REPORT this is not true, it brings in Kotlin DSL helpers like fun DependencyHandler.`testFixturesImplementation`.
+	// > Error resolving plugin [id: 'org.gradle.java-test-fixtures', apply: false]
+	// > > Plugin 'org.gradle.java-test-fixtures' is a core Gradle plugin, which is already on the classpath.
+	// > Requesting it with the 'apply false' option is a no-op.
+	// Applying this plugin even though it's not used here so that the common setup works.
+	`java-test-fixtures`
 }
 
 val projectVersion: String by project
@@ -33,19 +39,13 @@ allprojects {
 	replaceGradlePluginAutoDependenciesWithoutKotlin()
 
 	configurations.all {
-		replaceKotlinJre7WithJdk7()
-		replaceKotlinJre8WithJdk8()
 		replaceHamcrestDependencies(project)
-		resolutionStrategy {
-			// Make sure we don't have many versions of Kotlin lying around.
-			force(deps.kotlin.stdlib)
-			force(deps.kotlin.reflect)
-			// Force version so that it's upgraded correctly with useTarget.
-			force(deps.kotlin.stdlib.jre7)
-			force(deps.kotlin.stdlib.jdk7)
-			// Force version so that it's upgraded correctly with useTarget.
-			force(deps.kotlin.stdlib.jre8)
-			force(deps.kotlin.stdlib.jdk8)
+	}
+	dependencies {
+		implementation(enforcedPlatform(deps.kotlin.bom))
+		testImplementation(enforcedPlatform(deps.kotlin.bom))
+		plugins.withId("org.gradle.java-test-fixtures") {
+			testFixturesImplementation(enforcedPlatform(deps.kotlin.bom))
 		}
 	}
 
