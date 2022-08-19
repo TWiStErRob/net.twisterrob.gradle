@@ -6,7 +6,7 @@ pluginManagement {
 }
 
 plugins {
-	//id("com.gradle.enterprise")
+	id("com.gradle.enterprise")
 	// Allows using classes / functions from gradle/plugins project.
 	id("net.twisterrob.gradle.plugins.settings")
 }
