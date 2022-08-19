@@ -1,5 +1,6 @@
 plugins {
 	`kotlin-dsl`
+	//alias(libs.plugins.kotlin) // Can't apply since there's a mismatch between embedded Kotlin and latest Kotlin.
 	id("java-gradle-plugin")
 }
 
@@ -33,7 +34,6 @@ repositories {
 
 dependencies {
 	implementation(libs.kotlin.gradle)
-	implementation(enforcedPlatform(projectLibs.kotlin.gradle.bom))
 	implementation(libs.kotlin.dokka)
 	compileOnly(libs.nexus)
 	
