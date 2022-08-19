@@ -44,7 +44,7 @@ tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
 	inputs.files(jarOutput).withPathSensitivity(PathSensitivity.RELATIVE)
 	pluginClasspath.apply {
 		setFrom()
-		from(configurations.runtimeClasspath - configurations.compileOnly)
+		from(configurations.runtimeClasspath - configurations.compileClasspath)
 		from(jarOutput.singleFile)
 	}
 }

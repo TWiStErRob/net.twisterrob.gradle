@@ -56,8 +56,9 @@ val LintBaseTask.androidVariantName: String?
 			// because before 4.2.0 LintGlobalTask/LintFixTask didn't implement the interface.
 			// Force compile time binding to the interface, because a super of LintBaseTask may override the property.
 			(this as VariantAwareTask).variantName
-		AGPVersions.CLASSPATH < AGPVersions.v33x && this is AndroidVariantTask ->
-			@Suppress("CAST_NEVER_SUCCEEDS") // Historical binding to inherited property.
+		AGPVersions.CLASSPATH < AGPVersions.v33x && @Suppress("USELESS_IS_CHECK") (this is AndroidVariantTask) ->
+			// USELESS_IS_CHECK: Historical binding to inherited property.
+			@Suppress("CAST_NEVER_SUCCEEDS")
 			(this as AndroidVariantTask).variantName
 		this is LintGlobalTask -> null
 		AGPVersions.v32x < AGPVersions.CLASSPATH && this is LintFixTask -> null

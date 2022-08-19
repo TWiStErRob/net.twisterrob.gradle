@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.utils.keysToMap
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -7,6 +6,12 @@ plugins {
 	kotlin("jvm") // Applied so that getKotlinPluginVersion() works, will not be necessary in future Kotlin versions. 
 	@Suppress("DSL_SCOPE_VIOLATION", "UnstableApiUsage")
 	alias(libs.plugins.nexus)
+	// REPORT this is not true, it brings in Kotlin DSL helpers like fun DependencyHandler.`testFixturesImplementation`.
+	// > Error resolving plugin [id: 'org.gradle.java-test-fixtures', apply: false]
+	// > > Plugin 'org.gradle.java-test-fixtures' is a core Gradle plugin, which is already on the classpath.
+	// > Requesting it with the 'apply false' option is a no-op.
+	// Applying this plugin even though it's not used here so that the common setup works.
+	`java-test-fixtures`
 }
 
 val projectVersion: String by project
@@ -34,19 +39,14 @@ allprojects {
 	replaceGradlePluginAutoDependenciesWithoutKotlin()
 
 	configurations.all {
-		replaceKotlinJre7WithJdk7()
-		replaceKotlinJre8WithJdk8()
 		replaceHamcrestDependencies(project)
-		resolutionStrategy {
-			// Make sure we don't have many versions of Kotlin lying around.
-			force(deps.kotlin.stdlib)
-			force(deps.kotlin.reflect)
-			// Force version so that it's upgraded correctly with useTarget.
-			force(deps.kotlin.stdlib.jre7)
-			force(deps.kotlin.stdlib.jdk7)
-			// Force version so that it's upgraded correctly with useTarget.
-			force(deps.kotlin.stdlib.jre8)
-			force(deps.kotlin.stdlib.jdk8)
+	}
+	// Make sure we don't have many versions of Kotlin lying around.
+	dependencies {
+		compileOnly(enforcedPlatform(deps.kotlin.bom))
+		testCompileOnly(enforcedPlatform(deps.kotlin.bom))
+		plugins.withId("org.gradle.java-test-fixtures") {
+			testFixturesCompileOnly(enforcedPlatform(deps.kotlin.bom))
 		}
 	}
 
@@ -74,6 +74,8 @@ allprojects {
 		}
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
 			kotlinOptions.verbose = true
+			kotlinOptions.languageVersion = deps.versions.kotlin.language.get()
+			kotlinOptions.apiVersion = deps.versions.kotlin.language.get()
 			kotlinOptions.jvmTarget = deps.versions.java.get()
 			kotlinOptions.suppressWarnings = false
 			kotlinOptions.allWarningsAsErrors = true
@@ -85,6 +87,12 @@ allprojects {
 				// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
 				"-Xno-optimized-callable-references"
 			)
+			if (kotlinOptions.languageVersion == "1.4") {
+				// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".
+				kotlinOptions.freeCompilerArgs += "-Xsuppress-version-warnings"
+			} else {
+				TODO("Remove -Xsuppress-version-warnings")
+			}
 		}
 
 		tasks.withType<Test>().configureEach {
@@ -243,15 +251,3 @@ nexusPublishing {
 		}
 	}
 }
-
-// Cannot fix these yet, as Kotlin is outdated. https://github.com/TWiStErRob/net.twisterrob.gradle/issues/234
-// Ignoring these because it's fixed in 1.6.0 https://youtrack.jetbrains.com/issue/KT-47867.
-if (project.getKotlinPluginVersion()!! >= "1.6.0") {
-	error("Kotlin 1.6.0 fixes the IncrementalTaskInputs deprecation, so these ignores are no longer needed.")
-}
-doNotNagAbout(
-	"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'KaptWithoutKotlincTask.compile' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/7.5.1/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
-)
-doNotNagAbout(
-	"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'AbstractKotlinCompile.execute' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/7.5.1/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
-)

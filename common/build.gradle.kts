@@ -35,5 +35,5 @@ java.sourceSets.all { kotlin.srcDirs -= java.srcDirs }
 tasks.named<GroovyCompile>("compileTestGroovy") {
 	val kotlinTask = tasks.named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileTestKotlin")
 	dependsOn(kotlinTask)
-	classpath += files(kotlinTask.get().destinationDir)
+	classpath += files(kotlinTask.map { it.destinationDirectory })
 }

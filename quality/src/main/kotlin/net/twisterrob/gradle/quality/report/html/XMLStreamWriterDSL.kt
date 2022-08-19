@@ -11,10 +11,11 @@ fun Writer.xmlWriter(): XMLStreamWriter =
 		.createXMLStreamWriter(this)
 
 fun XMLStreamWriter.use(block: (XMLStreamWriter) -> Unit) {
+	val writer = this@use
 	AutoCloseable {
-		this@use.flush()
-		this@use.close()
-	}.use { block(this@use) }
+		writer.flush()
+		writer.close()
+	}.use { block(writer) }
 }
 
 /**
