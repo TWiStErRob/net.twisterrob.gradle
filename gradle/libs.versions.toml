@@ -30,6 +30,7 @@ lint = "30.2.1"
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # @see kotlin_version in buildSrc/gradle.properties
 kotlin = "1.4.32"
+kotlin-language = "1.4"
 
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases
 # Artifacts: https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/
