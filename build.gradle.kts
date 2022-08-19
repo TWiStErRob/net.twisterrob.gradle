@@ -42,10 +42,10 @@ allprojects {
 		replaceHamcrestDependencies(project)
 	}
 	dependencies {
-		implementation(enforcedPlatform(deps.kotlin.bom))
-		testImplementation(enforcedPlatform(deps.kotlin.bom))
+		compileOnly(enforcedPlatform(deps.kotlin.bom))
+		testCompileOnly(enforcedPlatform(deps.kotlin.bom))
 		plugins.withId("org.gradle.java-test-fixtures") {
-			testFixturesImplementation(enforcedPlatform(deps.kotlin.bom))
+			testFixturesCompileOnly(enforcedPlatform(deps.kotlin.bom))
 		}
 	}
 
