@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.java
 
 import com.android.build.gradle.BaseExtension
-import com.android.builder.core.VariantType.Companion.ANDROID_TEST_SUFFIX
-import com.android.builder.core.VariantType.Companion.UNIT_TEST_SUFFIX
+import com.android.builder.core.ComponentType.Companion.ANDROID_TEST_SUFFIX
+import com.android.builder.core.ComponentType.Companion.UNIT_TEST_SUFFIX
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.base.BaseExposedPlugin
 import org.gradle.api.JavaVersion

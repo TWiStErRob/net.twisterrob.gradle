@@ -32,6 +32,7 @@ class AGPVersionTest {
 			listOf(
 				Arguments.of("7.4.0-alpha09", AGPVersion(7, 4, Alpha, 9)),
 				Arguments.of("7.4.0-alpha02", AGPVersion(7, 4, Alpha, 2)),
+				Arguments.of("7.3.0-rc01", AGPVersion(7, 3, Candidate, 1)),
 				Arguments.of("7.3.0-beta01", AGPVersion(7, 3, Beta, 1)),
 				Arguments.of("7.3.0-alpha09", AGPVersion(7, 3, Alpha, 9)),
 				Arguments.of("7.3.0-alpha07", AGPVersion(7, 3, Alpha, 7)),
