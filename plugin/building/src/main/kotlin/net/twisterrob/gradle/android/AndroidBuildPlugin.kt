@@ -196,19 +196,19 @@ class AndroidBuildPlugin : BasePlugin() {
 		}
 
 		private fun fixVariantTaskGroups(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {
-			fun BaseVariantData.fixTaskMetadata() {
+			fun BaseVariantData.fixTaskMetadata(type: String) {
 				taskContainerCompat.compileTask.configure { task ->
 					task.group = "Build"
-					task.description = "Compiles sources for ${description}."
+					task.description = "Compiles ${type}sources for ${variant.description}."
 				}
 				taskContainerCompat.javacTask.configure { task ->
 					task.group = "Build"
-					task.description = "Compiles Java sources for ${description}."
+					task.description = "Compiles ${type}Java sources for ${variant.description}."
 				}
 			}
-			variant.variantData?.fixTaskMetadata()
-			variant.androidTestVariantData?.fixTaskMetadata()
-			variant.unitTestVariantData?.fixTaskMetadata()
+			variant.variantData?.fixTaskMetadata("")
+			variant.androidTestVariantData?.fixTaskMetadata("android test ")
+			variant.unitTestVariantData?.fixTaskMetadata("test ")
 		}
 
 		private fun addPackageName(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {
