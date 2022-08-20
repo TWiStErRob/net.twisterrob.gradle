@@ -43,19 +43,3 @@ dependencies {
 	// GradleTestHelpersKt.hasDevices uses com.android.ddmlib.AndroidDebugBridge.
 	testFixturesImplementation(libs.android.tools.ddmLib)
 }
-
-//configurations.all {
-//	resolutionStrategy.dependencySubstitution {
-//		val original = variant(project(projects.compat.agp74x.dependencyProject.path)) {
-//			attributes {
-//				attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 11)
-//			}
-//		}
-//		val replacement = variant(project(projects.compat.agp74x.dependencyProject.path)) {
-//			attributes {
-//				attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
-//			}
-//		}
-//		substitute(original).using(replacement)
-//	}
-//}

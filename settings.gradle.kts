@@ -1,5 +1,3 @@
-import net.twisterrob.gradle.plugins.settings.TargetJvmVersionRule
-
 // TODEL https://github.com/gradle/gradle/issues/18971
 rootProject.name = "net-twisterrob-gradle"
 
@@ -61,17 +59,5 @@ dependencyResolutionManagement {
 		mavenCentral()
 		// for Kotlin-DSL
 		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
-	}
-	rulesMode.set(RulesMode.PREFER_SETTINGS)
-	components {
-		withModule<TargetJvmVersionRule>("com.android.tools.build:gradle") { params(8)}
-		withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-api") { params(8)}
-		withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-settings-api") { params(8)}
-		withModule<TargetJvmVersionRule>("com.android.tools.build:builder") { params(8)}
-		withModule<TargetJvmVersionRule>("com.android.tools.build:builder-test-api") { params(8)}
-		withModule<TargetJvmVersionRule>("com.android.tools.build:aaptcompiler") { params(8)}
-		withModule<TargetJvmVersionRule>("com.android.tools.build:aapt2-proto") { params(8)}
-		withModule<TargetJvmVersionRule>("com.android.tools.build:builder-model") { params(8)}
-		withModule<TargetJvmVersionRule>("com.android.tools.build:manifest-merger") { params(8)}
 	}
 }
