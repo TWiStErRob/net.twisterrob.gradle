@@ -66,7 +66,11 @@ dependencyResolutionManagement {
 	components {
 		withModule<TargetJvmVersionRule>("com.android.tools.build:gradle") { params(8)}
 		withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-api") { params(8)}
+		withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-settings-api") { params(8)}
 		withModule<TargetJvmVersionRule>("com.android.tools.build:builder") { params(8)}
+		withModule<TargetJvmVersionRule>("com.android.tools.build:builder-test-api") { params(8)}
+		withModule<TargetJvmVersionRule>("com.android.tools.build:aaptcompiler") { params(8)}
+		withModule<TargetJvmVersionRule>("com.android.tools.build:aapt2-proto") { params(8)}
 		withModule<TargetJvmVersionRule>("com.android.tools.build:builder-model") { params(8)}
 		withModule<TargetJvmVersionRule>("com.android.tools.build:manifest-merger") { params(8)}
 	}
