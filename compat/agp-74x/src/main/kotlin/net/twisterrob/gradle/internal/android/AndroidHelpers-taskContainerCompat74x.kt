@@ -11,6 +11,7 @@ import com.android.build.gradle.internal.variant.BaseVariantData
  */
 val BaseVariantData.taskContainerCompat74x: TaskContainer
 	get() = BaseVariantData::class.java
-		.getDeclaredField("taskContainer")
-		.get(this)
+		.getDeclaredMethod("getTaskContainer")
+		.apply { isAccessible = true }
+		.invoke(this)
 			as TaskContainer
