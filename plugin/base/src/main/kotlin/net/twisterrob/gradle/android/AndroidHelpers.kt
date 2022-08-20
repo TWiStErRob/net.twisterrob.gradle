@@ -25,6 +25,7 @@ import net.twisterrob.gradle.internal.android.manifestFile40x
 import net.twisterrob.gradle.internal.android.manifestFile41x
 import net.twisterrob.gradle.internal.android.taskContainerCompat40x
 import net.twisterrob.gradle.internal.android.taskContainerCompat41x
+import net.twisterrob.gradle.internal.android.taskContainerCompat74x
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
@@ -85,6 +86,7 @@ fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
 val BaseVariantData.taskContainerCompat: TaskContainer
 	get() =
 		when {
+			AGPVersions.CLASSPATH >= AGPVersions.v74x -> this.taskContainerCompat74x
 			AGPVersions.CLASSPATH >= AGPVersions.v41x -> this.taskContainerCompat41x
 			AGPVersions.CLASSPATH >= AGPVersions.v40x -> this.taskContainerCompat40x
 			else -> AGPVersions.olderThan4NotSupported(AGPVersions.CLASSPATH)

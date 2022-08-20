@@ -3,10 +3,11 @@ package net.twisterrob.gradle.android
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.internal.api.androidTestVariantData
-import com.android.build.gradle.internal.api.unitTestVariantData
+import com.android.build.gradle.internal.api.BaseVariantImpl
+import com.android.build.gradle.internal.api.androidTestVariant
+import com.android.build.gradle.internal.api.unitTestVariant
+import com.android.build.gradle.internal.api.productionVariant
 import com.android.build.gradle.internal.api.variantData
-import com.android.build.gradle.internal.variant.BaseVariantData
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addBuildConfigFields
@@ -196,19 +197,19 @@ class AndroidBuildPlugin : BasePlugin() {
 		}
 
 		private fun fixVariantTaskGroups(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {
-			fun BaseVariantData.fixTaskMetadata() {
-				taskContainerCompat.compileTask.configure { task ->
+			fun BaseVariantImpl.fixTaskMetadata() {
+				variantData.taskContainerCompat.compileTask.configure { task ->
 					task.group = "Build"
-					task.description = "Compiles sources for ${description}."
+					task.description = "Compiles sources for ${this@fixTaskMetadata.description}."
 				}
-				taskContainerCompat.javacTask.configure { task ->
+				variantData.taskContainerCompat.javacTask.configure { task ->
 					task.group = "Build"
-					task.description = "Compiles Java sources for ${description}."
+					task.description = "Compiles Java sources for ${this@fixTaskMetadata.description}."
 				}
 			}
-			variant.variantData?.fixTaskMetadata()
-			variant.androidTestVariantData?.fixTaskMetadata()
-			variant.unitTestVariantData?.fixTaskMetadata()
+			variant.productionVariant.fixTaskMetadata()
+			variant.androidTestVariant?.fixTaskMetadata()
+			variant.unitTestVariant?.fixTaskMetadata()
 		}
 
 		private fun addPackageName(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {

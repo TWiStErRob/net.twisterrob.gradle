@@ -39,7 +39,9 @@
  4. Update CI.yml matrix and `publish-test-results` job
     * Update all Gradle `\d\.x` versions to the latest stable.
     * Keep all Gradle `\d\.\d\+` version on the latest patch.
- 5. Review this document if something was missing.
+    * Uncomment/add new AGP/Gradle combinations for .x versions.
+ 5. Update the README.md table and above table version range.
+ 6. Review this document if something was missing.
 
 
 # How to upgrade other libraries?
