@@ -32,6 +32,9 @@ repositories {
 	gradlePluginPortal()
 }
 
+// Note on `plugins { }`: when the version is declared in the plugins block (`plugins { id(...) version "..." }`),
+// the referenced dependencies are visible by IntelliJ Gradle Sync, but the breakpoints are not hit.
+// Declaring all the dependencies in this project resolves this issue.
 dependencies {
 	implementation(libs.kotlin.gradle)
 	implementation(libs.kotlin.dokka)
