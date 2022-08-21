@@ -93,25 +93,40 @@ class AndroidMinificationPlugin : BasePlugin() {
 
 		lintTasksDependOnProguardRulesTask(extractMinificationRules)
 		project.afterEvaluate {
-			android.variants.all { variant ->
-				val proguardTask = proguardTaskClass?.let { project.findMinificationTaskFor(variant, it) }
-				val r8Task = project.findMinificationTaskFor(variant, R8Task::class.java)
-				val obfuscationTask = proguardTask ?: r8Task
-				if (obfuscationTask != null) {
-					obfuscationTask.dependsOn(extractMinificationRules)
-					if (variant.flavorName == "") {
-						val generateMinificationRulesTask = createGenerateMinificationRulesTask(
-							variant,
-							generatedProguardRulesFile,
-							proguardTask == obfuscationTask
-						)
-						lintTasksDependOnProguardRulesTask(generateMinificationRulesTask)
-						obfuscationTask.dependsOn(generateMinificationRulesTask)
-					} else {
-						// Cannot do this simply because AGP doesn't provide a DSL surface for adding proguard rules for variants.
-						// It's possible to add for buildType and flavors, but since the mapping file is for variants,
-						// the generate... task would not be able to create a distinct file.
-						obfuscationTask.logger.warn("This project uses flavors, it's not possible to generate variant based rules for ${variant.name}.")
+			android.variants.configureEach { variant ->
+				val isFlavorless = variant.flavorName == ""
+				if (!isFlavorless) {
+					// Cannot do this simply because AGP doesn't provide a DSL surface for adding proguard rules for variants.
+					// It's possible to add for buildType and flavors, but since the mapping file is for variants,
+					// the generate... task would not be able to create a distinct file.
+					project.logger.warn("This project uses flavors, it's not possible to generate variant based rules for ${variant.name}.")
+				}
+				val generateProguardRulesTask =
+					createGenerateProguardMinificationRulesTask(variant, generatedProguardRulesFile)
+				if (isFlavorless) {
+					lintTasksDependOnProguardRulesTask(generateProguardRulesTask)
+				}
+				proguardTaskClass
+					?.let { project.tasks.withType(it) }
+					?.configureEach { obfuscationTask ->
+						if (obfuscationTask.variantName == variant.name) {
+							obfuscationTask.dependsOn(extractMinificationRules)
+							if (isFlavorless) {
+								obfuscationTask.dependsOn(generateProguardRulesTask)
+							}
+						}
+					}
+				val generateR8RulesTask =
+					createGenerateR8MinificationRulesTask(variant, generatedProguardRulesFile)
+				if (isFlavorless) {
+					lintTasksDependOnProguardRulesTask(generateR8RulesTask)
+				}
+				project.tasks.withType<R8Task>().configureEach { obfuscationTask ->
+					if (obfuscationTask.variantName == variant.name) {
+						obfuscationTask.dependsOn(extractMinificationRules)
+						if (isFlavorless) {
+							obfuscationTask.dependsOn(generateR8RulesTask)
+						}
 					}
 				}
 			}
@@ -121,8 +136,8 @@ class AndroidMinificationPlugin : BasePlugin() {
 	private fun lintTasksDependOnProguardRulesTask(task: TaskProvider<Task>) {
 		if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
 			// REPORT allow tasks to generate ProGuard files, this must be possible because aapt generates one.
-			project.tasks.withType<AndroidLintGlobalTask>().configureEach { it.dependsOn(task) }
-			project.tasks.withType<AndroidLintAnalysisTask>().configureEach { it.dependsOn(task) }
+			project.tasks.withType<AndroidLintGlobalTask>().configureEach { it.mustRunAfter(task) }
+			project.tasks.withType<AndroidLintAnalysisTask>().configureEach { it.mustRunAfter(task) }
 		}
 	}
 
@@ -138,34 +153,48 @@ class AndroidMinificationPlugin : BasePlugin() {
 			null
 		}
 
-	private fun <T : ProguardConfigurableTask> Project.findMinificationTaskFor(
-		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
-		taskClass: Class<T>
-	): T? =
-		this
-			.tasks
-			.withType(taskClass)
-			.matching { it.variantName == variant.name }
-			.singleOrNull()
-
-	private fun createGenerateMinificationRulesTask(
+	/**
+	 * Duplicate code, see also [createGenerateProguardMinificationRulesTask].
+	 */
+	private fun createGenerateR8MinificationRulesTask(
 		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
 		outputFile: File,
-		isProguard: Boolean
 	): TaskProvider<Task> =
-		project.tasks.register<Task>("generate${variant.name.capitalize()}MinificationRules") {
-			description = "Generates printConfiguration and dump options for ProGuard or R8"
+		project.tasks.register<Task>("generate${variant.name.capitalize()}R8MinificationRules") {
+			description = "Generates printConfiguration for R8 if supported."
 			val mappingFolder: Provider<File> = variant.mappingFileProvider.map { it.singleFile.parentFile }
 			inputs.property("targetFolder", mappingFolder)
 			outputs.file(outputFile)
 			doFirst {
+				outputFile.parentFile.mkdirs()
 				outputFile.createNewFile()
-				if (isProguard || AGPVersions.CLASSPATH < AGPVersions.v41x) {
+				if (AGPVersions.CLASSPATH < AGPVersions.v41x) {
 					outputFile.appendText("-printconfiguration ${mappingFolder.get().resolve("configuration.txt")}\n")
 				}
-				if (isProguard) {
-					outputFile.appendText("-dump ${mappingFolder.get().resolve("dump.txt")}\n")
-				}
+			}
+		}
+
+	/**
+	 * Duplicate code, see also [createGenerateR8MinificationRulesTask].
+	 */
+	private fun createGenerateProguardMinificationRulesTask(
+		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
+		outputFile: File,
+	): TaskProvider<Task> =
+		project.tasks.register<Task>("generate${variant.name.capitalize()}ProguardMinificationRules") {
+			description = "Generates printConfiguration and dump options for ProGuard."
+			val mappingFolder: Provider<File> = variant.mappingFileProvider.map { it.singleFile.parentFile }
+			inputs.property("targetFolder", mappingFolder)
+			outputs.file(outputFile)
+			doFirst {
+				outputFile.parentFile.mkdirs()
+				outputFile.createNewFile()
+				outputFile.writeText(
+					"""
+						-printconfiguration ${mappingFolder.get().resolve("configuration.txt")}
+						-dump ${mappingFolder.get().resolve("dump.txt")}
+					""".trimIndent()
+				)
 			}
 		}
 

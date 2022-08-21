@@ -58,33 +58,33 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 			}
 		}
 
-		project.tasks.withType<JavaCompile> {
-			options.encoding = DEFAULT_ENCODING
-			val isTestTask = name.contains("Test")
-			val isAndroidTest = name.endsWith("${ANDROID_TEST_SUFFIX}JavaWithJavac")
-			val isAndroidUnitTest = name.endsWith("${UNIT_TEST_SUFFIX}JavaWithJavac")
+		project.tasks.withType<JavaCompile>().configureEach { task ->
+			task.options.encoding = DEFAULT_ENCODING
+			val isTestTask = task.name.contains("Test")
+			val isAndroidTest = task.name.endsWith("${ANDROID_TEST_SUFFIX}JavaWithJavac")
+			val isAndroidUnitTest = task.name.endsWith("${UNIT_TEST_SUFFIX}JavaWithJavac")
 			if (!isTestTask) {
-				options.compilerArgs.add("-Xlint:unchecked")
-				options.compilerArgs.add("-Xlint:deprecation")
+				task.options.compilerArgs.add("-Xlint:unchecked")
+				task.options.compilerArgs.add("-Xlint:deprecation")
 			}
 			if (isTestTask && !isAndroidTest) {
-				changeCompatibility(JavaVersion.VERSION_1_8)
+				task.changeCompatibility(JavaVersion.VERSION_1_8)
 			}
 
-			val compileVersion = JavaVersion.toVersion(sourceCompatibility)
-			fixClasspathIfNecessary(compileVersion)
+			val compileVersion = JavaVersion.toVersion(task.sourceCompatibility)
+			task.fixClasspathIfNecessary(compileVersion)
 			if (isTestTask && isAndroidUnitTest) {
-				doFirst {
+				task.doFirst {
 					if (isTestTask && !isAndroidTest) {
 						// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
-						changeCompatibility(JavaVersion.VERSION_1_8)
+						task.changeCompatibility(JavaVersion.VERSION_1_8)
 					}
-					classpath += project.files(options.bootstrapClasspath)
-					fixClasspathIfNecessary(JavaVersion.toVersion(sourceCompatibility))
+					task.classpath += project.files(task.options.bootstrapClasspath)
+					task.fixClasspathIfNecessary(JavaVersion.toVersion(task.sourceCompatibility))
 				}
 			}
 
-			doFirst { removeDuplicateCompilerArgs() }
+			task.doFirst { task.removeDuplicateCompilerArgs() }
 		}
 	}
 }

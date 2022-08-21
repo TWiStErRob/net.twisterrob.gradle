@@ -16,6 +16,7 @@ enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project acc
 include(":quality")
 include(":common")
 include(":test")
+include(":test:integration")
 include(":test:internal")
 
 listOf("checkstyle", "pmd").forEach {
