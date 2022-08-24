@@ -907,10 +907,10 @@ jobs:
 
       - name: Publish Test Results
         if: success() || failure()
-        uses: EnricoMi/publish-unit-test-result-action@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: 0 🔔 Test Results
-          comment_title: Test Results
+          comment_mode: off
           report_individual_runs: true
           test_changes_limit: 0
           files: artifacts/* Test Results XMLs/**/*.xml
