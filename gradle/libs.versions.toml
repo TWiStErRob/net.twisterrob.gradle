@@ -3,7 +3,7 @@ java = "1.8"
 
 # Changelog: https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md
 # GitHub Releases: https://github.com/tomasbjerre/violations-lib/tags
-violations = "1.148.3"
+violations = "1.151.0"
 
 # JSR 305: Annotations for Software Defect Detection
 # Documentation: https://jcp.org/en/jsr/detail?id=305
@@ -18,7 +18,7 @@ jetbrains = "23.0.0"
 nexus = "1.1.0"
 
 # https://docs.gradle.com/enterprise/gradle-plugin/#release_history
-gradle-enterprise = "3.8.1"
+gradle-enterprise = "3.11.1"
 
 # See [lint] which is affected by this.
 # Versions: https://maven.google.com/web/index.html#com.android.tools.build:gradle
@@ -48,19 +48,21 @@ kotlin-dsl = "6.1.1"
 junit4 = "4.13.2"
 # JUnit 5 = JUnit Platform ([junit-api]) + JUnit Jupiter ([junit-engine]) + JUnit Vintage ([junit-vintage])
 # Changelog: https://junit.org/junit5/docs/current/release-notes/index.html
-junit5 = "5.8.2"
+junit5 = "5.9.0"
 # GitHub Releases: https://github.com/junit-pioneer/junit-pioneer/releases
-junit5-pioneer = "1.6.2"
+junit5-pioneer = "1.7.1"
 
 # Artifacts: https://mvnrepository.com/artifact/org.mockito/mockito-core
 # Changelog (1.x, 2.x and 3.x): https://github.com/mockito/mockito/blob/main/doc/release-notes/official.md
 # Changelog (4.x): https://github.com/mockito/mockito/releases
-mockito = "4.4.0"
+mockito = "4.7.0"
 # GitHub releases: https://github.com/nhaarman/mockito-kotlin/releases
 mockito-kotlin = "4.0.0"
 # GitHub releases: https://github.com/mockk/mockk/releases
-# TODO can't go farther than 1.12.2 yet https://github.com/mockk/mockk/issues/794
-mockk = "1.12.2"
+# TODO can't go farther than 1.12.5 yet
+# 1.12.6 is broken: https://github.com/mockk/mockk/issues/897
+# 1.12.7 requires Java 11: https://github.com/mockk/mockk/issues/898
+mockk = "1.12.5"
 
 hamcrest = "2.2"
 
@@ -70,11 +72,13 @@ jfixture = "2.7.2"
 jfixture-kotlin = "1.0.0"
 
 # Versions: https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
-svnkit = "1.10.5"
+svnkit = "1.10.7"
 # Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
 # Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
 # Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
-jgit = "5.13.0.202109080827-r"
+# TODO can't go further AGP 3.x and 4.x need Java 8 compatible versions
+# and jgit 6.x requires Java 11: https://wiki.eclipse.org/JGit/New_and_Noteworthy/6.0
+jgit = "5.13.1.202206130422-r"
 
 # Explicitly using an outdated version of diffuse, don't remember why.
 # Versions: https://github.com/JakeWharton/diffuse/tags
