@@ -13,9 +13,9 @@ buildscript {
 			// over
 			// classpath files('.../kotlin-stdlib-1.5.32.jar')
 			// and jarSearchingUtil.kt > hasEntry assumes that all "files" are .jar.
-			classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
+			classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
 		} else {
-			classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
+			classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
 			def doNotNagAbout = rootProject.ext["doNotNagAbout"]
 			// https://youtrack.jetbrains.com/issue/KT-47867 was fixed in 1.6.0,
 			// so disable these warnings for anything that uses Kotlin < 1.6.
