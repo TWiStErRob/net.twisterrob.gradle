@@ -3,9 +3,15 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 plugins {
-//	kotlin("jvm") apply false
+	kotlin("jvm") // Applied so that getKotlinPluginVersion() works, will not be necessary in future Kotlin versions. 
 	@Suppress("DSL_SCOPE_VIOLATION", "UnstableApiUsage")
 	alias(libs.plugins.nexus)
+	// REPORT this is not true, it brings in Kotlin DSL helpers like fun DependencyHandler.`testFixturesImplementation`.
+	// > Error resolving plugin [id: 'org.gradle.java-test-fixtures', apply: false]
+	// > > Plugin 'org.gradle.java-test-fixtures' is a core Gradle plugin, which is already on the classpath.
+	// > Requesting it with the 'apply false' option is a no-op.
+	// Applying this plugin even though it's not used here so that the common setup works.
+	`java-test-fixtures`
 }
 
 val projectVersion: String by project
@@ -33,19 +39,14 @@ allprojects {
 	replaceGradlePluginAutoDependenciesWithoutKotlin()
 
 	configurations.all {
-		replaceKotlinJre7WithJdk7()
-		replaceKotlinJre8WithJdk8()
 		replaceHamcrestDependencies(project)
-		resolutionStrategy {
-			// Make sure we don't have many versions of Kotlin lying around.
-			force(deps.kotlin.stdlib)
-			force(deps.kotlin.reflect)
-			// Force version so that it's upgraded correctly with useTarget.
-			force(deps.kotlin.stdlib.jre7)
-			force(deps.kotlin.stdlib.jdk7)
-			// Force version so that it's upgraded correctly with useTarget.
-			force(deps.kotlin.stdlib.jre8)
-			force(deps.kotlin.stdlib.jdk8)
+	}
+	// Make sure we don't have many versions of Kotlin lying around.
+	dependencies {
+		compileOnly(enforcedPlatform(deps.kotlin.bom))
+		testCompileOnly(enforcedPlatform(deps.kotlin.bom))
+		plugins.withId("org.gradle.java-test-fixtures") {
+			testFixturesCompileOnly(enforcedPlatform(deps.kotlin.bom))
 		}
 	}
 
@@ -73,6 +74,8 @@ allprojects {
 		}
 		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
 			kotlinOptions.verbose = true
+			kotlinOptions.languageVersion = deps.versions.kotlin.language.get()
+			kotlinOptions.apiVersion = deps.versions.kotlin.language.get()
 			kotlinOptions.jvmTarget = deps.versions.java.get()
 			kotlinOptions.suppressWarnings = false
 			kotlinOptions.allWarningsAsErrors = true
@@ -84,25 +87,37 @@ allprojects {
 				// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
 				"-Xno-optimized-callable-references"
 			)
+			if (kotlinOptions.languageVersion == "1.4") {
+				// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".
+				kotlinOptions.freeCompilerArgs += "-Xsuppress-version-warnings"
+			} else {
+				TODO("Remove -Xsuppress-version-warnings")
+			}
 		}
 
 		tasks.withType<Test>().configureEach {
 			useJUnitPlatform()
 
-			if (System.getProperties().containsKey("idea.paths.selector")) {
-				logger.debug("Keeping folder contents after test run from IDEA")
-				// see net.twisterrob.gradle.test.GradleRunnerRule
-				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterSuccess=false")
-				jvmArgs("-Dnet.twisterrob.gradle.runner.clearAfterFailure=false")
-			}
 			val propertyNamesToExposeToJUnitTests = listOf(
 				// for GradleRunnerRule to use a different Gradle version for tests
 				"net.twisterrob.gradle.runner.gradleVersion",
 				// for tests to decide dynamically
 				"net.twisterrob.test.android.pluginVersion",
-				"net.twisterrob.test.android.compileSdkVersion"
+				"net.twisterrob.test.android.compileSdkVersion",
+				// So that command line gradlew -P...=false works.
+				// Will override earlier jvmArgs, if both specified.
+				"net.twisterrob.gradle.runner.clearAfterSuccess",
+				"net.twisterrob.gradle.runner.clearAfterFailure",
 			)
-			val properties = propertyNamesToExposeToJUnitTests.keysToMap { project.findProperty(it) }
+			val properties = propertyNamesToExposeToJUnitTests
+				.keysToMap { project.findProperty(it) }
+				.toMutableMap()
+			if (System.getProperties().containsKey("idea.paths.selector")) {
+				logger.debug("Keeping folder contents after test run from IDEA")
+				// see net.twisterrob.gradle.test.GradleRunnerRule
+				properties["net.twisterrob.gradle.runner.clearAfterSuccess"] = "false"
+				properties["net.twisterrob.gradle.runner.clearAfterFailure"] = "false"
+			}
 			properties.forEach { (name, value) -> inputs.property(name, value) }
 			properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
 		}
@@ -179,7 +194,7 @@ if (project.property("net.twisterrob.gradle.build.includeExamples").toString().t
 
 project.tasks.register<TestReport>("testReport") {
 	group = LifecycleBasePlugin.VERIFICATION_GROUP
-	description = "Run and report on all tests in the project. Add -x test to just generate report."
+	description = "Run and report on all tests in the project. Add `-x test` to just generate report."
 	@Suppress("UnstableApiUsage")
 	destinationDirectory.set(file("${buildDir}/reports/tests/all"))
 
@@ -196,10 +211,16 @@ project.tasks.register<TestReport>("testReport") {
 	doLast {
 		@Suppress("UnstableApiUsage")
 		val reportFile = destinationDirectory.file("index.html").get().asFile
-		val successRegex = """(?s)<div class="infoBox" id="failures">\s*<div class="counter">0<\/div>""".toRegex()
-		if (!successRegex.containsMatchIn(reportFile.readText())) {
-			val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
-			throw GradleException("There were failing tests. See the report at: ${reportPath}")
+		val failureRegex = """(?s).*<div class="infoBox" id="failures">\s*<div class="counter">(\d+)<\/div>.*""".toRegex()
+		val failureMatch = failureRegex.matchEntire(reportFile.readText())
+		val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
+		if (failureMatch == null) {
+			throw GradleException("Cannot determine if the tests failed. See the report at: ${reportPath}")
+		} else {
+			val failCount = failureMatch.groups[1]!!.value
+			if (failCount != "0") {
+				throw GradleException("There were ${failCount} failing tests. See the report at: ${reportPath}")
+			}
 		}
 	}
 }

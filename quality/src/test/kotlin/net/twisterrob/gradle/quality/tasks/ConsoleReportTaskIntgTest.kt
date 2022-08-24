@@ -40,7 +40,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 	@Test fun `get total violation counts on root project`() {
 		gradle.file(checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")
 		gradle.file(checkstyle.simple.config, *CONFIG_PATH_CS)
-		gradle.file(pmd.simple.content, *SOURCE_PATH, "Pmd.java")
+		gradle.file(pmd.simple.content1, *SOURCE_PATH, "Pmd.java")
 		gradle.file(pmd.simple.config, *CONFIG_PATH_PMD)
 
 		@Language("gradle")
@@ -63,7 +63,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 	@Test fun `get total violation counts`() {
 		gradle.file(checkstyle.simple.content, "module", *SOURCE_PATH, "Cs.java")
 		gradle.file(checkstyle.simple.config, *CONFIG_PATH_CS)
-		gradle.file(pmd.simple.content, "module", *SOURCE_PATH, "Pmd.java")
+		gradle.file(pmd.simple.content1, "module", *SOURCE_PATH, "Pmd.java")
 		gradle.file(pmd.simple.config, *CONFIG_PATH_PMD)
 
 		@Language("gradle")
@@ -140,7 +140,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 
 		gradle.file(checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")
 		gradle.run(script, "checkstyleAll", "pmdAll", "printViolationCount").build()
-		gradle.file(pmd.simple.content, *SOURCE_PATH, "Pmd.java")
+		gradle.file(pmd.simple.content1, *SOURCE_PATH, "Pmd.java")
 
 		val result = gradle.runBuild {
 			run(null, "checkstyleAll", "pmdAll", "printViolationCount")
@@ -188,14 +188,6 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 
 	@Test fun `do not gather non-existent reports`() {
 		gradle.basedOn("android-root_app")
-
-		@Suppress("UnusedProperty")
-		@Language("properties")
-		val props = """
-			org.gradle.warning.mode=all
-			org.gradle.deprecation.trace=true
-		""".trimIndent()
-		gradle.runner.projectDir.resolve("gradle.properties").appendText(props)
 
 		@Language("gradle")
 		val script = """

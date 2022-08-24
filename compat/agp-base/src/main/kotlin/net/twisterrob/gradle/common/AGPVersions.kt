@@ -59,6 +59,7 @@ object AGPVersions {
 	val v7xx: AGPVersion = AGPVersion(7, null, null, null)
 	val v70x: AGPVersion = AGPVersion(7, 0, null, null)
 	val v71x: AGPVersion = AGPVersion(7, 1, null, null)
+	val v74x: AGPVersion = AGPVersion(7, 4, null, null)
 
 	/**
 	 * Is there an Android Gradle Plugin on the classpath?

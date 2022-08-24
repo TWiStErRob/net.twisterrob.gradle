@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableMap;
+import kotlin.Pair;
+import kotlin.collections.MapsKt;
 import net.twisterrob.gradle.common.grouper.TFO.E;
 import net.twisterrob.gradle.common.grouper.TFO.F;
 import net.twisterrob.gradle.common.grouper.TFO.G;
@@ -26,10 +27,10 @@ public class GrouperTest_Java {
 		));
 		Grouper<?, List<TFO>> e = grouper.<E>by("e");
 		Map<?, List<TFO>> grouping = e.group();
-		assertEquals(map()
-				.put(E.E1, list(TFO.E1F1G1, TFO.E1F2G1))
-				.put(E.E2, list(TFO.E2F1G2, TFO.E2F2G2))
-				.build(), grouping);
+		assertEquals(map(
+				entry(E.E1, list(TFO.E1F1G1, TFO.E1F2G1)),
+				entry(E.E2, list(TFO.E2F1G2, TFO.E2F2G2))
+		), grouping);
 	}
 
 	@Test public void groupOn2Levels() {
@@ -44,18 +45,16 @@ public class GrouperTest_Java {
 		Grouper<?, List<TFO>> e = grouper.<E>by("e");
 		Grouper<?, Map<?, List<TFO>>> f = e.<F>by("f");
 		Map<?, Map<?, List<TFO>>> grouping = f.group();
-		assertEquals(map()
-				.put(E.E1, map()
-						.put(F.F1, list(TFO.E1F1G1))
-						.put(F.F2, list(TFO.E1F2G1, TFO.E1F2G2))
-						.build()
-				)
-				.put(E.E2, map()
-						.put(F.F1, list(TFO.E2F1G2))
-						.put(F.F2, list(TFO.E2F2G2, TFO.E2F2G2))
-						.build()
-				)
-				.build(), grouping);
+		assertEquals(map(
+				entry(E.E1, map(
+						entry(F.F1, list(TFO.E1F1G1)),
+						entry(F.F2, list(TFO.E1F2G1, TFO.E1F2G2))
+				)),
+				entry(E.E2, map(
+						entry(F.F1, list(TFO.E2F1G2)),
+						entry(F.F2, list(TFO.E2F2G2, TFO.E2F2G2))
+				))
+		), grouping);
 	}
 
 	@Test public void countOn2Levels() {
@@ -71,18 +70,16 @@ public class GrouperTest_Java {
 		Grouper<?, Integer> e = count.<E>by("e");
 		Grouper<?, Map<?, Integer>> f = e.<F>by("f");
 		Map<?, Map<?, Integer>> grouping = f.group();
-		assertEquals(map()
-				.put(E.E1, map()
-						.put(F.F1, 1)
-						.put(F.F2, 2)
-						.build()
-				)
-				.put(E.E2, map()
-						.put(F.F1, 2)
-						.put(F.F2, 1)
-						.build()
-				)
-				.build(), grouping);
+		assertEquals(map(
+				entry(E.E1, map(
+						entry(F.F1, 1),
+						entry(F.F2, 2)
+				)),
+				entry(E.E2, map(
+						entry(F.F1, 2),
+						entry(F.F2, 1)
+				))
+		), grouping);
 	}
 
 	@Test public void countOn2Levels_custom() {
@@ -100,18 +97,16 @@ public class GrouperTest_Java {
 		Grouper<?, Integer> e = count.<E>by("e");
 		Grouper<?, Map<?, Integer>> f = e.<F>by("f");
 		Map<?, Map<?, Integer>> counts = f.group();
-		assertEquals(map()
-				.put(E.E1, map()
-						.put(F.F1, 8)
-						.put(F.F2, 64)
-						.build()
-				)
-				.put(E.E2, map()
-						.put(F.F1, 64)
-						.put(F.F2, 8)
-						.build()
-				)
-				.build(), counts);
+		assertEquals(map(
+				entry(E.E1, map(
+						entry(F.F1, 8),
+						entry(F.F2, 64)
+				)),
+				entry(E.E2, map(
+						entry(F.F1, 64),
+						entry(F.F2, 8)
+				))
+		), counts);
 	}
 
 	@Test public void groupOn3Levels() {
@@ -128,31 +123,25 @@ public class GrouperTest_Java {
 		assertEquals(threeLevelGrouping(), grouping);
 	}
 
-	private ImmutableMap<Object, Object> threeLevelGrouping() {
-		return map()
-				.put(E.E1, map()
-						.put(F.F1, map()
-								.put(G.G1, list(TFO.E1F1G1))
-								.build()
-						)
-						.put(F.F2, map()
-								.put(G.G1, list(TFO.E1F2G1))
-								.build()
-						)
-						.build()
-				)
-				.put(E.E2, map()
-						.put(F.F1, map()
-								.put(G.G2, list(TFO.E2F1G2))
-								.build()
-						)
-						.put(F.F2, map()
-								.put(G.G2, list(TFO.E2F2G2))
-								.build()
-						)
-						.build()
-				)
-				.build();
+	private Map<Object, Object> threeLevelGrouping() {
+		return map(
+				entry(E.E1, map(
+						entry(F.F1, map(
+								entry(G.G1, list(TFO.E1F1G1))
+						)),
+						entry(F.F2, map(
+								entry(G.G1, list(TFO.E1F2G1))
+						))
+				)),
+				entry(E.E2, map(
+						entry(F.F1, map(
+								entry(G.G2, list(TFO.E2F1G2))
+						)),
+						entry(F.F2, map(
+								entry(G.G2, list(TFO.E2F2G2))
+						))
+				))
+		);
 	}
 
 	@Test public void groupOn3LevelsDirect() {
@@ -181,30 +170,24 @@ public class GrouperTest_Java {
 		Grouper<?, Map<?, Integer>> f = e.<F>by("f");
 		Grouper<?, Map<?, Map<?, Integer>>> g = f.<G>by("g");
 		Map<?, Map<?, Map<?, Integer>>> counts = g.group();
-		assertEquals(map()
-				.put(E.E1, map()
-						.put(F.F1, map()
-								.put(G.G1, 1)
-								.build()
-						)
-						.put(F.F2, map()
-								.put(G.G1, 3)
-								.build()
-						)
-						.build()
-				)
-				.put(E.E2, map()
-						.put(F.F1, map()
-								.put(G.G2, 1)
-								.build()
-						)
-						.put(F.F2, map()
-								.put(G.G2, 2)
-								.build()
-						)
-						.build()
-				)
-				.build(), counts);
+		assertEquals(map(
+				entry(E.E1, map(
+						entry(F.F1, map(
+								entry(G.G1, 1)
+						)),
+						entry(F.F2, map(
+								entry(G.G1, 3)
+						))
+				)),
+				entry(E.E2, map(
+						entry(F.F1, map(
+								entry(G.G2, 1)
+						)),
+						entry(F.F2, map(
+								entry(G.G2, 2)
+						))
+				))
+		), counts);
 	}
 
 	@SuppressWarnings("varargs")
@@ -213,7 +196,13 @@ public class GrouperTest_Java {
 		return Arrays.asList(args);
 	}
 
-	private static @NotNull <K, V> ImmutableMap.Builder<K, V> map() {
-		return ImmutableMap.builder();
+	@SafeVarargs
+	@SuppressWarnings("varargs")
+	private static @NotNull <K, V> Map<K, V> map(Pair<K, V>... entries) {
+		return MapsKt.mapOf(entries);
+	}
+
+	private static <K, V> @NotNull Pair<K, V> entry(K k, V v) {
+		return new Pair<>(k, v);
 	}
 }

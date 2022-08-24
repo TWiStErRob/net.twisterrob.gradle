@@ -102,7 +102,7 @@ open class GradleRunnerRule : TestRule {
 
 	//region GradleRunner wrapper
 	//@Before(automatic with @Rule)
-	protected fun setUp() {
+	protected open fun setUp() {
 		buildFile = temp.newFile("build.gradle")
 		runner = GradleRunner
 			.create()
@@ -120,16 +120,18 @@ open class GradleRunnerRule : TestRule {
 		}
 	}
 
-	protected fun tearDown() {
+	protected open fun tearDown() {
 		// not used yet, but useful for debugging
 	}
+
+	open val extraArgs: Array<String> = arrayOf("--stacktrace")
 
 	//@Test:when
 	fun run(@Language("gradle") script: String?, vararg tasks: String): GradleRunner {
 		if (script != null) {
 			buildFile.appendText(script)
 		}
-		val args = arrayOf(*tasks, "--stacktrace")
+		val args = arrayOf(*tasks, *extraArgs)
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
 		val testKitDir = runner.let { it as? DefaultGradleRunner }?.testKitDirProvider?.dir
 		val javaVendor: String? by systemProperty("java.vendor")
@@ -143,6 +145,10 @@ open class GradleRunnerRule : TestRule {
 			"""
 			${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
 			Java: ${java} from ${javaHome}.
+			Gradle properties:
+			```properties
+${propertiesFileContentForLogging().prependIndent("\t\t\t")}
+			```
 			Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
 			```gradle
 ${buildFile.readText().prependIndent("\t\t\t")}
@@ -152,6 +158,12 @@ ${buildFile.readText().prependIndent("\t\t\t")}
 		)
 		return runner.withArguments(*args)
 	}
+
+	private fun propertiesFileContentForLogging(): String =
+		if (propertiesFile.exists())
+			propertiesFile.readText()
+		else
+			"${propertiesFile.name} does not exist."
 
 	/**
 	 * This is a workaround because runner.withPluginClasspath() doesn't seem to work.
@@ -207,13 +219,16 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 
 	fun file(contents: String, vararg path: String) {
+		getFile(*path).appendText(contents)
+	}
+
+	@Suppress("ReturnCount")
+	private fun getFile(vararg path: String): File {
 		if (path.size == 1 && path[0] == "build.gradle") {
-			buildFile.appendText(contents)
-			return
+			return buildFile
 		}
 		if (path.size == 1 && path[0] == "gradle.properties") {
-			propertiesFile.appendText(contents)
-			return
+			return propertiesFile
 		}
 		if (1 < path.size) {
 			val folders = path.sliceArray(0..path.size - 2)
@@ -221,7 +236,11 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 				temp.newFolder(*folders)
 			}
 		}
-		temp.newFile(path.joinToString(File.separator)).appendText(contents)
+		val existing = temp.root.resolve(path.joinToString(File.separator))
+		if (existing.exists()) {
+			return existing
+		}
+		return temp.newFile(path.joinToString(File.separator))
 	}
 
 	//@Test:given/@Before

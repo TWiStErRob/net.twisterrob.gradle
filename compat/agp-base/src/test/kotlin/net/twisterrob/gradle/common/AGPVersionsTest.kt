@@ -46,7 +46,7 @@ class AGPVersionsTest {
 	}
 
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
-		val expected = AGPVersion(7, 2, AGPVersion.ReleaseType.Beta, 4)
+		val expected = AGPVersion(7, 3, AGPVersion.ReleaseType.Candidate, 1)
 
 		val actual = AGPVersions.CLASSPATH
 
@@ -92,6 +92,7 @@ class AGPVersionsTest {
 		"7, ",
 		"7, 0",
 		"7, 1",
+		"7, 4",
 	)
 	@ParameterizedTest(name = "[$INDEX_PLACEHOLDER] v{0}.{1}.x")
 	fun `vXXX constants have the right version`(major: Int, minor: Int?) {

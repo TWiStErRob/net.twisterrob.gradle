@@ -8,6 +8,7 @@ import net.twisterrob.gradle.compat.newInputFileCompat
 import net.twisterrob.gradle.compat.newOutputFileCompat
 import net.twisterrob.gradle.dsl.reporting
 import net.twisterrob.gradle.quality.Violations
+import net.twisterrob.gradle.quality.report.bestXMLTransformerFactory
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
@@ -16,7 +17,6 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.jetbrains.annotations.VisibleForTesting
 import java.io.File
-import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
@@ -90,8 +90,9 @@ open class HtmlReportTask : BaseViolationsTask() {
 	@VisibleForTesting
 	internal fun transform() {
 		try {
-			TransformerFactory
-				.newInstance()
+			// We're expecting to get [com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl]
+			// Creating [com.sun.org.apache.xalan.internal.xsltc.trax.TransformerImpl].
+			bestXMLTransformerFactory()
 				.newTransformer(StreamSource(xslOutputFile.reader()))
 				.transform(StreamSource(xmlFile.reader()), StreamResult(htmlFile))
 			println("Wrote HTML report to ${SdkUtils.fileToUrlString(htmlFile.absoluteFile)}")

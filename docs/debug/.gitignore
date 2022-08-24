@@ -8,3 +8,4 @@
 # Ignore build files.
 /*/build/
 /*/buildSrc/build/
+/*/local.properties

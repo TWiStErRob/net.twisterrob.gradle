@@ -6,6 +6,7 @@ import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.test.compile.generateKotlinCompilationCheck
 import net.twisterrob.test.compile.generateKotlinCompilationCheckTest
@@ -85,6 +86,10 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 		)
 
 		gradle.basedOn(GradleBuildTestResources.kotlin)
+		// Somewhere after Kotlin 1.4.32 and before 1.5.32 there was a behavior change:
+		// Not having a source code would trigger compileKotlin to be NO-SOURCE.
+		// This means it doesn't try to resolve classpath, so th expected failure would never come.
+		gradle.file("", "src", "main", "java", "triggerCompilation.kt")
 
 		@Language("gradle")
 		val settings = """
@@ -101,6 +106,8 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script, "jar").buildAndFail()
 
+		result.assertNoOutputLine(""".*Build was configured to prefer settings repositories over project repositories but repository 'MavenRepo' was added by plugin 'net\.twisterrob\.kotlin'""".toRegex())
+		result.assertNoOutputLine(""".*Build was configured to prefer settings repositories over project repositories but repository '.*' was added by plugin '.*'""".toRegex())
 		result.assertHasOutputLine(""".*Cannot resolve external dependency (.*) because no repositories are defined\.""".toRegex())
 	}
 }

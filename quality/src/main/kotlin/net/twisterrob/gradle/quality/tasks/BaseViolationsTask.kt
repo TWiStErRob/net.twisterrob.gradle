@@ -47,6 +47,9 @@ abstract class BaseViolationsTask : DefaultTask() {
 			}
 			return@run (gradleGatherers + agpGatherers) as List<TaskReportGatherer<Task>>
 		}
+
+		private val CHECKSTYLE_BUILT_IN_CHECK: Regex =
+			Regex("""^com\.puppycrawl\.tools\.checkstyle\.checks(?:\.([a-z].+))?\.([A-Z].+)$""")
 	}
 
 	init {
@@ -102,19 +105,32 @@ abstract class BaseViolationsTask : DefaultTask() {
 						violations = gatherer.getViolations(task)?.map {
 							Violation(
 								rule = when (it.reporter) {
-									Parser.CHECKSTYLE.name ->
-										it.rule
-											.substringAfterLast('.') // class name
-											.removeSuffix("Check")
+									Parser.CHECKSTYLE.name -> {
+										val match = CHECKSTYLE_BUILT_IN_CHECK.matchEntire(it.rule)
+										if (match != null) {
+											match
+												.groups[2]!!.value // class name
+												// Clean redundancy, they don't use Check suffixes either.
+												.removeSuffix("Check")
+										} else {
+											it.rule
+												.substringAfterLast(".") // class name
+												// Assume name consistent with built-ins.
+												.removeSuffix("Check")
+										}
+									}
 									else ->
 										it.rule
 								},
 								category = when (it.reporter) {
-									Parser.CHECKSTYLE.name ->
-										it.rule
-											.substringBeforeLast('.') // package
-											.substringAfterLast('.') // last subpackage
-											.capitalize()
+									Parser.CHECKSTYLE.name -> {
+										val match = CHECKSTYLE_BUILT_IN_CHECK.matchEntire(it.rule)
+										if (match != null) {
+											(match.groups[1]?.value ?: "misc").capitalize()
+										} else {
+											"Custom"
+										}
+									}
 									Parser.PMD.name ->
 										when (it.category) {
 											"Import Statements" -> "Imports"

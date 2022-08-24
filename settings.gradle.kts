@@ -1,11 +1,22 @@
 // TODEL https://github.com/gradle/gradle/issues/18971
 rootProject.name = "net-twisterrob-gradle"
 
+pluginManagement {
+	includeBuild("gradle/plugins")
+}
+
+plugins {
+	id("com.gradle.enterprise")
+	// Allows using classes / functions from gradle/plugins project.
+	id("net.twisterrob.gradle.plugins.settings")
+}
+
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
 
 include(":quality")
 include(":common")
 include(":test")
+include(":test:integration")
 include(":test:internal")
 
 listOf("checkstyle", "pmd").forEach {
@@ -20,6 +31,9 @@ include(":compat:agp-41x")
 include(":compat:agp-42x")
 include(":compat:agp-70x")
 include(":compat:agp-71x")
+include(":compat:agp-72x")
+include(":compat:agp-73x")
+include(":compat:agp-74x")
 include(":compat:agp-latest")
 include(":compat:gradle")
 
@@ -47,35 +61,4 @@ dependencyResolutionManagement {
 		// for Kotlin-DSL
 		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
 	}
-}
-
-plugins {
-	// https://docs.gradle.com/enterprise/gradle-plugin/#release_history
-	id("com.gradle.enterprise") version "3.8.1"
-}
-
-gradleEnterprise {
-	buildScan {
-		termsOfServiceUrl = "https://gradle.com/terms-of-service"
-		termsOfServiceAgree = "yes"
-	}
-}
-
-/**
- * @see <a href="https://github.com/gradle/gradle/issues/19069">Feature request</a>
- */
-fun Settings.enableFeaturePreviewQuietly(name: String, summary: String) {
-	enableFeaturePreview(name)
-	val logger: Any = org.gradle.util.internal.IncubationLogger::class.java
-		.getDeclaredField("INCUBATING_FEATURE_HANDLER")
-		.apply { isAccessible = true }
-		.get(null)
-
-	@Suppress("UNCHECKED_CAST")
-	val features: MutableSet<String> = org.gradle.internal.featurelifecycle.LoggingIncubatingFeatureHandler::class.java
-		.getDeclaredField("features")
-		.apply { isAccessible = true }
-		.get(logger) as MutableSet<String>
-
-	features.add(summary)
 }

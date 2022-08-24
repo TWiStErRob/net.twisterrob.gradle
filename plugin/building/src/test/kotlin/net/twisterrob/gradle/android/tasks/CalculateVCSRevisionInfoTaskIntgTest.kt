@@ -103,7 +103,7 @@ class CalculateVCSRevisionInfoTaskIntgTest : BaseAndroidIntgTest() {
 			doCommitSingleFile(gradle.root.createTestFileToCommit(), "Second commit")
 		}
 
-		val second = gradle.run(null, "calculateBuildConfigVCSRevisionInfo").withDebug(true).build()
+		val second = gradle.run(null, "calculateBuildConfigVCSRevisionInfo").build()
 		second.assertSuccess(":calculateBuildConfigVCSRevisionInfo")
 	}
 

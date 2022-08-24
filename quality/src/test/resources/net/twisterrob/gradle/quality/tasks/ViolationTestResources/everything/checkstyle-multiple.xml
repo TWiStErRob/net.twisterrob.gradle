@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.37">
+	<file name="{{rootProject}}\src\main\java\UnusedImports_4.java">
+		<error line="1" severity="error" message="File does not end with a newline." source="com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck"/>
+		<error line="1" column="8" severity="error" message="Unused import - java.net.Authenticator." source="com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck"/>
+		<error line="2" column="8" severity="error" message="Unused import - java.awt.font.NumericShaper." source="com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck"/>
+		<error line="3" column="8" severity="error" message="Unused import - java.math.BigDecimal." source="com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck"/>
+		<error line="4" column="8" severity="error" message="Unused import - java.sql.Array." source="com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck"/>
+	</file>
+	<file name="{{rootProject}}\src\main\java\MemberName_2.java">
+		<error line="3" column="13" severity="error" message="Name &apos;TERIBLEMEMBERNAME&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+		<error line="4" column="13" severity="error" message="Name &apos;TERiBLe_member_NAME&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+	</file>
+	<file name="{{rootProject}}\src\main\java\EmptyBlock_3.java">
+		<error line="4" column="27" severity="error" message="Must have at least one statement." source="com.puppycrawl.tools.checkstyle.checks.blocks.EmptyBlockCheck"/>
+		<error line="8" column="21" severity="error" message="Must have at least one statement." source="com.puppycrawl.tools.checkstyle.checks.blocks.EmptyBlockCheck"/>
+		<error line="10" column="27" severity="error" message="Must have at least one statement." source="com.puppycrawl.tools.checkstyle.checks.blocks.EmptyBlockCheck"/>
+	</file>
+</checkstyle>

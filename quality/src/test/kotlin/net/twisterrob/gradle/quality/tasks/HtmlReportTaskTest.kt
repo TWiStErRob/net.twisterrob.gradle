@@ -1,21 +1,31 @@
 package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
+import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.projectFile
+import net.twisterrob.gradle.test.root
 import net.twisterrob.gradle.test.runBuild
+import net.twisterrob.test.testName
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.not
+import org.hamcrest.io.FileMatchers.aFileWithSize
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTimeoutPreemptively
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInfo
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.function.ThrowingSupplier
+import java.io.File
 import java.time.Duration.ofMinutes
-import kotlin.test.assertEquals
 
 /**
  * @see HtmlReportTask
@@ -273,13 +283,22 @@ class HtmlReportTaskTest : BaseIntgTest() {
 	@Test fun `task is capable of handling huge number of violations`() {
 		gradle.basedOn("android-root_app")
 		gradle.basedOn("lint-UnusedResources")
+		/**
+		 * Not sure why but on this version this test build runs out of memory, consistently, but only on CI.
+		 * I tried to lower the number of violations to 2500 first, that helped, but then the test ran out of memory.
+		 */
+		val specificallyWeirdVersion = AGPVersions.UNDER_TEST compatible AGPVersions.v42x
+				&& GradleVersion.current().baseVersion == GradleVersion.version("6.9.2")
+		val count = if (specificallyWeirdVersion) 2000 else 2500
 		@Language("gradle")
 		val script = """
+			dumpMemory("starting build")
 			apply plugin: 'org.gradle.reporting-base'
-			File xml = project.file("build/report.xml")
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
-				inputs.file(xml)
+			File xml = project.file("build/reports/lint-results-debug.xml")
+			def generate = tasks.register('generateBigReport') {
+				outputs.file(xml)
 				doFirst {
+					dumpMemory("starting generation")
 					xml.text = '<issues format="4" by="${HtmlReportTaskTest::class}">'
 					xml.withWriterAppend { writer ->
 						// Note: I tried to estimate the number of violations to create by measuring free memory:
@@ -287,7 +306,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 						// After many tries and empirical measurements, it was still flaky on each execution on GitHub.
 						// Since then I bumped Xmx from 128 to 256 and the count from 1500 to 3000.
 						// This should be stable and catch any regressions, if the processing goes non-linear.
-						3000.times {
+						$count.times {
 							writer.write(
 								'<issue id="MyLint" category="Performance" severity="Warning"' +
 								'       message="Fake lint" summary="Fake lint" explanation="Fake lint&#10;"' +
@@ -298,13 +317,20 @@ class HtmlReportTaskTest : BaseIntgTest() {
 						}
 					}
 					xml.append('</issues>')
+					dumpMemory("finished generation")
 				}
 			}
-
-			android.lintOptions {
-				//noinspection GroovyAssignabilityCheck
-				check = ['UnusedResources']
-				xmlOutput = xml
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
+				dependsOn(generate)
+				doFirst { dumpMemory("starting report") }
+				doLast { dumpMemory("finished report") }
+			}
+			afterEvaluate { dumpMemory("executing build") }
+			
+			static void dumpMemory(String message) {
+				def rt = Runtime.getRuntime()
+				3.times { rt.gc() }
+				println(message + ": free=" + rt.freeMemory() + " max=" + rt.maxMemory() + " total=" + rt.totalMemory())
 			}
 		""".trimIndent()
 		gradle.propertiesFile
@@ -313,11 +339,79 @@ class HtmlReportTaskTest : BaseIntgTest() {
 
 		val result = assertTimeoutPreemptively(ofMinutes(2), ThrowingSupplier {
 			gradle.runBuild {
-				run(script, "lint", "htmlReport")
+				run(script, "generateBigReport", "htmlReport")
 			}
 		})
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		//val violationsReport = gradle.violationsReport("html").readText()
+		//assertEquals(count, """<div class="violation"""".toRegex().findAll(violationsReport).count())
+	}
+
+	@Test fun `runs on multiple reports`(test: TestInfo) {
+		val violations = ViolationTestResources(gradle.root)
+		val checkstyle = CheckstyleTestResources()
+		val pmd = PmdTestResources { gradle.gradleVersion }
+		gradle.basedOn("android-root_app")
+		listOf(
+			"Autofill",
+			"IconMissingDensityFolder",
+			"UnusedIds",
+			"UnusedResources"
+		).forEach { check -> gradle.basedOn("lint-$check") }
+
+		checkstyle.multi.contents.forEach { (name, content) ->
+			gradle.file(content, "src", "main", "java", name)
+		}
+
+		gradle.file(pmd.simple.content1, "src", "main", "java", "WithoutPackage.java")
+		gradle.file(pmd.simple.content2, "src", "main", "java", "pmd", "PrintStack.java")
+
+		gradle.file(violations.everything.lintReport, "build", "reports", "lint-results-debug.xml")
+		gradle.file(violations.everything.checkstyleReport, "build", "reports", "checkstyle.xml")
+		gradle.file(violations.everything.pmdReport, "build", "reports", "pmd.xml")
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'org.gradle.reporting-base'
+			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.pmd'
+			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "htmlReport")
+		}
+
+		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		assertThat(gradle.violationsReport("xsl"), anExistingFile())
+		assertThat(gradle.violationsReport("xml"), anExistingFile())
+		assertThat(gradle.violationsReport("html"), anExistingFile())
+		exposeViolationsInReport(test, violations.everything)
+		assertThat(gradle.violationsReport("xsl"), aFileWithSize(greaterThan(0)))
+		assertEquals(
+			violations.everything.violationsXml,
+			gradle.violationsReport("xml").readText(),
+			gradle.violationsReport("xml").absolutePath
+		)
+		assertEquals(
+			violations.everything.violationsHtml,
+			gradle.violationsReport("html").readText(),
+			gradle.violationsReport("html").absolutePath
+		)
+	}
+
+	private fun exposeViolationsInReport(test: TestInfo, resources: ViolationTestResources.Everything) {
+		val baseDir = File("build/reports/tests/test/outputs").resolve(test.testName)
+		listOf(
+			gradle.violationsReport("xsl"),
+			gradle.violationsReport("xml"),
+			gradle.violationsReport("html"),
+		).forEach { file ->
+			file.copyTo(baseDir.resolve(file.name), overwrite = true)
+		}
+		baseDir.resolve("violations-expected.xml").writeText(resources.violationsXml)
+		baseDir.resolve("violations-expected.html").writeText(resources.violationsHtml)
 	}
 
 	companion object {
