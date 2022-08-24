@@ -4,8 +4,10 @@
 		"github>TWiStErRob/renovate-config"
 	],
 	"ignorePaths": [
-		"/docs/debug/",
-		"/graph/"
+		"/docs/debug/**",
+		"/docs/examples/**",
+		"/graph/**",
+		"/**/src/test/resources/**"
 	],
 	"packageRules": [
 		{
