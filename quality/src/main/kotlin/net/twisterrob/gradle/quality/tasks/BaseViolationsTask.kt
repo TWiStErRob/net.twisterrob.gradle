@@ -8,6 +8,7 @@ import net.twisterrob.gradle.common.nullSafeSum
 import net.twisterrob.gradle.pmd.PmdTask
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
+import net.twisterrob.gradle.quality.gather.DetektTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.LintGlobalReportGathererPre7
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import net.twisterrob.gradle.quality.gather.LintVariantReportGathererPre7
@@ -29,6 +30,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 		@Suppress("UNCHECKED_CAST")
 		private val GATHERERS: List<TaskReportGatherer<Task>> = run {
 			val gradleGatherers = listOf(
+				DetektTaskReportGatherer(),
 				QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
 				QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
 //			ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})

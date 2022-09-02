@@ -19,7 +19,7 @@ include(":test")
 include(":test:integration")
 include(":test:internal")
 
-listOf("checkstyle", "pmd").forEach {
+listOf("checkstyle", "pmd", "detekt").forEach {
 	include(":${it}")
 	project(":${it}").projectDir = file("checkers/${it}")
 }

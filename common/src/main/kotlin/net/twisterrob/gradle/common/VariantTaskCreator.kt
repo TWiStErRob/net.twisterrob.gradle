@@ -4,6 +4,7 @@ import com.android.SdkConstants.FD_GENERATED
 import net.twisterrob.gradle.compat.setOutputLocationCompat
 import net.twisterrob.gradle.compat.setRequired
 import org.gradle.api.Action
+import org.gradle.api.DefaultTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -28,10 +29,9 @@ open class VariantTaskCreator<T>(
 	private val taskClass: Class<T>,
 	private val extensionClass: Class<out BaseQualityExtension<T>>
 ) where
-T : SourceTask,
+T : DefaultTask,
 T : Reporting<out ReportContainer<out ConfigurableReport>>,
-T : TargetChecker,
-T : VerificationTask {
+T : TargetChecker {
 
 	private lateinit var eachTask: TaskProvider<*>
 
@@ -96,7 +96,9 @@ T : VerificationTask {
 			configurator.setupConfigLocations(task)
 			configurator.setupSources(task, variants)
 			configurator.setupReports(task)
-			checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
+			if (task is SourceTask) {
+				checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
+			}
 		}
 	}
 
@@ -111,7 +113,9 @@ T : VerificationTask {
 			configurator.setupConfigLocations(task)
 			configurator.setupSources(task, listOf(variant))
 			configurator.setupReports(task, variant.name)
-			checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
+			if (task is SourceTask) {
+				checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
+			}
 		}
 	}
 
@@ -132,6 +136,9 @@ T : VerificationTask {
 			task: T,
 			variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
 		) {
+			if (task !is SourceTask) {
+				throw IllegalArgumentException("setupSources should be overridden")
+			}
 			// TODO classpath
 			val buildPath = task.project.buildDir.toPath()
 			val projectPath = task.project.projectDir.toPath()
@@ -174,8 +181,10 @@ T : VerificationTask {
 
 		open fun setupReports(task: T, suffix: String? = null) {
 			val fullSuffix = if (suffix != null) "-${suffix}" else ""
-			// stop the build only if user wanted this task, otherwise we'll gather the results at once for reporting
-			task.ignoreFailures = !task.wasLaunchedOnly
+			if (task is VerificationTask) {
+				// stop the build only if user wanted this task, otherwise we'll gather the results at once for reporting
+				task.ignoreFailures = !task.wasLaunchedOnly
+			}
 			// TODO too soon?
 			val reporting: ReportingExtension = task.project.extensions.findByType(ReportingExtension::class.java)
 				?: error("Cannot find reporting extension, did you apply `reporting` plugin?")
