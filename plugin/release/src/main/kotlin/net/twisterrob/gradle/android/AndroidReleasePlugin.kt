@@ -46,26 +46,26 @@ class AndroidReleasePlugin : BasePlugin() {
 
 		android = project.extensions.getByName<BaseExtension>("android")
 
-		val releaseAllTask = registerReleaseAllTask()
+		val releaseEachTask = registerReleaseEachTask()
 		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
 			android.buildTypes.forEach { buildType ->
 				val releaseBuildTypeTask = registerReleaseTasks(buildType)
-				releaseAllTask.configure { it.dependsOn(releaseBuildTypeTask) }
+				releaseEachTask.configure { it.dependsOn(releaseBuildTypeTask) }
 			}
 		} else {
 			project.afterEvaluate {
 				android.buildTypes.forEach { buildType ->
 					val releaseBuildTypeTask = registerReleaseTasks(buildType)
-					releaseAllTask.configure { it.dependsOn(releaseBuildTypeTask) }
+					releaseEachTask.configure { it.dependsOn(releaseBuildTypeTask) }
 				}
 			}
 		}
 	}
 
-	private fun registerReleaseAllTask(): TaskProvider<Task> =
+	private fun registerReleaseEachTask(): TaskProvider<Task> =
 		project.tasks.register<Task>("release") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
-			description = "Assembles and archives all builds"
+			description = "Calls each release task for all build types"
 		}
 
 	private fun registerReleaseTasks(buildType: BuildType): TaskProvider<Task> {
