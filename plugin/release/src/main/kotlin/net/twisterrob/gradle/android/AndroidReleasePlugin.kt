@@ -122,9 +122,9 @@ class AndroidReleasePlugin : BasePlugin() {
 				variant.testVariant?.let(::useOutput)
 			}
 			if (variant.buildType.isMinifyEnabled) {
-				from(variant.mappingFileProvider.map { it.singleFile.parentFile }) {
-					it.include("*")
-					it.rename("(.*)", "proguard_$1")
+				from(variant.mappingFileProvider.map { it.singleFile.parentFile }) { copy ->
+					copy.include("*")
+					copy.rename("(.*)", "proguard_$1")
 				}
 			}
 
