@@ -185,11 +185,12 @@ class AndroidReleasePlugin : BasePlugin() {
 			doLast(closureOf<Zip> { printResultingArchive() })
 		}
 
-	private fun Zip.archiveMappingFile(mappingFileProvider: Provider<File>) {
-		from(mappingFileProvider.map { it.parentFile }) { copy ->
-			copy.include("*")
-			copy.rename("(.*)", "proguard_$1")
-		}
+}
+
+private fun Zip.archiveMappingFile(mappingFileProvider: Provider<File>) {
+	from(mappingFileProvider.map { it.parentFile }) { copy ->
+		copy.include("*")
+		copy.rename("(.*)", "proguard_$1")
 	}
 }
 
