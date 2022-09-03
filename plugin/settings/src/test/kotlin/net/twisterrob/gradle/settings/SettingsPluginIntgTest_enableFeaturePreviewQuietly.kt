@@ -5,16 +5,33 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import org.gradle.util.GradleVersion
+import org.hamcrest.Matchers.greaterThanOrEqualTo
+import org.hamcrest.assumeThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.io.File
 
+/**
+ * This test is using Gradle specific features, which vary heavily between versions.
+ *
+ * * [org.gradle.api.internal.FeaturePreviews.Feature.TYPESAFE_PROJECT_ACCESSORS]
+ *   was added in [7.0.0](https://github.com/gradle/gradle/commit/9b5c6b67f5526436f111429138f938194d42fc2d).
+ * * [org.gradle.api.internal.FeaturePreviews.Feature.GROOVY_COMPILATION_AVOIDANCE]
+ *   exists from Gradle 6.1.1 (and probably even earlier) to Gradle 7.5.1 (and probably even further),
+ *   but is hard to trigger for testing.
+ */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class SettingsPluginIntgTest : BaseIntgTest() {
+class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `outputs info line when applying typesafe accessors`() {
+		assumeThat(
+			"TYPESAFE_PROJECT_ACCESSORS was added in Gradle 7.0.0.",
+			gradle.gradleVersion.baseVersion,
+			greaterThanOrEqualTo(GradleVersion.version("7.0"))
+		)
+
 		@Language("gradle")
 		val settings = """
 			rootProject.name = "my-root"
@@ -40,6 +57,12 @@ class SettingsPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `quietly suppresses info line when applying typesafe accessors`() {
+		assumeThat(
+			"TYPESAFE_PROJECT_ACCESSORS was added in Gradle 7.0.0.",
+			gradle.gradleVersion.baseVersion,
+			greaterThanOrEqualTo(GradleVersion.version("7.0"))
+		)
+
 		@Language("gradle")
 		val settings = """
 			import net.twisterrob.gradle.settings.enableFeaturePreviewQuietly

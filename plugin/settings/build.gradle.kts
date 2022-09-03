@@ -20,4 +20,5 @@ dependencies {
 	implementation(gradleApiWithoutKotlin())
 
 	testImplementation(projects.test.internal)
+	testImplementation(testFixtures(projects.plugin.base))
 }
