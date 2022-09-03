@@ -14,6 +14,7 @@ import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.kotlin.dsl.closureOf
@@ -46,26 +47,26 @@ class AndroidReleasePlugin : BasePlugin() {
 
 		android = project.extensions.getByName<BaseExtension>("android")
 
-		val releaseAllTask = registerReleaseAllTask()
+		val releaseEachTask = registerReleaseEachTask()
 		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
 			android.buildTypes.forEach { buildType ->
 				val releaseBuildTypeTask = registerReleaseTasks(buildType)
-				releaseAllTask.configure { it.dependsOn(releaseBuildTypeTask) }
+				releaseEachTask.configure { it.dependsOn(releaseBuildTypeTask) }
 			}
 		} else {
 			project.afterEvaluate {
 				android.buildTypes.forEach { buildType ->
 					val releaseBuildTypeTask = registerReleaseTasks(buildType)
-					releaseAllTask.configure { it.dependsOn(releaseBuildTypeTask) }
+					releaseEachTask.configure { it.dependsOn(releaseBuildTypeTask) }
 				}
 			}
 		}
 	}
 
-	private fun registerReleaseAllTask(): TaskProvider<Task> =
+	private fun registerReleaseEachTask(): TaskProvider<Task> =
 		project.tasks.register<Task>("release") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
-			description = "Assembles and archives all builds"
+			description = "Calls each release task for all build types"
 		}
 
 	private fun registerReleaseTasks(buildType: BuildType): TaskProvider<Task> {
@@ -122,10 +123,7 @@ class AndroidReleasePlugin : BasePlugin() {
 				variant.testVariant?.let(::useOutput)
 			}
 			if (variant.buildType.isMinifyEnabled) {
-				from(variant.mappingFileProvider.map { it.singleFile.parentFile }) {
-					it.include("*")
-					it.rename("(.*)", "proguard_$1")
-				}
+				archiveMappingFile(variant.mappingFileProvider.map { it.singleFile })
 			}
 
 			doFirst(closureOf<Zip> { failIfAlreadyArchived() })
@@ -174,10 +172,7 @@ class AndroidReleasePlugin : BasePlugin() {
 
 			if (variant.minifiedEnabled) {
 				val mappingFileProvider = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
-				from(mappingFileProvider.map { it.asFile.parentFile }) { copy ->
-					copy.include("*")
-					copy.rename("(.*)", "proguard_$1")
-				}
+				archiveMappingFile(mappingFileProvider.map { it.asFile })
 			}
 
 			variant.androidTestCompat?.let { androidTest ->
@@ -189,6 +184,14 @@ class AndroidReleasePlugin : BasePlugin() {
 			doFirst(closureOf<Zip> { failIfAlreadyArchived() })
 			doLast(closureOf<Zip> { printResultingArchive() })
 		}
+
+}
+
+private fun Zip.archiveMappingFile(mappingFileProvider: Provider<File>) {
+	from(mappingFileProvider.map { it.parentFile }) { copy ->
+		copy.include("*")
+		copy.rename("(.*)", "proguard_$1")
+	}
 }
 
 private fun Zip.failIfAlreadyArchived() {
