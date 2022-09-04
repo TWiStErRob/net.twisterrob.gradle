@@ -117,7 +117,7 @@ class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 			println("My project: " + projects.myRoot.dependencyProject.rootDir)
 		""".trimIndent()
 
-		val result = gradle.run(build).withDebug(true).build()
+		val result = gradle.run(build).build()
 
 		result.assertHasOutputLine("My project: ${gradle.root}")
 		result.assertNoOutputLine("Type-safe project accessors is an incubating feature.")
