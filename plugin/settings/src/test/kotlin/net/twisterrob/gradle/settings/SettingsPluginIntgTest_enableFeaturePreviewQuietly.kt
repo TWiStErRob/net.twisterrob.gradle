@@ -32,7 +32,7 @@ class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 			greaterThanOrEqualTo(GradleVersion.version("7.0"))
 		)
 
-		@Language("gradle")
+		@Language("gradle.kts")
 		val settings = """
 			rootProject.name = "my-root"
 			
@@ -63,7 +63,7 @@ class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 			greaterThanOrEqualTo(GradleVersion.version("7.0"))
 		)
 
-		@Language("gradle")
+		@Language("gradle.kts")
 		val settings = """
 			import net.twisterrob.gradle.settings.enableFeaturePreviewQuietly
 			
