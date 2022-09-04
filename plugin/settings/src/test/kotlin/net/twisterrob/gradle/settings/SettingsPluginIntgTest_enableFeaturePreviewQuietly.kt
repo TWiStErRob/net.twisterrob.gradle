@@ -5,6 +5,7 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.root
 import org.gradle.util.GradleVersion
 import org.hamcrest.Matchers.greaterThanOrEqualTo
 import org.hamcrest.assumeThat
@@ -47,12 +48,12 @@ class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 		@Language("gradle")
 		val build = """
 			// Use type-safe project accessors for a sanity check.
-			println("My project: " + projects.myRoot.dependencyProject.path)
+			println("My project: " + projects.myRoot.dependencyProject.rootDir)
 		""".trimIndent()
 
 		val result = gradle.run(build).build()
 
-		result.assertHasOutputLine("My project: :")
+		result.assertHasOutputLine("My project: ${gradle.root}")
 		result.assertHasOutputLine("Type-safe project accessors is an incubating feature.")
 	}
 
@@ -80,12 +81,12 @@ class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 		@Language("gradle")
 		val build = """
 			// Use type-safe project accessors for a sanity check.
-			println("My project: " + projects.myRoot.dependencyProject.path)
+			println("My project: " + projects.myRoot.dependencyProject.rootDir)
 		""".trimIndent()
 
 		val result = gradle.run(build).build()
 
-		result.assertHasOutputLine("My project: :")
+		result.assertHasOutputLine("My project: ${gradle.root}")
 		result.assertNoOutputLine("Type-safe project accessors is an incubating feature.")
 	}
 }
