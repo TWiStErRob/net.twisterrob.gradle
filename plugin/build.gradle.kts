@@ -32,6 +32,7 @@ dependencies {
 	api(projects.plugin.release)
 	api(projects.plugin.building)
 	api(projects.plugin.reporting)
+	api(projects.plugin.settings)
 }
 
 tasks.register("tests") {

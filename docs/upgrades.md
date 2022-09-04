@@ -23,7 +23,8 @@
     * After pushing CI changes:
        * Add conversation to add new CI jobs to branch protection rules just before merging.
  5. Update `README.md` table and surrounding text.
- 6. Review this document if something was missing.
+ 6. Add/rename/delete `docs/debug/agpXXX-gradleYYY` folder to match CI combinations.
+ 7. Review this document if something was missing.
 
 
 # How to upgrade Gradle in the project?
@@ -41,7 +42,8 @@
     * Keep all Gradle `\d\.\d\+` version on the latest patch.
     * Uncomment/add new AGP/Gradle combinations for .x versions.
  5. Update the README.md table and above table version range.
- 6. Review this document if something was missing.
+ 6. Add/rename/delete `docs/debug/agpXXX-gradleYYY` folder to match CI combinations.
+ 7. Review this document if something was missing.
 
 
 # How to upgrade other libraries?

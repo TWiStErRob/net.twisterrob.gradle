@@ -105,10 +105,16 @@ gradle.buildFile << """\
 ```
 
 #### Ignore test for specific Gradle version
+This is discouraged, but sometimes necessary (e.g. the feature on the older Gradle version would be hard to implement).
 
 ```kotlin
+assumeThat(
+   "Feature X was added in Gradle 6.8.",
+   gradle.gradleVersion.baseVersion,
+   greaterThanOrEqualTo(GradleVersion.version("6.8"))
+)
+```
+where `gradle` is a `GradleRunnerRule` instance, and `gradle.gradleVersion` is pretty much equivalent to:
+```kotlin
 val gradleVersion: String by systemProperty("net.twisterrob.gradle.runner.gradleVersion")
-assumeTrue(GradleVersion.version(gradleVersion) < GradleVersion.version("5.0")) {
-    "Gradle 5 bumped PMD version and broke classpath, TODO"
-    }
 ```
