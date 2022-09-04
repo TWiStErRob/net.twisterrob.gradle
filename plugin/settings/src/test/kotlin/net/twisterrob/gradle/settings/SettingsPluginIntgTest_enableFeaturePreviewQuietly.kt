@@ -89,4 +89,37 @@ class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 		result.assertHasOutputLine("My project: ${gradle.root}")
 		result.assertNoOutputLine("Type-safe project accessors is an incubating feature.")
 	}
+
+	@Test fun `quietly suppresses info line when applying typesafe accessors (Groovy)`() {
+		assumeThat(
+			"TYPESAFE_PROJECT_ACCESSORS was added in Gradle 7.0.0.",
+			gradle.gradleVersion.baseVersion,
+			greaterThanOrEqualTo(GradleVersion.version("7.0"))
+		)
+
+		@Language("gradle")
+		val settings = """
+			import static net.twisterrob.gradle.settings.SettingsUtils.enableFeaturePreviewQuietly
+			
+			plugins {
+				id("net.twisterrob.settings")
+			}
+			
+			rootProject.name = "my-root"
+			
+			enableFeaturePreviewQuietly(settings, "TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
+		""".trimIndent()
+		gradle.file(settings, "settings.gradle")
+
+		@Language("gradle")
+		val build = """
+			// Use type-safe project accessors for a sanity check.
+			println("My project: " + projects.myRoot.dependencyProject.rootDir)
+		""".trimIndent()
+
+		val result = gradle.run(build).withDebug(true).build()
+
+		result.assertHasOutputLine("My project: ${gradle.root}")
+		result.assertNoOutputLine("Type-safe project accessors is an incubating feature.")
+	}
 }
