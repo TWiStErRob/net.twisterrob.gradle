@@ -42,11 +42,14 @@
 			"enabled": false
 		},
 		{
-			"description": "Disable updating Gradle in debug projects, they have a specific version. Allow minors.",
+			"description": "Disable updating Gradle in debug projects, they have a specific version. Allow patches.",
+			"matchPackageNames": [
+				"gradle"
+			],
 			"matchPaths": [
 				"+(docs/debug/agp*-gradle*/gradle/wrapper/gradle-wrapper.properties)"
 			],
-			"matchUpdateTypes": ["major"],
+			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
 		}
 	]
