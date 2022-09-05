@@ -62,4 +62,11 @@ dependencyResolutionManagement {
 		// for Kotlin-DSL
 		maven { setUrl("https://repo.gradle.org/gradle/libs-releases-local/") }
 	}
+	versionCatalogs {
+		create(defaultLibrariesExtensionName.get()) {
+			// Implicit behavior: from(files("gradle/libs.versions.toml"))
+			// Load additional libraries from other files:
+			load(file("gradle/agp.versions.toml"))
+		}
+	}
 }
