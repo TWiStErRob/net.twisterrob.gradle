@@ -4,7 +4,6 @@
 		"github>TWiStErRob/renovate-config"
 	],
 	"ignorePaths": [
-		"docs/debug/**",
 		"graph/**",
 		"**/src/test/resources/**",
 		"**/src/testFixtures/resources/**"
