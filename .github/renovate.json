@@ -12,16 +12,12 @@
 	],
 	"packageRules": [
 		{
-			"description": "Disable updating AGP in main project, they have a specific version, and will break the matrix. Allow patches.",
+			"description": "Disable updating AGP compatibility dependencies, they have a specific version, and will break the matrix. Allow patches.",
 			"matchPackageNames": [
-				"com.android.tools.build:gradle",
-				"com.android.application"
+				"com.android.tools.build:gradle"
 			],
 			"matchPaths": [
-				"+(build.gradle.kts)",
-				"+(*/build.gradle.kts)",
-				"+(*/*/build.gradle.kts)",
-				"+(gradle/libs.versions.toml)"
+				"+(gradle/agp.versions.toml)"
 			],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
