@@ -5,7 +5,6 @@
 	],
 	"ignorePaths": [
 		"docs/debug/**",
-		"docs/examples/**",
 		"graph/**",
 		"**/src/test/resources/**",
 		"**/src/testFixtures/resources/**"
@@ -20,6 +19,18 @@
 				"+(gradle/agp.versions.toml)"
 			],
 			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		},
+		{
+			"description": "Disable updating Quality plugin in example projects, they're part of the release process.",
+			"matchPackageNames": [
+				"net.twisterrob.quality"
+			],
+			"matchPaths": [
+				"+(docs/examples/release/**)",
+				"+(docs/examples/snapshot/**)",
+				"+(docs/examples/local/**)"
+			],
 			"enabled": false
 		},
 		{
