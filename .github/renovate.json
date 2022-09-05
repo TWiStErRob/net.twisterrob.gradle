@@ -15,7 +15,7 @@
 				"com.android.tools.build:gradle"
 			],
 			"matchPaths": [
-				"+(gradle/agp.versions.toml)"
+				"gradle/agp.versions.toml"
 			],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
@@ -26,9 +26,9 @@
 				"net.twisterrob.quality"
 			],
 			"matchPaths": [
-				"+(docs/examples/release/**)",
-				"+(docs/examples/snapshot/**)",
-				"+(docs/examples/local/**)"
+				"docs/examples/release/**",
+				"docs/examples/snapshot/**",
+				"docs/examples/local/**"
 			],
 			"enabled": false
 		},
@@ -39,14 +39,14 @@
 				"com.android.application"
 			],
 			"matchPaths": [
-				"+(docs/debug/agp*-gradle*/build.gradle)",
-				"+(docs/debug/agp*-gradle*/build.gradle.kts)",
-				"+(docs/debug/agp*-gradle*/settings.gradle)",
-				"+(docs/debug/agp*-gradle*/settings.gradle.kts)",
-				"+(docs/debug/agp*-gradle*/buildSrc/build.gradle)",
-				"+(docs/debug/agp*-gradle*/buildSrc/build.gradle.kts)",
-				"+(docs/debug/agp*-gradle*/buildSrc/settings.gradle)",
-				"+(docs/debug/agp*-gradle*/buildSrc/settings.gradle.kts)"
+				"docs/debug/agp*-gradle*/build.gradle",
+				"docs/debug/agp*-gradle*/build.gradle.kts",
+				"docs/debug/agp*-gradle*/settings.gradle",
+				"docs/debug/agp*-gradle*/settings.gradle.kts",
+				"docs/debug/agp*-gradle*/buildSrc/build.gradle",
+				"docs/debug/agp*-gradle*/buildSrc/build.gradle.kts",
+				"docs/debug/agp*-gradle*/buildSrc/settings.gradle",
+				"docs/debug/agp*-gradle*/buildSrc/settings.gradle.kts"
 			],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
@@ -57,7 +57,7 @@
 				"gradle"
 			],
 			"matchPaths": [
-				"+(docs/debug/agp*-gradle*/gradle/wrapper/gradle-wrapper.properties)"
+				"docs/debug/agp*-gradle*/gradle/wrapper/gradle-wrapper.properties"
 			],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
