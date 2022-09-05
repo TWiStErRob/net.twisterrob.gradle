@@ -4,5 +4,5 @@ repositories {
 }
 
 dependencies {
-	implementation 'com.android.tools.build:gradle:4.0.2'
+	implementation 'com.android.tools.build:gradle:4.2.2'
 }
