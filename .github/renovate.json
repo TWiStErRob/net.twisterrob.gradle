@@ -4,26 +4,32 @@
 		"github>TWiStErRob/renovate-config"
 	],
 	"ignorePaths": [
-		"docs/debug/**",
-		"docs/examples/**",
 		"graph/**",
 		"**/src/test/resources/**",
 		"**/src/testFixtures/resources/**"
 	],
 	"packageRules": [
 		{
-			"description": "Disable updating AGP in main project, they have a specific version, and will break the matrix. Allow patches.",
+			"description": "Disable updating AGP compatibility dependencies, they have a specific version, and will break the matrix. Allow patches.",
 			"matchPackageNames": [
-				"com.android.tools.build:gradle",
-				"com.android.application"
+				"com.android.tools.build:gradle"
 			],
 			"matchPaths": [
-				"+(build.gradle.kts)",
-				"+(*/build.gradle.kts)",
-				"+(*/*/build.gradle.kts)",
-				"+(gradle/libs.versions.toml)"
+				"+(gradle/agp.versions.toml)"
 			],
 			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		},
+		{
+			"description": "Disable updating Quality plugin in example projects, they're part of the release process.",
+			"matchPackageNames": [
+				"net.twisterrob.quality"
+			],
+			"matchPaths": [
+				"+(docs/examples/release/**)",
+				"+(docs/examples/snapshot/**)",
+				"+(docs/examples/local/**)"
+			],
 			"enabled": false
 		},
 		{
@@ -33,20 +39,27 @@
 				"com.android.application"
 			],
 			"matchPaths": [
-				"+(docs/debug/agp*-gradle*/**/build.gradle)",
-				"+(docs/debug/agp*-gradle*/**/build.gradle.kts)",
-				"+(docs/debug/agp*-gradle*/**/settings.gradle)",
-				"+(docs/debug/agp*-gradle*/**/settings.gradle.kts)"
+				"+(docs/debug/agp*-gradle*/build.gradle)",
+				"+(docs/debug/agp*-gradle*/build.gradle.kts)",
+				"+(docs/debug/agp*-gradle*/settings.gradle)",
+				"+(docs/debug/agp*-gradle*/settings.gradle.kts)",
+				"+(docs/debug/agp*-gradle*/buildSrc/build.gradle)",
+				"+(docs/debug/agp*-gradle*/buildSrc/build.gradle.kts)",
+				"+(docs/debug/agp*-gradle*/buildSrc/settings.gradle)",
+				"+(docs/debug/agp*-gradle*/buildSrc/settings.gradle.kts)"
 			],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
 		},
 		{
-			"description": "Disable updating Gradle in debug projects, they have a specific version. Allow minors.",
+			"description": "Disable updating Gradle in debug projects, they have a specific version. Allow patches.",
+			"matchPackageNames": [
+				"gradle"
+			],
 			"matchPaths": [
 				"+(docs/debug/agp*-gradle*/gradle/wrapper/gradle-wrapper.properties)"
 			],
-			"matchUpdateTypes": ["major"],
+			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
 		}
 	]
