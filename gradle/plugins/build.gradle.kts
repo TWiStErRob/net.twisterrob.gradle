@@ -41,7 +41,7 @@ dependencies {
 	compileOnly(libs.nexus)
 	
 	// TODEL hack from https://github.com/gradle/gradle/issues/15383#issuecomment-779893192 (there are more parts to this)
-	implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
+	compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
