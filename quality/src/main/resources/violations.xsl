@@ -187,7 +187,7 @@
 				</xsl:choose>
 				<span class="action"
 					title="To suppress:&#xA;&#xA;{details/@suppress}&#xA;&#xA;Click to copy!"
-					onClick="copyToClipboard(`{details/@suppress}`)"
+					onClick="copyToClipboard('suppression', `{details/@suppress}`)"
 				><code>🤫</code></span>
 				<xsl:if test="details/title">
 					<script>render.markdown(`<xsl:value-of select="details/title" />`)</script>
@@ -282,12 +282,10 @@
 			}
 		});
 
-		function copyToClipboard(text) {
-			var $temp = $("<textarea>");
-			$("body").append($temp);
-			$temp.val(text).select();
-			document.execCommand("copy");
-			$temp.remove();
+		function copyToClipboard(what, text) {
+			navigator.clipboard.writeText(text).catch(() => {
+				alert(`Failed to copy ${what} to clipboard: ${text}`);
+			});
 		}
 
 		var render = {

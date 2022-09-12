@@ -1,7 +1,7 @@
 <!DOCTYPE html><html>
     <head>
         <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>junit10604310516655983690
+        <title>junit17181599312409286086
 					&mdash; Violations Report
 				</title>
         <style type="text/css">/*<![CDATA[*/
@@ -152,12 +152,10 @@
 			}
 		});
 
-		function copyToClipboard(text) {
-			var $temp = $("<textarea>");
-			$("body").append($temp);
-			$temp.val(text).select();
-			document.execCommand("copy");
-			$temp.remove();
+		function copyToClipboard(what, text) {
+			navigator.clipboard.writeText(text).catch(() => {
+				alert(`Failed to copy ${what} to clipboard: ${text}`);
+			});
 		}
 
 		var render = {
@@ -203,7 +201,7 @@
     </head>
     <body>
         <h1 id="top">Violations report for
-					junit10604310516655983690</h1>
+					junit17181599312409286086</h1>
         <a class="back-to-top" href="#top">↸ Back to top</a>
         <div id="toc">
             <h2 id="toc">Summary</h2>
@@ -467,14 +465,14 @@
 
 @SuppressWarnings(&quot;PMD.AvoidPrintStackTrace&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;PMD.AvoidPrintStackTrace&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;PMD.AvoidPrintStackTrace&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/pmd/PrintStack.java">src\main\java\pmd\<b>PrintStack.java</b>:8</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/pmd/PrintStack.java">src\main\java\pmd\<b>PrintStack.java</b>:8</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -515,14 +513,14 @@ Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;PMD.AvoidPrint
 
 @SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/EmptyBlock_3.java">src\main\java\<b>EmptyBlock_3.java</b>:4</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/EmptyBlock_3.java">src\main\java\<b>EmptyBlock_3.java</b>:4</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -556,14 +554,14 @@ Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:Emp
 
 @SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/EmptyBlock_3.java">src\main\java\<b>EmptyBlock_3.java</b>:8</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/EmptyBlock_3.java">src\main\java\<b>EmptyBlock_3.java</b>:8</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -597,14 +595,14 @@ Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:Emp
 
 @SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;checkstyle:EmptyBlock&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/EmptyBlock_3.java">src\main\java\<b>EmptyBlock_3.java</b>:10</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/EmptyBlock_3.java">src\main\java\<b>EmptyBlock_3.java</b>:10</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -645,14 +643,14 @@ Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:Emp
 
 @SuppressWarnings(&quot;PMD.NoPackage&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;PMD.NoPackage&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;PMD.NoPackage&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/WithoutPackage.java">src\main\java\<b>WithoutPackage.java</b>:1-3</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/WithoutPackage.java">src\main\java\<b>WithoutPackage.java</b>:1-3</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -691,14 +689,14 @@ Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;PMD.NoPackage&
 
 @SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:1</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:1</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -730,14 +728,14 @@ import java.math.BigDecimal;`,
 
 @SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:2</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:2</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -770,14 +768,14 @@ import java.sql.Array;`,
 
 @SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:3</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:3</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -811,14 +809,14 @@ import java.sql.Array;
 
 @SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;checkstyle:UnusedImports&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:4</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:4</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -859,14 +857,14 @@ public class UnusedImports_4 {`,
 
 @SuppressWarnings(&quot;checkstyle:NewlineAtEndOfFile&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:NewlineAtEndOfFile&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;checkstyle:NewlineAtEndOfFile&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:1</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/UnusedImports_4.java">src\main\java\<b>UnusedImports_4.java</b>:1</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -905,14 +903,14 @@ import java.math.BigDecimal;`,
 
 @SuppressWarnings(&quot;checkstyle:MemberName&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:MemberName&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;checkstyle:MemberName&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/MemberName_2.java">src\main\java\<b>MemberName_2.java</b>:3</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/MemberName_2.java">src\main\java\<b>MemberName_2.java</b>:3</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -946,14 +944,14 @@ Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:Mem
 
 @SuppressWarnings(&quot;checkstyle:MemberName&quot;) // TODO explanation
 
-Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:MemberName&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
+Click to copy!" onClick="copyToClipboard('suppression', `@SuppressWarnings(&quot;checkstyle:MemberName&quot;) // TODO explanation`)"><code>&#129323;</code></span></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>:
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/java/MemberName_2.java">src\main\java\<b>MemberName_2.java</b>:4</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/java/MemberName_2.java">src\main\java\<b>MemberName_2.java</b>:4</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -993,14 +991,14 @@ Click to copy!" onClick="copyToClipboard(`@SuppressWarnings(&quot;checkstyle:Mem
 
 tools:ignore=&quot;UnusedIds&quot;
 
-Click to copy!" onClick="copyToClipboard(`tools:ignore=&quot;UnusedIds&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused id`)</script></span>
+Click to copy!" onClick="copyToClipboard('suppression', `tools:ignore=&quot;UnusedIds&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused id`)</script></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>(debug):
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/res/values/unused_ids.xml">src\main\res\values\<b>unused_ids.xml</b>:4</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/res/values/unused_ids.xml">src\main\res\values\<b>unused_ids.xml</b>:4</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -1044,14 +1042,14 @@ You can include test sources in the unused resource check by setting the system 
 
 tools:ignore=&quot;UnusedResources&quot;
 
-Click to copy!" onClick="copyToClipboard(`tools:ignore=&quot;UnusedResources&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused resources`)</script></span>
+Click to copy!" onClick="copyToClipboard('suppression', `tools:ignore=&quot;UnusedResources&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused resources`)</script></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>(debug):
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/res/drawable/missing_density.xml">src\main\res\drawable\<b>missing_density.xml</b>:1</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/res/drawable/missing_density.xml">src\main\res\drawable\<b>missing_density.xml</b>:1</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -1090,14 +1088,14 @@ You can include test sources in the unused resource check by setting the system 
 
 tools:ignore=&quot;UnusedResources&quot;
 
-Click to copy!" onClick="copyToClipboard(`tools:ignore=&quot;UnusedResources&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused resources`)</script></span>
+Click to copy!" onClick="copyToClipboard('suppression', `tools:ignore=&quot;UnusedResources&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused resources`)</script></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>(debug):
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/res/layout/autofill.xml">src\main\res\layout\<b>autofill.xml</b>:1</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/res/layout/autofill.xml">src\main\res\layout\<b>autofill.xml</b>:1</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -1138,14 +1136,14 @@ You can include test sources in the unused resource check by setting the system 
 
 tools:ignore=&quot;UnusedResources&quot;
 
-Click to copy!" onClick="copyToClipboard(`tools:ignore=&quot;UnusedResources&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused resources`)</script></span>
+Click to copy!" onClick="copyToClipboard('suppression', `tools:ignore=&quot;UnusedResources&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Unused resources`)</script></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>(debug):
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/res/values/unused.xml">src\main\res\values\<b>unused.xml</b>:3</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/res/values/unused.xml">src\main\res\values\<b>unused.xml</b>:3</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -1195,14 +1193,14 @@ You can include test sources in the unused resource check by setting the system 
 
 tools:ignore=&quot;Autofill&quot;
 
-Click to copy!" onClick="copyToClipboard(`tools:ignore=&quot;Autofill&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Use Autofill`)</script></span>
+Click to copy!" onClick="copyToClipboard('suppression', `tools:ignore=&quot;Autofill&quot;`)"><code>&#129323;</code></span><script>render.markdown(`Use Autofill`)</script></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>(debug):
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/res/layout/autofill.xml">src\main\res\layout\<b>autofill.xml</b>:1</a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/res/layout/autofill.xml">src\main\res\layout\<b>autofill.xml</b>:1</a>
                             </summary>
                             <pre class="hljs">
                                 <code><script>
@@ -1250,14 +1248,14 @@ You can mark a view unimportant for autofill by specifying an \`importantForAuto
 
 <issue id=&quot;IconMissingDensityFolder&quot; severity=&quot;ignore&quot;>     <!-- TODO explanation -->     <ignore path=&quot;res&quot; /> </issue>
 
-Click to copy!" onClick="copyToClipboard(`<issue id=&quot;IconMissingDensityFolder&quot; severity=&quot;ignore&quot;>     <!-- TODO explanation -->     <ignore path=&quot;res&quot; /> </issue>`)"><code>&#129323;</code></span><script>render.markdown(`Missing density folder`)</script></span>
+Click to copy!" onClick="copyToClipboard('suppression', `<issue id=&quot;IconMissingDensityFolder&quot; severity=&quot;ignore&quot;>     <!-- TODO explanation -->     <ignore path=&quot;res&quot; /> </issue>`)"><code>&#129323;</code></span><script>render.markdown(`Missing density folder`)</script></span>
 			
                         <br>
                         			
                         <details class="location" open="open">
                             <summary>
                                 <code class="module">:<b></b></code>(debug):
-					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690/src/main/res/">src\main\<b>res</b></a>
+					<a class="file" href="file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086/src/main/res/">src\main\<b>res</b></a>
                             </summary>
                             <pre>
                                 <code>main:
@@ -1273,7 +1271,7 @@ Click to copy!" onClick="copyToClipboard(`<issue id=&quot;IconMissingDensityFold
                         			
                         <details class="description">
                             <summary>
-                                <script>render.markdown(`Missing density variation folders in \`C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit10604310516655983690\\src\\main\\res\`: drawable-hdpi, drawable-mdpi, drawable-xhdpi`)</script>
+                                <script>render.markdown(`Missing density variation folders in \`C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit17181599312409286086\\src\\main\\res\`: drawable-hdpi, drawable-mdpi, drawable-xhdpi`)</script>
                             </summary>
                             <section>
                                 <script>render.markdown(`Icons will look best if a custom version is provided for each of the major screen density classes (low, medium, high, extra-high, extra-extra-high). This lint check identifies folders which are missing, such as \`drawable-hdpi\`.
