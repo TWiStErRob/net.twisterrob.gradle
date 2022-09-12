@@ -34,12 +34,12 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 		private val endl = System.lineSeparator()
 
-		@Suppress("")
 		@Language("java")
 		private val testFile: String = """
 			import org.junit.*;
 			
 			@SuppressWarnings({
+				"RedundantSuppression", // These suppressions are working.
 				"NewClassNamingConvention", "NewMethodNamingConvention",
 				"ConstantConditions", "JUnitTestMethodInProductSource",
 			})
