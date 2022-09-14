@@ -31,91 +31,91 @@ subprojects {
 		replaceHamcrestDependencies(project)
 	}
 
-	gradle.projectsEvaluated {
-		tasks.withType<JavaCompile>().configureEach {
-			options.compilerArgs.addAll(
-				listOf(
-					"-Werror", // fail on warnings
-					"-Xlint:all", // enable all possible checks
-					"-Xlint:-processing" // except "No processor claimed any of these annotations"
-				)
+	tasks.withType<JavaCompile>().configureEach {
+		options.compilerArgs.addAll(
+			listOf(
+				"-Werror", // fail on warnings
+				"-Xlint:all", // enable all possible checks
+				"-Xlint:-processing" // except "No processor claimed any of these annotations"
 			)
-		}
-		tasks.withType<GroovyCompile>().configureEach {
-			options.compilerArgs.addAll(
-				listOf(
-					"-Werror", // fail on warnings
-					"-Xlint:all" // enable all possible checks
-				)
-			)
-			groovyOptions.configurationScript = rootProject.file("gradle/compileGroovy.groovy")
-			// enable Java 7 invokeDynamic, since Java target is > 7 (Android requires Java 8 at least)
-			// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project
-			groovyOptions.optimizationOptions!!["indy"] = true
-		}
-		tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-			kotlinOptions.verbose = true
-			kotlinOptions.languageVersion = deps.versions.kotlin.language.get()
-			kotlinOptions.apiVersion = deps.versions.kotlin.language.get()
-			kotlinOptions.jvmTarget = deps.versions.java.get()
-			kotlinOptions.suppressWarnings = false
-			kotlinOptions.allWarningsAsErrors = true
-			kotlinOptions.freeCompilerArgs += listOf(
-				// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
-				//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
-				//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
-				//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
-				// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
-				"-Xno-optimized-callable-references"
-			)
-			if (kotlinOptions.languageVersion == "1.4") {
-				// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".
-				kotlinOptions.freeCompilerArgs += "-Xsuppress-version-warnings"
-			} else {
-				TODO("Remove -Xsuppress-version-warnings")
-			}
-		}
+		)
+	}
 
-		tasks.withType<Test>().configureEach {
-			useJUnitPlatform()
-
-			val propertyNamesToExposeToJUnitTests = listOf(
-				// for GradleRunnerRule to use a different Gradle version for tests
-				"net.twisterrob.gradle.runner.gradleVersion",
-				// for tests to decide dynamically
-				"net.twisterrob.test.android.pluginVersion",
-				"net.twisterrob.test.android.compileSdkVersion",
-				// So that command line gradlew -P...=false works.
-				// Will override earlier jvmArgs, if both specified.
-				"net.twisterrob.gradle.runner.clearAfterSuccess",
-				"net.twisterrob.gradle.runner.clearAfterFailure",
+	tasks.withType<GroovyCompile>().configureEach {
+		options.compilerArgs.addAll(
+			listOf(
+				"-Werror", // fail on warnings
+				"-Xlint:all" // enable all possible checks
 			)
-			val properties = propertyNamesToExposeToJUnitTests
-				.keysToMap { project.findProperty(it) }
-				.toMutableMap()
-			if (System.getProperties().containsKey("idea.paths.selector")) {
-				logger.debug("Keeping folder contents after test run from IDEA")
-				// see net.twisterrob.gradle.test.GradleRunnerRule
-				properties["net.twisterrob.gradle.runner.clearAfterSuccess"] = "false"
-				properties["net.twisterrob.gradle.runner.clearAfterFailure"] = "false"
-			}
-			properties.forEach { (name, value) -> inputs.property(name, value) }
-			properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
+		)
+		groovyOptions.configurationScript = rootProject.file("gradle/compileGroovy.groovy")
+		// enable Java 7 invokeDynamic, since Java target is > 7 (Android requires Java 8 at least)
+		// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project
+		groovyOptions.optimizationOptions!!["indy"] = true
+	}
+
+	tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+		kotlinOptions.verbose = true
+		kotlinOptions.languageVersion = deps.versions.kotlin.language.get()
+		kotlinOptions.apiVersion = deps.versions.kotlin.language.get()
+		kotlinOptions.jvmTarget = deps.versions.java.get()
+		kotlinOptions.suppressWarnings = false
+		kotlinOptions.allWarningsAsErrors = true
+		kotlinOptions.freeCompilerArgs += listOf(
+			// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
+			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
+			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
+			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
+			// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
+			"-Xno-optimized-callable-references"
+		)
+		if (kotlinOptions.languageVersion == "1.4") {
+			// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".
+			kotlinOptions.freeCompilerArgs += "-Xsuppress-version-warnings"
+		} else {
+			TODO("Remove -Xsuppress-version-warnings")
 		}
+	}
 
-		tasks.withType<@Suppress("UnstableApiUsage") ProcessResources>().configureEach {
-			val propertyNamesToReplace = listOf(
-				"net.twisterrob.test.android.pluginVersion",
-				"net.twisterrob.test.android.compileSdkVersion"
+	tasks.withType<Test>().configureEach {
+		useJUnitPlatform()
+
+		val propertyNamesToExposeToJUnitTests = listOf(
+			// for GradleRunnerRule to use a different Gradle version for tests
+			"net.twisterrob.gradle.runner.gradleVersion",
+			// for tests to decide dynamically
+			"net.twisterrob.test.android.pluginVersion",
+			"net.twisterrob.test.android.compileSdkVersion",
+			// So that command line gradlew -P...=false works.
+			// Will override earlier jvmArgs, if both specified.
+			"net.twisterrob.gradle.runner.clearAfterSuccess",
+			"net.twisterrob.gradle.runner.clearAfterFailure",
+		)
+		val properties = propertyNamesToExposeToJUnitTests
+			.keysToMap { project.findProperty(it) }
+			.toMutableMap()
+		if (System.getProperties().containsKey("idea.paths.selector")) {
+			logger.debug("Keeping folder contents after test run from IDEA")
+			// see net.twisterrob.gradle.test.GradleRunnerRule
+			properties["net.twisterrob.gradle.runner.clearAfterSuccess"] = "false"
+			properties["net.twisterrob.gradle.runner.clearAfterFailure"] = "false"
+		}
+		properties.forEach { (name, value) -> inputs.property(name, value) }
+		properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
+	}
+
+	tasks.withType<@Suppress("UnstableApiUsage") ProcessResources>().configureEach {
+		val propertyNamesToReplace = listOf(
+			"net.twisterrob.test.android.pluginVersion",
+			"net.twisterrob.test.android.compileSdkVersion"
+		)
+		val properties = propertyNamesToReplace.keysToMap { project.findProperty(it) }
+		properties.forEach { (name, value) -> inputs.property(name, value) }
+		filesMatching(listOf("**/build.gradle", "**/settings.gradle")) {
+			val replacements = properties + mapOf(
+				// custom replacements (`"name" to value`) would come here
 			)
-			val properties = propertyNamesToReplace.keysToMap { project.findProperty(it) }
-			properties.forEach { (name, value) -> inputs.property(name, value) }
-			filesMatching(listOf("**/build.gradle", "**/settings.gradle")) {
-				val replacements = properties + mapOf(
-					// custom replacements (`"name" to value`) would come here
-				)
-				filter(mapOf("tokens" to replacements), org.apache.tools.ant.filters.ReplaceTokens::class.java)
-			}
+			filter(mapOf("tokens" to replacements), org.apache.tools.ant.filters.ReplaceTokens::class.java)
 		}
 	}
 
