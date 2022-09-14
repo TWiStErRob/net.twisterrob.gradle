@@ -32,7 +32,6 @@ dependencies {
 	compileOnly(libs.android.gradle)
 	// Need com.android.utils.FileUtils for HtmlReportTask.
 	compileOnly(libs.android.tools.common)
-//	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")
 	api(libs.violations)
 
 	testImplementation(projects.test.internal)
