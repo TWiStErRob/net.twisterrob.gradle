@@ -164,7 +164,7 @@ subprojects {
 
 	normalization {
 		runtimeClasspath {
-			metaInf { 
+			metaInf {
 				ignoreAttribute("Built-Date")
 			}
 		}
@@ -204,7 +204,7 @@ project.tasks.register<TestReport>("testReport") {
 	doLast {
 		@Suppress("UnstableApiUsage")
 		val reportFile = destinationDirectory.file("index.html").get().asFile
-		val failureRegex = """(?s).*<div class="infoBox" id="failures">\s*<div class="counter">(\d+)<\/div>.*""".toRegex()
+		val failureRegex = Regex("""(?s).*<div class="infoBox" id="failures">\s*<div class="counter">(\d+)<\/div>.*""")
 		val failureMatch = failureRegex.matchEntire(reportFile.readText())
 		val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
 		if (failureMatch == null) {
