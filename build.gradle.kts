@@ -158,6 +158,7 @@ allprojects {
 		java.targetCompatibility = JavaVersion.toVersion(deps.versions.java.get())
 		tasks.named<Test>("test") { testLogging.events("passed", "skipped", "failed") }
 		afterEvaluate {
+			// Delayed configuration, so that project.* is set up properly in corresponding modules' build.gradle.kts.
 			tasks.named<Jar>("jar") {
 				manifest {
 					attributes(
