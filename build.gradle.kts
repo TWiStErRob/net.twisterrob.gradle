@@ -3,15 +3,8 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 plugins {
-	kotlin("jvm") // Applied so that getKotlinPluginVersion() works, will not be necessary in future Kotlin versions.
 	@Suppress("DSL_SCOPE_VIOLATION")
 	alias(libs.plugins.nexus)
-	// REPORT this is not true, it brings in Kotlin DSL helpers like fun DependencyHandler.`testFixturesImplementation`.
-	// > Error resolving plugin [id: 'org.gradle.java-test-fixtures', apply: false]
-	// > > Plugin 'org.gradle.java-test-fixtures' is a core Gradle plugin, which is already on the classpath.
-	// > Requesting it with the 'apply false' option is a no-op.
-	// Applying this plugin even though it's not used here so that the common setup works.
-	`java-test-fixtures`
 }
 
 val projectVersion: String by project
@@ -25,10 +18,6 @@ allprojects {
 resetGradleTestWorkerIdToDefault()
 
 subprojects {
-	apply { plugin("kotlin") }
-}
-
-allprojects {
 	// Extension with name 'libs' does not exist. Currently registered extension names: [ext, kotlin, kotlinTestRegistry, base, defaultArtifacts, sourceSets, reporting, java, javaToolchains, testing]
 	// Needs to be called different from libs,
 	// because com.android.tools.idea.gradle.dsl.model.ext.PropertyUtil.followElement
@@ -40,14 +29,6 @@ allprojects {
 
 	configurations.all {
 		replaceHamcrestDependencies(project)
-	}
-	// Make sure we don't have many versions of Kotlin lying around.
-	dependencies {
-		compileOnly(enforcedPlatform(deps.kotlin.bom))
-		testCompileOnly(enforcedPlatform(deps.kotlin.bom))
-		plugins.withId("org.gradle.java-test-fixtures") {
-			testFixturesCompileOnly(enforcedPlatform(deps.kotlin.bom))
-		}
 	}
 
 	gradle.projectsEvaluated {
@@ -140,7 +121,13 @@ allprojects {
 
 	plugins.withId("kotlin") {
 		dependencies {
-			//add("implementation", "org.funktionale:funktionale-partials:1.2")
+			// Make sure we don't have many versions of Kotlin lying around.
+			add("compileOnly", enforcedPlatform(deps.kotlin.bom))
+			add("testCompileOnly", enforcedPlatform(deps.kotlin.bom))
+			plugins.withId("org.gradle.java-test-fixtures") {
+				add("testFixturesCompileOnly", enforcedPlatform(deps.kotlin.bom))
+			}
+
 			add("compileOnly", deps.kotlin.dsl) {
 				isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
 			}
