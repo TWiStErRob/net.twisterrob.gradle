@@ -166,13 +166,18 @@ allprojects {
 							"Implementation-Vendor" to project.group,
 							"Implementation-Title" to project.base.archivesName.get(),
 							"Implementation-Version" to project.version,
-							"Built-Date" to if (projectVersion.endsWith("-SNAPSHOT"))
-								DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(0))
-							else
-								DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+							"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
 						)
 					)
 				}
+			}
+		}
+	}
+
+	normalization {
+		runtimeClasspath {
+			metaInf { 
+				ignoreAttribute("Built-Date")
 			}
 		}
 	}
