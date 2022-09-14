@@ -223,4 +223,40 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 		val tasks = tasksIn(modules, "testDebugUnitTest")
 		assertThat(allTasks - tasks - ":testReport", not(hasItem(startsWith("test"))))
 	}
+
+	@Test fun `f276`() {
+		gradle.settingsFile.appendText("include ':module1'${endl}")
+
+		@Language("gradle")
+		val subProject = """
+			apply plugin: 'com.android.library'
+			dependencies {
+				testImplementation 'junit:junit:${Version.id()}'
+			}
+			tasks.withType(Test) {
+				ignoreFailures = true
+			}
+		""".trimIndent()
+		@Language("xml")
+		val manifest = """
+			<manifest package="module1" />
+		""".trimIndent()
+
+		gradle.file(subProject, "module1", "build.gradle")
+		gradle.file(manifest, "module1", "src", "main", "AndroidManifest.xml")
+		gradle.file(testFile, "module1", "src", "test", "java", "Tests.java")
+
+		@Language("gradle")
+		val script = """
+			apply plugin: 'net.twisterrob.quality'
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			basedOn("android-multi_module")
+			run(script, ":module1:testDebug", ":testReport", "--no-parallel")
+		}
+
+		assertEquals(TaskOutcome.NO_SOURCE, result.task(":module1:test")!!.outcome)
+		assertEquals(TaskOutcome.SUCCESS, result.task(":testReport")!!.outcome)
+	}
 }
