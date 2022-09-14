@@ -3,8 +3,8 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 plugins {
-	kotlin("jvm") // Applied so that getKotlinPluginVersion() works, will not be necessary in future Kotlin versions. 
-	@Suppress("DSL_SCOPE_VIOLATION", "UnstableApiUsage")
+	kotlin("jvm") // Applied so that getKotlinPluginVersion() works, will not be necessary in future Kotlin versions.
+	@Suppress("DSL_SCOPE_VIOLATION")
 	alias(libs.plugins.nexus)
 	// REPORT this is not true, it brings in Kotlin DSL helpers like fun DependencyHandler.`testFixturesImplementation`.
 	// > Error resolving plugin [id: 'org.gradle.java-test-fixtures', apply: false]
