@@ -59,9 +59,6 @@ mockito = "4.8.0"
 # GitHub releases: https://github.com/nhaarman/mockito-kotlin/releases
 mockito-kotlin = "4.0.0"
 # GitHub releases: https://github.com/mockk/mockk/releases
-# TODO can't go farther than 1.12.5 yet
-# 1.12.6 is broken: https://github.com/mockk/mockk/issues/897
-# 1.12.7 requires Java 11: https://github.com/mockk/mockk/issues/898
 mockk = "1.12.8"
 
 hamcrest = "2.2"
