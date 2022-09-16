@@ -302,6 +302,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 	companion object {
 		@Language("gradle.kts")
 		val settings: String = """
+			import java.io.PrintWriter
+			import java.io.StringWriter
+			
 			val created: MutableMap<Task, Throwable> = mutableMapOf()
 			gradle.taskGraph.whenReady {
 				created.remove(created.keys.single { it.path == ":help" })
@@ -320,6 +323,19 @@ class PluginIntegrationTest : BaseIntgTest() {
 					val message =  "${'$'}{task} was created before ${'$'}{project} was configured."
 					created.put(task, Exception(message))
 				}
+			}
+			
+			/**
+			 * Polyfill for Gradle <6.8 which doesn't have Kotlin 1.4+.
+			 * [Throwable.stackTraceToString] is `@SinceKotlin("1.4")`.
+			 * See https://docs.gradle.org/current/userguide/compatibility.html#kotlin
+			 */
+			fun Throwable.stackTraceToString(): String {
+				val sw = StringWriter()
+				val pw = PrintWriter(sw)
+				printStackTrace(pw)
+				pw.flush()
+				return sw.toString()
 			}
 		""".trimIndent()
 	}
