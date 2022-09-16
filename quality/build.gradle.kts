@@ -51,9 +51,11 @@ tasks.register("tests") {
 		projects.pmd,
 		projects.test,
 		projects.test.internal,
+		projects.test.integration,
 	).forEach {
 		dependsOn(it.dependencyProject.tasks.named("test"))
 	}
+	dependsOn(projects.compat.dependencyProject.tasks.named("tests"))
 }
 
 pullTestResourcesFrom(projects.test)
