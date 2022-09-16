@@ -1,7 +1,7 @@
 plugins {
-	`kotlin-dsl`
+	id("org.gradle.java-gradle-plugin")
 	//alias(libs.plugins.kotlin) // Can't apply since there's a mismatch between embedded Kotlin and latest Kotlin.
-	id("java-gradle-plugin")
+	`kotlin-dsl`
 }
 
 gradlePlugin {
