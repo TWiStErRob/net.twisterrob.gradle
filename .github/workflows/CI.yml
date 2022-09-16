@@ -38,7 +38,7 @@ jobs:
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
       - name: Build Gradle Quality plugins.
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace jar
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace jar validatePlugins
 
       - name: Cancel other jobs on Build failure, no need to check / test it.
         if: failure()
@@ -47,6 +47,14 @@ jobs:
       - name: Publish Gradle Quality plugins to mavenLocal().
         # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
         run: ./gradlew --no-daemon --no-build-cache --no-configuration-cache --stacktrace publishToMavenLocal
+
+      - name: Upload Gradle Plugin validation report.
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Gradle Plugin Validation Report
+          path: |
+            ${{ github.workspace }}/**/build/reports/plugin-development/validation-report.txt
 
       - name: Upload JARs, Maven and Gradle metadata.
         if: success() || failure()
