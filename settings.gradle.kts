@@ -11,6 +11,8 @@ plugins {
 	id("net.twisterrob.gradle.plugins.settings")
 }
 
+// buildscript { enableDependencyLocking(settings) }
+
 enableFeaturePreviewQuietly("TYPESAFE_PROJECT_ACCESSORS", "Type-safe project accessors")
 
 include(":quality")
