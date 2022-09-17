@@ -1,5 +1,6 @@
 package net.twisterrob.gradle
 
+import net.twisterrob.gradle.common.KotlinVersions
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -342,7 +343,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 	 * and [fixed](https://youtrack.jetbrains.com/issue/KT-46626) in Kotlin 1.5.30.
 	 */
 	private fun conditionalApplyKotlin(androidPluginId: String): String =
-		if (GradleVersion.version("1.5.30") <= GradleVersion.current()) {
+		if (KotlinVersion(1, 5, 30) <= KotlinVersions.UNDER_TEST) {
 			// Location is not relevant since Kotlin 1.5.30, we can put this plugin in any location.
 			"""
 			apply plugin: "kotlin-android"
