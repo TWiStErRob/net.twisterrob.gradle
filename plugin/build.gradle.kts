@@ -42,7 +42,7 @@ tasks.register("tests") {
 allprojects {
 	tasks.withType<Test>().configureEach {
 		onlyIf {
-			it.project.findProperty("net.twisterrob.test.android.pluginVersion").toString() >= "4.0.0"
+			it.project.property("net.twisterrob.test.android.pluginVersion").toString() >= "4.0.0"
 		}
 	}
 }

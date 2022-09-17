@@ -96,7 +96,7 @@ subprojects {
 			"net.twisterrob.gradle.runner.clearAfterFailure",
 		)
 		val properties = propertyNamesToExposeToJUnitTests
-			.keysToMap { project.findProperty(it) }
+			.keysToMap { project.property(it) }
 			.toMutableMap()
 		if (System.getProperties().containsKey("idea.paths.selector")) {
 			logger.debug("Keeping folder contents after test run from IDEA")
@@ -114,7 +114,7 @@ subprojects {
 			"net.twisterrob.test.kotlin.pluginVersion",
 			"net.twisterrob.test.android.compileSdkVersion"
 		)
-		val properties = propertyNamesToReplace.keysToMap { project.findProperty(it) }
+		val properties = propertyNamesToReplace.keysToMap { project.property(it) }
 		properties.forEach { (name, value) -> inputs.property(name, value) }
 		filesMatching(listOf("**/build.gradle", "**/settings.gradle")) {
 			val replacements = properties + mapOf(
