@@ -353,12 +353,20 @@ class PluginIntegrationTest : BaseIntgTest() {
 		when (location) {
 			ApplyLocation.BEFORE -> {
 				// Location is not relevant since Kotlin 1.5.30, we can put this plugin in any location.
-				"""if (kotlin.KotlinVersion.CURRENT.isAtLeast(1, 5, 30)) { apply plugin: "kotlin-android" }"""
+				"""
+				if ("1.5.30" <= org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapperKt.getKotlinPluginVersion(project)) {
+					println("before"); apply plugin: "kotlin-android"
+				}
+				""".trimIndent()
 			}
 
 			ApplyLocation.AFTER -> {
 				// Location is relevant before Kotlin 1.5.30, we have to put this after the Android plugin.
-				"""if (!kotlin.KotlinVersion.CURRENT.isAtLeast(1, 5, 30)) { apply plugin: "kotlin-android" }"""
+				"""
+				if (org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapperKt.getKotlinPluginVersion(project) < "1.5.30") {
+					println("before"); apply plugin: "kotlin-android"
+				}
+				""".trimIndent()
 			}
 		}
 }
