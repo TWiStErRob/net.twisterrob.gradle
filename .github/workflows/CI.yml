@@ -253,6 +253,7 @@ jobs:
           ${{ matrix.test-task }}
           -Pnet.twisterrob.gradle.build.verboseReports=true
           -Pnet.twisterrob.test.android.pluginVersion=${{ matrix.agp }}
+          -Pnet.twisterrob.test.kotlin.pluginVersion=${{ matrix.kotlin }}
           -Pnet.twisterrob.gradle.runner.gradleVersion=${{ matrix.gradle }}
 
       - name: Upload "${{ env.JOB_NAME }} Test Results XMLs".
@@ -293,6 +294,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # See https://docs.gradle.org/current/userguide/compatibility.html#kotlin.
         # See https://developer.android.com/studio/releases/gradle-plugin#updating-gradle.
         #gradle: []
         # See https://developer.android.com/studio/releases/gradle-plugin.
@@ -301,6 +303,8 @@ jobs:
         #build-tools: []
         # See android-all_kinds/build.gradle for more info.
         #instant-api: []
+        # See https://kotlinlang.org/docs/releases.html.
+        #kotlin: []
         # Potential to run specific test tasks, e.g. :plugin can be run separately.
         #test-task: []
         include:
@@ -316,6 +320,7 @@ jobs:
             agp: 3.1.4
             build-tools: 27.0.3
             instant-api: 26
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 3.2.x on Gradle 4.6+"
             gradle: 4.9
@@ -323,6 +328,7 @@ jobs:
             agp: 3.2.1
             build-tools: 28.0.3
             instant-api: 27
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 3.3.x on Gradle 4.10.1+"
             gradle: 4.10.3
@@ -330,6 +336,7 @@ jobs:
             agp: 3.3.3
             build-tools: 28.0.3
             instant-api: 27
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 3.3.x on Gradle 5.x"
             gradle: 5.4.1
@@ -337,6 +344,7 @@ jobs:
             agp: 3.3.3
             build-tools: 28.0.3
             instant-api: 27
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 3.4.x on Gradle 5.1.1+"
             gradle: 5.6.4
@@ -344,6 +352,7 @@ jobs:
             agp: 3.4.3
             build-tools: 28.0.3
             instant-api: 28
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 3.5.x on Gradle 5.4.1-5.6.4"
             gradle: 5.6.4
@@ -351,6 +360,7 @@ jobs:
             agp: 3.5.4
             build-tools: 28.0.3
             instant-api: 28
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 3.5.x on Gradle 6.x"
             gradle: 6.7.1
@@ -358,6 +368,7 @@ jobs:
             agp: 3.5.4
             build-tools: 28.0.3
             instant-api: 28
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 3.6.x on Gradle 5.6.4+"
             gradle: 5.6.4
@@ -365,6 +376,7 @@ jobs:
             agp: 3.6.4
             build-tools: 28.0.3
             instant-api: 28
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 3.6.x on Gradle 6.x"
             gradle: 6.7.1
@@ -372,6 +384,7 @@ jobs:
             agp: 3.6.4
             build-tools: 28.0.3
             instant-api: 28
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 4.0.x on Gradle 6.1.1+"
             gradle: 6.1.1
@@ -379,6 +392,7 @@ jobs:
             agp: 4.0.2
             build-tools: 29.0.2
             instant-api: 29
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 4.0.x on Gradle 6.1.1+ - plugin"
             gradle: 6.1.1
@@ -386,6 +400,7 @@ jobs:
             agp: 4.0.2
             build-tools: 32.0.0
             instant-api: 29
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 4.0.x on Gradle 6.x"
             gradle: 6.7.1
@@ -393,6 +408,7 @@ jobs:
             agp: 4.0.2
             build-tools: 29.0.2
             instant-api: 29
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 4.0.x on Gradle 6.x - plugin"
             gradle: 6.7.1
@@ -400,6 +416,7 @@ jobs:
             agp: 4.0.2
             build-tools: 32.0.0
             instant-api: 29
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 4.1.x on Gradle 6.5+"
             gradle: 6.5.1
@@ -407,6 +424,7 @@ jobs:
             agp: 4.1.3
             build-tools: 29.0.2
             instant-api: 29
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 4.1.x on Gradle 6.5+ - plugin"
             gradle: 6.5.1
@@ -414,6 +432,7 @@ jobs:
             agp: 4.1.3
             build-tools: 32.0.0
             instant-api: 29
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 4.1.x on Gradle 6.x"
             gradle: 6.7.1
@@ -421,6 +440,7 @@ jobs:
             agp: 4.1.3
             build-tools: 29.0.2
             instant-api: 29
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 4.1.x on Gradle 6.x - plugin"
             gradle: 6.7.1
@@ -428,6 +448,7 @@ jobs:
             agp: 4.1.3
             build-tools: 32.0.0
             instant-api: 29
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 4.2.x on Gradle 6.7.1+"
             gradle: 6.7.1
@@ -435,6 +456,7 @@ jobs:
             agp: 4.2.2
             build-tools: 30.0.2
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 4.2.x on Gradle 6.7.1+ - plugin"
             gradle: 6.7.1
@@ -442,6 +464,7 @@ jobs:
             agp: 4.2.2
             build-tools: 32.0.0
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 4.2.x on Gradle 6.x"
             gradle: 6.9.2
@@ -449,6 +472,7 @@ jobs:
             agp: 4.2.2
             build-tools: 30.0.2
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 4.2.x on Gradle 6.x - plugin"
             gradle: 6.9.2
@@ -456,6 +480,7 @@ jobs:
             agp: 4.2.2
             build-tools: 32.0.0
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 4.2.x on Gradle 7.x"
             gradle: 7.5.1
@@ -463,6 +488,7 @@ jobs:
             agp: 4.2.2
             build-tools: 30.0.2
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 4.2.x on Gradle 7.x - plugin"
             gradle: 7.5.1
@@ -470,6 +496,7 @@ jobs:
             agp: 4.2.2
             build-tools: 32.0.0
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           # From AGP 7 onwards it requires JDK 11 for Gradle to run on.
           # > com.android.builder.errors.EvalIssueException:
@@ -481,6 +508,7 @@ jobs:
             agp: 7.0.4
             build-tools: 30.0.2
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 7.0.x on Gradle 7.0+ - plugin"
             gradle: 7.0.2
@@ -488,6 +516,7 @@ jobs:
             agp: 7.0.4
             build-tools: 32.0.0
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 7.0.x on Gradle 7.x"
             gradle: 7.5.1
@@ -495,6 +524,7 @@ jobs:
             agp: 7.0.4
             build-tools: 30.0.2
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 7.0.x on Gradle 7.x - plugin"
             gradle: 7.5.1
@@ -502,6 +532,7 @@ jobs:
             agp: 7.0.4
             build-tools: 32.0.0
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 7.1.x on Gradle 7.2+"
             gradle: 7.2
@@ -509,6 +540,7 @@ jobs:
             agp: 7.1.3
             build-tools: 30.0.2
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 7.1.x on Gradle 7.2+ - plugin"
             gradle: 7.2
@@ -516,6 +548,7 @@ jobs:
             agp: 7.1.3
             build-tools: 32.0.0
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 7.1.x on Gradle 7.x"
             gradle: 7.5.1
@@ -523,6 +556,7 @@ jobs:
             agp: 7.1.3
             build-tools: 30.0.2
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 7.1.x on Gradle 7.x - plugin"
             gradle: 7.5.1
@@ -530,6 +564,7 @@ jobs:
             agp: 7.1.3
             build-tools: 32.0.0
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 7.2.x on Gradle 7.3+"
             gradle: 7.3.3
@@ -537,6 +572,7 @@ jobs:
             agp: 7.2.2
             build-tools: 30.0.2
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 7.2.x on Gradle 7.3+ - plugin"
             gradle: 7.3.3
@@ -544,6 +580,7 @@ jobs:
             agp: 7.2.2
             build-tools: 32.0.0
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 7.2.x on Gradle 7.x"
             gradle: 7.5.1
@@ -551,6 +588,7 @@ jobs:
             agp: 7.2.2
             build-tools: 30.0.2
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 7.2.x on Gradle 7.x - plugin"
             gradle: 7.5.1
@@ -558,11 +596,22 @@ jobs:
             agp: 7.2.2
             build-tools: 32.0.0
             instant-api: 30
+            kotlin: 1.4.32
             test-task: testReport :plugin:tests
+            # See GradlePluginUtils.kt > pluginList: AGP 7.3 requires Kotlin 1.5.20+.
+            # 1.5.32 would be enough, but have to jump further forward because:
+            # org.jetbrains.kotlin.gradle.internal.kapt.KaptWithoutKotlincTask.kotlinStdlibClasspath is eagerly initialized.
+            # jarSearchingUtil.kt > findPotentialModuleJars uses a HashSet
+            # Sometimes (e.g. always on CI, not on Window locally) the hash ordering prefers
+            # classpath files('.../plugin/languages/build/classes/java/main')
+            # over
+            # classpath files('.../kotlin-stdlib-1.5.32.jar')
+            # and jarSearchingUtil.kt > hasEntry assumes that all "files" are .jar.
           - name: "AGP 7.3.x on Gradle 7.4+"
             gradle: 7.4.2
             gradle-java: 11
             agp: 7.3.0
+            kotlin: 1.6.21
             build-tools: 30.0.3
             instant-api: 30
             test-task: testReport :quality:tests
@@ -570,6 +619,7 @@ jobs:
             gradle: 7.4.2
             gradle-java: 11
             agp: 7.3.0
+            kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
             test-task: testReport :plugin:tests
@@ -577,6 +627,7 @@ jobs:
             gradle: 7.5.1
             gradle-java: 11
             agp: 7.3.0
+            kotlin: 1.6.21
             build-tools: 30.0.3
             instant-api: 30
             test-task: testReport :quality:tests
@@ -584,6 +635,7 @@ jobs:
             gradle: 7.5.1
             gradle-java: 11
             agp: 7.3.0
+            kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
             test-task: testReport :plugin:tests
@@ -591,6 +643,7 @@ jobs:
             gradle: 7.5.1
             gradle-java: 11
             agp: 7.4.0-alpha10
+            kotlin: 1.6.21
             build-tools: 30.0.3
             instant-api: 30
             test-task: testReport :quality:tests
@@ -598,6 +651,7 @@ jobs:
             gradle: 7.5.1
             gradle-java: 11
             agp: 7.4.0-alpha10
+            kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
             test-task: testReport :plugin:tests

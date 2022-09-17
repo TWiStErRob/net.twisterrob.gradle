@@ -88,6 +88,7 @@ subprojects {
 			"net.twisterrob.gradle.runner.gradleVersion",
 			// for tests to decide dynamically
 			"net.twisterrob.test.android.pluginVersion",
+			"net.twisterrob.test.kotlin.pluginVersion",
 			"net.twisterrob.test.android.compileSdkVersion",
 			// So that command line gradlew -P...=false works.
 			// Will override earlier jvmArgs, if both specified.
@@ -110,6 +111,7 @@ subprojects {
 	tasks.withType<@Suppress("UnstableApiUsage") ProcessResources>().configureEach {
 		val propertyNamesToReplace = listOf(
 			"net.twisterrob.test.android.pluginVersion",
+			"net.twisterrob.test.kotlin.pluginVersion",
 			"net.twisterrob.test.android.compileSdkVersion"
 		)
 		val properties = propertyNamesToReplace.keysToMap { project.findProperty(it) }

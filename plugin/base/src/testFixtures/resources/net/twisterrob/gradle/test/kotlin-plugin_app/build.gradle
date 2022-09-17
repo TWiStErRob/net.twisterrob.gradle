@@ -3,19 +3,8 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		// See GradlePluginUtils.kt > pluginList: AGP 7.3 requires Kotlin 1.5.20+.
-		if ("@net.twisterrob.test.android.pluginVersion@" >= "7.3.0") {
-			// 1.5.32 would be enough, but have to jump further forward because:
-			// org.jetbrains.kotlin.gradle.internal.kapt.KaptWithoutKotlincTask.kotlinStdlibClasspath is eagerly initialized.
-			// jarSearchingUtil.kt > findPotentialModuleJars uses a HashSet
-			// Sometimes (e.g. always on CI, not on Window locally) the hash ordering prefers
-			// classpath files('.../plugin/languages/build/classes/java/main')
-			// over
-			// classpath files('.../kotlin-stdlib-1.5.32.jar')
-			// and jarSearchingUtil.kt > hasEntry assumes that all "files" are .jar.
-			classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
-		} else {
-			classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:@net.twisterrob.test.kotlin.pluginVersion@")
+		if (!("@net.twisterrob.test.android.pluginVersion@" >= "7.3.0")) {
 			def doNotNagAbout = rootProject.ext["doNotNagAbout"]
 			// https://youtrack.jetbrains.com/issue/KT-47867 was fixed in 1.6.0,
 			// so disable these warnings for anything that uses Kotlin < 1.6.
