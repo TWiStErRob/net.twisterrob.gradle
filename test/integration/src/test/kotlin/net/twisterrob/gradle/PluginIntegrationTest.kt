@@ -6,6 +6,7 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
+import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -216,9 +217,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			${conditionalApplyKotlin(ApplyLocation.BEFORE)}
-			apply plugin: "net.twisterrob.android-app"
-			${conditionalApplyKotlin(ApplyLocation.AFTER)}
+			${conditionalApplyKotlin("net.twisterrob.android-app")}
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -249,9 +248,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			${conditionalApplyKotlin(ApplyLocation.BEFORE)}
-			apply plugin: "net.twisterrob.android-library"
-			${conditionalApplyKotlin(ApplyLocation.AFTER)}
+			${conditionalApplyKotlin("net.twisterrob.android-library")}
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -266,9 +263,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			${conditionalApplyKotlin(ApplyLocation.BEFORE)}
-			apply plugin: "net.twisterrob.android-app" // :plugin
-			${conditionalApplyKotlin(ApplyLocation.AFTER)}
+			${conditionalApplyKotlin("net.twisterrob.android-app")} // :plugin
 			// Android: apply plugin: "net.twisterrob.android-library" // :plugin
 			apply plugin: "net.twisterrob.root" // :plugin:base
 			apply plugin: "net.twisterrob.java" // :plugin:languages
@@ -341,32 +336,23 @@ class PluginIntegrationTest : BaseIntgTest() {
 		""".trimIndent()
 	}
 
-	private enum class ApplyLocation { BEFORE, AFTER }
-
 	/**
 	 * Kotlin plugin had a dependency on what order it's applied in.
 	 * The issue has been [nicely summarized](https://youtrack.jetbrains.com/issue/KT-44279)
 	 * and [fixed](https://youtrack.jetbrains.com/issue/KT-46626) in Kotlin 1.5.30.
 	 */
-	@Suppress("SameParameterValue")
-	private fun conditionalApplyKotlin(location: ApplyLocation): String =
-		when (location) {
-			ApplyLocation.BEFORE -> {
-				// Location is not relevant since Kotlin 1.5.30, we can put this plugin in any location.
-				"""
-				if ("1.5.30" <= org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapperKt.getKotlinPluginVersion(project)) {
-					println("before"); apply plugin: "kotlin-android"
-				}
-				""".trimIndent()
-			}
-
-			ApplyLocation.AFTER -> {
-				// Location is relevant before Kotlin 1.5.30, we have to put this after the Android plugin.
-				"""
-				if (org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapperKt.getKotlinPluginVersion(project) < "1.5.30") {
-					println("before"); apply plugin: "kotlin-android"
-				}
-				""".trimIndent()
-			}
+	private fun conditionalApplyKotlin(androidPluginId: String): String =
+		if (GradleVersion.version("1.5.30") <= GradleVersion.current()) {
+			// Location is not relevant since Kotlin 1.5.30, we can put this plugin in any location.
+			"""
+			apply plugin: "kotlin-android"
+			apply plugin: "${androidPluginId}"
+			""".trimIndent()
+		} else {
+			// Location is relevant before Kotlin 1.5.30, we have to put this after the Android plugin.
+			"""
+			apply plugin: "${androidPluginId}"
+			apply plugin: "kotlin-android"
+			""".trimIndent()
 		}
 }
