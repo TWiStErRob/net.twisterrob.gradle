@@ -216,8 +216,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "kotlin-android"
 			apply plugin: "net.twisterrob.android-app"
+			apply plugin: "kotlin-android"
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -248,8 +248,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "kotlin-android"
 			apply plugin: "net.twisterrob.android-library"
+			apply plugin: "kotlin-android"
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -264,8 +264,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "kotlin-android"
 			apply plugin: "net.twisterrob.android-app" // :plugin
+			apply plugin: "kotlin-android"
 			// Android: apply plugin: "net.twisterrob.android-library" // :plugin
 			apply plugin: "net.twisterrob.root" // :plugin:base
 			apply plugin: "net.twisterrob.java" // :plugin:languages
