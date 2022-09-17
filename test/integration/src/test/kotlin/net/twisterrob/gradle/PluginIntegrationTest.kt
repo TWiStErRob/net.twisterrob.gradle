@@ -335,9 +335,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			 */
 			fun Throwable.stackTraceToString(): String {
 				val sw = StringWriter()
-				val pw = PrintWriter(sw)
-				printStackTrace(pw)
-				pw.flush()
+				this.printStackTrace(PrintWriter(sw, true))
 				return sw.toString()
 			}
 		""".trimIndent()
