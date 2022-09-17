@@ -4,7 +4,7 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:@net.twisterrob.test.kotlin.pluginVersion@")
-		if (!("@net.twisterrob.test.android.pluginVersion@" >= "7.3.0")) {
+		if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.6.0") {
 			def doNotNagAbout = rootProject.ext["doNotNagAbout"]
 			// https://youtrack.jetbrains.com/issue/KT-47867 was fixed in 1.6.0,
 			// so disable these warnings for anything that uses Kotlin < 1.6.
