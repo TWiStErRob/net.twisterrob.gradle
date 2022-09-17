@@ -6,7 +6,6 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
-import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -217,8 +216,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
+			${conditionalApplyKotlin(ApplyLocation.BEFORE)}
 			apply plugin: "net.twisterrob.android-app"
-			apply plugin: "kotlin-android"
+			${conditionalApplyKotlin(ApplyLocation.AFTER)}
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -249,32 +249,14 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			${conditionalApplyPlugin("6.3", ApplyLocation.BEFORE, "kotlin-android")}
+			${conditionalApplyKotlin(ApplyLocation.BEFORE)}
 			apply plugin: "net.twisterrob.android-library"
-			${conditionalApplyPlugin("6.3", ApplyLocation.AFTER, "kotlin-android")}
+			${conditionalApplyKotlin(ApplyLocation.AFTER)}
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
 		verifyTasksNotCreated(script)
 	}
-
-	enum class ApplyLocation { BEFORE, AFTER }
-
-	@Suppress("SameParameterValue")
-	private fun conditionalApplyPlugin(invariantMinVersion: String, location: ApplyLocation, plugin: String): String =
-		if (GradleVersion.version(invariantMinVersion) <= gradle.gradleVersion.baseVersion) {
-			// Location is not relevant since invariantMinVersion, we can put this plugin in before location.
-			when (location) {
-				ApplyLocation.BEFORE -> """apply plugin: "${plugin}""""
-				ApplyLocation.AFTER -> """//apply plugin: "${plugin}""""
-			}
-		} else {
-			// Location is relevant before invariantMinVersion, we have to put this in after location.
-			when (location) {
-				ApplyLocation.BEFORE -> """//apply plugin: "${plugin}"""""
-				ApplyLocation.AFTER -> """apply plugin: "${plugin}""""
-			}
-		}
 
 	@Test
 	fun `android kotlin project doesn't create tasks when using all plugins`() {
@@ -284,8 +266,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
+			${conditionalApplyKotlin(ApplyLocation.BEFORE)}
 			apply plugin: "net.twisterrob.android-app" // :plugin
-			apply plugin: "kotlin-android"
+			${conditionalApplyKotlin(ApplyLocation.AFTER)}
 			// Android: apply plugin: "net.twisterrob.android-library" // :plugin
 			apply plugin: "net.twisterrob.root" // :plugin:base
 			apply plugin: "net.twisterrob.java" // :plugin:languages
@@ -359,4 +342,25 @@ class PluginIntegrationTest : BaseIntgTest() {
 			}
 		""".trimIndent()
 	}
+
+	private enum class ApplyLocation { BEFORE, AFTER }
+
+	/**
+	 * Kotlin plugin had a dependency on what order it's applied in.
+	 * The issue has been [nicely summarized](https://youtrack.jetbrains.com/issue/KT-44279)
+	 * and [fixed](https://youtrack.jetbrains.com/issue/KT-46626) in Kotlin 1.5.30.
+	 */
+	@Suppress("SameParameterValue")
+	private fun conditionalApplyKotlin(location: ApplyLocation): String =
+		when (location) {
+			ApplyLocation.BEFORE -> {
+				// Location is not relevant since Kotlin 1.5.30, we can put this plugin in any location.
+				"""if (kotlin.KotlinVersion.CURRENT.isAtLeast(1, 5, 30)) { apply plugin: "kotlin-android" }"""
+			}
+
+			ApplyLocation.AFTER -> {
+				// Location is relevant before Kotlin 1.5.30, we have to put this after the Android plugin.
+				"""if (!kotlin.KotlinVersion.CURRENT.isAtLeast(1, 5, 30)) { apply plugin: "kotlin-android" }"""
+			}
+		}
 }
