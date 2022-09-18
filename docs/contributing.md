@@ -7,7 +7,8 @@ Feel free to raise any small fix or enhancement.
 
 When merging pull requests: do a squash merge.
 
-This will ensure that fixed issues will be automatically closed and commit history also has a link to the fixed issue as well as the PR.  
+This will ensure that fixed issues will be automatically closed
+and commit history also has a link to the fixed issue as well as the PR.  
 *e.g. [6fc97c Fix #29: escape CData to produce valid XML document (#38)](https://github.com/TWiStErRob/net.twisterrob.gradle/commit/6fc97c25e9eb809d4d809c79b0ae42537ca69ea5)*.
 
 

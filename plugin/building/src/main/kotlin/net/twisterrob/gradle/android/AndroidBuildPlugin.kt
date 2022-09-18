@@ -5,8 +5,8 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.api.BaseVariantImpl
 import com.android.build.gradle.internal.api.androidTestVariant
-import com.android.build.gradle.internal.api.unitTestVariant
 import com.android.build.gradle.internal.api.productionVariant
+import com.android.build.gradle.internal.api.unitTestVariant
 import com.android.build.gradle.internal.api.variantData
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask

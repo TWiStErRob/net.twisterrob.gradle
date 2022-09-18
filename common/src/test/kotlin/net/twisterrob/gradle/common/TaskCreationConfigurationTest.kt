@@ -1,9 +1,9 @@
 package net.twisterrob.gradle.common
 
+import net.twisterrob.gradle.test.Project
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.testfixtures.ProjectBuilder
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.hasItem
@@ -18,7 +18,7 @@ class TaskCreationConfigurationTest {
 
 	@Test fun `registering a task preConfigures, but does not create it`() {
 		val mockConfiguration: TaskCreationConfiguration<TestTask> = mock()
-		val fixtProject = ProjectBuilder.builder().build()
+		val fixtProject = Project()
 		val createdTasks: Map<String, Task> = fixtProject.collectCreatedTasks()
 
 		val provider = fixtProject.registerTask("testTask", mockConfiguration)
@@ -31,7 +31,7 @@ class TaskCreationConfigurationTest {
 
 	@Test fun `registering a task and get-ing it creates and configures`() {
 		val mockConfiguration: TaskCreationConfiguration<TestTask> = mock()
-		val fixtProject = ProjectBuilder.builder().build()
+		val fixtProject = Project()
 		val createdTasks: Map<String, Task> = fixtProject.collectCreatedTasks()
 
 		val provider = fixtProject.registerTask("testTask", mockConfiguration)

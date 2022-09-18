@@ -1,8 +1,8 @@
 import net.twisterrob.gradle.plugins.settings.TargetJvmVersionRule
 
 plugins {
-	kotlin
-	`java-library`
+	id("org.gradle.java-library")
+	id("org.jetbrains.kotlin.jvm")
 	id("net.twisterrob.gradle.build.publishing")
 }
 

@@ -2,7 +2,6 @@ package net.twisterrob.test.process
 
 import net.twisterrob.test.withRootCause
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.opentest4j.AssertionFailedError
 import java.io.File
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.MINUTES

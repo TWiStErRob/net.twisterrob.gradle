@@ -10,12 +10,24 @@
 	],
 	"packageRules": [
 		{
-			"description": "Disable updating AGP compatibility dependencies, they have a specific version, and will break the matrix. Allow patches.",
+			"description": "Disable updating AGP compatibility dependencies, they have a specific version, and will break the build. Allow patches.",
 			"matchPackageNames": [
 				"com.android.tools.build:gradle"
 			],
 			"matchPaths": [
 				"gradle/agp.versions.toml"
+			],
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		},
+		{
+			"description": "Disable updating CI matrix dependencies, they have a specific version. Allow patches.",
+			"matchPackageNames": [
+				"com.android.tools.build:gradle",
+				"gradle"
+			],
+			"matchPaths": [
+				".github/workflows/CI.yml"
 			],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
@@ -61,6 +73,71 @@
 			],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
+		}
+	],
+	"regexManagers": [
+		{
+			"description": "Update AGP compatibility CI matrix values.",
+			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"datasourceTemplate": "maven",
+			"registryUrlTemplate": "https://maven.google.com",
+			"depNameTemplate": "com.android.tools.build:gradle",
+			"matchStrings": [
+				"  agp: (?<currentValue>.*)"
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update AGP compatibility CI matrix artifact names. The names depend on `agp` matrix values.",
+			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"datasourceTemplate": "maven",
+			"registryUrlTemplate": "https://maven.google.com",
+			"depNameTemplate": "com.android.tools.build:gradle",
+			"matchStrings": [
+				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?<currentValue>.*) on (?:.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update AGP defaults for local runs.",
+			"fileMatch": ["^gradle\\.properties$"],
+			"datasourceTemplate": "maven",
+			"registryUrlTemplate": "https://maven.google.com",
+			"depNameTemplate": "com.android.tools.build:gradle",
+			"matchStrings": [
+				"net.twisterrob.test.android.pluginVersion=(?<currentValue>.*)"
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update Gradle compatibility CI matrix values.",
+			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"datasourceTemplate": "gradle-version",
+			"depNameTemplate": "gradle",
+			"matchStrings": [
+				"  gradle: (?<currentValue>.*)"
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update Gradle compatibility CI matrix artifact names. The names depend on `gradle` matrix values.",
+			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"datasourceTemplate": "gradle-version",
+			"depNameTemplate": "gradle",
+			"matchStrings": [
+				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?:.*) on (?<currentValue>.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update Gradle defaults for local runs.",
+			"fileMatch": ["^gradle\\.properties$"],
+			"datasourceTemplate": "gradle-version",
+			"depNameTemplate": "gradle",
+			"matchStrings": [
+				"net.twisterrob.gradle.runner.gradleVersion=(?<currentValue>.*)"
+			],
+			"versioningTemplate": "gradle"
 		}
 	]
 }

@@ -4,6 +4,8 @@
 /*/build/
 /*/*/build/
 out/
+gradle/dependency-locks/*.lockfile
+/*.lockfile
 
 # IDEA Project files
 .idea/

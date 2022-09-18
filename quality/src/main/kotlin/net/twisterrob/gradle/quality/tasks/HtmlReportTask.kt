@@ -15,6 +15,8 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.jetbrains.annotations.VisibleForTesting
 import java.io.File
 import javax.xml.transform.stream.StreamResult
@@ -37,8 +39,12 @@ open class HtmlReportTask : BaseViolationsTask() {
 	private val xslTemplateFile: File?
 		get() = xslTemplate.asFile.orNull
 
+	/**
+	 * Note: if this is set up in a way that it uses external files, add those to the task inputs.
+	 */
 	@get:InputFile
 	@get:Optional
+	@get:PathSensitive(PathSensitivity.NONE)
 	val xslTemplate: RegularFileProperty = newInputFileCompat()
 
 	private val xslOutputFile: File

@@ -9,7 +9,6 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
-import net.twisterrob.gradle.test.assertNoTask
 import net.twisterrob.gradle.test.assertSkipped
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.delete

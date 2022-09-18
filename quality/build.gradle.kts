@@ -1,7 +1,7 @@
 plugins {
-//	kotlin("jvm")
-	`java-gradle-plugin`
-	`java-test-fixtures`
+	id("org.gradle.java-gradle-plugin")
+	id("org.jetbrains.kotlin.jvm")
+	id("org.gradle.java-test-fixtures")
 	id("net.twisterrob.gradle.build.publishing")
 }
 
@@ -32,7 +32,6 @@ dependencies {
 	compileOnly(libs.android.gradle)
 	// Need com.android.utils.FileUtils for HtmlReportTask.
 	compileOnly(libs.android.tools.common)
-//	compileOnly ("de.aaschmid:gradle-cpd-plugin:1.0")
 	api(libs.violations)
 
 	testImplementation(projects.test.internal)
@@ -52,9 +51,11 @@ tasks.register("tests") {
 		projects.pmd,
 		projects.test,
 		projects.test.internal,
+		projects.test.integration,
 	).forEach {
 		dependsOn(it.dependencyProject.tasks.named("test"))
 	}
+	dependsOn(projects.compat.dependencyProject.tasks.named("tests"))
 }
 
 pullTestResourcesFrom(projects.test)

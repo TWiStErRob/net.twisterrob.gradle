@@ -1,7 +1,5 @@
 package net.twisterrob.gradle.test
 
-import net.twisterrob.gradle.test.GradleRunnerRule
-
 object GradleBuildTestResources {
 
 	val kotlin: KotlinProject = object : KotlinProject {}

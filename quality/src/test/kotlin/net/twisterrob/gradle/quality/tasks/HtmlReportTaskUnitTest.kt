@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
-import org.gradle.testfixtures.ProjectBuilder
+import net.twisterrob.gradle.test.Project
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
@@ -10,7 +10,7 @@ import kotlin.test.assertNotNull
 class HtmlReportTaskUnitTest {
 
 	@Test fun `transformation error displays affected file names`() {
-		val project = ProjectBuilder.builder().build()
+		val project = Project()
 		project.plugins.apply("reporting-base")
 		val sut = project.tasks.create("sut", HtmlReportTask::class.java)
 

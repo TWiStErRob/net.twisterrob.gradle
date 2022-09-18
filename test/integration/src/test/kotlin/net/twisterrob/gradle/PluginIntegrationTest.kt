@@ -1,11 +1,13 @@
 package net.twisterrob.gradle
 
+import net.twisterrob.gradle.common.KotlinVersions
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
+import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -216,8 +218,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "kotlin-android"
-			apply plugin: "net.twisterrob.android-app"
+			${conditionalApplyKotlin("net.twisterrob.android-app")}
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -248,8 +249,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "kotlin-android"
-			apply plugin: "net.twisterrob.android-library"
+			${conditionalApplyKotlin("net.twisterrob.android-library")}
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -264,8 +264,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "kotlin-android"
-			apply plugin: "net.twisterrob.android-app" // :plugin
+			${conditionalApplyKotlin("net.twisterrob.android-app")} // :plugin
 			// Android: apply plugin: "net.twisterrob.android-library" // :plugin
 			apply plugin: "net.twisterrob.root" // :plugin:base
 			apply plugin: "net.twisterrob.java" // :plugin:languages
@@ -302,6 +301,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 	companion object {
 		@Language("gradle.kts")
 		val settings: String = """
+			import java.io.PrintWriter
+			import java.io.StringWriter
+			
 			val created: MutableMap<Task, Throwable> = mutableMapOf()
 			gradle.taskGraph.whenReady {
 				created.remove(created.keys.single { it.path == ":help" })
@@ -321,6 +323,37 @@ class PluginIntegrationTest : BaseIntgTest() {
 					created.put(task, Exception(message))
 				}
 			}
+			
+			/**
+			 * Polyfill for Gradle <6.8 which doesn't have Kotlin 1.4+.
+			 * [Throwable.stackTraceToString] is `@SinceKotlin("1.4")`.
+			 * See https://docs.gradle.org/current/userguide/compatibility.html#kotlin
+			 */
+			fun Throwable.stackTraceToString(): String {
+				val sw = StringWriter()
+				this.printStackTrace(PrintWriter(sw, true))
+				return sw.toString()
+			}
 		""".trimIndent()
 	}
+
+	/**
+	 * Kotlin plugin had a dependency on what order it's applied in.
+	 * The issue has been [nicely summarized](https://youtrack.jetbrains.com/issue/KT-44279)
+	 * and [fixed](https://youtrack.jetbrains.com/issue/KT-46626) in Kotlin 1.5.30.
+	 */
+	private fun conditionalApplyKotlin(androidPluginId: String): String =
+		if (KotlinVersion(1, 5, 30) <= KotlinVersions.UNDER_TEST) {
+			// Location is not relevant since Kotlin 1.5.30, we can put this plugin in any location.
+			"""
+			apply plugin: "kotlin-android"
+			apply plugin: "${androidPluginId}"
+			""".trimIndent()
+		} else {
+			// Location is relevant before Kotlin 1.5.30, we have to put this after the Android plugin.
+			"""
+			apply plugin: "${androidPluginId}"
+			apply plugin: "kotlin-android"
+			""".trimIndent()
+		}
 }

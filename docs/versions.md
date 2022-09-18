@@ -11,7 +11,7 @@ This version executes:
  * calls the JUnit runner when running tests
  * runs the POM generation and publishing tasks
 
-Through `id("java-gradle-plugin")` and `gradleApi()`/`gradleApiWithoutKotlin()` dependency it also becomes part of the compile-classpath of production and test code.
+Through `id("org.gradle.java-gradle-plugin")` and `gradleApi()`/`gradleApiWithoutKotlin()` dependency it also becomes part of the compile-classpath of production and test code.
 
 The runtime-classpath of production code depends on who is running the plugin's code.
 
