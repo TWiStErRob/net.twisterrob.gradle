@@ -2,6 +2,7 @@ plugins {
 	id("org.gradle.java-gradle-plugin")
 	//alias(libs.plugins.kotlin) // Can't apply since there's a mismatch between embedded Kotlin and latest Kotlin.
 	`kotlin-dsl`
+	id("io.gitlab.arturbosch.detekt") version "1.21.0"
 }
 
 gradlePlugin {
@@ -53,4 +54,23 @@ dependencies {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
 	kotlinOptions.verbose = true
 	kotlinOptions.allWarningsAsErrors = true
+}
+
+detekt {
+	// TODEL https://github.com/detekt/detekt/issues/4926
+	buildUponDefaultConfig = false
+	allRules = true
+	//debug = true
+	config = project.rootProject.files("../../config/detekt/detekt.yml")
+	baseline = project.rootProject.file("../../config/detekt/detekt-baseline-gradle-plugins.xml")
+	basePath = project.rootProject.projectDir.resolve("../..").absolutePath
+
+	parallel = true
+
+	project.tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+		reports {
+			html.required.set(true) // human
+			txt.required.set(true) // console
+		}
+	}
 }
