@@ -1,7 +1,7 @@
 plugins {
-//	kotlin("jvm")
-	`java-gradle-plugin`
-	`java-test-fixtures`
+	id("org.gradle.java-gradle-plugin")
+	id("org.jetbrains.kotlin.jvm")
+	id("org.gradle.java-test-fixtures")
 	id("net.twisterrob.gradle.build.publishing")
 }
 

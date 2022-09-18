@@ -184,7 +184,6 @@ class AndroidReleasePlugin : BasePlugin() {
 			doFirst(closureOf<Zip> { failIfAlreadyArchived() })
 			doLast(closureOf<Zip> { printResultingArchive() })
 		}
-
 }
 
 private fun Zip.archiveMappingFile(mappingFileProvider: Provider<File>) {

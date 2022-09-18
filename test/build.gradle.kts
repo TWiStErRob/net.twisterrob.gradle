@@ -1,6 +1,6 @@
 plugins {
-//	kotlin("jvm")
-	`java-gradle-plugin`
+	id("org.gradle.java-gradle-plugin")
+	id("org.jetbrains.kotlin.jvm")
 	id("net.twisterrob.gradle.build.publishing")
 }
 

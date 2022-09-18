@@ -1,7 +1,7 @@
 plugins {
-	`kotlin-dsl`
+	id("org.gradle.java-gradle-plugin")
 	//alias(libs.plugins.kotlin) // Can't apply since there's a mismatch between embedded Kotlin and latest Kotlin.
-	id("java-gradle-plugin")
+	`kotlin-dsl`
 }
 
 gradlePlugin {
@@ -10,7 +10,7 @@ gradlePlugin {
 			id = "net.twisterrob.gradle.plugins.settings"
 			implementationClass = "net.twisterrob.gradle.plugins.settings.SettingsPlugin"
 		}
-		
+
 		// Re-exposure of plugin from dependency. Gradle doesn't expose the plugin itself, even with api().
 		create("com.gradle.enterprise") {
 			id = "com.gradle.enterprise"
@@ -39,7 +39,7 @@ dependencies {
 	implementation(libs.kotlin.gradle)
 	implementation(libs.kotlin.dokka)
 	compileOnly(libs.nexus)
-	
+
 	// TODEL hack from https://github.com/gradle/gradle/issues/15383#issuecomment-779893192 (there are more parts to this)
 	compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }

@@ -9,5 +9,6 @@ internal object DummyVcsExtension : VCSExtension {
 	override val isAvailable: Boolean = isAvailableQuick
 	override val revision: String = "no VCS"
 	override val revisionNumber: Int = 0
-	override fun files(project: Project): FileCollection = project.files()
+	override fun files(project: Project): FileCollection =
+		project.files()
 }

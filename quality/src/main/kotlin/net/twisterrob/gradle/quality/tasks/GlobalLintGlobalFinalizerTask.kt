@@ -26,6 +26,8 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskCollection
 import org.gradle.api.tasks.TaskProvider
@@ -42,6 +44,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	 * otherwise it'll spam the logs with [java.io.FileNotFoundException]s.
 	 */
 	@InputFiles
+	@PathSensitive(PathSensitivity.NONE)
 	val xmlReports: MutableList<Provider<RegularFile>> = mutableListOf()
 
 	@TaskAction

@@ -1,8 +1,7 @@
 plugins {
-	kotlin
-	`java-library`
-	`java-test-fixtures`
-	id("java-gradle-plugin")
+	id("org.gradle.java-gradle-plugin")
+	id("org.jetbrains.kotlin.jvm")
+	id("org.gradle.java-test-fixtures")
 	id("net.twisterrob.gradle.build.publishing")
 }
 

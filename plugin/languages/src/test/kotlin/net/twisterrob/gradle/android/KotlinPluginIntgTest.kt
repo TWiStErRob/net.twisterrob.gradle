@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.kotlin.KotlinPlugin
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
-import net.twisterrob.gradle.kotlin.KotlinPlugin
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSuccess
