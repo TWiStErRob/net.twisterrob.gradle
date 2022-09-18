@@ -389,11 +389,13 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		assertThat(gradle.violationsReport("html"), anExistingFile())
 		exposeViolationsInReport(test, violations.everything)
 		assertThat(gradle.violationsReport("xsl"), aFileWithSize(greaterThan(0)))
+		// If this fails, see net.twisterrob.gradle.quality.tasks.ViolationTestResources.Everything.
 		assertEquals(
 			violations.everything.violationsXml,
 			gradle.violationsReport("xml").readText(),
 			gradle.violationsReport("xml").absolutePath
 		)
+		// If this fails, see net.twisterrob.gradle.quality.tasks.ViolationTestResources.Everything.
 		assertEquals(
 			violations.everything.violationsHtml,
 			gradle.violationsReport("html").readText(),
