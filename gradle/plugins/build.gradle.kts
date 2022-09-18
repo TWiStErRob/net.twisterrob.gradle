@@ -20,6 +20,11 @@ gradlePlugin {
 			}
 		}
 
+		create("detekt") {
+			id = "net.twisterrob.gradle.build.detekt"
+			implementationClass = "net.twisterrob.gradle.build.DetektPlugin"
+		}
+
 		create("publishing") {
 			id = "net.twisterrob.gradle.build.publishing"
 			implementationClass = "net.twisterrob.gradle.build.PublishingPlugin"
@@ -38,6 +43,7 @@ repositories {
 dependencies {
 	implementation(libs.kotlin.gradle)
 	implementation(libs.kotlin.dokka)
+	implementation(libs.detekt)
 	compileOnly(libs.nexus)
 
 	// TODEL hack from https://github.com/gradle/gradle/issues/15383#issuecomment-779893192 (there are more parts to this)

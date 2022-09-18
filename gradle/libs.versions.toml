@@ -38,6 +38,8 @@ kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
 kotlin-build = "1.7.10"
 
+detekt = "1.21.0"
+
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases
 # Artifacts: https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/
 # TODO there's no later version that 6.1.1, even though Gradle is 6.9 / 7.x already.
@@ -112,6 +114,7 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 kotlin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "kotlin-build" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-target" }
 kotlin-dsl = { module = "org.gradle:gradle-kotlin-dsl", version.ref = "kotlin-dsl" }
+detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 
 junit-legacy = { module = "junit:junit", version.ref = "junit4" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }

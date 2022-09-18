@@ -1,0 +1,19 @@
+config:
+  # If a property in the configuration is deprecated, that'll fail Detekt execution.
+  warningsAsErrors: true
+
+processors:
+  # Blanket disable processors as they are not used.
+  # Stats would show up in HTML report, but since that's not mergeable it has little value per module.
+  active: false
+
+console-reports:
+  exclude:
+    # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
+    - 'NotificationReport'
+    # Disabled because it's very verbose. 
+    - 'FindingsReport'
+    # Disabled because it's very verbose, even more so than FindingsReport.
+    - 'FileBasedFindingsReport'
+    # Enabled, because this gives enough context to see the problems.
+    #- 'LiteFindingsReport'
