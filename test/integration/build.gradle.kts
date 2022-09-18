@@ -7,7 +7,7 @@ dependencies {
 	implementation(projects.plugin)
 	implementation(projects.quality)
 	implementation(projects.test)
-	implementation(projects.compat.kotlin)
+	implementation(projects.compat.kotlinBase)
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))

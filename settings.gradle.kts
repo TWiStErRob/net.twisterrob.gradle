@@ -38,7 +38,7 @@ include(":compat:agp-73x")
 include(":compat:agp-74x")
 include(":compat:agp-latest")
 include(":compat:gradle")
-include(":compat:kotlin")
+include(":compat:kotlin-base")
 
 include(":plugin")
 include(":plugin:base")
