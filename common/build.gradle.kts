@@ -3,6 +3,7 @@ plugins {
 	id("org.jetbrains.kotlin.jvm")
 	id("org.gradle.groovy")
 	id("net.twisterrob.gradle.build.publishing")
+	id("net.twisterrob.gradle.build.detekt")
 }
 
 base.archivesName.set("twister-quality-common")
