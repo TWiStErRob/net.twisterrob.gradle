@@ -6,7 +6,7 @@ plugins {
 
 gradlePlugin {
 	plugins {
-		create("net.twisterrob.gradle.plugins.settings") {
+		create("settings") {
 			id = "net.twisterrob.gradle.plugins.settings"
 			implementationClass = "net.twisterrob.gradle.plugins.settings.SettingsPlugin"
 		}
