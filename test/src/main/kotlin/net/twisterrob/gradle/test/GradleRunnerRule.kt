@@ -59,6 +59,17 @@ open class GradleRunnerRule : TestRule {
 
 	lateinit var runner: GradleRunner private set
 
+	//@Test:given/@Before
+	var gradleVersion: GradleVersion = GradleVersion.current()
+		set(value) {
+			val distributionUrl =
+				URI.create("https://services.gradle.org/distributions/gradle-${value.version}-all.zip")
+			runner
+				.withGradleVersion(value.version)
+				.withGradleDistribution(distributionUrl)
+			field = value
+		}
+
 	@Suppress("MemberVisibilityCanBePrivate") // API
 	lateinit var buildFile: File
 		private set
@@ -68,6 +79,8 @@ open class GradleRunnerRule : TestRule {
 
 	val propertiesFile: File
 		get() = File(runner.projectDir, "gradle.properties")
+
+	open val extraArgs: Array<String> = arrayOf("--stacktrace")
 
 	//region TestRule
 	override fun apply(base: Statement, description: Description): Statement {
@@ -123,8 +136,6 @@ open class GradleRunnerRule : TestRule {
 	protected open fun tearDown() {
 		// not used yet, but useful for debugging
 	}
-
-	open val extraArgs: Array<String> = arrayOf("--stacktrace")
 
 	//@Test:when
 	fun run(@Language("gradle") script: String?, vararg tasks: String): GradleRunner {
@@ -197,17 +208,6 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	fun setGradleVersion(version: String) {
 		gradleVersion = GradleVersion.version(version)
 	}
-
-	//@Test:given/@Before
-	var gradleVersion: GradleVersion = GradleVersion.current()
-		set(value) {
-			val distributionUrl =
-				URI.create("https://services.gradle.org/distributions/gradle-${value.version}-all.zip")
-			runner
-				.withGradleVersion(value.version)
-				.withGradleDistribution(distributionUrl)
-			field = value
-		}
 
 	//@Test:given/@Before
 	fun file(contents: String, path: String) {

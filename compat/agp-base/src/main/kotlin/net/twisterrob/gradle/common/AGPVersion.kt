@@ -23,6 +23,10 @@ data class AGPVersion(
 		Stable,
 	}
 
+
+	override fun compareTo(other: AGPVersion): Int =
+		compareValuesBy(this, other, AGPVersion::major, AGPVersion::minor, AGPVersion::type, AGPVersion::patch)
+
 	infix fun compatible(other: AGPVersion): Boolean {
 		require(other.minor == null || other.type == null || other.patch == null) { "${other} must be a joker." }
 		if (this.major != other.major) return false
@@ -69,7 +73,4 @@ data class AGPVersion(
 		private fun MatchResult.intGroup(name: String): Int? =
 			groups[name]?.run { value.toInt() }
 	}
-
-	override fun compareTo(other: AGPVersion): Int =
-		compareValuesBy(this, other, AGPVersion::major, AGPVersion::minor, AGPVersion::type, AGPVersion::patch)
 }

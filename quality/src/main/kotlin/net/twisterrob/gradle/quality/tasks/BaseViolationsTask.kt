@@ -25,33 +25,6 @@ import se.bjurr.violations.lib.reports.Parser
 
 abstract class BaseViolationsTask : DefaultTask() {
 
-	companion object {
-		@Suppress("UNCHECKED_CAST")
-		private val GATHERERS: List<TaskReportGatherer<Task>> = run {
-			val gradleGatherers = listOf(
-				QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
-				QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
-//			ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
-//			TestReportGatherer<>("test", Test)
-			)
-			val agpGatherers = when {
-				AGPVersions.CLASSPATH >= AGPVersions.v70x ->
-					listOf(
-						LintReportGatherer(),
-					)
-				else ->
-					listOf(
-						LintVariantReportGathererPre7(),
-						LintGlobalReportGathererPre7(ALL_VARIANTS_NAME),
-					)
-			}
-			return@run (gradleGatherers + agpGatherers) as List<TaskReportGatherer<Task>>
-		}
-
-		private val CHECKSTYLE_BUILT_IN_CHECK: Regex =
-			Regex("""^com\.puppycrawl\.tools\.checkstyle\.checks(?:\.([a-z].+))?\.([A-Z].+)$""")
-	}
-
 	init {
 		this.group = JavaBasePlugin.VERIFICATION_GROUP
 		// REPORT this extra task is needed because configureEach runs before
@@ -189,5 +162,32 @@ abstract class BaseViolationsTask : DefaultTask() {
 				}
 			}
 		}
+	}
+
+	companion object {
+		@Suppress("UNCHECKED_CAST")
+		private val GATHERERS: List<TaskReportGatherer<Task>> = run {
+			val gradleGatherers = listOf(
+				QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
+				QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
+//			ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
+//			TestReportGatherer<>("test", Test)
+			)
+			val agpGatherers = when {
+				AGPVersions.CLASSPATH >= AGPVersions.v70x ->
+					listOf(
+						LintReportGatherer(),
+					)
+				else ->
+					listOf(
+						LintVariantReportGathererPre7(),
+						LintGlobalReportGathererPre7(ALL_VARIANTS_NAME),
+					)
+			}
+			return@run (gradleGatherers + agpGatherers) as List<TaskReportGatherer<Task>>
+		}
+
+		private val CHECKSTYLE_BUILT_IN_CHECK: Regex =
+			Regex("""^com\.puppycrawl\.tools\.checkstyle\.checks(?:\.([a-z].+))?\.([A-Z].+)$""")
 	}
 }

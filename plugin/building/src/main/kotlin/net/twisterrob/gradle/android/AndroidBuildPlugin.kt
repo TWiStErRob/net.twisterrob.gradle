@@ -26,12 +26,12 @@ import org.gradle.kotlin.dsl.withType
 
 open class AndroidBuildPluginExtension {
 
+	var decorateBuildConfig: Boolean = true
+
 	companion object {
 
 		internal const val NAME: String = "twisterrob"
 	}
-
-	var decorateBuildConfig: Boolean = true
 }
 
 class AndroidBuildPlugin : BasePlugin() {

@@ -45,12 +45,6 @@ import java.util.Properties
 @Suppress("MemberVisibilityCanBePrivate")
 open class AndroidVersionExtension {
 
-	companion object {
-
-		internal const val NAME: String = "version"
-		internal const val DEFAULT_FILE_NAME: String = "version.properties"
-	}
-
 	private var autoVersionSet: Boolean = false
 
 	/**
@@ -102,9 +96,17 @@ open class AndroidVersionExtension {
 			autoVersion()
 		}
 
-	private fun autoVersion() {
-		if (!autoVersionSet) autoVersion = true
-	}
+	var renameAPK: Boolean = true
+
+	var formatArtifactName: (Project, String, String, Long, String?) -> String =
+		{ _, variantName, applicationId, versionCode, versionName ->
+			val variant =
+				if (variantName.endsWith("AndroidTest"))
+					variantName.removeSuffix("AndroidTest") + "-androidTest"
+				else
+					variantName
+			"${applicationId}@${versionCode}-v${versionName}+${variant}"
+		}
 
 	var buildMagnitude: Int = 1000
 
@@ -132,17 +134,15 @@ open class AndroidVersionExtension {
 		}
 	}
 
-	var renameAPK: Boolean = true
+	private fun autoVersion() {
+		if (!autoVersionSet) autoVersion = true
+	}
 
-	var formatArtifactName: (Project, String, String, Long, String?) -> String =
-		{ _, variantName, applicationId, versionCode, versionName ->
-			val variant =
-				if (variantName.endsWith("AndroidTest"))
-					variantName.removeSuffix("AndroidTest") + "-androidTest"
-				else
-					variantName
-			"${applicationId}@${versionCode}-v${versionName}+${variant}"
-		}
+	companion object {
+
+		internal const val NAME: String = "version"
+		internal const val DEFAULT_FILE_NAME: String = "version.properties"
+	}
 }
 
 class AndroidVersionPlugin : BasePlugin() {

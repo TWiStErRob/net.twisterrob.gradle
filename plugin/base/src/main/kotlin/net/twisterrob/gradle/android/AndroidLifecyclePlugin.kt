@@ -14,12 +14,12 @@ import org.gradle.kotlin.dsl.withType
 @Suppress("MemberVisibilityCanBePrivate")
 open class AndroidLifecycleExtension {
 
+	val beforeAndroidEvaluateActions: MutableList<() -> Unit> = mutableListOf()
+
 	companion object {
 
 		internal const val NAME: String = "lifecycle"
 	}
-
-	val beforeAndroidEvaluateActions: MutableList<() -> Unit> = mutableListOf()
 }
 
 fun Project.beforeAndroidTasksCreated(block: () -> Unit) {

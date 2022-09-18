@@ -18,11 +18,6 @@ class TableGenerator(
 	private val minWidth: Int = 0
 ) {
 
-	companion object {
-		private const val MIN_MODULE_LENGTH: Int = 7 // Summary
-		private const val MIN_VARIANT_LENGTH: Int = 9 // (total: x)
-	}
-
 	fun build(byModuleByVariantByParserCounts: Map<Module, Map<Variant, Map<Parser, MaybeCount>>>): String {
 		val modules = byModuleByVariantByParserCounts.keys
 		val variants = byModuleByVariantByParserCounts.flatMap { it.value.keys }.distinct()
@@ -74,5 +69,10 @@ class TableGenerator(
 			listOf()
 		}
 		return (listOf(header) + rows + footer).joinToString(System.lineSeparator())
+	}
+
+	companion object {
+		private const val MIN_MODULE_LENGTH: Int = 7 // Summary
+		private const val MIN_VARIANT_LENGTH: Int = 9 // (total: x)
 	}
 }

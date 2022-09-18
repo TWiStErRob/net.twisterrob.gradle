@@ -17,25 +17,6 @@ class LintMessageDetailsSplitter {
 
 	companion object {
 
-		private fun String.replaceNewLines(): String =
-			replace("""&#xA;""", "\n")
-
-		/**
-		 * Reverse of [se.bjurr.violations.lib.parsers.AndroidLintParser.parseReportOutput].
-		 */
-		private fun defaultSplit(v: Violation): MessageDetails {
-			val lines = v.message.lineSequence()
-
-			return MessageDetails(
-				title = lines.elementAt(0).replaceNewLines(),
-				message = lines.elementAt(1).replaceNewLines(),
-				description = lines
-					.drop(2) // already used 0 and 1 above
-					.joinToString("\n")
-					.replaceNewLines()
-			)
-		}
-
 		private val specialCases: Map<String, (Violation) -> MessageDetails> = mapOf(
 			"IconMissingDensityFolder" to fun(v: Violation): MessageDetails {
 				val split = defaultSplit(v)
@@ -98,5 +79,24 @@ class LintMessageDetailsSplitter {
 				)
 			}
 		)
+
+		private fun String.replaceNewLines(): String =
+			replace("""&#xA;""", "\n")
+
+		/**
+		 * Reverse of [se.bjurr.violations.lib.parsers.AndroidLintParser.parseReportOutput].
+		 */
+		private fun defaultSplit(v: Violation): MessageDetails {
+			val lines = v.message.lineSequence()
+
+			return MessageDetails(
+				title = lines.elementAt(0).replaceNewLines(),
+				message = lines.elementAt(1).replaceNewLines(),
+				description = lines
+					.drop(2) // already used 0 and 1 above
+					.joinToString("\n")
+					.replaceNewLines()
+			)
+		}
 	}
 }

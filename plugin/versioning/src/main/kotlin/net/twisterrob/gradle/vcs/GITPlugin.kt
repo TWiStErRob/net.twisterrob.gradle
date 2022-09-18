@@ -31,15 +31,7 @@ class GITPlugin : BasePlugin() {
 
 open class GITPluginExtension : VCSExtension {
 
-	companion object {
-
-		internal const val NAME: String = "git"
-	}
-
 	internal lateinit var project: Project
-
-	private inline fun <T> inRepo(block: Git.() -> T): T =
-		inRepo(project.rootDir, block)
 
 	override val isAvailableQuick: Boolean
 		get() = project.rootDir.resolve(".git").exists()
@@ -97,6 +89,14 @@ open class GITPluginExtension : VCSExtension {
 				}
 			}
 		)
+
+	private inline fun <T> inRepo(block: Git.() -> T): T =
+		inRepo(project.rootDir, block)
+
+	companion object {
+
+		internal const val NAME: String = "git"
+	}
 }
 
 private inline fun <T> inRepo(dir: File, block: Git.() -> T): T {

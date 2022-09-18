@@ -8,19 +8,6 @@ import org.gradle.kotlin.dsl.get
 
 class AndroidSigningPlugin : BasePlugin() {
 
-	companion object {
-
-		private const val SIGNING_CONFIG_NAME = "twisterrob"
-
-		private const val DEFAULT_STORE_FILE = "twisterrob.jks"
-		private const val STORE_FILE = "RELEASE_STORE_FILE"
-		private const val STORE_PASSWORD = "RELEASE_STORE_PASSWORD"
-
-		private const val DEFAULT_KEY_ALIAS = "net.twisterrob"
-		private const val KEY_ALIAS = "RELEASE_KEY_ALIAS"
-		private const val KEY_PASSWORD = "RELEASE_KEY_PASSWORD"
-	}
-
 	override fun apply(target: Project) {
 		super.apply(target)
 
@@ -48,4 +35,17 @@ class AndroidSigningPlugin : BasePlugin() {
 
 	private fun mandatoryProp(name: String): String =
 		optionalProp(name)!!
+
+	companion object {
+
+		private const val SIGNING_CONFIG_NAME = "twisterrob"
+
+		private const val DEFAULT_STORE_FILE = "twisterrob.jks"
+		private const val STORE_FILE = "RELEASE_STORE_FILE"
+		private const val STORE_PASSWORD = "RELEASE_STORE_PASSWORD"
+
+		private const val DEFAULT_KEY_ALIAS = "net.twisterrob"
+		private const val KEY_ALIAS = "RELEASE_KEY_ALIAS"
+		private const val KEY_PASSWORD = "RELEASE_KEY_PASSWORD"
+	}
 }

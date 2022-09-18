@@ -8,21 +8,6 @@ import org.jetbrains.annotations.TestOnly
 @Suppress("MagicNumber") // Meant for hardcoding version numbers.
 object AGPVersions {
 
-	@Throws(IllegalStateException::class)
-	fun olderThan4NotSupported(version: AGPVersion): Nothing {
-		error("AGP ${version} is not supported, because it's older than ${v4xx}")
-	}
-
-	@Throws(IllegalStateException::class)
-	fun olderThan7NotSupported(version: AGPVersion): Nothing {
-		error("AGP ${version} is not supported, because it's older than ${v7xx}")
-	}
-
-	@Throws(IllegalStateException::class)
-	fun otherThan4NotSupported(version: AGPVersion): Nothing {
-		error("AGP ${version} is not supported, because it's not compatible with ${v4xx}")
-	}
-
 	/**
 	 * The version AGP on the classpath of the build running this plugin.
 	 * Not to be confused with the one used to compile this plugin, which is the latest supported.
@@ -104,4 +89,19 @@ object AGPVersions {
 					.getOrThrow()
 			return versionClass.getDeclaredField("ANDROID_GRADLE_PLUGIN_VERSION").get(null) as String
 		}
+
+	@Throws(IllegalStateException::class)
+	fun olderThan4NotSupported(version: AGPVersion): Nothing {
+		error("AGP ${version} is not supported, because it's older than ${v4xx}")
+	}
+
+	@Throws(IllegalStateException::class)
+	fun olderThan7NotSupported(version: AGPVersion): Nothing {
+		error("AGP ${version} is not supported, because it's older than ${v7xx}")
+	}
+
+	@Throws(IllegalStateException::class)
+	fun otherThan4NotSupported(version: AGPVersion): Nothing {
+		error("AGP ${version} is not supported, because it's not compatible with ${v4xx}")
+	}
 }

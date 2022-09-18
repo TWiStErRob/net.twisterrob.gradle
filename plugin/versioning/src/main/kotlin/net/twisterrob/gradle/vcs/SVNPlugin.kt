@@ -31,19 +31,7 @@ class SVNPlugin : BasePlugin() {
 
 open class SVNPluginExtension : VCSExtension {
 
-	companion object {
-
-		internal const val NAME: String = "svn"
-	}
-
 	internal lateinit var project: Project
-
-	private fun open(): SVNStatus {
-		val options: ISVNOptions = SVNWCUtil.createDefaultOptions(true)
-		val clientManager = SVNClientManager.newInstance(options)
-		val statusClient = clientManager.statusClient
-		return statusClient.doStatus(project.rootDir, false)
-	}
 
 	override val revision: String
 		get() = revisionNumber.toString()
@@ -69,6 +57,13 @@ open class SVNPluginExtension : VCSExtension {
 			project.rootDir.resolve(".svn/wc.db")
 		)
 
+	private fun open(): SVNStatus {
+		val options: ISVNOptions = SVNWCUtil.createDefaultOptions(true)
+		val clientManager = SVNClientManager.newInstance(options)
+		val statusClient = clientManager.statusClient
+		return statusClient.doStatus(project.rootDir, false)
+	}
+
 	// key method/closure - used as: def out = doSvnMain( 'your', 'svn', 'args', 'go', 'here' );
 	@Suppress("unused")
 	private fun cli(vararg svnArgs: String): String {
@@ -84,6 +79,11 @@ open class SVNPluginExtension : VCSExtension {
 			System.setOut(oldSystemOut)
 			System.setSecurityManager(null)
 		}
+	}
+
+	companion object {
+
+		internal const val NAME: String = "svn"
 	}
 
 	private object NonExitingSecurityManager : SecurityManager() {
