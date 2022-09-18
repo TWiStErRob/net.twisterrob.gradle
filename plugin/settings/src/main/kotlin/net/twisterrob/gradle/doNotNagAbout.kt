@@ -1,10 +1,13 @@
+@file:JvmMultifileClass
+@file:JvmName("GradleUtils")
+
 package net.twisterrob.gradle
 
 /**
  * Surgically ignoring messages like this will prevent actual executions from triggering
  * stack traces and warnings, which means that even with some warnings,
  * it's possible to use `org.gradle.warning.mode=fail`.
- * 
+ *
  * Example usage with Gradle 7.5.1 and Android Gradle Plugin 7.2.2:
  * ```
  * val gradleVersion: String = GradleVersion.current().baseVersion.version
@@ -19,7 +22,7 @@ package net.twisterrob.gradle
  *     + "https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
  * )
  * ```
- * Note: the gradleVersion substitution is there so Gradle upgrades in 7.x don't need revising this warning. 
+ * Note: the gradleVersion substitution is there so Gradle upgrades in 7.x don't need revising this warning.
  */
 fun doNotNagAbout(message: String) {
 	val logger: Any = org.gradle.internal.deprecation.DeprecationLogger::class.java
