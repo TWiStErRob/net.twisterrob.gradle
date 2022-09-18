@@ -200,6 +200,11 @@ if (project.property("net.twisterrob.gradle.build.includeExamples").toString().t
 	}
 }
 
+tasks.register("check") {
+	description = "Delegate task for checking included builds too."
+	dependsOn(gradle.includedBuild("plugins").task(":check"))
+}
+
 project.tasks.register<TestReport>("testReport") {
 	group = LifecycleBasePlugin.VERIFICATION_GROUP
 	description = "Run and report on all tests in the project. Add `-x test` to just generate report."
