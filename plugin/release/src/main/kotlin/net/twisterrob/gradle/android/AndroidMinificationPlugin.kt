@@ -106,7 +106,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 				if (isFlavorless) {
 					lintTasksDependOnProguardRulesTask(generateProguardRulesTask)
 				}
-				proguardTaskClass
+				proguardTaskClass()
 					?.let { project.tasks.withType(it) }
 					?.configureEach { obfuscationTask ->
 						if (obfuscationTask.variantName == variant.name) {
@@ -144,9 +144,9 @@ class AndroidMinificationPlugin : BasePlugin() {
 	/**
 	 * AGP 7 fully removed support for this task. This will only return a value in < [AGPVersions.v70x].
 	 */
-	@Suppress("UNCHECKED_CAST")
-	private val proguardTaskClass: Class<out ProguardConfigurableTask>?
-		get() = try {
+	private fun proguardTaskClass(): Class<out ProguardConfigurableTask>? =
+		try {
+			@Suppress("UNCHECKED_CAST")
 			Class.forName("com.android.build.gradle.internal.tasks.ProguardTask")
 					as Class<out ProguardConfigurableTask>
 		} catch (ex: ClassNotFoundException) {

@@ -140,6 +140,7 @@ open class GradleRunnerRule : TestRule {
 		val javaRuntimeName: String? by systemProperty("java.runtime.name")
 		val javaRuntimeVersion: String? by systemProperty("java.runtime.version")
 		val javaHome: String? by systemProperty("java.home")
+		@Suppress("NullableToStringCall")
 		val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
 		println(
 			"""

@@ -17,3 +17,39 @@ console-reports:
     - 'FileBasedFindingsReport'
     # Enabled, because this gives enough context to see the problems.
     #- 'LiteFindingsReport'
+
+
+comments:
+  UndocumentedPublicClass:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
+
+  UndocumentedPublicFunction:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
+
+  UndocumentedPublicProperty:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
+
+
+naming:
+  BooleanPropertyNaming:
+    allowedPattern: '^(is|has|are|was)'
+
+style:
+  NoTabs:
+    # I'm a tab guy, I don't pay for space in advance.
+    active: false
+  OptionalWhenBraces:
+    # STOPSHIP
+    active: false
+  UseIfInsteadOfWhen:
+    # STOPSHIP
+    active: false

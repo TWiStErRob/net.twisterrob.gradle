@@ -77,6 +77,7 @@ fun RegularFileProperty.fileProviderCompat(task: DefaultTask, file: Provider<Fil
 /**
  * Gradle 4.3-6.9 compatible version of [ObjectFactory.fileProperty].
  * @param task is necessary to because historically this was [DefaultTask.newInputFile] or [DefaultTask.newOutputFile].
+ * @param isInput what type of property to create: true=[DefaultTask.newInputFile], false=[DefaultTask.newOutputFile].
  *
  * @see DefaultTask.newInputFile
  * @see DefaultTask.newOutputFile
@@ -140,6 +141,7 @@ fun DefaultTask.newOutputFileCompat(): RegularFileProperty =
 /**
  * Gradle 4.3-6.9 compatible version of [ProjectLayout.dir].
  * @param project is necessary, because shims need access to services on [Project].
+ * @param provider location of the directory.
  *
  * @see ProjectLayout.directoryProperty
  * @see ObjectFactory.directoryProperty

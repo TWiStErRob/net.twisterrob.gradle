@@ -5,7 +5,7 @@ import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
-import net.twisterrob.gradle.android.abortOnErrorCompat
+import net.twisterrob.gradle.android.isAbortOnErrorCompat
 import net.twisterrob.gradle.android.androidComponents
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
@@ -114,7 +114,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
 				// `android { lintOptions { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
-				it.lint.abortOnErrorCompat = false
+				it.lint.isAbortOnErrorCompat = false
 				it.lint.xmlReport = true
 			}
 			// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.

@@ -21,14 +21,16 @@ import com.android.build.api.variant.Component
  */
 @Suppress("UNCHECKED_CAST")
 fun <C : Component, T : C> C.unwrapCast(): T =
+	@Suppress("UseIfInsteadOfWhen") // Preferred for instanceof type checks.
 	when (this) {
 		is AnalyticsEnabledComponent -> this.delegate.unwrapCast()
-		else -> this
-	} as T
+		else -> this as T
+	}
 
 @Suppress("UNCHECKED_CAST")
 fun <T : Artifacts> Artifacts.unwrapCast(): T =
+	@Suppress("UseIfInsteadOfWhen") // Preferred for instanceof type checks.
 	when (this) {
 		is AnalyticsEnabledArtifacts -> this.delegate.unwrapCast()
-		else -> this
-	} as T
+		else -> this as T
+	}

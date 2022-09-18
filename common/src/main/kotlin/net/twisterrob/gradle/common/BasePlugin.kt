@@ -11,7 +11,7 @@ import java.io.File
 
 open class BasePlugin : Plugin<Project> {
 
-	@Suppress("PropertyName", "MemberVisibilityCanBePrivate")
+	@Suppress("PropertyName", "MemberVisibilityCanBePrivate", "VariableNaming")
 	protected val LOG: Logger = LoggerFactory.getLogger(javaClass)
 
 	protected lateinit var project: Project

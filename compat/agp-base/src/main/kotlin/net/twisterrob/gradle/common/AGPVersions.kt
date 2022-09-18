@@ -5,6 +5,7 @@ import org.jetbrains.annotations.TestOnly
 /**
  * Version constants for the Android Gradle Plugin.
  */
+@Suppress("MagicNumber") // Meant for hardcoding version numbers.
 object AGPVersions {
 
 	@Throws(IllegalStateException::class)
@@ -48,18 +49,18 @@ object AGPVersions {
 					?: error("Property 'net.twisterrob.test.android.pluginVersion' is not set.")
 			)
 
-	val v32x: AGPVersion = AGPVersion(3, 2, null, null)
-	val v33x: AGPVersion = AGPVersion(3, 3, null, null)
-	val v34x: AGPVersion = AGPVersion(3, 4, null, null)
-	val v36x: AGPVersion = AGPVersion(3, 6, null, null)
-	val v4xx: AGPVersion = AGPVersion(4, null, null, null)
-	val v40x: AGPVersion = AGPVersion(4, 0, null, null)
-	val v41x: AGPVersion = AGPVersion(4, 1, null, null)
-	val v42x: AGPVersion = AGPVersion(4, 2, null, null)
-	val v7xx: AGPVersion = AGPVersion(7, null, null, null)
-	val v70x: AGPVersion = AGPVersion(7, 0, null, null)
-	val v71x: AGPVersion = AGPVersion(7, 1, null, null)
-	val v74x: AGPVersion = AGPVersion(7, 4, null, null)
+	val v32x: AGPVersion = AGPVersion(major = 3, minor = 2, type = null, patch = null)
+	val v33x: AGPVersion = AGPVersion(major = 3, minor = 3, type = null, patch = null)
+	val v34x: AGPVersion = AGPVersion(major = 3, minor = 4, type = null, patch = null)
+	val v36x: AGPVersion = AGPVersion(major = 3, minor = 6, type = null, patch = null)
+	val v4xx: AGPVersion = AGPVersion(major = 4, minor = null, type = null, patch = null)
+	val v40x: AGPVersion = AGPVersion(major = 4, minor = 0, type = null, patch = null)
+	val v41x: AGPVersion = AGPVersion(major = 4, minor = 1, type = null, patch = null)
+	val v42x: AGPVersion = AGPVersion(major = 4, minor = 2, type = null, patch = null)
+	val v7xx: AGPVersion = AGPVersion(major = 7, minor = null, type = null, patch = null)
+	val v70x: AGPVersion = AGPVersion(major = 7, minor = 0, type = null, patch = null)
+	val v71x: AGPVersion = AGPVersion(major = 7, minor = 1, type = null, patch = null)
+	val v74x: AGPVersion = AGPVersion(major = 7, minor = 4, type = null, patch = null)
 
 	/**
 	 * Is there an Android Gradle Plugin on the classpath?

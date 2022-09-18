@@ -21,16 +21,16 @@ fun safeAdd(a: Int?, b: Int?): Int? =
 fun nullSafeSum(): Collector<Int?, *, Int?> =
 	nullSafeSum(Function.identity())
 
-fun <T> nullSafeSum(mapper: Function<T?, Int?>): Collector<T?, *, Int?> {
-	return Collectors.reducing(null, mapper, BinaryOperator(::safeAdd))
-}
+fun <T> nullSafeSum(mapper: Function<T?, Int?>): Collector<T?, *, Int?> =
+	Collectors.reducing(null, mapper, BinaryOperator(::safeAdd))
 
 fun File.listFilesInDirectory(filter: ((File) -> Boolean)? = null): Array<File> {
 	val listFiles: Array<File>? =
-		if (filter != null)
+		if (filter != null) {
 			this.listFiles(filter)
-		else
+		} else {
 			this.listFiles()
+		}
 
 	return listFiles ?: error(
 		"$this does not denote a directory or an error occurred" +
