@@ -6,6 +6,7 @@ plugins {
 	@Suppress("DSL_SCOPE_VIOLATION")
 	alias(libs.plugins.nexus)
 	id("net.twisterrob.gradle.build.detekt")
+	id("net.twisterrob.gradle.build.detekt.root")
 }
 
 val projectVersion: String by project

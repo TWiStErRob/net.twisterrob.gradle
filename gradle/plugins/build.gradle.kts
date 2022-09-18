@@ -25,6 +25,10 @@ gradlePlugin {
 			id = "net.twisterrob.gradle.build.detekt"
 			implementationClass = "net.twisterrob.gradle.build.DetektPlugin"
 		}
+		create("detekt-root") {
+			id = "net.twisterrob.gradle.build.detekt.root"
+			implementationClass = "net.twisterrob.gradle.build.DetektRootPlugin"
+		}
 
 		create("publishing") {
 			id = "net.twisterrob.gradle.build.publishing"
