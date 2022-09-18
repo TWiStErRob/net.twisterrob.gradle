@@ -1,12 +1,12 @@
 package net.twisterrob.gradle.common
 
-import org.gradle.testfixtures.ProjectBuilder
+import net.twisterrob.gradle.test.Project
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class TaskExtensionsKtTest {
-	private val project = ProjectBuilder.builder().build()
+	private val project = Project()
 
 	@Test fun `task was launched explicitly`() {
 		val task = project.tasks.create("myTask")

@@ -5,10 +5,11 @@ import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.html.model.build
+import net.twisterrob.gradle.test.RootProject
+import net.twisterrob.gradle.test.createSubProject
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -21,7 +22,7 @@ private const val ALL = "*"
 
 @Suppress("UnnecessaryVariable")
 class ViolationsDeduplicatorKtTest {
-	private val fixtRoot = ProjectBuilder.builder().build()
+	private val fixtRoot = RootProject()
 	private val fixture = JFixture().apply {
 		customise().sameInstance(Project::class.java, fixtRoot)
 		customise().lazyInstance(Task::class.java) {
@@ -30,7 +31,7 @@ class ViolationsDeduplicatorKtTest {
 	}
 
 	@Test fun `AGP7 lint vs checkstyle in module`() {
-		val fixtModule = ProjectBuilder.builder().withName("module").withParent(fixtRoot).build()
+		val fixtModule = fixtRoot.createSubProject("module")
 		val input = listOf(
 			violations(fixtRoot, "debug", "lint"),
 			violations(fixtRoot, "release", "lint"),
@@ -63,7 +64,7 @@ class ViolationsDeduplicatorKtTest {
 	}
 
 	@Test fun `AGP4 lint vs checkstyle in module`() {
-		val fixtModule = ProjectBuilder.builder().withName("module").withParent(fixtRoot).build()
+		val fixtModule = fixtRoot.createSubProject("module")
 		val input = listOf(
 			violations(fixtRoot, ALL, "lint"),
 			violations(fixtRoot, "debug", "lint"),
@@ -243,7 +244,7 @@ class ViolationsDeduplicatorKtTest {
 	}
 
 	@Test fun `violations from different modules don't get merged`() {
-		val fixtModule = ProjectBuilder.builder().withName("module").withParent(fixtRoot).build()
+		val fixtModule = fixtRoot.createSubProject("module")
 		val violationRootOnly: Violation = fixture.build()
 		val violationModuleOnly: Violation = fixture.build()
 		val violation: Violation = fixture.build()
