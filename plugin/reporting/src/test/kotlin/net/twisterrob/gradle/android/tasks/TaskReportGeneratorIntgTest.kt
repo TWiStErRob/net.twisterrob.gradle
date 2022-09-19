@@ -8,6 +8,7 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.root
+import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.io.FileMatchers.anExistingDirectory
@@ -45,6 +46,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 
 	@Test fun `missing output`() {
 		gradle.basedOn(GradleBuildTestResources.android)
+		gradle.root.resolve("subfolder").mkdirs()
 
 		@Language("gradle")
 		val script = """
@@ -56,7 +58,13 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script, "generateHtmlReportFromXml").buildAndFail()
 
-		assertThat(result.failReason, containsString("lateinit property output has not been initialized"))
+		val expectedError = when {
+			gradle.gradleVersion.baseVersion < GradleVersion.version("7.0") ->
+				"No value has been specified for property 'output'."
+			else ->
+				"Type '${TestReportGenerator::class.qualifiedName}' property 'output' doesn't have a configured value."
+		}
+		assertThat(result.failReason, containsString(expectedError))
 	}
 
 	@Test fun `missing input`() {
@@ -72,6 +80,12 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script, "generateHtmlReportFromXml").buildAndFail()
 
-		assertThat(result.failReason, containsString("lateinit property input has not been initialized"))
+		val expectedError = when {
+			gradle.gradleVersion.baseVersion < GradleVersion.version("7.0") ->
+				"No value has been specified for property 'input'."
+			else ->
+				"Type '${TestReportGenerator::class.qualifiedName}' property 'input' doesn't have a configured value."
+		}
+		assertThat(result.failReason, containsString(expectedError))
 	}
 }

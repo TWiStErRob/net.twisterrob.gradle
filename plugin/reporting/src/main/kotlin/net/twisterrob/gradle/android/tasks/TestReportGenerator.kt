@@ -12,14 +12,14 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-open class TestReportGenerator : DefaultTask() {
+abstract class TestReportGenerator : DefaultTask() {
 
-	@InputDirectory
-	@PathSensitive(PathSensitivity.RELATIVE)
-	lateinit var input: File
+	@get:InputDirectory
+	@get:PathSensitive(PathSensitivity.RELATIVE)
+	abstract var input: File
 
-	@OutputDirectory
-	lateinit var output: File
+	@get:OutputDirectory
+	abstract var output: File
 
 	@Input
 	var type: ReportType = ReportType.SINGLE_FLAVOR
