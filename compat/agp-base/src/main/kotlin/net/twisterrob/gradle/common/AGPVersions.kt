@@ -59,7 +59,7 @@ object AGPVersions {
 			try {
 				ANDROID_GRADLE_PLUGIN_VERSION
 				true
-			} catch (ex: IllegalStateException) {
+			} catch (ignore: IllegalStateException) {
 				false
 			}
 

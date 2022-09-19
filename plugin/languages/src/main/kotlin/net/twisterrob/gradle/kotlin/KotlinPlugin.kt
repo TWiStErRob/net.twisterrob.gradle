@@ -6,7 +6,12 @@ import net.twisterrob.gradle.android.hasAndroidTest
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.get
+import kotlin.reflect.KCallable
+
+private typealias DependencyAdder = DependencyHandler.(Any) -> Dependency?
 
 const val VERSION_KOTLIN: String = "1.4.32"
 
@@ -22,11 +27,11 @@ class KotlinPlugin : BasePlugin() {
 			if (shouldAddAutoRepositoriesTo(project)) {
 				project.repositories.mavenCentral()
 			}
-			project.dependencies.add("implementation", kotlin("stdlib-jdk7"))
+			project.dependencies.implementation(kotlin("stdlib-jdk7"))
 			if (project.plugins.hasAndroidTest()) {
-				project.addTestDependencies("implementation")
+				project.addTestDependencies(DependencyHandler::implementation)
 			} else {
-				project.addTestDependencies("testImplementation")
+				project.addTestDependencies(DependencyHandler::testImplementation)
 			}
 			val android: BaseExtension = project.extensions["android"] as BaseExtension
 			android.sourceSets.all {
@@ -37,8 +42,8 @@ class KotlinPlugin : BasePlugin() {
 			if (shouldAddAutoRepositoriesTo(project)) {
 				project.repositories.mavenCentral()
 			}
-			project.dependencies.add("implementation", kotlin("stdlib"))
-			project.addTestDependencies("testImplementation")
+			project.dependencies.implementation(kotlin("stdlib"))
+			project.addTestDependencies(DependencyHandler::testImplementation)
 		}
 	}
 
@@ -47,28 +52,34 @@ class KotlinPlugin : BasePlugin() {
 		private fun kotlin(module: String): String =
 			"org.jetbrains.kotlin:kotlin-$module:$VERSION_KOTLIN"
 
-		private fun Project.addTestDependencies(configuration: String) {
-			dependencies.add(configuration, kotlin("test"))
+		private fun Project.addTestDependencies(configuration: DependencyAdder) {
+			dependencies.configuration(kotlin("test"))
 			addKotlinJUnitIfNeeded(configuration)
 			addKotlinTestNGIfNeeded(configuration)
 		}
 
-		private fun Project.addKotlinJUnitIfNeeded(configuration: String) {
-			configurations[configuration].dependencies.all {
+		private fun Project.addKotlinJUnitIfNeeded(configuration: DependencyAdder) {
+			configurations[(configuration as KCallable<*>).name].dependencies.all {
 				if (it.group == "junit" && it.name == "junit"
-					&& (it.version ?: "").matches("""4\.\d+(\.\d+)?(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
+					&& it.version.orEmpty().matches("""4\.\d+(\.\d+)?(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
 				) {
-					dependencies.add(configuration, kotlin("test-junit"))
+					dependencies.configuration(kotlin("test-junit"))
 				}
 			}
 		}
 
-		private fun Project.addKotlinTestNGIfNeeded(configuration: String) {
-			configurations[configuration].dependencies.all {
+		private fun Project.addKotlinTestNGIfNeeded(configuration: DependencyAdder) {
+			configurations[(configuration as KCallable<*>).name].dependencies.all {
 				if (it.group == "org.testng" && it.name == "testng") {
-					dependencies.add(configuration, kotlin("test-testng"))
+					dependencies.configuration(kotlin("test-testng"))
 				}
 			}
 		}
 	}
 }
+
+private fun DependencyHandler.implementation(dependencyNotation: Any): Dependency? =
+	add("implementation", dependencyNotation)
+
+private fun DependencyHandler.testImplementation(dependencyNotation: Any): Dependency? =
+	add("testImplementation", dependencyNotation)

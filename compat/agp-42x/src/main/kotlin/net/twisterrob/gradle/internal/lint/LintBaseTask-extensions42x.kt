@@ -56,7 +56,8 @@ val LintBaseTask.androidVariantName: String?
 			// because before 4.2.0 LintGlobalTask/LintFixTask didn't implement the interface.
 			// Force compile time binding to the interface, because a super of LintBaseTask may override the property.
 			(this as VariantAwareTask).variantName
-		AGPVersions.CLASSPATH < AGPVersions.v33x && @Suppress("USELESS_IS_CHECK") (this is AndroidVariantTask) ->
+		@Suppress("KotlinConstantConditions")
+		(AGPVersions.CLASSPATH < AGPVersions.v33x && @Suppress("USELESS_IS_CHECK") (this is AndroidVariantTask)) ->
 			// USELESS_IS_CHECK: Historical binding to inherited property.
 			@Suppress("CAST_NEVER_SUCCEEDS")
 			(this as AndroidVariantTask).variantName
@@ -67,15 +68,27 @@ val LintBaseTask.androidVariantName: String?
 
 val LintBaseTask.xmlOutput: File
 	get() = lintOptions.xmlOutput
-		?: LintOptions_createOutputPath(project, androidVariantName, SdkConstants.DOT_XML, reportsDir, isFatalOnly)
+		?: LintOptions_createOutputPath(
+			project = project,
+			variantName = androidVariantName,
+			extension = SdkConstants.DOT_XML,
+			reportsDir = reportsDir,
+			fatalOnly = isFatalOnly
+		)
 
 val LintBaseTask.htmlOutput: File
 	get() = lintOptions.htmlOutput
-		?: LintOptions_createOutputPath(project, androidVariantName, ".html", reportsDir, isFatalOnly)
+		?: LintOptions_createOutputPath(
+			project = project,
+			variantName = androidVariantName,
+			extension = ".html",
+			reportsDir = reportsDir,
+			fatalOnly = isFatalOnly
+		)
 
 // TODO figure out where to find com.android.tools.lint.gradle.SyncOptions#createOutputPath
 @Suppress("FunctionName")
-fun LintOptions_createOutputPath(
+private fun LintOptions_createOutputPath(
 	project: Project, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean
 ): File {
 	val base = StringBuilder().apply {

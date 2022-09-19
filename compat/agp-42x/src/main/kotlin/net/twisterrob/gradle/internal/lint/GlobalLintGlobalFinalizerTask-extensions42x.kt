@@ -12,16 +12,16 @@ val Project.lintGlobalTasks: TaskCollection<LintGlobalTask>
 	get() = this.tasks.withType(LintGlobalTask::class.java)
 
 fun TaskCollection<LintGlobalTask>.configureXmlReport() {
-	this.configureEach {
-		it.lintOptions.isAbortOnError = it.wasLaunchedExplicitly
+	this.configureEach { task ->
+		task.lintOptions.isAbortOnError = task.wasLaunchedExplicitly
 		// make sure we have xml output, otherwise can't figure out if it failed
-		it.lintOptions.xmlReport = true
+		task.lintOptions.xmlReport = true
 	}
 }
 
 fun TaskCollection<LintGlobalTask>.collectXmlReport(reportDiscovered: (RegularFileProperty) -> Unit) {
-	this.configureEach {
-		reportDiscovered(it.xmlOutputProperty)
+	this.configureEach { task ->
+		reportDiscovered(task.xmlOutputProperty)
 	}
 }
 

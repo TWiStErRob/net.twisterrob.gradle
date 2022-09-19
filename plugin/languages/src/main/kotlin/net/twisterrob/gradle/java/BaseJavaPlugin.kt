@@ -91,7 +91,9 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 
 /**
  * Prevent this warning for compileJava and compileTestJava and others.
- * > :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
+ * ```log
+ * :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
+ * ```
  */
 private fun JavaCompile.fixClasspathIfNecessary(compileVersion: JavaVersion) {
 	if (JavaVersion.current() == compileVersion) {
@@ -142,6 +144,7 @@ private fun JavaCompile.changeCompatibility(ver: JavaVersion) {
  * Since the suggested usage is [org.gradle.api.Task.doFirst],
  * it doesn't matter if it's before or after the relevant `options.compilerArgs += [ ... ]` setup.
  */
+@Suppress("StringLiteralDuplication")
 private fun JavaCompile.removeDuplicateCompilerArgs() {
 	logger.debug("${this} (input): ${options.compilerArgs}")
 	val duplicates = options.compilerArgs
@@ -169,6 +172,7 @@ private fun JavaCompile.removeDuplicateCompilerArgs() {
  * Since the suggested usage is [org.gradle.api.Task.doFirst],
  * it doesn't matter if it's before or after the relevant `options.compilerArgs += [ ... ]` setup.
  */
+@Suppress("StringLiteralDuplication", "UnusedPrivateMember")
 private fun JavaCompile.removeDuplicateCompilerArgs2() {
 	logger.debug("${this} (input): ${options.compilerArgs}")
 	fun xlintName(arg: String): String? =

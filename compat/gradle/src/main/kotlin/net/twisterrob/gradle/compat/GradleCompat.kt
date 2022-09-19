@@ -21,10 +21,11 @@ import org.gradle.util.GradleVersion
 import java.io.File
 
 /**
- * @param S `Any` restriction is arbitrary,
- * because otherwise [`.map {}` gives a warning](https://youtrack.jetbrains.com/issue/KT-36770).
+ * @param T the input type
+ * @param S the output type, may be nullable; upon returning null the provider will have no value.
+ * @param transformer The transformer to apply to values.
  */
-fun <T, S : Any> Provider<T>.flatMapCompat(transformer: (T) -> Provider<S>): Provider<S> =
+fun <T, S> Provider<T>.flatMapCompat(transformer: (T) -> Provider<S>): Provider<S> =
 	when {
 		GradleVersion.current().baseVersion < GradleVersion.version("5.0") -> {
 			this.map { transformer(it).get() }

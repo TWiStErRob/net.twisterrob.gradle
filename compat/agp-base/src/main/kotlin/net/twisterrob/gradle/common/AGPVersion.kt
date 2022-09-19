@@ -9,7 +9,9 @@ data class AGPVersion(
 
 	init {
 		require(major >= 0)
+		@Suppress("UnnecessaryParentheses") // TODEL Kotlin 1.22.0
 		require((minor ?: 0) >= 0)
+		@Suppress("UnnecessaryParentheses") // TODEL Kotlin 1.22.0
 		require((patch ?: 0) >= 0)
 		if (patch != null) requireNotNull(type) { "If a patch release is given, you must specify its type." }
 		if (patch != null) requireNotNull(minor) { "Cannot specify a patch version without minor." }
@@ -23,10 +25,11 @@ data class AGPVersion(
 		Stable,
 	}
 
-
 	override fun compareTo(other: AGPVersion): Int =
 		compareValuesBy(this, other, AGPVersion::major, AGPVersion::minor, AGPVersion::type, AGPVersion::patch)
 
+	// TODEL https://github.com/detekt/detekt/issues/5321
+	@Suppress("ReturnCount", "DataClassContainsFunctions")
 	infix fun compatible(other: AGPVersion): Boolean {
 		require(other.minor == null || other.type == null || other.patch == null) { "${other} must be a joker." }
 		if (this.major != other.major) return false

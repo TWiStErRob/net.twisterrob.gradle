@@ -30,11 +30,14 @@ class AndroidSigningPlugin : BasePlugin() {
 		}
 	}
 
+	@Suppress("CastToNullableType") // Map<String, ?> -> it could be anything, it could be a null too.
+	@Throws(ClassCastException::class) // If property is not a String.
 	private fun optionalProp(name: String): String? =
 		project.properties[name] as String?
 
+	@Throws(ClassCastException::class) // If property is not a String.
 	private fun mandatoryProp(name: String): String =
-		optionalProp(name)!!
+		requireNotNull(optionalProp(name)) { "Missing property '${name}'." }
 
 	companion object {
 

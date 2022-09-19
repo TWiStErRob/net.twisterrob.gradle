@@ -71,9 +71,10 @@ val BaseExtension.variants: DomainObjectSet<out @Suppress("DEPRECATION" /* AGP 7
 		}
 
 fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) {
-	configureEach {
-		if (it.name == name)
-			block(it)
+	configureEach { buildType ->
+		if (buildType.name == name) {
+			block(buildType)
+		}
 	}
 }
 

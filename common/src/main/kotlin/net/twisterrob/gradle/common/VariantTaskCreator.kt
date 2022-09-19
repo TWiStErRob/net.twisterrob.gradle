@@ -181,13 +181,13 @@ T : VerificationTask {
 				?: error("Cannot find reporting extension, did you apply `reporting` plugin?")
 			val reportsDir = reporting.baseDirectory
 			with(task.reports) {
-				getByName("xml") {
-					it.setRequired(true)
-					it.setOutputLocationCompat(reportsDir.file("${baseName}${fullSuffix}.xml"))
+				getByName("xml") { xml ->
+					xml.setRequired(true)
+					xml.setOutputLocationCompat(reportsDir.file("${baseName}${fullSuffix}.xml"))
 				}
-				getByName("html") {
-					it.setRequired(true)
-					it.setOutputLocationCompat(reportsDir.file("${baseName}${fullSuffix}.html"))
+				getByName("html") { html ->
+					html.setRequired(true)
+					html.setOutputLocationCompat(reportsDir.file("${baseName}${fullSuffix}.html"))
 				}
 			}
 		}

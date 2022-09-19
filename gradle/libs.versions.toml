@@ -38,6 +38,7 @@ kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
 kotlin-build = "1.7.10"
 
+# TODO 1.22 remove UnnecessaryParentheses and configure unavoidable cases (allowForUnclearPrecedence).
 detekt = "1.21.0"
 
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases

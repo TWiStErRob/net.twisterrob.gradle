@@ -67,7 +67,7 @@ open class AndroidVersionExtension {
 
 	var versionCodeFormat: (version: AndroidVersionExtension) -> Int =
 		{ version ->
-			with(version) { (((major * minorMagnitude + minor) * patchMagnitude + patch) * buildMagnitude + build) }
+			with(version) { ((major * minorMagnitude + minor) * patchMagnitude + patch) * buildMagnitude + build }
 		}
 
 	var major: Int = 0 // M 0..213
@@ -81,14 +81,14 @@ open class AndroidVersionExtension {
 			field = value
 			autoVersion()
 		}
-	var minorMagnitude: Int = 100
+	var minorMagnitude: Int = @Suppress("MagicNumber") 100
 
 	var patch: Int = 0 // P 0..99
 		set(value) {
 			field = value
 			autoVersion()
 		}
-	var patchMagnitude: Int = 100
+	var patchMagnitude: Int = @Suppress("MagicNumber") 100
 
 	var build: Int = 0 // B 0..999
 		set(value) {
@@ -101,21 +101,22 @@ open class AndroidVersionExtension {
 	var formatArtifactName: (Project, String, String, Long, String?) -> String =
 		{ _, variantName, applicationId, versionCode, versionName ->
 			val variant =
-				if (variantName.endsWith("AndroidTest"))
+				if (variantName.endsWith("AndroidTest")) {
 					variantName.removeSuffix("AndroidTest") + "-androidTest"
-				else
+				} else {
 					variantName
-			"${applicationId}@${versionCode}-v${versionName}+${variant}"
+				}
+			"${applicationId}@${versionCode}-v${versionName ?: "null"}+${variant}"
 		}
 
-	var buildMagnitude: Int = 1000
+	var buildMagnitude: Int = @Suppress("MagicNumber") 1000
 
-	/** VCS versionCode pattern is MMMNPBBBBB (what fits into 2147483648) */
+	/** VCS versionCode pattern is MMMNPBBBBB (which fits into 2147483648). */
 	fun versionByVCS(vcs: VCSExtension) {
 		// major magnitude is the rest // M 0..213
-		minorMagnitude = 10 // N 0..9
-		patchMagnitude = 10 // P 0..9
-		buildMagnitude = 100000 // B 0..99999
+		minorMagnitude = @Suppress("MagicNumber") 10 // N 0..9
+		patchMagnitude = @Suppress("MagicNumber") 10 // P 0..9
+		buildMagnitude = @Suppress("MagicNumber") 100_000 // B 0..99999
 		build = vcs.revisionNumber
 		versionNameFormat = { version ->
 			buildString {
@@ -275,19 +276,19 @@ class AndroidVersionPlugin : BasePlugin() {
 	}
 
 	private fun readVersionFromFile(file: File): Properties =
-		readVersion(file).apply {
-			getProperty("major")?.let { version.major = it.toInt() }
-			getProperty("minor")?.let { version.minor = it.toInt() }
-			getProperty("patch")?.let { version.patch = it.toInt() }
-			getProperty("build")?.let { version.build = it.toInt() }
+		readVersion(file).also { props ->
+			props.getProperty("major")?.let { version.major = it.toInt() }
+			props.getProperty("minor")?.let { version.minor = it.toInt() }
+			props.getProperty("patch")?.let { version.patch = it.toInt() }
+			props.getProperty("build")?.let { version.build = it.toInt() }
 		}
 
 	private fun readVersion(file: File): Properties =
-		Properties().apply {
+		Properties().also { props ->
 			try {
-				FileInputStream(file)
-					.use { load(it) } // Load the properties.
-					.also { version.autoVersion = true } // If the file existed, turn on auto-versioning.
+				FileInputStream(file).use { props.load(it) }
+				// If the file existed, turn on auto-versioning.
+				version.autoVersion = true
 			} catch (ignore: FileNotFoundException) {
 			}
 		}

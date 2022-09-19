@@ -16,7 +16,7 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 		object : VariantTaskCreator<PmdTask>.DefaultTaskConfig() {
 
 			override fun setupConfigLocations(task: PmdTask) {
-				task.ruleSets = listOf() // default is java-basic
+				task.ruleSets = emptyList() // default is java-basic
 				val rootConfig = task.project.rootProject.file("config/pmd/pmd.xml")
 				val subConfig = task.project.file("config/pmd/pmd.xml")
 				val config: File? = listOf(subConfig, rootConfig).firstOrNull { it.exists() }

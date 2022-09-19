@@ -13,6 +13,7 @@ open class BaseQualityPlugin(
 	override fun apply(target: Project) {
 		super.apply(target)
 
+		@Suppress("CastToNullableType") // This is a lazy creation, so findByName is very likely null.
 		val quality = project.extensions.findByName("quality") as ExtensionAware?
 			?: project.extensions.create("quality", FakeQualityExtension::class.java) as ExtensionAware
 		quality.extensions.create(extensionName, extensionType, project)
