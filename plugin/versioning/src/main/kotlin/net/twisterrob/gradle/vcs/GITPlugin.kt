@@ -2,6 +2,7 @@ package net.twisterrob.gradle.vcs
 
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
+import net.twisterrob.gradle.vcs.VCSPluginExtension.Companion.vcs
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.eclipse.jgit.lib.AbbreviatedObjectId
@@ -13,7 +14,6 @@ import org.eclipse.jgit.util.FS
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.getByName
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -22,9 +22,7 @@ class GITPlugin : BasePlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
-		val git = project
-			.extensions.getByName<VCSPluginExtension>(VCSPluginExtension.NAME)
-			.extensions.create<GITPluginExtension>(GITPluginExtension.NAME)
+		val git = project.vcs.extensions.create<GITPluginExtension>(GITPluginExtension.NAME)
 		git.project = project // TODO better solution
 	}
 }

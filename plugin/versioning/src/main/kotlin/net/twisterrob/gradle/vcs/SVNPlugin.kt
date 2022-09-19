@@ -2,10 +2,10 @@ package net.twisterrob.gradle.vcs
 
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
+import net.twisterrob.gradle.vcs.VCSPluginExtension.Companion.vcs
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.getByName
 import org.tmatesoft.svn.cli.SVN
 import org.tmatesoft.svn.core.SVNException
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil
@@ -22,9 +22,7 @@ class SVNPlugin : BasePlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
-		val svn = project
-			.extensions.getByName<VCSPluginExtension>(VCSPluginExtension.NAME)
-			.extensions.create<SVNPluginExtension>(SVNPluginExtension.NAME)
+		val svn = project.vcs.extensions.create<SVNPluginExtension>(SVNPluginExtension.NAME)
 		svn.project = project // TODO better solution
 	}
 }

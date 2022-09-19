@@ -37,6 +37,9 @@ open class VCSPluginExtension : VCSExtension {
 	companion object {
 
 		internal const val NAME: String = "VCS"
+
+		internal val Project.vcs: VCSPluginExtension
+			get() = this.extensions.getByName<VCSPluginExtension>(NAME)
 	}
 }
 
