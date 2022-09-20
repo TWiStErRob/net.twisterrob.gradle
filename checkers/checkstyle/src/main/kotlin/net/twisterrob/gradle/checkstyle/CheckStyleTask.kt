@@ -21,7 +21,7 @@ open class CheckStyleTask : Checkstyle(), TargetChecker {
 
 	private fun setupProperties() {
 		// partially based on https://github.com/jshiell/checkstyle-idea#eclipse-cs-variable-support
-		configProperties = (configProperties.orEmpty()) + mapOf(
+		configProperties = configProperties.orEmpty() + mapOf(
 			"basedir" to project.projectDir, // TODO or rootDir?
 			"project_loc" to project.rootDir,
 			"workspace_loc" to project.rootDir

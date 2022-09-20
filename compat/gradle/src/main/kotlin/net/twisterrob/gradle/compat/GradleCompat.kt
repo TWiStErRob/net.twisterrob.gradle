@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions") // TODO might be worth splitting by receiver and use @JvmMultifileClass?
+
 package net.twisterrob.gradle.compat
 
 import org.gradle.api.DefaultTask
@@ -66,7 +68,11 @@ fun RegularFileProperty.conventionCompat(file: Provider<RegularFile>): RegularFi
 fun RegularFileProperty.fileProviderCompat(task: DefaultTask, file: Provider<File>): RegularFileProperty =
 	when {
 		GradleVersion.current().baseVersion < GradleVersion.version("6.0") -> {
-			this.set(file.map { task.project.objects.filePropertyCompat(task, false).apply { set(it) }.get() })
+			this.set(file.map { fileValue ->
+				// Convoluted way to create a RegularFile object.
+				val property = task.project.objects.filePropertyCompat(task, false)
+				property.apply { set(fileValue) }.get()
+			})
 			this
 		}
 		else -> {
