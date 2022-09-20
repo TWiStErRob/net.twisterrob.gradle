@@ -1,13 +1,11 @@
 package net.twisterrob.gradle.common
 
 import org.gradle.api.Action
-import org.gradle.api.Project
 import org.gradle.api.internal.file.pattern.PatternMatcherFactory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.util.PatternSet
 
 open class BaseQualityExtension<T>(
-	private val project: Project,
 	internal var taskConfigurator: Action<TaskConfigurator<T>> = Action {}
 ) where T : SourceTask {
 
