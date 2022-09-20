@@ -60,21 +60,27 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 				}
 
 				task.include(variants
+					.asSequence()
 					.flatMap { it.sourceSets }
 					.flatMap { it.resDirectories }
 					.map { dir ->
 						// build relative path (e.g. src/main/res) and
 						// append a trailing "/" for include to treat it as recursive
 						projectPath.relativize(dir.toPath()).toString() + File.separator
-					})
+					}
+					.toList()
+				)
 
 				task.include(variants
+					.asSequence()
 					.flatMap { it.sourceSets }
 					.map { it.manifestFile }
 					.map { file ->
 						// build relative path (e.g. src/main/AndroidManifest.xml)
 						projectPath.relativize(file.toPath()).toString()
-					})
+					}
+					.toList()
+				)
 			}
 		}
 }
