@@ -40,23 +40,19 @@ private val defaultReleaseDir: File
 
 class AndroidReleasePlugin : BasePlugin() {
 
-	lateinit var android: BaseExtension
-
 	override fun apply(target: Project) {
 		super.apply(target)
-
-		android = project.extensions.getByName<BaseExtension>("android")
-
+		val android = project.extensions.getByName<BaseExtension>("android")
 		val releaseEachTask = registerReleaseEachTask()
 		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
 			android.buildTypes.forEach { buildType ->
-				val releaseBuildTypeTask = registerReleaseTasks(buildType)
+				val releaseBuildTypeTask = registerReleaseTasks(android, buildType)
 				releaseEachTask.configure { it.dependsOn(releaseBuildTypeTask) }
 			}
 		} else {
 			project.afterEvaluate {
 				android.buildTypes.forEach { buildType ->
-					val releaseBuildTypeTask = registerReleaseTasks(buildType)
+					val releaseBuildTypeTask = registerReleaseTasks(android, buildType)
 					releaseEachTask.configure { it.dependsOn(releaseBuildTypeTask) }
 				}
 			}
@@ -69,23 +65,25 @@ class AndroidReleasePlugin : BasePlugin() {
 			description = "Calls each release task for all build types"
 		}
 
-	private fun registerReleaseTasks(buildType: BuildType): TaskProvider<Task> {
+	private fun registerReleaseTasks(android: BaseExtension, buildType: BuildType): TaskProvider<Task> {
 		val releaseBuildTypeTask = project.tasks.register<Task>("releaseAll${buildType.name.capitalize()}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives all ${buildType.name} builds"
 		}
 		LOG.debug("Creating tasks for {}", buildType.name)
 
+		val version = android.defaultConfig.extensions.getByType<AndroidVersionExtension>()
 		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
 			val withBuildType = project.androidComponents.selector().withBuildType(buildType.name)
 			project.androidComponents.onVariants(withBuildType) { variant ->
-				val releaseVariantTask = registerReleaseTask(variant.unwrapCast<Variant, ApplicationVariantImpl>())
+				val appVariant = variant.unwrapCast<Variant, ApplicationVariantImpl>()
+				val releaseVariantTask = registerReleaseTask(version, appVariant)
 				releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
 			}
 		} else {
 			android.variants.matching { it.buildType.name == buildType.name }.all { variant ->
 				variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
-				val releaseVariantTask = registerReleaseTask(variant)
+				val releaseVariantTask = registerReleaseTask(version, variant)
 				releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
 				variant.productFlavors.forEach { flavor ->
 					val releaseFlavorTask = registerFlavorTask(flavor)
@@ -98,16 +96,16 @@ class AndroidReleasePlugin : BasePlugin() {
 	}
 
 	private fun registerReleaseTask(
+		version: AndroidVersionExtension,
 		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
 	): TaskProvider<Zip> =
 		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.description}"
 			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
-			val archiveFormat =
-				android.defaultConfig.extensions.getByType<AndroidVersionExtension>().formatArtifactName
 			val releaseZipFileName = with(variant) {
-				archiveFormat(project, "archive", applicationId, versionCode.toLong(), versionName) + ".zip"
+				val versionCode = versionCode.toLong()
+				version.formatArtifactName(project, "archive", applicationId, versionCode, versionName) + ".zip"
 			}
 			archiveFileName.set(releaseZipFileName)
 
@@ -147,13 +145,14 @@ class AndroidReleasePlugin : BasePlugin() {
 		return releaseFlavorTask
 	}
 
-	private fun registerReleaseTask(variant: ApplicationVariantImpl): TaskProvider<Zip> =
+	private fun registerReleaseTask(
+		version: AndroidVersionExtension,
+		variant: ApplicationVariantImpl
+	): TaskProvider<Zip> =
 		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.name} build"
 			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
-			val archiveFormat =
-				android.defaultConfig.extensions.getByType<AndroidVersionExtension>().formatArtifactName
 			val out = variant.outputs.single()
 			inputs.property("variant-applicationId", variant.applicationId)
 			inputs.property("variant-versionName", out.versionName)
@@ -163,7 +162,8 @@ class AndroidReleasePlugin : BasePlugin() {
 				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
 				val versionCode = out.versionCode.get()!!.toLong()
 				val versionName = out.versionName.get()
-				archiveFormat(project, "archive", variant.applicationId.get(), versionCode, versionName) + ".zip"
+				val applicationId = variant.applicationId.get()
+				version.formatArtifactName(project, "archive", applicationId, versionCode, versionName) + ".zip"
 			})
 
 			from(variant.artifacts.get(SingleArtifact.APK)) { copy ->
