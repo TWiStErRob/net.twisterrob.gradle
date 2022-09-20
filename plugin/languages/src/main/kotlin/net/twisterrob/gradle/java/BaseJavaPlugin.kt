@@ -39,6 +39,7 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 		if (project.plugins.hasPlugin(org.gradle.api.plugins.JavaPlugin::class.java)) {
 			when {
 				GradleVersion.current().baseVersion < GradleVersion.version("7.1") -> {
+					// STOPSHIP this can be removed? JavaPluginExtension is since 4.10 (at least lower to 4.10?)
 					@Suppress("DEPRECATION")
 					with(project.convention.getPlugin<org.gradle.api.plugins.JavaPluginConvention>()) {
 						sourceCompatibility = JavaVersion.VERSION_1_7

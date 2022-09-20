@@ -36,12 +36,9 @@ open class AndroidBuildPluginExtension {
 
 class AndroidBuildPlugin : BasePlugin() {
 
-	private lateinit var android: BaseExtension
-
 	override fun apply(target: Project) {
 		super.apply(target)
-		android = project.extensions.getByName<BaseExtension>("android")
-
+		val android = project.extensions.getByName<BaseExtension>("android")
 		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
 		if (shouldAddAutoRepositoriesTo(project)) {
@@ -196,7 +193,9 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 		}
 
-		private fun fixVariantTaskGroups(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {
+		private fun fixVariantTaskGroups(
+			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant
+		) {
 			fun BaseVariantImpl.fixTaskMetadata() {
 				variantData.taskContainerCompat.compileTask.configure { task ->
 					task.group = "Build"
@@ -212,7 +211,9 @@ class AndroidBuildPlugin : BasePlugin() {
 			variant.unitTestVariant?.fixTaskMetadata()
 		}
 
-		private fun addPackageName(@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant) {
+		private fun addPackageName(
+			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant
+		) {
 			// Package name for use e.g. in preferences to launch intent from the right package or for content providers
 			variant.resValue("string", "app_package", variant.applicationId)
 		}

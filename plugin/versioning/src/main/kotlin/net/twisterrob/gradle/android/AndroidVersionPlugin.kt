@@ -155,6 +155,7 @@ class AndroidVersionPlugin : BasePlugin() {
 		project.extensions["android"] as AppExtension
 	}
 
+	@Suppress("LateinitUsage") // TODO can be probably refactored to put the when inside the withId and pass params.
 	private lateinit var version: AndroidVersionExtension
 
 	override fun apply(target: Project) {

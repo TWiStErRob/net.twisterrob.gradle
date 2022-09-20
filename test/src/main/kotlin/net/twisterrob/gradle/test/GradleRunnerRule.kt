@@ -106,6 +106,7 @@ open class GradleRunnerRule : TestRule {
 
 	internal fun after(success: Boolean) {
 		tearDown()
+		@Suppress("ComplexCondition")
 		if ((success && needClearAfterSuccess) || (!success && needClearAfterFailure)) {
 			temp.delete()
 		}
@@ -172,10 +173,11 @@ ${buildFile.readText().prependIndent("\t\t\t")}
 	}
 
 	private fun propertiesFileContentForLogging(): String =
-		if (propertiesFile.exists())
+		if (propertiesFile.exists()) {
 			propertiesFile.readText()
-		else
+		} else {
 			"${propertiesFile.name} does not exist."
+		}
 
 	/**
 	 * This is a workaround because runner.withPluginClasspath() doesn't seem to work.
@@ -259,7 +261,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 			else -> "/${relativeTo.javaClass.`package`.name}"
 		}
 		val resource = this.javaClass.getResource("${container}/${path}")
-			?: throw IllegalArgumentException("Cannot find ${path} relative to {$relativeTo}")
+			?: throw IllegalArgumentException("Cannot find ${path} relative to {${relativeTo ?: "nothing (i.e. absolute)"}}")
 		return File(resource.file)
 	}
 

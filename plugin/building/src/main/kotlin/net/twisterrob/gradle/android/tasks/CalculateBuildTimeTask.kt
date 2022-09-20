@@ -51,11 +51,11 @@ abstract class CalculateBuildTimeTask : DefaultTask() {
 		internal fun TaskProvider<CalculateBuildTimeTask>.addBuildConfigFields(project: Project) {
 			if (AGPVersions.CLASSPATH < AGPVersions.v41x) get().writeBuildTime()
 
-			val buildTimeField = this.flatMap(CalculateBuildTimeTask::buildTimeFile).map {
+			val buildTimeField = this.flatMap(CalculateBuildTimeTask::buildTimeFile).map { file ->
 				fun dateFormat(date: Long): String =
 					DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(date))
 
-				val buildTime = it.asFile.readText().toLong()
+				val buildTime = file.asFile.readText().toLong()
 
 				return@map "new java.util.Date(${buildTime}L) /* ${dateFormat(buildTime)} */"
 			}
