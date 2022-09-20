@@ -11,10 +11,11 @@ import java.io.File
 
 open class BasePlugin : Plugin<Project> {
 
+	@Suppress("LateinitUsage") // Too many usages to fix right now. TODO consider removing this field, make dep explicit.
 	protected lateinit var project: Project
 		private set
 
-	@Suppress("PropertyName", "LeakingThis") // keep it consistent with external loggers
+	@Suppress("PropertyName", "VariableNaming") // keep it consistent with external loggers
 	protected var LOG: Logger = LoggerFactory.getLogger(this::class.java)
 		private set
 
