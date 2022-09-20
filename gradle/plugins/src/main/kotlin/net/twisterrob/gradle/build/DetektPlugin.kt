@@ -14,6 +14,7 @@ internal class DetektPlugin : Plugin<Project> {
 			// TODEL https://github.com/detekt/detekt/issues/4926
 			buildUponDefaultConfig = false
 			allRules = true
+			ignoreFailures = true
 			//debug = true
 			config = project.rootProject.files("config/detekt/detekt.yml")
 			baseline = project.rootProject.file("config/detekt/detekt-baseline-${project.slug}.xml")
