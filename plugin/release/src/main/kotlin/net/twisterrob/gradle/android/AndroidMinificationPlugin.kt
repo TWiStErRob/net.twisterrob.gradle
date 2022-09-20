@@ -149,7 +149,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 			@Suppress("UNCHECKED_CAST")
 			Class.forName("com.android.build.gradle.internal.tasks.ProguardTask")
 					as Class<out ProguardConfigurableTask>
-		} catch (ex: ClassNotFoundException) {
+		} catch (ignore: ClassNotFoundException) {
 			null
 		}
 
