@@ -66,6 +66,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				.map { (report, violations) ->
 					"${report} (${violations.size})"
 				}
+			@Suppress("SpreadOperator")
 			val lines = listOfNotNull(
 				"Ran lint on subprojects: ${totalCount} issues found.",
 				"See reports in subprojects:",

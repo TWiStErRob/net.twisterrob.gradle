@@ -4,6 +4,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import java.io.File
 
+// STOPSHIP REPORT UseDataClass too wide, name would be enough
 class Violations(
 	@JvmField val parser: String,
 	@JvmField val module: String,

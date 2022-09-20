@@ -139,6 +139,6 @@ private fun String.isClassLoadable(): Boolean =
 	try {
 		Class.forName(this)
 		/*@return*/ true
-	} catch (e: ClassNotFoundException) {
+	} catch (ignore: ClassNotFoundException) {
 		/*@return*/ false
 	}

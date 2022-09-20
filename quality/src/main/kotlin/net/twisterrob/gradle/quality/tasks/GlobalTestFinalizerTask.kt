@@ -45,6 +45,7 @@ open class GlobalTestFinalizerTask : TestReport() {
 
 	class Creator : TaskCreationConfiguration<GlobalTestFinalizerTask> {
 		override fun preConfigure(project: Project, taskProvider: TaskProvider<GlobalTestFinalizerTask>) {
+			// No pre-configuration, all config is lazy.
 		}
 
 		override fun configure(task: GlobalTestFinalizerTask) {

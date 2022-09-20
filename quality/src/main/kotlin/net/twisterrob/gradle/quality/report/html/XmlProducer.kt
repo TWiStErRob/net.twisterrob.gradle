@@ -12,7 +12,7 @@ internal fun Project.produceXml(results: Grouper.Start<Violations>, xmlFile: Fil
 	val xslPath = xslFile.toRelativeString(xmlFile.parentFile).replace('\\', '/')
 	xmlFile.writer().use { writer ->
 		writer.xmlWriter().use { xmlWriter ->
-			renderXml(xmlWriter, group, this.rootProject.name, xslPath)
+			renderXml(to = xmlWriter, from = group, projectName = this.rootProject.name, xslPath = xslPath)
 		}
 	}
 }
