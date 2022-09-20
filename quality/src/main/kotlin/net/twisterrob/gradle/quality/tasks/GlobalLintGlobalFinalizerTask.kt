@@ -50,10 +50,11 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	@TaskAction
 	fun failOnFailures() {
 		val gatherer =
-			if (AGPVersions.CLASSPATH >= AGPVersions.v70x)
+			if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
 				LintReportGatherer()
-			else
+			} else {
 				LintGlobalReportGathererPre7(ALL_VARIANTS_NAME)
+			}
 		val violationsByFile = xmlReports
 			.map { it.get().asFile }
 			.filter(File::exists)

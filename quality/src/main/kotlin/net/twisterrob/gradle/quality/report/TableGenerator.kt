@@ -26,6 +26,7 @@ class TableGenerator(
 		val summary: Map<Parser, MaybeCount> = parsers.associateBy({ it }) { parser ->
 			byModuleByVariantByParserCounts
 				.values
+				.asSequence()
 				.flatMap { it.values }
 				.map { it[parser] }
 				.reduce(::safeAdd)

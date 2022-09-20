@@ -30,11 +30,11 @@ internal fun renderXml(
 					categoryViolations.forEach { (reporter, reporterViolations) ->
 						element("reporter") {
 							attribute("name", reporter)
-							reporterViolations.forEach {
+							reporterViolations.forEach { violation ->
 								try {
-									renderViolation(to, ViolationViewModel.create(it))
+									renderViolation(to, ViolationViewModel.create(violation))
 								} catch (ex: Throwable) {
-									throw IllegalArgumentException(it.toString(), ex)
+									throw IllegalArgumentException(violation.toString(), ex)
 								}
 							}
 						}

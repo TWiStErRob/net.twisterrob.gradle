@@ -44,33 +44,32 @@ internal fun collapseFile(violations: List<Violation>): List<Violation> {
 	fun merge(list: List<Violation>): Violation {
 		val first = list.first()
 		return Violation(
-			first.rule,
-			first.category,
-			first.severity,
-			list.joinToString { it.message },
-			first.specifics,
-			Location(
-				first.location.module,
-				first.location.task,
-				first.location.variant,
-				first.location.file,
-				first.location.startLine,
-				list.last().location.endLine,
-				first.location.column
+			rule = first.rule,
+			category = first.category,
+			severity = first.severity,
+			message = list.joinToString { it.message },
+			specifics = first.specifics,
+			location = Location(
+				module = first.location.module,
+				task = first.location.task,
+				variant = first.location.variant,
+				file = first.location.file,
+				startLine = first.location.startLine,
+				endLine = list.last().location.endLine,
+				column = first.location.column
 			),
-			first.source
+			source = first.source
 		)
 	}
 
 	var continuation: MutableList<Violation> = mutableListOf(violations.first())
 	val mergeds = mutableListOf<Violation>()
 	for (next in violations.asSequence().drop(1)) {
-		if (verySimilarProblem(next, continuation.last())) {
-			if (continuation.last().location.endLine + 1 == next.location.startLine) {
-				// found a continuation, save and continue searching
-				continuation.add(next)
-				continue
-			}
+		val last = continuation.last()
+		if (verySimilarProblem(next, last) && last.location.endLine + 1 == next.location.startLine) {
+			// Found a continuation, save and continue searching.
+			continuation.add(next)
+			continue
 		}
 		// if reached here, something is different and next is not part of the [first, last] group
 		// continuation was already found, merge them (possible that continuation.size == 1, it still works

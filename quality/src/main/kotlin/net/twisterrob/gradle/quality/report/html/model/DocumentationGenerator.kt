@@ -29,7 +29,7 @@ class DocumentationGenerator {
 				} else {
 					val match = PMD_DOC_LINK_LINE.find(v.message)
 					if (match != null) {
-						val url = match.groups[1]!!.value
+						val url = match.groupValues[1]
 						URI.create(url)
 					} else if (v.category != null) {
 						val rule = v.rule.toLowerCase(Locale.ROOT).toLowerCase(Locale.ROOT)

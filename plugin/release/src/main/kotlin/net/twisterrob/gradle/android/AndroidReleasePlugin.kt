@@ -159,7 +159,7 @@ class AndroidReleasePlugin : BasePlugin() {
 			inputs.property("variant-versionCode", out.versionCode)
 
 			archiveFileName.set(project.provider {
-				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "UnsafeCallOnNullableType")
 				val versionCode = out.versionCode.get()!!.toLong()
 				val versionName = out.versionName.get()
 				val applicationId = variant.applicationId.get()
@@ -201,7 +201,7 @@ private fun Zip.failIfAlreadyArchived() {
 }
 
 private fun Zip.printResultingArchive() {
-	println("Published release artifacts to ${outputs.files.singleFile}:" + ZipFile(outputs.files.singleFile)
+	logger.quiet("Published release artifacts to ${outputs.files.singleFile}:" + ZipFile(outputs.files.singleFile)
 		.entries()
 		.toList()
 		.sortedBy { it.name }

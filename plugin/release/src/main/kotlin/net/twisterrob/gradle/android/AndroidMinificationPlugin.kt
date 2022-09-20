@@ -98,8 +98,10 @@ class AndroidMinificationPlugin : BasePlugin() {
 				if (!isFlavorless) {
 					// Cannot do this simply because AGP doesn't provide a DSL surface for adding proguard rules for variants.
 					// It's possible to add for buildType and flavors, but since the mapping file is for variants,
-					// the generate... task would not be able to create a distinct file.
-					project.logger.warn("This project uses flavors, it's not possible to generate variant based rules for ${variant.name}.")
+					// the `generate...` task would not be able to create a distinct file.
+					project.logger.warn(
+						"This project uses flavors, it's not possible to generate variant based rules for ${variant.name}."
+					)
 				}
 				val generateProguardRulesTask =
 					createGenerateProguardMinificationRulesTask(variant, generatedProguardRulesFile)

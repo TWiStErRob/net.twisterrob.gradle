@@ -111,7 +111,7 @@ private val Iterable<Violations>.violations: List<Violation>
 	get() = this.flatMap { it.violations.orEmpty() }
 
 private fun Iterable<List<Violation>>.intersect(): List<Violation> =
-	this.reduce { acc, it -> intersect(acc, it) }
+	this.reduce { acc, next -> intersect(acc, next) }
 
 @Suppress("ConvertArgumentToSet")
 private fun intersect(list1: List<Violation>, list2: List<Violation>): List<Violation> {

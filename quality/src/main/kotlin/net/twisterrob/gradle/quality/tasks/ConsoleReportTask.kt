@@ -38,15 +38,23 @@ open class ConsoleReportTask : BaseViolationsTask() {
 			.map { "${it.module}:${it.parser}@${it.variant} (${it.violations!!.size}): ${it.report}" }
 
 		if (result.isNotEmpty()) {
-			println(result.joinToString(System.lineSeparator() + System.lineSeparator()))
-			println()
+			logger.quiet(
+				result.joinToString(
+					separator = System.lineSeparator() + System.lineSeparator(),
+					postfix = System.lineSeparator()
+				)
+			)
 		}
 		if (reportLocations.isNotEmpty()) {
-			println(reportLocations.joinToString(System.lineSeparator()))
-			println()
+			logger.quiet(
+				reportLocations.joinToString(
+					separator = System.lineSeparator(),
+					postfix = System.lineSeparator()
+				)
+			)
 		}
 		if (table.isNotBlank()) {
-			println(table)
+			logger.quiet(table)
 		}
 	}
 }
