@@ -33,8 +33,6 @@ T : Reporting<out ReportContainer<out ConfigurableReport>>,
 T : TargetChecker,
 T : VerificationTask {
 
-	private lateinit var eachTask: TaskProvider<*>
-
 	private val checkerExtension: BaseQualityExtension<T>
 		get() {
 			val quality = project.extensions.getByName("quality") as ExtensionAware
@@ -45,8 +43,8 @@ T : VerificationTask {
 		variants: DomainObjectSet<out @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
 	) {
 		project.plugins.apply(pluginName)
-		createGlobalTask()
-		variants.all(this::createTaskForVariant)
+		val eachTask = createGlobalTask()
+		variants.all { createTaskForVariant(it, eachTask) }
 		project.afterEvaluate {
 			project.tasks.register("${baseName}All", taskClass, variantsConfig(variants))
 		}
@@ -65,19 +63,20 @@ T : VerificationTask {
 	open fun taskConfigurator(): VariantTaskCreator<T>.DefaultTaskConfig =
 		DefaultTaskConfig()
 
-	private fun createGlobalTask() {
+	private fun createGlobalTask(): TaskProvider<Task> {
 		val globalTaskName = "${baseName}Each"
 		if (globalTaskName in project.tasks.names) {
-			return
+			return project.tasks.named(globalTaskName)
 		}
-		eachTask = project.tasks.register(globalTaskName) { task: Task ->
+		return project.tasks.register(globalTaskName) { task: Task ->
 			task.group = JavaBasePlugin.VERIFICATION_GROUP
 			task.description = "Run ${baseName} on each variant separately"
 		}
 	}
 
 	private fun createTaskForVariant(
-		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant
+		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant,
+		eachTask: TaskProvider<*>,
 	) {
 		val taskName = "${baseName}${variant.name.capitalize()}"
 		val variantTask = project.tasks.register(taskName, taskClass, variantConfig(variant))
