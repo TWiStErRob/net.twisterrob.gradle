@@ -8,7 +8,7 @@ internal typealias Reporter = String
 
 @Suppress("USELESS_CAST") // casts are useful to convert String to typealias
 internal fun group(violationss: List<Violations>): Map<Category, Map<Reporter, List<Violation>>> {
-	val allViolations = violationss.flatMap { (it.violations ?: emptyList()) }
+	val allViolations = violationss.flatMap { it.violations.orEmpty() }
 
 	@Suppress("UnnecessaryVariable") // REPORT broken refactor: inlining this variable breaks code
 	val group = allViolations

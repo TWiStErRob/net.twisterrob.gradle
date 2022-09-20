@@ -20,6 +20,7 @@ console-reports:
 
 
 comments:
+
   CommentOverPrivateFunction:
     # Disabled as I don't agree with it, if a function needs docs, it needs docs. Visibility doesn't change that.
     active: false
@@ -48,10 +49,13 @@ comments:
 
 
 naming:
+
   BooleanPropertyNaming:
     allowedPattern: '^(is|has|are|was)'
 
+
 style:
+
   NoTabs:
     # I'm a tab guy, I don't pay for space in advance.
     active: false
@@ -64,9 +68,11 @@ style:
     # It's unavoidable to have some long lines when stacktraces or links are added as comments.
     excludeCommentStatements: true
 
-#  UnnecessaryParentheses: 
-#    # Match IntelliJ IDEA Kotlin Plugin's UnclearPrecedenceOfBinaryExpression setup.
-#    # TODO not yet released, coming in next of 1.21.0
+  UnnecessaryParentheses:
+    # TODO disable for now, because it has too many false positives, enable in next of 1.21.0.
+    active: false
+    # Match IntelliJ IDEA Kotlin Plugin's UnclearPrecedenceOfBinaryExpression setup.
+    # TODO not yet released, coming in next of 1.21.0
 #    allowForUnclearPrecedence: true
 
   UseIfInsteadOfWhen:
