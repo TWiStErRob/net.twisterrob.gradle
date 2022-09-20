@@ -51,7 +51,8 @@ open class HtmlReportTask : BaseViolationsTask() {
 		get() = xsl.asFile.get()
 
 	/**
-	 * val xsl: File = xml.parentFile.resolve(xslTemplate.name)
+	 * `val xsl: File = xml.parentFile.resolve(xslTemplate.name)` would be better,
+	 * but it's not possible to use `xml` in the constructor.
 	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@get:OutputFile

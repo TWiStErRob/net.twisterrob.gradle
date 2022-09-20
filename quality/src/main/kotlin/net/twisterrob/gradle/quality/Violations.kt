@@ -1,3 +1,5 @@
+@file:Suppress("LongParameterList") // Collection of "data" classes, they have a lot to hold.
+
 package net.twisterrob.gradle.quality
 
 import org.gradle.api.Project
@@ -40,6 +42,7 @@ class Violation(
 	val source: Source
 ) {
 
+	@Suppress("MaxLineLength")
 	override fun toString(): String =
 		"Violation(rule='$rule', category=${category ?: "null"}, severity=$severity, message='$message', specifics=$specifics, location=$location, source=$source)"
 
@@ -58,6 +61,8 @@ class Violation(
 		val endLine: Int,
 		val column: Int
 	) {
+
+		@Suppress("MaxLineLength")
 		override fun toString(): String =
 			"Location(module=$module, task=$task, variant='$variant', file=$file, startLine=$startLine, endLine=$endLine, column=$column)"
 	}
@@ -70,6 +75,8 @@ class Violation(
 		val report: File,
 		val humanReport: File?
 	) {
+
+		@Suppress("MaxLineLength")
 		override fun toString(): String =
 			"Source(parser='$parser', gatherer='$gatherer', reporter='$reporter', source='$source', report=$report, humanReport=${humanReport ?: "null"})"
 	}

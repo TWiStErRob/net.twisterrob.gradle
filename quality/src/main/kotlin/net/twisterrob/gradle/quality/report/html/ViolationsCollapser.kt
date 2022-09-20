@@ -62,6 +62,7 @@ internal fun collapseFile(violations: List<Violation>): List<Violation> {
 		)
 	}
 
+	@Suppress("DoubleMutabilityForCollection") // Complex algorithm.
 	var continuation: MutableList<Violation> = mutableListOf(violations.first())
 	val mergeds = mutableListOf<Violation>()
 	for (next in violations.asSequence().drop(1)) {

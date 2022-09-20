@@ -145,7 +145,7 @@ open class GradleRunnerRule : TestRule {
 		}
 		val args = arrayOf(*tasks, *extraArgs)
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
-		val testKitDir = runner.let { it as? DefaultGradleRunner }?.testKitDirProvider?.dir
+		val testKitDir = (runner as? DefaultGradleRunner)?.testKitDirProvider?.dir
 		val javaVendor: String? by systemProperty("java.vendor")
 		val javaVersion: String? by systemProperty("java.version")
 		val javaVersionDate: String? by systemProperty("java.version.date")

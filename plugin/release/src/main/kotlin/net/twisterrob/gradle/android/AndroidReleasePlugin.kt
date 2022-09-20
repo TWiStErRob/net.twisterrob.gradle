@@ -25,19 +25,6 @@ import java.io.File
 import java.io.IOException
 import java.util.zip.ZipFile
 
-private val defaultReleaseDir: File
-	get() {
-		val envVarName = "RELEASE_HOME"
-		val releaseHome = checkNotNull(System.getenv(envVarName)) {
-			"Please set ${envVarName} environment variable to an existing directory."
-		}
-		return File(releaseHome).also {
-			check(it.exists() && it.isDirectory) {
-				"Please set ${envVarName} environment variable to an existing directory."
-			}
-		}
-	}
-
 class AndroidReleasePlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
@@ -102,7 +89,7 @@ class AndroidReleasePlugin : BasePlugin() {
 		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.description}"
-			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
+			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve(DEFAULT_DIR) })
 			val releaseZipFileName = with(variant) {
 				val versionCode = versionCode.toLong()
 				version.formatArtifactName(project, "archive", applicationId, versionCode, versionName) + ".zip"
@@ -152,7 +139,7 @@ class AndroidReleasePlugin : BasePlugin() {
 		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.name} build"
-			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve("android") })
+			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve(DEFAULT_DIR) })
 			val out = variant.outputs.single()
 			inputs.property("variant-applicationId", variant.applicationId)
 			inputs.property("variant-versionName", out.versionName)
@@ -184,6 +171,25 @@ class AndroidReleasePlugin : BasePlugin() {
 			doFirst(closureOf<Zip> { failIfAlreadyArchived() })
 			doLast(closureOf<Zip> { printResultingArchive() })
 		}
+
+	companion object {
+
+		private const val DEFAULT_DIR = "android"
+
+		private val defaultReleaseDir: File
+			get() {
+				val envVarName = "RELEASE_HOME" // TODO bad for configuration cache.
+				val releaseHome = checkNotNull(System.getenv(envVarName)) {
+					"Please set ${envVarName} environment variable to an existing directory."
+				}
+				return File(releaseHome).also {
+					check(it.exists() && it.isDirectory) {
+						"Please set ${envVarName} environment variable to an existing directory."
+					}
+				}
+			}
+
+	}
 }
 
 private fun Zip.archiveMappingFile(mappingFileProvider: Provider<File>) {
