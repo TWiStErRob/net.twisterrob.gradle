@@ -17,6 +17,5 @@ internal val com.android.build.gradle.api.BaseVariant.androidTestVariant: BaseVa
 
 @Suppress("DEPRECATION" /* AGP 7.0 */)
 internal val com.android.build.gradle.api.BaseVariant.unitTestVariant: BaseVariantImpl?
-	// STOPSHIP REPORT CastToNullableType reports too wide
 	@Suppress("CastToNullableType")
 	get() = (this as TestedVariant).unitTestVariant as BaseVariantImpl?

@@ -4,7 +4,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import java.io.File
 
-// STOPSHIP REPORT UseDataClass too wide, name would be enough
+@Suppress("UseDataClass") // Don't want to define equals/hashCode/component methods as they all imply something.
 class Violations(
 	@JvmField val parser: String,
 	@JvmField val module: String,
@@ -24,11 +24,12 @@ class Violations(
 ) {
 
 	override fun toString(): String {
-		val violations = this.violations?.joinToString(prefix = "\n", separator = "\n")
+		val violations = this.violations?.joinToString(prefix = "\n", separator = "\n") ?: "[]"
 		return "${module}${if (module == ":") "" else ":"}${parser}@${variant} (${result}):$violations"
 	}
 }
 
+@Suppress("UseDataClass") // Don't want to define equals/hashCode/component methods as they all imply something.
 class Violation(
 	val rule: String,
 	val category: String?,
@@ -40,7 +41,7 @@ class Violation(
 ) {
 
 	override fun toString(): String =
-		"Violation(rule='$rule', category=$category, severity=$severity, message='$message', specifics=$specifics, location=$location, source=$source)"
+		"Violation(rule='$rule', category=${category ?: "null"}, severity=$severity, message='$message', specifics=$specifics, location=$location, source=$source)"
 
 	enum class Severity {
 		INFO,
@@ -70,6 +71,6 @@ class Violation(
 		val humanReport: File?
 	) {
 		override fun toString(): String =
-			"Source(parser='$parser', gatherer='$gatherer', reporter='$reporter', source='$source', report=$report, humanReport=$humanReport)"
+			"Source(parser='$parser', gatherer='$gatherer', reporter='$reporter', source='$source', report=$report, humanReport=${humanReport ?: "null"})"
 	}
 }

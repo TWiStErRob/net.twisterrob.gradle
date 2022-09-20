@@ -62,6 +62,14 @@ naming:
     allowedPattern: '^(is|has|are|was)'
 
 
+potential-bugs:
+
+  CastToNullableType:
+    # STOPSHIP REPORT CastToNullableType reports too wide, e.g. bestXMLOutputFactory() > defaultImpl: original verison hides ReplaceSafeCallChainWithRun
+    # STOPSHIP REPORT CastToNullableType reports too wide, e.g. BaseVariant.unitTestVariant contains 2 casts
+    active: true
+
+
 style:
 
   NoTabs:
@@ -86,3 +94,8 @@ style:
   UseIfInsteadOfWhen:
     # STOPSHIP
     active: false
+
+  UseDataClass:
+    # STOPSHIP REPORT UseDataClass too wide, name would be enough.
+    # STOPSHIP REPORT UseDataClass false positive on LocationViewModel.
+    active: true

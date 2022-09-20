@@ -88,7 +88,8 @@ internal fun renderViolation(to: XMLStreamWriter, vm: ViolationViewModel) {
 						// This is a peculiarity of streaming XML rendering,
 						// because there's no backtrack once the element started outputting.
 						context.resolve()
-					} catch (ex: Throwable) {
+					} catch (@Suppress("TooGenericExceptionCaught") ex: Throwable) {
+						// Intentionally catch all exceptions, because we don't want to crash the whole report.
 						render(to, ErrorContext(context, ex))
 						return@renderContext
 					}

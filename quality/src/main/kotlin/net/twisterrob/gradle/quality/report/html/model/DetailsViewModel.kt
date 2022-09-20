@@ -3,6 +3,7 @@ package net.twisterrob.gradle.quality.report.html.model
 import net.twisterrob.gradle.quality.Violation
 import java.net.URI
 
+@Suppress("UseDataClass") // ViewModel pattern, no need for data class methods.
 class DetailsViewModel(private val v: Violation) {
 	val rule: String get() = v.rule
 	val suppression: String? get() = SuppressionGenerator().getSuppression(v)

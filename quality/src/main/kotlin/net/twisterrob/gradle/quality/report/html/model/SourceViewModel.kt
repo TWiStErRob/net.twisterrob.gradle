@@ -3,6 +3,7 @@ package net.twisterrob.gradle.quality.report.html.model
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violation.Source
 
+@Suppress("UseDataClass") // ViewModel pattern, no need for data class methods.
 class SourceViewModel(violation: Violation) {
 	private val s: Source = violation.source
 	val parser: String = s.parser

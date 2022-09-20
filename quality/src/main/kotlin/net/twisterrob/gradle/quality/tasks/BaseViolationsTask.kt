@@ -118,7 +118,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 									SEVERITY.ERROR -> Violation.Severity.ERROR
 								},
 								message = it.message,
-								specifics = it.specifics ?: emptyMap(),
+								specifics = it.specifics.orEmpty(),
 								location = Violation.Location(
 									module = subproject,
 									task = task,

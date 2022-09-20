@@ -68,7 +68,7 @@ class TableGenerator(
 			val summaryRow = String.format(rowFormat, *(summaryHeader + summaryData).toTypedArray())
 			listOf(summaryRow)
 		} else {
-			listOf()
+			emptyList()
 		}
 		return (listOf(header) + rows + footer).joinToString(System.lineSeparator())
 	}

@@ -133,8 +133,8 @@ class AndroidReleasePlugin : BasePlugin() {
 		// Get the flavor task in case it was already registered by another variant.
 		var releaseFlavorTask = try {
 			project.tasks.named(releaseFlavorTaskName)
-		} catch (ex: UnknownTaskException) {
-			null
+		} catch (ignore: UnknownTaskException) {
+			null // maybeRegister()
 		}
 		if (releaseFlavorTask == null) {
 			releaseFlavorTask = project.tasks.register<Task>(releaseFlavorTaskName) {

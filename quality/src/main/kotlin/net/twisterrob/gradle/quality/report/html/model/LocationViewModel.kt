@@ -6,6 +6,7 @@ import org.gradle.api.Project
 import java.io.File
 import java.net.URI
 
+@Suppress("UseDataClass") // ViewModel pattern, no need for data class methods.
 class LocationViewModel(violation: Violation) {
 	private val loc: Location = violation.location
 	private val module: Project = loc.module
