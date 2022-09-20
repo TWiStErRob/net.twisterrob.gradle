@@ -29,8 +29,7 @@ import net.twisterrob.gradle.internal.android.taskContainerCompat74x
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.provider.Provider
 import java.io.File
@@ -79,11 +78,8 @@ fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType)
 	}
 }
 
-fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
-	project.objects.fileProperty().apply {
-		set(project.layout.buildDirectory
-			.map { it.file("${SdkConstants.FD_INTERMEDIATES}/$relativePath") })
-	}
+fun Project.intermediateRegularFile(relativePath: String): Provider<RegularFile> =
+	this.layout.buildDirectory.file("${SdkConstants.FD_INTERMEDIATES}/$relativePath")
 
 val BaseVariantData.taskContainerCompat: TaskContainer
 	get() =

@@ -31,14 +31,16 @@ abstract class CalculateBuildTimeTask : DefaultTask() {
 	abstract val buildTime: Property<Long>
 
 	@get:OutputFile
-	val buildTimeFile: RegularFileProperty =
-		intermediateRegularFile("buildConfigDecorations/buildTime.txt")
+	abstract val buildTimeFile: RegularFileProperty
 
 	init {
 		description = "Calculates the build time for BuildConfig.java."
 		// Not using a provider to prevent turning over midnight during build,
 		// each build will have a single calculation.
+		@Suppress("LeakingThis")
 		buildTime.convention(OffsetDateTime.now().truncatedTo(ChronoUnit.DAYS).toInstant().toEpochMilli())
+		@Suppress("LeakingThis")
+		buildTimeFile.convention(project.intermediateRegularFile("buildConfigDecorations/buildTime.txt"))
 	}
 
 	@TaskAction

@@ -15,15 +15,17 @@ import org.gradle.kotlin.dsl.getByType
 abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 
 	@get:OutputFile
-	val revisionFile: RegularFileProperty =
-		intermediateRegularFile("buildConfigDecorations/revision.txt")
+	abstract val revisionFile: RegularFileProperty
 
 	@get:OutputFile
-	val revisionNumberFile: RegularFileProperty =
-		intermediateRegularFile("buildConfigDecorations/revisionNumber.txt")
+	abstract val revisionNumberFile: RegularFileProperty
 
 	init {
 		inputs.files(project.provider { vcs.current.files(project) })
+		@Suppress("LeakingThis")
+		revisionFile.convention(project.intermediateRegularFile("buildConfigDecorations/revision.txt"))
+		@Suppress("LeakingThis")
+		revisionNumberFile.convention(project.intermediateRegularFile("buildConfigDecorations/revisionNumber.txt"))
 	}
 
 	private val vcs: VCSPluginExtension
