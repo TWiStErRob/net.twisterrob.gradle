@@ -15,6 +15,7 @@ import java.net.URI
 /**
  * Simplified {@link org.junit.Rule} around {@link GradleRunner} to reduce code repetition.
  */
+@Suppress("BooleanPropertyNaming") // These are clear names.
 open class GradleRunnerRule : TestRule {
 
 	private val temp = TemporaryFolder()

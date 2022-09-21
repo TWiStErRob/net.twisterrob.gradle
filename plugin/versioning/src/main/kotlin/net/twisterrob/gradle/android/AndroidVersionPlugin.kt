@@ -45,7 +45,7 @@ import java.util.Properties
 @Suppress("MemberVisibilityCanBePrivate")
 open class AndroidVersionExtension {
 
-	private var autoVersionSet: Boolean = false
+	private var isAutoVersionSet: Boolean = false
 
 	/**
 	 * Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648).
@@ -54,10 +54,10 @@ open class AndroidVersionExtension {
 	 * autoVersion will default to `true` when `version.properties` file exists.
 	 * autoVersion will default to `true` when [major], [minor], [patch] or [build] properties are set.
 	 */
-	var autoVersion: Boolean = false
+	var isAutoVersion: Boolean = false
 		set(value) {
 			field = value
-			autoVersionSet = true
+			isAutoVersionSet = true
 		}
 
 	var versionNameFormat: (version: AndroidVersionExtension) -> String =
@@ -96,7 +96,7 @@ open class AndroidVersionExtension {
 			autoVersion()
 		}
 
-	var renameAPK: Boolean = true
+	var isRenameAPK: Boolean = true
 
 	var formatArtifactName: (Project, String, String, Long, String?) -> String =
 		{ _, variantName, applicationId, versionCode, versionName ->
@@ -136,7 +136,7 @@ open class AndroidVersionExtension {
 	}
 
 	private fun autoVersion() {
-		if (!autoVersionSet) autoVersion = true
+		if (!isAutoVersionSet) isAutoVersion = true
 	}
 
 	companion object {
@@ -181,7 +181,7 @@ class AndroidVersionPlugin : BasePlugin() {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
 				// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.
 				project.androidComponents.onVariants(project.androidComponents.selector().all()) {
-					if (version.renameAPK) {
+					if (version.isRenameAPK) {
 						renameAPKPost7(it as ApplicationVariant)
 					}
 				}
@@ -189,7 +189,7 @@ class AndroidVersionPlugin : BasePlugin() {
 			else -> {
 				project.beforeAndroidTasksCreated {
 					android.applicationVariants.all {
-						if (version.renameAPK) {
+						if (version.isRenameAPK) {
 							renameAPKPre7(it, it)
 						}
 					}
@@ -208,7 +208,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	 * but before any of AGP's [Project.afterEvaluate] is executed.
 	 */
 	private fun autoVersion() {
-		if (version.autoVersion) {
+		if (version.isAutoVersion) {
 			android.defaultConfig.setVersionCode(version.versionCodeFormat(version))
 			android.defaultConfig.setVersionName(version.versionNameFormat(version))
 		}
@@ -289,7 +289,7 @@ class AndroidVersionPlugin : BasePlugin() {
 			try {
 				FileInputStream(file).use { props.load(it) }
 				// If the file existed, turn on auto-versioning.
-				version.autoVersion = true
+				version.isAutoVersion = true
 			} catch (ignore: FileNotFoundException) {
 			}
 		}

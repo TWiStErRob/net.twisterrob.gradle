@@ -26,7 +26,7 @@ import org.gradle.kotlin.dsl.withType
 
 open class AndroidBuildPluginExtension {
 
-	var decorateBuildConfig: Boolean = true
+	var isDecorateBuildConfig: Boolean = true
 
 	companion object {
 
@@ -132,21 +132,21 @@ class AndroidBuildPlugin : BasePlugin() {
 		when {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
 				project.androidComponents.finalizeDsl {
-					if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
+					if (twisterrob.isDecorateBuildConfig && android.buildFeatures.buildConfig != false) {
 						decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
 					}
 				}
 			}
 			else -> {
 				project.beforeAndroidTasksCreated {
-					if (twisterrob.decorateBuildConfig && android.buildFeatures.buildConfig != false) {
+					if (twisterrob.isDecorateBuildConfig && android.buildFeatures.buildConfig != false) {
 						decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
 					}
 				}
 			}
 		}
 		project.plugins.withType<AppPlugin> {
-			if (twisterrob.decorateBuildConfig) {
+			if (twisterrob.isDecorateBuildConfig) {
 				android.variants.all(::addPackageName)
 			}
 		}
