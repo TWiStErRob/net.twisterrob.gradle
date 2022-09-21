@@ -33,8 +33,10 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 	val defaultImpl =
 		XMLOutputFactory::class.declaredMembers
 			.singleOrNull { it.name == "DEFAULIMPL" }
-			?.apply { isAccessible = true }
-			?.call() as String?
+			?.let { field ->
+				field.isAccessible = true
+				field.call() as String
+			}
 			?: "com.sun.xml.internal.stream.XMLOutputFactoryImpl"
 	if (defaultImpl.isClassLoadable()) {
 		// return XMLOutputFactory.newFactory(defaultImpl, null as ClassLoader?) is @since Java 6,
