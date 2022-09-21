@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.build
 
 import io.gitlab.arturbosch.detekt.Detekt
+import isCI
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.withType
@@ -14,7 +15,7 @@ internal class DetektPlugin : Plugin<Project> {
 			// TODEL https://github.com/detekt/detekt/issues/4926
 			buildUponDefaultConfig = false
 			allRules = true
-			ignoreFailures = true
+			ignoreFailures = isCI
 			//debug = true
 			config = project.rootProject.files("config/detekt/detekt.yml")
 			baseline = project.rootProject.file("config/detekt/detekt-baseline-${project.slug}.xml")
