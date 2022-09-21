@@ -46,7 +46,6 @@ jobs:
           --continue
           jar
           validatePlugins
-          detekt
           detektMain
           detektReportMergeSarif
           detektReportMergeXml
