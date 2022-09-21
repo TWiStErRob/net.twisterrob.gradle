@@ -145,7 +145,6 @@ jobs:
           ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
   check:
-    if: false
     name: 2 🛠️ ${{ matrix.name }}
     runs-on: ubuntu-latest
     env:
