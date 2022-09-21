@@ -135,6 +135,13 @@ open class AndroidVersionExtension {
 		}
 	}
 
+	fun versionByProperties(properties: Properties) {
+		properties.getProperty("major")?.let { major = it.toInt() }
+		properties.getProperty("minor")?.let { minor = it.toInt() }
+		properties.getProperty("patch")?.let { patch = it.toInt() }
+		properties.getProperty("build")?.let { build = it.toInt() }
+	}
+
 	private fun autoVersion() {
 		if (!isAutoVersionSet) isAutoVersion = true
 	}
@@ -175,7 +182,7 @@ class AndroidVersionPlugin : BasePlugin() {
 
 	private fun init() {
 		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
-		readVersionFromFile(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME))
+		version.versionByProperties(readVersion(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME)))
 
 		when {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
@@ -222,7 +229,7 @@ class AndroidVersionPlugin : BasePlugin() {
 		}
 		variantOutput.outputFileName.set(project.provider {
 			// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
-			@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+			@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "UnsafeCallOnNullableType", "MaxLineLength")
 			val artifactName = version.formatArtifactName(
 				project,
 				variant.name,
@@ -230,12 +237,12 @@ class AndroidVersionPlugin : BasePlugin() {
 				variantOutput.versionCode.getOrElse(-1)!!.toLong(),
 				variantOutput.versionName.getOrElse(null)
 			)
-			"${artifactName}.apk"
+			artifactName.apk
 		})
 		androidTestOutput?.let { androidTest ->
 			androidTest.outputFileName.set(project.provider {
 				// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
-				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "UnsafeCallOnNullableType", "MaxLineLength")
 				val artifactName = version.formatArtifactName(
 					project,
 					variant.androidTestCompat!!.name,
@@ -243,7 +250,7 @@ class AndroidVersionPlugin : BasePlugin() {
 					variantOutput.versionCode.getOrElse(-1)!!.toLong(),
 					variantOutput.versionName.getOrElse(null)
 				)
-				"${artifactName}.apk"
+				artifactName.apk
 			})
 		}
 	}
@@ -263,7 +270,7 @@ class AndroidVersionPlugin : BasePlugin() {
 			val artifactName = version.formatArtifactName(
 				project, variant.name, variant.applicationId, source.versionCode.toLong(), source.versionName
 			)
-			outputFileName = "${artifactName}.apk"
+			outputFileName = artifactName.apk
 		}
 		if (variant is @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.internal.api.TestedVariant) {
 			// TODO this is a Hail Mary trying to propagate version to androidTest APK, but has no effect.
@@ -276,19 +283,11 @@ class AndroidVersionPlugin : BasePlugin() {
 		}
 	}
 
-	private fun readVersionFromFile(file: File): Properties =
-		readVersion(file).also { props ->
-			props.getProperty("major")?.let { version.major = it.toInt() }
-			props.getProperty("minor")?.let { version.minor = it.toInt() }
-			props.getProperty("patch")?.let { version.patch = it.toInt() }
-			props.getProperty("build")?.let { version.build = it.toInt() }
-		}
-
 	private fun readVersion(file: File): Properties =
 		Properties().also { props ->
 			try {
 				FileInputStream(file).use { props.load(it) }
-				// If the file existed, turn on auto-versioning.
+				// If the file existed, turn on auto-versioning. TODO remove side effect.
 				version.isAutoVersion = true
 			} catch (ignore: FileNotFoundException) {
 			}
@@ -301,3 +300,5 @@ val DefaultConfig.version: AndroidVersionExtension
 fun DefaultConfig.version(configuration: Action<AndroidVersionExtension>) {
 	configuration.execute(version)
 }
+private val String.apk: String
+	get() = "${this}.apk"

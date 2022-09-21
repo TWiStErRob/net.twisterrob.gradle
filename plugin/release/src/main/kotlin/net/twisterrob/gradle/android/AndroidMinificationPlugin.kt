@@ -54,21 +54,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 					buildType.proguardFiles.add(myReleaseProguardRulesFile)
 				}
 			}
-
-			val autoProguardFile = project.file("src/main/proguard.pro")
-			if (autoProguardFile.exists() && autoProguardFile.isFile) {
-				android.defaultConfig.proguardFiles.add(autoProguardFile)
-			}
-			val autoDexMainFile = project.file("src/main/multidex.pro")
-			if (autoDexMainFile.exists() && autoDexMainFile.isFile) {
-				android.defaultConfig.multiDexKeepProguard = autoDexMainFile
-			}
-			project.plugins.withType<LibraryPlugin> {
-				val autoConsumerFile = project.file("src/main/consumer.pro")
-				if (autoConsumerFile.exists() && autoConsumerFile.isFile) {
-					android.defaultConfig.consumerProguardFiles(autoConsumerFile)
-				}
-			}
+			setupAutoProguardFiles()
 		}
 
 		val extractMinificationRules = project.tasks.register<Task>("extractMinificationRules") {
@@ -91,9 +77,30 @@ class AndroidMinificationPlugin : BasePlugin() {
 			}
 		}
 
-		lintTasksDependOnProguardRulesTask(extractMinificationRules)
-		project.afterEvaluate {
-			android.variants.configureEach { variant ->
+		lintDependsOnGenerateRulesTask(extractMinificationRules)
+		android.generateVariantRules(generatedProguardRulesFile, extractMinificationRules)
+	}
+
+	private fun BaseExtension.setupAutoProguardFiles() {
+		val autoProguardFile = project.file("src/main/proguard.pro")
+		if (autoProguardFile.exists() && autoProguardFile.isFile) {
+			defaultConfig.proguardFiles.add(autoProguardFile)
+		}
+		val autoDexMainFile = project.file("src/main/multidex.pro")
+		if (autoDexMainFile.exists() && autoDexMainFile.isFile) {
+			defaultConfig.multiDexKeepProguard = autoDexMainFile
+		}
+		project.plugins.withType<LibraryPlugin> {
+			val autoConsumerFile = project.file("src/main/consumer.pro")
+			if (autoConsumerFile.exists() && autoConsumerFile.isFile) {
+				defaultConfig.consumerProguardFiles(autoConsumerFile)
+			}
+		}
+	}
+
+	private fun BaseExtension.generateVariantRules(targetFile: File, extractMinificationRules: TaskProvider<Task>) {
+		project.afterEvaluate { project ->
+			variants.configureEach { variant ->
 				val isFlavorless = variant.flavorName == ""
 				if (!isFlavorless) {
 					// Cannot do this simply because AGP doesn't provide a DSL surface for adding proguard rules for variants.
@@ -103,10 +110,9 @@ class AndroidMinificationPlugin : BasePlugin() {
 						"This project uses flavors, it's not possible to generate variant based rules for ${variant.name}."
 					)
 				}
-				val generateProguardRulesTask =
-					createGenerateProguardMinificationRulesTask(variant, generatedProguardRulesFile)
+				val generateProguardRulesTask = createGenerateProguardRules(variant, targetFile)
 				if (isFlavorless) {
-					lintTasksDependOnProguardRulesTask(generateProguardRulesTask)
+					lintDependsOnGenerateRulesTask(generateProguardRulesTask)
 				}
 				proguardTaskClass()
 					?.let { project.tasks.withType(it) }
@@ -118,10 +124,9 @@ class AndroidMinificationPlugin : BasePlugin() {
 							}
 						}
 					}
-				val generateR8RulesTask =
-					createGenerateR8MinificationRulesTask(variant, generatedProguardRulesFile)
+				val generateR8RulesTask = createGenerateR8Rules(variant, targetFile)
 				if (isFlavorless) {
-					lintTasksDependOnProguardRulesTask(generateR8RulesTask)
+					lintDependsOnGenerateRulesTask(generateR8RulesTask)
 				}
 				project.tasks.withType<R8Task>().configureEach { obfuscationTask ->
 					if (obfuscationTask.variantName == variant.name) {
@@ -135,7 +140,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 		}
 	}
 
-	private fun lintTasksDependOnProguardRulesTask(task: TaskProvider<Task>) {
+	private fun lintDependsOnGenerateRulesTask(task: TaskProvider<Task>) {
 		if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
 			// REPORT allow tasks to generate ProGuard files, this must be possible because aapt generates one.
 			project.tasks.withType<AndroidLintGlobalTask>().configureEach { it.mustRunAfter(task) }
@@ -156,9 +161,9 @@ class AndroidMinificationPlugin : BasePlugin() {
 		}
 
 	/**
-	 * Duplicate code, see also [createGenerateProguardMinificationRulesTask].
+	 * Duplicate code, see also [createGenerateProguardRules].
 	 */
-	private fun createGenerateR8MinificationRulesTask(
+	private fun createGenerateR8Rules(
 		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
 		outputFile: File,
 	): TaskProvider<Task> =
@@ -177,9 +182,9 @@ class AndroidMinificationPlugin : BasePlugin() {
 		}
 
 	/**
-	 * Duplicate code, see also [createGenerateR8MinificationRulesTask].
+	 * Duplicate code, see also [createGenerateR8Rules].
 	 */
-	private fun createGenerateProguardMinificationRulesTask(
+	private fun createGenerateProguardRules(
 		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
 		outputFile: File,
 	): TaskProvider<Task> =

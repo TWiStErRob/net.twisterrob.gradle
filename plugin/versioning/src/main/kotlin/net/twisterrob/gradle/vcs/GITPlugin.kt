@@ -21,15 +21,13 @@ class GITPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-
-		val git = project.vcs.extensions.create<GITPluginExtension>(GITPluginExtension.NAME)
-		git.project = project // TODO better solution
+		project.vcs.extensions.create<GITPluginExtension>(GITPluginExtension.NAME, project)
 	}
 }
 
-open class GITPluginExtension : VCSExtension {
-
-	internal lateinit var project: Project
+open class GITPluginExtension(
+	private val project: Project
+) : VCSExtension {
 
 	override val isAvailableQuick: Boolean
 		get() = project.rootDir.resolve(".git").exists()

@@ -1,4 +1,7 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress(
+	"NOTHING_TO_INLINE", // Keep inlines for consistency.
+	"TooManyFunctions", // This file defines a full DSL framework.
+)
 
 package net.twisterrob.gradle.quality.report.html
 
@@ -20,7 +23,10 @@ fun XMLStreamWriter.use(block: (XMLStreamWriter) -> Unit) {
 
 /**
  * Based on the amazing idea from https://www.schibsted.pl/blog/back-end/readable-xml-kotlin-extensions/
- * @param encoding be sure to set the underlying Writer's encoding to the same
+ *
+ * @param version the XML version. Defaults to `1.0`.
+ * @param encoding the XML encoding. Be sure to set the underlying Writer's encoding to the same.
+ * @param content scope to write the XML content.
  */
 inline fun XMLStreamWriter.document(
 	version: String = "1.0",

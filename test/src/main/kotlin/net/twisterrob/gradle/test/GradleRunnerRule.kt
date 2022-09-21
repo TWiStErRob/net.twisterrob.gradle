@@ -153,19 +153,20 @@ open class GradleRunnerRule : TestRule {
 		val javaRuntimeName: String? by systemProperty("java.runtime.name")
 		val javaRuntimeVersion: String? by systemProperty("java.runtime.version")
 		val javaHome: String? by systemProperty("java.home")
-		@Suppress("NullableToStringCall")
+		@Suppress("NullableToStringCall") // Debug info, null is OK.
 		val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
+		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println(
 			"""
 			${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
 			Java: ${java} from ${javaHome}.
 			Gradle properties:
 			```properties
-${propertiesFileContentForLogging().prependIndent("\t\t\t")}
+${propertiesContentForLogging().prependIndent("\t\t\t")}
 			```
 			Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
 			```gradle
-${buildFile.readText().prependIndent("\t\t\t")}
+${buildContentForLogging().prependIndent("\t\t\t")}
 			```
 			Execution output:
 			""".trimIndent()
@@ -173,7 +174,11 @@ ${buildFile.readText().prependIndent("\t\t\t")}
 		return runner.withArguments(*args)
 	}
 
-	private fun propertiesFileContentForLogging(): String =
+
+	private fun buildContentForLogging(): String =
+		buildFile.readText()
+
+	private fun propertiesContentForLogging(): String =
 		if (propertiesFile.exists()) {
 			propertiesFile.readText()
 		} else {
@@ -268,6 +273,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 
 	//@Test:given/@Before
 	fun basedOn(folder: File): GradleRunnerRule {
+		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println("Deploying ${folder} into ${temp.root}")
 		folder.copyRecursively(temp.root, overwrite = false) { file, ex ->
 			when {

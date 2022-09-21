@@ -21,15 +21,13 @@ class SVNPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-
-		val svn = project.vcs.extensions.create<SVNPluginExtension>(SVNPluginExtension.NAME)
-		svn.project = project // TODO better solution
+		project.vcs.extensions.create<SVNPluginExtension>(SVNPluginExtension.NAME, project)
 	}
 }
 
-open class SVNPluginExtension : VCSExtension {
-
-	internal lateinit var project: Project
+open class SVNPluginExtension(
+	private val project: Project
+) : VCSExtension {
 
 	override val revision: String
 		get() = revisionNumber.toString()
