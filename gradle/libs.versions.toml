@@ -52,7 +52,7 @@ kotlin-dsl = "6.1.1"
 junit4 = "4.13.2"
 # JUnit 5 = JUnit Platform ([junit-api]) + JUnit Jupiter ([junit-engine]) + JUnit Vintage ([junit-vintage])
 # Changelog: https://junit.org/junit5/docs/current/release-notes/index.html
-junit5 = "5.9.0"
+junit5 = "5.9.1"
 # GitHub Releases: https://github.com/junit-pioneer/junit-pioneer/releases
 junit5-pioneer = "1.7.1"
 
