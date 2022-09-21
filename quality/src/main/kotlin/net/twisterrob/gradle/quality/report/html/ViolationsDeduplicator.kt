@@ -71,6 +71,7 @@ private fun mergeIntersections(violations: List<Violations>): List<Violations> =
 		.groupBy { it.parser.rewrite() }
 		.flatMap { (_, list) -> mergeIntersectionsForParser(list) }
 
+@Suppress("ReturnCount") // Open to suggestions.
 private fun mergeIntersectionsForParser(violations: List<Violations>): List<Violations> {
 	@Suppress("USELESS_CAST") // Make sure chains use the typealiases.
 	val byVariant = violations.groupBy { it.variant as Variant }

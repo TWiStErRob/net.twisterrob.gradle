@@ -35,7 +35,7 @@ open class ConsoleReportTask : BaseViolationsTask() {
 		val reportLocations = violations
 			.list
 			.filter { it.violations.orEmpty().isNotEmpty() }
-			.map { "${it.module}:${it.parser}@${it.variant} (${it.violations!!.size}): ${it.report}" }
+			.map { "${it.module}:${it.parser}@${it.variant} (${it.violations.orEmpty().size}): ${it.report}" }
 
 		if (result.isNotEmpty()) {
 			logger.quiet(

@@ -8,6 +8,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.UntrackedTask
 
 @UntrackedTask(because = "It is used to inspect Gradle state, output is console.")
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class VersionsTask : DefaultTask() {
 
 	init {

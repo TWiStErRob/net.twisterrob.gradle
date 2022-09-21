@@ -111,13 +111,13 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 		}
 
 		private fun Project.configureReports(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
-			androidComponents.finalizeDsl {
+			androidComponents.finalizeDsl { android ->
 				// Make sure we have XML output, otherwise can't figure out if it failed.
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
 				// `android { lintOptions { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
-				it.lint.isAbortOnErrorCompat = false
-				it.lint.xmlReport = true
+				android.lint.isAbortOnErrorCompat = false
+				android.lint.xmlReport = true
 			}
 			// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.
 			androidComponents.onVariants(androidComponents.selector().all()) { variant ->

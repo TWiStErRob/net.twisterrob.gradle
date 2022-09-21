@@ -26,15 +26,16 @@ sealed class ContextViewModel {
 		private val ex: Throwable
 	) : ContextViewModel() {
 
-		private val data by lazy {
+		val message: String by lazy {
 			val exceptions = generateSequence(ex) { it.cause }
-			val messages = exceptions.joinToString(System.lineSeparator())
-			val fullTrace = StringWriter().apply { PrintWriter(this).use { ex.printStackTrace(it) } }.toString()
-			Pair(messages, fullTrace)
+			exceptions.joinToString(System.lineSeparator())
 		}
 
-		val message: String get() = data.first
-		val fullStackTrace: String get() = data.second
+		val fullStackTrace: String by lazy {
+			StringWriter()
+				.apply { PrintWriter(this, true).use { ex.printStackTrace(it) } }
+				.toString()
+		}
 	}
 
 	class CodeContext(private val v: Violation) : ContextViewModel() {

@@ -72,8 +72,9 @@ open class HtmlReportTask : BaseViolationsTask() {
 		//xslTemplate.conventionCompat(project.layout.projectDirectory.file("config/violations.xsl"))
 		@Suppress("LeakingThis")
 		doFirst {
+			val xslTemplateFile = xslTemplateFile
 			if (xslTemplateFile?.exists() == true) {
-				xslTemplateFile!!.copyTo(xslOutputFile, overwrite = true)
+				xslTemplateFile.copyTo(xslOutputFile, overwrite = true)
 			} else {
 				val violationsTransformationResource = "/violations.xsl"
 				val builtIn = this::class.java.getResourceAsStream(violationsTransformationResource)

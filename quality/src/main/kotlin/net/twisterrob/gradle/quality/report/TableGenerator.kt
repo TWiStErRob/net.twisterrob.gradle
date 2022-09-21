@@ -8,6 +8,7 @@ private typealias Variant = String
 private typealias Parser = String
 private typealias MaybeCount = Int?
 
+@Suppress("LongParameterList") // These are also the constants that would be otherwise in companion, but overridable.
 class TableGenerator(
 	private val columnSeparator: String = "\t",
 	private val missingCount: String = "N/A",
@@ -18,7 +19,10 @@ class TableGenerator(
 	private val minWidth: Int = 0
 ) {
 
-	@Suppress("SpreadOperator") // Open to suggestions.
+	@Suppress(
+		"SpreadOperator", // Open to suggestions.
+		"ReturnCount", // Open to suggestions.
+	)
 	fun build(byModuleByVariantByParserCounts: Map<Module, Map<Variant, Map<Parser, MaybeCount>>>): String {
 		val modules = byModuleByVariantByParserCounts.keys
 		val variants = byModuleByVariantByParserCounts.flatMap { it.value.keys }.distinct()

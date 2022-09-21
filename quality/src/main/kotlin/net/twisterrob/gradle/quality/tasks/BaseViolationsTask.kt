@@ -82,7 +82,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 										val match = CHECKSTYLE_BUILT_IN_CHECK.matchEntire(it.rule)
 										if (match != null) {
 											match
-												.groups[2]!!.value // class name
+												.groupValues[2] // class name
 												// Clean redundancy, they don't use Check suffixes either.
 												.removeSuffix("Check")
 										} else {

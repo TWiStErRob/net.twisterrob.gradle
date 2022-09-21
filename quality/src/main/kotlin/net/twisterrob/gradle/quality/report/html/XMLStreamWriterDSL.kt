@@ -49,6 +49,15 @@ inline fun XMLStreamWriter.element(
 		writeEndElement()
 	}
 
+@Suppress("CanBeNonNullable") // TODEL https://github.com/detekt/detekt/issues/5331
+inline fun <T : Any> XMLStreamWriter.optionalElement(
+	name: String,
+	value: T?,
+	crossinline content: XMLStreamWriter.(T) -> Unit
+) {
+	value?.let { element(name) { content(it) } }
+}
+
 inline fun XMLStreamWriter.element(name: String, content: String) {
 	element(name) {
 		writeCharacters(content)
@@ -67,6 +76,15 @@ inline fun XMLStreamWriter.attribute(name: String, value: String) {
 
 inline fun XMLStreamWriter.attribute(name: String, value: Any) {
 	writeAttribute(name, value.toString())
+}
+
+@Suppress("CanBeNonNullable") // TODEL https://github.com/detekt/detekt/issues/5331
+inline fun <T : Any> XMLStreamWriter.optionalAttribute(
+	name: String,
+	value: T?,
+	transformation: (T) -> String
+) {
+	value?.let { attribute(name, transformation(it)) }
 }
 
 inline fun XMLStreamWriter.cdata(content: String) {
