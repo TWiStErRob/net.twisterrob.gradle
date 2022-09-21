@@ -14,6 +14,7 @@ import net.twisterrob.gradle.quality.gather.LintVariantReportGathererPre7
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.html.deduplicate
+import net.twisterrob.gradle.quality.violations.RuleCategoryParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.Project
@@ -66,6 +67,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 
 	@TaskAction
 	fun validateViolations() {
+		val ruleCategoryParser = RuleCategoryParser()
 		val results = project.allprojects.flatMap { subproject ->
 			GATHERERS.flatMap { gatherer ->
 				gatherer.allTasksFrom(subproject).map { task ->
@@ -77,41 +79,8 @@ abstract class BaseViolationsTask : DefaultTask() {
 						report = gatherer.getHumanReportLocation(task),
 						violations = gatherer.getViolations(task)?.map {
 							Violation(
-								rule = when (it.reporter) {
-									Parser.CHECKSTYLE.name -> {
-										val match = CHECKSTYLE_BUILT_IN_CHECK.matchEntire(it.rule)
-										if (match != null) {
-											match
-												.groupValues[2] // class name
-												// Clean redundancy, they don't use Check suffixes either.
-												.removeSuffix("Check")
-										} else {
-											it.rule
-												.substringAfterLast(".") // class name
-												// Assume name consistent with built-ins.
-												.removeSuffix("Check")
-										}
-									}
-									else ->
-										it.rule
-								},
-								category = when (it.reporter) {
-									Parser.CHECKSTYLE.name -> {
-										val match = CHECKSTYLE_BUILT_IN_CHECK.matchEntire(it.rule)
-										if (match != null) {
-											(match.groups[1]?.value ?: "misc").capitalize()
-										} else {
-											"Custom"
-										}
-									}
-									Parser.PMD.name ->
-										when (it.category) {
-											"Import Statements" -> "Imports"
-											else -> it.category
-										}
-									else ->
-										it.category
-								},
+								rule = ruleCategoryParser.rule(it),
+								category = ruleCategoryParser.category(it),
 								severity = when (it.severity!!) {
 									SEVERITY.INFO -> Violation.Severity.INFO
 									SEVERITY.WARN -> Violation.Severity.WARNING
@@ -185,8 +154,5 @@ abstract class BaseViolationsTask : DefaultTask() {
 			}
 			return@run (gradleGatherers + agpGatherers) as List<TaskReportGatherer<Task>>
 		}
-
-		private val CHECKSTYLE_BUILT_IN_CHECK: Regex =
-			Regex("""^com\.puppycrawl\.tools\.checkstyle\.checks(?:\.([a-z].+))?\.([A-Z].+)$""")
 	}
 }
