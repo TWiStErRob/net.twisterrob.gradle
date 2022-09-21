@@ -12,4 +12,4 @@ android-gradle-v70x = { module = "com.android.tools.build:gradle", version = "7.
 android-gradle-v71x = { module = "com.android.tools.build:gradle", version = "7.1.3" }
 android-gradle-v72x = { module = "com.android.tools.build:gradle", version = "7.2.2" }
 android-gradle-v73x = { module = "com.android.tools.build:gradle", version = "7.3.0" }
-android-gradle-v74x = { module = "com.android.tools.build:gradle", version = "7.4.0-alpha10" }
+android-gradle-v74x = { module = "com.android.tools.build:gradle", version = "7.4.0-beta01" }
