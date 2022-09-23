@@ -119,7 +119,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
 		project.allprojects { subproject: Project ->
 			GATHERERS.forEach { gatherer ->
-				// FIXME this should be configureEach or other lazy approach, but doesn't work on AGP 3.3 then
+				// TODO this should be configureEach or other lazy approach, but doesn't work on AGP 3.3 then
 				gatherer.allTasksFrom(subproject).forEach { reportTask ->
 					try {
 						action(gatherer, reportTask)

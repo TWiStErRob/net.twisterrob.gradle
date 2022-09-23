@@ -50,10 +50,6 @@ comments:
 
 complexity:
 
-  ComplexMethod:
-    # STOPSHIP REPORT ComplexMethod counts local functions (e.g. collapseFile)
-    active: true
-
   LabeledExpression:
     # Disabled as it flags quite a lot of code. I don't see a problem with using labels sometimes.
     # TODEL https://github.com/detekt/detekt/issues/5316 and review usages.
@@ -66,22 +62,20 @@ naming:
     allowedPattern: '^(is|has|are|was)'
 
 
-potential-bugs:
-
-  CastToNullableType:
-    # STOPSHIP REPORT CastToNullableType reports too wide, e.g. bestXMLOutputFactory() > defaultImpl: original verison hides ReplaceSafeCallChainWithRun
-    # STOPSHIP REPORT CastToNullableType reports too wide, e.g. BaseVariant.unitTestVariant contains 2 casts
-    active: true
-
-
 style:
+
+  ForbiddenComment:
+    values:
+      - 'FIXME'
+      - 'STOPSHIP'
+      #- 'TODO'
 
   NoTabs:
     # I'm a tab guy, I don't pay for space in advance.
     active: false
 
   OptionalWhenBraces:
-    # STOPSHIP
+    # TODEL https://github.com/detekt/detekt/issues/5133
     active: false
 
   MaxLineLength:
@@ -89,7 +83,6 @@ style:
     excludeCommentStatements: true
 
   ReturnCount:
-    # STOPSHIP REPORT ReturnCount false positive on inner returns in lambdas.
     # Default 2 is not enough, usually a single guard and a condition simply violates this.
     max: 3
 
@@ -103,8 +96,3 @@ style:
   UseIfInsteadOfWhen:
     # STOPSHIP
     active: false
-
-  UseDataClass:
-    # STOPSHIP REPORT UseDataClass too wide, name would be enough.
-    # STOPSHIP REPORT UseDataClass false positive on LocationViewModel.
-    active: true

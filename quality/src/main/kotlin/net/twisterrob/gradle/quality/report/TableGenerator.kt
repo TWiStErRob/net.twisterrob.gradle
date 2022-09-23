@@ -21,7 +21,7 @@ class TableGenerator(
 
 	@Suppress(
 		"SpreadOperator", // Open to suggestions.
-		"ReturnCount", // Open to suggestions.
+		"ReturnCount", // TODEL https://github.com/detekt/detekt/issues/5341
 	)
 	fun build(byModuleByVariantByParserCounts: Map<Module, Map<Variant, Map<Parser, MaybeCount>>>): String {
 		val modules = byModuleByVariantByParserCounts.keys

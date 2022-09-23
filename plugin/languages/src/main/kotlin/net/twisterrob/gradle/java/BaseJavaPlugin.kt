@@ -53,8 +53,9 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 
 private fun Project.configureGlobalCompatibility() {
 	when {
+		// JavaPluginConvention was deprecated in Gradle 7.1.
+		// JavaPluginExtension was added in Gradle 4.10, but sourceSets was only added in Gradle 7.1.
 		GradleVersion.current().baseVersion < GradleVersion.version("7.1") -> {
-			// STOPSHIP this can be removed? JavaPluginExtension is since 4.10 (at least lower to 4.10?)
 			@Suppress("DEPRECATION")
 			with(this.convention.getPlugin<org.gradle.api.plugins.JavaPluginConvention>()) {
 				sourceCompatibility = JavaVersion.VERSION_1_7
