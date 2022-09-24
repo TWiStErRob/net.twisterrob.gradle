@@ -31,14 +31,16 @@ abstract class CalculateBuildTimeTask : DefaultTask() {
 	abstract val buildTime: Property<Long>
 
 	@get:OutputFile
-	val buildTimeFile: RegularFileProperty =
-		intermediateRegularFile("buildConfigDecorations/buildTime.txt")
+	abstract val buildTimeFile: RegularFileProperty
 
 	init {
 		description = "Calculates the build time for BuildConfig.java."
 		// Not using a provider to prevent turning over midnight during build,
 		// each build will have a single calculation.
+		@Suppress("LeakingThis")
 		buildTime.convention(OffsetDateTime.now().truncatedTo(ChronoUnit.DAYS).toInstant().toEpochMilli())
+		@Suppress("LeakingThis")
+		buildTimeFile.convention(project.intermediateRegularFile("buildConfigDecorations/buildTime.txt"))
 	}
 
 	@TaskAction
@@ -51,11 +53,11 @@ abstract class CalculateBuildTimeTask : DefaultTask() {
 		internal fun TaskProvider<CalculateBuildTimeTask>.addBuildConfigFields(project: Project) {
 			if (AGPVersions.CLASSPATH < AGPVersions.v41x) get().writeBuildTime()
 
-			val buildTimeField = this.flatMap(CalculateBuildTimeTask::buildTimeFile).map {
+			val buildTimeField = this.flatMap(CalculateBuildTimeTask::buildTimeFile).map { file ->
 				fun dateFormat(date: Long): String =
 					DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(date))
 
-				val buildTime = it.asFile.readText().toLong()
+				val buildTime = file.asFile.readText().toLong()
 
 				return@map "new java.util.Date(${buildTime}L) /* ${dateFormat(buildTime)} */"
 			}

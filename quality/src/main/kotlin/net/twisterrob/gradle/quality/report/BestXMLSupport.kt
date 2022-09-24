@@ -20,6 +20,7 @@ import kotlin.reflect.jvm.javaType
  *  * Fall back to hardcoding, which might fail anyway if the default is not there.
  *  * Give up, and use whatever is available.
  */
+@Suppress("ReturnCount") // Open to suggestions.
 internal fun bestXMLOutputFactory(): XMLOutputFactory {
 	// >= 9, because running Java 7 is simply not supported for any Gradle / AGP combination.
 	if (ManagementFactory.getRuntimeMXBean().specVersion != "1.8") {
@@ -32,8 +33,10 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 	val defaultImpl =
 		XMLOutputFactory::class.declaredMembers
 			.singleOrNull { it.name == "DEFAULIMPL" }
-			?.apply { isAccessible = true }
-			?.call() as String?
+			?.let { field ->
+				field.isAccessible = true
+				field.call() as String
+			}
 			?: "com.sun.xml.internal.stream.XMLOutputFactoryImpl"
 	if (defaultImpl.isClassLoadable()) {
 		// return XMLOutputFactory.newFactory(defaultImpl, null as ClassLoader?) is @since Java 6,
@@ -139,6 +142,6 @@ private fun String.isClassLoadable(): Boolean =
 	try {
 		Class.forName(this)
 		/*@return*/ true
-	} catch (e: ClassNotFoundException) {
+	} catch (ignore: ClassNotFoundException) {
 		/*@return*/ false
 	}

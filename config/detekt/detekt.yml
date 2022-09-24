@@ -1,0 +1,94 @@
+config:
+  # If a property in the configuration is deprecated, that'll fail Detekt execution.
+  warningsAsErrors: true
+
+processors:
+  # Blanket disable processors as they are not used.
+  # Stats would show up in HTML report, but since that's not mergeable it has little value per module.
+  active: false
+
+console-reports:
+  exclude:
+    # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
+    - 'NotificationReport'
+    # Disabled because it's very verbose. 
+    - 'FindingsReport'
+    # Disabled because it's very verbose, even more so than FindingsReport.
+    - 'FileBasedFindingsReport'
+    # Enabled, because this gives enough context to see the problems.
+    #- 'LiteFindingsReport'
+
+
+comments:
+
+  CommentOverPrivateFunction:
+    # Disabled as I don't agree with it, if a function needs docs, it needs docs. Visibility doesn't change that.
+    active: false
+
+  CommentOverPrivateProperty:
+    # Disabled as I don't agree with it, if a function needs docs, it needs docs. Visibility doesn't change that.
+    active: false
+
+  UndocumentedPublicClass:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
+
+  UndocumentedPublicFunction:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
+
+  UndocumentedPublicProperty:
+    # Disabled as this is not a public library. For now it's not even all in Kotlin.
+    active: false
+    # Enforce for production and test code. This negates the excludes in default config.
+    excludes: [ ]
+
+
+complexity:
+
+  LabeledExpression:
+    # Disabled as it flags quite a lot of code. I don't see a problem with using labels sometimes.
+    # TODEL https://github.com/detekt/detekt/issues/5316 and review usages.
+    active: false
+
+
+naming:
+
+  BooleanPropertyNaming:
+    allowedPattern: '^(is|has|are|was)'
+
+
+style:
+
+  ForbiddenComment:
+    values:
+      - 'FIXME'
+      - 'STOPSHIP'
+      #- 'TODO'
+
+  NoTabs:
+    # I'm a tab guy, I don't pay for space in advance.
+    active: false
+
+  OptionalWhenBraces:
+    # TODEL https://github.com/detekt/detekt/issues/5133
+    active: false
+
+  MaxLineLength:
+    # It's unavoidable to have some long lines when stacktraces or links are added as comments.
+    excludeCommentStatements: true
+
+  ReturnCount:
+    # Default 2 is not enough, usually a single guard and a condition simply violates this.
+    max: 3
+
+  UnnecessaryParentheses:
+    # TODO disable for now, because it has too many false positives, enable in next of 1.21.0.
+    active: false
+    # Match IntelliJ IDEA Kotlin Plugin's UnclearPrecedenceOfBinaryExpression setup.
+    # TODO not yet released, coming in next of 1.21.0
+#    allowForUnclearPrecedence: true

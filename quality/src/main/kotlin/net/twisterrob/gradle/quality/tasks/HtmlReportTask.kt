@@ -51,7 +51,8 @@ open class HtmlReportTask : BaseViolationsTask() {
 		get() = xsl.asFile.get()
 
 	/**
-	 * val xsl: File = xml.parentFile.resolve(xslTemplate.name)
+	 * `val xsl: File = xml.parentFile.resolve(xslTemplate.name)` would be better,
+	 * but it's not possible to use `xml` in the constructor.
 	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@get:OutputFile
@@ -71,8 +72,9 @@ open class HtmlReportTask : BaseViolationsTask() {
 		//xslTemplate.conventionCompat(project.layout.projectDirectory.file("config/violations.xsl"))
 		@Suppress("LeakingThis")
 		doFirst {
+			val xslTemplateFile = xslTemplateFile
 			if (xslTemplateFile?.exists() == true) {
-				xslTemplateFile!!.copyTo(xslOutputFile, overwrite = true)
+				xslTemplateFile.copyTo(xslOutputFile, overwrite = true)
 			} else {
 				val violationsTransformationResource = "/violations.xsl"
 				val builtIn = this::class.java.getResourceAsStream(violationsTransformationResource)
@@ -90,7 +92,7 @@ open class HtmlReportTask : BaseViolationsTask() {
 
 	override fun processViolations(violations: Grouper.Start<Violations>) {
 		project.produceXml(violations, xmlFile, xslOutputFile)
-		println("Wrote XML report to ${SdkUtils.fileToUrlString(xmlFile.absoluteFile)}")
+		logger.lifecycle("Wrote XML report to ${SdkUtils.fileToUrlString(xmlFile.absoluteFile)}")
 	}
 
 	@VisibleForTesting
@@ -101,8 +103,9 @@ open class HtmlReportTask : BaseViolationsTask() {
 			bestXMLTransformerFactory()
 				.newTransformer(StreamSource(xslOutputFile.reader()))
 				.transform(StreamSource(xmlFile.reader()), StreamResult(htmlFile))
-			println("Wrote HTML report to ${SdkUtils.fileToUrlString(htmlFile.absoluteFile)}")
-		} catch (ex: Throwable) {
+			logger.lifecycle("Wrote HTML report to ${SdkUtils.fileToUrlString(htmlFile.absoluteFile)}")
+		} catch (@Suppress("TooGenericExceptionCaught") ex: Throwable) {
+			// Slap on more information to the exception.
 			throw GradleException("Cannot transform ${xmlFile}\nto ${htmlFile}\nusing ${xslOutputFile}", ex)
 		}
 	}

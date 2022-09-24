@@ -45,16 +45,17 @@ open class GlobalTestFinalizerTask : TestReport() {
 
 	class Creator : TaskCreationConfiguration<GlobalTestFinalizerTask> {
 		override fun preConfigure(project: Project, taskProvider: TaskProvider<GlobalTestFinalizerTask>) {
+			// No pre-configuration, all config is lazy.
 		}
 
 		override fun configure(task: GlobalTestFinalizerTask) {
 			val tests = task.project.allprojects
 				.flatMap { it.tasks.withType<Test>() } // Forces to create the tasks.
-				.onEach {
+				.onEach { test ->
 					// Make sure we have XML output, otherwise can't figure out if test failed.
-					it.reports.junitXml.setRequired(true)
+					test.reports.junitXml.setRequired(true)
 					// Let the tests/build finish, to get a final "all" report.
-					it.ignoreFailures = !it.wasLaunchedOnly
+					test.ignoreFailures = !test.wasLaunchedOnly
 				}
 			// Detach the result directories to prevent creation on dependsOn relationships.
 			// When simply using reportOn(tests) or reportOn(tasks.map { it.binaryResultDirectory }) task dependencies would be created.

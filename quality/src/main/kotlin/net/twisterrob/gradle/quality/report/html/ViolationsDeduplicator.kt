@@ -1,4 +1,4 @@
-@file:Suppress("USELESS_CAST")
+@file:Suppress("TooManyFunctions") // This defines a whole module in one file.
 
 package net.twisterrob.gradle.quality.report.html
 
@@ -17,6 +17,7 @@ private typealias Parser = String
  * Approach: get violations that affect all variants and remove them from variant-specific violations
  */
 fun deduplicate(violations: List<Violations>): List<Violations> {
+	@Suppress("USELESS_CAST") // Make sure chains use the typealias.
 	return violations
 		.groupBy { it.module as Module }
 		.mapValues { (_, list) -> process(mergeIntersections(list)) }
@@ -25,6 +26,7 @@ fun deduplicate(violations: List<Violations>): List<Violations> {
 }
 
 private fun process(violations: List<Violations>): List<Violations> {
+	@Suppress("USELESS_CAST") // Make sure chains use the typealias.
 	val byVariant = violations.groupBy { it.variant as Variant }
 	val all = byVariant[ALL_VARIANTS_NAME] ?: return violations
 	val filtered = byVariant.filterKeys { it != ALL_VARIANTS_NAME }
@@ -69,7 +71,9 @@ private fun mergeIntersections(violations: List<Violations>): List<Violations> =
 		.groupBy { it.parser.rewrite() }
 		.flatMap { (_, list) -> mergeIntersectionsForParser(list) }
 
+@Suppress("ReturnCount") // Open to suggestions.
 private fun mergeIntersectionsForParser(violations: List<Violations>): List<Violations> {
+	@Suppress("USELESS_CAST") // Make sure chains use the typealiases.
 	val byVariant = violations.groupBy { it.variant as Variant }
 	val filtered = byVariant.filterKeys { it != ALL_VARIANTS_NAME }
 	if (filtered.size < 2) {
@@ -111,7 +115,7 @@ private val Iterable<Violations>.violations: List<Violation>
 	get() = this.flatMap { it.violations.orEmpty() }
 
 private fun Iterable<List<Violation>>.intersect(): List<Violation> =
-	this.reduce { acc, it -> intersect(acc, it) }
+	this.reduce { acc, next -> intersect(acc, next) }
 
 @Suppress("ConvertArgumentToSet")
 private fun intersect(list1: List<Violation>, list2: List<Violation>): List<Violation> {
@@ -121,6 +125,7 @@ private fun intersect(list1: List<Violation>, list2: List<Violation>): List<Viol
 	return intersection.map { it.violation }
 }
 
+@Suppress("UseDataClass") // External equals/hashCode for deduplication.
 private class Deduper(val violation: Violation) {
 
 	override fun equals(other: Any?): Boolean {

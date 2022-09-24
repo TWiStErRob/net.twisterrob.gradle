@@ -7,8 +7,7 @@ import se.bjurr.violations.lib.model.Violation
 import se.bjurr.violations.lib.reports.Parser
 import java.io.File
 
-internal class LintReportGatherer(
-) : TaskReportGatherer<AndroidLintTask>(AndroidLintTask::class.java) {
+internal class LintReportGatherer : TaskReportGatherer<AndroidLintTask>(AndroidLintTask::class.java) {
 
 	override fun getParsableReportLocation(task: AndroidLintTask): File =
 		task.xmlReportOutputFile.asFile.get()

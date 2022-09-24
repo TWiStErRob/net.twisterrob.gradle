@@ -26,33 +26,35 @@ sealed class ContextViewModel {
 		private val ex: Throwable
 	) : ContextViewModel() {
 
-		private val data by lazy {
+		val message: String by lazy {
 			val exceptions = generateSequence(ex) { it.cause }
-			val messages = exceptions.joinToString(System.lineSeparator())
-			val fullTrace = StringWriter().apply { PrintWriter(this).use { ex.printStackTrace(it) } }.toString()
-			Pair(messages, fullTrace)
+			exceptions.joinToString(System.lineSeparator())
 		}
 
-		val message: String get() = data.first
-		val fullStackTrace: String get() = data.second
+		val fullStackTrace: String by lazy {
+			StringWriter()
+				.apply { PrintWriter(this, true).use { ex.printStackTrace(it) } }
+				.toString()
+		}
 	}
 
 	class CodeContext(private val v: Violation) : ContextViewModel() {
-
-		override fun resolve() {
-			context
-		}
 
 		private val context by lazy { getContext(v) }
 		val type: String get() = "code"
 		val language: String
 			get() = when (v.location.file.extension) {
 				"kt" -> "kotlin"
+				"kts" -> "kotlin"
 				else -> v.location.file.extension
 			}
 		val startLine: Int get() = context.second
 		val endLine: Int get() = context.third
 		val data: String get() = context.first.escapeCodeForJSTemplate()
+
+		override fun resolve() {
+			context
+		}
 
 		companion object {
 
@@ -94,10 +96,6 @@ sealed class ContextViewModel {
 
 	class DirectoryContext(private val v: Violation) : ContextViewModel() {
 
-		override fun resolve() {
-			listing
-		}
-
 		val listing: String by lazy {
 			fun <E> Iterable<E>.replace(old: E, new: E): Iterable<E> =
 				map { if (it == old) new else it }
@@ -118,29 +116,33 @@ sealed class ContextViewModel {
 				.prependIndent("\t")
 			dir.parentFile.name + ":\n" + relevantListing
 		}
+
+		override fun resolve() {
+			listing
+		}
 	}
 
 	class ImageContext(private val v: Violation) : ContextViewModel() {
-
-		override fun resolve() {
-			embeddedPixels
-		}
 
 		val embeddedPixels: String by lazy {
 			val data = Base64.getEncoder().encodeToString(v.location.file.readBytes())
 			"data:image/${v.location.file.extension};base64,${data}"
 		}
+
+		override fun resolve() {
+			embeddedPixels
+		}
 	}
 
 	class ArchiveContext(private val v: Violation) : ContextViewModel() {
 
-		override fun resolve() {
-			listing
-		}
-
 		val listing: String by lazy {
 			val entries = ZipFile(v.location.file).entries().asSequence()
 			entries.map { it.name }.sorted().joinToString("\n")
+		}
+
+		override fun resolve() {
+			listing
 		}
 	}
 

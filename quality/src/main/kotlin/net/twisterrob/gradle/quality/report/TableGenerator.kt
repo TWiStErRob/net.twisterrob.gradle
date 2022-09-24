@@ -8,6 +8,7 @@ private typealias Variant = String
 private typealias Parser = String
 private typealias MaybeCount = Int?
 
+@Suppress("LongParameterList") // These are also the constants that would be otherwise in companion, but overridable.
 class TableGenerator(
 	private val columnSeparator: String = "\t",
 	private val missingCount: String = "N/A",
@@ -18,11 +19,10 @@ class TableGenerator(
 	private val minWidth: Int = 0
 ) {
 
-	companion object {
-		private const val MIN_MODULE_LENGTH: Int = 7 // Summary
-		private const val MIN_VARIANT_LENGTH: Int = 9 // (total: x)
-	}
-
+	@Suppress(
+		"SpreadOperator", // Open to suggestions.
+		"ReturnCount", // TODEL https://github.com/detekt/detekt/issues/5341
+	)
 	fun build(byModuleByVariantByParserCounts: Map<Module, Map<Variant, Map<Parser, MaybeCount>>>): String {
 		val modules = byModuleByVariantByParserCounts.keys
 		val variants = byModuleByVariantByParserCounts.flatMap { it.value.keys }.distinct()
@@ -30,7 +30,9 @@ class TableGenerator(
 		val summary: Map<Parser, MaybeCount> = parsers.associateBy({ it }) { parser ->
 			byModuleByVariantByParserCounts
 				.values
-				.flatMap { it.values }
+				.asSequence()
+				// Note: Kotlin 1.4 introduced Sequence.flatMap(()->Iterable), Gradle <6.8 uses Kotlin 1.3.x
+				.flatMap { it.values.asSequence() }
 				.map { it[parser] }
 				.reduce(::safeAdd)
 		}
@@ -52,7 +54,7 @@ class TableGenerator(
 			byModule.value.flatMap row@{ byVariant ->
 				val byParserCounts = byVariant.value
 				if (!printEmptyRows && byParserCounts.values.count { it != null } == 0) {
-					return@row listOf<String>()
+					return@row emptyList<String>()
 				}
 				val cells = parsers.map cell@{
 					return@cell when (byParserCounts[it]) {
@@ -71,8 +73,13 @@ class TableGenerator(
 			val summaryRow = String.format(rowFormat, *(summaryHeader + summaryData).toTypedArray())
 			listOf(summaryRow)
 		} else {
-			listOf()
+			emptyList()
 		}
 		return (listOf(header) + rows + footer).joinToString(System.lineSeparator())
+	}
+
+	companion object {
+		private const val MIN_MODULE_LENGTH: Int = 7 // Summary
+		private const val MIN_VARIANT_LENGTH: Int = 9 // (total: x)
 	}
 }

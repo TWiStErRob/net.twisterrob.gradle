@@ -6,6 +6,7 @@ import org.gradle.api.Project
 import java.io.File
 import java.net.URI
 
+@Suppress("UseDataClass") // TODEL https://github.com/detekt/detekt/issues/5339
 class LocationViewModel(violation: Violation) {
 	private val loc: Location = violation.location
 	private val module: Project = loc.module
@@ -13,16 +14,20 @@ class LocationViewModel(violation: Violation) {
 	val modulePath: String get() = module.path
 
 	val modulePrefix: String
-		get() = when (module.path) {
-			":" -> ""
-			else -> module.path.substring(0, module.path.length - module.name.length - 1)
-		}
+		get() =
+			if (module.path == ":") {
+				""
+			} else {
+				module.path.substring(0, module.path.length - module.name.length - 1)
+			}
 
 	val moduleName: String
-		get() = when (module.path) {
-			":" -> ""
-			else -> module.name
-		}
+		get() =
+			if (module.path == ":") {
+				""
+			} else {
+				module.name
+			}
 
 	val variant: String get() = loc.variant
 	val file: String get() = loc.file.absolutePath

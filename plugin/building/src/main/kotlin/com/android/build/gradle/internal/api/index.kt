@@ -8,12 +8,14 @@ internal val com.android.build.gradle.api.BaseVariant.variantData: BaseVariantDa
 
 @Suppress("DEPRECATION" /* AGP 7.0 */)
 internal val com.android.build.gradle.api.BaseVariant.productionVariant: BaseVariantImpl
-	get() = (this as BaseVariantImpl)
+	get() = this as BaseVariantImpl
 
 @Suppress("DEPRECATION" /* AGP 7.0 */)
 internal val com.android.build.gradle.api.BaseVariant.androidTestVariant: BaseVariantImpl?
-	get() = ((this as TestedVariant).testVariant as BaseVariantImpl?)
+	@Suppress("CastToNullableType")
+	get() = (this as TestedVariant).testVariant as BaseVariantImpl?
 
 @Suppress("DEPRECATION" /* AGP 7.0 */)
 internal val com.android.build.gradle.api.BaseVariant.unitTestVariant: BaseVariantImpl?
-	get() = ((this as TestedVariant).unitTestVariant as BaseVariantImpl?)
+	@Suppress("CastToNullableType")
+	get() = (this as TestedVariant).unitTestVariant as BaseVariantImpl?

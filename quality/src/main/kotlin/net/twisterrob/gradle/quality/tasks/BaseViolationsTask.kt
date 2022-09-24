@@ -14,6 +14,7 @@ import net.twisterrob.gradle.quality.gather.LintVariantReportGathererPre7
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.html.deduplicate
+import net.twisterrob.gradle.quality.violations.RuleCategoryParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.Project
@@ -24,33 +25,6 @@ import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
 
 abstract class BaseViolationsTask : DefaultTask() {
-
-	companion object {
-		@Suppress("UNCHECKED_CAST")
-		private val GATHERERS: List<TaskReportGatherer<Task>> = run {
-			val gradleGatherers = listOf(
-				QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
-				QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
-//			ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
-//			TestReportGatherer<>("test", Test)
-			)
-			val agpGatherers = when {
-				AGPVersions.CLASSPATH >= AGPVersions.v70x ->
-					listOf(
-						LintReportGatherer(),
-					)
-				else ->
-					listOf(
-						LintVariantReportGathererPre7(),
-						LintGlobalReportGathererPre7(ALL_VARIANTS_NAME),
-					)
-			}
-			return@run (gradleGatherers + agpGatherers) as List<TaskReportGatherer<Task>>
-		}
-
-		private val CHECKSTYLE_BUILT_IN_CHECK: Regex =
-			Regex("""^com\.puppycrawl\.tools\.checkstyle\.checks(?:\.([a-z].+))?\.([A-Z].+)$""")
-	}
 
 	init {
 		this.group = JavaBasePlugin.VERIFICATION_GROUP
@@ -93,6 +67,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 
 	@TaskAction
 	fun validateViolations() {
+		val ruleCategoryParser = RuleCategoryParser()
 		val results = project.allprojects.flatMap { subproject ->
 			GATHERERS.flatMap { gatherer ->
 				gatherer.allTasksFrom(subproject).map { task ->
@@ -104,48 +79,15 @@ abstract class BaseViolationsTask : DefaultTask() {
 						report = gatherer.getHumanReportLocation(task),
 						violations = gatherer.getViolations(task)?.map {
 							Violation(
-								rule = when (it.reporter) {
-									Parser.CHECKSTYLE.name -> {
-										val match = CHECKSTYLE_BUILT_IN_CHECK.matchEntire(it.rule)
-										if (match != null) {
-											match
-												.groups[2]!!.value // class name
-												// Clean redundancy, they don't use Check suffixes either.
-												.removeSuffix("Check")
-										} else {
-											it.rule
-												.substringAfterLast(".") // class name
-												// Assume name consistent with built-ins.
-												.removeSuffix("Check")
-										}
-									}
-									else ->
-										it.rule
-								},
-								category = when (it.reporter) {
-									Parser.CHECKSTYLE.name -> {
-										val match = CHECKSTYLE_BUILT_IN_CHECK.matchEntire(it.rule)
-										if (match != null) {
-											(match.groups[1]?.value ?: "misc").capitalize()
-										} else {
-											"Custom"
-										}
-									}
-									Parser.PMD.name ->
-										when (it.category) {
-											"Import Statements" -> "Imports"
-											else -> it.category
-										}
-									else ->
-										it.category
-								},
+								rule = ruleCategoryParser.rule(it),
+								category = ruleCategoryParser.category(it),
 								severity = when (it.severity!!) {
 									SEVERITY.INFO -> Violation.Severity.INFO
 									SEVERITY.WARN -> Violation.Severity.WARNING
 									SEVERITY.ERROR -> Violation.Severity.ERROR
 								},
 								message = it.message,
-								specifics = it.specifics ?: emptyMap(),
+								specifics = it.specifics.orEmpty(),
 								location = Violation.Location(
 									module = subproject,
 									task = task,
@@ -177,17 +119,41 @@ abstract class BaseViolationsTask : DefaultTask() {
 	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
 		project.allprojects { subproject: Project ->
 			GATHERERS.forEach { gatherer ->
-				// FIXME this should be configureEach or other lazy approach, but doesn't work on AGP 3.3 then
+				// TODO this should be configureEach or other lazy approach, but doesn't work on AGP 3.3 then
 				gatherer.allTasksFrom(subproject).forEach { reportTask ->
 					try {
 						action(gatherer, reportTask)
-					} catch (ex: RuntimeException) {
-						throw GradleException(
-							"Cannot configure $reportTask from $gatherer gatherer in $subproject", ex
-						)
+					} catch (@Suppress("TooGenericExceptionCaught") ex: RuntimeException) {
+						// Slap on more information to the exception.
+						throw GradleException("Cannot configure $reportTask from $gatherer gatherer in $subproject", ex)
 					}
 				}
 			}
+		}
+	}
+
+	companion object {
+		@Suppress("UNCHECKED_CAST")
+		private val GATHERERS: List<TaskReportGatherer<Task>> = run {
+			val gradleGatherers = listOf(
+				QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
+				QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
+//				ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
+//				TestReportGatherer<>("test", Test)
+			)
+			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
+			val agpGatherers = when {
+				AGPVersions.CLASSPATH >= AGPVersions.v70x ->
+					listOf(
+						LintReportGatherer(),
+					)
+				else ->
+					listOf(
+						LintVariantReportGathererPre7(),
+						LintGlobalReportGathererPre7(ALL_VARIANTS_NAME),
+					)
+			}
+			return@run (gradleGatherers + agpGatherers) as List<TaskReportGatherer<Task>>
 		}
 	}
 }

@@ -16,7 +16,7 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 		object : VariantTaskCreator<PmdTask>.DefaultTaskConfig() {
 
 			override fun setupConfigLocations(task: PmdTask) {
-				task.ruleSets = listOf() // default is java-basic
+				task.ruleSets = emptyList() // default is java-basic
 				val rootConfig = task.project.rootProject.file("config/pmd/pmd.xml")
 				val subConfig = task.project.file("config/pmd/pmd.xml")
 				val config: File? = listOf(subConfig, rootConfig).firstOrNull { it.exists() }
@@ -59,22 +59,30 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 					return
 				}
 
+				// Note: Kotlin 1.4 introduced Sequence.flatMap(()->Iterable), Gradle <6.8 uses Kotlin 1.3.x
+
 				task.include(variants
-					.flatMap { it.sourceSets }
-					.flatMap { it.resDirectories }
+					.asSequence()
+					.flatMap { it.sourceSets.asSequence() }
+					.flatMap { it.resDirectories.asSequence() }
 					.map { dir ->
 						// build relative path (e.g. src/main/res) and
 						// append a trailing "/" for include to treat it as recursive
 						projectPath.relativize(dir.toPath()).toString() + File.separator
-					})
+					}
+					.toList()
+				)
 
 				task.include(variants
-					.flatMap { it.sourceSets }
+					.asSequence()
+					.flatMap { it.sourceSets.asSequence() }
 					.map { it.manifestFile }
 					.map { file ->
 						// build relative path (e.g. src/main/AndroidManifest.xml)
 						projectPath.relativize(file.toPath()).toString()
-					})
+					}
+					.toList()
+				)
 			}
 		}
 }

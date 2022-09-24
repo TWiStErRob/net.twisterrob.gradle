@@ -2,10 +2,10 @@ package net.twisterrob.gradle.vcs
 
 import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
+import net.twisterrob.gradle.vcs.VCSPluginExtension.Companion.vcs
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.getByName
 import org.tmatesoft.svn.cli.SVN
 import org.tmatesoft.svn.core.SVNException
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil
@@ -21,29 +21,13 @@ class SVNPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-
-		val svn = project
-			.extensions.getByName<VCSPluginExtension>(VCSPluginExtension.NAME)
-			.extensions.create<SVNPluginExtension>(SVNPluginExtension.NAME)
-		svn.project = project // TODO better solution
+		project.vcs.extensions.create<SVNPluginExtension>(SVNPluginExtension.NAME, project)
 	}
 }
 
-open class SVNPluginExtension : VCSExtension {
-
-	companion object {
-
-		internal const val NAME: String = "svn"
-	}
-
-	internal lateinit var project: Project
-
-	private fun open(): SVNStatus {
-		val options: ISVNOptions = SVNWCUtil.createDefaultOptions(true)
-		val clientManager = SVNClientManager.newInstance(options)
-		val statusClient = clientManager.statusClient
-		return statusClient.doStatus(project.rootDir, false)
-	}
+open class SVNPluginExtension(
+	private val project: Project
+) : VCSExtension {
 
 	override val revision: String
 		get() = revisionNumber.toString()
@@ -69,6 +53,13 @@ open class SVNPluginExtension : VCSExtension {
 			project.rootDir.resolve(".svn/wc.db")
 		)
 
+	private fun open(): SVNStatus {
+		val options: ISVNOptions = SVNWCUtil.createDefaultOptions(true)
+		val clientManager = SVNClientManager.newInstance(options)
+		val statusClient = clientManager.statusClient
+		return statusClient.doStatus(project.rootDir, false)
+	}
+
 	// key method/closure - used as: def out = doSvnMain( 'your', 'svn', 'args', 'go', 'here' );
 	@Suppress("unused")
 	private fun cli(vararg svnArgs: String): String {
@@ -84,6 +75,11 @@ open class SVNPluginExtension : VCSExtension {
 			System.setOut(oldSystemOut)
 			System.setSecurityManager(null)
 		}
+	}
+
+	companion object {
+
+		internal const val NAME: String = "svn"
 	}
 
 	private object NonExitingSecurityManager : SecurityManager() {

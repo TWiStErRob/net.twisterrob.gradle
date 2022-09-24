@@ -38,7 +38,32 @@ jobs:
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
       - name: Build Gradle Quality plugins.
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace jar validatePlugins
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --stacktrace
+          --continue
+          jar
+          validatePlugins
+          detektMain
+          detektReportMergeSarif
+          detektReportMergeXml
+
+      - name: Upload "Detekt Results" artifact.
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Detekt Results
+          path: |
+            ${{ github.workspace }}/**/build/reports/detekt/detekt.*
+            ${{ github.workspace }}/build/reports/detekt/merge.*
+
+      - name: Publish "Code scanning results / detekt".
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif
 
       - name: Cancel other jobs on Build failure, no need to check / test it.
         if: failure()

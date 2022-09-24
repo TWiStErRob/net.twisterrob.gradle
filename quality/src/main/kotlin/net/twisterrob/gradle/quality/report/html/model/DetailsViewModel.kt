@@ -3,6 +3,7 @@ package net.twisterrob.gradle.quality.report.html.model
 import net.twisterrob.gradle.quality.Violation
 import java.net.URI
 
+@Suppress("UseDataClass") // TODEL https://github.com/detekt/detekt/issues/5339
 class DetailsViewModel(private val v: Violation) {
 	val rule: String get() = v.rule
 	val suppression: String? get() = SuppressionGenerator().getSuppression(v)
@@ -43,7 +44,7 @@ class DetailsViewModel(private val v: Violation) {
 					description = run {
 						lines
 							.drop(1) // already used 0 above
-							// Drop documentation line in favor of [../@documentation]. 
+							// Drop documentation line in favor of [../@documentation].
 							.filterNot { DocumentationGenerator.PMD_DOC_LINK_LINE.matches(it) }
 							.joinToString("\n")
 					}

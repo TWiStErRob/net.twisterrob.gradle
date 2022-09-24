@@ -45,13 +45,7 @@ import java.util.Properties
 @Suppress("MemberVisibilityCanBePrivate")
 open class AndroidVersionExtension {
 
-	companion object {
-
-		internal const val NAME: String = "version"
-		internal const val DEFAULT_FILE_NAME: String = "version.properties"
-	}
-
-	private var autoVersionSet: Boolean = false
+	private var isAutoVersionSet: Boolean = false
 
 	/**
 	 * Default versionCode pattern is MMMNNPPBBB (what fits into 2147483648).
@@ -60,10 +54,10 @@ open class AndroidVersionExtension {
 	 * autoVersion will default to `true` when `version.properties` file exists.
 	 * autoVersion will default to `true` when [major], [minor], [patch] or [build] properties are set.
 	 */
-	var autoVersion: Boolean = false
+	var isAutoVersion: Boolean = false
 		set(value) {
 			field = value
-			autoVersionSet = true
+			isAutoVersionSet = true
 		}
 
 	var versionNameFormat: (version: AndroidVersionExtension) -> String =
@@ -73,7 +67,7 @@ open class AndroidVersionExtension {
 
 	var versionCodeFormat: (version: AndroidVersionExtension) -> Int =
 		{ version ->
-			with(version) { (((major * minorMagnitude + minor) * patchMagnitude + patch) * buildMagnitude + build) }
+			with(version) { ((major * minorMagnitude + minor) * patchMagnitude + patch) * buildMagnitude + build }
 		}
 
 	var major: Int = 0 // M 0..213
@@ -87,14 +81,14 @@ open class AndroidVersionExtension {
 			field = value
 			autoVersion()
 		}
-	var minorMagnitude: Int = 100
+	var minorMagnitude: Int = @Suppress("MagicNumber") 100
 
 	var patch: Int = 0 // P 0..99
 		set(value) {
 			field = value
 			autoVersion()
 		}
-	var patchMagnitude: Int = 100
+	var patchMagnitude: Int = @Suppress("MagicNumber") 100
 
 	var build: Int = 0 // B 0..999
 		set(value) {
@@ -102,18 +96,27 @@ open class AndroidVersionExtension {
 			autoVersion()
 		}
 
-	private fun autoVersion() {
-		if (!autoVersionSet) autoVersion = true
-	}
+	var isRenameAPK: Boolean = true
 
-	var buildMagnitude: Int = 1000
+	var formatArtifactName: (Project, String, String, Long, String?) -> String =
+		{ _, variantName, applicationId, versionCode, versionName ->
+			val variant =
+				if (variantName.endsWith("AndroidTest")) {
+					variantName.removeSuffix("AndroidTest") + "-androidTest"
+				} else {
+					variantName
+				}
+			"${applicationId}@${versionCode}-v${versionName ?: "null"}+${variant}"
+		}
 
-	/** VCS versionCode pattern is MMMNPBBBBB (what fits into 2147483648) */
+	var buildMagnitude: Int = @Suppress("MagicNumber") 1000
+
+	/** VCS versionCode pattern is MMMNPBBBBB (which fits into 2147483648). */
 	fun versionByVCS(vcs: VCSExtension) {
 		// major magnitude is the rest // M 0..213
-		minorMagnitude = 10 // N 0..9
-		patchMagnitude = 10 // P 0..9
-		buildMagnitude = 100000 // B 0..99999
+		minorMagnitude = @Suppress("MagicNumber") 10 // N 0..9
+		patchMagnitude = @Suppress("MagicNumber") 10 // P 0..9
+		buildMagnitude = @Suppress("MagicNumber") 100_000 // B 0..99999
 		build = vcs.revisionNumber
 		versionNameFormat = { version ->
 			buildString {
@@ -132,17 +135,22 @@ open class AndroidVersionExtension {
 		}
 	}
 
-	var renameAPK: Boolean = true
+	fun versionByProperties(properties: Properties) {
+		properties.getProperty("major")?.let { major = it.toInt() }
+		properties.getProperty("minor")?.let { minor = it.toInt() }
+		properties.getProperty("patch")?.let { patch = it.toInt() }
+		properties.getProperty("build")?.let { build = it.toInt() }
+	}
 
-	var formatArtifactName: (Project, String, String, Long, String?) -> String =
-		{ _, variantName, applicationId, versionCode, versionName ->
-			val variant =
-				if (variantName.endsWith("AndroidTest"))
-					variantName.removeSuffix("AndroidTest") + "-androidTest"
-				else
-					variantName
-			"${applicationId}@${versionCode}-v${versionName}+${variant}"
-		}
+	private fun autoVersion() {
+		if (!isAutoVersionSet) isAutoVersion = true
+	}
+
+	companion object {
+
+		internal const val NAME: String = "version"
+		internal const val DEFAULT_FILE_NAME: String = "version.properties"
+	}
 }
 
 class AndroidVersionPlugin : BasePlugin() {
@@ -154,6 +162,7 @@ class AndroidVersionPlugin : BasePlugin() {
 		project.extensions["android"] as AppExtension
 	}
 
+	@Suppress("LateinitUsage") // TODO can be probably refactored to put the when inside the withId and pass params.
 	private lateinit var version: AndroidVersionExtension
 
 	override fun apply(target: Project) {
@@ -161,6 +170,7 @@ class AndroidVersionPlugin : BasePlugin() {
 		// When the Android application plugin is applied, we can set up the defaults and the DSL.
 		project.plugins.withId<AppPlugin>("com.android.application") { init() }
 		// Just before the project is finished evaluating, configure a bit more.
+		@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 		when {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
 				project.androidComponents.finalizeDsl { autoVersion() }
@@ -173,13 +183,13 @@ class AndroidVersionPlugin : BasePlugin() {
 
 	private fun init() {
 		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
-		readVersionFromFile(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME))
-
+		version.versionByProperties(readVersion(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME)))
+		@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 		when {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
 				// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.
 				project.androidComponents.onVariants(project.androidComponents.selector().all()) {
-					if (version.renameAPK) {
+					if (version.isRenameAPK) {
 						renameAPKPost7(it as ApplicationVariant)
 					}
 				}
@@ -187,7 +197,7 @@ class AndroidVersionPlugin : BasePlugin() {
 			else -> {
 				project.beforeAndroidTasksCreated {
 					android.applicationVariants.all {
-						if (version.renameAPK) {
+						if (version.isRenameAPK) {
 							renameAPKPre7(it, it)
 						}
 					}
@@ -206,7 +216,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	 * but before any of AGP's [Project.afterEvaluate] is executed.
 	 */
 	private fun autoVersion() {
-		if (version.autoVersion) {
+		if (version.isAutoVersion) {
 			android.defaultConfig.setVersionCode(version.versionCodeFormat(version))
 			android.defaultConfig.setVersionName(version.versionNameFormat(version))
 		}
@@ -220,7 +230,7 @@ class AndroidVersionPlugin : BasePlugin() {
 		}
 		variantOutput.outputFileName.set(project.provider {
 			// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
-			@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+			@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "UnsafeCallOnNullableType", "MaxLineLength")
 			val artifactName = version.formatArtifactName(
 				project,
 				variant.name,
@@ -228,12 +238,12 @@ class AndroidVersionPlugin : BasePlugin() {
 				variantOutput.versionCode.getOrElse(-1)!!.toLong(),
 				variantOutput.versionName.getOrElse(null)
 			)
-			"${artifactName}.apk"
+			artifactName.apk
 		})
 		androidTestOutput?.let { androidTest ->
 			androidTest.outputFileName.set(project.provider {
 				// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
-				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "UnsafeCallOnNullableType", "MaxLineLength")
 				val artifactName = version.formatArtifactName(
 					project,
 					variant.androidTestCompat!!.name,
@@ -241,7 +251,7 @@ class AndroidVersionPlugin : BasePlugin() {
 					variantOutput.versionCode.getOrElse(-1)!!.toLong(),
 					variantOutput.versionName.getOrElse(null)
 				)
-				"${artifactName}.apk"
+				artifactName.apk
 			})
 		}
 	}
@@ -261,7 +271,7 @@ class AndroidVersionPlugin : BasePlugin() {
 			val artifactName = version.formatArtifactName(
 				project, variant.name, variant.applicationId, source.versionCode.toLong(), source.versionName
 			)
-			outputFileName = "${artifactName}.apk"
+			outputFileName = artifactName.apk
 		}
 		if (variant is @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.internal.api.TestedVariant) {
 			// TODO this is a Hail Mary trying to propagate version to androidTest APK, but has no effect.
@@ -274,20 +284,12 @@ class AndroidVersionPlugin : BasePlugin() {
 		}
 	}
 
-	private fun readVersionFromFile(file: File): Properties =
-		readVersion(file).apply {
-			getProperty("major")?.let { version.major = it.toInt() }
-			getProperty("minor")?.let { version.minor = it.toInt() }
-			getProperty("patch")?.let { version.patch = it.toInt() }
-			getProperty("build")?.let { version.build = it.toInt() }
-		}
-
 	private fun readVersion(file: File): Properties =
-		Properties().apply {
+		Properties().also { props ->
 			try {
-				FileInputStream(file)
-					.use { load(it) } // Load the properties.
-					.also { version.autoVersion = true } // If the file existed, turn on auto-versioning.
+				FileInputStream(file).use { props.load(it) }
+				// If the file existed, turn on auto-versioning. TODO remove side effect.
+				version.isAutoVersion = true
 			} catch (ignore: FileNotFoundException) {
 			}
 		}
@@ -299,3 +301,6 @@ val DefaultConfig.version: AndroidVersionExtension
 fun DefaultConfig.version(configuration: Action<AndroidVersionExtension>) {
 	configuration.execute(version)
 }
+
+private val String.apk: String
+	get() = "${this}.apk"

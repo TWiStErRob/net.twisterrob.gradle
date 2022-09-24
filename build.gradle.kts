@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter
 plugins {
 	@Suppress("DSL_SCOPE_VIOLATION")
 	alias(libs.plugins.nexus)
+	id("net.twisterrob.gradle.build.detekt.root")
 }
 
 val projectVersion: String by project
@@ -197,6 +198,11 @@ if (project.property("net.twisterrob.gradle.build.includeExamples").toString().t
 	tasks.register("checkExamples") {
 		dependsOn(gradle.includedBuilds.map { it.task(":check") })
 	}
+}
+
+tasks.register("check") {
+	description = "Delegate task for checking included builds too."
+	dependsOn(gradle.includedBuild("plugins").task(":check"))
 }
 
 project.tasks.register<TestReport>("testReport") {

@@ -23,6 +23,11 @@ data class AGPVersion(
 		Stable,
 	}
 
+	override fun compareTo(other: AGPVersion): Int =
+		compareValuesBy(this, other, AGPVersion::major, AGPVersion::minor, AGPVersion::type, AGPVersion::patch)
+
+	// TODEL https://github.com/detekt/detekt/issues/5321
+	@Suppress("ReturnCount", "DataClassContainsFunctions")
 	infix fun compatible(other: AGPVersion): Boolean {
 		require(other.minor == null || other.type == null || other.patch == null) { "${other} must be a joker." }
 		if (this.major != other.major) return false
@@ -43,24 +48,30 @@ data class AGPVersion(
 		fun parse(version: String): AGPVersion {
 			val match = AGP_VERSION_REGEX.matchEntire(version)
 				?: error("Unrecognised Android Gradle Plugin version: ${version}, only ${AGP_VERSION_REGEX} are supported.")
-			val major = match.groups["major"]!!.value.toInt()
-			val minor = match.groups["minor"]?.value?.toInt()
-			val patch = match.groups["patch"]?.value?.toInt()
-			val iteration = match.groups["iteration"]?.value?.trimStart('0')?.toInt()
+			val major = match.intGroup("major") ?: error("major in ${AGP_VERSION_REGEX} was empty for ${version}.")
+			val minor = match.intGroup("minor")
+			val patch = match.intGroup("patch")
+			val iteration = match.groups["iteration"]?.run { value.trimStart('0').toInt() }
 			if (iteration != null && patch != 0) {
-				error("Invalid version, pattern: <major>.<minor>.<patch>-<type><iteration> is not supported with patch other than 0.")
+				val complexVersion = "<major>.<minor>.<patch>-<type><iteration>"
+				error("Invalid version ${version}, pattern: ${complexVersion} is not supported with patch other than 0.")
 			}
 			val type = when (val preReleaseTypeString = match.groups["type"]?.value) {
 				null -> ReleaseType.Stable
 				"alpha" -> ReleaseType.Alpha
 				"beta" -> ReleaseType.Beta
 				"rc" -> ReleaseType.Candidate
-				else -> error("Unknown ${preReleaseTypeString}")
+				else -> error("Unknown ${preReleaseTypeString} in ${version}.")
 			}
-			return AGPVersion(major, minor, type, iteration ?: patch)
+			return AGPVersion(
+				major = major,
+				minor = minor,
+				type = type,
+				patch = iteration ?: patch
+			)
 		}
-	}
 
-	override fun compareTo(other: AGPVersion): Int =
-		compareValuesBy(this, other, AGPVersion::major, AGPVersion::minor, AGPVersion::type, AGPVersion::patch)
+		private fun MatchResult.intGroup(name: String): Int? =
+			groups[name]?.run { value.toInt() }
+	}
 }

@@ -8,19 +8,6 @@ import org.gradle.kotlin.dsl.get
 
 class AndroidSigningPlugin : BasePlugin() {
 
-	companion object {
-
-		private const val SIGNING_CONFIG_NAME = "twisterrob"
-
-		private const val DEFAULT_STORE_FILE = "twisterrob.jks"
-		private const val STORE_FILE = "RELEASE_STORE_FILE"
-		private const val STORE_PASSWORD = "RELEASE_STORE_PASSWORD"
-
-		private const val DEFAULT_KEY_ALIAS = "net.twisterrob"
-		private const val KEY_ALIAS = "RELEASE_KEY_ALIAS"
-		private const val KEY_PASSWORD = "RELEASE_KEY_PASSWORD"
-	}
-
 	override fun apply(target: Project) {
 		super.apply(target)
 
@@ -43,9 +30,25 @@ class AndroidSigningPlugin : BasePlugin() {
 		}
 	}
 
+	@Suppress("CastToNullableType") // Map<String, ?> -> it could be anything, it could be a null too.
+	@Throws(ClassCastException::class) // If property is not a String.
 	private fun optionalProp(name: String): String? =
 		project.properties[name] as String?
 
+	@Throws(ClassCastException::class) // If property is not a String.
 	private fun mandatoryProp(name: String): String =
-		optionalProp(name)!!
+		requireNotNull(optionalProp(name)) { "Missing property '${name}'." }
+
+	companion object {
+
+		private const val SIGNING_CONFIG_NAME = "twisterrob"
+
+		private const val DEFAULT_STORE_FILE = "twisterrob.jks"
+		private const val STORE_FILE = "RELEASE_STORE_FILE"
+		private const val STORE_PASSWORD = "RELEASE_STORE_PASSWORD"
+
+		private const val DEFAULT_KEY_ALIAS = "net.twisterrob"
+		private const val KEY_ALIAS = "RELEASE_KEY_ALIAS"
+		private const val KEY_PASSWORD = "RELEASE_KEY_PASSWORD"
+	}
 }

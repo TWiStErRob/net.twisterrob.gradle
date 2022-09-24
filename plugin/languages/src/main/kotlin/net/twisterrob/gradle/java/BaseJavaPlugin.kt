@@ -37,25 +37,7 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 		}
 
 		if (project.plugins.hasPlugin(org.gradle.api.plugins.JavaPlugin::class.java)) {
-			when {
-				GradleVersion.current().baseVersion < GradleVersion.version("7.1") -> {
-					@Suppress("DEPRECATION")
-					with(project.convention.getPlugin<org.gradle.api.plugins.JavaPluginConvention>()) {
-						sourceCompatibility = JavaVersion.VERSION_1_7
-						targetCompatibility = JavaVersion.VERSION_1_8
-
-						sourceSets["main"].compileClasspath += project.configurations.maybeCreate("provided")
-					}
-				}
-				else -> {
-					with(project.extensions.getByName<JavaPluginExtension>("java")) {
-						sourceCompatibility = JavaVersion.VERSION_1_7
-						targetCompatibility = JavaVersion.VERSION_1_8
-
-						sourceSets["main"].compileClasspath += project.configurations.maybeCreate("provided")
-					}
-				}
-			}
+			project.configureGlobalCompatibility()
 		}
 
 		project.tasks.withType<JavaCompile>().configureEach { task ->
@@ -63,35 +45,72 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 			val isTestTask = task.name.contains("Test")
 			val isAndroidTest = task.name.endsWith("${ANDROID_TEST_SUFFIX}JavaWithJavac")
 			val isAndroidUnitTest = task.name.endsWith("${UNIT_TEST_SUFFIX}JavaWithJavac")
-			if (!isTestTask) {
-				task.options.compilerArgs.add("-Xlint:unchecked")
-				task.options.compilerArgs.add("-Xlint:deprecation")
-			}
-			if (isTestTask && !isAndroidTest) {
-				task.changeCompatibility(JavaVersion.VERSION_1_8)
-			}
+			task.configureCompilerArgs(isTestTask)
+			task.configureCompatibility(isTestTask, isAndroidTest, isAndroidUnitTest)
+		}
+	}
+}
 
-			val compileVersion = JavaVersion.toVersion(task.sourceCompatibility)
-			task.fixClasspathIfNecessary(compileVersion)
-			if (isTestTask && isAndroidUnitTest) {
-				task.doFirst {
-					if (isTestTask && !isAndroidTest) {
-						// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
-						task.changeCompatibility(JavaVersion.VERSION_1_8)
-					}
-					task.classpath += project.files(task.options.bootstrapClasspath)
-					task.fixClasspathIfNecessary(JavaVersion.toVersion(task.sourceCompatibility))
-				}
-			}
+private fun Project.configureGlobalCompatibility() {
+	@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
+	when {
+		// JavaPluginConvention was deprecated in Gradle 7.1.
+		// JavaPluginExtension was added in Gradle 4.10, but sourceSets was only added in Gradle 7.1.
+		GradleVersion.current().baseVersion < GradleVersion.version("7.1") -> {
+			@Suppress("DEPRECATION")
+			with(this.convention.getPlugin<org.gradle.api.plugins.JavaPluginConvention>()) {
+				sourceCompatibility = JavaVersion.VERSION_1_7
+				targetCompatibility = JavaVersion.VERSION_1_8
 
-			task.doFirst { task.removeDuplicateCompilerArgs() }
+				sourceSets["main"].compileClasspath += configurations.maybeCreate("provided")
+			}
+		}
+		else -> {
+			with(this.extensions.getByName<JavaPluginExtension>("java")) {
+				sourceCompatibility = JavaVersion.VERSION_1_7
+				targetCompatibility = JavaVersion.VERSION_1_8
+
+				sourceSets["main"].compileClasspath += configurations.maybeCreate("provided")
+			}
+		}
+	}
+}
+
+private fun JavaCompile.configureCompilerArgs(isTestTask: Boolean) {
+	if (!isTestTask) {
+		this.options.compilerArgs.add("-Xlint:unchecked")
+		this.options.compilerArgs.add("-Xlint:deprecation")
+	}
+	this.doFirst { this.removeDuplicateCompilerArgs() }
+}
+
+private fun JavaCompile.configureCompatibility(
+	isTestTask: Boolean,
+	isAndroidTest: Boolean,
+	isAndroidUnitTest: Boolean
+) {
+	if (isTestTask && !isAndroidTest) {
+		this.changeCompatibility(JavaVersion.VERSION_1_8)
+	}
+	val compileVersion = JavaVersion.toVersion(this.sourceCompatibility)
+	this.fixClasspathIfNecessary(compileVersion)
+	if (isTestTask && isAndroidUnitTest) {
+		this.doFirst {
+			if (!isAndroidTest) {
+				// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
+				this.changeCompatibility(JavaVersion.VERSION_1_8)
+			}
+			this.classpath += this.project.files(this.options.bootstrapClasspath)
+			this.fixClasspathIfNecessary(JavaVersion.toVersion(this.sourceCompatibility))
 		}
 	}
 }
 
 /**
  * Prevent this warning for compileJava and compileTestJava and others.
- * > :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
+ * ```log
+ * :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
+ * ```
  */
 private fun JavaCompile.fixClasspathIfNecessary(compileVersion: JavaVersion) {
 	if (JavaVersion.current() == compileVersion) {
@@ -142,6 +161,7 @@ private fun JavaCompile.changeCompatibility(ver: JavaVersion) {
  * Since the suggested usage is [org.gradle.api.Task.doFirst],
  * it doesn't matter if it's before or after the relevant `options.compilerArgs += [ ... ]` setup.
  */
+@Suppress("StringLiteralDuplication")
 private fun JavaCompile.removeDuplicateCompilerArgs() {
 	logger.debug("${this} (input): ${options.compilerArgs}")
 	val duplicates = options.compilerArgs
@@ -169,6 +189,7 @@ private fun JavaCompile.removeDuplicateCompilerArgs() {
  * Since the suggested usage is [org.gradle.api.Task.doFirst],
  * it doesn't matter if it's before or after the relevant `options.compilerArgs += [ ... ]` setup.
  */
+@Suppress("StringLiteralDuplication", "UnusedPrivateMember")
 private fun JavaCompile.removeDuplicateCompilerArgs2() {
 	logger.debug("${this} (input): ${options.compilerArgs}")
 	fun xlintName(arg: String): String? =

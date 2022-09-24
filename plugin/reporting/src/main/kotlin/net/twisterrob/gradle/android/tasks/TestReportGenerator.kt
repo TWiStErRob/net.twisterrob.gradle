@@ -4,30 +4,34 @@ import com.android.build.gradle.internal.test.report.ReportType
 import com.android.build.gradle.internal.test.report.ResilientTestReport
 import com.android.utils.FileUtils
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import java.io.File
 
-open class TestReportGenerator : DefaultTask() {
+abstract class TestReportGenerator : DefaultTask() {
 
-	@InputDirectory
-	@PathSensitive(PathSensitivity.RELATIVE)
-	lateinit var input: File
+	@get:InputDirectory
+	@get:PathSensitive(PathSensitivity.RELATIVE)
+	abstract val input: DirectoryProperty
 
-	@OutputDirectory
-	lateinit var output: File
+	@get:OutputDirectory
+	abstract val output: DirectoryProperty
 
 	@Input
 	var type: ReportType = ReportType.SINGLE_FLAVOR
 
 	@TaskAction
 	fun generate() {
-		FileUtils.cleanOutputDir(output)
-		val report = ResilientTestReport(type, input, output)
+		val inp = input.get().asFile
+		val out = output.get().asFile
+
+		FileUtils.cleanOutputDir(out)
+		val report = ResilientTestReport(type, inp, out)
+
 		report.generateReport()
 	}
 }

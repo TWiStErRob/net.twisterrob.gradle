@@ -8,7 +8,7 @@ import org.gradle.api.Incubating
  */
 @get:Incubating
 @set:Incubating
-var Lint.abortOnError70x: Boolean
+var Lint.isAbortOnError70x: Boolean
 	get() = isAbortOnError
 	set(value) {
 		isAbortOnError = value

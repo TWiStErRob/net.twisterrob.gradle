@@ -17,25 +17,6 @@ class LintMessageDetailsSplitter {
 
 	companion object {
 
-		private fun String.replaceNewLines(): String =
-			replace("""&#xA;""", "\n")
-
-		/**
-		 * Reverse of [se.bjurr.violations.lib.parsers.AndroidLintParser.parseReportOutput].
-		 */
-		private fun defaultSplit(v: Violation): MessageDetails {
-			val lines = v.message.lineSequence()
-
-			return MessageDetails(
-				title = lines.elementAt(0).replaceNewLines(),
-				message = lines.elementAt(1).replaceNewLines(),
-				description = lines
-					.drop(2) // already used 0 and 1 above
-					.joinToString("\n")
-					.replaceNewLines()
-			)
-		}
-
 		private val specialCases: Map<String, (Violation) -> MessageDetails> = mapOf(
 			"IconMissingDensityFolder" to fun(v: Violation): MessageDetails {
 				val split = defaultSplit(v)
@@ -48,6 +29,7 @@ class LintMessageDetailsSplitter {
 			// Consider using ContextViewModel.ErrorContext for displaying the stack trace of this.
 			"LintError" to fun(v: Violation): MessageDetails {
 				val split = defaultSplit(v)
+				@Suppress("MaxLineLength")
 				val replaced =
 					if ("←" in split.message) {
 						split.message
@@ -66,7 +48,7 @@ class LintMessageDetailsSplitter {
 								
 								```
 								Exception in thread "lint" ${it.groupValues[2]}:${
-									it.groupValues[3]
+									it.groupValues[@Suppress("MagicNumber") 3]
 										.replace("←", "\n\tat ")
 										.prependIndent("\t\t\t\t\t\t\t\t")
 										.trimStart('\t')
@@ -98,5 +80,24 @@ class LintMessageDetailsSplitter {
 				)
 			}
 		)
+
+		private fun String.replaceNewLines(): String =
+			replace("""&#xA;""", "\n")
+
+		/**
+		 * Reverse of [se.bjurr.violations.lib.parsers.AndroidLintParser.parseReportOutput].
+		 */
+		private fun defaultSplit(v: Violation): MessageDetails {
+			val lines = v.message.lineSequence()
+
+			return MessageDetails(
+				title = lines.elementAt(0).replaceNewLines(),
+				message = lines.elementAt(1).replaceNewLines(),
+				description = lines
+					.drop(2) // already used 0 and 1 above
+					.joinToString("\n")
+					.replaceNewLines()
+			)
+		}
 	}
 }

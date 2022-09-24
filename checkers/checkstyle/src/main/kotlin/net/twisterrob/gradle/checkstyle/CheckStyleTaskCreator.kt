@@ -46,6 +46,7 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 						task.configFile = rootConfig
 					}
 				}
+				@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 				when {
 					GradleVersion.current().baseVersion < GradleVersion.version("6.0") -> {
 						// Keep using Checkstyle.setConfigDir instead of getConfigDirectory() for backward compatibility.

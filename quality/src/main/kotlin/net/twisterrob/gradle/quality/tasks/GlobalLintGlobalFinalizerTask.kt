@@ -5,7 +5,7 @@ import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
-import net.twisterrob.gradle.android.abortOnErrorCompat
+import net.twisterrob.gradle.android.isAbortOnErrorCompat
 import net.twisterrob.gradle.android.androidComponents
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
@@ -50,10 +50,11 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	@TaskAction
 	fun failOnFailures() {
 		val gatherer =
-			if (AGPVersions.CLASSPATH >= AGPVersions.v70x)
+			if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
 				LintReportGatherer()
-			else
+			} else {
 				LintGlobalReportGathererPre7(ALL_VARIANTS_NAME)
+			}
 		val violationsByFile = xmlReports
 			.map { it.get().asFile }
 			.filter(File::exists)
@@ -66,6 +67,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				.map { (report, violations) ->
 					"${report} (${violations.size})"
 				}
+			@Suppress("SpreadOperator")
 			val lines = listOfNotNull(
 				"Ran lint on subprojects: ${totalCount} issues found.",
 				"See reports in subprojects:",
@@ -109,13 +111,13 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 		}
 
 		private fun Project.configureReports(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
-			androidComponents.finalizeDsl {
+			androidComponents.finalizeDsl { android ->
 				// Make sure we have XML output, otherwise can't figure out if it failed.
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
 				// `android { lintOptions { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
-				it.lint.abortOnErrorCompat = false
-				it.lint.xmlReport = true
+				android.lint.isAbortOnErrorCompat = false
+				android.lint.xmlReport = true
 			}
 			// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.
 			androidComponents.onVariants(androidComponents.selector().all()) { variant ->
@@ -143,6 +145,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 private val Project.lintTasks: TaskCollection<*>
 	get() =
+		@Suppress("UseIfInsteadOfWhen") // Preparing for future version ranges.
 		when {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x ->
 				this.tasks.withType(AndroidLintGlobalTask::class.java)

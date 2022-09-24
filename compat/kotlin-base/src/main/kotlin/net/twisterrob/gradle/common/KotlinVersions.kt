@@ -36,8 +36,11 @@ private val KOTLIN_VERSION_REGEX: Regex =
 fun KotlinVersion.Companion.parse(version: String): KotlinVersion {
 	val match = KOTLIN_VERSION_REGEX.matchEntire(version)
 		?: error("Unrecognised Kotlin Gradle Plugin version: ${version}, only ${KOTLIN_VERSION_REGEX} are supported.")
-	val major = match.groups["major"]!!.value.toInt()
-	val minor = match.groups["minor"]!!.value.toInt()
-	val patch = match.groups["patch"]?.value?.toInt() ?: 0
+	val major = match.intGroup("major") ?: error("major in ${KOTLIN_VERSION_REGEX} was empty for ${version}.")
+	val minor = match.intGroup("minor") ?: error("minor in ${KOTLIN_VERSION_REGEX} was empty for ${version}.")
+	val patch = match.intGroup("patch") ?: 0
 	return KotlinVersion(major, minor, patch)
 }
+
+private fun MatchResult.intGroup(name: String): Int? =
+	groups[name]?.run { value.toInt() }

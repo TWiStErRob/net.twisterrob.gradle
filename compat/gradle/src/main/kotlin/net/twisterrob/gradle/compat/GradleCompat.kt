@@ -1,3 +1,8 @@
+@file:Suppress(
+	"TooManyFunctions", // TODO might be worth splitting by receiver and use @JvmMultifileClass?
+	"UseIfInsteadOfWhen", // Preparing for future new version ranges.
+)
+
 package net.twisterrob.gradle.compat
 
 import org.gradle.api.DefaultTask
@@ -21,10 +26,11 @@ import org.gradle.util.GradleVersion
 import java.io.File
 
 /**
- * @param S `Any` restriction is arbitrary,
- * because otherwise [`.map {}` gives a warning](https://youtrack.jetbrains.com/issue/KT-36770).
+ * @param T the input type
+ * @param S the output type, may be nullable; upon returning null the provider will have no value.
+ * @param transformer The transformer to apply to values.
  */
-fun <T, S : Any> Provider<T>.flatMapCompat(transformer: (T) -> Provider<S>): Provider<S> =
+fun <T, S> Provider<T>.flatMapCompat(transformer: (T) -> Provider<S>): Provider<S> =
 	when {
 		GradleVersion.current().baseVersion < GradleVersion.version("5.0") -> {
 			this.map { transformer(it).get() }
@@ -65,7 +71,11 @@ fun RegularFileProperty.conventionCompat(file: Provider<RegularFile>): RegularFi
 fun RegularFileProperty.fileProviderCompat(task: DefaultTask, file: Provider<File>): RegularFileProperty =
 	when {
 		GradleVersion.current().baseVersion < GradleVersion.version("6.0") -> {
-			this.set(file.map { task.project.objects.filePropertyCompat(task, false).apply { set(it) }.get() })
+			this.set(file.map { fileValue ->
+				// Convoluted way to create a RegularFile object.
+				val property = task.project.objects.filePropertyCompat(task, false)
+				property.apply { set(fileValue) }.get()
+			})
 			this
 		}
 		else -> {
@@ -77,6 +87,7 @@ fun RegularFileProperty.fileProviderCompat(task: DefaultTask, file: Provider<Fil
 /**
  * Gradle 4.3-6.9 compatible version of [ObjectFactory.fileProperty].
  * @param task is necessary to because historically this was [DefaultTask.newInputFile] or [DefaultTask.newOutputFile].
+ * @param isInput what type of property to create: true=[DefaultTask.newInputFile], false=[DefaultTask.newOutputFile].
  *
  * @see DefaultTask.newInputFile
  * @see DefaultTask.newOutputFile
@@ -140,6 +151,7 @@ fun DefaultTask.newOutputFileCompat(): RegularFileProperty =
 /**
  * Gradle 4.3-6.9 compatible version of [ProjectLayout.dir].
  * @param project is necessary, because shims need access to services on [Project].
+ * @param provider location of the directory.
  *
  * @see ProjectLayout.directoryProperty
  * @see ObjectFactory.directoryProperty

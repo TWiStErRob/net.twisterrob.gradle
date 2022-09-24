@@ -63,7 +63,8 @@ abstract class AndroidInstallRunnerTask : Exec() {
 		@VisibleForTesting
 		internal fun getMainActivity(androidManifest: InputStream): String? {
 			val document = DocumentBuilderFactory
-				.newInstance().apply { isNamespaceAware = true }
+				.newInstance()
+				.apply { isNamespaceAware = true }
 				.newDocumentBuilder()
 				.parse(InputSource(androidManifest))
 			@Language("XPath")

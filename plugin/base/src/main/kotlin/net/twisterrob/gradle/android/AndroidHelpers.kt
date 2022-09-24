@@ -29,8 +29,7 @@ import net.twisterrob.gradle.internal.android.taskContainerCompat74x
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.provider.Provider
 import java.io.File
@@ -60,7 +59,8 @@ fun PluginContainer.hasAndroid(): Boolean =
 fun PluginContainer.hasAndroidTest(): Boolean =
 	hasPlugin("com.android.test")
 
-val BaseExtension.variants: DomainObjectSet<out @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant>
+val BaseExtension.variants:
+		DomainObjectSet<out @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant>
 	get() =
 		when (this) {
 			is AppExtension -> applicationVariants
@@ -71,17 +71,15 @@ val BaseExtension.variants: DomainObjectSet<out @Suppress("DEPRECATION" /* AGP 7
 		}
 
 fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) {
-	configureEach {
-		if (it.name == name)
-			block(it)
+	configureEach { buildType ->
+		if (buildType.name == name) {
+			block(buildType)
+		}
 	}
 }
 
-fun Task.intermediateRegularFile(relativePath: String): RegularFileProperty =
-	project.objects.fileProperty().apply {
-		set(project.layout.buildDirectory
-			.map { it.file("${SdkConstants.FD_INTERMEDIATES}/$relativePath") })
-	}
+fun Project.intermediateRegularFile(relativePath: String): Provider<RegularFile> =
+	this.layout.buildDirectory.file("${SdkConstants.FD_INTERMEDIATES}/$relativePath")
 
 val BaseVariantData.taskContainerCompat: TaskContainer
 	get() =

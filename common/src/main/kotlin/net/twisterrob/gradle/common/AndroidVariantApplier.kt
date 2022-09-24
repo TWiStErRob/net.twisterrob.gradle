@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.common
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
 import org.gradle.api.Action
@@ -15,30 +16,28 @@ class AndroidVariantApplier(val project: Project) {
 		variantsClosure: Action<DomainObjectSet<out com.android.build.gradle.api.BaseVariant>>
 	) {
 		project.plugins.withId("com.android.application") {
-			val android = project.extensions.getByName<AppExtension>("android")
-			variantsClosure.execute(android.applicationVariants)
+			variantsClosure.execute(android<AppExtension>().applicationVariants)
 		}
 		project.plugins.withId("com.android.library") {
-			val android = project.extensions.getByName<LibraryExtension>("android")
-			variantsClosure.execute(android.libraryVariants)
+			variantsClosure.execute(android<LibraryExtension>().libraryVariants)
 		}
 		project.plugins.withId("com.android.feature") {
 			// These types of feature modules were deprecated and removed in AGP 4.x.
-			//val android = project.extensions["android"] as FeatureExtension
-			//variantsClosure.execute(android.featureVariants)
+			//variantsClosure.execute(android<FeatureExtension>().featureVariants)
 		}
 		project.plugins.withId("com.android.dynamic-feature") {
-			val android = project.extensions.getByName<AppExtension>("android")
-			variantsClosure.execute(android.applicationVariants)
+			variantsClosure.execute(android<AppExtension>().applicationVariants)
 		}
 		project.plugins.withId("com.android.test") {
-			val android = project.extensions.getByName<TestExtension>("android")
-			variantsClosure.execute(android.applicationVariants)
+			variantsClosure.execute(android<TestExtension>().applicationVariants)
 		}
 		project.plugins.withId("com.android.instantapp") {
-			//val android = project.extensions.getByName<InstantAppExtension>("android")
+			//android<InstantAppExtension>()
 			// has no variants, but don't call back, because there's no way to tell if this happened
 			//variantsClosure.execute(new DefaultDomainObjectSet<>(BaseVariant))
 		}
 	}
+
+	inline fun <reified T : BaseExtension> android(): T =
+		project.extensions.getByName<T>("android")
 }

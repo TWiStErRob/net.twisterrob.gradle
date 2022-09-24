@@ -8,8 +8,7 @@ import se.bjurr.violations.lib.model.Violation
 import se.bjurr.violations.lib.reports.Parser
 import java.io.File
 
-class LintVariantReportGathererPre7(
-) : TaskReportGatherer<LintPerVariantTask>(LintPerVariantTask::class.java) {
+class LintVariantReportGathererPre7 : TaskReportGatherer<LintPerVariantTask>(LintPerVariantTask::class.java) {
 
 	override fun getParsableReportLocation(task: LintPerVariantTask): File =
 		task.xmlOutput
@@ -18,7 +17,7 @@ class LintVariantReportGathererPre7(
 		task.htmlOutput
 
 	override fun getName(task: LintPerVariantTask): String =
-		task.androidVariantName!!
+		task.androidVariantName ?: error("$task has no variant name.")
 
 	override fun getDisplayName(task: LintPerVariantTask): String =
 		"lintVariant"

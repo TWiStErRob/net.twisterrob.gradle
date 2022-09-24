@@ -10,11 +10,6 @@ import org.gradle.kotlin.dsl.getByName
 
 open class VCSPluginExtension : VCSExtension {
 
-	companion object {
-
-		internal const val NAME: String = "VCS"
-	}
-
 	var current: VCSExtension = DummyVcsExtension
 		internal set
 
@@ -38,9 +33,26 @@ open class VCSPluginExtension : VCSExtension {
 
 	override fun files(project: Project): FileCollection =
 		current.files(project)
+
+	companion object {
+
+		internal const val NAME: String = "VCS"
+
+		internal val Project.vcs: VCSPluginExtension
+			get() = this.extensions.getByName<VCSPluginExtension>(NAME)
+	}
 }
 
 class VCSPlugin : BaseExposedPlugin() {
+
+	override fun apply(target: Project) {
+		super.apply(target)
+
+		val vcs = project.extensions.create<VCSPluginExtension>(VCSPluginExtension.NAME)
+		project.apply<SVNPlugin>()
+		project.apply<GITPlugin>()
+		vcs.current = vcs.whichVCS()
+	}
 
 	companion object {
 
@@ -54,14 +66,5 @@ class VCSPlugin : BaseExposedPlugin() {
 				git.isAvailable -> git
 				else -> DummyVcsExtension
 			}
-	}
-
-	override fun apply(target: Project) {
-		super.apply(target)
-
-		val vcs = project.extensions.create<VCSPluginExtension>(VCSPluginExtension.NAME)
-		project.apply<SVNPlugin>()
-		project.apply<GITPlugin>()
-		vcs.current = vcs.whichVCS()
 	}
 }

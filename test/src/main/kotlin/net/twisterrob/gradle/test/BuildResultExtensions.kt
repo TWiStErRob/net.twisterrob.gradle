@@ -56,7 +56,7 @@ fun BuildResult.assertNoOutputLine(reason: String?, unexpectedLine: String) {
 
 private fun BuildResult.assertRegex(reason: String?, regex: Regex, positive: Boolean = true) {
 	val message = """
-		${reason ?: ""}
+		${reason.orEmpty()}
 		Expected:
 		${if (positive) "" else "No match for "}${regex}
 		Actual:

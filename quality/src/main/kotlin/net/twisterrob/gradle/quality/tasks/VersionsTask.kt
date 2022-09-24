@@ -9,15 +9,17 @@ import org.gradle.api.tasks.UntrackedTask
 
 @UntrackedTask(because = "It is used to inspect Gradle state, output is console.")
 open class VersionsTask : DefaultTask() {
+// Note: Gradle convention is to make tasks abstract, but this task fails on Gradle 4.x with:
+// > Caused by: org.gradle.api.GradleException: Cannot create a proxy class for abstract class 'VersionsTask'.
+// without an actionable root cause.
 
 	init {
 		outputs.upToDateWhen { false }
 	}
 
-	@Suppress("unused")
 	@TaskAction
 	fun printVersions() {
-		println(
+		logger.quiet(
 			"""
 			Gradle version: ${project.gradle.gradleVersion}
 			Checkstyle version: ${getVersion("checkstyle", CheckstyleExtension::class.java)}

@@ -22,7 +22,7 @@ open class ConsoleReportTask : BaseViolationsTask() {
 		).build(grouped)
 		val result = violations
 			.list
-			.flatMap { it.violations ?: emptyList() }
+			.flatMap { it.violations.orEmpty() }
 			.map { violation ->
 				val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
 				val loc = violation.location
@@ -34,19 +34,27 @@ open class ConsoleReportTask : BaseViolationsTask() {
 			}
 		val reportLocations = violations
 			.list
-			.filter { (it.violations ?: emptyList()).isNotEmpty() }
-			.map { "${it.module}:${it.parser}@${it.variant} (${it.violations!!.size}): ${it.report}" }
+			.filter { it.violations.orEmpty().isNotEmpty() }
+			.map { "${it.module}:${it.parser}@${it.variant} (${it.violations.orEmpty().size}): ${it.report}" }
 
 		if (result.isNotEmpty()) {
-			println(result.joinToString(System.lineSeparator() + System.lineSeparator()))
-			println()
+			logger.quiet(
+				result.joinToString(
+					separator = System.lineSeparator() + System.lineSeparator(),
+					postfix = System.lineSeparator()
+				)
+			)
 		}
 		if (reportLocations.isNotEmpty()) {
-			println(reportLocations.joinToString(System.lineSeparator()))
-			println()
+			logger.quiet(
+				reportLocations.joinToString(
+					separator = System.lineSeparator(),
+					postfix = System.lineSeparator()
+				)
+			)
 		}
 		if (table.isNotBlank()) {
-			println(table)
+			logger.quiet(table)
 		}
 	}
 }

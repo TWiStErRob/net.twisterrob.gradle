@@ -15,6 +15,7 @@ import java.net.URI
 /**
  * Simplified {@link org.junit.Rule} around {@link GradleRunner} to reduce code repetition.
  */
+@Suppress("BooleanPropertyNaming") // These are clear names.
 open class GradleRunnerRule : TestRule {
 
 	private val temp = TemporaryFolder()
@@ -59,6 +60,17 @@ open class GradleRunnerRule : TestRule {
 
 	lateinit var runner: GradleRunner private set
 
+	//@Test:given/@Before
+	var gradleVersion: GradleVersion = GradleVersion.current()
+		set(value) {
+			val distributionUrl =
+				URI.create("https://services.gradle.org/distributions/gradle-${value.version}-all.zip")
+			runner
+				.withGradleVersion(value.version)
+				.withGradleDistribution(distributionUrl)
+			field = value
+		}
+
 	@Suppress("MemberVisibilityCanBePrivate") // API
 	lateinit var buildFile: File
 		private set
@@ -68,6 +80,8 @@ open class GradleRunnerRule : TestRule {
 
 	val propertiesFile: File
 		get() = File(runner.projectDir, "gradle.properties")
+
+	open val extraArgs: Array<String> = arrayOf("--stacktrace")
 
 	//region TestRule
 	override fun apply(base: Statement, description: Description): Statement {
@@ -93,6 +107,7 @@ open class GradleRunnerRule : TestRule {
 
 	internal fun after(success: Boolean) {
 		tearDown()
+		@Suppress("ComplexCondition")
 		if ((success && needClearAfterSuccess) || (!success && needClearAfterFailure)) {
 			temp.delete()
 		}
@@ -124,8 +139,6 @@ open class GradleRunnerRule : TestRule {
 		// not used yet, but useful for debugging
 	}
 
-	open val extraArgs: Array<String> = arrayOf("--stacktrace")
-
 	//@Test:when
 	fun run(@Language("gradle") script: String?, vararg tasks: String): GradleRunner {
 		if (script != null) {
@@ -133,25 +146,27 @@ open class GradleRunnerRule : TestRule {
 		}
 		val args = arrayOf(*tasks, *extraArgs)
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
-		val testKitDir = runner.let { it as? DefaultGradleRunner }?.testKitDirProvider?.dir
+		val testKitDir = (runner as? DefaultGradleRunner)?.testKitDirProvider?.dir
 		val javaVendor: String? by systemProperty("java.vendor")
 		val javaVersion: String? by systemProperty("java.version")
 		val javaVersionDate: String? by systemProperty("java.version.date")
 		val javaRuntimeName: String? by systemProperty("java.runtime.name")
 		val javaRuntimeVersion: String? by systemProperty("java.runtime.version")
 		val javaHome: String? by systemProperty("java.home")
+		@Suppress("NullableToStringCall") // Debug info, null is OK.
 		val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
+		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println(
 			"""
 			${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
 			Java: ${java} from ${javaHome}.
 			Gradle properties:
 			```properties
-${propertiesFileContentForLogging().prependIndent("\t\t\t")}
+${propertiesContentForLogging().prependIndent("\t\t\t")}
 			```
 			Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
 			```gradle
-${buildFile.readText().prependIndent("\t\t\t")}
+${buildContentForLogging().prependIndent("\t\t\t")}
 			```
 			Execution output:
 			""".trimIndent()
@@ -159,11 +174,16 @@ ${buildFile.readText().prependIndent("\t\t\t")}
 		return runner.withArguments(*args)
 	}
 
-	private fun propertiesFileContentForLogging(): String =
-		if (propertiesFile.exists())
+
+	private fun buildContentForLogging(): String =
+		buildFile.readText()
+
+	private fun propertiesContentForLogging(): String =
+		if (propertiesFile.exists()) {
 			propertiesFile.readText()
-		else
+		} else {
 			"${propertiesFile.name} does not exist."
+		}
 
 	/**
 	 * This is a workaround because runner.withPluginClasspath() doesn't seem to work.
@@ -196,17 +216,6 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	fun setGradleVersion(version: String) {
 		gradleVersion = GradleVersion.version(version)
 	}
-
-	//@Test:given/@Before
-	var gradleVersion: GradleVersion = GradleVersion.current()
-		set(value) {
-			val distributionUrl =
-				URI.create("https://services.gradle.org/distributions/gradle-${value.version}-all.zip")
-			runner
-				.withGradleVersion(value.version)
-				.withGradleDistribution(distributionUrl)
-			field = value
-		}
 
 	//@Test:given/@Before
 	fun file(contents: String, path: String) {
@@ -258,24 +267,22 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 			else -> "/${relativeTo.javaClass.`package`.name}"
 		}
 		val resource = this.javaClass.getResource("${container}/${path}")
-			?: throw IllegalArgumentException("Cannot find ${path} relative to {$relativeTo}")
+			?: throw IllegalArgumentException("Cannot find ${path} relative to {${relativeTo ?: "nothing (i.e. absolute)"}}")
 		return File(resource.file)
 	}
 
 	//@Test:given/@Before
 	fun basedOn(folder: File): GradleRunnerRule {
+		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println("Deploying ${folder} into ${temp.root}")
-		folder.copyRecursively(temp.root, overwrite = false) { file, ex ->
-			when {
-				file == buildFile && ex is FileAlreadyExistsException -> {
-					val originalBuildFile = buildFile.readText()
-					val newBuildFile = folder.resolve(buildFile.name).readText()
-					buildFile.writeText(originalBuildFile + newBuildFile)
-					OnErrorAction.SKIP
-				}
-
-				else -> throw ex
+		folder.copyRecursively(temp.root, overwrite = false) onError@{ file, ex ->
+			if (file == buildFile && ex is FileAlreadyExistsException) {
+				val originalBuildFile = buildFile.readText()
+				val newBuildFile = folder.resolve(buildFile.name).readText()
+				buildFile.writeText(originalBuildFile + newBuildFile)
+				return@onError OnErrorAction.SKIP
 			}
+			throw ex
 		}
 		return this
 	}

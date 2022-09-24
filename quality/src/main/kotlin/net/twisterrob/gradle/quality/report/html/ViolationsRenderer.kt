@@ -30,11 +30,13 @@ internal fun renderXml(
 					categoryViolations.forEach { (reporter, reporterViolations) ->
 						element("reporter") {
 							attribute("name", reporter)
-							reporterViolations.forEach {
+							reporterViolations.forEach { violation ->
 								try {
-									renderViolation(to, ViolationViewModel.create(it))
-								} catch (ex: Throwable) {
-									throw IllegalArgumentException(it.toString(), ex)
+									renderViolation(to, ViolationViewModel.create(violation))
+								} catch (@Suppress("TooGenericExceptionCaught") ex: Throwable) {
+									// Intentionally catch all exceptions,
+									// because we want to crash the whole report, but with more information.
+									throw IllegalArgumentException(violation.toString(), ex)
 								}
 							}
 						}
@@ -75,20 +77,21 @@ internal fun renderViolation(to: XMLStreamWriter, vm: ViolationViewModel) {
 		with(vm.details) {
 			element("details") {
 				attribute("rule", rule)
-				suppression?.let { attribute("suppress", it) }
+				optionalAttribute("suppress", suppression) { it }
 				attribute("category", category)
 				attribute("severity", severity)
-				documentation?.let { attribute("documentation", it.toASCIIString()) }
-				messaging.title?.let { element("title") { cdata(it) } }
-				messaging.message?.let { element("message") { cdata(it) } }
-				messaging.description?.let { element("description") { cdata(it) } }
+				optionalAttribute("documentation", documentation) { it.toASCIIString() }
+				optionalElement("title", messaging.title) { cdata(it) }
+				optionalElement("message", messaging.message) { cdata(it) }
+				optionalElement("description", messaging.description) { cdata(it) }
 				element("context") renderContext@{
 					try {
 						// Make sure context is ready and only then start rendering it.
 						// This is a peculiarity of streaming XML rendering,
 						// because there's no backtrack once the element started outputting.
 						context.resolve()
-					} catch (ex: Throwable) {
+					} catch (@Suppress("TooGenericExceptionCaught") ex: Throwable) {
+						// Intentionally catch all exceptions, because we don't want to crash the whole report.
 						render(to, ErrorContext(context, ex))
 						return@renderContext
 					}

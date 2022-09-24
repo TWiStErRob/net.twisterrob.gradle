@@ -98,14 +98,14 @@ fun BuildResult.assertNoSource(taskPath: String) {
 
 fun BuildResult.assertOutcome(taskPath: String, outcome: TaskOutcome) {
 	val task = task(taskPath)
-		.let { assertNotNull(it, "${taskPath} task not found"); it!! }
+	assertNotNull(task, "${taskPath} task not found")
+	task!! // TODEL https://github.com/junit-team/junit5/issues/1866
 	assertEquals(outcome, task.outcome)
 }
 
 /**
  * Helper to allow SAM-like behavior for [Statement] abstract class.
  */
-@Suppress("TestFunctionName")
 inline fun Statement(crossinline block: () -> Unit): Statement =
 	object : Statement() {
 		override fun evaluate() {
