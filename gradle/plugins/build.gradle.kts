@@ -2,7 +2,7 @@ plugins {
 	id("org.gradle.java-gradle-plugin")
 	//alias(libs.plugins.kotlin) // Can't apply since there's a mismatch between embedded Kotlin and latest Kotlin.
 	`kotlin-dsl`
-	id("io.gitlab.arturbosch.detekt") version "1.21.0"
+	alias(libs.plugins.detekt)
 }
 
 gradlePlugin {
@@ -60,10 +60,12 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 	kotlinOptions.allWarningsAsErrors = true
 }
 
+// Note: duplicated from DetektPlugin because can't apply project this build.gradle.kts is defining.
 detekt {
 	// TODEL https://github.com/detekt/detekt/issues/4926
 	buildUponDefaultConfig = false
 	allRules = true
+	ignoreFailures = true
 	//debug = true
 	config = project.rootProject.files("../../config/detekt/detekt.yml")
 	baseline = project.rootProject.file("../../config/detekt/detekt-baseline-gradle-plugins.xml")

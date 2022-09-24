@@ -4,6 +4,7 @@ import se.bjurr.violations.lib.model.Violation
 import se.bjurr.violations.lib.reports.Parser
 
 class RuleCategoryParser {
+
 	fun rule(it: Violation): String =
 		@Suppress("UseIfInsteadOfWhen") // Preparing for future parsers.
 		when (it.reporter) {

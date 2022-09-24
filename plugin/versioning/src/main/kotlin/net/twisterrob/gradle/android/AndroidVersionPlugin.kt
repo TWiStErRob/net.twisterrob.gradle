@@ -301,5 +301,6 @@ val DefaultConfig.version: AndroidVersionExtension
 fun DefaultConfig.version(configuration: Action<AndroidVersionExtension>) {
 	configuration.execute(version)
 }
+
 private val String.apk: String
 	get() = "${this}.apk"

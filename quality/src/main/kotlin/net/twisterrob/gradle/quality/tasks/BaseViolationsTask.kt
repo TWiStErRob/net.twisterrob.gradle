@@ -138,8 +138,8 @@ abstract class BaseViolationsTask : DefaultTask() {
 			val gradleGatherers = listOf(
 				QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
 				QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
-//			ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
-//			TestReportGatherer<>("test", Test)
+//				ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
+//				TestReportGatherer<>("test", Test)
 			)
 			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 			val agpGatherers = when {

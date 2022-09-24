@@ -36,7 +36,7 @@ private fun configureDetektReportMerging(
 		// we need to know about all the Detekt tasks for their report locations.
 		project.evaluationDependsOnChildren()
 		project.allprojects
-			.flatMap { it.tasks.withType(Detekt::class) } // Forces to create the tasks.
+			.flatMap { it.tasks.withType<Detekt>() } // Forces to create the tasks.
 			.onEach { it.reports { report().required.set(true) } }
 			.forEach { detektReportingTask ->
 				detektReportMergeTask.mustRunAfter(detektReportingTask)

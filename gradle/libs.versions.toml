@@ -148,3 +148,4 @@ dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = 
 
 [plugins]
 nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
