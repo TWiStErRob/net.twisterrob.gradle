@@ -275,17 +275,14 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	fun basedOn(folder: File): GradleRunnerRule {
 		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println("Deploying ${folder} into ${temp.root}")
-		folder.copyRecursively(temp.root, overwrite = false) { file, ex ->
-			when {
-				file == buildFile && ex is FileAlreadyExistsException -> {
-					val originalBuildFile = buildFile.readText()
-					val newBuildFile = folder.resolve(buildFile.name).readText()
-					buildFile.writeText(originalBuildFile + newBuildFile)
-					OnErrorAction.SKIP
-				}
-
-				else -> throw ex
+		folder.copyRecursively(temp.root, overwrite = false) onError@{ file, ex ->
+			if (file == buildFile && ex is FileAlreadyExistsException) {
+				val originalBuildFile = buildFile.readText()
+				val newBuildFile = folder.resolve(buildFile.name).readText()
+				buildFile.writeText(originalBuildFile + newBuildFile)
+				return@onError OnErrorAction.SKIP
 			}
+			throw ex
 		}
 		return this
 	}

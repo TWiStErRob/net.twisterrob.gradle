@@ -10,7 +10,6 @@ import com.android.build.gradle.tasks.LintFixTask
 import com.android.build.gradle.tasks.LintGlobalTask
 import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
 import java.io.File
 
 // TODO find globalScope.net.twisterrob.gradle.internal.lint.getReportsDir and task.net.twisterrob.gradle.internal.lint.isFatalOnly
@@ -69,7 +68,6 @@ val LintBaseTask.androidVariantName: String?
 val LintBaseTask.xmlOutput: File
 	get() = lintOptions.xmlOutput
 		?: LintOptions_createOutputPath(
-			project = project,
 			variantName = androidVariantName,
 			extension = SdkConstants.DOT_XML,
 			reportsDir = reportsDir,
@@ -79,7 +77,6 @@ val LintBaseTask.xmlOutput: File
 val LintBaseTask.htmlOutput: File
 	get() = lintOptions.htmlOutput
 		?: LintOptions_createOutputPath(
-			project = project,
 			variantName = androidVariantName,
 			extension = ".html",
 			reportsDir = reportsDir,
@@ -89,7 +86,10 @@ val LintBaseTask.htmlOutput: File
 // TODO figure out where to find com.android.tools.lint.gradle.SyncOptions#createOutputPath
 @Suppress("FunctionName")
 private fun LintOptions_createOutputPath(
-	project: Project, variantName: String?, extension: String, reportsDir: File?, fatalOnly: Boolean
+	variantName: String?,
+	extension: String,
+	reportsDir: File,
+	fatalOnly: Boolean
 ): File {
 	val base = StringBuilder().apply {
 		append("lint-results")
@@ -97,15 +97,10 @@ private fun LintOptions_createOutputPath(
 			append("-")
 			append(variantName)
 		}
-
 		if (fatalOnly) {
 			append("-fatal")
 		}
-
 		append(extension)
 	}.toString()
-	return when {
-		reportsDir != null -> File(reportsDir, base)
-		else -> File(project.buildDir, "reports" + File.separator + base)
-	}
+	return reportsDir.resolve(base)
 }

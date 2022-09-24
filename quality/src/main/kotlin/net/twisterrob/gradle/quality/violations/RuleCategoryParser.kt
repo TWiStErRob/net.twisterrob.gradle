@@ -5,6 +5,7 @@ import se.bjurr.violations.lib.reports.Parser
 
 class RuleCategoryParser {
 	fun rule(it: Violation): String =
+		@Suppress("UseIfInsteadOfWhen") // Preparing for future parsers.
 		when (it.reporter) {
 			Parser.CHECKSTYLE.name -> {
 				val match = CHECKSTYLE_BUILT_IN_CHECK.matchEntire(it.rule)
@@ -35,6 +36,7 @@ class RuleCategoryParser {
 				}
 			}
 			Parser.PMD.name ->
+				@Suppress("UseIfInsteadOfWhen") // Preparing for future category exceptions.
 				when (it.category) {
 					"Import Statements" -> "Imports"
 					else -> it.category

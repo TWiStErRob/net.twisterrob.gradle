@@ -170,6 +170,7 @@ class AndroidVersionPlugin : BasePlugin() {
 		// When the Android application plugin is applied, we can set up the defaults and the DSL.
 		project.plugins.withId<AppPlugin>("com.android.application") { init() }
 		// Just before the project is finished evaluating, configure a bit more.
+		@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 		when {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
 				project.androidComponents.finalizeDsl { autoVersion() }
@@ -183,7 +184,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	private fun init() {
 		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
 		version.versionByProperties(readVersion(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME)))
-
+		@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 		when {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
 				// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.

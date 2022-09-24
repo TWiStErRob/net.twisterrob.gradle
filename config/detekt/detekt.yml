@@ -92,7 +92,3 @@ style:
     # Match IntelliJ IDEA Kotlin Plugin's UnclearPrecedenceOfBinaryExpression setup.
     # TODO not yet released, coming in next of 1.21.0
 #    allowForUnclearPrecedence: true
-
-  UseIfInsteadOfWhen:
-    # STOPSHIP
-    active: false

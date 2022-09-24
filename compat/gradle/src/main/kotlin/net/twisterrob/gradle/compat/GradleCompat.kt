@@ -1,4 +1,7 @@
-@file:Suppress("TooManyFunctions") // TODO might be worth splitting by receiver and use @JvmMultifileClass?
+@file:Suppress(
+	"TooManyFunctions", // TODO might be worth splitting by receiver and use @JvmMultifileClass?
+	"UseIfInsteadOfWhen", // Preparing for future new version ranges.
+)
 
 package net.twisterrob.gradle.compat
 

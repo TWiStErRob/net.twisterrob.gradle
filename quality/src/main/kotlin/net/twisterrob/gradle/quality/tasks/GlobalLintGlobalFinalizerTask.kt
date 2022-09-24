@@ -145,6 +145,7 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 private val Project.lintTasks: TaskCollection<*>
 	get() =
+		@Suppress("UseIfInsteadOfWhen") // Preparing for future version ranges.
 		when {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x ->
 				this.tasks.withType(AndroidLintGlobalTask::class.java)

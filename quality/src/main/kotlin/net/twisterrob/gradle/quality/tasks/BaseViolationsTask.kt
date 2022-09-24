@@ -141,6 +141,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 //			ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
 //			TestReportGatherer<>("test", Test)
 			)
+			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 			val agpGatherers = when {
 				AGPVersions.CLASSPATH >= AGPVersions.v70x ->
 					listOf(

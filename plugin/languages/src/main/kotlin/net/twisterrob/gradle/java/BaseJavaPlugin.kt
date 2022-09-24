@@ -52,6 +52,7 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 }
 
 private fun Project.configureGlobalCompatibility() {
+	@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 	when {
 		// JavaPluginConvention was deprecated in Gradle 7.1.
 		// JavaPluginExtension was added in Gradle 4.10, but sourceSets was only added in Gradle 7.1.

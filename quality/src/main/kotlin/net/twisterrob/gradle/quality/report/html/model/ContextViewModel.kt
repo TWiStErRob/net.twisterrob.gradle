@@ -45,6 +45,7 @@ sealed class ContextViewModel {
 		val language: String
 			get() = when (v.location.file.extension) {
 				"kt" -> "kotlin"
+				"kts" -> "kotlin"
 				else -> v.location.file.extension
 			}
 		val startLine: Int get() = context.second

@@ -98,6 +98,7 @@ class AndroidBuildPlugin : BasePlugin() {
 	companion object {
 
 		private fun BaseExtension.configureLint() {
+			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 			when {
 				AGPVersions.v71x < AGPVersions.CLASSPATH -> {
 					@Suppress("UnstableApiUsage")
@@ -180,7 +181,7 @@ class AndroidBuildPlugin : BasePlugin() {
 				project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
 			val vcsTaskProvider =
 				project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
-
+			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 			when {
 				AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
 					project.androidComponents.finalizeDsl {
