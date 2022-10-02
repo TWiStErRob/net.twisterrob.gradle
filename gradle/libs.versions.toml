@@ -36,7 +36,7 @@ kotlin-target = "1.4.32"
 # Actual Kotlin language and API version for compilcation, it restricts language features and metadata.
 kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
-kotlin-build = "1.7.10"
+kotlin-build = "1.7.20"
 
 # TODO 1.22 activate UnnecessaryParentheses with allowForUnclearPrecedence.
 # TODO 1.22 remove MaxLineLength from LintMessageDetailsSplitter
