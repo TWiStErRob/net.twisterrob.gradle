@@ -1000,4 +1000,4 @@ jobs:
           comment_mode: off
           report_individual_runs: true
           test_changes_limit: 0
-          files: artifacts/* Test Results XMLs/**/*.xml
+          junit_files: artifacts/* Test Results XMLs/**/*.xml
