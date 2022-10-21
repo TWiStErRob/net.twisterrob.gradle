@@ -492,7 +492,7 @@ jobs:
             kotlin: 1.4.32
             test-task: testReport :plugin:tests
           - name: "AGP 4.2.x on Gradle 6.x"
-            gradle: 6.9.2
+            gradle: 6.9.3
             gradle-java: 8
             agp: 4.2.2
             build-tools: 30.0.2
@@ -500,7 +500,7 @@ jobs:
             kotlin: 1.4.32
             test-task: testReport :quality:tests
           - name: "AGP 4.2.x on Gradle 6.x - plugin"
-            gradle: 6.9.2
+            gradle: 6.9.3
             gradle-java: 8
             agp: 4.2.2
             build-tools: 32.0.0
@@ -834,19 +834,19 @@ jobs:
           name: AGP 4.2.x on Gradle 6.7.1+ - plugin (4.2.2 on 6.7.1) Test Results XMLs
           path: artifacts/AGP 4.2.x on Gradle 6.7.1+ - plugin (4.2.2 on 6.7.1) Test Results XMLs
 
-      - name: Download 'AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.2) Test Results XMLs'
+      - name: Download 'AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.3) Test Results XMLs'
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.2) Test Results XMLs
-          path: artifacts/AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.2) Test Results XMLs
+          name: AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.3) Test Results XMLs
+          path: artifacts/AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.3) Test Results XMLs
 
-      - name: Download 'AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.2) Test Results XMLs'
+      - name: Download 'AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.3) Test Results XMLs'
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.2) Test Results XMLs
-          path: artifacts/AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.2) Test Results XMLs
+          name: AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.3) Test Results XMLs
+          path: artifacts/AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.3) Test Results XMLs
 
       - name: Download 'AGP 4.2.x on Gradle 7.x (4.2.2 on 7.5.1) Test Results XMLs'
         if: success() || failure()
