@@ -46,7 +46,8 @@ class AGPVersionsTest {
 	}
 
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
-		val expected = AGPVersion(7, 3, AGPVersion.ReleaseType.Stable, 0)
+		// This is not using AGPVersion() because Renovate needs to update this one. See "Update AGP version test.".
+		val expected = AGPVersion.parse("7.3.0")
 
 		val actual = AGPVersions.CLASSPATH
 
