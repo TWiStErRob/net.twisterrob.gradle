@@ -99,6 +99,17 @@
 			"versioningTemplate": "gradle"
 		},
 		{
+			"description": "Update AGP version test.",
+			"fileMatch": ["^compat/agp-base/src/test/kotlin/net/twisterrob/gradle/common/AGPVersionsTest\\.kt$"],
+			"datasourceTemplate": "maven",
+			"registryUrlTemplate": "https://maven.google.com",
+			"depNameTemplate": "com.android.tools.build:gradle",
+			"matchStrings": [
+				"val expected = AGPVersion\\.parse\\(\"(?<currentValue>.*)\"\\)"
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
 			"description": "Update AGP defaults for local runs.",
 			"fileMatch": ["^gradle\\.properties$"],
 			"datasourceTemplate": "maven",
