@@ -31,6 +31,9 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
 
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
+
       # Check publicly available release version first, this should be independent of repository state.
       - name: Verify docs/examples/release.
         working-directory: docs/examples/release
@@ -211,6 +214,9 @@ jobs:
 
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
+
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
 
       # To prevent "Welcome to Gradle <version>! Here are the highlights of this release:" in build log, use:
       #- run: touch ~/.gradle/notifications/5.6.4/release-features.rendered
