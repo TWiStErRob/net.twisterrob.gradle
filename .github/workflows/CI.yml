@@ -62,7 +62,7 @@ jobs:
             ${{ github.workspace }}/**/build/reports/detekt/detekt.*
             ${{ github.workspace }}/build/reports/detekt/merge.*
 
-      - name: Publish "Code scanning results / detekt".
+      - name: Publish "Code scanning results / detekt" GitHub Code Scanning analysis.
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
@@ -76,7 +76,7 @@ jobs:
         # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
         run: ./gradlew --no-daemon --no-build-cache --no-configuration-cache --stacktrace publishToMavenLocal
 
-      - name: Upload "Gradle Plugin Validation Report".
+      - name: Upload "Gradle Plugin Validation Report" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
@@ -181,7 +181,7 @@ jobs:
       - name: Set up Android SDK.
         uses: android-actions/setup-android@v2
 
-      - name: Install Android SDK components
+      - name: Install Android SDK components.
         run: |
           # The following are already done by setup-android@v2 action:
           # sdkmanager --install "cmdline-tools;latest"
@@ -287,21 +287,21 @@ jobs:
           -Pnet.twisterrob.test.kotlin.pluginVersion=${{ matrix.kotlin }}
           -Pnet.twisterrob.gradle.runner.gradleVersion=${{ matrix.gradle }}
 
-      - name: Upload "${{ env.JOB_NAME }} Test Results XMLs".
+      - name: Upload "${{ env.JOB_NAME }} Test Results XMLs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.JOB_NAME }} Test Results XMLs
           path: ${{ github.workspace }}/**/build/test-results/test/TEST-*.xml
 
-      - name: Upload "${{ env.JOB_NAME }} Test Results HTML".
+      - name: Upload "${{ env.JOB_NAME }} Test Results HTML" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.JOB_NAME }} Test Results HTML
           path: ${{ github.workspace }}/build/reports/tests/all/
 
-      - name: Upload "${{ env.JOB_NAME }} Test Results HTMLs".
+      - name: Upload "${{ env.JOB_NAME }} Test Results HTMLs" artifact.
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
@@ -998,7 +998,7 @@ jobs:
       #  run: ls -R
       #  working-directory: artifacts
 
-      - name: Publish Test Results
+      - name: Publish "Test Results" check suite.
         if: success() || failure()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
