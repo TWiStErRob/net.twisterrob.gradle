@@ -75,7 +75,7 @@ jfixture = "2.7.2"
 jfixture-kotlin = "1.0.0"
 
 # Versions: https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
-svnkit = "1.10.8"
+svnkit = "1.10.9"
 # Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
 # Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
 # Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
