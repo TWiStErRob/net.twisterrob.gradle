@@ -70,7 +70,7 @@ jobs:
 
       - name: Cancel other jobs on Build failure, no need to check / test it.
         if: failure()
-        uses: andymckay/cancel-action@0.2
+        uses: andymckay/cancel-action@0.3
 
       - name: Publish Gradle Quality plugins to mavenLocal().
         # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
