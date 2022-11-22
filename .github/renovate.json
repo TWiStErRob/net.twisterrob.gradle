@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
-		"github>TWiStErRob/renovate-config"
+		"local>TWiStErRob/renovate-config"
 	],
 	"ignorePaths": [
 		"graph/**",
