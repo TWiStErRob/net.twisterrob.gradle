@@ -87,8 +87,6 @@ style:
     max: 3
 
   UnnecessaryParentheses:
-    # TODO disable for now, because it has too many false positives, enable in next of 1.21.0.
-    active: false
+    active: true
     # Match IntelliJ IDEA Kotlin Plugin's UnclearPrecedenceOfBinaryExpression setup.
-    # TODO not yet released, coming in next of 1.21.0
-#    allowForUnclearPrecedence: true
+    allowForUnclearPrecedence: true

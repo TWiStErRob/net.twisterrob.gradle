@@ -40,7 +40,6 @@ kotlin-build = "1.7.21"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
 kotlin-dokka = "1.7.20"
 
-# TODO 1.22 activate UnnecessaryParentheses with allowForUnclearPrecedence.
 detekt = "1.22.0"
 
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases
