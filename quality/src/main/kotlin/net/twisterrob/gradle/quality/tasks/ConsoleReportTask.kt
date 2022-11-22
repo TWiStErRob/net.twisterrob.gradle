@@ -17,8 +17,8 @@ open class ConsoleReportTask : BaseViolationsTask() {
 		val table = TableGenerator(
 			zeroCount = "." /*TODO ✓*/,
 			missingCount = "",
-			printEmptyRows = false,
-			printEmptyColumns = false
+			isPrintEmptyRows = false,
+			isPrintEmptyColumns = false
 		).build(grouped)
 		val result = violations
 			.list

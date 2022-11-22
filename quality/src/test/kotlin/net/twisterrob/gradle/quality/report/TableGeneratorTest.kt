@@ -49,7 +49,7 @@ class TableGeneratorTest {
 	}
 
 	@Test fun doesNotPrintEmptyRows() {
-		val sut = TableGenerator(printEmptyRows = false)
+		val sut = TableGenerator(isPrintEmptyRows = false)
 
 		val result = sut.build(INPUT)
 
@@ -64,7 +64,7 @@ class TableGeneratorTest {
 	}
 
 	@Test fun doesNotPrintEmptyColumns() {
-		val sut = TableGenerator(printEmptyColumns = false)
+		val sut = TableGenerator(isPrintEmptyColumns = false)
 
 		val result = sut.build(INPUT)
 
@@ -81,7 +81,7 @@ class TableGeneratorTest {
 	}
 
 	@Test fun doesNotPrintEmptyRowsAndColumns() {
-		val sut = TableGenerator(printEmptyRows = false, printEmptyColumns = false)
+		val sut = TableGenerator(isPrintEmptyRows = false, isPrintEmptyColumns = false)
 
 		val result = sut.build(INPUT)
 
