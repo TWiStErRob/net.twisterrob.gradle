@@ -29,7 +29,6 @@ class LintMessageDetailsSplitter {
 			// Consider using ContextViewModel.ErrorContext for displaying the stack trace of this.
 			"LintError" to fun(v: Violation): MessageDetails {
 				val split = defaultSplit(v)
-				@Suppress("MaxLineLength")
 				val replaced =
 					if ("←" in split.message) {
 						split.message

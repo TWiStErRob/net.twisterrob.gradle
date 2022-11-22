@@ -41,7 +41,6 @@ kotlin-build = "1.7.21"
 kotlin-dokka = "1.7.20"
 
 # TODO 1.22 activate UnnecessaryParentheses with allowForUnclearPrecedence.
-# TODO 1.22 remove MaxLineLength from LintMessageDetailsSplitter
 detekt = "1.22.0"
 
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases
