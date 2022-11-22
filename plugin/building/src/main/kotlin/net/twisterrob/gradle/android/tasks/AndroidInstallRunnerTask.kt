@@ -79,7 +79,7 @@ abstract class AndroidInstallRunnerTask : Exec() {
 					]
 				]
 				/@android:name
-			"""
+			""".trimIndent()
 			val mainActivityName = AndroidXPathFactory // registers `android:`
 				.newXPath()
 				.evaluate(xpath, document, XPathConstants.STRING) as String

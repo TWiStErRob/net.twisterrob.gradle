@@ -188,17 +188,17 @@ class AndroidVersionPlugin : BasePlugin() {
 		when {
 			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
 				// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.
-				project.androidComponents.onVariants(project.androidComponents.selector().all()) {
+				project.androidComponents.onVariants(project.androidComponents.selector().all()) { variant ->
 					if (version.isRenameAPK) {
-						renameAPKPost7(it as ApplicationVariant)
+						renameAPKPost7(variant as ApplicationVariant)
 					}
 				}
 			}
 			else -> {
 				project.beforeAndroidTasksCreated {
-					android.applicationVariants.all {
+					android.applicationVariants.all { variant ->
 						if (version.isRenameAPK) {
-							renameAPKPre7(it, it)
+							renameAPKPre7(variant, variant)
 						}
 					}
 				}
