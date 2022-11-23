@@ -3,6 +3,7 @@ package net.twisterrob.gradle.quality.tasks
 import java.io.File
 import java.lang.management.ManagementFactory
 
+@Suppress("UseDataClass") // https://github.com/detekt/detekt/issues/5339
 class ViolationTestResources(
 	private val rootProject: File
 ) {
@@ -49,13 +50,13 @@ class ViolationTestResources(
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <location file="..."
-				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit10604310516655983690((?:\\[^"]+)+)(?=")""".toRegex()) {
-					val group1 = it.groups[1]!!.value
+				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit10604310516655983690((?:\\[^"]+)+)(?=")""".toRegex()) { match ->
+					val group1 = match.groups[1]!!.value
 					rootProject.absolutePath + group1.replace("\\", File.separator)
 				}
 				// <location fileAbsoluteAsUrl="..."
-				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690((?:/[^"]+)+)(?=")""".toRegex()) {
-					val group1 = it.groups[1]!!.value
+				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10604310516655983690((?:/[^"]+)+)(?=")""".toRegex()) { match ->
+					val group1 = match.groups[1]!!.value
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
 				// <violation[details/@rule="IconMissingDensityFolder"]/description
@@ -66,8 +67,8 @@ class ViolationTestResources(
 				}
 				// <location pathRelativeToProject="...\"
 				// <location pathRelativeToModule="...\"
-				.replace("""(?<=(pathRelativeToProject|pathRelativeToModule)=")(?:[^"]+\\)+(?=")""".toRegex()) {
-					it.value.replace("\\", File.separator)
+				.replace("""(?<=(pathRelativeToProject|pathRelativeToModule)=")(?:[^"]+\\)+(?=")""".toRegex()) { match ->
+					match.value.replace("\\", File.separator)
 				}
 				// The XSL transformation will produce system-specific separators
 				// (on CI/Unix this is different from the captured Windows line endings).
@@ -108,14 +109,14 @@ class ViolationTestResources(
 					rootProject.absolutePath.replace("\\", "\\\\")
 				}
 				// <a class="file" href="file:/...">src\main\<b>
-				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086((?:/[^"]+)+)(?=")""".toRegex()) {
-					val group1 = it.groups[1]!!.value
+				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit17181599312409286086((?:/[^"]+)+)(?=")""".toRegex()) { match ->
+					val group1 = match.groups[1]!!.value
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
 				// <a class="file" href="file:/...">...<b>
-				.replace("""(a class="file" href="file:/.+">)((?:[^"]+\\)+)(?=<b>)""".toRegex()) {
-					val group1 = it.groups[1]!!.value
-					val group2 = it.groups[2]!!.value
+				.replace("""(a class="file" href="file:/.+">)((?:[^"]+\\)+)(?=<b>)""".toRegex()) { match ->
+					val group1 = match.groups[1]!!.value
+					val group2 = match.groups[2]!!.value
 					group1 + group2.replace("\\", File.separator)
 				}
 				// The XSL transformation on Java 8 doesn't acknowledge the <xsl:output indent="yes"> attribute,

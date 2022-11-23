@@ -73,6 +73,7 @@ private fun resolveFromFolders(command: String, vararg dirs: File): File {
 		?: error("Cannot find any of ${variants} in any of these folders:\n${dirs.joinToString("\n")}")
 }
 
+@Suppress("LongParameterList") // Simply these many things contribute to APK metadata.
 fun assertDefaultDebugBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
@@ -89,17 +90,18 @@ fun assertDefaultDebugBadging(
 	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) {
 	assertDefaultBadging(
-		apk,
-		applicationId,
-		versionCode,
-		versionName,
-		compileSdkVersion,
-		compileSdkVersionName,
-		minSdkVersion,
-		targetSdkVersion
+		apk = apk,
+		applicationId = applicationId,
+		versionCode = versionCode,
+		versionName = versionName,
+		compileSdkVersion = compileSdkVersion,
+		compileSdkVersionName = compileSdkVersionName,
+		minSdkVersion = minSdkVersion,
+		targetSdkVersion = targetSdkVersion
 	)
 }
 
+@Suppress("LongParameterList") // Simply these many things contribute to APK metadata.
 fun assertDefaultReleaseBadging(
 	apk: File,
 	applicationId: String = packageName,
@@ -111,17 +113,18 @@ fun assertDefaultReleaseBadging(
 	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) {
 	assertDefaultBadging(
-		apk,
-		applicationId,
-		versionCode,
-		versionName,
-		compileSdkVersion,
-		compileSdkVersionName,
-		minSdkVersion,
-		targetSdkVersion
+		apk = apk,
+		applicationId = applicationId,
+		versionCode = versionCode,
+		versionName = versionName,
+		compileSdkVersion = compileSdkVersion,
+		compileSdkVersionName = compileSdkVersionName,
+		minSdkVersion = minSdkVersion,
+		targetSdkVersion = targetSdkVersion
 	)
 }
 
+@Suppress("LongParameterList") // Simply these many things contribute to APK metadata.
 fun assertDefaultBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
@@ -138,7 +141,8 @@ fun assertDefaultBadging(
 	} catch (ex: Throwable) {
 		val contents = apk
 			.parentFile
-			.listFiles().orEmpty()
+			.listFiles()
+			.orEmpty()
 			.joinToString(prefix = "'${apk.parentFile}' contents:\n", separator = "\n")
 		throw ex.withRootCause(IOException(contents))
 	}

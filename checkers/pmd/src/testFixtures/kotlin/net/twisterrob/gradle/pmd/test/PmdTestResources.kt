@@ -3,6 +3,8 @@ package net.twisterrob.gradle.pmd.test
 import org.gradle.util.GradleVersion
 
 /**
+ * Test resources for PMD static analyser.
+ *
  * Usage:
  * ```
  * private lateinit var gradle: GradleRunnerRule
@@ -13,6 +15,7 @@ import org.gradle.util.GradleVersion
  * }
  * ```
  */
+@Suppress("UseDataClass") // https://github.com/detekt/detekt/issues/5339
 class PmdTestResources(
 	/**
 	 * Reasons for conditionals, see embedded PMD versions in [net.twisterrob.gradle.quality.tasks.VersionsTaskTest].

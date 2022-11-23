@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.checkstyle.test
 
 /**
+ * Test resources for Checkstyle static analyser.
+ *
  * Usage:
  * ```
  * private lateinit var gradle: GradleRunnerRule
@@ -11,6 +13,7 @@ package net.twisterrob.gradle.checkstyle.test
  * }
  * ```
  */
+@Suppress("UseDataClass") // https://github.com/detekt/detekt/issues/5339
 class CheckstyleTestResources {
 
 	val empty: EmptyConfiguration = object : EmptyConfiguration {}

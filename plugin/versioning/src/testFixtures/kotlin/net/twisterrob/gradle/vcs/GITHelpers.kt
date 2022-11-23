@@ -14,7 +14,8 @@ inline fun git(repoDir: File, block: Git.() -> Unit) {
 
 fun createGitRepository(repoDir: File): Git =
 	Git
-		.init().call {
+		.init()
+		.call {
 			setDirectory(repoDir)
 		}
 		.also { result -> println("Repository ${repoDir} created at ${result}") }
@@ -22,13 +23,15 @@ fun createGitRepository(repoDir: File): Git =
 fun Git.doCommitSingleFile(file: File, message: String): RevCommit {
 	val relativePath = file.relativeTo(this.repository.directory)
 	this
-		.add().call {
+		.add()
+		.call {
 			addFilepattern(relativePath.toString())
 		}
 		.also { println("Added $relativePath") }
 
 	return this
-		.commit().call {
+		.commit()
+		.call {
 			setMessage(message)
 		}
 		.also { println("Committed revision ${it.id}: ${it.fullMessage}") }
@@ -39,7 +42,8 @@ fun Git.doCheckout(ref: ObjectId): Ref? =
 
 fun Git.doCheckout(ref: String): Ref? {
 	return this
-		.checkout().call {
+		.checkout()
+		.call {
 			setName(ref)
 		}
 		.also { println("Checked out ${ref} as ${it?.objectId}") }
