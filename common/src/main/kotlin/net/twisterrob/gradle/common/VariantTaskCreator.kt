@@ -137,10 +137,10 @@ T : VerificationTask {
 			if (!buildPath.startsWith(projectPath)) {
 				task.logger.warn(
 					"""
-					Cannot set up ${baseName} source folders,
-						because the build directory ${buildPath}
-						needs to be inside the project directory ${projectPath}.
-					""".trimIndent().replace("""\r?\n\t*""".toRegex(), " ")
+						|Cannot set up ${baseName} source folders,
+						|	because the build directory ${buildPath}
+						|	needs to be inside the project directory ${projectPath}.
+					""".trimMargin().replace("""\r?\n\t*""".toRegex(), " ")
 				)
 				return
 			}

@@ -26,11 +26,11 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 					task.doFirst("Warn about missing configuration files.") {
 						task.logger.warn(
 							"""
-							While auto-configuring ruleSetFiles for ${task}, there was no configuration found at:
-								rootProject=${rootConfig}
-								subProject=${subConfig}
-								and there's no configuration location set in Gradle build files either.
-							""".trimIndent()
+								|While auto-configuring ruleSetFiles for ${task}, there was no configuration found at:
+								|	rootProject=${rootConfig}
+								|	subProject=${subConfig}
+								|	and there's no configuration location set in Gradle build files either.
+							""".trimMargin()
 						)
 					}
 				}
@@ -51,10 +51,10 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 				if (!buildPath.startsWith(projectPath)) {
 					task.logger.warn(
 						"""
-						Cannot set up ${task} source folders,
-							because the build directory ${buildPath}
-							needs to be inside the project directory ${projectPath}.
-						""".trimIndent().replace("""\r?\n\t*""".toRegex(), " ")
+							|Cannot set up ${task} source folders,
+							|	because the build directory ${buildPath}
+							|	needs to be inside the project directory ${projectPath}.
+						""".trimMargin().replace("""\r?\n\t*""".toRegex(), " ")
 					)
 					return
 				}

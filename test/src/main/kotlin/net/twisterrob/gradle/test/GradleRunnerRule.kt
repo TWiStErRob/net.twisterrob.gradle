@@ -158,17 +158,17 @@ open class GradleRunnerRule : TestRule {
 		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println(
 			"""
-			${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
-			Java: ${java} from ${javaHome}.
-			Gradle properties:
-			```properties
-${propertiesContentForLogging().prependIndent("\t\t\t")}
-			```
-			Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
-			```gradle
-${buildContentForLogging().prependIndent("\t\t\t")}
-			```
-			Execution output:
+				${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
+				Java: ${java} from ${javaHome}.
+				Gradle properties:
+				```properties
+${propertiesContentForLogging().prependIndent("\t\t\t\t")}
+				```
+				Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
+				```gradle
+${buildContentForLogging().prependIndent("\t\t\t\t")}
+				```
+				Execution output:
 			""".trimIndent()
 		)
 		return runner.withArguments(*args)

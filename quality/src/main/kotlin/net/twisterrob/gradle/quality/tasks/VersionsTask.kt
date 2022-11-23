@@ -21,9 +21,9 @@ open class VersionsTask : DefaultTask() {
 	fun printVersions() {
 		logger.quiet(
 			"""
-			Gradle version: ${project.gradle.gradleVersion}
-			Checkstyle version: ${getVersion("checkstyle", CheckstyleExtension::class.java)}
-			PMD version: ${getVersion("pmd", PmdExtension::class.java)}
+				Gradle version: ${project.gradle.gradleVersion}
+				Checkstyle version: ${getVersion("checkstyle", CheckstyleExtension::class.java)}
+				PMD version: ${getVersion("pmd", PmdExtension::class.java)}
 			""".trimIndent()
 		)
 	}

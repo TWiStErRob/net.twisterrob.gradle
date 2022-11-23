@@ -31,12 +31,12 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 						task.doFirst("Warn about missing configuration files.") {
 							task.logger.warn(
 								"""
-								While auto-configuring configFile for ${task}, there was no configuration found at:
-									rootProject=${rootConfig}
-									subProject=${subConfig}
-									task=${task.configFile}
-									and there's no configuration location set in Gradle build files either.
-								""".trimIndent()
+									|While auto-configuring configFile for ${task}, there was no configuration found at:
+									|	rootProject=${rootConfig}
+									|	subProject=${subConfig}
+									|	task=${task.configFile}
+									|	and there's no configuration location set in Gradle build files either.
+								""".trimMargin()
 							)
 						}
 					}

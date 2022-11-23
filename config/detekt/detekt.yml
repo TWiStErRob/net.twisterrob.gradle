@@ -81,6 +81,10 @@ style:
   MaxLineLength:
     # It's unavoidable to have some long lines when stacktraces or links are added as comments.
     excludeCommentStatements: true
+  
+  MultilineRawStringIndentation:
+    # TODEL https://github.com/detekt/detekt/issues/5564
+    active: false
 
   ReturnCount:
     # Default 2 is not enough, usually a single guard and a condition simply violates this.
