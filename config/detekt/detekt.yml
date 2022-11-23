@@ -51,8 +51,7 @@ comments:
 complexity:
 
   LabeledExpression:
-    # Disabled as it flags quite a lot of code. I don't see a problem with using labels sometimes.
-    # TODEL https://github.com/detekt/detekt/issues/5316 and review usages.
+    # I don't see a problem with using labels sometimes.
     active: false
 
 

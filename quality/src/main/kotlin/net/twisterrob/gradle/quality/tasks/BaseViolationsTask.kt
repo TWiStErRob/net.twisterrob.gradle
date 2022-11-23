@@ -71,7 +71,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 		val results = project.allprojects.flatMap { subproject ->
 			GATHERERS.flatMap { gatherer ->
 				gatherer.allTasksFrom(subproject).map { task ->
-					return@map Violations(
+					Violations(
 						parser = gatherer.getDisplayName(task),
 						module = subproject.path,
 						variant = gatherer.getName(task),

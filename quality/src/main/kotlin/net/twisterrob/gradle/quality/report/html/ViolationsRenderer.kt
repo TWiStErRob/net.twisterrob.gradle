@@ -95,6 +95,7 @@ internal fun renderViolation(to: XMLStreamWriter, vm: ViolationViewModel) {
 						render(to, ErrorContext(context, ex))
 						return@renderContext
 					}
+					// Outside try-catch, because if there's an error in rendering, that should crash the report.
 					render(to, context)
 				}
 			}

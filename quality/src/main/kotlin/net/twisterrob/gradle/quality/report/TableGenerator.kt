@@ -57,7 +57,7 @@ class TableGenerator(
 					return@row emptyList<String>()
 				}
 				val cells = parsers.map cell@{
-					return@cell when (byParserCounts[it]) {
+					when (byParserCounts[it]) {
 						0 -> zeroCount
 						null -> missingCount
 						else -> byParserCounts[it].toString()

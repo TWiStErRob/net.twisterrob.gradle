@@ -26,7 +26,7 @@ open class ConsoleReportTask : BaseViolationsTask() {
 			.map { violation ->
 				val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
 				val loc = violation.location
-				return@map (""
+				return@map ("" // Not using raw string literals because of the new-line requirements.
 						+ "\n${loc.file.absolutePath}:${loc.startLine} in ${loc.module}/${loc.variant}"
 						+ "\n\t${violation.source.reporter}/${violation.rule}"
 						+ "\n${message.prependIndent("\t")}"
