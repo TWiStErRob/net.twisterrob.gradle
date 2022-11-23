@@ -3,7 +3,7 @@ package net.twisterrob.gradle.quality.report.html.model
 import net.twisterrob.gradle.quality.Violation
 
 class SuppressionGenerator {
-	@Suppress("ComplexMethod") // Nicely structured, so it's ok.
+	@Suppress("CyclomaticComplexMethod") // Nicely structured, so it's ok.
 	fun getSuppression(v: Violation): String? =
 		when (v.source.reporter) {
 			"ANDROIDLINT" -> {
