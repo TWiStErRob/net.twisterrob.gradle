@@ -157,7 +157,7 @@ open class GradleRunnerRule : TestRule {
 		val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
 		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println(
-			"""
+			@Suppress("MultilineRawStringIndentation") """
 				${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
 				Java: ${java} from ${javaHome}.
 				Gradle properties:
@@ -195,7 +195,7 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 				"classpath files('${it.absolutePath.replace("\\", "\\\\")}')"
 			}
 		@Language("gradle")
-		val buildscript = """
+		val buildscript = @Suppress("MultilineRawStringIndentation") """
 			buildscript {
 				dependencies {
 ${classPaths.prependIndent("\t\t\t\t\t")}

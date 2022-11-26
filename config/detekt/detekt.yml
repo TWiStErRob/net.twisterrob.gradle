@@ -82,8 +82,7 @@ style:
     excludeCommentStatements: true
   
   MultilineRawStringIndentation:
-    # TODEL https://github.com/detekt/detekt/issues/5564
-    active: false
+    indentSize: 1
 
   ReturnCount:
     # Default 2 is not enough, usually a single guard and a condition simply violates this.
