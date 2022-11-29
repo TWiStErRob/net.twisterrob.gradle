@@ -17,9 +17,14 @@ jobs:
   # Lifted out to do at once, because action is not stable enough for parallel workflows ^.
   validate:
     name: 0 🦺 Validation
+    runs-on: ubuntu-22.04
+    timeout-minutes: 2
     steps:
-    - name: Validate Gradle Wrapper JARs.
-      uses: gradle/wrapper-validation-action@v1
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
 
   build:
     name: 1 🔨 Build
