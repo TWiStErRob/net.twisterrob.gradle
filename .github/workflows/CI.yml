@@ -15,7 +15,7 @@ concurrency:
 jobs:
   build:
     name: 1 🔨 Build
-    runs-on: ubuntu-2204
+    runs-on: ubuntu-22.04
     # A run took 5.5 minutes, give it a bit of a buffer (there's networking involved, download and upload), and constrain.
     timeout-minutes: 20
     steps:
@@ -149,7 +149,7 @@ jobs:
 
   check:
     name: 2 🛠️ ${{ matrix.name }}
-    runs-on: ubuntu-2204
+    runs-on: ubuntu-22.04
     env:
       JOB_NAME: ${{ matrix.name }} (${{ matrix.agp }} on ${{ matrix.gradle }})
       # Capture which Gradle version is running the build to use in some steps.
@@ -690,7 +690,7 @@ jobs:
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
     name: 3 📢 Publish Tests Results
-    runs-on: ubuntu-2204
+    runs-on: ubuntu-22.04
     needs: check
     # The dependency job might be skipped, we don't need to run this job then.
     if: success() || failure()
