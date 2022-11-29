@@ -129,7 +129,16 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		listOf(
 			resolveFromJDK("jarsigner").absolutePath,
 			"-verify",
-			"-verbose",
+
+			// Turn this on to see more output in case of failure.
+			"-verbose", // Print details of files.
+
+			// Can't turn this on, because of warnings that cannot be fixed reasonably.
+			//"-strict", // Make warnings on stderr into errors, with non-0 exit code.
+
+			// Don't include this in repo, because it hangs the test on local execution.
+			//"-J-Djava.security.debug=jar", // Print details of JAR verification.
+
 			apk
 		).runCommand()
 }
