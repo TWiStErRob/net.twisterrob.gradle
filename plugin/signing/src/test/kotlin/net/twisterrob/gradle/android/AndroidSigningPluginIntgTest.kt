@@ -79,6 +79,12 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.android-app'
+			// Increase minimum version to avoid ignoring the signature:
+			// > jarsigner WARNING: The jar will be treated as unsigned,
+			// > because it is signed with a weak algorithm that is now disabled by the security property
+			// This happens on GitHub Actions ubuntu-2204 runners because java.security file contains:
+			// jdk.jar.disabledAlgorithms=SHA1 denyAfter 2019-01-01
+			android.defaultConfig.minSdkVersion = 21
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -123,7 +129,16 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		listOf(
 			resolveFromJDK("jarsigner").absolutePath,
 			"-verify",
-			"-verbose",
+
+			// Turn this on to see more output in case of failure.
+			"-verbose", // Print details of files.
+
+			// Can't turn this on, because of warnings that cannot be fixed reasonably.
+			//"-strict", // Make warnings on stderr into errors, with non-0 exit code.
+
+			// Don't include this in repo, because it hangs the test on local execution.
+			//"-J-Djava.security.debug=jar", // Print details of JAR verification.
+
 			apk
 		).runCommand()
 }
