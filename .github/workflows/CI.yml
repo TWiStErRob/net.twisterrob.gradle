@@ -13,11 +13,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # TODEL https://github.com/gradle/wrapper-validation-action/issues/69
+  # Lifted out to do at once, because action is not stable enough for parallel workflows ^.
+  validate:
+    name: 0 🦺 Validation
+    runs-on: ubuntu-22.04
+    timeout-minutes: 2
+    steps:
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
+      - name: Validate Gradle Wrapper JARs.
+        uses: gradle/wrapper-validation-action@v1
+
   build:
     name: 1 🔨 Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     # A run took 5.5 minutes, give it a bit of a buffer (there's networking involved, download and upload), and constrain.
     timeout-minutes: 20
+    needs: validate
     steps:
       - name: Set up JDK 11.
         uses: actions/setup-java@v3
@@ -149,7 +163,7 @@ jobs:
 
   check:
     name: 2 🛠️ ${{ matrix.name }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       JOB_NAME: ${{ matrix.name }} (${{ matrix.agp }} on ${{ matrix.gradle }})
       # Capture which Gradle version is running the build to use in some steps.
@@ -157,7 +171,7 @@ jobs:
       GRADLE_VERSION: 0.0.0
     # Average observed execution time is 6-7 minutes, double it for timeout constraint.
     timeout-minutes: 30
-
+    needs: validate
     steps:
       - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
 
@@ -215,8 +229,12 @@ jobs:
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
 
-      - name: Validate Gradle Wrapper JARs.
-        uses: gradle/wrapper-validation-action@v1
+      # TODEL https://github.com/gradle/wrapper-validation-action/issues/69
+      # Commented out, because action is not stable enough for parallel workflows ^.
+      # jobs.build would validate it anyway, although with that, the matrix will still execute the bad code.
+      # To be sure, lifted as "needs" prerequisite at least until there's some response on the issue.
+      #- name: Validate Gradle Wrapper JARs.
+      #  uses: gradle/wrapper-validation-action@v1
 
       # To prevent "Welcome to Gradle <version>! Here are the highlights of this release:" in build log, use:
       #- run: touch ~/.gradle/notifications/5.6.4/release-features.rendered
@@ -690,7 +708,7 @@ jobs:
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
     name: 3 📢 Publish Tests Results
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: check
     # The dependency job might be skipped, we don't need to run this job then.
     if: success() || failure()
