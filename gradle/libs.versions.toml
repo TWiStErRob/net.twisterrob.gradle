@@ -61,7 +61,7 @@ junit5-pioneer = "1.9.1"
 # Changelog (4.x): https://github.com/mockito/mockito/releases
 mockito = "4.9.0"
 # GitHub releases: https://github.com/nhaarman/mockito-kotlin/releases
-mockito-kotlin = "4.0.0"
+mockito-kotlin = "4.1.0"
 # GitHub releases: https://github.com/mockk/mockk/releases
 mockk = "1.13.3"
 
