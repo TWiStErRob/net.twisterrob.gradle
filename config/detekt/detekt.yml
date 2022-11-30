@@ -82,6 +82,7 @@ style:
     excludeCommentStatements: true
   
   MultilineRawStringIndentation:
+    # Indentation by default is assuming spaces, but due to tabs being used, we only want 1 indent level.
     indentSize: 1
 
   ReturnCount:
@@ -89,6 +90,5 @@ style:
     max: 3
 
   UnnecessaryParentheses:
-    active: true
     # Match IntelliJ IDEA Kotlin Plugin's UnclearPrecedenceOfBinaryExpression setup.
     allowForUnclearPrecedence: true
