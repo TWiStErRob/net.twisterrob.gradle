@@ -3,7 +3,7 @@ package net.twisterrob.gradle.quality.report.html.model
 import net.twisterrob.gradle.quality.Violation
 
 class SuppressionGenerator {
-	@Suppress("ComplexMethod") // Nicely structured, so it's ok.
+	@Suppress("CyclomaticComplexMethod") // Nicely structured, so it's ok.
 	fun getSuppression(v: Violation): String? =
 		when (v.source.reporter) {
 			"ANDROIDLINT" -> {
@@ -13,11 +13,11 @@ class SuppressionGenerator {
 					"xml" -> """tools:ignore="${v.rule}""""
 					"gradle" -> """//noinspection ${v.rule} TODO explanation"""
 					else -> """
-						<issue id="${v.rule}" severity="ignore">
-						    <!-- TODO explanation -->
-						    <ignore path="${if (v.isLocationExternal) v.location.file.name else v.locationRelativeToModule}" />
-						</issue>
-					""".trimIndent()
+						|<issue id="${v.rule}" severity="ignore">
+						|    <!-- TODO explanation -->
+						|    <ignore path="${if (v.isLocationExternal) v.location.file.name else v.locationRelativeToModule}" />
+						|</issue>
+					""".trimMargin()
 				}
 			}
 

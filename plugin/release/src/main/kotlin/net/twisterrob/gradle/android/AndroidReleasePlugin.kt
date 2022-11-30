@@ -182,8 +182,8 @@ class AndroidReleasePlugin : BasePlugin() {
 				val releaseHome = checkNotNull(System.getenv(envVarName)) {
 					"Please set ${envVarName} environment variable to an existing directory."
 				}
-				return File(releaseHome).also {
-					check(it.exists() && it.isDirectory) {
+				return File(releaseHome).also { releaseDir ->
+					check(releaseDir.exists() && releaseDir.isDirectory) {
 						"Please set ${envVarName} environment variable to an existing directory."
 					}
 				}

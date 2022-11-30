@@ -157,18 +157,18 @@ open class GradleRunnerRule : TestRule {
 		val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
 		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println(
-			"""
-			${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
-			Java: ${java} from ${javaHome}.
-			Gradle properties:
-			```properties
-${propertiesContentForLogging().prependIndent("\t\t\t")}
-			```
-			Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
-			```gradle
-${buildContentForLogging().prependIndent("\t\t\t")}
-			```
-			Execution output:
+			@Suppress("MultilineRawStringIndentation") """
+				${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
+				Java: ${java} from ${javaHome}.
+				Gradle properties:
+				```properties
+${propertiesContentForLogging().prependIndent("\t\t\t\t")}
+				```
+				Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
+				```gradle
+${buildContentForLogging().prependIndent("\t\t\t\t")}
+				```
+				Execution output:
 			""".trimIndent()
 		)
 		return runner.withArguments(*args)
@@ -195,7 +195,7 @@ ${buildContentForLogging().prependIndent("\t\t\t")}
 				"classpath files('${it.absolutePath.replace("\\", "\\\\")}')"
 			}
 		@Language("gradle")
-		val buildscript = """
+		val buildscript = @Suppress("MultilineRawStringIndentation") """
 			buildscript {
 				dependencies {
 ${classPaths.prependIndent("\t\t\t\t\t")}

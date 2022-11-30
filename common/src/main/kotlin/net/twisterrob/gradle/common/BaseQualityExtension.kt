@@ -24,9 +24,9 @@ class TaskConfigurator<out T>(val task: T) where T : SourceTask {
 		val exceptions = PatternSet()
 			.include("${basePrefix}/*")
 			.exclude(relativeExceptions.map { "${basePrefix}/${it}" })
-		task.source.matching(exceptions).visit {
-			if (it.isDirectory && exactException.matches(it.relativePath.segments, 0)) {
-				task.exclude(it.relativePath.pathString + "/**")
+		task.source.matching(exceptions).visit { file ->
+			if (file.isDirectory && exactException.matches(file.relativePath.segments, 0)) {
+				task.exclude(file.relativePath.pathString + "/**")
 			}
 		}
 	}

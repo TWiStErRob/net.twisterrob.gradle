@@ -20,7 +20,6 @@ import kotlin.reflect.jvm.javaType
  *  * Fall back to hardcoding, which might fail anyway if the default is not there.
  *  * Give up, and use whatever is available.
  */
-@Suppress("ReturnCount") // Open to suggestions.
 internal fun bestXMLOutputFactory(): XMLOutputFactory {
 	// >= 9, because running Java 7 is simply not supported for any Gradle / AGP combination.
 	if (ManagementFactory.getRuntimeMXBean().specVersion != "1.8") {

@@ -13,15 +13,15 @@ class TableGenerator(
 	private val columnSeparator: String = "\t",
 	private val missingCount: String = "N/A",
 	private val zeroCount: String = "0",
-	private val printEmptyColumns: Boolean = true,
-	private val printEmptyRows: Boolean = true,
-	private val summaryRow: Boolean = true,
+	private val isPrintEmptyColumns: Boolean = true,
+	private val isPrintEmptyRows: Boolean = true,
+	private val isPrintSummaryRow: Boolean = true,
 	private val minWidth: Int = 0
 ) {
 
 	@Suppress(
 		"SpreadOperator", // Open to suggestions.
-		"ReturnCount", // TODEL https://github.com/detekt/detekt/issues/5341
+		"CognitiveComplexMethod", // Wholeheartedly agree, open to suggestions.
 	)
 	fun build(byModuleByVariantByParserCounts: Map<Module, Map<Variant, Map<Parser, MaybeCount>>>): String {
 		val modules = byModuleByVariantByParserCounts.keys
@@ -37,7 +37,7 @@ class TableGenerator(
 				.reduce(::safeAdd)
 		}
 
-		if (!printEmptyColumns) {
+		if (!isPrintEmptyColumns) {
 			parsers = parsers.filter { summary[it] != null }
 		}
 		val format = parsers.map { it.length.coerceAtLeast(minWidth) }.joinToString("") { "${columnSeparator}%${it}s" }
@@ -53,11 +53,11 @@ class TableGenerator(
 		val rows = byModuleByVariantByParserCounts.flatMap { byModule ->
 			byModule.value.flatMap row@{ byVariant ->
 				val byParserCounts = byVariant.value
-				if (!printEmptyRows && byParserCounts.values.count { it != null } == 0) {
+				if (!isPrintEmptyRows && byParserCounts.values.count { it != null } == 0) {
 					return@row emptyList<String>()
 				}
 				val cells = parsers.map cell@{
-					return@cell when (byParserCounts[it]) {
+					when (byParserCounts[it]) {
 						0 -> zeroCount
 						null -> missingCount
 						else -> byParserCounts[it].toString()
@@ -67,7 +67,7 @@ class TableGenerator(
 				return@row listOf(row)
 			}
 		}
-		val footer = if (summaryRow) {
+		val footer = if (isPrintSummaryRow) {
 			val summaryHeader = listOf("Summary", "(total: ${total})")
 			val summaryData = parsers.map { summary[it]?.toString() ?: missingCount }
 			val summaryRow = String.format(rowFormat, *(summaryHeader + summaryData).toTypedArray())

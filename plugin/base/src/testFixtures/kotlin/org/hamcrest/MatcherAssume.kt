@@ -63,6 +63,7 @@ fun <T> assumeThat(actual: T, matcher: Matcher<in T>) {
  *
  * @param <T> the static type accepted by the matcher
  * (This can flag obvious compile-time problems such as `assumeThat(1, is("a"))`.)
+ * @param message the message to be included in the Exception if the assumption is invalid
  * @param actual the computed value being compared
  * @param matcher an expression, built of [Matcher]s, specifying allowed values
  *

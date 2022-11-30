@@ -40,9 +40,7 @@ kotlin-build = "1.7.22"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
 kotlin-dokka = "1.7.20"
 
-# TODO 1.22 activate UnnecessaryParentheses with allowForUnclearPrecedence.
-# TODO 1.22 remove MaxLineLength from LintMessageDetailsSplitter
-detekt = "1.21.0"
+detekt = "1.22.0"
 
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases
 # Artifacts: https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/

@@ -22,8 +22,6 @@ class TestPlugin : Plugin<Project> {
 				"version" to myManifest.getValue("Implementation-Version")!!
 			)
 			add("testImplementation", selfDependency)
-
-			return@with
 		}
 	}
 

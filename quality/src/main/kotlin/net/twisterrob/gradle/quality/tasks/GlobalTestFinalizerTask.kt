@@ -31,7 +31,7 @@ open class GlobalTestFinalizerTask : TestReport() {
 			if (!xmlDir.exists()) {
 				// Info only because not every module will have tests (e.g. grouping modules).
 				logger.info("Skipping $resultDir, because it doesn't exist")
-				return@flatMap emptyList()
+				emptyList()
 			} else {
 				gatherer.findViolations(xmlDir)
 			}

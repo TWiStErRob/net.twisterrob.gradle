@@ -121,10 +121,11 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			}
 			// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.
 			androidComponents.onVariants(androidComponents.selector().all()) { variant ->
-				if (variant is TestVariant) return@onVariants
-				taskProvider.configure { task ->
-					task.xmlReports += variant.artifacts.unwrapCast<ArtifactsImpl>()
-						.get(InternalArtifactType.LINT_XML_REPORT)
+				if (variant !is TestVariant) {
+					taskProvider.configure { task ->
+						task.xmlReports += variant.artifacts.unwrapCast<ArtifactsImpl>()
+							.get(InternalArtifactType.LINT_XML_REPORT)
+					}
 				}
 			}
 		}

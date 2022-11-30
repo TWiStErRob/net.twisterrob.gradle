@@ -8,5 +8,5 @@ fun File.createTestFileToCommit(): File =
 
 fun File.createTestFileToCommit(message: String): File {
 	val hash = message.hashCode().absoluteValue.toString(16).padStart(8, '0')
-	return resolve("test_commit_$hash.txt").also { it.writeText(message) }
+	return resolve("test_commit_$hash.txt").apply { writeText(message) }
 }

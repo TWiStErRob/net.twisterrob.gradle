@@ -230,13 +230,14 @@ class AndroidBuildPlugin : BasePlugin() {
 			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant
 		) {
 			fun BaseVariantImpl.fixTaskMetadata() {
+				val variantImpl = this
 				variantData.taskContainerCompat.compileTask.configure { task ->
 					task.group = "Build"
-					task.description = "Compiles sources for ${this@fixTaskMetadata.description}."
+					task.description = "Compiles sources for ${variantImpl.description}."
 				}
 				variantData.taskContainerCompat.javacTask.configure { task ->
 					task.group = "Build"
-					task.description = "Compiles Java sources for ${this@fixTaskMetadata.description}."
+					task.description = "Compiles Java sources for ${variantImpl.description}."
 				}
 			}
 			variant.productionVariant.fixTaskMetadata()

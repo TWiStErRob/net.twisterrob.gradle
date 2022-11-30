@@ -18,9 +18,9 @@ internal fun collapseUniform(violations: List<Violation>): List<Violation> =
 		.mapValues { (_, list) -> collapseFile(list) }
 		.flatMap { it.value }
 
-@Suppress("ComplexMethod") // TODEL https://github.com/detekt/detekt/issues/5344
+@Suppress("CyclomaticComplexMethod") // TODEL https://github.com/detekt/detekt/issues/5344
 internal fun collapseFile(violations: List<Violation>): List<Violation> {
-	@Suppress("SimplifyBooleanWithConstants")
+	@Suppress("SimplifyBooleanWithConstants", "UnnecessaryPartOfBinaryExpression")
 	fun verySimilarProblem(v1: Violation, v2: Violation): Boolean =
 		true // help the autoformat
 				&& v1.rule == v2.rule

@@ -51,8 +51,7 @@ comments:
 complexity:
 
   LabeledExpression:
-    # Disabled as it flags quite a lot of code. I don't see a problem with using labels sometimes.
-    # TODEL https://github.com/detekt/detekt/issues/5316 and review usages.
+    # I don't see a problem with using labels sometimes.
     active: false
 
 
@@ -81,14 +80,15 @@ style:
   MaxLineLength:
     # It's unavoidable to have some long lines when stacktraces or links are added as comments.
     excludeCommentStatements: true
+  
+  MultilineRawStringIndentation:
+    # Indentation by default is assuming spaces, but due to tabs being used, we only want 1 indent level.
+    indentSize: 1
 
   ReturnCount:
     # Default 2 is not enough, usually a single guard and a condition simply violates this.
     max: 3
 
   UnnecessaryParentheses:
-    # TODO disable for now, because it has too many false positives, enable in next of 1.21.0.
-    active: false
     # Match IntelliJ IDEA Kotlin Plugin's UnclearPrecedenceOfBinaryExpression setup.
-    # TODO not yet released, coming in next of 1.21.0
-#    allowForUnclearPrecedence: true
+    allowForUnclearPrecedence: true

@@ -59,9 +59,9 @@ class KotlinPlugin : BasePlugin() {
 		}
 
 		private fun Project.addKotlinJUnitIfNeeded(configuration: DependencyAdder) {
-			configurations[(configuration as KCallable<*>).name].dependencies.all {
-				if (it.group == "junit" && it.name == "junit"
-					&& it.version.orEmpty().matches("""4\.\d+(\.\d+)?(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
+			configurations[(configuration as KCallable<*>).name].dependencies.all { dep ->
+				if (dep.group == "junit" && dep.name == "junit"
+					&& dep.version.orEmpty().matches("""4\.\d+(\.\d+)?(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
 				) {
 					dependencies.configuration(kotlin("test-junit"))
 				}
@@ -69,8 +69,8 @@ class KotlinPlugin : BasePlugin() {
 		}
 
 		private fun Project.addKotlinTestNGIfNeeded(configuration: DependencyAdder) {
-			configurations[(configuration as KCallable<*>).name].dependencies.all {
-				if (it.group == "org.testng" && it.name == "testng") {
+			configurations[(configuration as KCallable<*>).name].dependencies.all { dep ->
+				if (dep.group == "org.testng" && dep.name == "testng") {
 					dependencies.configuration(kotlin("test-testng"))
 				}
 			}
