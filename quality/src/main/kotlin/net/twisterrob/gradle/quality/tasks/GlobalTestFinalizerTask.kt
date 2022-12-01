@@ -80,12 +80,14 @@ private val Test.binaryResultsDirectoryCompat: Any?
 private var TestReport.destinationDirCompat: File
 	get() =
 		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
+			@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 8 */)
 			this.destinationDir
 		} else {
 			this.destinationDirectory.get().asFile
 		}
 	set(value) {
 		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
+			@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 8 */)
 			this.destinationDir = value
 		} else {
 			this.destinationDirectory.set(value)
@@ -95,6 +97,7 @@ private var TestReport.destinationDirCompat: File
 private var TestReport.testResultsCompat: FileCollection
 	get() =
 		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
+			@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 8 */)
 			this.testResultDirs
 		} else {
 			this.testResults
