@@ -32,7 +32,7 @@ lint = "30.3.1"
 
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # Actual Kotlin version for dependencies. It has to be older to make sure AGP 3.x is still compatible.
-kotlin-target = "1.4.32"
+kotlin-target = "1.8.0"
 # Actual Kotlin language and API version for compilcation, it restricts language features and metadata.
 kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
