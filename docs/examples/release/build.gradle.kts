@@ -22,35 +22,34 @@ repositories {
 	mavenCentral()
 }
 
-val agpVersion = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION
-if (!agpVersion.startsWith("7.")) {
-	error("AGP major version changed, review below hack.")
-}
-
-// Copy of plugin\settings\src\main\kotlin\net\twisterrob\gradle\doNotNagAbout.kt temporarily until 0.15 is released.
-fun doNotNagAbout(message: String) {
-	val logger: Any = org.gradle.internal.deprecation.DeprecationLogger::class.java
-		.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
-		.apply { isAccessible = true }
-		.get(null)
-
-	@Suppress("UNCHECKED_CAST")
-	val messages: MutableSet<String> =
-		org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler::class.java
-			.getDeclaredField("messages")
+if (com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.startsWith("7.")) {
+	// Copy of plugin\settings\src\main\kotlin\net\twisterrob\gradle\doNotNagAbout.kt temporarily until 0.15 is released.
+	fun doNotNagAbout(message: String) {
+		val logger: Any = org.gradle.internal.deprecation.DeprecationLogger::class.java
+			.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
 			.apply { isAccessible = true }
-			.get(logger) as MutableSet<String>
+			.get(null)
 
-	messages.add(message)
-}
+		@Suppress("UNCHECKED_CAST")
+		val messages: MutableSet<String> =
+			org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler::class.java
+				.getDeclaredField("messages")
+				.apply { isAccessible = true }
+				.get(logger) as MutableSet<String>
 
-val gradleVersion: String = GradleVersion.current().baseVersion.version
+		messages.add(message)
+	}
+
+	val gradleVersion: String = GradleVersion.current().baseVersion.version
 
 // See https://issuetracker.google.com/issues/264177800
-@Suppress("MaxLineLength")
-doNotNagAbout(
-	"The Report.destination property has been deprecated. " +
-			"This is scheduled to be removed in Gradle 9.0. " +
-			"Please use the outputLocation property instead. " +
-			"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details."
-)
+	@Suppress("MaxLineLength")
+	doNotNagAbout(
+		"The Report.destination property has been deprecated. " +
+				"This is scheduled to be removed in Gradle 9.0. " +
+				"Please use the outputLocation property instead. " +
+				"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details."
+	)
+} else {
+	error("AGP major version changed, review hack.")
+}
