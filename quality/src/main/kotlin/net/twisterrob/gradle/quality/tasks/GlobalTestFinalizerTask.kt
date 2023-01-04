@@ -9,6 +9,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.TestReport
 import org.gradle.kotlin.dsl.withType
@@ -69,18 +70,41 @@ open class GlobalTestFinalizerTask : TestReport() {
 private val Test.binaryResultsDirectoryCompat: Any?
 	get() =
 		if (GradleVersion.current().baseVersion < GradleVersion.version("5.6")) {
-			@Suppress("DEPRECATION" /* Gradle 7, to be removed in Gradle 8 */)
-			binResultsDir
+			@Suppress("DEPRECATION")
+			this.binResultsDir
 		} else {
 			// Need to create an indirection with a provider to keep it lazy,
 			// but also detach from the DirectoryProperty, which references its owning task.
-			project.provider { binaryResultsDirectory.get() }
+			project.provider { this.binaryResultsDirectory.get() }
 		}
+
+/**
+ * Polyfill as reflective call, as this method was...
+ *  * Originally added as [Test.binResultsDir] as [org.gradle.api.Incubating].
+ *  * [Refactored to AbstractTestTask in Gradle 4.4](https://github.com/gradle/gradle/pull/3234)
+ *  * [Deprecated in Gradle 6.0](https://github.com/gradle/gradle/pull/10473)
+ *  * [Removed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#abstracttesttask_api_cleanup)
+ *
+ * @see AbstractTestTask.getBinaryResultsDirectory
+ */
+@Deprecated(
+	message = "Replaced with AbstractTestTask.binaryResultsDirectory.",
+	replaceWith = ReplaceWith("binaryResultsDirectory.set(value)")
+)
+private var AbstractTestTask.binResultsDir: File
+	get() {
+		val getBinResultsDir = AbstractTestTask::class.java.getDeclaredMethod("getBinResultsDir")
+		return getBinResultsDir(this) as File
+	}
+	set(value) {
+		val setBinResultsDir = AbstractTestTask::class.java.getDeclaredMethod("setBinResultsDir", File::class.java)
+		setBinResultsDir(this, value)
+	}
 
 private var TestReport.destinationDirCompat: File
 	get() =
 		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 8 */)
+			@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 9 */)
 			this.destinationDir
 		} else {
 			this.destinationDirectory.get().asFile
@@ -97,16 +121,35 @@ private var TestReport.destinationDirCompat: File
 private var TestReport.testResultsCompat: FileCollection
 	get() =
 		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 8 */)
+			@Suppress("DEPRECATION")
 			this.testResultDirs
 		} else {
 			this.testResults
 		}
 	set(value) {
 		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION" /* Gradle 7.4, to be removed in Gradle 8 */)
+			@Suppress("DEPRECATION" /* Gradle 7.4, to be removed in Gradle 9 */)
 			this.reportOn(value)
 		} else {
 			this.testResults.from(value)
 		}
+	}
+
+/**
+ * Polyfill as reflective call, as this method was...
+ *  * [Added in Gradle 1.4](https://github.com/gradle/gradle/commit/c7dd16ecfbb438ce153153efff008ee83764d394)
+ *  * [Marked for replacement in Gradle 7.4](https://github.com/gradle/gradle/pull/19732)
+ *  * [Deprecated in Gradle 7.6](https://github.com/gradle/gradle/pull/21371)
+ *  * [Removed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#abstracttesttask_api_cleanup)
+ *
+ * @see TestReport.getTestResults
+ */
+@Deprecated(
+	message = "Replaced with TestReport.testResults.",
+	replaceWith = ReplaceWith("testResults.from(value)")
+)
+private val TestReport.testResultDirs: FileCollection
+	get() {
+		val getTestResultDirs = TestReport::class.java.getDeclaredMethod("getTestResultDirs")
+		return getTestResultDirs(this) as FileCollection
 	}
