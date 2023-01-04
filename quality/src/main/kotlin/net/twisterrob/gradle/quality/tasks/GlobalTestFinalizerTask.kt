@@ -139,8 +139,9 @@ private var TestReport.testResultsCompat: FileCollection
  * Polyfill as reflective call, as this method was...
  *  * [Added in Gradle 1.4](https://github.com/gradle/gradle/commit/c7dd16ecfbb438ce153153efff008ee83764d394)
  *  * [Marked for replacement in Gradle 7.4](https://github.com/gradle/gradle/pull/19732)
- *  * [Deprecated in Gradle 7.6](https://github.com/gradle/gradle/pull/21371)
- *  * [Removed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#abstracttesttask_api_cleanup)
+ *  * [Deprecated in Gradle 7.6](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#replacement_methods_in_org_gradle_api_tasks_testing_testreport)
+ *    [PR](https://github.com/gradle/gradle/pull/21371)
+ *  * [Removed in Gradle 8.0](https://github.com/gradle/gradle/issues/23390)
  *
  * @see TestReport.getTestResults
  */
