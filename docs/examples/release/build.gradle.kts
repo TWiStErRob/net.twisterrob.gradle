@@ -53,3 +53,16 @@ if (com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.startsWith("7.")) {
 } else {
 	error("AGP major version changed, review hack.")
 }
+
+// TODEL https://issuetracker.google.com/issues/252848749
+if (com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION < "7.4") {
+	val loggerFactory: org.slf4j.ILoggerFactory = org.slf4j.LoggerFactory.getILoggerFactory()
+	val addNoOpLogger: java.lang.reflect.Method = loggerFactory.javaClass
+		.getDeclaredMethod("addNoOpLogger", String::class.java)
+		.apply {
+			isAccessible = true
+		}
+	addNoOpLogger(loggerFactory, "StartParameterUtils")
+} else {
+	error("AGP version changed, review hack.")
+}
