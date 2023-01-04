@@ -333,13 +333,13 @@ fun ConfigurableReport.setOutputLocationCompat(destination: Provider<out FileSys
  *  * [Deprecated in Gradle 7.1](https://github.com/gradle/gradle/commit/85fbb7cd5b7eae14dcff657f712583fcbd225ad6)
  *  * [Removed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#report_api_cleanup)
  *
- * @see Report.getRequired
+ * @see Report.getOutputLocation
  */
 @Deprecated(
 	message = "Replaced with ConfigurableReport.outputLocation.",
 	replaceWith = ReplaceWith("outputLocation.set(value)")
 )
-var Report.destination: File
+private var Report.destination: File
 	get() {
 		val getDestination = Report::class.java.getDeclaredMethod("getDestination")
 		return getDestination(this) as File
@@ -350,7 +350,7 @@ var Report.destination: File
 	}
 
 /**
- * Gradle 4.3-8.0 compatible version of [Report.getOutputLocation].
+ * Gradle 4.3-8.0 compatible version of [Report.getRequired].
  *
  * @see ConfigurableReport.setRequired
  * @see ConfigurableReport.setEnabled
@@ -380,7 +380,7 @@ fun ConfigurableReport.setRequired(enabled: Boolean) {
 	message = "Replaced with ConfigurableReport.required.",
 	replaceWith = ReplaceWith("required.set(value)")
 )
-var Report.isEnabled: Boolean
+private var Report.isEnabled: Boolean
 	get() {
 		val isEnabled = Report::class.java.getDeclaredMethod("isEnabled")
 		return isEnabled(this) as Boolean
