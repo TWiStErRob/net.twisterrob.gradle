@@ -278,11 +278,12 @@ val Project.archivesBaseNameCompat: String
 		}
 
 /**
- * Gradle 4.3-7.3 compatible version of [Report.getOutputLocation].get().
+ * Gradle 4.3-8.0 compatible version of [Report.getOutputLocation].get().
  *
- * @see Report.getDestination
  * @see Report.getOutputLocation
+ * @see Report.getDestination
  */
+@Suppress("KDocUnresolvedReference")
 fun Report.getOutputLocationCompat(): File =
 	when {
 		GradleVersion.current().baseVersion < GradleVersion.version("6.1") -> {
@@ -296,7 +297,7 @@ fun Report.getOutputLocationCompat(): File =
 	}
 
 /**
- * Gradle 4.3-7.3 compatible version of [ConfigurableReport.getOutputLocation].set().
+ * Gradle 4.3-7.8 compatible version of [ConfigurableReport.getOutputLocation].set().
  *
  * @see ConfigurableReport.setDestination
  * @see ConfigurableReport.getOutputLocation
@@ -327,11 +328,34 @@ fun ConfigurableReport.setOutputLocationCompat(destination: Provider<out FileSys
 }
 
 /**
- * Gradle 4.3-7.3 compatible version of [Report.getOutputLocation].
+ * Polyfill as reflective call, as this method was...
+ *  * Added in Gradle 1.0
+ *  * [Deprecated in Gradle 7.1](https://github.com/gradle/gradle/commit/85fbb7cd5b7eae14dcff657f712583fcbd225ad6)
+ *  * [Removed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#report_api_cleanup)
+ *
+ * @see Report.getRequired
+ */
+@Deprecated(
+	message = "Replaced with ConfigurableReport.outputLocation.",
+	replaceWith = ReplaceWith("outputLocation.set(value)")
+)
+var Report.destination: File
+	get() {
+		val getDestination = Report::class.java.getDeclaredMethod("getDestination")
+		return getDestination(this) as File
+	}
+	set(value) {
+		val setDestination = ConfigurableReport::class.java.getDeclaredMethod("setDestination", File::class.java)
+		setDestination(this, value)
+	}
+
+/**
+ * Gradle 4.3-8.0 compatible version of [Report.getOutputLocation].
  *
  * @see ConfigurableReport.setRequired
  * @see ConfigurableReport.setEnabled
  */
+@Suppress("KDocUnresolvedReference")
 fun ConfigurableReport.setRequired(enabled: Boolean) {
 	when {
 		GradleVersion.current().baseVersion < GradleVersion.version("6.1") -> {
@@ -343,3 +367,25 @@ fun ConfigurableReport.setRequired(enabled: Boolean) {
 		}
 	}
 }
+
+/**
+ * Polyfill as reflective call, as this method was...
+ *  * Added in Gradle 1.0
+ *  * [Deprecated in Gradle 7.1](https://github.com/gradle/gradle/commit/85fbb7cd5b7eae14dcff657f712583fcbd225ad6)
+ *  * [Removed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#report_api_cleanup)
+ *
+ * @see ConfigurableReport.getRequired
+ */
+@Deprecated(
+	message = "Replaced with ConfigurableReport.required.",
+	replaceWith = ReplaceWith("required.set(value)")
+)
+var Report.isEnabled: Boolean
+	get() {
+		val isEnabled = Report::class.java.getDeclaredMethod("isEnabled")
+		return isEnabled(this) as Boolean
+	}
+	set(value) {
+		val setEnabled = ConfigurableReport::class.java.getDeclaredMethod("setEnabled", Boolean::class.java)
+		setEnabled(this, value)
+	}
