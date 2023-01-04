@@ -290,10 +290,28 @@ fun Report.getOutputLocationCompat(): File =
 			@Suppress("DEPRECATION")
 			this.destination
 		}
+		GradleVersion.current().baseVersion < GradleVersion.version("8.0") -> {
+			// New in Gradle 6.1 with return type Provider<? extends FileSystemLocation>.
+			this.outputLocationCompat.get().asFile
+		}
 		else -> {
-			// New in Gradle 6.1.
+			// Return type changed in Gradle 8.0 to Property<? extends FileSystemLocation>.
 			this.outputLocation.get().asFile
 		}
+	}
+
+/**
+ * Reflective access for the breaking change.
+ * * [Return type of `outputLocation` changed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#report_getoutputlocation_return_type_changed_from_provider_to_property).
+ *   [PR](https://github.com/gradle/gradle/pull/22232).
+ *
+ * @see Report.getOutputLocation
+ */
+private val Report.outputLocationCompat: Provider<out FileSystemLocation>
+	get() {
+		val outputLocation = Report::class.java.getDeclaredMethod("getOutputLocation")
+		@Suppress("UNCHECKED_CAST")
+		return outputLocation(this) as Provider<out FileSystemLocation>
 	}
 
 /**
@@ -318,6 +336,7 @@ fun ConfigurableReport.setOutputLocationCompat(destination: Provider<out FileSys
 		}
 		else -> {
 			// New in Gradle 6.1.
+			// Even though return value changed in Gradle 8.0, the smart cast makes it safe.
 			@Suppress("UNCHECKED_CAST")
 			when (this) {
 				is SingleFileReport -> outputLocation.set(destination as Provider<RegularFile>)
