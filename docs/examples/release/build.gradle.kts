@@ -22,27 +22,62 @@ repositories {
 	mavenCentral()
 }
 
-if (com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.startsWith("7.")) {
+// TODEL https://issuetracker.google.com/issues/264177800
+if (com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION < "7.4.1") {
 	// Copy of plugin\settings\src\main\kotlin\net\twisterrob\gradle\doNotNagAbout.kt temporarily until 0.15 is released.
+
+	class IgnoringSet(
+		private val backingSet: MutableSet<String>
+	) : MutableSet<String> by backingSet {
+
+		private val ignores: MutableSet<Regex> = mutableSetOf()
+
+		fun ignorePattern(regex: Regex) {
+			ignores.add(regex)
+		}
+
+		override fun add(element: String): Boolean {
+			val isIgnored = ignores.any { it.matches(element) }
+			val isNew = backingSet.add(element)
+			return !isIgnored && isNew
+		}
+	}
 	fun doNotNagAbout(message: String) {
-		val logger: Any = org.gradle.internal.deprecation.DeprecationLogger::class.java
-			.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
+		// "fail" was not a valid option for --warning-mode before Gradle 5.6.0.
+		// In Gradle 4.7.0 (c633542) org.gradle.util.SingleMessageLogger#deprecatedFeatureHandler came to be in a refactor.
+		// In Gradle 6.2.0 it was split (247fd32) to org.gradle.util.DeprecationLogger#deprecatedFeatureHandler
+		// and then further split (308086a) to org.gradle.internal.deprecation.DeprecationLogger#deprecatedFeatureHandler
+		// and then renamed (a75aedd) to #DEPRECATED_FEATURE_HANDLER.
+		val loggerField =
+			if (GradleVersion.version("6.2.0") <= GradleVersion.current().baseVersion) {
+				Class.forName("org.gradle.internal.deprecation.DeprecationLogger")
+					.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
+					.apply { isAccessible = true }
+			} else if (GradleVersion.version("4.7.0") <= GradleVersion.current().baseVersion) {
+				Class.forName("org.gradle.util.SingleMessageLogger")
+					.getDeclaredField("deprecatedFeatureHandler")
+					.apply { isAccessible = true }
+			} else {
+				error("Gradle ${GradleVersion.current()} too old, cannot ignore deprecation: $message")
+			}
+		val deprecationLogger: Any = loggerField.get(null)
+
+		// LoggingDeprecatedFeatureHandler#messages was added in Gradle 1.8.
+		val messagesField = org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler::class.java
+			.getDeclaredField("messages")
 			.apply { isAccessible = true }
-			.get(null)
-
 		@Suppress("UNCHECKED_CAST")
-		val messages: MutableSet<String> =
-			org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler::class.java
-				.getDeclaredField("messages")
-				.apply { isAccessible = true }
-				.get(logger) as MutableSet<String>
+		val messages: MutableSet<String> = messagesField.get(deprecationLogger) as MutableSet<String>
 
-		messages.add(message)
+		val ignore = if (messages is IgnoringSet) messages else IgnoringSet(messages)
+		messagesField.set(deprecationLogger, ignore)
+		// Ignoring with "startsWith" to disregard the stack trace. It's not ideal,
+		// but it's the best we can do to counteract https://github.com/gradle/gradle/pull/22489 introduced in Gradle 8.0.
+		ignore.ignorePattern(Regex("(?s)${Regex.escape(message)}.*"))
 	}
 
-	val gradleVersion: String = GradleVersion.current().baseVersion.version
+	val gradleVersion: String = GradleVersion.current().version
 
-// See https://issuetracker.google.com/issues/264177800
 	@Suppress("MaxLineLength")
 	doNotNagAbout(
 		"The Report.destination property has been deprecated. " +
