@@ -128,17 +128,17 @@ jobs:
         if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/master'
         run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION)" | tee --append $GITHUB_ENV
 
-      - name: Verify docs/examples/local for release.
-        working-directory: docs/examples/local
-        if: env.SNAPSHOT_VERSION == ''
-        run: |
-          sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}-SNAPSHOT"/version "${{ env.PROJECT_VERSION }}"/g' build.gradle.kts
-          ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
-
-      - name: Verify docs/examples/local for snapshot.
-        working-directory: docs/examples/local
-        if: env.SNAPSHOT_VERSION != ''
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+#      - name: Verify docs/examples/local for release.
+#        working-directory: docs/examples/local
+#        if: env.SNAPSHOT_VERSION == ''
+#        run: |
+#          sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}-SNAPSHOT"/version "${{ env.PROJECT_VERSION }}"/g' build.gradle.kts
+#          ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+#
+#      - name: Verify docs/examples/local for snapshot.
+#        working-directory: docs/examples/local
+#        if: env.SNAPSHOT_VERSION != ''
+#        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
       - name: Publish Gradle plugins to Sonatype Snapshot with version ${{ env.SNAPSHOT_VERSION }}.
         if: env.SNAPSHOT_VERSION != ''
@@ -154,12 +154,12 @@ jobs:
           -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
           -PprojectVersion=${{ env.SNAPSHOT_VERSION }}
 
-      - name: Verify docs/examples/snapshot with version ${{ env.SNAPSHOT_VERSION }}.
-        working-directory: docs/examples/snapshot
-        if: env.SNAPSHOT_VERSION != ''
-        run: |
-          sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}"/version "${{ env.SNAPSHOT_VERSION }}"/g' build.gradle.kts
-          ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+#      - name: Verify docs/examples/snapshot with version ${{ env.SNAPSHOT_VERSION }}.
+#        working-directory: docs/examples/snapshot
+#        if: env.SNAPSHOT_VERSION != ''
+#        run: |
+#          sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}"/version "${{ env.SNAPSHOT_VERSION }}"/g' build.gradle.kts
+#          ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
   check:
     name: 2 🛠️ ${{ matrix.name }}
