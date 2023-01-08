@@ -707,6 +707,7 @@ jobs:
     # The dependency job might be skipped, we don't need to run this job then.
     if: success() || failure()
     # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
+    # It often runs out of time, because 1 of the many artifact downloads takes many minutes.
     timeout-minutes: 10
 
     steps:
