@@ -43,7 +43,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 					val report = gatherer.getParsableReportLocation(reportTask)
 					// Using files instead of file, because the report might not exist,
 					// see https://github.com/gradle/gradle/issues/2919#issuecomment-981097984.
-					this.inputs.files(report)
+					(this as Task).inputs.files(report)
 					if (!report.exists()) {
 						logger.info(
 							"Missing report for {} (probably wasn't executed yet after clean): {}",
