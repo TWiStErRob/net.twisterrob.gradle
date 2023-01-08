@@ -34,7 +34,7 @@ exposeTestResources()
 // Need to depend on the real artifact so TestPluginTest can work
 tasks.named<Test>("test") {
 	val jarOutput = tasks.jar.get().outputs.files
-	inputs.files(jarOutput).withPathSensitivity(PathSensitivity.RELATIVE)
+	(this as Task).inputs.files(jarOutput).withPathSensitivity(PathSensitivity.RELATIVE)
 	doFirst {
 		val jarArtifactPath = jarOutput.singleFile.parentFile
 		(this as Test).jvmArgs("-Dnet.twisterrob.gradle.test.artifactPath=${jarArtifactPath}")
@@ -43,7 +43,7 @@ tasks.named<Test>("test") {
 
 tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
 	val jarOutput = tasks.jar.get().outputs.files
-	inputs.files(jarOutput).withPathSensitivity(PathSensitivity.RELATIVE)
+	(this as Task).inputs.files(jarOutput).withPathSensitivity(PathSensitivity.RELATIVE)
 	pluginClasspath.apply {
 		setFrom()
 		from(configurations.runtimeClasspath - configurations.compileClasspath)
