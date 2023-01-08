@@ -191,11 +191,11 @@ fun ProjectLayout.dirCompat(project: Project, provider: Provider<File>): Provide
 	replaceWith = ReplaceWith("project.objects.fileProperty()")
 )
 fun DefaultTask.newInputFile(): RegularFileProperty {
-	val newInputFile = DefaultTask::class.java.getDeclaredMethod("newInputFile").apply {
+	val method = DefaultTask::class.java.getDeclaredMethod("newInputFile").apply {
 		// protected to public as this extension function is static and external to DefaultTask.
 		isAccessible = true
 	}
-	return newInputFile(this) as RegularFileProperty
+	return method(this) as RegularFileProperty
 }
 
 /**
@@ -211,11 +211,11 @@ fun DefaultTask.newInputFile(): RegularFileProperty {
 	replaceWith = ReplaceWith("project.objects.fileProperty()")
 )
 fun DefaultTask.newOutputFile(): RegularFileProperty {
-	val newOutputFile = DefaultTask::class.java.getDeclaredMethod("newOutputFile").apply {
+	val method = DefaultTask::class.java.getDeclaredMethod("newOutputFile").apply {
 		// protected to public as this extension function is static and external to DefaultTask.
 		isAccessible = true
 	}
-	return newOutputFile(this) as RegularFileProperty
+	return method(this) as RegularFileProperty
 }
 
 /**
@@ -231,8 +231,8 @@ fun DefaultTask.newOutputFile(): RegularFileProperty {
 	replaceWith = ReplaceWith("project.objects.fileProperty()")
 )
 fun ProjectLayout.fileProperty(): RegularFileProperty {
-	val fileProperty = ProjectLayout::class.java.getDeclaredMethod("fileProperty")
-	return fileProperty(this) as RegularFileProperty
+	val method = ProjectLayout::class.java.getDeclaredMethod("fileProperty")
+	return method(this) as RegularFileProperty
 }
 
 /**
@@ -248,8 +248,8 @@ fun ProjectLayout.fileProperty(): RegularFileProperty {
 	replaceWith = ReplaceWith("project.objects.directoryProperty()")
 )
 fun ProjectLayout.directoryProperty(): DirectoryProperty {
-	val directoryProperty = ProjectLayout::class.java.getDeclaredMethod("directoryProperty")
-	return directoryProperty(this) as DirectoryProperty
+	val method = ProjectLayout::class.java.getDeclaredMethod("directoryProperty")
+	return method(this) as DirectoryProperty
 }
 
 /**
@@ -309,9 +309,9 @@ fun Report.getOutputLocationCompat(): File =
  */
 private val Report.outputLocationCompat: Provider<out FileSystemLocation>
 	get() {
-		val outputLocation = Report::class.java.getDeclaredMethod("getOutputLocation")
+		val method = Report::class.java.getDeclaredMethod("getOutputLocation")
 		@Suppress("UNCHECKED_CAST")
-		return outputLocation(this) as Provider<out FileSystemLocation>
+		return method(this) as Provider<out FileSystemLocation>
 	}
 
 /**
@@ -360,12 +360,12 @@ fun ConfigurableReport.setOutputLocationCompat(destination: Provider<out FileSys
 )
 private var Report.destination: File
 	get() {
-		val getDestination = Report::class.java.getDeclaredMethod("getDestination")
-		return getDestination(this) as File
+		val method = Report::class.java.getDeclaredMethod("getDestination")
+		return method(this) as File
 	}
 	set(value) {
-		val setDestination = ConfigurableReport::class.java.getDeclaredMethod("setDestination", File::class.java)
-		setDestination(this, value)
+		val method = ConfigurableReport::class.java.getDeclaredMethod("setDestination", File::class.java)
+		method(this, value)
 	}
 
 /**
@@ -401,10 +401,10 @@ fun ConfigurableReport.setRequired(enabled: Boolean) {
 )
 private var Report.isEnabled: Boolean
 	get() {
-		val isEnabled = Report::class.java.getDeclaredMethod("isEnabled")
-		return isEnabled(this) as Boolean
+		val method = Report::class.java.getDeclaredMethod("isEnabled")
+		return method(this) as Boolean
 	}
 	set(value) {
-		val setEnabled = ConfigurableReport::class.java.getDeclaredMethod("setEnabled", Boolean::class.java)
-		setEnabled(this, value)
+		val method = ConfigurableReport::class.java.getDeclaredMethod("setEnabled", Boolean::class.java)
+		method(this, value)
 	}

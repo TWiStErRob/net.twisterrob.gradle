@@ -91,14 +91,15 @@ private val Test.binaryResultsDirectoryCompat: Any?
 	message = "Replaced with AbstractTestTask.binaryResultsDirectory.",
 	replaceWith = ReplaceWith("binaryResultsDirectory.set(value)")
 )
+@Suppress("VarCouldBeVal")
 private var AbstractTestTask.binResultsDir: File
 	get() {
-		val getBinResultsDir = AbstractTestTask::class.java.getDeclaredMethod("getBinResultsDir")
-		return getBinResultsDir(this) as File
+		val method = AbstractTestTask::class.java.getDeclaredMethod("getBinResultsDir")
+		return method(this) as File
 	}
 	set(value) {
-		val setBinResultsDir = AbstractTestTask::class.java.getDeclaredMethod("setBinResultsDir", File::class.java)
-		setBinResultsDir(this, value)
+		val method = AbstractTestTask::class.java.getDeclaredMethod("setBinResultsDir", File::class.java)
+		method(this, value)
 	}
 
 private var TestReport.destinationDirCompat: File
@@ -151,6 +152,6 @@ private var TestReport.testResultsCompat: FileCollection
 )
 private val TestReport.testResultDirs: FileCollection
 	get() {
-		val getTestResultDirs = TestReport::class.java.getDeclaredMethod("getTestResultDirs")
-		return getTestResultDirs(this) as FileCollection
+		val method = TestReport::class.java.getDeclaredMethod("getTestResultDirs")
+		return method(this) as FileCollection
 	}
