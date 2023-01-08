@@ -251,7 +251,7 @@ jobs:
           ./gradlew --no-daemon --version | tee gradle.version.log
           # Capture version for later usage.
           # Note: the $ is very important no prevent matching the "Welcome to Gradle x.y.z!" line.
-          grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?)$' gradle.version.log > gradle.version
+          grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?(?:-rc-\d+)?)$' gradle.version.log > gradle.version
           echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
 
       - name: Download Gradle ${{ matrix.gradle }} running the tests.
