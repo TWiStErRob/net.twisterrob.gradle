@@ -77,8 +77,12 @@ private fun setupSources(project: Project) {
 			from(sourceSet.resources.sourceDirectories)
 		}
 		sourcesFrom(project.java.sourceSets["main"])
-		if ("testFixtures" in project.java.sourceSets.names) {
-			sourcesFrom(project.java.sourceSets["testFixtures"])
+		// Need to lazily access this sourceSet to make sure this code executes at the right time.
+		// The org.gradle.java-test-fixtures plugin might be applied before or after this plugin.
+		project.java.sourceSets.whenObjectAdded {
+			if (name == "testFixtures") {
+				sourcesFrom(this)
+			}
 		}
 	}
 	project.artifacts.add("archives", sourcesJar)
