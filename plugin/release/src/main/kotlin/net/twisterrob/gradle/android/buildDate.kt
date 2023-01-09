@@ -13,7 +13,7 @@ internal val builtDate: Instant by lazy {
 		url is JarURLConnection -> {
 			val mf = url.manifest ?: error("Cannot find manifest in ${url.jarFileURL}")
 			val date = mf.mainAttributes.getValue("Built-Date")
-				?: error("Build-Date attribute not present in manifest\n${url.manifest.mainAttributes.toMap()}")
+				?: error("Built-Date attribute not present in manifest\n${url.manifest.mainAttributes.toMap()}")
 			Instant.from(DateTimeFormatter.ISO_INSTANT.parse(date))
 		}
 
