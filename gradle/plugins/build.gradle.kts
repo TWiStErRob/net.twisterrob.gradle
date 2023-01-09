@@ -23,16 +23,16 @@ gradlePlugin {
 
 		create("detekt") {
 			id = "net.twisterrob.gradle.build.detekt"
-			implementationClass = "net.twisterrob.gradle.build.DetektPlugin"
+			implementationClass = "net.twisterrob.gradle.build.detekt.DetektPlugin"
 		}
 		create("detekt-root") {
 			id = "net.twisterrob.gradle.build.detekt.root"
-			implementationClass = "net.twisterrob.gradle.build.DetektRootPlugin"
+			implementationClass = "net.twisterrob.gradle.build.detekt.DetektRootPlugin"
 		}
 
-		create("publishing") {
+		create("publishing-gradle") {
 			id = "net.twisterrob.gradle.build.publishing"
-			implementationClass = "net.twisterrob.gradle.build.PublishingPlugin"
+			implementationClass = "net.twisterrob.gradle.build.publishing.PublishGradlePluginPlugin"
 		}
 	}
 }
