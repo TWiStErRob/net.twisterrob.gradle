@@ -20,7 +20,7 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import java
 import kotlin
 
-class PublishGradlePluginPlugin : Plugin<Project> {
+class PublishingPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
 		project.plugins.apply("maven-publish")
@@ -103,7 +103,7 @@ private fun MavenPublication.setupModuleIdentity(project: Project) {
 		version = project.version as String
 
 		pom {
-			val projectDescription = project.description?.takeIf { it.contains(':') }
+			val projectDescription = project.description?.takeIf { it.contains(": ") }
 				?: error("$project must have a description with format: \"Module Display Name: Module description.\"")
 			name.set(projectDescription.substringBefore(": ").also { check(it.isNotBlank()) })
 			description.set(projectDescription.substringAfter(": ").also { check(it.isNotBlank()) })

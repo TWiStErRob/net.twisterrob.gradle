@@ -1,7 +1,5 @@
 plugins {
-	id("org.gradle.java-gradle-plugin")
-	id("org.jetbrains.kotlin.jvm")
-	id("net.twisterrob.gradle.build.detekt")
+	id("net.twisterrob.gradle.build.module.gradle-plugin")
 }
 
 dependencies {

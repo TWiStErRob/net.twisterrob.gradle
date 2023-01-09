@@ -1,8 +1,6 @@
 plugins {
-	id("org.gradle.java-library")
-	id("org.jetbrains.kotlin.jvm")
-	id("net.twisterrob.gradle.build.publishing")
-	id("net.twisterrob.gradle.build.detekt")
+	id("net.twisterrob.gradle.build.module.library")
+	id("net.twisterrob.gradle.build.publish")
 }
 
 base.archivesName.set("twister-compat-agp-4.2.x")

@@ -21,18 +21,21 @@ gradlePlugin {
 			}
 		}
 
-		create("detekt") {
-			id = "net.twisterrob.gradle.build.detekt"
-			implementationClass = "net.twisterrob.gradle.build.detekt.DetektPlugin"
+		create("module.root") {
+			id = "net.twisterrob.gradle.build.module.root"
+			implementationClass = "net.twisterrob.gradle.build.RootModulePlugin"
 		}
-		create("detekt-root") {
-			id = "net.twisterrob.gradle.build.detekt.root"
-			implementationClass = "net.twisterrob.gradle.build.detekt.DetektRootPlugin"
+		create("module.gradle-plugin") {
+			id = "net.twisterrob.gradle.build.module.gradle-plugin"
+			implementationClass = "net.twisterrob.gradle.build.GradlePluginModulePlugin"
 		}
-
-		create("publishing-gradle") {
-			id = "net.twisterrob.gradle.build.publishing"
-			implementationClass = "net.twisterrob.gradle.build.publishing.PublishGradlePluginPlugin"
+		create("module.library") {
+			id = "net.twisterrob.gradle.build.module.library"
+			implementationClass = "net.twisterrob.gradle.build.LibraryModulePlugin"
+		}
+		create("publishing") {
+			id = "net.twisterrob.gradle.build.publish"
+			implementationClass = "net.twisterrob.gradle.build.publishing.PublishingPlugin"
 		}
 	}
 }
