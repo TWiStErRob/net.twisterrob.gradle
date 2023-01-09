@@ -1,6 +1,7 @@
 import net.twisterrob.gradle.doNotNagAbout
 import org.jetbrains.kotlin.utils.keysToMap
-import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 plugins {
@@ -162,7 +163,7 @@ subprojects {
 							"Implementation-Vendor" to project.group,
 							"Implementation-Title" to project.base.archivesName.get(),
 							"Implementation-Version" to project.version,
-							"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+							"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)), // STOPSHIP
 						)
 					)
 				}
