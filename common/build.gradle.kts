@@ -1,9 +1,7 @@
 plugins {
-	id("org.gradle.java-library")
-	id("org.jetbrains.kotlin.jvm")
+	id("net.twisterrob.gradle.build.module.library")
+	id("net.twisterrob.gradle.build.publish")
 	id("org.gradle.groovy")
-	id("net.twisterrob.gradle.build.publishing")
-	id("net.twisterrob.gradle.build.detekt")
 }
 
 base.archivesName.set("twister-quality-common")

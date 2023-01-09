@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.build
+package net.twisterrob.gradle.build.detekt
 
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Project

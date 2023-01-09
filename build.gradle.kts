@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 plugins {
 	@Suppress("DSL_SCOPE_VIOLATION")
 	alias(libs.plugins.nexus)
-	id("net.twisterrob.gradle.build.detekt.root")
+	id("net.twisterrob.gradle.build.module.root")
 }
 
 val projectVersion: String by project

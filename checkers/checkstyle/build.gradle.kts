@@ -1,9 +1,7 @@
 plugins {
-	id("org.gradle.java-gradle-plugin")
-	id("org.jetbrains.kotlin.jvm")
+	id("net.twisterrob.gradle.build.module.gradle-plugin")
+	id("net.twisterrob.gradle.build.publish")
 	id("org.gradle.java-test-fixtures")
-	id("net.twisterrob.gradle.build.publishing")
-	id("net.twisterrob.gradle.build.detekt")
 }
 
 base.archivesName.set("twister-quality-checkstyle")

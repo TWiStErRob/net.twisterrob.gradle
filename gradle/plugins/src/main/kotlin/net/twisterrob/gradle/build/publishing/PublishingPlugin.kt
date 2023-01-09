@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.build
+package net.twisterrob.gradle.build.publishing
 
 import base
 import groovy.util.Node
@@ -14,7 +14,6 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.register
-import org.gradle.kotlin.dsl.the
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.DokkaTask
@@ -33,38 +32,17 @@ class PublishingPlugin : Plugin<Project> {
 				isAutomatedPublishing = false
 			}
 		}
-
-		val dokkaJavadoc = project.tasks.named<DokkaTask>("dokkaJavadoc") {
-			// TODO https://github.com/Kotlin/dokka/issues/1894
-			moduleName.set(this.project.base.archivesName)
-			dokkaSourceSets.configureEach {
-				reportUndocumented.set(false)
-			}
+		setupSources(project)
+		setupDoc(project)
+		project.configure<SigningExtension> {
+			setupSigning(project)
 		}
-
-		val sourcesJar = project.tasks.register<Jar>("sourcesJar") {
-			archiveClassifier.set("sources")
-			fun sourcesFrom(sourceSet: SourceSet) {
-				from(sourceSet.java.sourceDirectories)
-				from(sourceSet.kotlin.sourceDirectories)
-				from(sourceSet.resources.sourceDirectories)
-			}
-			sourcesFrom(project.java.sourceSets["main"])
-			if ("testFixtures" in project.java.sourceSets.names) {
-				sourcesFrom(project.java.sourceSets["testFixtures"])
-			}
-		}
-		project.artifacts.add("archives", sourcesJar)
-
-		val javadocJar = project.tasks.register<Jar>("javadocJar") {
-			archiveClassifier.set("javadoc")
-			from(dokkaJavadoc)
-		}
-		project.artifacts.add("archives", javadocJar)
-
 		project.configure<PublishingExtension> {
 			publications {
-				register<MavenPublication>("release") {
+				register<MavenPublication>("release") release@{
+					project.configure<SigningExtension> {
+						sign(this@release)
+					}
 					setupModuleIdentity(project)
 					setupArtifacts(project)
 					setupLinks(project)
@@ -72,17 +50,54 @@ class PublishingPlugin : Plugin<Project> {
 				}
 			}
 		}
-		project.configure<SigningExtension> {
-			//val signingKeyId: String? by project // Gradle 6+ only
-			// -PsigningKey to gradlew, or ORG_GRADLE_PROJECT_signingKey env var
-			val signingKey: String? by project
-			// -PsigningPassword to gradlew, or ORG_GRADLE_PROJECT_signingPassword env var
-			val signingPassword: String? by project
-			if (signingKey != null && signingPassword != null) {
-				useInMemoryPgpKeys(signingKey, signingPassword)
-				sign(project.the<PublishingExtension>().publications["release"])
+	}
+}
+
+private fun setupDoc(project: Project) {
+	val dokkaJavadoc = project.tasks.named<DokkaTask>("dokkaJavadoc") {
+		// TODO https://github.com/Kotlin/dokka/issues/1894
+		moduleName.set(this.project.base.archivesName)
+		dokkaSourceSets.configureEach {
+			reportUndocumented.set(false)
+		}
+	}
+	val javadocJar = project.tasks.register<Jar>("javadocJar") {
+		archiveClassifier.set("javadoc")
+		from(dokkaJavadoc)
+	}
+	project.artifacts.add("archives", javadocJar)
+}
+
+private fun setupSources(project: Project) {
+	val sourcesJar = project.tasks.register<Jar>("sourcesJar") {
+		archiveClassifier.set("sources")
+		fun sourcesFrom(sourceSet: SourceSet) {
+			from(sourceSet.java.sourceDirectories)
+			from(sourceSet.kotlin.sourceDirectories)
+			from(sourceSet.resources.sourceDirectories)
+		}
+		sourcesFrom(project.java.sourceSets["main"])
+		// Need to lazily access this sourceSet to make sure this code executes at the right time.
+		// The org.gradle.java-test-fixtures plugin might be applied before or after this plugin.
+		project.java.sourceSets.whenObjectAdded {
+			if (name == "testFixtures") {
+				sourcesFrom(this)
 			}
 		}
+	}
+	project.artifacts.add("archives", sourcesJar)
+}
+
+private fun SigningExtension.setupSigning(project: Project) {
+	//val signingKeyId: String? by project // Gradle 6+ only
+	// -PsigningKey to gradlew, or ORG_GRADLE_PROJECT_signingKey env var
+	val signingKey: String? by project
+	// -PsigningPassword to gradlew, or ORG_GRADLE_PROJECT_signingPassword env var
+	val signingPassword: String? by project
+	if (signingKey != null && signingPassword != null) {
+		useInMemoryPgpKeys(signingKey, signingPassword)
+	} else {
+		setRequired { false }
 	}
 }
 
@@ -92,7 +107,7 @@ private fun MavenPublication.setupModuleIdentity(project: Project) {
 		version = project.version as String
 
 		pom {
-			val projectDescription = project.description?.takeIf { it.contains(':') }
+			val projectDescription = project.description?.takeIf { it.contains(": ") }
 				?: error("$project must have a description with format: \"Module Display Name: Module description.\"")
 			name.set(projectDescription.substringBefore(": ").also { check(it.isNotBlank()) })
 			description.set(projectDescription.substringAfter(": ").also { check(it.isNotBlank()) })
