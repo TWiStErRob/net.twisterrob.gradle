@@ -50,9 +50,5 @@ tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
 	}
 }
 
-inline val TaskContainer.jar: TaskProvider<Jar>
-	get() = named<Jar>("jar")
-
-// Polyfill for Gradle 5
-operator fun Provider<Configuration>.minus(other: Provider<Configuration>): FileCollection =
-	this.get() - other.get()
+operator fun Provider<Configuration>.minus(other: Provider<Configuration>): Provider<FileCollection> =
+	this.flatMap { one -> other.map { two -> one - two } }
