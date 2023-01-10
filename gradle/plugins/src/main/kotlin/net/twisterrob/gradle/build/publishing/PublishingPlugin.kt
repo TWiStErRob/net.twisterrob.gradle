@@ -10,11 +10,11 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.register
-import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.DokkaTask
 import java
@@ -26,31 +26,46 @@ class PublishingPlugin : Plugin<Project> {
 		project.plugins.apply("maven-publish")
 		project.plugins.apply("signing")
 		project.plugins.apply("org.jetbrains.dokka")
-		project.plugins.withId("java-gradle-plugin") {
-			project.configure<GradlePluginDevelopmentExtension> {
-				// https://github.com/gradle/gradle/issues/11611
-				isAutomatedPublishing = false
-			}
-		}
 		setupSources(project)
 		setupDoc(project)
-		project.configure<SigningExtension> {
-			setupSigning(project)
-		}
-		project.configure<PublishingExtension> {
-			publications {
-				register<MavenPublication>("release") release@{
-					project.configure<SigningExtension> {
-						sign(this@release)
+		setupSigning(project)
+		project.plugins.withId("net.twisterrob.gradle.build.module.library") {
+			project.configure<PublishingExtension> {
+				publications {
+					create<MavenPublication>("library") library@{
+						setupPublication(project)
+						// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
+						from(project.components["java"])
+						setupArtifacts(project)
 					}
-					setupModuleIdentity(project)
-					setupArtifacts(project)
-					setupLinks(project)
-					reorderNodes(project)
+				}
+			}
+		}
+		project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
+			project.afterEvaluate {
+				// Configure built-in pluginMaven publication created by java-gradle-plugin.
+				// Have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin.
+				project.configure<PublishingExtension> {
+					publications {
+						named<MavenPublication>("pluginMaven").configure pluginMaven@{
+							setupPublication(project)
+							suppressPomMetadataWarningsFor("testFixturesApiElements")
+							suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
+						}
+					}
 				}
 			}
 		}
 	}
+}
+
+private fun MavenPublication.setupPublication(project: Project) {
+	project.configure<SigningExtension> {
+		sign(this@setupPublication)
+	}
+	setupModuleIdentity(project)
+	setupLinks(project)
+	reorderNodes(project)
 }
 
 private fun setupDoc(project: Project) {
@@ -88,16 +103,18 @@ private fun setupSources(project: Project) {
 	project.artifacts.add("archives", sourcesJar)
 }
 
-private fun SigningExtension.setupSigning(project: Project) {
-	//val signingKeyId: String? by project // Gradle 6+ only
-	// -PsigningKey to gradlew, or ORG_GRADLE_PROJECT_signingKey env var
-	val signingKey: String? by project
-	// -PsigningPassword to gradlew, or ORG_GRADLE_PROJECT_signingPassword env var
-	val signingPassword: String? by project
-	if (signingKey != null && signingPassword != null) {
-		useInMemoryPgpKeys(signingKey, signingPassword)
-	} else {
-		setRequired { false }
+private fun setupSigning(project: Project) {
+	project.configure<SigningExtension> {
+		//val signingKeyId: String? by project // Gradle 6+ only
+		// -PsigningKey to gradlew, or ORG_GRADLE_PROJECT_signingKey env var
+		val signingKey: String? by project
+		// -PsigningPassword to gradlew, or ORG_GRADLE_PROJECT_signingPassword env var
+		val signingPassword: String? by project
+		if (signingKey != null && signingPassword != null) {
+			useInMemoryPgpKeys(signingKey, signingPassword)
+		} else {
+			setRequired { false }
+		}
 	}
 }
 
@@ -116,14 +133,6 @@ private fun MavenPublication.setupModuleIdentity(project: Project) {
 }
 
 private fun MavenPublication.setupArtifacts(project: Project) {
-	if (project.plugins.hasPlugin("com.android.library")) {
-		from(project.components["release"])
-	} else {
-		// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
-		from(project.components["java"])
-		suppressPomMetadataWarningsFor("testFixturesApiElements")
-		suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
-	}
 	artifact(project.tasks.named("sourcesJar")) { classifier = "sources" }
 	artifact(project.tasks.named("javadocJar")) { classifier = "javadoc" }
 }
