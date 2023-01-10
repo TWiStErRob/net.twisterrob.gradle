@@ -7,6 +7,13 @@ plugins {
 base.archivesName.set("twister-convention-building")
 description = "Build Convention Plugin: Gradle Plugin to handle conventional builds."
 
+gradlePlugin {
+	disableGradlePluginValidation()
+	plugins {
+		// Not created, internal plugins only used by class reference.
+	}
+}
+
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	api(projects.plugin.base)
@@ -26,5 +33,3 @@ dependencies {
 	// AndroidInstallRunnerTaskTest calls production code directly, so need com.android.xml.AndroidXPathFactory.
 	testRuntimeOnly(libs.android.tools.common)
 }
-
-disableGradlePluginValidation()

@@ -7,6 +7,13 @@ plugins {
 base.archivesName.set("twister-convention-release")
 description = "Release Convention Plugin: Gradle Plugin to handle conventional releasing."
 
+gradlePlugin {
+	disableGradlePluginValidation()
+	plugins {
+		// Not created, internal plugins only used by class reference.
+	}
+}
+
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	api(projects.plugin.base)
@@ -25,8 +32,6 @@ dependencies {
 
 	testFixturesImplementation(projects.compat.agpBase)
 }
-
-disableGradlePluginValidation()
 
 // net.twisterrob.gradle.android.BuildDateKt.getBuiltDate needs the manifest.
 // The manifest is generated centrally by root build.gradle.kts

@@ -6,6 +6,13 @@ plugins {
 base.archivesName.set("twister-convention-signing")
 description = "Signing Convention Plugin: Gradle Plugin to apply Android Signing conventions."
 
+gradlePlugin {
+	disableGradlePluginValidation()
+	plugins {
+		// Not created, internal plugins only used by class reference.
+	}
+}
+
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	api(projects.plugin.base)
@@ -18,5 +25,3 @@ dependencies {
 	testImplementation(projects.compat.agpBase)
 	testImplementation(testFixtures(projects.plugin.base))
 }
-
-disableGradlePluginValidation()
