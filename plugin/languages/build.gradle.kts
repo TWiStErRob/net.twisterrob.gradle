@@ -7,17 +7,34 @@ base.archivesName.set("twister-convention-languages")
 description = "Languages Convention Plugin: Gradle Plugin to apply Java and Kotlin conventions."
 
 gradlePlugin {
+	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("net.twisterrob.java") {
 			id = "net.twisterrob.java"
+			displayName = "Java Convention Plugin"
+			description = """
+				TWiStErRob's Convention plugin for Java modules.
+				Various defaults and hacks to make development easier.
+			""".trimIndent()
+			tags.set(setOf("conventions", "java"))
 			implementationClass = "net.twisterrob.gradle.java.JavaPlugin"
 		}
 		create("net.twisterrob.java-library") {
 			id = "net.twisterrob.java-library"
+			displayName = "Java Library Convention Plugin"
+			description = """
+				TWiStErRob's Convention plugin for Java library modules.
+			""".trimIndent()
+			tags.set(setOf("conventions", "java"))
 			implementationClass = "net.twisterrob.gradle.java.JavaLibPlugin"
 		}
 		create("net.twisterrob.kotlin") {
 			id = "net.twisterrob.kotlin"
+			displayName = "Kotlin Convention Plugin"
+			description = """
+				TWiStErRob's Convention plugin for Kotlin modules.
+			""".trimIndent()
+			tags.set(setOf("conventions", "kotlin"))
 			implementationClass = "net.twisterrob.gradle.kotlin.KotlinPlugin"
 		}
 	}

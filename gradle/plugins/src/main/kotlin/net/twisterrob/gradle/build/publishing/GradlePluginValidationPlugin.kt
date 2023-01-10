@@ -36,13 +36,13 @@ class GradlePluginValidationPlugin : Plugin<Project> {
 						plugins.all plugin@{
 							val plugin = this@plugin
 							plugin.id ?: error("Plugin ID for ${plugin.name} is not set.")
-//							plugin.displayName ?: error("Plugin Display Name for ${plugin.id} is not set.")
-//							plugin.description ?: error("Plugin Description for ${plugin.id} is not set.")
+							plugin.displayName ?: error("Plugin Display Name for ${plugin.id} is not set.")
+							plugin.description ?: error("Plugin Description for ${plugin.id} is not set.")
 							plugin.implementationClass
 								?: error("Plugin implementation class for ${plugin.id} is not set.")
-//							if (plugin.tags.getOrElse(emptySet()).isEmpty()) {
-//								error("Plugin Tags for ${plugin.id} are not set.")
-//							}
+							if (plugin.tags.getOrElse(emptySet()).isEmpty()) {
+								error("Plugin Tags for ${plugin.id} are not set.")
+							}
 						}
 					}
 				}

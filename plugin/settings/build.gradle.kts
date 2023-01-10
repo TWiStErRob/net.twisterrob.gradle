@@ -7,9 +7,22 @@ base.archivesName.set("twister-convention-settings")
 description = "Settings Convention Plugin: Gradle Plugin to apply in settings.gradle files."
 
 gradlePlugin {
+	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("net.twisterrob.settings") {
 			id = "net.twisterrob.settings"
+			displayName = "Gradle Settings Convention Plugin"
+			description = """
+				TWiStErRob's Convention plugin for Gradle Settings files.
+				
+				Features:
+				 * Exposes utility functions used in many projects:
+				   * `enableFeaturePreviewQuietly`
+				   * `doNotNagAbout`
+				   * `slug`
+				 * No logic yet.
+			""".trimIndent()
+			tags.set(setOf("utilities", "settings", "logging"))
 			implementationClass = "net.twisterrob.gradle.settings.SettingsPlugin"
 		}
 	}

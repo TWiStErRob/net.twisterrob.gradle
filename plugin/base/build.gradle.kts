@@ -8,9 +8,18 @@ base.archivesName.set("twister-convention-base")
 description = "Utilities: utility functions and classes to write convention plugins."
 
 gradlePlugin {
+	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("net.twisterrob.root") {
 			id = "net.twisterrob.root"
+			displayName = "Gradle Root Convention Plugin"
+			description = """
+				TWiStErRob's Convention plugin for Gradle rootProject modules.
+				
+				Features:
+				 * Adds a debugWrapper task to generate gradled.bat debug helper.
+			""".trimIndent()
+			tags.set(setOf("conventions", "rootProject"))
 			implementationClass = "net.twisterrob.gradle.root.RootPlugin"
 		}
 	}
