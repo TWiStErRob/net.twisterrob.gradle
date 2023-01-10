@@ -36,7 +36,6 @@ class PublishingPlugin : Plugin<Project> {
 						setupPublication(project)
 						// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
 						from(project.components["java"])
-						setupArtifacts(project)
 					}
 				}
 			}
@@ -70,6 +69,7 @@ private fun MavenPublication.setupPublication(project: Project) {
 	}
 	setupModuleIdentity(project)
 	setupLinks(project)
+	setupArtifacts(project)
 	reorderNodes(project)
 }
 
