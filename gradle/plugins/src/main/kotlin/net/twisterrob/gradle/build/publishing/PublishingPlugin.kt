@@ -9,6 +9,7 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.internal.component.external.model.TestFixturesSupport
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
@@ -96,13 +97,11 @@ private fun setupSources(project: Project) {
 			from(sourceSet.kotlin.sourceDirectories)
 			from(sourceSet.resources.sourceDirectories)
 		}
-		sourcesFrom(project.java.sourceSets["main"])
-		// Need to lazily access this sourceSet to make sure this code executes at the right time.
-		// The org.gradle.java-test-fixtures plugin might be applied before or after this plugin.
-		project.java.sourceSets.whenObjectAdded {
-			if (name == "testFixtures") {
-				sourcesFrom(this)
-			}
+		project.plugins.withId("org.gradle.java") {
+			sourcesFrom(project.java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME])
+		}
+		project.plugins.withId("org.gradle.java-test-fixtures") {
+			sourcesFrom(project.java.sourceSets[TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME])
 		}
 	}
 	project.artifacts.add("archives", sourcesJar)
