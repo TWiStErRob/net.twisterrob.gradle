@@ -133,8 +133,12 @@ private fun MavenPublication.setupModuleIdentity(project: Project) {
 		version = project.version as String
 
 		pom {
-			val projectDescription = project.description?.takeIf { it.contains(": ") }
-				?: error("$project must have a description with format: \"Module Display Name: Module description.\"")
+			val projectDescription = project.description?.takeIf { it.contains(": ") && it.endsWith(".") }
+				?: error(
+					"$project must have a description with format: " +
+							"\"Module Display Name: Module description.\", " +
+							"found ${project.description}"
+				)
 			name.set(projectDescription.substringBefore(": ").also { check(it.isNotBlank()) })
 			description.set(projectDescription.substringAfter(": ").also { check(it.isNotBlank()) })
 		}
