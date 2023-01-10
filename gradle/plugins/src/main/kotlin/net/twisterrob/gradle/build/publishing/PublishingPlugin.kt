@@ -61,6 +61,10 @@ class PublishingPlugin : Plugin<Project> {
 	companion object {
 		const val SOURCES_JAR_TASK_NAME: String = "sourcesJar"
 		const val JAVADOC_JAR_TASK_NAME: String = "javadocJar"
+		/**
+		 * @see org.jetbrains.dokka.gradle.DokkaPlugin
+		 */
+		const val DOKKA_JAR_TASK_NAME: String = "dokkaJavadoc"
 	}
 }
 
@@ -75,7 +79,7 @@ private fun MavenPublication.setupPublication(project: Project) {
 }
 
 private fun setupDoc(project: Project) {
-	val dokkaJavadoc = project.tasks.named<DokkaTask>("dokkaJavadoc") {
+	val dokkaJavadoc = project.tasks.named<DokkaTask>(PublishingPlugin.DOKKA_JAR_TASK_NAME) {
 		// TODO https://github.com/Kotlin/dokka/issues/1894
 		moduleName.set(this.project.base.archivesName)
 		dokkaSourceSets.configureEach {
