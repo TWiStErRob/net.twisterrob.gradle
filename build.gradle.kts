@@ -179,15 +179,6 @@ subprojects {
 		}
 	}
 
-	plugins.withId("java-gradle-plugin") {
-		project.tasks.withType<ValidatePlugins>().configureEach {
-			ignoreFailures.set(false)
-			// TODO failOnWarning=true https://github.com/TWiStErRob/net.twisterrob.gradle/issues/291
-			failOnWarning.set(false)
-			enableStricterValidation.set(true)
-		}
-	}
-
 	if (project.property("net.twisterrob.gradle.build.verboseReports").toString().toBoolean()) {
 		tasks.withType<Test>().configureEach {
 			configureVerboseReportsForGithubActions()

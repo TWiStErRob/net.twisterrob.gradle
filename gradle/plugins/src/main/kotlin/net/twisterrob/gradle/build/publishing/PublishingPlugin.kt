@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.build.publishing
 
 import base
+import gradlePlugin
 import groovy.namespace.QName
 import groovy.util.Node
 import groovy.util.NodeList
@@ -10,6 +11,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.internal.component.external.model.TestFixturesSupport
+import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
@@ -28,6 +30,7 @@ class PublishingPlugin : Plugin<Project> {
 		project.plugins.apply("org.gradle.maven-publish")
 		project.plugins.apply("org.gradle.signing")
 		project.plugins.apply("org.jetbrains.dokka")
+		project.plugins.apply(GradlePluginValidationPlugin::class)
 		setupSources(project)
 		setupDoc(project)
 		setupSigning(project)
@@ -43,6 +46,11 @@ class PublishingPlugin : Plugin<Project> {
 			}
 		}
 		project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
+			@Suppress("UnstableApiUsage")
+			project.gradlePlugin.apply {
+				website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
+				vcsUrl.set("https://github.com/TWiStErRob/net.twisterrob.gradle.git")
+			}
 			project.afterEvaluate {
 				// Configure built-in pluginMaven publication created by java-gradle-plugin.
 				// Have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin.
