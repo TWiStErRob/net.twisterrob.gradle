@@ -59,8 +59,8 @@ class PublishingPlugin : Plugin<Project> {
 	}
 
 	companion object {
-		val SOURCES_JAR_TASK_NAME: String = "sourcesJar"
-		val JAVADOC_JAR_TASK_NAME: String = "javadocJar"
+		const val SOURCES_JAR_TASK_NAME: String = "sourcesJar"
+		const val JAVADOC_JAR_TASK_NAME: String = "javadocJar"
 	}
 }
 
