@@ -155,7 +155,7 @@ private fun MavenPublication.setupModuleIdentity(project: Project) {
 
 private fun MavenPublication.setupArtifacts(project: Project) {
 	artifact(project.tasks.named(PublishingPlugin.SOURCES_JAR_TASK_NAME)) { classifier = "sources" }
-	artifact(project.tasks.named(PublishingPlugin.JAVADOC_JAR_TASK_NAME)) { classifier = "javadoc" }
+//	artifact(project.tasks.named(PublishingPlugin.JAVADOC_JAR_TASK_NAME)) { classifier = "javadoc" } // STOPSHIP temporarily disable to speed up testing
 }
 
 private fun MavenPublication.setupLinks(project: Project) {
