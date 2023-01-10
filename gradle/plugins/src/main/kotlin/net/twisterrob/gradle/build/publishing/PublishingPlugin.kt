@@ -23,8 +23,8 @@ import kotlin
 class PublishingPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
-		project.plugins.apply("maven-publish")
-		project.plugins.apply("signing")
+		project.plugins.apply("org.gradle.maven-publish")
+		project.plugins.apply("org.gradle.signing")
 		project.plugins.apply("org.jetbrains.dokka")
 		setupSources(project)
 		setupDoc(project)
@@ -57,6 +57,11 @@ class PublishingPlugin : Plugin<Project> {
 			}
 		}
 	}
+
+	companion object {
+		val SOURCES_JAR_TASK_NAME: String = "sourcesJar"
+		val JAVADOC_JAR_TASK_NAME: String = "javadocJar"
+	}
 }
 
 private fun MavenPublication.setupPublication(project: Project) {
@@ -76,7 +81,7 @@ private fun setupDoc(project: Project) {
 			reportUndocumented.set(false)
 		}
 	}
-	val javadocJar = project.tasks.register<Jar>("javadocJar") {
+	val javadocJar = project.tasks.register<Jar>(PublishingPlugin.JAVADOC_JAR_TASK_NAME) {
 		archiveClassifier.set("javadoc")
 		from(dokkaJavadoc)
 	}
@@ -84,7 +89,7 @@ private fun setupDoc(project: Project) {
 }
 
 private fun setupSources(project: Project) {
-	val sourcesJar = project.tasks.register<Jar>("sourcesJar") {
+	val sourcesJar = project.tasks.register<Jar>(PublishingPlugin.SOURCES_JAR_TASK_NAME) {
 		archiveClassifier.set("sources")
 		fun sourcesFrom(sourceSet: SourceSet) {
 			from(sourceSet.java.sourceDirectories)
@@ -133,8 +138,8 @@ private fun MavenPublication.setupModuleIdentity(project: Project) {
 }
 
 private fun MavenPublication.setupArtifacts(project: Project) {
-	artifact(project.tasks.named("sourcesJar")) { classifier = "sources" }
-	artifact(project.tasks.named("javadocJar")) { classifier = "javadoc" }
+	artifact(project.tasks.named(PublishingPlugin.SOURCES_JAR_TASK_NAME)) { classifier = "sources" }
+	artifact(project.tasks.named(PublishingPlugin.JAVADOC_JAR_TASK_NAME)) { classifier = "javadoc" }
 }
 
 private fun MavenPublication.setupLinks(project: Project) {
