@@ -6,7 +6,6 @@ import groovy.util.Node
 import groovy.util.NodeList
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.bundling.Jar
@@ -19,6 +18,7 @@ import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.register
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.DokkaTask
+import publishing
 import java
 import kotlin
 
@@ -32,7 +32,7 @@ class PublishingPlugin : Plugin<Project> {
 		setupDoc(project)
 		setupSigning(project)
 		project.plugins.withId("net.twisterrob.gradle.build.module.library") {
-			project.configure<PublishingExtension> {
+			project.publishing.apply {
 				publications {
 					create<MavenPublication>("library") library@{
 						setupPublication(project)
@@ -46,7 +46,7 @@ class PublishingPlugin : Plugin<Project> {
 			project.afterEvaluate {
 				// Configure built-in pluginMaven publication created by java-gradle-plugin.
 				// Have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin.
-				project.configure<PublishingExtension> {
+				project.publishing.apply {
 					publications {
 						named<MavenPublication>("pluginMaven").configure pluginMaven@{
 							setupPublication(project)
