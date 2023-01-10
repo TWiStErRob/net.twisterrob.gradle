@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.build.publishing
 
 import base
+import groovy.namespace.QName
 import groovy.util.Node
 import groovy.util.NodeList
 import org.gradle.api.Plugin
@@ -173,11 +174,18 @@ private fun MavenPublication.reorderNodes(project: Project) {
 	fun Node.getChildren(localName: String): NodeList =
 		this.get(localName) as NodeList
 
-	fun NodeList.nodes(): List<Node> =
-		(this as Iterable<*>).filterIsInstance<Node>()
+	fun Iterable<*>.nodes(): List<Node> =
+		this.filterIsInstance<Node>()
+
+	/**
+	 * @see org.gradle.plugins.ear.descriptor.internal.DefaultDeploymentDescriptor.localNameOf
+	 */
+	fun Node.localName(): String =
+		if (this.name() is QName) (this.name() as QName).localPart else this.name().toString()
 
 	fun Node.getChild(localName: String): Node =
-		this.getChildren(localName).nodes().single()
+		this.getChildren(localName).nodes().singleOrNull()
+			?: error("Cannot find $localName in ${this.localName()}: ${this.children().nodes().map { it.localName() }}")
 
 	project.afterEvaluate {
 		pom.withXml {
