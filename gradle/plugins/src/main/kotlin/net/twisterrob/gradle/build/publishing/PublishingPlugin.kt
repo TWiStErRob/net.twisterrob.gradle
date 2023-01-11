@@ -1,15 +1,12 @@
 package net.twisterrob.gradle.build.publishing
 
 import base
-import disableLoggingFor
 import gradlePlugin
 import groovy.namespace.QName
 import groovy.util.Node
 import groovy.util.NodeList
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.component.AdhocComponentWithVariants
-import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
@@ -30,10 +27,10 @@ class PublishingPlugin : Plugin<Project> {
 		project.plugins.apply("org.jetbrains.dokka")
 		project.plugins.apply(GradlePluginValidationPlugin::class)
 		project.java.withDokkaJar(project, project.tasks.named(DOKKA_TASK_NAME))
+		project.java.withSourcesJar()
 		setupDoc(project)
 		setupSigning(project)
 		project.plugins.withId("net.twisterrob.gradle.build.module.library") {
-			project.java.withSourcesJar()
 			project.publishing.apply {
 				publications {
 					create<MavenPublication>("library") library@{
@@ -43,13 +40,8 @@ class PublishingPlugin : Plugin<Project> {
 					}
 				}
 			}
-			deduplicateJavadocArtifact(project)
 		}
 		project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
-			// Silence: "Signing plugin detected. Will automatically sign the published artifacts."
-			disableLoggingFor("com.gradle.publish.PublishTask")
-			// Implicitly enables: withSourcesJar, withJavadocJar, signing.
-			project.plugins.apply("com.gradle.plugin-publish")
 			@Suppress("UnstableApiUsage")
 			project.gradlePlugin.apply {
 				website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
@@ -77,7 +69,6 @@ class PublishingPlugin : Plugin<Project> {
 					}
 				}
 			}
-			deduplicateJavadocArtifact(project)
 		}
 	}
 
@@ -90,6 +81,9 @@ class PublishingPlugin : Plugin<Project> {
 }
 
 private fun MavenPublication.setupPublication(project: Project) {
+	project.configure<SigningExtension> {
+		sign(this@setupPublication)
+	}
 	setupModuleIdentity(project)
 	setupLinks(project)
 	reorderNodes(project)
@@ -101,31 +95,6 @@ private fun setupDoc(project: Project) {
 		moduleName.set(this.project.base.archivesName)
 		dokkaSourceSets.configureEach {
 			reportUndocumented.set(false)
-		}
-	}
-}
-
-/**
- * This is necessary, because `com.gradle.plugin-publish` forces sources and javadoc.
- * But Kotlin Dokka generated Javadoc needs to be registered too.
- * See https://github.com/Kotlin/dokka/issues/558#issuecomment-1377983835
- */
-private fun deduplicateJavadocArtifact(project: Project) {
-	// Need to delay it, otherwise it doesn't run on variants added late.
-	project.afterEvaluate {
-		val javadoc = project.configurations[JavaPlugin.JAVADOC_ELEMENTS_CONFIGURATION_NAME]
-		(project.components["java"] as AdhocComponentWithVariants).withVariantsFromConfiguration(javadoc) {
-			val artifacts = this.configurationVariant.artifacts
-			artifacts
-				.groupBy {
-					"${it.type}:${it.name}-${it.classifier}.${it.extension}@${it.date} - ${it.file.canonicalPath}"
-				}
-				.forEach { (key, duplicates) ->
-					duplicates.drop(1).forEach {
-						logger.info("Removing duplicate artifact: $key")
-						artifacts.remove(it)
-					}
-				}
 		}
 	}
 }
