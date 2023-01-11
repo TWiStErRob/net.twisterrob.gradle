@@ -9,7 +9,7 @@ description = "Settings Convention Plugin: Gradle Plugin to apply in settings.gr
 gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.settings") {
+		create("settings") {
 			id = "net.twisterrob.settings"
 			displayName = "Gradle Settings Convention Plugin"
 			description = """

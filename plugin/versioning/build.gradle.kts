@@ -10,7 +10,7 @@ description = "Versioning Convention Plugin: Gradle Plugin to set up versioning 
 gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.vcs") {
+		create("vcs") {
 			id = "net.twisterrob.vcs"
 			displayName = "Versioning Convention Plugin"
 			description = """

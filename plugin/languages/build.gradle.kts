@@ -9,7 +9,7 @@ description = "Languages Convention Plugin: Gradle Plugin to apply Java and Kotl
 gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.java") {
+		create("java") {
 			id = "net.twisterrob.java"
 			displayName = "Java Convention Plugin"
 			description = """
@@ -19,7 +19,7 @@ gradlePlugin {
 			tags.set(setOf("conventions", "java"))
 			implementationClass = "net.twisterrob.gradle.java.JavaPlugin"
 		}
-		create("net.twisterrob.java-library") {
+		create("javaLibrary") {
 			id = "net.twisterrob.java-library"
 			displayName = "Java Library Convention Plugin"
 			description = """
@@ -28,7 +28,7 @@ gradlePlugin {
 			tags.set(setOf("conventions", "java"))
 			implementationClass = "net.twisterrob.gradle.java.JavaLibPlugin"
 		}
-		create("net.twisterrob.kotlin") {
+		create("kotlin") {
 			id = "net.twisterrob.kotlin"
 			displayName = "Kotlin Convention Plugin"
 			description = """

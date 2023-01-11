@@ -10,7 +10,7 @@ description = "Quality: All quality plugins bundled in one."
 gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.quality") {
+		create("quality") {
 			id = "net.twisterrob.quality"
 			displayName = "Gradle Quality Plugins"
 			description = """

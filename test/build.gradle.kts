@@ -9,7 +9,7 @@ description = "Test: Gradle test plugin."
 gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.gradle.test") {
+		create("gradleTest") {
 			id = "net.twisterrob.gradle.test"
 			displayName = "Gradle Testing Plugin"
 			description = """

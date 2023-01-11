@@ -10,7 +10,7 @@ description = "PMD: PMD quality setup plugin for Gradle."
 gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.pmd") {
+		create("pmd") {
 			id = "net.twisterrob.pmd"
 			displayName = "PMD Convention Plugin"
 			description = """

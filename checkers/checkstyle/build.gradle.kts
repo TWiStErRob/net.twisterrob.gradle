@@ -10,7 +10,7 @@ description = "Checkstyle: Checkstyle quality setup plugin for Gradle."
 gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.checkstyle") {
+		create("checkstyle") {
 			id = "net.twisterrob.checkstyle"
 			displayName = "Checkstyle Convention Plugin"
 			description = """

@@ -10,7 +10,7 @@ description = "Utilities: utility functions and classes to write convention plug
 gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.root") {
+		create("root") {
 			id = "net.twisterrob.root"
 			displayName = "Gradle Root Convention Plugin"
 			description = """
