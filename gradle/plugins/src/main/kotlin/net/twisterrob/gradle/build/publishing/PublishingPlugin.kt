@@ -1,28 +1,26 @@
 package net.twisterrob.gradle.build.publishing
 
 import base
+import disableLoggingFor
 import gradlePlugin
 import groovy.namespace.QName
 import groovy.util.Node
 import groovy.util.NodeList
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.component.AdhocComponentWithVariants
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.bundling.Jar
-import org.gradle.internal.component.external.model.TestFixturesSupport
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
-import org.gradle.kotlin.dsl.register
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.DokkaTask
 import publishing
 import java
-import kotlin
 
 class PublishingPlugin : Plugin<Project> {
 
@@ -31,10 +29,11 @@ class PublishingPlugin : Plugin<Project> {
 		project.plugins.apply("org.gradle.signing")
 		project.plugins.apply("org.jetbrains.dokka")
 		project.plugins.apply(GradlePluginValidationPlugin::class)
-		setupSources(project)
+		project.java.withDokkaJar(project, project.tasks.named(DOKKA_TASK_NAME))
 		setupDoc(project)
 		setupSigning(project)
 		project.plugins.withId("net.twisterrob.gradle.build.module.library") {
+			project.java.withSourcesJar()
 			project.publishing.apply {
 				publications {
 					create<MavenPublication>("library") library@{
@@ -44,8 +43,13 @@ class PublishingPlugin : Plugin<Project> {
 					}
 				}
 			}
+			deduplicateJavadocArtifact(project)
 		}
 		project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
+			// Silence: "Signing plugin detected. Will automatically sign the published artifacts."
+			disableLoggingFor("com.gradle.publish.PublishTask")
+			// Implicitly enables: withSourcesJar, withJavadocJar, signing.
+			project.plugins.apply("com.gradle.plugin-publish")
 			@Suppress("UnstableApiUsage")
 			project.gradlePlugin.apply {
 				website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
@@ -58,66 +62,72 @@ class PublishingPlugin : Plugin<Project> {
 					publications {
 						named<MavenPublication>("pluginMaven").configure pluginMaven@{
 							setupPublication(project)
+							// > Maven publication 'pluginMaven' pom metadata warnings
+							// > (silence with 'suppressPomMetadataWarningsFor(variant)'):
+							// > - Variant testFixturesApiElements:
+							// >     - Declares capability net.twisterrob.gradle:checkstyle-test-fixtures:0.15-SNAPSHOT which cannot be mapped to Maven
+							// > - Variant testFixturesRuntimeElements:
+							// >     - Declares capability net.twisterrob.gradle:checkstyle-test-fixtures:0.15-SNAPSHOT which cannot be mapped to Maven
+							// > These issues indicate information that is lost in the published 'pom' metadata file,
+							// > which may be an issue if the published library is consumed by an old Gradle version or Apache Maven.
+							// > The 'module' metadata file, which is used by Gradle 6+ is not affected.
 							suppressPomMetadataWarningsFor("testFixturesApiElements")
 							suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
 						}
 					}
 				}
 			}
+			deduplicateJavadocArtifact(project)
 		}
 	}
 
 	companion object {
-		const val SOURCES_JAR_TASK_NAME: String = "sourcesJar"
-		const val JAVADOC_JAR_TASK_NAME: String = "javadocJar"
 		/**
 		 * @see org.jetbrains.dokka.gradle.DokkaPlugin
 		 */
-		const val DOKKA_JAR_TASK_NAME: String = "dokkaJavadoc"
+		const val DOKKA_TASK_NAME: String = "dokkaJavadoc"
 	}
 }
 
 private fun MavenPublication.setupPublication(project: Project) {
-	project.configure<SigningExtension> {
-		sign(this@setupPublication)
-	}
 	setupModuleIdentity(project)
 	setupLinks(project)
-	setupArtifacts(project)
 	reorderNodes(project)
 }
 
 private fun setupDoc(project: Project) {
-	val dokkaJavadoc = project.tasks.named<DokkaTask>(PublishingPlugin.DOKKA_JAR_TASK_NAME) {
+	project.tasks.named<DokkaTask>(PublishingPlugin.DOKKA_TASK_NAME) {
 		// TODO https://github.com/Kotlin/dokka/issues/1894
 		moduleName.set(this.project.base.archivesName)
 		dokkaSourceSets.configureEach {
 			reportUndocumented.set(false)
 		}
 	}
-	val javadocJar = project.tasks.register<Jar>(PublishingPlugin.JAVADOC_JAR_TASK_NAME) {
-		archiveClassifier.set("javadoc")
-		from(dokkaJavadoc)
-	}
-	project.artifacts.add("archives", javadocJar)
 }
 
-private fun setupSources(project: Project) {
-	val sourcesJar = project.tasks.register<Jar>(PublishingPlugin.SOURCES_JAR_TASK_NAME) {
-		archiveClassifier.set("sources")
-		fun sourcesFrom(sourceSet: SourceSet) {
-			from(sourceSet.java.sourceDirectories)
-			from(sourceSet.kotlin.sourceDirectories)
-			from(sourceSet.resources.sourceDirectories)
-		}
-		project.plugins.withId("org.gradle.java") {
-			sourcesFrom(project.java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME])
-		}
-		project.plugins.withId("org.gradle.java-test-fixtures") {
-			sourcesFrom(project.java.sourceSets[TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME])
+/**
+ * This is necessary, because `com.gradle.plugin-publish` forces sources and javadoc.
+ * But Kotlin Dokka generated Javadoc needs to be registered too.
+ * See https://github.com/Kotlin/dokka/issues/558#issuecomment-1377983835
+ */
+private fun deduplicateJavadocArtifact(project: Project) {
+	// Need to delay it, otherwise it doesn't run on variants added late.
+	project.afterEvaluate {
+		val javadoc = project.configurations[JavaPlugin.JAVADOC_ELEMENTS_CONFIGURATION_NAME]
+		(project.components["java"] as AdhocComponentWithVariants).withVariantsFromConfiguration(javadoc) {
+			val artifacts = this.configurationVariant.artifacts
+			artifacts
+				.groupBy {
+					"${it.type}:${it.name}-${it.classifier}.${it.extension}@${it.date} - ${it.file.canonicalPath}"
+				}
+				.forEach { (key, duplicates) ->
+					duplicates.drop(1).forEach {
+						logger.info("Removing duplicate artifact: $key")
+						artifacts.remove(it)
+					}
+				}
 		}
 	}
-	project.artifacts.add("archives", sourcesJar)
 }
 
 private fun setupSigning(project: Project) {
@@ -151,11 +161,6 @@ private fun MavenPublication.setupModuleIdentity(project: Project) {
 			description.set(projectDescription.substringAfter(": ").also { check(it.isNotBlank()) })
 		}
 	}
-}
-
-private fun MavenPublication.setupArtifacts(project: Project) {
-	artifact(project.tasks.named(PublishingPlugin.SOURCES_JAR_TASK_NAME)) { classifier = "sources" }
-//	artifact(project.tasks.named(PublishingPlugin.JAVADOC_JAR_TASK_NAME)) { classifier = "javadoc" } // STOPSHIP temporarily disable to speed up testing
 }
 
 private fun MavenPublication.setupLinks(project: Project) {

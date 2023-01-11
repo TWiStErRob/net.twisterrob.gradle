@@ -53,6 +53,7 @@ dependencies {
 	implementation(libs.kotlin.gradle)
 	implementation(libs.kotlin.dokka)
 	implementation(libs.detekt)
+	implementation(libs.gradle.publish)
 	compileOnly(libs.nexus)
 
 	// TODEL hack from https://github.com/gradle/gradle/issues/15383#issuecomment-779893192 (there are more parts to this)
