@@ -21,7 +21,11 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
         set ORG_GRADLE_PROJECT_signingKey=...
         set ORG_GRADLE_PROJECT_signingPassword=...
         ```
-    * `gradlew publishReleasePublicationToSonatypeRepository`  
+    * ```shell
+      gradlew publishLibraryPublicationToSonatypeRepository
+      gradlew publishPluginMavenPublicationToSonatypeRepository
+      gradlew publishAllPluginMarkerMavenPublicationsToSonatypeRepository
+      ```  
      _If this fails, fix and amend last commit._
     * Open [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories), log in and close staging repository output at console to validate.
  1. Archive and final integration test.

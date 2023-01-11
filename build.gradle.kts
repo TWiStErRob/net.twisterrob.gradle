@@ -268,7 +268,7 @@ project.tasks.register<Delete>("cleanDebug") {
 nexusPublishing {
 	repositories {
 		sonatype {
-			// For :publishReleasePublicationToSonatypeRepository, projectVersion suffix chooses repo.
+			// For :publish...PublicationToSonatypeRepository, projectVersion suffix chooses repo.
 			nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
 			snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
 

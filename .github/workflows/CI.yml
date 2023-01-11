@@ -153,7 +153,9 @@ jobs:
           --no-configuration-cache
           --no-watch-fs
           --stacktrace
-          publishReleasePublicationToSonatypeRepository
+          publishLibraryPublicationToSonatypeRepository
+          publishPluginMavenPublicationToSonatypeRepository
+          publishAllPluginMarkerMavenPublicationsToSonatypeRepository
           -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}
           -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
           -PprojectVersion=${{ env.SNAPSHOT_VERSION }}

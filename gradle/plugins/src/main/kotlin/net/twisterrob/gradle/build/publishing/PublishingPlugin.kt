@@ -7,6 +7,7 @@ import groovy.util.Node
 import groovy.util.NodeList
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
@@ -14,6 +15,7 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
+import org.gradle.kotlin.dsl.the
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.DokkaTask
 import publishing
@@ -42,6 +44,7 @@ class PublishingPlugin : Plugin<Project> {
 			}
 		}
 		project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
+			registerPublicationsTasks(project)
 			@Suppress("UnstableApiUsage")
 			project.gradlePlugin.apply {
 				website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
@@ -191,6 +194,41 @@ private fun MavenPublication.reorderNodes(project: Project) {
 				)
 				lastNodes.forEach { remove(it) }
 				lastNodes.forEach { append(it) }
+			}
+		}
+	}
+}
+
+/**
+ * Create convenience lifecycle tasks for markers.
+ *
+ * @see org.gradle.plugin.devel.plugins.MavenPluginPublishPlugin.createMavenMarkerPublication
+ * @see org.gradle.api.publish.maven.plugins.MavenPublishPlugin.createPublishTasksForEachMavenRepo
+ */
+private fun registerPublicationsTasks(project: Project) {
+	val markersName = "allPluginMarkerMavenPublications"
+	val markersDescription = "all Gradle Plugin Marker publications"
+	val markerPublications = project.the<PublishingExtension>()
+		.publications
+		.matching {
+			it is MavenPublication && it.name.endsWith("PluginMarkerMaven")
+		}
+	project.tasks.register("publish${markersName.capitalize()}ToMavenLocal") task@{
+		group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
+		description = "Publishes ${markersDescription} produced by this project to the local Maven cache."
+		markerPublications.all publication@{
+			val publication = this@publication.name
+			this@task.dependsOn("publish${publication.capitalize()}PublicationToMavenLocal")
+		}
+	}
+	project.the<PublishingExtension>().repositories.all repository@{
+		val repository = this@repository.name
+		project.tasks.register("publish${markersName.capitalize()}To${repository.capitalize()}Repository") task@{
+			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
+			description = "Publishes ${markersDescription} produced by this project to the ${repository} repository."
+			markerPublications.all publication@{
+				val publication = this@publication.name
+				this@task.dependsOn("publish${publication.capitalize()}PublicationTo${repository.capitalize()}Repository")
 			}
 		}
 	}
