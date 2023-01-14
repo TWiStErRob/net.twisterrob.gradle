@@ -11,15 +11,20 @@ import java.io.File
 
 open class BasePlugin : Plugin<Project> {
 
-	@Suppress("PropertyName", "MemberVisibilityCanBePrivate", "VariableNaming")
-	protected val LOG: Logger = LoggerFactory.getLogger(javaClass)
+	@Suppress(
+		"PropertyName", // Keep it consistent with external loggers.
+		"MemberVisibilityCanBePrivate",
+		"VariableNaming", // Keep it consistent with external loggers.
+	)
+	protected val LOG: Logger = LoggerFactory.getLogger(this::class.java)
 
 	@Suppress("LateinitUsage") // Too many usages to fix right now. TODO consider removing this field, make dep explicit.
 	protected lateinit var project: Project
+		private set
 
 	override fun apply(target: Project) {
+		this.project = target
 		LOG.debug("Applying to ${target}")
-		project = target
 
 		checkGradleVersion(GradleVersion.current())
 	}

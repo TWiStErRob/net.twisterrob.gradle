@@ -3,8 +3,8 @@ package net.twisterrob.gradle.kotlin
 import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.android.hasAndroidTest
-import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
+import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler

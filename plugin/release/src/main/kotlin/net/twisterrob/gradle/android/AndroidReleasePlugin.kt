@@ -7,8 +7,8 @@ import com.android.build.api.variant.impl.BuiltArtifactsImpl
 import com.android.build.gradle.BaseExtension
 import com.android.builder.model.BuildType
 import com.android.builder.model.ProductFlavor
-import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project

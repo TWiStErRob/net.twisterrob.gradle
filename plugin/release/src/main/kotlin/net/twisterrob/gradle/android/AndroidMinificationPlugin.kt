@@ -8,8 +8,8 @@ import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.tasks.ProguardConfigurableTask
 import com.android.build.gradle.internal.tasks.R8Task
-import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.provider.Provider

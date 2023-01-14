@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.vcs
 
-import net.twisterrob.gradle.base.BaseExposedPlugin
+import net.twisterrob.gradle.common.BaseExposedPlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection

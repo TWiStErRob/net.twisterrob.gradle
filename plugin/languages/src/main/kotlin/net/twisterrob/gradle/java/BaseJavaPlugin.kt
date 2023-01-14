@@ -2,7 +2,7 @@ package net.twisterrob.gradle.java
 
 import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.android.hasAndroid
-import net.twisterrob.gradle.base.BaseExposedPlugin
+import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.get

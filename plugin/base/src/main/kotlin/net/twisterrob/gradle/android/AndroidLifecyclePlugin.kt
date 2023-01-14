@@ -2,7 +2,7 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.AndroidBasePlugin
-import net.twisterrob.gradle.base.BasePlugin
+import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException

@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.vcs
 
-import net.twisterrob.gradle.base.BasePlugin
+import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.vcs.VCSPluginExtension.Companion.vcs
 import org.eclipse.jgit.api.Git
