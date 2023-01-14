@@ -80,7 +80,7 @@ fun Project.exposeTestResources() {
 fun Project.pullTestResourcesFrom(project: ProjectDependency) {
 	val testResources = configurations.create("gobbledTestResources")
 	dependencies {
-		add(testResources.name, project(project.dependencyProject.path, configuration = "testResources"))
+		add(testResources.name, project(project.dependencyProject.path, configuration = "exposedTestResources"))
 	}
 	java.sourceSets.named("test").configure {
 		resources.srcDir(testResources)
