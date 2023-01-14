@@ -82,8 +82,12 @@ fun Project.pullTestResourcesFrom(project: ProjectDependency) {
 	dependencies {
 		add(testResources.name, project(project.dependencyProject.path, configuration = "exposedTestResources"))
 	}
+	val copyResources = tasks.register<Copy>("copyExposedTestResources") {
+		from(testResources)
+		into(layout.buildDirectory.dir("unPackagedTestResources"))
+	}
 	java.sourceSets.named("test").configure {
-		resources.srcDir(testResources)
+		resources.srcDir(copyResources)
 	}
 }
 
