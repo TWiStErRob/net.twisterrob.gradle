@@ -26,6 +26,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.gradleKotlinDsl
+import org.gradle.kotlin.dsl.project
 import org.gradle.kotlin.dsl.register
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
@@ -77,13 +78,13 @@ fun Project.exposeTestResources() {
  * Pull in resources from other modules' `src/test/resources` folders.
  */
 fun Project.pullTestResourcesFrom(project: ProjectDependency) {
-	pullTestResourcesFrom(evaluationDependsOn(project.dependencyProject.path))
-}
-
-private fun Project.pullTestResourcesFrom(project: Project) {
-	val myResources = this.java.sourceSets["test"].resources
-	val otherResources = project.java.sourceSets["test"].resources
-	myResources.srcDirs(otherResources.srcDirs)
+	val testResources = configurations.create("gobbledTestResources")
+	dependencies {
+		add(testResources.name, project(project.dependencyProject.path, configuration = "testResources"))
+	}
+	java.sourceSets.named("test").configure {
+		resources.srcDir(testResources)
+	}
 }
 
 /**
