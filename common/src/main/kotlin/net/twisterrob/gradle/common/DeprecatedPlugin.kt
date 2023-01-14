@@ -2,28 +2,40 @@ package net.twisterrob.gradle.common
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.initialization.Settings
 import org.gradle.internal.deprecation.DeprecationLogger
 import org.gradle.internal.deprecation.DeprecationMessageBuilder
 import org.gradle.util.GradleVersion
 
-abstract class DeprecatedPlugin(
-	private val originalName: String,
+abstract class DeprecatedProjectPlugin(
+	private val oldName: String,
 	private val newName: String,
 ) : Plugin<Project> {
 
 	override fun apply(project: Project) {
-		project.nagUserWithPluginDeprecation(originalName, newName)
+		nagUserWithPluginDeprecation(project.project.logger::warn, oldName, newName)
 		project.plugins.apply(newName)
 	}
 }
 
-private fun Project.nagUserWithPluginDeprecation(oldName: String, newName: String) {
+abstract class DeprecatedSettingsPlugin(
+	private val oldName: String,
+	private val newName: String,
+) : Plugin<Settings> {
+
+	override fun apply(settings: Settings) {
+		nagUserWithPluginDeprecation(::println, oldName, newName)
+		settings.plugins.apply(newName)
+	}
+}
+
+fun nagUserWithPluginDeprecation(logger: (String) -> Unit, oldName: String, newName: String) {
 	if (GradleVersion.version("6.3") <= GradleVersion.current().baseVersion
 		&& GradleVersion.current().baseVersion <= GradleVersion.version("9.0")
 	) {
 		gradleInternalNagging(oldName, newName)
 	} else {
-		project.logger.warn("Plugin ${oldName} is deprecated, please use ${newName} instead.")
+		logger("Plugin ${oldName} is deprecated, please use ${newName} instead.")
 	}
 }
 
@@ -38,7 +50,7 @@ private fun gradleInternalNagging(oldName: String, newName: String) {
 	DeprecationLogger::class.java
 		.getDeclaredMethod("nagUserWith", DeprecationMessageBuilder::class.java, Class::class.java)
 		.apply { isAccessible = true }
-		.invoke(null, builder, DeprecatedPlugin::class.java)
+		.invoke(null, builder, Class.forName("net.twisterrob.gradle.common.DeprecatedPluginKt"))
 }
 
 private fun <T : DeprecationMessageBuilder<T>> DeprecationMessageBuilder<T>.willBeRemovedInGradleNextMajor() {

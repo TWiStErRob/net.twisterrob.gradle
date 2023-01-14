@@ -36,10 +36,8 @@ kotlin.sourceSets.named("main").configure {
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
-	// Expose some methods to TestKit runtime classpath.
-	runtimeOnly(projects.compat.gradle)
+	api(projects.common)
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
-	testImplementation(projects.compat.gradle)
 }
