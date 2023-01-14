@@ -19,12 +19,14 @@ import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.SourceSet
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.gradleKotlinDsl
+import org.gradle.kotlin.dsl.register
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
@@ -58,6 +60,17 @@ fun DependencyHandlerScope.add(
 	configuration: Action<in ExternalModuleDependency>
 ) {
 	this@add.addProvider(configurationName, dependency, configuration)
+}
+
+fun Project.exposeTestResources() {
+	val packageTestResources = tasks.register<Copy>("packageTestResources") {
+		from(project.java.sourceSets.named("test").map { it.resources })
+		into(project.layout.buildDirectory.dir("packagedTestResources"))
+	}
+	val testResources = configurations.create("exposedTestResources")
+	artifacts {
+		add(testResources.name, packageTestResources)
+	}
 }
 
 /**

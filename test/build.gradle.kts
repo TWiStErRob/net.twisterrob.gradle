@@ -28,6 +28,8 @@ dependencies {
 	testImplementation(projects.test.internal)
 }
 
+exposeTestResources()
+
 // Need to depend on the real artifact so TestPluginTest can work
 tasks.named<Test>("test") {
 	val jarOutput = tasks.jar.get().outputs.files
