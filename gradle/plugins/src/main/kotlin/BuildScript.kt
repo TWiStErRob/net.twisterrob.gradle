@@ -7,7 +7,6 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
-import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.dsl.DependencyHandler
@@ -58,19 +57,6 @@ fun DependencyHandlerScope.add(
 	configuration: Action<in ExternalModuleDependency>
 ) {
 	this@add.addProvider(configurationName, dependency, configuration)
-}
-
-/**
- * Pull in resources from other modules' `src/test/resources` folders.
- */
-fun Project.pullTestResourcesFrom(project: ProjectDependency) {
-	pullTestResourcesFrom(evaluationDependsOn(project.dependencyProject.path))
-}
-
-private fun Project.pullTestResourcesFrom(project: Project) {
-	val myResources = this.java.sourceSets["test"].resources
-	val otherResources = project.java.sourceSets["test"].resources
-	myResources.srcDirs(otherResources.srcDirs)
 }
 
 /**
