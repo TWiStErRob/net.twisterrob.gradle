@@ -10,7 +10,7 @@ gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("androidApp") {
-			id = "net.twisterrob.android-app"
+			id = "net.twisterrob.gradle.plugin.android-app"
 			displayName = "Android App Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for Android applications.
@@ -28,7 +28,7 @@ gradlePlugin {
 			implementationClass = "net.twisterrob.gradle.android.AndroidAppPlugin"
 		}
 		create("androidLibrary") {
-			id = "net.twisterrob.android-library"
+			id = "net.twisterrob.gradle.plugin.android-library"
 			displayName = "Android Library Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for Android libraries.
@@ -39,7 +39,7 @@ gradlePlugin {
 			implementationClass = "net.twisterrob.gradle.android.AndroidLibraryPlugin"
 		}
 		create("androidTest") {
-			id = "net.twisterrob.android-test"
+			id = "net.twisterrob.gradle.plugin.android-test"
 			displayName = "Android Test Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for Android test modules.

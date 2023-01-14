@@ -11,7 +11,7 @@ gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("vcs") {
-			id = "net.twisterrob.vcs"
+			id = "net.twisterrob.gradle.plugin.vcs"
 			displayName = "Versioning Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for Version Control.

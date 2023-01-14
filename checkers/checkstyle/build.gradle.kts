@@ -11,7 +11,7 @@ gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("checkstyle") {
-			id = "net.twisterrob.checkstyle"
+			id = "net.twisterrob.gradle.plugin.checkstyle"
 			displayName = "Checkstyle Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for Checkstyle.

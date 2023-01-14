@@ -10,7 +10,7 @@ gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("settings") {
-			id = "net.twisterrob.settings"
+			id = "net.twisterrob.gradle.plugin.settings"
 			displayName = "Gradle Settings Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for Gradle Settings files.

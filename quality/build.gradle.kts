@@ -11,7 +11,7 @@ gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("quality") {
-			id = "net.twisterrob.quality"
+			id = "net.twisterrob.gradle.plugin.quality"
 			displayName = "Gradle Quality Plugins"
 			description = """
 				Sane defaults for Checkstyle, PMD, Lint, Test reports which make multi-module Gradle project CI easier.

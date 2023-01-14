@@ -10,7 +10,7 @@ gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("java") {
-			id = "net.twisterrob.java"
+			id = "net.twisterrob.gradle.plugin.java"
 			displayName = "Java Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for Java modules.
@@ -20,7 +20,7 @@ gradlePlugin {
 			implementationClass = "net.twisterrob.gradle.java.JavaPlugin"
 		}
 		create("javaLibrary") {
-			id = "net.twisterrob.java-library"
+			id = "net.twisterrob.gradle.plugin.java-library"
 			displayName = "Java Library Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for Java library modules.
@@ -29,7 +29,7 @@ gradlePlugin {
 			implementationClass = "net.twisterrob.gradle.java.JavaLibPlugin"
 		}
 		create("kotlin") {
-			id = "net.twisterrob.kotlin"
+			id = "net.twisterrob.gradle.plugin.kotlin"
 			displayName = "Kotlin Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for Kotlin modules.

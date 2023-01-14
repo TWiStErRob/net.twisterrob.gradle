@@ -10,7 +10,7 @@ gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("gradleTest") {
-			id = "net.twisterrob.gradle.test"
+			id = "net.twisterrob.gradle.plugin.test"
 			displayName = "Gradle Testing Plugin"
 			description = """
 				TWiStErRob's testing helper plugin and testing utilities.

@@ -11,7 +11,7 @@ gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("pmd") {
-			id = "net.twisterrob.pmd"
+			id = "net.twisterrob.gradle.plugin.pmd"
 			displayName = "PMD Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for PMD.

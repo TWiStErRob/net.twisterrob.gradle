@@ -11,7 +11,7 @@ gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("root") {
-			id = "net.twisterrob.root"
+			id = "net.twisterrob.gradle.plugin.root"
 			displayName = "Gradle Root Convention Plugin"
 			description = """
 				TWiStErRob's Convention plugin for Gradle rootProject modules.
