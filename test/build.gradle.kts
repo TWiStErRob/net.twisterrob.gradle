@@ -33,6 +33,8 @@ dependencies {
 	compileOnly(libs.annotations.jsr305)
 	compileOnly(libs.annotations.jetbrains)
 
+	api(projects.common)
+
 	testImplementation(gradleApiWithoutKotlin())
 	testImplementation(gradleTestKitWithoutKotlin())
 	testImplementation(projects.test.internal)
