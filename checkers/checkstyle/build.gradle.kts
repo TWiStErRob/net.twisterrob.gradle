@@ -23,6 +23,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("conventions", "checkstyle"))
 			implementationClass = "net.twisterrob.gradle.checkstyle.CheckStylePlugin"
+			deprecateId(project, "net.twisterrob.checkstyle")
 		}
 	}
 }

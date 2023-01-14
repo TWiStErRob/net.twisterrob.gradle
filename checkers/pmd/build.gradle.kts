@@ -22,6 +22,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("conventions", "pmd"))
 			implementationClass = "net.twisterrob.gradle.pmd.PmdPlugin"
+			deprecateId(project, "net.twisterrob.pmd")
 		}
 	}
 }

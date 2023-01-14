@@ -18,6 +18,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("multi-module", "android", "reporting", "quality", "static-checks", "CI", "checkstyle", "pmd"))
 			implementationClass = "net.twisterrob.gradle.quality.QualityPlugin"
+			deprecateId(project, "net.twisterrob.quality")
 		}
 	}
 }

@@ -20,6 +20,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("gradle", "test", "plugin-development"))
 			implementationClass = "net.twisterrob.gradle.test.TestPlugin"
+			deprecateId(project, "net.twisterrob.gradle.test")
 		}
 	}
 }
