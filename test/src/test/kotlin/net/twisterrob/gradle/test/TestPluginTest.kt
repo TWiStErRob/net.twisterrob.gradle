@@ -63,7 +63,7 @@ class TestPluginTest : BaseIntgTest() {
 		val script = """
 			import org.gradle.util.GradleVersion
 			apply plugin: 'groovy'
-			apply plugin: 'net.twisterrob.gradle.test'
+			apply plugin: 'net.twisterrob.gradle.plugin.test'
 
 			repositories {
 				ivy {
