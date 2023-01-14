@@ -7,7 +7,6 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
-import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.dsl.DependencyHandler
@@ -19,15 +18,12 @@ import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.SourceSet
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.gradleKotlinDsl
-import org.gradle.kotlin.dsl.project
-import org.gradle.kotlin.dsl.register
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
@@ -61,34 +57,6 @@ fun DependencyHandlerScope.add(
 	configuration: Action<in ExternalModuleDependency>
 ) {
 	this@add.addProvider(configurationName, dependency, configuration)
-}
-
-fun Project.exposeTestResources() {
-	val packageTestResources = tasks.register<Copy>("packageTestResources") {
-		from(project.java.sourceSets.named("test").map { it.resources })
-		into(project.layout.buildDirectory.dir("packagedTestResources"))
-	}
-	val testResources = configurations.create("exposedTestResources")
-	artifacts {
-		add(testResources.name, packageTestResources)
-	}
-}
-
-/**
- * Pull in resources from other modules' `src/test/resources` folders.
- */
-fun Project.pullTestResourcesFrom(project: ProjectDependency) {
-	val testResources = configurations.create("gobbledTestResources")
-	dependencies {
-		add(testResources.name, project(project.dependencyProject.path, configuration = "exposedTestResources"))
-	}
-	val copyResources = tasks.register<Copy>("copyExposedTestResources") {
-		from(testResources)
-		into(layout.buildDirectory.dir("unPackagedTestResources"))
-	}
-	java.sourceSets.named("test").configure {
-		resources.srcDir(copyResources)
-	}
 }
 
 /**
