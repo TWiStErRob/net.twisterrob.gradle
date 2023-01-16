@@ -57,17 +57,7 @@ class PublishingPlugin : Plugin<Project> {
 					publications {
 						named<MavenPublication>("pluginMaven").configure pluginMaven@{
 							setupPublication(project)
-							// > Maven publication 'pluginMaven' pom metadata warnings
-							// > (silence with 'suppressPomMetadataWarningsFor(variant)'):
-							// > - Variant testFixturesApiElements:
-							// >     - Declares capability net.twisterrob.gradle:checkstyle-test-fixtures:0.15-SNAPSHOT which cannot be mapped to Maven
-							// > - Variant testFixturesRuntimeElements:
-							// >     - Declares capability net.twisterrob.gradle:checkstyle-test-fixtures:0.15-SNAPSHOT which cannot be mapped to Maven
-							// > These issues indicate information that is lost in the published 'pom' metadata file,
-							// > which may be an issue if the published library is consumed by an old Gradle version or Apache Maven.
-							// > The 'module' metadata file, which is used by Gradle 6+ is not affected.
-							suppressPomMetadataWarningsFor("testFixturesApiElements")
-							suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
+							handleTestFixtures()
 						}
 					}
 				}
@@ -90,6 +80,20 @@ private fun MavenPublication.setupPublication(project: Project) {
 	setupModuleIdentity(project)
 	setupLinks(project)
 	reorderNodes(project)
+}
+
+private fun MavenPublication.handleTestFixtures() {
+	// > Maven publication 'pluginMaven' pom metadata warnings
+	// > (silence with 'suppressPomMetadataWarningsFor(variant)'):
+	// > - Variant testFixturesApiElements:
+	// >     - Declares capability net.twisterrob.gradle:checkstyle-test-fixtures:0.15-SNAPSHOT which cannot be mapped to Maven
+	// > - Variant testFixturesRuntimeElements:
+	// >     - Declares capability net.twisterrob.gradle:checkstyle-test-fixtures:0.15-SNAPSHOT which cannot be mapped to Maven
+	// > These issues indicate information that is lost in the published 'pom' metadata file,
+	// > which may be an issue if the published library is consumed by an old Gradle version or Apache Maven.
+	// > The 'module' metadata file, which is used by Gradle 6+ is not affected.
+	suppressPomMetadataWarningsFor("testFixturesApiElements")
+	suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
 }
 
 private fun setupDoc(project: Project) {
