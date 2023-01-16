@@ -1,19 +1,12 @@
 package net.twisterrob.gradle.java
 
 import com.android.build.gradle.BaseExtension
-import com.android.builder.core.ComponentType.Companion.ANDROID_TEST_SUFFIX
-import com.android.builder.core.ComponentType.Companion.UNIT_TEST_SUFFIX
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.base.BaseExposedPlugin
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.getByName
-import org.gradle.kotlin.dsl.getPlugin
 import org.gradle.kotlin.dsl.withType
-import org.gradle.util.GradleVersion
 
 private const val DEFAULT_ENCODING = "UTF-8"
 
@@ -28,50 +21,15 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 			val android: BaseExtension = project.extensions["android"] as BaseExtension
 			with(android.compileOptions) {
 				encoding = DEFAULT_ENCODING
-				setDefaultJavaVersion(JavaVersion.VERSION_1_7)
-				setSourceCompatibility(JavaVersion.VERSION_1_7)
-				setTargetCompatibility(JavaVersion.VERSION_1_8)
 			}
 		} else {
 			applyDefaultPlugin()
 		}
 
-		if (project.plugins.hasPlugin(org.gradle.api.plugins.JavaPlugin::class.java)) {
-			project.configureGlobalCompatibility()
-		}
-
 		project.tasks.withType<JavaCompile>().configureEach { task ->
 			task.options.encoding = DEFAULT_ENCODING
 			val isTestTask = task.name.contains("Test")
-			val isAndroidTest = task.name.endsWith("${ANDROID_TEST_SUFFIX}JavaWithJavac")
-			val isAndroidUnitTest = task.name.endsWith("${UNIT_TEST_SUFFIX}JavaWithJavac")
 			task.configureCompilerArgs(isTestTask)
-			task.configureCompatibility(isTestTask, isAndroidTest, isAndroidUnitTest)
-		}
-	}
-}
-
-private fun Project.configureGlobalCompatibility() {
-	@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
-	when {
-		// JavaPluginConvention was deprecated in Gradle 7.1.
-		// JavaPluginExtension was added in Gradle 4.10, but sourceSets was only added in Gradle 7.1.
-		GradleVersion.current().baseVersion < GradleVersion.version("7.1") -> {
-			@Suppress("DEPRECATION")
-			with(this.convention.getPlugin<org.gradle.api.plugins.JavaPluginConvention>()) {
-				sourceCompatibility = JavaVersion.VERSION_1_7
-				targetCompatibility = JavaVersion.VERSION_1_8
-
-				sourceSets["main"].compileClasspath += configurations.maybeCreate("provided")
-			}
-		}
-		else -> {
-			with(this.extensions.getByName<JavaPluginExtension>("java")) {
-				sourceCompatibility = JavaVersion.VERSION_1_7
-				targetCompatibility = JavaVersion.VERSION_1_8
-
-				sourceSets["main"].compileClasspath += configurations.maybeCreate("provided")
-			}
 		}
 	}
 }
@@ -82,65 +40,6 @@ private fun JavaCompile.configureCompilerArgs(isTestTask: Boolean) {
 		this.options.compilerArgs.add("-Xlint:deprecation")
 	}
 	this.doFirst { this.removeDuplicateCompilerArgs() }
-}
-
-private fun JavaCompile.configureCompatibility(
-	isTestTask: Boolean,
-	isAndroidTest: Boolean,
-	isAndroidUnitTest: Boolean
-) {
-	if (isTestTask && !isAndroidTest) {
-		this.changeCompatibility(JavaVersion.VERSION_1_8)
-	}
-	val compileVersion = JavaVersion.toVersion(this.sourceCompatibility)
-	this.fixClasspathIfNecessary(compileVersion)
-	if (isTestTask && isAndroidUnitTest) {
-		this.doFirst {
-			if (!isAndroidTest) {
-				// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
-				this.changeCompatibility(JavaVersion.VERSION_1_8)
-			}
-			this.classpath += this.project.files(this.options.bootstrapClasspath)
-			this.fixClasspathIfNecessary(JavaVersion.toVersion(this.sourceCompatibility))
-		}
-	}
-}
-
-/**
- * Prevent this warning for compileJava and compileTestJava and others.
- * ```log
- * :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
- * ```
- */
-private fun JavaCompile.fixClasspathIfNecessary(compileVersion: JavaVersion) {
-	if (JavaVersion.current() == compileVersion) {
-		// Same version is set as the one running Gradle, nothing to do.
-		return
-	}
-	val envVar = "JAVA${compileVersion.majorVersion}_HOME"
-	val root = System.getenv(envVar)
-	var rt = project.file("$root/jre/lib/rt.jar")
-	if (!rt.exists()) {
-		rt = project.file("$root/lib/rt.jar")
-	}
-	if (!rt.exists()) {
-		logger.warn(
-			"Java Compatibility: javac needs a bootclasspath, "
-					+ "but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root).\n"
-					+ "Make sure $envVar is set to a distribution of JDK ${compileVersion.majorVersion}."
-		)
-		return
-	}
-	logger.info("Java Compatibility: using rt.jar from $rt")
-	options.bootstrapClasspath = project.files(rt.absolutePath)
-}
-
-private fun JavaCompile.changeCompatibility(ver: JavaVersion) {
-	val origS = sourceCompatibility
-	val origT = targetCompatibility
-	sourceCompatibility = ver.toString()
-	targetCompatibility = ver.toString()
-	logger.info("Changed compatibility ${origS}/${origT} to ${ver}/${ver}")
 }
 
 /**
