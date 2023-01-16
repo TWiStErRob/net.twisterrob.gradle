@@ -540,6 +540,11 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			dependencies {
 				implementation "com.google.auto.service:auto-service:1.0-rc6"
 			}
+			// > Error while dexing. The dependency contains Java 8 bytecode.
+			// > Please enable desugaring by adding the following to build.gradle
+			// > See https://developer.android.com/studio/write/java8-support.html for details.
+			// > Alternatively, increase the minSdkVersion to 26 or above.
+			android.compileOptions.targetCompatibility = JavaVersion.VERSION_1_8
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
