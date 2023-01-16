@@ -1,8 +1,6 @@
 package net.twisterrob.gradle.java
 
 import com.android.build.gradle.BaseExtension
-import com.android.builder.core.ComponentType.Companion.ANDROID_TEST_SUFFIX
-import com.android.builder.core.ComponentType.Companion.UNIT_TEST_SUFFIX
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.base.BaseExposedPlugin
 import org.gradle.api.JavaVersion
@@ -43,10 +41,7 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 		project.tasks.withType<JavaCompile>().configureEach { task ->
 			task.options.encoding = DEFAULT_ENCODING
 			val isTestTask = task.name.contains("Test")
-			val isAndroidTest = task.name.endsWith("${ANDROID_TEST_SUFFIX}JavaWithJavac")
-			val isAndroidUnitTest = task.name.endsWith("${UNIT_TEST_SUFFIX}JavaWithJavac")
 			task.configureCompilerArgs(isTestTask)
-			task.configureCompatibility(isTestTask, isAndroidTest, isAndroidUnitTest)
 		}
 	}
 }
@@ -82,65 +77,6 @@ private fun JavaCompile.configureCompilerArgs(isTestTask: Boolean) {
 		this.options.compilerArgs.add("-Xlint:deprecation")
 	}
 	this.doFirst { this.removeDuplicateCompilerArgs() }
-}
-
-private fun JavaCompile.configureCompatibility(
-	isTestTask: Boolean,
-	isAndroidTest: Boolean,
-	isAndroidUnitTest: Boolean
-) {
-	if (isTestTask && !isAndroidTest) {
-		this.changeCompatibility(JavaVersion.VERSION_1_8)
-	}
-	val compileVersion = JavaVersion.toVersion(this.sourceCompatibility)
-	this.fixClasspathIfNecessary(compileVersion)
-	if (isTestTask && isAndroidUnitTest) {
-		this.doFirst {
-			if (!isAndroidTest) {
-				// TODO hacky, need to reapply at doFirst, because otherwise it resets as if it was production code
-				this.changeCompatibility(JavaVersion.VERSION_1_8)
-			}
-			this.classpath += this.project.files(this.options.bootstrapClasspath)
-			this.fixClasspathIfNecessary(JavaVersion.toVersion(this.sourceCompatibility))
-		}
-	}
-}
-
-/**
- * Prevent this warning for compileJava and compileTestJava and others.
- * ```log
- * :compileJava warning: [options] bootstrap class path not set in conjunction with -source 1.x
- * ```
- */
-private fun JavaCompile.fixClasspathIfNecessary(compileVersion: JavaVersion) {
-	if (JavaVersion.current() == compileVersion) {
-		// Same version is set as the one running Gradle, nothing to do.
-		return
-	}
-	val envVar = "JAVA${compileVersion.majorVersion}_HOME"
-	val root = System.getenv(envVar)
-	var rt = project.file("$root/jre/lib/rt.jar")
-	if (!rt.exists()) {
-		rt = project.file("$root/lib/rt.jar")
-	}
-	if (!rt.exists()) {
-		logger.warn(
-			"Java Compatibility: javac needs a bootclasspath, "
-					+ "but no jre/lib/rt.jar or lib/rt.jar found in $envVar (=$root).\n"
-					+ "Make sure $envVar is set to a distribution of JDK ${compileVersion.majorVersion}."
-		)
-		return
-	}
-	logger.info("Java Compatibility: using rt.jar from $rt")
-	options.bootstrapClasspath = project.files(rt.absolutePath)
-}
-
-private fun JavaCompile.changeCompatibility(ver: JavaVersion) {
-	val origS = sourceCompatibility
-	val origT = targetCompatibility
-	sourceCompatibility = ver.toString()
-	targetCompatibility = ver.toString()
-	logger.info("Changed compatibility ${origS}/${origT} to ${ver}/${ver}")
 }
 
 /**
