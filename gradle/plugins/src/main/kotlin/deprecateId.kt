@@ -22,7 +22,7 @@ fun PluginDeclaration.deprecateId(project: Project, oldId: String) {
 				oldName.set(oldId)
 				newName.set(plugin.id)
 				implementationClass.set(plugin.implementationClass)
-				output.set(project.layout.buildDirectory.dir("plugin-deprecations/main/kotlin"))
+				output.set(project.layout.buildDirectory.dir("plugin-deprecations/${oldId}/kotlin"))
 			}
 		)
 	}
@@ -31,7 +31,7 @@ fun PluginDeclaration.deprecateId(project: Project, oldId: String) {
 			project.tasks.register<DeprecatedPluginGradleDescriptorGeneratingTask>(taskName + "Resources") {
 				oldName.set(oldId)
 				implementationClass.set(plugin.implementationClass)
-				output.set(project.layout.buildDirectory.dir("plugin-deprecations/main/resources"))
+				output.set(project.layout.buildDirectory.dir("plugin-deprecations/${oldId}/resources"))
 			}
 		)
 	}
