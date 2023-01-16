@@ -54,7 +54,7 @@ jobs:
         if: success() || failure()
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
-      - name: Build Gradle Quality plugins.
+      - name: Build Gradle plugins.
         run: >
           ./gradlew
           --no-daemon
@@ -86,7 +86,7 @@ jobs:
         if: failure()
         uses: andymckay/cancel-action@0.3
 
-      - name: Publish Gradle Quality plugins to mavenLocal().
+      - name: Publish Gradle plugins to mavenLocal().
         # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
         run: ./gradlew --no-daemon --no-build-cache --no-configuration-cache --stacktrace publishToMavenLocal
 
@@ -140,7 +140,7 @@ jobs:
         if: env.SNAPSHOT_VERSION != ''
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
-      - name: Publish Gradle Quality plugins to Sonatype Snapshot.
+      - name: Publish Gradle plugins to Sonatype Snapshot with version ${{env.SNAPSHOT_VERSION}}.
         if: env.SNAPSHOT_VERSION != ''
         # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
         run: >
