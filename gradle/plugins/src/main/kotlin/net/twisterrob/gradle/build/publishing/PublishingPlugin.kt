@@ -8,11 +8,10 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
+import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.DokkaTask
@@ -22,6 +21,8 @@ import java
 class PublishingPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
+		// Note: org.gradle.api.publish.plugins.PublishingPlugin.apply calls publications.all,
+		// so most code here is eagerly executed, even inside register { }!
 		project.plugins.apply("org.gradle.maven-publish")
 		project.plugins.apply("org.gradle.signing")
 		project.plugins.apply("org.jetbrains.dokka")
@@ -33,7 +34,7 @@ class PublishingPlugin : Plugin<Project> {
 		project.plugins.withId("net.twisterrob.gradle.build.module.library") {
 			project.publishing.apply {
 				publications {
-					create<MavenPublication>("library") library@{
+					register<MavenPublication>("library") {
 						setupPublication(project)
 						// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
 						from(project.components["java"])
@@ -48,25 +49,17 @@ class PublishingPlugin : Plugin<Project> {
 				website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
 				vcsUrl.set("https://github.com/TWiStErRob/net.twisterrob.gradle.git")
 			}
-			project.afterEvaluate {
-				// Configure built-in pluginMaven publication created by java-gradle-plugin.
-				// Have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin.
-				project.publishing.apply {
-					publications {
-						named<MavenPublication>("pluginMaven").configure pluginMaven@{
-							setupPublication(project)
-							handleTestFixtures()
-							// TODEL work around https://github.com/gradle/gradle/issues/23551
-							project.gradlePlugin.plugins.forEach plugin@{ plugin ->
-								getByName<MavenPublication>("${plugin.name}PluginMarkerMaven").pom.withXml {
-									asNode()
-										.getChild("dependencies")
-										.getChild("dependency")
-										.getChild("artifactId")
-										.setValue(this@pluginMaven.artifactId)
-								}
-							}
-						}
+			project.publishing.apply {
+				publications {
+					// Cannot configure built-in pluginMaven publication created by java-gradle-plugin here.
+					// We would have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin,
+					// but then it wouldn't pick up the changes to the pluginMaven publication.
+					// This is shown here: https://github.com/gradle/gradle/issues/23551
+					// Registering a new publication here will override the built-in one in MavenPluginPublishPlugin.
+					// Notice the maybeCreate usage in addMainPublication.
+					register<MavenPublication>("pluginMaven") {
+						setupPublication(project)
+						handleTestFixtures()
 					}
 				}
 			}
