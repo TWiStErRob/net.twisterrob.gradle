@@ -140,7 +140,7 @@ jobs:
         if: env.SNAPSHOT_VERSION != ''
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
-      - name: Publish Gradle plugins to Sonatype Snapshot with version ${{env.SNAPSHOT_VERSION}}.
+      - name: Publish Gradle plugins to Sonatype Snapshot with version ${{ env.SNAPSHOT_VERSION }}.
         if: env.SNAPSHOT_VERSION != ''
         # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
         run: >
@@ -154,7 +154,7 @@ jobs:
           -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
           -PprojectVersion=${{ env.SNAPSHOT_VERSION }}
 
-      - name: Verify docs/examples/snapshot.
+      - name: Verify docs/examples/snapshot with version ${{ env.SNAPSHOT_VERSION }}.
         working-directory: docs/examples/snapshot
         if: env.SNAPSHOT_VERSION != ''
         run: |
