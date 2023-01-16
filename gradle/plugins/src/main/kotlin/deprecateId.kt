@@ -54,20 +54,21 @@ internal abstract class DeprecatedPluginKotlinGeneratingTask : DefaultTask() {
 	@TaskAction
 	fun generateDeprecatedPlugin() {
 		val implementationClass = implementationClass.get()
-
+		val packageName = implementationClass.substringBeforeLast('.')
+		val className = implementationClass.substringAfterLast('.')
 		@Language("kotlin")
 		val deprecatedPluginSourceCode = """
-			package ${implementationClass.substringBeforeLast('.')}
+			package ${packageName}
 			
 			import net.twisterrob.gradle.common.DeprecatedProjectPlugin
 			
-			internal class ${implementationClass.substringAfterLast('.')}Deprecated : DeprecatedProjectPlugin(
+			internal class ${className}Deprecated : DeprecatedProjectPlugin(
 				oldName = "${oldName.get()}",
 				newName = "${newName.get()}",
 			)
-		""".trimIndent()
+		""".trimIndent() + "\n"
 
-		val fileName = "${implementationClass.substringAfterLast('.')}Deprecated.kt"
+		val fileName = "${packageName.replace('.', '/')}/${className}Deprecated.kt"
 		output.get().asFile.resolve(fileName)
 			.also { it.parentFile.mkdirs() }
 			.writeText(deprecatedPluginSourceCode)
@@ -90,7 +91,7 @@ internal abstract class DeprecatedPluginGradleDescriptorGeneratingTask : Default
 		@Language("properties")
 		val deprecatedPluginDescriptor = """
 			implementation-class=${implementationClass.get()}Deprecated
-		""".trimIndent()
+		""".trimIndent() + "\n"
 
 		output.get().asFile.resolve("META-INF/gradle-plugins/${oldName.get()}.properties")
 			.also { it.parentFile.mkdirs() }
