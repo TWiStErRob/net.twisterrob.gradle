@@ -10,6 +10,7 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.the
@@ -55,6 +56,16 @@ class PublishingPlugin : Plugin<Project> {
 						named<MavenPublication>("pluginMaven").configure pluginMaven@{
 							setupPublication(project)
 							handleTestFixtures()
+							// TODEL work around https://github.com/gradle/gradle/issues/23551
+							project.gradlePlugin.plugins.forEach plugin@{ plugin ->
+								getByName<MavenPublication>("${plugin.name}PluginMarkerMaven").pom.withXml {
+									asNode()
+										.getChild("dependencies")
+										.getChild("dependency")
+										.getChild("artifactId")
+										.setValue(this@pluginMaven.artifactId)
+								}
+							}
 						}
 					}
 				}
