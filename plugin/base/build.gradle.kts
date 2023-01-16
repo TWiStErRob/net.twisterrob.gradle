@@ -21,6 +21,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("conventions", "rootProject"))
 			implementationClass = "net.twisterrob.gradle.root.RootPlugin"
+			deprecateId(project, "net.twisterrob.root")
 		}
 	}
 }

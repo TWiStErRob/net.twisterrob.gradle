@@ -18,6 +18,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("conventions", "java"))
 			implementationClass = "net.twisterrob.gradle.java.JavaPlugin"
+			deprecateId(project, "net.twisterrob.java")
 		}
 		create("javaLibrary") {
 			id = "net.twisterrob.gradle.plugin.java-library"
@@ -27,6 +28,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("conventions", "java"))
 			implementationClass = "net.twisterrob.gradle.java.JavaLibPlugin"
+			deprecateId(project, "net.twisterrob.java-library")
 		}
 		create("kotlin") {
 			id = "net.twisterrob.gradle.plugin.kotlin"
@@ -36,6 +38,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("conventions", "kotlin"))
 			implementationClass = "net.twisterrob.gradle.kotlin.KotlinPlugin"
+			deprecateId(project, "net.twisterrob.kotlin")
 		}
 	}
 }

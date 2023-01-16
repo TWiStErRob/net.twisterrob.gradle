@@ -26,6 +26,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("conventions", "android", "versioning", "proguard"))
 			implementationClass = "net.twisterrob.gradle.android.AndroidAppPlugin"
+			deprecateId(project, "net.twisterrob.android-app")
 		}
 		create("androidLibrary") {
 			id = "net.twisterrob.gradle.plugin.android-library"
@@ -37,6 +38,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("conventions", "android"))
 			implementationClass = "net.twisterrob.gradle.android.AndroidLibraryPlugin"
+			deprecateId(project, "net.twisterrob.android-library")
 		}
 		create("androidTest") {
 			id = "net.twisterrob.gradle.plugin.android-test"
@@ -46,6 +48,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("conventions", "android"))
 			implementationClass = "net.twisterrob.gradle.android.AndroidTestPlugin"
+			deprecateId(project, "net.twisterrob.android-test")
 		}
 	}
 }
@@ -59,6 +62,9 @@ dependencies {
 	api(projects.plugin.building)
 	api(projects.plugin.reporting)
 	api(projects.plugin.settings)
+
+	testImplementation(projects.test.internal)
+	testImplementation(testFixtures(projects.plugin.base))
 }
 
 tasks.register("tests") {

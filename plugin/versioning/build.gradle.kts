@@ -25,6 +25,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("conventions", "android", "versioning", "git", "svn", "vcs"))
 			implementationClass = "net.twisterrob.gradle.vcs.VCSPlugin"
+			deprecateId(project, "net.twisterrob.vcs")
 		}
 	}
 }

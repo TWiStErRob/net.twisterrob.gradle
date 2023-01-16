@@ -24,6 +24,7 @@ gradlePlugin {
 			""".trimIndent()
 			tags.set(setOf("utilities", "settings", "logging"))
 			implementationClass = "net.twisterrob.gradle.settings.SettingsPlugin"
+			// deprecateId(project, "net.twisterrob.settings") // Manually added, because Plugin<Settings>
 		}
 	}
 }
