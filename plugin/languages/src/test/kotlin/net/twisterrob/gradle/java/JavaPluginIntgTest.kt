@@ -46,7 +46,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `applying java by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.java'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.java'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(
@@ -80,7 +80,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `applying java-library by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.java-library'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.java-library'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(

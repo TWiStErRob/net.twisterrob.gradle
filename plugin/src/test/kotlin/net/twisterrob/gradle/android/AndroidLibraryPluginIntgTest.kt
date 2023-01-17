@@ -15,7 +15,7 @@ class AndroidLibraryPluginIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.android-library'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.android-library'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(

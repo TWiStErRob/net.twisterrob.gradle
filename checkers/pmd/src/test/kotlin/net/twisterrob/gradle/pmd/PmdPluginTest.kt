@@ -281,7 +281,7 @@ class PmdPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.pmd'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.pmd'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(

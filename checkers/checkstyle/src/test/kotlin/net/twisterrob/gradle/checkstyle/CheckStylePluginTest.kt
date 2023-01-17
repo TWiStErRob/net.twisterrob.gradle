@@ -336,7 +336,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.checkstyle'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(

@@ -118,7 +118,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.kotlin'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(

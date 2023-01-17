@@ -39,7 +39,7 @@ class VCSPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.vcs'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.vcs'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(
