@@ -1,7 +1,9 @@
 ## Gradle Plugins
 
 ```gradle
-apply plugin: net.twisterrob.<...>
+plugins {
+    id("net.twisterrob.gradle.plugin.<...>") version "..."
+}
 ```
 
 ### net.twisterrob.gradle.plugin.android-app
@@ -37,3 +39,6 @@ project.VCS.current.revisionNumber // int
 project.VCS.current.isAvailable // boolean
 project.VCS.current.isAvailableQuick // boolean
 ```
+
+### net.twisterrob.gradle.plugin.settings
+Convenience methods for Gradle build files.
