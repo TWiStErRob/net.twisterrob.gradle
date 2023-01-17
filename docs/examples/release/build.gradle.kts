@@ -1,7 +1,7 @@
 plugins {
 	id("com.android.application") version "7.4.0"
 	// TODO enable doNotNagAbout below and make org.gradle.warning.mode=fail when updating to 0.15.
-	id("net.twisterrob.quality") version "0.14.1"
+	id("net.twisterrob.gradle.plugin.quality") version "0.14.1"
 }
 
 android {

@@ -115,7 +115,7 @@ The project is using a modular architecture to reduce coupling and so it's possi
 
 | Module (location): summary | Distributed Artifact,<br>Gradle Plugin ID,<br>JVM Package |
 | --- | --- |
-| **quality** ([`/quality`](../quality)):<br>All quality plugins bundled in one.<br> |`classpath 'net.twisterrob.gradle:twister-quality:+'`<br>`apply plugin: 'net.twisterrob.quality'`<br>`import net.twisterrob.gradle.quality;` |
+| **quality** ([`/quality`](../quality)):<br>All quality plugins bundled in one.<br> |`classpath 'net.twisterrob.gradle:twister-quality:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.quality'`<br>`import net.twisterrob.gradle.quality;` |
 | **common** ([`/common`](../common)):<br>Shared classes between checkers.<br>_Not to be consumed directly._ | `classpath 'net.twisterrob.gradle:twister-quality-common:+'`<br>`// apply plugin: N/A`<br>`import net.twisterrob.gradle.common;` |
 | **checkstyle** ([`/checkers/checkstyle`](../checkers/checkstyle)):<br>Checkstyle setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-checkstyle:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'`<br>`import net.twisterrob.gradle.checkstyle;` |
 | **pmd** ([`/checkers/pmd`](../checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-pmd:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.pmd'`<br>`import net.twisterrob.gradle.pmd;` |

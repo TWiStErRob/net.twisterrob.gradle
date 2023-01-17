@@ -72,9 +72,9 @@ buildscript {
 	}
 }
 // Kotlin
-apply(plugin = "net.twisterrob.quality")
+apply(plugin = "net.twisterrob.gradle.plugin.quality")
 // Groovy
-apply plugin: "net.twisterrob.quality"
+apply plugin: "net.twisterrob.gradle.plugin.quality"
 ```
 
 </details>
@@ -97,9 +97,9 @@ dependencies {
 
 ```gradle
 // Kotlin
-apply(plugin = "net.twisterrob.quality")
+apply(plugin = "net.twisterrob.gradle.plugin.quality")
 // Groovy
-apply plugin: "net.twisterrob.quality"
+apply plugin: "net.twisterrob.gradle.plugin.quality"
 ```
 
 </details>
@@ -111,7 +111,7 @@ See it live at [SNAPSHOT example](docs/examples/snapshot/settings.gradle.kts).
 
 ```gradle
 plugins {
-	id("net.twisterrob.quality") version "x.y"
+	id("net.twisterrob.gradle.plugin.quality") version "x.y"
 }
 ```
 
@@ -123,7 +123,7 @@ pluginManagement {
 	resolutionStrategy {
 		eachPlugin {
 			when (requested.id.id) {
-				"net.twisterrob.quality" ->
+				"net.twisterrob.gradle.plugin.quality" ->
 					useModule("net.twisterrob.gradle:twister-quality:${requested.version}")
 			}
 		}
