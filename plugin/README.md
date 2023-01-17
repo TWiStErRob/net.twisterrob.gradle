@@ -29,7 +29,7 @@ Replacement for `kotlin`, `kotlin-android`, `kotlin-kapt`.
 Generates a `gradled.bat` which can be used instead of `gradlew.bat` to start Gradle in Debug mode.
 It will make sure there's only one instance of Gradle is running, display a console window and wait for the debugger to attach before starting.
 
-### net.twisterrob.vcs
+### net.twisterrob.gradle.plugin.vcs
 Provides DSL access to GIT and SVN revision info:
 ```
 project.VCS.current.revision // String

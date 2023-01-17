@@ -24,7 +24,7 @@ class GITPluginIntgTest : BaseIntgTest() {
 		}
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			println("VCS.current: " + project.VCS.current)
 		""".trimIndent()
 
@@ -40,7 +40,7 @@ class GITPluginIntgTest : BaseIntgTest() {
 		}
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			println("GIT revision: " + project.VCS.current.revision)
 		""".trimIndent()
 
@@ -56,7 +56,7 @@ class GITPluginIntgTest : BaseIntgTest() {
 		}
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			println("GIT revision: " + project.VCS.current.revisionNumber)
 		""".trimIndent()
 
@@ -69,7 +69,7 @@ class GITPluginIntgTest : BaseIntgTest() {
 		gradle.root.resolve(".git").mkdir()
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			println("VCS.current: " + project.VCS.current)
 			println("GIT revision: " + project.VCS.current.revision)
 		""".trimIndent()
@@ -88,7 +88,7 @@ class GITPluginIntgTest : BaseIntgTest() {
 		gradle.root.resolve("config").mkdir()
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			println("VCS.current: " + project.VCS.current)
 		""".trimIndent()
 

@@ -89,7 +89,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
 			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
 			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
 			// Android: "net.twisterrob.gradle.plugin.android-test", // :plugin
@@ -117,7 +117,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			"net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
 			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
 			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
 			// Android: "net.twisterrob.gradle.plugin.android-test", // :plugin
@@ -146,7 +146,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
 			"net.twisterrob.quality", // :quality
 			"net.twisterrob.gradle.plugin.pmd", // :pmd
 			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
@@ -173,7 +173,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
 			"net.twisterrob.quality", // :quality
 			"net.twisterrob.gradle.plugin.pmd", // :pmd
 			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
@@ -200,7 +200,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			"net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
 			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
 			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
 			// Special: "net.twisterrob.gradle.plugin.android-test", // :plugin
@@ -231,7 +231,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			"net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
 			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
 			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
 			// Special: "net.twisterrob.gradle.plugin.android-test", // :plugin
@@ -269,7 +269,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			apply plugin: "net.twisterrob.gradle.plugin.java" // :plugin:languages
 			apply plugin: "net.twisterrob.gradle.plugin.java-library" // :plugin:languages
 			apply plugin: "net.twisterrob.gradle.plugin.kotlin" // :plugin:languages
-			apply plugin: "net.twisterrob.vcs" // :plugin:versioning
+			apply plugin: "net.twisterrob.gradle.plugin.vcs" // :plugin:versioning
 			apply plugin: "net.twisterrob.quality" // :quality
 			apply plugin: "net.twisterrob.gradle.plugin.pmd" // :pmd
 			apply plugin: "net.twisterrob.gradle.plugin.checkstyle" // :checkstyle

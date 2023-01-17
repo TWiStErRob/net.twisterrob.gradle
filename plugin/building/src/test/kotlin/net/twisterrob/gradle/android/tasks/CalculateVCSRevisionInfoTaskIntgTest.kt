@@ -27,7 +27,7 @@ class CalculateVCSRevisionInfoTaskIntgTest : BaseAndroidIntgTest() {
 	@Test fun `will stay up to date when didn't change`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			if (project.VCS.current == project.VCS.git || project.VCS.current == project.VCS.svn) {
 				throw new IllegalStateException("Not dummy: " + project.VCS.current)
 			}
@@ -48,7 +48,7 @@ class CalculateVCSRevisionInfoTaskIntgTest : BaseAndroidIntgTest() {
 		}
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			if (project.VCS.current != project.VCS.git) {
 				throw new IllegalStateException("Not git: " + project.VCS.current)
 			}
@@ -69,7 +69,7 @@ class CalculateVCSRevisionInfoTaskIntgTest : BaseAndroidIntgTest() {
 		}
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			if (project.VCS.current != project.VCS.git) {
 				throw new IllegalStateException("Not git: " + project.VCS.current)
 			}
@@ -89,7 +89,7 @@ class CalculateVCSRevisionInfoTaskIntgTest : BaseAndroidIntgTest() {
 		}
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			if (project.VCS.current != project.VCS.git) {
 				throw new IllegalStateException("Not git: " + project.VCS.current)
 			}
@@ -116,7 +116,7 @@ class CalculateVCSRevisionInfoTaskIntgTest : BaseAndroidIntgTest() {
 		}
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			if (project.VCS.current != project.VCS.svn) {
 				throw new IllegalStateException("Not svn: " + project.VCS.current)
 			}
@@ -138,7 +138,7 @@ class CalculateVCSRevisionInfoTaskIntgTest : BaseAndroidIntgTest() {
 		}
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.vcs'
+			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
 			if (project.VCS.current != project.VCS.svn) {
 				throw new IllegalStateException("Not svn: " + project.VCS.current)
 			}
