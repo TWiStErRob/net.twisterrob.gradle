@@ -85,7 +85,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
@@ -113,7 +113,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			"net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
@@ -142,7 +142,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
@@ -169,7 +169,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
@@ -196,7 +196,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			"net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
@@ -227,7 +227,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
 			"net.twisterrob.gradle.plugin.java", // :plugin:languages
 			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
 			"net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
@@ -265,7 +265,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		val script = """
 			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")} // :plugin
 			// Android: apply plugin: "net.twisterrob.gradle.plugin.android-library" // :plugin
-			apply plugin: "net.twisterrob.root" // :plugin:base
+			apply plugin: "net.twisterrob.gradle.plugin.root" // :plugin:base
 			apply plugin: "net.twisterrob.gradle.plugin.java" // :plugin:languages
 			apply plugin: "net.twisterrob.gradle.plugin.java-library" // :plugin:languages
 			apply plugin: "net.twisterrob.gradle.plugin.kotlin" // :plugin:languages

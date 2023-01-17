@@ -19,7 +19,7 @@ class RootPluginIntgTest : BaseIntgTest() {
 	@Test fun `applies GradlePlugin`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.root'
+			apply plugin: 'net.twisterrob.gradle.plugin.root'
 			
 			plugins.withType(${GradlePlugin::class.qualifiedName}) {
 				println("Gradle Plugin applied")
@@ -32,7 +32,7 @@ class RootPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.root'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.root'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(

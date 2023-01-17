@@ -22,7 +22,7 @@ Replacement for `java-library`.
 ### net.twisterrob.gradle.plugin.kotlin
 Replacement for `kotlin`, `kotlin-android`, `kotlin-kapt`.
 
-### net.twisterrob.root
+### net.twisterrob.gradle.plugin.root
 
 #### `:gradleWrapper`
 
