@@ -22,7 +22,7 @@ dependencies {
 	// Need com.android.utils.FileUtils for TestReportGenerator.generate().
 	compileOnly(libs.android.tools.common)
 
-	// This plugin is part of the net.twisterrob.android-app plugin, not designed to work on its own.
+	// This plugin is part of the net.twisterrob.gradle.plugin.android-app plugin, not designed to work on its own.
 	runtimeOnly(projects.plugin)
 
 	testImplementation(projects.test.internal)

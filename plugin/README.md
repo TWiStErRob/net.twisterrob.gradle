@@ -4,13 +4,13 @@
 apply plugin: net.twisterrob.<...>
 ```
 
-### net.twisterrob.android-app
+### net.twisterrob.gradle.plugin.android-app
 Replacement for `com.android.application`.
 
-### net.twisterrob.android-library
+### net.twisterrob.gradle.plugin.android-library
 Replacement for `com.android.library`.
 
-### net.twisterrob.android-test
+### net.twisterrob.gradle.plugin.android-test
 Replacement for `com.android.test`.
 
 ### net.twisterrob.java

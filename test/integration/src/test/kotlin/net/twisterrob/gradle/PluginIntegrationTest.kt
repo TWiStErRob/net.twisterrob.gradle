@@ -90,9 +90,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.java-library", // :plugin:languages
 			// Kotlin: "net.twisterrob.kotlin", // :plugin:languages
 			"net.twisterrob.vcs", // :plugin:versioning
-			// Android: "net.twisterrob.android-app", // :plugin
-			// Android: "net.twisterrob.android-library", // :plugin
-			// Android: "net.twisterrob.android-test", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-test", // :plugin
 			"net.twisterrob.quality", // :quality
 			"net.twisterrob.pmd", // :pmd
 			"net.twisterrob.checkstyle", // :checkstyle
@@ -118,9 +118,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.java-library", // :plugin:languages
 			"net.twisterrob.kotlin", // :plugin:languages
 			"net.twisterrob.vcs", // :plugin:versioning
-			// Android: "net.twisterrob.android-app", // :plugin
-			// Android: "net.twisterrob.android-library", // :plugin
-			// Android: "net.twisterrob.android-test", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-test", // :plugin
 			"net.twisterrob.quality", // :quality
 			"net.twisterrob.pmd", // :pmd
 			"net.twisterrob.checkstyle", // :checkstyle
@@ -159,7 +159,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "net.twisterrob.android-app"
+			apply plugin: "net.twisterrob.gradle.plugin.android-app"
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -186,7 +186,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "net.twisterrob.android-library"
+			apply plugin: "net.twisterrob.gradle.plugin.android-library"
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -201,9 +201,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.java-library", // :plugin:languages
 			"net.twisterrob.kotlin", // :plugin:languages
 			"net.twisterrob.vcs", // :plugin:versioning
-			// Android: "net.twisterrob.android-app", // :plugin
-			// Android: "net.twisterrob.android-library", // :plugin
-			// Special: "net.twisterrob.android-test", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
+			// Special: "net.twisterrob.gradle.plugin.android-test", // :plugin
 			"net.twisterrob.quality", // :quality
 			"net.twisterrob.pmd", // :pmd
 			"net.twisterrob.checkstyle", // :checkstyle
@@ -217,7 +217,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			${conditionalApplyKotlin("net.twisterrob.android-app")}
+			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")}
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -232,9 +232,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.java-library", // :plugin:languages
 			"net.twisterrob.kotlin", // :plugin:languages
 			"net.twisterrob.vcs", // :plugin:versioning
-			// Android: "net.twisterrob.android-app", // :plugin
-			// Android: "net.twisterrob.android-library", // :plugin
-			// Special: "net.twisterrob.android-test", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
+			// Special: "net.twisterrob.gradle.plugin.android-test", // :plugin
 			"net.twisterrob.quality", // :quality
 			"net.twisterrob.pmd", // :pmd
 			"net.twisterrob.checkstyle", // :checkstyle
@@ -248,7 +248,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			${conditionalApplyKotlin("net.twisterrob.android-library")}
+			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-library")}
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -263,8 +263,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			${conditionalApplyKotlin("net.twisterrob.android-app")} // :plugin
-			// Android: apply plugin: "net.twisterrob.android-library" // :plugin
+			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")} // :plugin
+			// Android: apply plugin: "net.twisterrob.gradle.plugin.android-library" // :plugin
 			apply plugin: "net.twisterrob.root" // :plugin:base
 			apply plugin: "net.twisterrob.java" // :plugin:languages
 			apply plugin: "net.twisterrob.java-library" // :plugin:languages

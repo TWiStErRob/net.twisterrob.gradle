@@ -28,7 +28,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-library'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
 				testImplementation "junit:junit:4.13.1"
@@ -48,7 +48,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
 				testImplementation "junit:junit:4.13.1"
@@ -69,7 +69,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 		gradle.settingsFile.writeText("include ':test'")
 		@Language("gradle")
 		val appScript = """
-			apply plugin: 'net.twisterrob.android-test'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-test'
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
 				implementation "junit:junit:4.13.1"
@@ -85,7 +85,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 		""".trimIndent()
 
 		val result = gradle.run(script, ":test:compileDebugSources").build()
