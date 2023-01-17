@@ -96,7 +96,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.quality", // :quality
 			"net.twisterrob.gradle.plugin.pmd", // :pmd
 			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
-			"net.twisterrob.gradle.test", // :test
+			"net.twisterrob.gradle.plugin.test", // :test
 		]
 	)
 	fun `empty project doesn't create tasks when using plugin`(pluginId: String) {
@@ -124,7 +124,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.quality", // :quality
 			"net.twisterrob.gradle.plugin.pmd", // :pmd
 			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
-			"net.twisterrob.gradle.test", // :test
+			"net.twisterrob.gradle.plugin.test", // :test
 		]
 	)
 	fun `kotlin project doesn't create tasks when using plugin`(pluginId: String) {
@@ -150,7 +150,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.quality", // :quality
 			"net.twisterrob.gradle.plugin.pmd", // :pmd
 			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
-			// Android: "net.twisterrob.gradle.test", // :test
+			// Android: "net.twisterrob.gradle.plugin.test", // :test
 		]
 	)
 	fun `android app project doesn't create tasks when using plugin`(pluginId: String) {
@@ -177,7 +177,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.quality", // :quality
 			"net.twisterrob.gradle.plugin.pmd", // :pmd
 			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
-			// Android: "net.twisterrob.gradle.test", // :test
+			// Android: "net.twisterrob.gradle.plugin.test", // :test
 		]
 	)
 	fun `android library project doesn't create tasks when using plugin`(pluginId: String) {
@@ -207,7 +207,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.quality", // :quality
 			"net.twisterrob.gradle.plugin.pmd", // :pmd
 			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
-			// Android: "net.twisterrob.gradle.test", // :test
+			// Android: "net.twisterrob.gradle.plugin.test", // :test
 		]
 	)
 	fun `android kotlin app project doesn't create tasks when using plugin`(pluginId: String) {
@@ -238,7 +238,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			"net.twisterrob.gradle.plugin.quality", // :quality
 			"net.twisterrob.gradle.plugin.pmd", // :pmd
 			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
-			// Android: "net.twisterrob.gradle.test", // :test
+			// Android: "net.twisterrob.gradle.plugin.test", // :test
 		]
 	)
 	fun `android kotlin library project doesn't create tasks when using plugin`(pluginId: String) {
@@ -273,7 +273,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			apply plugin: "net.twisterrob.gradle.plugin.quality" // :quality
 			apply plugin: "net.twisterrob.gradle.plugin.pmd" // :pmd
 			apply plugin: "net.twisterrob.gradle.plugin.checkstyle" // :checkstyle
-			// Android: apply plugin: "net.twisterrob.gradle.test" // :test
+			// Android: apply plugin: "net.twisterrob.gradle.plugin.test" // :test
 		""".trimIndent()
 
 		verifyTasksNotCreated(script)

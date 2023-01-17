@@ -21,7 +21,7 @@ class TestPluginTest : BaseIntgTest() {
 	 *
 	 * Let's break that down:<ul>
 	 * <li>This test sets up a Gradle project with:<ul>
-	 *     <li>{@code apply plugin: 'net.twisterrob.gradle.test'}
+	 *     <li>{@code apply plugin: 'net.twisterrob.gradle.plugin.test'}
 	 *     <li>{@code Testception.groovy}
 	 *     </ul>
 	 * <li>{@code Testception} sets up a simple Gradle build and checks its output.
