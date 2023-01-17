@@ -73,7 +73,7 @@ See [CHANGELOG.md](../CHANGELOG.md)
 ## 3.4.x
  
 ### 3.4.2.14-29-29.1
- - Add `net.twisterrob.java-library` plugin
+ - Add `net.twisterrob.gradle.plugin.java-library` plugin
  - Automatically detect `-Xlint:opt -Xlint:-opt` and disable wins.
  - Exclude classpath leaked annotation processors
 

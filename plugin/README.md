@@ -13,13 +13,13 @@ Replacement for `com.android.library`.
 ### net.twisterrob.gradle.plugin.android-test
 Replacement for `com.android.test`.
 
-### net.twisterrob.java
+### net.twisterrob.gradle.plugin.java
 Replacement for `java`.
 
-### net.twisterrob.java-library
+### net.twisterrob.gradle.plugin.java-library
 Replacement for `java-library`.
 
-### net.twisterrob.kotlin
+### net.twisterrob.gradle.plugin.kotlin
 Replacement for `kotlin`, `kotlin-android`, `kotlin-kapt`.
 
 ### net.twisterrob.root

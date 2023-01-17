@@ -37,7 +37,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 		""".trimIndent()
 
 		val result = gradle.run(script, "jar").build()
@@ -52,7 +52,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
 				testImplementation "org.testng:testng:6.14.3"
 			}
@@ -71,7 +71,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
 				testImplementation "junit:junit:4.13.1"
 			}
@@ -107,7 +107,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 		""".trimIndent()
 
 		val result = gradle.run(script, "jar").buildAndFail()
@@ -118,7 +118,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.kotlin'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(

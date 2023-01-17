@@ -32,7 +32,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `java plugin can be applied standalone`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.java'
+			apply plugin: 'net.twisterrob.gradle.plugin.java'
 			println("Java: " + plugins.hasPlugin("java"))
 			println("Java Library: " + plugins.hasPlugin("java-library"))
 		""".trimIndent()
@@ -46,7 +46,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `applying java by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.java'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.java'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(
@@ -66,7 +66,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `java-library plugin can be applied standalone`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.java-library'
+			apply plugin: 'net.twisterrob.gradle.plugin.java-library'
 			println("Java: " + plugins.hasPlugin("java"))
 			println("Java Library: " + plugins.hasPlugin("java-library"))
 		""".trimIndent()
@@ -80,7 +80,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `applying java-library by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.java-library'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.java-library'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(
@@ -116,7 +116,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 		gradle.file(uncheckedWarning, "src/main/java/${packageFolder}/Unchecked.java")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.java'
+			apply plugin: 'net.twisterrob.gradle.plugin.java'
 			tasks.named("compileJava").configure {
 				it.options.compilerArgs += [
 					// Disable default-enabled warnings (restore javac default state)
@@ -151,7 +151,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 		gradle.file(uncheckedWarning, "src/main/java/${packageFolder}/Unchecked.java")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.java'
+			apply plugin: 'net.twisterrob.gradle.plugin.java'
 		""".trimIndent()
 
 		val result = gradle.run(script, "build").build()
@@ -181,7 +181,7 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 		gradle.file(uncheckedWarning, "src/main/java/${packageFolder}/Deprecation.java")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.java'
+			apply plugin: 'net.twisterrob.gradle.plugin.java'
 		""".trimIndent()
 
 		val result = gradle.run(script, "build").build()

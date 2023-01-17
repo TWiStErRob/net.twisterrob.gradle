@@ -333,7 +333,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
 			android.twisterrob.decorateBuildConfig = false
 			
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
 				testImplementation 'junit:junit:4.13.1'
 				testImplementation 'org.robolectric:robolectric:4.9.2'
@@ -397,7 +397,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
 				testImplementation 'junit:junit:4.13.1'
 				testImplementation 'org.robolectric:robolectric:4.9.2'
@@ -467,7 +467,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
 				testImplementation 'junit:junit:4.13.1'
 				testImplementation 'org.robolectric:robolectric:4.9.2'

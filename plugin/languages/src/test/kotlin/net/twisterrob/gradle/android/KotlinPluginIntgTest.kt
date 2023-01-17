@@ -29,7 +29,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
 				testImplementation "junit:junit:4.13.1"
 			}
@@ -49,7 +49,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
 				testImplementation "junit:junit:4.13.1"
 			}
@@ -70,7 +70,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val appScript = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-test'
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
 				implementation "junit:junit:4.13.1"
 			}
