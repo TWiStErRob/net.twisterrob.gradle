@@ -117,8 +117,8 @@ The project is using a modular architecture to reduce coupling and so it's possi
 | --- | --- |
 | **quality** ([`/quality`](../quality)):<br>All quality plugins bundled in one.<br> |`classpath 'net.twisterrob.gradle:twister-quality:+'`<br>`apply plugin: 'net.twisterrob.quality'`<br>`import net.twisterrob.gradle.quality;` |
 | **common** ([`/common`](../common)):<br>Shared classes between checkers.<br>_Not to be consumed directly._ | `classpath 'net.twisterrob.gradle:twister-quality-common:+'`<br>`// apply plugin: N/A`<br>`import net.twisterrob.gradle.common;` |
-| **checkstyle** ([`/checkers/checkstyle`](../checkers/checkstyle)):<br>Checkstyle setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-checkstyle:+'`<br>`apply plugin: 'net.twisterrob.checkstyle'`<br>`import net.twisterrob.gradle.checkstyle;` |
-| **pmd** ([`/checkers/pmd`](../checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-pmd:+'`<br>`apply plugin: 'net.twisterrob.pmd'`<br>`import net.twisterrob.gradle.pmd;` |
+| **checkstyle** ([`/checkers/checkstyle`](../checkers/checkstyle)):<br>Checkstyle setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-checkstyle:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'`<br>`import net.twisterrob.gradle.checkstyle;` |
+| **pmd** ([`/checkers/pmd`](../checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-pmd:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.pmd'`<br>`import net.twisterrob.gradle.pmd;` |
 | **test** ([`/test`](../test)):<br>[Gradle test plugin and resources.](../test/README.md) | `classpath 'net.twisterrob.gradle:twister-gradle-test:+'`<br>`apply plugin: 'net.twisterrob.gradle.test'`<br>`import net.twisterrob.gradle.test;` |
 | **plugin** ([`/plugin`](../plugin)):<br>[Gradle Android plugin conventions.](../plugin/README.md) | `classpath 'net.twisterrob.gradle:twister-convention-plugins:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.android-app'`<br>`apply plugin: 'net.twisterrob.root'`<br>`import net.twisterrob.gradle.android;` |
 

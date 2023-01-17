@@ -33,7 +33,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 		private val SCRIPT_CONFIGURE_PMD: String = """
 			import org.gradle.util.GradleVersion
 			subprojects { // i.e. :module
-				apply plugin: 'net.twisterrob.pmd'
+				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
 				pmd {
 					if (GradleVersion.version("6.0.0") <= GradleVersion.current().baseVersion) {

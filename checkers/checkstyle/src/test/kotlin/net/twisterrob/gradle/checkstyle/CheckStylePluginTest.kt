@@ -44,7 +44,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -58,7 +58,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'java'
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -71,7 +71,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 	@Test fun `applies without a hitch to an Android project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -89,7 +89,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			allprojects {
-				apply plugin: 'net.twisterrob.checkstyle'
+				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			}
 		""".trimIndent()
 		// ":instant" is not supported yet, and won't be since it's deprecated in 3.6.x.
@@ -155,7 +155,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val rootProject = """
 			allprojects {
-				apply plugin: 'net.twisterrob.checkstyle'
+				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			}
 		""".trimIndent()
 
@@ -184,7 +184,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		""".trimIndent()
 		@Language("gradle")
 		val subProjectApplied = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			apply plugin: 'com.android.library'
 		""".trimIndent()
 
@@ -240,7 +240,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val applyCheckstyle = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
@@ -263,7 +263,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val build = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
@@ -292,7 +292,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val build = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
@@ -325,7 +325,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val applyCheckstyle = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -336,7 +336,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.checkstyle'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(

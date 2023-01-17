@@ -43,7 +43,7 @@ class PmdPluginTest : BaseIntgTest() {
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -57,7 +57,7 @@ class PmdPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'java'
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -71,7 +71,7 @@ class PmdPluginTest : BaseIntgTest() {
 		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -89,7 +89,7 @@ class PmdPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			allprojects {
-				apply plugin: 'net.twisterrob.pmd'
+				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			}
 		""".trimIndent()
 		// ":instant" is not supported yet, and won't be since it's deprecated in 3.6.x.
@@ -155,7 +155,7 @@ class PmdPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val rootProject = """
 			allprojects {
-				apply plugin: 'net.twisterrob.pmd'
+				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			}
 		""".trimIndent()
 
@@ -184,7 +184,7 @@ class PmdPluginTest : BaseIntgTest() {
 		""".trimIndent()
 		@Language("gradle")
 		val subProjectApplied = """
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			apply plugin: 'com.android.library'
 		""".trimIndent()
 
@@ -240,7 +240,7 @@ class PmdPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val applyPmd = """
 			import org.gradle.util.GradleVersion
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			pmd {
 				toolVersion = '5.6.1'
 				if (GradleVersion.version("6.0.0") <= GradleVersion.current().baseVersion) {
@@ -281,7 +281,7 @@ class PmdPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.pmd'").buildAndFail()
+		val result = gradle.run("apply plugin: 'net.twisterrob.gradle.plugin.pmd'").buildAndFail()
 
 		result.assertHasOutputLine(
 			Regex(

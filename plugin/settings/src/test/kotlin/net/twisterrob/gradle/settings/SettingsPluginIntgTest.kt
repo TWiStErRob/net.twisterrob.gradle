@@ -19,7 +19,7 @@ class SettingsPluginIntgTest : BaseIntgTest() {
 		@Language("gradle.kts")
 		val settings = """
 			plugins {
-				id("net.twisterrob.settings")
+				id("net.twisterrob.gradle.plugin.settings")
 			}
 		""".trimIndent()
 		gradle.file(settings, "settings.gradle.kts")

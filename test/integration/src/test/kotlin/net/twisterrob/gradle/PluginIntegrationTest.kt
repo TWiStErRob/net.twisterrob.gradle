@@ -94,8 +94,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
 			// Android: "net.twisterrob.gradle.plugin.android-test", // :plugin
 			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
 			"net.twisterrob.gradle.test", // :test
 		]
 	)
@@ -122,8 +122,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
 			// Android: "net.twisterrob.gradle.plugin.android-test", // :plugin
 			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
 			"net.twisterrob.gradle.test", // :test
 		]
 	)
@@ -148,8 +148,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
 			"net.twisterrob.vcs", // :plugin:versioning
 			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
 			// Android: "net.twisterrob.gradle.test", // :test
 		]
 	)
@@ -175,8 +175,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
 			"net.twisterrob.vcs", // :plugin:versioning
 			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
 			// Android: "net.twisterrob.gradle.test", // :test
 		]
 	)
@@ -205,8 +205,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
 			// Special: "net.twisterrob.gradle.plugin.android-test", // :plugin
 			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
 			// Android: "net.twisterrob.gradle.test", // :test
 		]
 	)
@@ -236,8 +236,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
 			// Special: "net.twisterrob.gradle.plugin.android-test", // :plugin
 			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
 			// Android: "net.twisterrob.gradle.test", // :test
 		]
 	)
@@ -271,8 +271,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 			apply plugin: "net.twisterrob.gradle.plugin.kotlin" // :plugin:languages
 			apply plugin: "net.twisterrob.vcs" // :plugin:versioning
 			apply plugin: "net.twisterrob.quality" // :quality
-			apply plugin: "net.twisterrob.pmd" // :pmd
-			apply plugin: "net.twisterrob.checkstyle" // :checkstyle
+			apply plugin: "net.twisterrob.gradle.plugin.pmd" // :pmd
+			apply plugin: "net.twisterrob.gradle.plugin.checkstyle" // :checkstyle
 			// Android: apply plugin: "net.twisterrob.gradle.test" // :test
 		""".trimIndent()
 
