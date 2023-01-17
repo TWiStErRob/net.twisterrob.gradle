@@ -53,6 +53,9 @@ internal abstract class DeprecatedPluginKotlinGeneratingTask : DefaultTask() {
 
 	@TaskAction
 	fun generateDeprecatedPlugin() {
+		if (oldName.get() == newName.get()) {
+			error("Old and new plugin ID are the same: ${oldName.get()}")
+		}
 		val implementationClass = implementationClass.get()
 		val packageName = implementationClass.substringBeforeLast('.')
 		val className = implementationClass.substringAfterLast('.')
