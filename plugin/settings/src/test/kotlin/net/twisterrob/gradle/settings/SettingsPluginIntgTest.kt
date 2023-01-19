@@ -26,7 +26,10 @@ class SettingsPluginIntgTest : BaseIntgTest() {
 		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
 			gradle.file(settings, "settings.gradle.kts")
 			val result = gradle.run("").build()
-			result.assertHasOutputLine("Plugin net.twisterrob.settings is deprecated, please use net.twisterrob.gradle.plugin.settings instead.")
+			result.assertHasOutputLine(
+				"Plugin net.twisterrob.settings is deprecated, " +
+						"please use net.twisterrob.gradle.plugin.settings instead."
+			)
 		} else {
 			gradle.file(settings, "settings.gradle.kts")
 

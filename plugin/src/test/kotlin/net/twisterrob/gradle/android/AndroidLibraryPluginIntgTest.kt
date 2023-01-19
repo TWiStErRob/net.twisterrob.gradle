@@ -18,7 +18,10 @@ class AndroidLibraryPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `applying by the old name is deprecated`() {
 		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
 			val result = gradle.run("apply plugin: 'net.twisterrob.android-library'").build()
-			result.assertHasOutputLine("Plugin net.twisterrob.android-library is deprecated, please use net.twisterrob.gradle.plugin.android-library instead.")
+			result.assertHasOutputLine(
+				"Plugin net.twisterrob.android-library is deprecated, " +
+						"please use net.twisterrob.gradle.plugin.android-library instead."
+			)
 		} else {
 			val result = gradle.run("apply plugin: 'net.twisterrob.android-library'").buildAndFail()
 			result.assertHasOutputLine(

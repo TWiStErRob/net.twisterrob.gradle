@@ -339,7 +339,10 @@ class CheckStylePluginTest : BaseIntgTest() {
 	@Test fun `applying by the old name is deprecated`() {
 		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
 			val result = gradle.run("apply plugin: 'net.twisterrob.checkstyle'").build()
-			result.assertHasOutputLine("Plugin net.twisterrob.checkstyle is deprecated, please use net.twisterrob.gradle.plugin.checkstyle instead.")
+			result.assertHasOutputLine(
+				"Plugin net.twisterrob.checkstyle is deprecated, " +
+						"please use net.twisterrob.gradle.plugin.checkstyle instead."
+			)
 		} else {
 			val result = gradle.run("apply plugin: 'net.twisterrob.checkstyle'").buildAndFail()
 			result.assertHasOutputLine(

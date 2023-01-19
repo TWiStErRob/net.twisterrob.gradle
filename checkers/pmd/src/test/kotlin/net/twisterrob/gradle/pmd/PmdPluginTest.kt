@@ -284,7 +284,10 @@ class PmdPluginTest : BaseIntgTest() {
 	@Test fun `applying by the old name is deprecated`() {
 		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
 			val result = gradle.run("apply plugin: 'net.twisterrob.pmd'").build()
-			result.assertHasOutputLine("Plugin net.twisterrob.pmd is deprecated, please use net.twisterrob.gradle.plugin.pmd instead.")
+			result.assertHasOutputLine(
+				"Plugin net.twisterrob.pmd is deprecated, " +
+						"please use net.twisterrob.gradle.plugin.pmd instead."
+			)
 		} else {
 			val result = gradle.run("apply plugin: 'net.twisterrob.pmd'").buildAndFail()
 			result.assertHasOutputLine(

@@ -49,7 +49,10 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `applying java by the old name is deprecated`() {
 		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
 			val result = gradle.run("apply plugin: 'net.twisterrob.java'").build()
-			result.assertHasOutputLine("Plugin net.twisterrob.java is deprecated, please use net.twisterrob.gradle.plugin.java instead.")
+			result.assertHasOutputLine(
+				"Plugin net.twisterrob.java is deprecated, " +
+						"please use net.twisterrob.gradle.plugin.java instead."
+			)
 		} else {
 			val result = gradle.run("apply plugin: 'net.twisterrob.java'").buildAndFail()
 			result.assertHasOutputLine(
@@ -87,7 +90,10 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `applying java-library by the old name is deprecated`() {
 		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
 			val result = gradle.run("apply plugin: 'net.twisterrob.java-library'").build()
-			result.assertHasOutputLine("Plugin net.twisterrob.java-library is deprecated, please use net.twisterrob.gradle.plugin.java-library instead.")
+			result.assertHasOutputLine(
+				"Plugin net.twisterrob.java-library is deprecated, " +
+						"please use net.twisterrob.gradle.plugin.java-library instead."
+			)
 		} else {
 			val result = gradle.run("apply plugin: 'net.twisterrob.java-library'").buildAndFail()
 			result.assertHasOutputLine(

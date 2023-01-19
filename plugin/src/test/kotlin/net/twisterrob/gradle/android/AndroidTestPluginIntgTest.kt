@@ -18,7 +18,10 @@ class AndroidTestPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `applying by the old name is deprecated`() {
 		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
 			val result = gradle.run("apply plugin: 'net.twisterrob.android-test'").build()
-			result.assertHasOutputLine("Plugin net.twisterrob.android-test is deprecated, please use net.twisterrob.gradle.plugin.android-test instead.")
+			result.assertHasOutputLine(
+				"Plugin net.twisterrob.android-test is deprecated, " +
+						"please use net.twisterrob.gradle.plugin.android-test instead."
+			)
 		} else {
 			val result = gradle.run("apply plugin: 'net.twisterrob.android-test'").buildAndFail()
 			result.assertHasOutputLine(

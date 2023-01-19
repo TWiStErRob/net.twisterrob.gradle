@@ -3,11 +3,12 @@ package net.twisterrob.gradle.common
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
+import org.gradle.api.logging.Logging
 import org.gradle.internal.deprecation.DeprecationLogger
 import org.gradle.internal.deprecation.DeprecationMessageBuilder
 import org.gradle.util.GradleVersion
 
-abstract class DeprecatedProjectPlugin(
+open class DeprecatedProjectPlugin(
 	private val oldName: String,
 	private val newName: String,
 ) : Plugin<Project> {
@@ -18,13 +19,14 @@ abstract class DeprecatedProjectPlugin(
 	}
 }
 
-abstract class DeprecatedSettingsPlugin(
+open class DeprecatedSettingsPlugin(
 	private val oldName: String,
 	private val newName: String,
 ) : Plugin<Settings> {
 
 	override fun apply(settings: Settings) {
-		nagUserWithPluginDeprecation(::println, oldName, newName)
+		val logger = Logging.getLogger(Settings::class.java)
+		nagUserWithPluginDeprecation(logger::warn, oldName, newName)
 		settings.plugins.apply(newName)
 	}
 }
