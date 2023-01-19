@@ -3,6 +3,7 @@ package net.twisterrob.gradle.common
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
+import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.internal.deprecation.DeprecationLogger
 import org.gradle.internal.deprecation.DeprecationMessageBuilder
@@ -14,7 +15,7 @@ open class DeprecatedProjectPlugin(
 ) : Plugin<Project> {
 
 	override fun apply(project: Project) {
-		nagUserWithPluginDeprecation(project.project.logger::warn, oldName, newName)
+		nagUserWithPluginDeprecation(project.project.logger, oldName, newName)
 		project.plugins.apply(newName)
 	}
 }
@@ -25,19 +26,18 @@ open class DeprecatedSettingsPlugin(
 ) : Plugin<Settings> {
 
 	override fun apply(settings: Settings) {
-		val logger = Logging.getLogger(Settings::class.java)
-		nagUserWithPluginDeprecation(logger::warn, oldName, newName)
+		nagUserWithPluginDeprecation(Logging.getLogger(Settings::class.java), oldName, newName)
 		settings.plugins.apply(newName)
 	}
 }
 
-fun nagUserWithPluginDeprecation(logger: (String) -> Unit, oldName: String, newName: String) {
+private fun nagUserWithPluginDeprecation(logger: Logger, oldName: String, newName: String) {
 	if (GradleVersion.version("6.3") <= GradleVersion.current().baseVersion
 		&& GradleVersion.current().baseVersion <= GradleVersion.version("9.0")
 	) {
 		gradleInternalNagging(oldName, newName)
 	} else {
-		logger("Plugin ${oldName} is deprecated, please use ${newName} instead.")
+		logger.warn("Plugin ${oldName} is deprecated, please use ${newName} instead.")
 	}
 }
 
