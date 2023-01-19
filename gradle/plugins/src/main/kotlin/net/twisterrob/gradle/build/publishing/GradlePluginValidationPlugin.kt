@@ -23,7 +23,7 @@ class GradlePluginValidationPlugin : Plugin<Project> {
 			}
 
 			project.plugins.withId("org.gradle.maven-publish") {
-				// TODO hook up validation to publishing
+				// TODO hook up validation to publishing, so it only executes when relevant.
 				project.afterEvaluate {
 					@Suppress("UnstableApiUsage")
 					project.gradlePlugin.apply {
@@ -33,13 +33,12 @@ class GradlePluginValidationPlugin : Plugin<Project> {
 						if (!vcsUrl.isPresent) {
 							error("$project missing website for Gradle Plugin publications.")
 						}
-						plugins.all plugin@{
+						plugins.configureEach plugin@{
 							val plugin = this@plugin
 							plugin.id ?: error("Plugin ID for ${plugin.name} is not set.")
 							plugin.displayName ?: error("Plugin Display Name for ${plugin.id} is not set.")
 							plugin.description ?: error("Plugin Description for ${plugin.id} is not set.")
-							plugin.implementationClass
-								?: error("Plugin implementation class for ${plugin.id} is not set.")
+							plugin.implementationClass ?: error("Plugin implementation for ${plugin.id} is not set.")
 							if (plugin.tags.getOrElse(emptySet()).isEmpty()) {
 								error("Plugin Tags for ${plugin.id} are not set.")
 							}
