@@ -118,20 +118,24 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").buildAndFail()
-
-		result.assertHasOutputLine(
-			Regex(
-				"""org\.gradle\.api\.GradleException: """ +
-						"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
+		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
+			val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").build()
+			result.assertHasOutputLine("Plugin net.twisterrob.kotlin is deprecated, please use net.twisterrob.gradle.plugin.kotlin instead.")
+		} else {
+			val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").buildAndFail()
+			result.assertHasOutputLine(
+				Regex(
+					"""org\.gradle\.api\.GradleException: """ +
+							"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
+				)
 			)
-		)
-		result.assertHasOutputLine(
-			Regex(
-				"""The net\.twisterrob\.kotlin plugin has been deprecated\. """
-						+ """This is scheduled to be removed in Gradle \d\.0\. """
-						+ """Please use the net\.twisterrob\.gradle\.plugin\.kotlin plugin instead."""
+			result.assertHasOutputLine(
+				Regex(
+					"""The net\.twisterrob\.kotlin plugin has been deprecated\. """
+							+ """This is scheduled to be removed in Gradle \d\.0\. """
+							+ """Please use the net\.twisterrob\.gradle\.plugin\.kotlin plugin instead."""
+				)
 			)
-		)
+		}
 	}
 }
