@@ -60,6 +60,16 @@ Currently supported version are Android Gradle Plugin 3.3.3 — 7.4.x on Gradle 
 ## Quick setup
 There are different ways to use a Gradle plugin, choose your poison below.
 <details>
+	<summary>modern build.gradle(.kts) (<code>plugins</code>)</summary>
+
+```gradle
+plugins {
+	id("net.twisterrob.gradle.plugin.quality") version "x.y"
+}
+```
+</details>
+
+<details>
 	<summary>normal build.gradle(.kts) (<code>buildscript</code>)</summary>
 
 ```gradle
@@ -100,35 +110,6 @@ dependencies {
 apply(plugin = "net.twisterrob.gradle.plugin.quality")
 // Groovy
 apply plugin: "net.twisterrob.gradle.plugin.quality"
-```
-
-</details>
-
-<details>
-	<summary><code>plugins</code> block and settings.gradle(.kts)</summary>
-
-See it live at [SNAPSHOT example](docs/examples/snapshot/settings.gradle.kts).
-
-```gradle
-plugins {
-	id("net.twisterrob.gradle.plugin.quality") version "x.y"
-}
-```
-
-```gradle
-pluginManagement {
-	repositories {
-		mavenCentral()
-	}
-	resolutionStrategy {
-		eachPlugin {
-			when (requested.id.id) {
-				"net.twisterrob.gradle.plugin.quality" ->
-					useModule("net.twisterrob.gradle:twister-quality:${requested.version}")
-			}
-		}
-	}
-}
 ```
 
 </details>

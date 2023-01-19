@@ -37,6 +37,7 @@ maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
    name = "Sonatype 01: SNAPSHOTs"
    content {
        includeGroup("net.twisterrob.gradle")
+       includeGroupByRegex("net\.twisterrob\.gradle\.plugin\..*")
    }
    mavenContent {
        snapshotsOnly()
@@ -56,17 +57,19 @@ gradlew publishToMavenLocal
 ```
 
 #### Consume
+`settings.gradle(.kts)`:
 ```gradle
-buildscript {
+pluginManagement {
 	repositories {
 		mavenLocal() // make sure it's first
+		...
 	}
 }
 ```
-and then business as usual (e.g. `buildscript { dependencies { classpath "..."` etc. see [README.md](../README.md#quick-setup)).
+and then business as usual (e.g. `plugins { ...` etc. see [README.md](../README.md#quick-setup)).
 
 
-## Using the `-SNAPSHOT` from a local build
+### Using the `-SNAPSHOT` from a local build
 This bypasses Gradle's dependency management and uses jars directly. The drawback is that each transitive dependency has to be manually added.
 
 <details>
