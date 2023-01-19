@@ -9,6 +9,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.register
@@ -49,17 +50,20 @@ class PublishingPlugin : Plugin<Project> {
 				website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
 				vcsUrl.set("https://github.com/TWiStErRob/net.twisterrob.gradle.git")
 			}
-			project.publishing.apply {
-				publications {
-					// Cannot configure built-in pluginMaven publication created by java-gradle-plugin here.
-					// We would have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin,
-					// but then it wouldn't pick up the changes to the pluginMaven publication.
-					// This is shown here: https://github.com/gradle/gradle/issues/23551
-					// Registering a new publication here will override the built-in one in MavenPluginPublishPlugin.
-					// Notice the maybeCreate usage in addMainPublication.
-					register<MavenPublication>("pluginMaven") {
-						setupPublication(project)
-						handleTestFixtures()
+			// Configure built-in pluginMaven publication created by java-gradle-plugin.
+			// Have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin.
+			// Cannot be relying on the `maybeCreate` usage in MavenPluginPublishPlugin.addMainPublication,
+			// because the module name is set in afterEvaluate in setupModuleIdentity and MPPP already read it.
+			// This is described in https://github.com/gradle/gradle/issues/23551.
+			project.afterEvaluate {
+				project.publishing.apply {
+					publications {
+						named<MavenPublication>("pluginMaven").configure pluginMaven@{
+							setupPublication(project)
+							handleTestFixtures()
+							// TODEL work around https://github.com/gradle/gradle/issues/23551
+							fixMarkers(project)
+						}
 					}
 				}
 			}
@@ -81,6 +85,21 @@ private fun MavenPublication.setupPublication(project: Project) {
 	setupModuleIdentity(project)
 	setupLinks(project)
 	reorderNodes(project)
+}
+
+private fun MavenPublication.fixMarkers(project: Project) {
+	project.gradlePlugin.plugins.forEach { plugin ->
+		project.publishing.publications
+			.getByName<MavenPublication>("${plugin.name}PluginMarkerMaven")
+			.pom
+			.withXml {
+				asNode()
+					.getChild("dependencies")
+					.getChild("dependency")
+					.getChild("artifactId")
+					.setValue(this@fixMarkers.artifactId)
+			}
+	}
 }
 
 private fun MavenPublication.handleTestFixtures() {
