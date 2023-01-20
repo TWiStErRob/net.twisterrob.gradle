@@ -1,5 +1,4 @@
 pluginManagement {
-	includeBuild("../shared")
 	repositories {
 		mavenCentral()
 		//gradlePluginPortal() // not used

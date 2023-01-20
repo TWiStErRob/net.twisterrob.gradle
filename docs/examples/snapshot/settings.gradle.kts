@@ -1,8 +1,18 @@
 pluginManagement {
-	includeBuild("../shared")
 	repositories {
 		mavenCentral()
 		//gradlePluginPortal() // not used
+		exclusiveContent {
+			forRepository {
+				google()
+			}
+			filter {
+				includeGroupByRegex("""^com\.android(\..*)?$""")
+				includeGroupByRegex("""^com\.google\.android\..*$""")
+				includeGroupByRegex("""^com\.google\.testing\.platform$""")
+				includeGroupByRegex("""^androidx\..*$""")
+			}
+		}
 		exclusiveContent {
 			forRepository {
 				maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
@@ -16,17 +26,6 @@ pluginManagement {
 				includeGroup("net.twisterrob.gradle")
 			}
 		}
-		exclusiveContent {
-			forRepository {
-				google()
-			}
-			filter {
-				includeGroupByRegex("""^com\.android(\..*)?$""")
-				includeGroupByRegex("""^com\.google\.android\..*$""")
-				includeGroupByRegex("""^com\.google\.testing\.platform$""")
-				includeGroupByRegex("""^androidx\..*$""")
-			}
-		}
 	}
 	resolutionStrategy {
 		eachPlugin {
@@ -38,6 +37,12 @@ pluginManagement {
 			}
 		}
 	}
+}
+
+plugins {
+	id("net.twisterrob.gradle.plugin.settings") version "0.15-SNAPSHOT"
+	// REPORT why is this needed? Without this * What went wrong: com/android/build/gradle/AppExtension
+	id("com.android.application") version "7.3.1" apply false
 }
 
 if (!JavaVersion.current().isJava11Compatible) {
