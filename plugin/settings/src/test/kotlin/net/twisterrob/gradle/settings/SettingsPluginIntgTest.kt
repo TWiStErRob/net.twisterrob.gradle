@@ -19,9 +19,9 @@ class SettingsPluginIntgTest : BaseIntgTest() {
 	@Test fun `applying by the old name is deprecated`() {
 		@Language("gradle.kts")
 		val settings = """
-		plugins {
-			id("net.twisterrob.settings")
-		}
+			plugins {
+				id("net.twisterrob.settings")
+			}
 		""".trimIndent()
 		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
 			gradle.file(settings, "settings.gradle.kts")
