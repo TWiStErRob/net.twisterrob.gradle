@@ -6,7 +6,6 @@ import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
@@ -22,7 +21,7 @@ abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 	abstract val revisionNumberFile: RegularFileProperty
 
 	init {
-		(this as Task).inputs.files(project.provider { vcs.current.files(project) })
+		inputs.files(project.provider { vcs.current.files(project) })
 		@Suppress("LeakingThis")
 		revisionFile.convention(project.intermediateRegularFile("buildConfigDecorations/revision.txt"))
 		@Suppress("LeakingThis")
