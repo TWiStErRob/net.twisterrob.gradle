@@ -12,7 +12,7 @@ import org.gradle.util.GradleVersion
  *
  * Example usage with Gradle 7.5.1 and Android Gradle Plugin 7.2.2:
  * ```
- * val gradleVersion: String = GradleVersion.current().baseVersion.version
+ * val gradleVersion: String = GradleVersion.current().version
  *
  * // Ignore warning for https://issuetracker.google.com/issues/218478028 since Gradle 7.5,
  * // it's going to be fixed in AGP 7.3.
