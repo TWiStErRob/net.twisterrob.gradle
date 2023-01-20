@@ -10,10 +10,10 @@ gradlePlugin {
 	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
 		create("gradleTest") {
-			id = "net.twisterrob.gradle.plugin.test"
+			id = "net.twisterrob.gradle.plugin.gradle.test"
 			displayName = "Gradle Testing Plugin"
 			description = """
-				TWiStErRob's testing helper plugin and testing utilities.
+				TWiStErRob's testing helper plugin and testing utilities for Gradle based integration tests.
 				
 				A wrapper for `org.gradle.testkit.runner.GradleRunner` to reduce boilerplate.
 				Also contains helpers for building a project on disk from code and assert the results of an execution.
