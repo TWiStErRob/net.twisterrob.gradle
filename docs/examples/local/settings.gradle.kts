@@ -36,8 +36,6 @@ pluginManagement {
 
 plugins {
 	id("net.twisterrob.gradle.plugin.settings") version "0.15-SNAPSHOT"
-	// REPORT why is this needed? Without this * What went wrong: com/android/build/gradle/AppExtension
-	id("com.android.application") version "7.3.1" apply false
 }
 
 if (!JavaVersion.current().isJava11Compatible) {
