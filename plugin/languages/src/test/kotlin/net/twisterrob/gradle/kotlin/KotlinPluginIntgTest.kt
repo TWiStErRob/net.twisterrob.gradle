@@ -118,6 +118,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
+		gradle.basedOn(GradleBuildTestResources.kotlin)
 		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
 			val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").build()
 			result.assertHasOutputLine(
