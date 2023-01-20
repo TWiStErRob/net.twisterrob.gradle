@@ -2,10 +2,10 @@ package net.twisterrob.gradle.build.detekt
 
 import io.gitlab.arturbosch.detekt.Detekt
 import isCI
+import net.twisterrob.gradle.slug
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.withType
-import slug
 
 internal class DetektPlugin : Plugin<Project> {
 
