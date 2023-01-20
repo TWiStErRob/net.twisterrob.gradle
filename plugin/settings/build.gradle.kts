@@ -15,6 +15,16 @@ gradlePlugin {
 	}
 }
 
+kotlin {
+	sourceSets.named("main").configure {
+		// Split up the sources into multiple folders, so gradle/plugins can re-use some of them.
+		// Creating an extra folder for only publicly used sources.
+		// Therefore, everything in src/main/kotlin is re-used between this project and gradle/plugins.
+		// See gradle/plugins/build.gradle.kts > kotlin.sourceSets for more info.
+		kotlin.srcDir("src/main/kotlin-published")
+	}
+}
+
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 

@@ -58,6 +58,14 @@ dependencies {
 	compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
 
+kotlin {
+	sourceSets.named("main").configure {
+		// Import part of the project into gradle/plugins,
+		// so that it can be used in from precompiled plugins and build.gradle.kts. 
+		kotlin.srcDir("../../plugin/settings/src/main/kotlin")
+	}
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
 	kotlinOptions.verbose = true
 	kotlinOptions.allWarningsAsErrors = true
