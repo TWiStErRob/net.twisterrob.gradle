@@ -5,7 +5,10 @@ import net.twisterrob.gradle.test.createSubProject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
- 
+
+/**
+ * @see slug
+ */
 class GradleUtilsTest_slug {
 	@Test fun `root module`() {
 		val fixtRoot = RootProject()
