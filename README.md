@@ -47,6 +47,7 @@ Currently supported version are Android Gradle Plugin 3.3.3 — 7.4.x on Gradle 
 | 7.4 - 7.4.2        |     ❓      |     ❓      |     ❓      |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.15 - ∞ |    ❌     |
 | 7.5 - 7.5.1        |     ❓      |     ❓      |     ❓      |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.15 - ∞ | 0.15 - ∞ |
 | 7.6                |     ❓      |     ❓      |     ❓      |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.15 - ∞ | 0.15 - ∞ |
+| 8.0 RC 2           |     ❓      |     ❓      |     ❓      |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     |    ❓     |    ❓     |    ❓     |    ❓     |    ❓     | 0.15 - ∞ |
 
  * ❓ = not sure if it's supported by AGP, never tested.
  * ❌ = incompatible based on AGP compatibility.

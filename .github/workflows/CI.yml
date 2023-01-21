@@ -698,6 +698,22 @@ jobs:
             build-tools: 32.0.0
             instant-api: 30
             test-task: testReport :plugin:tests
+          - name: "AGP 7.4.x on Gradle 8.x"
+            gradle: 8.0-rc-2
+            gradle-java: 11
+            agp: 7.4.0
+            kotlin: 1.6.21
+            build-tools: 30.0.3
+            instant-api: 30
+            test-task: testReport :quality:tests
+          - name: "AGP 7.4.x on Gradle 8.x - plugin"
+            gradle: 8.0-rc-2
+            gradle-java: 11
+            agp: 7.4.0
+            kotlin: 1.6.21
+            build-tools: 32.0.0
+            instant-api: 30
+            test-task: testReport :plugin:tests
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
@@ -999,6 +1015,20 @@ jobs:
         with:
           name: AGP 7.4.x on Gradle 7.x - plugin (7.4.0 on 7.6) Test Results XMLs
           path: artifacts/AGP 7.4.x on Gradle 7.x - plugin (7.4.0 on 7.6) Test Results XMLs
+
+      - name: Download 'AGP 7.4.x on Gradle 8.x (7.4.0 on 8.0-rc-2) Test Results XMLs' artifact.
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: AGP 7.4.x on Gradle 8.x (7.4.0 on 8.0-rc-2) Test Results XMLs
+          path: artifacts/AGP 7.4.x on Gradle 8.x (7.4.0 on 8.0-rc-2) Test Results XMLs
+
+      - name: Download 'AGP 7.4.x on Gradle 8.x - plugin (7.4.0 on 8.0-rc-2) Test Results XMLs' artifact.
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: AGP 7.4.x on Gradle 8.x - plugin (7.4.0 on 8.0-rc-2) Test Results XMLs
+          path: artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.0 on 8.0-rc-2) Test Results XMLs
 
       #- name: Display structure of downloaded files
       #  run: ls -R
