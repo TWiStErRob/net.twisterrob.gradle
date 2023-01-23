@@ -60,8 +60,15 @@ naming:
   BooleanPropertyNaming:
     allowedPattern: '^(is|has|are|was)'
 
+  FunctionMaxLength:
+    excludes:
+      - '**/src/test/kotlin/**'
 
 style:
+  
+  ClassOrdering:
+    excludes:
+      - '**/src/test/kotlin/**'
 
   ForbiddenComment:
     values:
