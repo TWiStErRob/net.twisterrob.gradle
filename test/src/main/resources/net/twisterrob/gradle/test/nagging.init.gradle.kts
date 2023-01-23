@@ -18,8 +18,6 @@ initscript {
 
 apply<net.twisterrob.gradle.nagging.NaggingPlugin>()
 
-val gradleVersion: String = GradleVersion.current().version
-
 // Sorted by (Gradle, AGP).
 
 doNotNagAbout(
