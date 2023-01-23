@@ -11,11 +11,11 @@ import org.gradle.util.GradleVersion
  * @see doNotNagAbout for more details
  */
 fun doNotNagAbout(gradle: String, agpRegex: String, message: String) {
-	if (GradleVersion.current().baseVersion == GradleVersion.version(gradle)) {
-		if (Regex(agpRegex) matches agpVersion) {
-			val logger = Logging.getLogger(Gradle::class.java)
-			logger.lifecycle("Ignoring deprecation: ${message}")
-			doNotNagAbout(message)
-		}
-	}
+	if (GradleVersion.current().baseVersion != GradleVersion.version(gradle)) return
+	if (!Regex(agpRegex).matches(agpVersion)) return
+
+	val logger = Logging.getLogger(Gradle::class.java)
+	logger.lifecycle("Ignoring deprecation: ${message}")
+
+	doNotNagAbout(message)
 }
