@@ -23,6 +23,7 @@ import java.util.regex.Pattern
  *    This is useful if multiple plugins are behind on fixing the deprecations.
  *  - `fail` was not a valid option for `--warning-mode` before Gradle 5.6.0.
  *
+ * ### Example 1 - suppressing generic deprecation.
  * Realistic usage example with Gradle 7.5.1 and Android Gradle Plugin 7.2.2:
  * ```kotlin
  * // Ignore warning for https://issuetracker.google.com/issues/218478028 since Gradle 7.5,
@@ -37,25 +38,52 @@ import java.util.regex.Pattern
  *     + "https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
  *   )
  * } else {
- * 	 error("AGP version changed, review deprecation warning suppression.")
+ *   error("AGP version changed, review deprecation warning suppression.")
  * }
  * ```
  * Notes:
+ *  - Notice that there's no reference to AGP in the message, which means it'll suppress other usages of the same API!
  *  - The `gradleVersion` substitution is there so Gradle upgrades in 7.x don't need revising this warning.
  *  - The version check is optional, but encouraged, so hacks don't linger around longer than necessary.
+ *  - The text is broken down into sentences, so it's more human-friendly in code.
  *
- * See `doNotNagAbout(Regex)` overload for more dynamic message matching.
+ * ### Example 2 - suppressing specific deprecation (Gradle 8+ only).
+ * Realistic regex with stacktrace example with Gradle 8.0 and Android Gradle Plugin 7.4:
+ * ```kotlin
+ * // Ignore warning for https://issuetracker.google.com/issues/264177800 since Gradle 8.0,
+ * // it's going to be fixed in AGP 7.4.1 or AGP 8.0.
+ * if (com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION < "7.4.1") {
+ *   val gradleVersion: String = GradleVersion.current().version
+ *   doNotNagAbout(
+ *     Regex.escape(
+ *       "The Report.destination property has been deprecated. "
+ *       + "This is scheduled to be removed in Gradle 9.0. "
+ *       + "Please use the outputLocation property instead. "
+ *       + "See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details."
+ *     ) + ".*${Regex.escape("at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure")}.*"
+ *   )
+ * } else {
+ *   error("AGP version changed, review deprecation warning suppression.")
+ * }
+ * ```
+ * Notes (in addition to the notes from Example 1):
+ *  - The stack trace is matched blanket as "contains" (`.*${...}.*`),
+ *    and only one line is matched which identifies AGP as the source.
+ *  - [Regex.escape] is used to prevent crazy-looking escape sequences.
  *
- * @param message The regex provided will be used to match the entire message, including the stack trace in Gradle 8.
- * If you want to do a partial match, use `^` and `$` anchors and add `.*` to fill in the dynamic parts.
- *
- * For example sticking with the example, the regex could be:
+ * ### Example 3 - Partial match (discouraged)
+ * For an example of partial match, sticking with Example 1, the regex could be:
  * ```kotlin
  * doNotNagAbout(Regex("""^.*org\.gradle\.work\.InputChanges.*$"""))
  * ```
- *
  * Note that this is possible, but discouraged,
  * because it may ignore too much and cause build breakages or delays in future upgrades of your builds.
+ * That said, this is probably still better than using values other than `fail` for `org.gradle.warning.mode.
+ *
+ * @param message The regex provided will be used to match the entire message, including the stack trace in Gradle 8.
+ * If you want to do a partial match, add `.*` to fill in the dynamic parts.
+ * The flag [RegexOption.DOT_MATCHES_ALL] is enforced so `.` will match newlines and the regex is easier to write.
+ * This can be disabled with `(?-s)` inline if you know what you're doing.
  */
 fun doNotNagAbout(message: Regex) {
 	// In Gradle 4.7.0 (c633542) org.gradle.util.SingleMessageLogger#deprecatedFeatureHandler came to be in a refactor.
@@ -85,7 +113,8 @@ fun doNotNagAbout(message: Regex) {
 
 	val ignore = IgnoringSet.wrap(messages)
 	messagesField.set(deprecationLogger, ignore)
-	ignore.ignorePattern(message)
+	val regex = Regex(message.pattern, message.options + setOf(RegexOption.DOT_MATCHES_ALL))
+	ignore.ignorePattern(regex)
 }
 
 /**
