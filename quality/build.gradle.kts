@@ -50,9 +50,10 @@ tasks.register("tests") {
 		projects.pmd,
 		projects.test,
 		projects.test.internal,
+		projects.test.internal.runtime,
 		projects.test.integration,
-	).forEach {
-		dependsOn(it.dependencyProject.tasks.named("test"))
+	).forEach { project ->
+		dependsOn(project.dependencyProject.tasks.named("test"))
 	}
 	dependsOn(projects.compat.dependencyProject.tasks.named("tests"))
 }

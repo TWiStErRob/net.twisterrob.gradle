@@ -20,6 +20,7 @@ include(":common")
 include(":test")
 include(":test:integration")
 include(":test:internal")
+include(":test:internal:runtime")
 
 listOf("checkstyle", "pmd").forEach {
 	include(":${it}")
