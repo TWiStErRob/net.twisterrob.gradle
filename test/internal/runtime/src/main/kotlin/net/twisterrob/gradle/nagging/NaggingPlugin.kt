@@ -8,7 +8,7 @@ import org.gradle.api.invocation.Gradle
  */
 class NaggingPlugin : Plugin<Gradle> {
 	override fun apply(gradle: Gradle) {
-		gradle.rootProject {
+		gradle.rootProject { rootProject ->
 			// Groovy .ext === Kotlin .extensions.extraProperties === Kotlin DSL .extra
 			// Based on https://stackoverflow.com/a/19269037/253468
 			// Based on https://discuss.gradle.org/t/how-to-access-a-function-defined-in-init-gradle-in-build-script/6200/2
@@ -22,8 +22,8 @@ class NaggingPlugin : Plugin<Gradle> {
 			// val doNotNagAbout = project.rootProject.extensions.extraProperties["doNotNagAbout"] as (String, String, String) -> Unit
 			// doNotNagAbout("7.4.2", """^7\.2\.\d$""", "message")
 
-			it.extensions.extraProperties.set("doNotNagAbout", ::doNotNagAbout)
-			it.extensions.extraProperties.set("doNotNagAboutPattern", ::doNotNagAboutPattern)
+			rootProject.extensions.extraProperties.set("doNotNagAbout", ::doNotNagAbout)
+			rootProject.extensions.extraProperties.set("doNotNagAboutPattern", ::doNotNagAboutPattern)
 		}
 	}
 }

@@ -4,4 +4,5 @@ plugins {
 
 dependencies {
 	compileOnly(gradleApiWithoutKotlin())
+	implementation(projects.plugin.settings)
 }
