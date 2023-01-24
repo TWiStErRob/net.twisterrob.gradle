@@ -1,6 +1,4 @@
 [libraries]
-android-gradle-v31x = { module = "com.android.tools.build:gradle", version = "3.1.4" }
-android-gradle-v32x = { module = "com.android.tools.build:gradle", version = "3.2.1" }
 android-gradle-v33x = { module = "com.android.tools.build:gradle", version = "3.3.3" }
 android-gradle-v34x = { module = "com.android.tools.build:gradle", version = "3.4.3" }
 android-gradle-v35x = { module = "com.android.tools.build:gradle", version = "3.5.4" }
