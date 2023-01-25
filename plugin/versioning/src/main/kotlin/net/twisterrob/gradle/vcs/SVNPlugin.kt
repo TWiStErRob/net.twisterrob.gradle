@@ -62,33 +62,48 @@ open class SVNPluginExtension(
 
 	// key method/closure - used as: def out = doSvnMain( 'your', 'svn', 'args', 'go', 'here' );
 	@Suppress("unused")
-	private fun cli(vararg svnArgs: String): String {
-		System.setSecurityManager(NonExitingSecurityManager) // stop SVN.main from doing a System.exit call
-		val baos = ByteArrayOutputStream()
-		val oldSystemOut = System.out
-		System.setOut(PrintStream(baos))
-		try {
-			SVN.main(svnArgs)
-			System.out.flush()
-			return baos.toString()
-		} finally {
-			System.setOut(oldSystemOut)
-			System.setSecurityManager(null)
+	private fun cli(vararg svnArgs: String): String =
+		captureSystemOut {
+			preventExit { SVN.main(svnArgs) }
 		}
-	}
 
 	companion object {
 
 		internal const val NAME: String = "svn"
-	}
 
-	private object NonExitingSecurityManager : SecurityManager() {
-
-		override fun checkPermission(perm: Permission) {
-			// do nothing
+		@Suppress("DEPRECATION") // TODEL if there's a replacement in https://bugs.openjdk.org/browse/JDK-8199704.
+		private inline fun <T> preventExit(block: () -> T): T {
+			val oldSecurityManager = System.getSecurityManager()
+			System.setSecurityManager(NonExitingSecurityManager) // stop SVN.main from doing a System.exit call
+			try {
+				return block()
+			} finally {
+				System.setSecurityManager(oldSecurityManager)
+			}
 		}
 
-		override fun checkExit(status: Int): Nothing =
-			throw SecurityException()
+		private inline fun captureSystemOut(block: () -> Unit): String {
+			val baos = ByteArrayOutputStream()
+			val oldSystemOut = System.out
+			System.setOut(PrintStream(baos))
+			try {
+				block()
+				System.out.flush()
+				return baos.toString()
+			} finally {
+				System.setOut(oldSystemOut)
+			}
+		}
+	}
+
+	private object NonExitingSecurityManager : @Suppress("DEPRECATION") SecurityManager() {
+
+		override fun checkPermission(perm: Permission) {
+			// Do nothing, allow it.
+		}
+
+		override fun checkExit(status: Int) {
+			throw SecurityException() // Prevent it.
+		}
 	}
 }
