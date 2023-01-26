@@ -71,6 +71,12 @@ open class GradleRunnerRule : TestRule {
 			field = value
 		}
 
+	var javaHome = File(System.getProperty("java.home"))
+		set(value) {
+			setJavaHome(value)
+			field = value
+		}
+
 	@Suppress("MemberVisibilityCanBePrivate") // API
 	lateinit var buildFile: File
 		private set

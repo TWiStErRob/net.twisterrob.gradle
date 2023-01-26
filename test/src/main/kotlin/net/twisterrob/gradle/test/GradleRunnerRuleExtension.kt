@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstancePostProcessor
+import java.io.File
 
 open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback {
 
@@ -15,6 +16,7 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 		override fun setUp() {
 			super.setUp()
 			file(readInitGradle(), "init.gradle.kts")
+			javaHome = File(System.getenv(System.getProperty("net.twisterrob.test.gradle.javaHomeEnv")))
 		}
 
 		private fun strictWarningMode(): Array<String> =

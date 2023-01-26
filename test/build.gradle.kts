@@ -20,6 +20,7 @@ dependencies {
 
 	compileOnly(libs.junit.legacy)
 	compileOnly(libs.junit.api)
+	compileOnly(libs.mockito.kotlin)
 	compileOnly(libs.annotations.jsr305)
 	compileOnly(libs.annotations.jetbrains)
 
