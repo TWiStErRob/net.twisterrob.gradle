@@ -71,6 +71,12 @@ open class GradleRunnerRule : TestRule {
 			field = value
 		}
 
+	var javaHome = File(System.getProperty("java.home"))
+		set(value) {
+			setJavaHome(value)
+			field = value
+		}
+
 	@Suppress("MemberVisibilityCanBePrivate") // API
 	lateinit var buildFile: File
 		private set
@@ -158,8 +164,8 @@ open class GradleRunnerRule : TestRule {
 		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println(
 			@Suppress("MultilineRawStringIndentation") """
-				${gradleVersion} worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
-				Java: ${java} from ${javaHome}.
+				Test Java: ${java} from ${javaHome}.
+				Requesting ${gradleVersion} in worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
 				Gradle properties:
 				```properties
 ${propertiesContentForLogging().prependIndent("\t\t\t\t")}

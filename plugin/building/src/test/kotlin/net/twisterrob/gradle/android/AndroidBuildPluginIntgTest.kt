@@ -336,7 +336,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
 				testImplementation 'junit:junit:4.13.1'
-				testImplementation 'org.robolectric:robolectric:4.4'
+				testImplementation 'org.robolectric:robolectric:4.9.2'
 				testImplementation 'androidx.test:core:1.3.0'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
@@ -400,7 +400,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
 				testImplementation 'junit:junit:4.13.1'
-				testImplementation 'org.robolectric:robolectric:4.4'
+				testImplementation 'org.robolectric:robolectric:4.9.2'
 				testImplementation 'androidx.test:core:1.3.0'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
@@ -470,7 +470,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.kotlin'
 			dependencies {
 				testImplementation 'junit:junit:4.13.1'
-				testImplementation 'org.robolectric:robolectric:4.4'
+				testImplementation 'org.robolectric:robolectric:4.9.2'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test).configureEach {

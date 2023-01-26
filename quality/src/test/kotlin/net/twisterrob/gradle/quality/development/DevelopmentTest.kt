@@ -85,5 +85,5 @@ class DevelopmentTest : BaseIntgTest() {
 
 private fun openHtml(html: File) {
 	assertThat(html, anExistingFile())
-	Runtime.getRuntime().exec("""cmd /k "start "" "${html.toURI()}""""")
+	Runtime.getRuntime().exec(arrayOf("cmd", "/k", "start", "", html.toURI().toString()))
 }

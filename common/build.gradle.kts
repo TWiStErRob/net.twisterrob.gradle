@@ -37,3 +37,11 @@ tasks.named<GroovyCompile>("compileTestGroovy") {
 	dependsOn(kotlinTask)
 	classpath += files(kotlinTask.map { it.destinationDirectory })
 }
+
+tasks.named<Test>("test") {
+	if (javaVersion.isJava9Compatible) {
+		// TODEL Java 16 vs Gradle 7+ https://github.com/gradle/gradle/issues/18647
+		// Example test: TaskCreationConfigurationTest.`registering a task preConfigures, but does not create it`
+		jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
+	}
+}
