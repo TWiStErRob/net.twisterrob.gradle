@@ -22,13 +22,13 @@ gradle-enterprise = "3.12.2"
 
 # See [lint] which is affected by this.
 # Versions: https://maven.google.com/web/index.html#com.android.tools.build:gradle
-agp = "7.3.1"
+agp = "7.4.0"
 
 # = 23.0.0 + [agp].
 # @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
 # @see builder-model//version.properties
 # Versions: https://maven.google.com/web/index.html#com.android.tools.lint:lint
-lint = "30.3.1"
+lint = "30.4.0"
 
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # Actual Kotlin version for dependencies. It has to be older to make sure AGP 3.x is still compatible.
