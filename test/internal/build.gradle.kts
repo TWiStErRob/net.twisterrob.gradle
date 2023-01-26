@@ -33,3 +33,9 @@ dependencies {
 	testRuntimeOnly(libs.android.lint.gradle) { isTransitive = false }
 	testRuntimeOnly(libs.android.lint.checks) { isTransitive = false }
 }
+
+tasks.named<Test>("test") {
+	// TODEL Java 16 vs AssertionFailedError https://github.com/ota4j-team/opentest4j/issues/70
+	// Example test: WithRootCauseKtTest.`registering a task preConfigures, but does not create it`
+	jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
+}
