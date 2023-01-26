@@ -33,7 +33,9 @@ disableGradlePluginValidation()
 addJarToClasspathOfPlugin()
 
 tasks.named<Test>("test") {
-	// TODEL throws initializationError, probably because Java 8 is used for bytecode, but running on Java 19.
-	// Example test: AndroidReleasePluginIntgTest (but only on CI!)
-	jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+	if (javaVersion.isJava9Compatible) {
+		// TODEL throws initializationError, probably because Java 8 is used for bytecode, but running on Java 19.
+		// Example test: AndroidReleasePluginIntgTest (but only on CI!)
+		jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+	}
 }
