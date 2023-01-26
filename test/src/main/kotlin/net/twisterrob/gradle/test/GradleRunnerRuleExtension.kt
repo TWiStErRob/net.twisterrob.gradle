@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstancePostProcessor
-import java.io.File
 
 open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback {
 
@@ -21,7 +20,7 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 			super.setUp()
 			file(readResource("nagging.init.gradle.kts"), "nagging.init.gradle.kts")
 			file(readResource("runtime.init.gradle.kts"), "runtime.init.gradle.kts")
-			javaHome = File(System.getenv(System.getProperty("net.twisterrob.test.gradle.javaHomeEnv")))
+			//javaHome = File(System.getenv(System.getProperty("net.twisterrob.test.gradle.javaHomeEnv")))
 		}
 
 		private fun strictWarningMode(): Array<String> =

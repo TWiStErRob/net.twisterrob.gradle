@@ -33,10 +33,10 @@ jobs:
     timeout-minutes: 20
     needs: validate
     steps:
-      - name: Set up JDK 19.
+      - name: Set up JDK 17.
         uses: actions/setup-java@v3
         with:
-          java-version: 19
+          java-version: 17
           distribution: zulu
 
       - name: Set up Android SDK.
@@ -175,10 +175,10 @@ jobs:
     steps:
       - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
 
-      - name: Set up JDK 19.
+      - name: Set up JDK 17.
         uses: actions/setup-java@v3
         with:
-          java-version: 19
+          java-version: 17
           distribution: zulu
 
       - name: Set up Android SDK.
@@ -214,6 +214,23 @@ jobs:
           # compileSdkVersion for almost all tests, may need an extra `yes | sdkmanager "platforms;android-30"` step.
           echo sdkmanager --install "platforms;android-30"
           sdkmanager --install "platforms;android-30"
+
+      - name: Set up JDK(s).
+        run: |
+          echo "JAVA8_HOME=$JAVA_HOME_8_X64" | tee --append $GITHUB_ENV
+          echo "JAVA11_HOME=$JAVA_HOME_11_X64" | tee --append $GITHUB_ENV
+          case ${{ matrix.gradle-java }} in
+            8)
+              echo "JAVA_HOME=$JAVA_HOME_8_X64" | tee --append $GITHUB_ENV
+            ;;
+            11)
+              echo "JAVA_HOME=$JAVA_HOME_11_X64" | tee --append $GITHUB_ENV
+            ;;
+            *)
+              echo "Unrecognized matrix.gradle-java=${{ matrix.gradle-java }}."
+              exit 1
+            ;;
+          esac
 
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
