@@ -11,11 +11,11 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 
 	private val rule = object : GradleRunnerRule() {
 		override val extraArgs: Array<String>
-			get() = super.extraArgs + arrayOf("--init-script=init.gradle.kts") + strictWarningMode()
+			get() = super.extraArgs + arrayOf("--init-script=nagging.init.gradle.kts") + strictWarningMode()
 
 		override fun setUp() {
 			super.setUp()
-			file(readInitGradle(), "init.gradle.kts")
+			file(readInitGradle(), "nagging.init.gradle.kts")
 			javaHome = File(System.getenv(System.getProperty("net.twisterrob.test.gradle.javaHomeEnv")))
 		}
 
@@ -28,7 +28,7 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 			}
 
 		private fun readInitGradle(): String {
-			val initGradle = GradleRunnerRuleExtension::class.java.getResourceAsStream("init.gradle.kts")
+			val initGradle = GradleRunnerRuleExtension::class.java.getResourceAsStream("nagging.init.gradle.kts")
 				?: error("Cannot find init.gradle.kts on classpath of ${GradleRunnerRuleExtension::class}")
 			return initGradle.use { it.reader().readText() }
 		}
