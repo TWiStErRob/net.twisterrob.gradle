@@ -6,7 +6,8 @@ import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NA
 import net.twisterrob.gradle.quality.Violations
 import org.gradle.api.GradleException
 
-open class ValidateViolationsTask : BaseViolationsTask() {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class ValidateViolationsTask : BaseViolationsTask() {
 
 	override fun processViolations(violations: Grouper.Start<Violations>) {
 		if (violations.list.any { it.violations.orEmpty().isNotEmpty() }) {

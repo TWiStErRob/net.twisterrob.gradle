@@ -46,7 +46,8 @@ class TaskCreationConfigurationTest {
 		verifyNoMoreInteractions(mockConfiguration)
 	}
 
-	internal open class TestTask : DefaultTask()
+	@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+	internal abstract class TestTask : DefaultTask()
 }
 
 private fun Project.collectCreatedTasks(): Map<String, Task> {

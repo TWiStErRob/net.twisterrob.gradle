@@ -7,6 +7,7 @@ import org.gradle.api.plugins.quality.PmdExtension
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.UntrackedTask
 
+@Suppress("UnstableApiUsage", "UnnecessaryAbstractClass") // Gradle convention.
 @UntrackedTask(because = "It is used to inspect Gradle state, output is console.")
 abstract class VersionsTask : DefaultTask() {
 
