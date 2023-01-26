@@ -10,15 +10,17 @@ import java.io.File
 open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback {
 
 	private val rule = object : GradleRunnerRule() {
-		private val initScripts: MutableList<String> = mutableListOf()
 
 		override val extraArgs: Array<String>
-			get() = super.extraArgs + initScripts.map { "--init-script=${it}" } + strictWarningMode()
+			get() = super.extraArgs + strictWarningMode() + arrayOf(
+				"--init-script=nagging.init.gradle.kts",
+				"--init-script=runtime.init.gradle.kts",
+			)
 
 		override fun setUp() {
 			super.setUp()
-			file(readResource("nagging.init.gradle.kts"), "nagging.init.gradle.kts".also { initScripts.add(it) })
-			file(readResource("runtime.init.gradle.kts"), "runtime.init.gradle.kts".also { initScripts.add(it) })
+			file(readResource("nagging.init.gradle.kts"), "nagging.init.gradle.kts")
+			file(readResource("runtime.init.gradle.kts"), "runtime.init.gradle.kts")
 			javaHome = File(System.getenv(System.getProperty("net.twisterrob.test.gradle.javaHomeEnv")))
 		}
 
