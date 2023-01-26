@@ -26,13 +26,6 @@ private val LintBaseTask.isFatalOnly
  * Due to Kotlin limitations, cannot polyfill `variantName` (extension methods are compile time bound),
  * so introducing a separate property is a good compromise.
  * This only calls [LintPerVariantTask.variantName] when it actually exists.
- * 3.1.4, 3.2.1:
- *  * [AndroidVariantTask.variantName] : [DefaultTask]
- *  * [LintPerVariantTask] : [LintBaseTask]
- *  * [LintGlobalTask] : [LintBaseTask]
- *  * [LintFixTask] (new in 3.2.0) : [LintBaseTask]
- *  * [LintBaseTask] : `com.android.build.gradle.internal.tasks.AndroidBuilderTask`
- *  * `AndroidBuilderTask` : [AndroidVariantTask]
  * 3.3.3, 3.6.4, 4.0.0, 4.1.0:
  *  * [AndroidVariantTask] : [DefaultTask], [VariantAwareTask.variantName]
  *  * [LintPerVariantTask] : [LintBaseTask], [VariantAwareTask.variantName]
@@ -55,11 +48,6 @@ val LintBaseTask.androidVariantName: String?
 			// because before 4.2.0 LintGlobalTask/LintFixTask didn't implement the interface.
 			// Force compile time binding to the interface, because a super of LintBaseTask may override the property.
 			(this as VariantAwareTask).variantName
-		@Suppress("KotlinConstantConditions")
-		(AGPVersions.CLASSPATH < AGPVersions.v33x && @Suppress("USELESS_IS_CHECK") (this is AndroidVariantTask)) ->
-			// USELESS_IS_CHECK: Historical binding to inherited property.
-			@Suppress("CAST_NEVER_SUCCEEDS")
-			(this as AndroidVariantTask).variantName
 		this is LintGlobalTask -> null
 		AGPVersions.v32x < AGPVersions.CLASSPATH && this is LintFixTask -> null
 		else -> null

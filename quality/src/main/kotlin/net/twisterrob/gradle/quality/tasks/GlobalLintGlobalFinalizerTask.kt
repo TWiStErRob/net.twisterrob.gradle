@@ -5,8 +5,8 @@ import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
-import net.twisterrob.gradle.android.isAbortOnErrorCompat
 import net.twisterrob.gradle.android.androidComponents
+import net.twisterrob.gradle.android.isAbortOnErrorCompat
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.TaskCreationConfiguration
@@ -24,7 +24,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.JavaBasePlugin
-import org.gradle.api.provider.Provider
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
@@ -35,7 +35,7 @@ import org.gradle.kotlin.dsl.withType
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
 
-open class GlobalLintGlobalFinalizerTask : DefaultTask() {
+abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	/**
 	 * This should only contain files that will definitely generate (i.e. `if (subTask.enabled)` in [mustRunAfter]).
@@ -43,9 +43,9 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	 * At the usage we need to double-check if the file existed,
 	 * otherwise it'll spam the logs with [java.io.FileNotFoundException]s.
 	 */
-	@InputFiles
-	@PathSensitive(PathSensitivity.NONE)
-	val xmlReports: MutableList<Provider<RegularFile>> = mutableListOf()
+	@get:InputFiles
+	@get:PathSensitive(PathSensitivity.NONE)
+	abstract val xmlReports: ListProperty<RegularFile>
 
 	@TaskAction
 	fun failOnFailures() {
@@ -56,7 +56,8 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				LintGlobalReportGathererPre7(ALL_VARIANTS_NAME)
 			}
 		val violationsByFile = xmlReports
-			.map { it.get().asFile }
+			.get()
+			.map { it.asFile }
 			.filter(File::exists)
 			.associateBy({ it }) { gatherer.findViolations(it) }
 		val totalCount = violationsByFile.values.sumBy { violations: List<Violation> -> violations.size }
@@ -123,8 +124,8 @@ open class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			androidComponents.onVariants(androidComponents.selector().all()) { variant ->
 				if (variant !is TestVariant) {
 					taskProvider.configure { task ->
-						task.xmlReports += variant.artifacts.unwrapCast<ArtifactsImpl>()
-							.get(InternalArtifactType.LINT_XML_REPORT)
+						val artifacts = variant.artifacts.unwrapCast<ArtifactsImpl>()
+						task.xmlReports.add(artifacts.get(InternalArtifactType.LINT_XML_REPORT))
 					}
 				}
 			}

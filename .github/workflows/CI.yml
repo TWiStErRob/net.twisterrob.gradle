@@ -365,36 +365,6 @@ jobs:
         # Potential to run specific test tasks, e.g. :plugin can be run separately.
         #test-task: []
         include:
-          # Disabled, fails too many tests, see https://github.com/TWiStErRob/net.twisterrob.gradle/issues/111.
-          #- name: "AGP 3.0.x on Gradle 4.1+"
-          #  gradle: 4.2.1
-          #  agp: 3.0.1
-          #  build-tools: 26.0.3
-          #  instant-api: 26
-          - name: "AGP 3.1.x on Gradle 4.4+"
-            gradle: 4.9
-            gradle-java: 8
-            agp: 3.1.4
-            build-tools: 27.0.3
-            instant-api: 26
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
-          - name: "AGP 3.2.x on Gradle 4.6+"
-            gradle: 4.9
-            gradle-java: 8
-            agp: 3.2.1
-            build-tools: 28.0.3
-            instant-api: 27
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
-          - name: "AGP 3.3.x on Gradle 4.10.1+"
-            gradle: 4.10.3
-            gradle-java: 8
-            agp: 3.3.3
-            build-tools: 28.0.3
-            instant-api: 27
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
           - name: "AGP 3.3.x on Gradle 5.x"
             gradle: 5.4.1
             gradle-java: 8
@@ -732,27 +702,6 @@ jobs:
       #    name: * Test Results XMLs
       #    path: artifacts
       # The `if: success() || failure()` is there to publish as much as possible even if some artifacts are missing.
-
-      - name: Download 'AGP 3.1.x on Gradle 4.4+ (3.1.4 on 4.9) Test Results XMLs' artifact.
-        if: success() || failure()
-        uses: actions/download-artifact@v3
-        with:
-          name: AGP 3.1.x on Gradle 4.4+ (3.1.4 on 4.9) Test Results XMLs
-          path: artifacts/AGP 3.1.x on Gradle 4.4+ (3.1.4 on 4.9) Test Results XMLs
-
-      - name: Download 'AGP 3.2.x on Gradle 4.6+ (3.2.1 on 4.9) Test Results XMLs' artifact.
-        if: success() || failure()
-        uses: actions/download-artifact@v3
-        with:
-          name: AGP 3.2.x on Gradle 4.6+ (3.2.1 on 4.9) Test Results XMLs
-          path: artifacts/AGP 3.2.x on Gradle 4.6+ (3.2.1 on 4.9) Test Results XMLs
-
-      - name: Download 'AGP 3.3.x on Gradle 4.10.1+ (3.3.3 on 4.10.3) Test Results XMLs' artifact.
-        if: success() || failure()
-        uses: actions/download-artifact@v3
-        with:
-          name: AGP 3.3.x on Gradle 4.10.1+ (3.3.3 on 4.10.3) Test Results XMLs
-          path: artifacts/AGP 3.3.x on Gradle 4.10.1+ (3.3.3 on 4.10.3) Test Results XMLs
 
       - name: Download 'AGP 3.3.x on Gradle 5.x (3.3.3 on 5.4.1) Test Results XMLs' artifact.
         if: success() || failure()

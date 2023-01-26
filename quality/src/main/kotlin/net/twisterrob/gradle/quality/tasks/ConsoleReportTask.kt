@@ -4,7 +4,8 @@ import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.TableGenerator
 
-open class ConsoleReportTask : BaseViolationsTask() {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class ConsoleReportTask : BaseViolationsTask() {
 
 	override fun processViolations(violations: Grouper.Start<Violations>) {
 		@Suppress("UNCHECKED_CAST")

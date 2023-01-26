@@ -4,8 +4,6 @@ import com.android.utils.SdkUtils
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.compat.conventionCompat
 import net.twisterrob.gradle.compat.flatMapCompat
-import net.twisterrob.gradle.compat.newInputFileCompat
-import net.twisterrob.gradle.compat.newOutputFileCompat
 import net.twisterrob.gradle.dsl.reporting
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.bestXMLTransformerFactory
@@ -22,19 +20,19 @@ import java.io.File
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
-open class HtmlReportTask : BaseViolationsTask() {
+abstract class HtmlReportTask : BaseViolationsTask() {
 
 	private val xmlFile: File
 		get() = xml.asFile.get()
 
 	@get:OutputFile
-	val xml: RegularFileProperty = newOutputFileCompat()
+	abstract val xml: RegularFileProperty
 
 	private val htmlFile: File
 		get() = html.asFile.get()
 
 	@get:OutputFile
-	val html: RegularFileProperty = newOutputFileCompat()
+	abstract val html: RegularFileProperty
 
 	private val xslTemplateFile: File?
 		get() = xslTemplate.asFile.orNull
@@ -45,7 +43,7 @@ open class HtmlReportTask : BaseViolationsTask() {
 	@get:InputFile
 	@get:Optional
 	@get:PathSensitive(PathSensitivity.NONE)
-	val xslTemplate: RegularFileProperty = newInputFileCompat()
+	abstract val xslTemplate: RegularFileProperty
 
 	private val xslOutputFile: File
 		get() = xsl.asFile.get()
@@ -56,7 +54,7 @@ open class HtmlReportTask : BaseViolationsTask() {
 	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@get:OutputFile
-	val xsl: RegularFileProperty = newOutputFileCompat()
+	abstract val xsl: RegularFileProperty
 
 	init {
 		xml.conventionCompat(project.reporting.baseDirectory.file("violations.xml"))
