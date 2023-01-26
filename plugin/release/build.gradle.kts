@@ -31,3 +31,9 @@ disableGradlePluginValidation()
 // net.twisterrob.gradle.android.BuildDateKt.getBuiltDate needs the manifest.
 // The manifest is generated centrally by root build.gradle.kts
 addJarToClasspathOfPlugin()
+
+tasks.named<Test>("test") {
+	// TODEL throws initializationError, probably because Java 8 is used for bytecode, but running on Java 19.
+	// Example test: AndroidReleasePluginIntgTest (but only on CI!)
+	jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+}
