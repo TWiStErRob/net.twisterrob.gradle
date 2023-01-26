@@ -10,12 +10,15 @@ import java.io.File
 open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback {
 
 	private val rule = object : GradleRunnerRule() {
+		private val initScripts: MutableList<String> = mutableListOf()
+
 		override val extraArgs: Array<String>
-			get() = super.extraArgs + arrayOf("--init-script=nagging.init.gradle.kts") + strictWarningMode()
+			get() = super.extraArgs + initScripts.map { "--init-script=${it}" } + strictWarningMode()
 
 		override fun setUp() {
 			super.setUp()
-			file(readInitGradle(), "nagging.init.gradle.kts")
+			file(readResource("nagging.init.gradle.kts"), "nagging.init.gradle.kts".also { initScripts.add(it) })
+			file(readResource("runtime.init.gradle.kts"), "runtime.init.gradle.kts".also { initScripts.add(it) })
 			javaHome = File(System.getenv(System.getProperty("net.twisterrob.test.gradle.javaHomeEnv")))
 		}
 
@@ -27,9 +30,9 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 				emptyArray() // "fail" was not a valid option for --warning-mode before Gradle 5.6.
 			}
 
-		private fun readInitGradle(): String {
-			val initGradle = GradleRunnerRuleExtension::class.java.getResourceAsStream("nagging.init.gradle.kts")
-				?: error("Cannot find init.gradle.kts on classpath of ${GradleRunnerRuleExtension::class}")
+		private fun readResource(name: String): String {
+			val initGradle = GradleRunnerRuleExtension::class.java.getResourceAsStream(name)
+				?: error("Cannot find ${name} on classpath of ${GradleRunnerRuleExtension::class}")
 			return initGradle.use { it.reader().readText() }
 		}
 	}
