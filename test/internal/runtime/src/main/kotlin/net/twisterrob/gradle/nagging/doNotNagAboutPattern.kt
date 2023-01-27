@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("NaggingUtils")
+
 package net.twisterrob.gradle.nagging
 
 import net.twisterrob.gradle.doNotNagAbout
