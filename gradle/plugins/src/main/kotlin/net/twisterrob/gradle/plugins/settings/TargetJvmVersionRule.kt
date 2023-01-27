@@ -12,7 +12,7 @@ abstract class TargetJvmVersionRule @Inject constructor(
 ) : ComponentMetadataRule {
 
 	override fun execute(context: ComponentMetadataContext) {
-		context.details.withVariant("apiElements") {
+		context.details.withVariant("runtimeElements") {
 			val version = context.details.id.version
 			if (version.startsWith("7.4.") || version.startsWith("30.4.")) {
 				attributes {

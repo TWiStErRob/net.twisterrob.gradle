@@ -34,9 +34,13 @@ class JavaCompatibilityPlugin : Plugin<Project> {
 
 			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle") { params(javaVersion) }
 			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-api") { params(javaVersion) }
+			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-settings-api") { params(javaVersion) }
 			withModule<TargetJvmVersionRule>("com.android.tools.build:builder") { params(javaVersion) }
 			withModule<TargetJvmVersionRule>("com.android.tools.build:builder-model") { params(javaVersion) }
+			withModule<TargetJvmVersionRule>("com.android.tools.build:builder-test-api") { params(javaVersion) }
 			withModule<TargetJvmVersionRule>("com.android.tools.build:manifest-merger") { params(javaVersion) }
+			withModule<TargetJvmVersionRule>("com.android.tools.build:aapt2-proto") { params(javaVersion) }
+			withModule<TargetJvmVersionRule>("com.android.tools.build:aaptcompiler") { params(javaVersion) }
 		}
 	}
 }
