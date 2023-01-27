@@ -25,3 +25,7 @@ pluginManagement {
 		}
 	}
 }
+
+if (!JavaVersion.current().isJava11Compatible) {
+	error("Java 11+ is required to build this project, found: ${JavaVersion.current()}.")
+}
