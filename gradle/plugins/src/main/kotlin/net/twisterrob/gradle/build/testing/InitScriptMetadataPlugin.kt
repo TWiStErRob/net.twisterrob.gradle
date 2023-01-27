@@ -1,9 +1,15 @@
 package net.twisterrob.gradle.build.testing
 
+import StaticComponentIdentifier
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.ArtifactView
+import org.gradle.api.artifacts.component.ComponentIdentifier
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.internal.lambdas.SerializableLambdas
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.testing.Test
+import org.gradle.internal.component.local.model.OpaqueComponentIdentifier
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 
@@ -17,9 +23,13 @@ class InitScriptMetadataPlugin : Plugin<Project> {
 				dependencies.add(project.dependencyFactory.create(project.project(":test:internal:runtime")))
 			}
 
+		val view: ArtifactView = initScriptConfiguration.get().incoming.artifactView {
+			componentFilter(SerializableLambdas.spec { excludeGradleApi(it) })
+		}
+
 		val initScriptTestMetadata = project.tasks
 			.register<InitScriptTestMetadata>("initScriptTestMetadata") {
-				initScriptClasspath.from(initScriptConfiguration)
+				initScriptClasspath.from(project.provider { view.files.elements })
 			}
 
 		project.tasks.named<Test>("test").configure {
@@ -39,3 +49,15 @@ class InitScriptMetadataPlugin : Plugin<Project> {
 		private const val DEFAULT_CONFIGURATION_NAME: String = "initscriptRuntimeClasspath"
 	}
 }
+
+private fun excludeGradleApi(componentId: ComponentIdentifier): Boolean =
+	when (componentId) {
+		is OpaqueComponentIdentifier ->
+			false // Gradle built-in internal DependencyFactoryInternal.ClassPathNotation
+		is StaticComponentIdentifier ->
+			false // My override of DependencyFactoryInternal.ClassPathNotation, needs to be ignored the same.
+		is ModuleComponentIdentifier ->
+			!componentId.group.startsWith("org.jetbrains")
+		else ->
+			true
+	}
