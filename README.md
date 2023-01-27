@@ -23,7 +23,7 @@ For details on what was changed in different versions, see [CHANGELOG](CHANGELOG
 
 ## Compatibility
 
-Android Gradle Plugin 3.1.4 — 7.4.x on Gradle 4.9 — 7.5.x
+Android Gradle Plugin 3.1.4 — 7.4.x on Gradle 4.9 — 7.6.x
 as listed in [AGP's compatibility guide](https://developer.android.com/studio/releases/gradle-plugin#updating-gradle)
 are covered by different plugin versions.
 
@@ -46,6 +46,7 @@ Currently supported version are Android Gradle Plugin 3.3.3 — 7.4.x on Gradle 
 | 7.3 - 7.3.3        |     ❓      |     ❓      |     ❓      |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.13 - ∞ | 0.13 - ∞ | 0.14 - ∞ | 0.14 - ∞ |    ❌     |    ❌     |
 | 7.4 - 7.4.2        |     ❓      |     ❓      |     ❓      |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.15 - ∞ |    ❌     |
 | 7.5 - 7.5.1        |     ❓      |     ❓      |     ❓      |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.15 - ∞ | 0.15 - ∞ |
+| 7.6                |     ❓      |     ❓      |     ❓      |    ❓    |    ❓     |    ❓     |    ❓     |    ❓     | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.15 - ∞ | 0.15 - ∞ |
 
  * ❓ = not sure if it's supported by AGP, never tested.
  * ❌ = incompatible based on AGP compatibility.
