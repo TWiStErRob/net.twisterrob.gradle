@@ -10,6 +10,7 @@ description = "Reporting Convention Plugin: Gradle tasks to support reporting."
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	api(projects.plugin.base)
+	implementation(projects.compat.agp)
 	compileOnly(libs.android.gradle)
 	// Need com.android.utils.FileUtils for TestReportGenerator.generate().
 	compileOnly(libs.android.tools.common)

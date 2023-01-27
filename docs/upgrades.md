@@ -8,6 +8,7 @@
     * Change all `android-gradle-v__x` to the latest patch version.
     * If there's a new alpha/beta/rc/stable release, create a new module: `:compat:agp-__x`.  
       This will be empty, but will allow immediate browsing of source code.
+    * Add dependency from `:compat:agp` to the new `:compat:agp-__x`.
  3. Add compatibility checks via `AGPVersions` if necessary.
     * Review `AGPVersionsTest` to bump latest classpath version.
     * Review `AGPVersionsTest` if there's a new constant.
@@ -21,7 +22,7 @@
       ```
       Comment out the 7.x version if there's no newer stable yet.
     * After pushing CI changes:
-       * Add conversation to add new CI jobs to branch protection rules just before merging.
+       * Add review comment to add new CI jobs to branch protection rules just before merging.
  5. Update `README.md` table and surrounding text.
  6. Add/rename/delete `docs/debug/agpXXX-gradleYYY` folder to match CI combinations.
  7. Review this document if something was missing.
