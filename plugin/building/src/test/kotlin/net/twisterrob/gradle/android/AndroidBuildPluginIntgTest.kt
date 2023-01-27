@@ -39,7 +39,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 	@BeforeEach fun setMemory() {
 		// TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/147
-		gradle.file("org.gradle.jvmargs=-Xmx256M\n", "gradle.properties")
+		gradle.file("org.gradle.jvmargs=-Xmx384M\n", "gradle.properties")
 	}
 
 	@Test fun `adds automatic repositories`() {
