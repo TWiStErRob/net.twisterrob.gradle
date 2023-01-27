@@ -76,15 +76,16 @@ object AGPVersions {
 				// Cannot use compatibility AGPVersions.CLASSPATH to create a `when` in this one, as this is defining it.
 				kotlin
 					.runCatching {
-						// Introduced in AGP 3.6.x.
+						// Introduced in AGP 3.6.x and live in 7.3.1; 7.4.0 changed bytecode version to 55 (Java 11).
 						Class.forName("com.android.Version")
 					}
-					.recoverCatching {
+					.recoverCatching { ex ->
+						if (ex !is ClassNotFoundException) throw ex
 						// Deprecated in AGP 3.6.x and removed in AGP 4.x.
 						Class.forName("com.android.builder.model.Version")
 					}
-					.recoverCatching {
-						error("Cannot find AGP Version class on the classpath")
+					.recoverCatching { ex ->
+						throw IllegalStateException("Cannot find AGP Version class on the classpath", ex)
 					}
 					.getOrThrow()
 			return versionClass.getDeclaredField("ANDROID_GRADLE_PLUGIN_VERSION").get(null) as String
