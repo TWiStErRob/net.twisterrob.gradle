@@ -1,9 +1,10 @@
-import net.twisterrob.gradle.nagging.doNotNagAbout
-import net.twisterrob.gradle.nagging.doNotNagAboutPattern
+//import net.twisterrob.gradle.nagging.doNotNagAbout
+//import net.twisterrob.gradle.nagging.doNotNagAboutPattern
 import org.gradle.util.GradleVersion
 import java.io.File
 
 initscript {
+	println("initscript: ${kotlin.KotlinVersion.CURRENT}")
 	dependencies {
 		// Essentially:
 		// classpath(files("test\\internal\\runtime\\build\\libs\\runtime-0.15-SNAPSHOT.jar"))
@@ -12,11 +13,30 @@ initscript {
 			.apply { load(initscriptMetadata.reader()) }
 			.getProperty("initscript-classpath")
 			.split(File.pathSeparator)
-			.forEach { add("classpath", files(it)) }
+			.forEach { println(it); add("classpath", files(it)) }
 	}
 }
+println("body: ${kotlin.KotlinVersion.CURRENT}")
 
 apply<net.twisterrob.gradle.nagging.NaggingPlugin>()
+
+/**
+ * HACK ALERT! See net.twisterrob.gradle.build.hackKotlinMetadata for more details.
+ */
+fun doNotNagAbout(gradle: String, agpRegex: String, message: String) {
+	Class.forName("net.twisterrob.gradle.nagging.NaggingUtils")
+		.getDeclaredMethod("doNotNagAbout", String::class.java, String::class.java, String::class.java)
+	.invoke(null, gradle, agpRegex, message)
+}
+
+/**
+ * HACK ALERT! See net.twisterrob.gradle.build.hackKotlinMetadata for more details.
+ */
+fun doNotNagAboutPattern(gradle: String, agpRegex: String, messageRegex: String) {
+	Class.forName("net.twisterrob.gradle.nagging.NaggingUtils")
+		.getDeclaredMethod("doNotNagAboutPattern", String::class.java, String::class.java, String::class.java)
+		.invoke(null, gradle, agpRegex, messageRegex)
+}
 
 // Sorted by (Gradle, AGP).
 
