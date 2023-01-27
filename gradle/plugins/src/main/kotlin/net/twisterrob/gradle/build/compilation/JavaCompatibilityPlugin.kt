@@ -1,9 +1,11 @@
 package net.twisterrob.gradle.build.compilation
 
 import net.twisterrob.gradle.plugins.settings.TargetJvmVersionRule
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.withModule
+import versionCatalogs
 
 class JavaCompatibilityPlugin : Plugin<Project> {
 	override fun apply(target: Project) {
@@ -26,11 +28,15 @@ class JavaCompatibilityPlugin : Plugin<Project> {
 			// This project still uses Java 8, so let's rewrite the metadata,
 			// so that the produced jars can still be used with Java 8.
 			// https://docs.gradle.org/current/userguide/component_metadata_rules.html
-			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle") { params(8) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-api") { params(8) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:builder") { params(8) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:builder-model") { params(8) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:manifest-merger") { params(8) }
+
+			val javaVersion = target.versionCatalogs.named("libs").findVersion("java").get()
+				.let { JavaVersion.toVersion(it).majorVersion.toInt() }
+
+			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle") { params(javaVersion) }
+			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-api") { params(javaVersion) }
+			withModule<TargetJvmVersionRule>("com.android.tools.build:builder") { params(javaVersion) }
+			withModule<TargetJvmVersionRule>("com.android.tools.build:builder-model") { params(javaVersion) }
+			withModule<TargetJvmVersionRule>("com.android.tools.build:manifest-merger") { params(javaVersion) }
 		}
 	}
 }
