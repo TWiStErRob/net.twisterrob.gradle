@@ -6,13 +6,14 @@ import org.gradle.api.artifacts.ComponentMetadataRule
 import org.gradle.api.attributes.java.TargetJvmVersion
 import javax.inject.Inject
 
-@CacheableRule
+//@CacheableRule
 abstract class TargetJvmVersionRule @Inject constructor(
 	private val jvmVersionOverride: Int
 ) : ComponentMetadataRule {
 
 	override fun execute(context: ComponentMetadataContext) {
-		context.details.allVariants {
+		context.details.withVariant("apiElements") {
+			println(context.details.id)
 			attributes {
 				attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, jvmVersionOverride)
 			}
