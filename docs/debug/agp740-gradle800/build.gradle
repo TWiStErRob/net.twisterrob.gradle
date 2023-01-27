@@ -6,6 +6,6 @@ repositories {
 }
 
 android {
-	compileSdkVersion 'android-33'
 	namespace = "test.project"
+	compileSdkVersion 'android-33'
 }
