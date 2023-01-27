@@ -1,27 +1,29 @@
 # How to upgrade AGP in the project?
 
  1. Update compile AGP version:
-    * `libs.versions.toml`: change `agp` and `lint` to the latest stable.
+    * `libs.versions.toml`: change `agp` and `agp-tools` to the latest stable.
     * Run `gradlew jar` to make things compile.
     * Change `net.twisterrob.test.android.pluginVersion` to the same as `agp`.
  2. Update AGP compat versions
     * Change all `android-gradle-v__x` to the latest patch version.
     * If there's a new alpha/beta/rc/stable release, create a new module: `:compat:agp-__x`.  
       This will be empty, but will allow immediate browsing of source code.
+    * Add dependency from `:compat:agp` to the new `:compat:agp-__x`.
  3. Add compatibility checks via `AGPVersions` if necessary.
     * Review `AGPVersionsTest` to bump latest classpath version.
     * Review `AGPVersionsTest` if there's a new constant.
  4. Add new CI matrix based on AGP compatibility guide.
-    * For example if AGP 7.2.1 requires Gradle 7.3.1 and latest stable is 7.4.2, create the following combinations:
+    * These might already exist if you're bumping alpha/beta/rc/stable forward.
+    * For example if AGP 7.2.1 requires Gradle 7.3.1 and latest stable is Gradle 7.4.2, create the following combinations:
       ```yaml
-      - name: "AGP 7.2.x on Gradle 7.3+"
-      - name: "AGP 7.2.x on Gradle 7.3+ - plugin"
+      - name: "AGP 7.2.x on Gradle 7.3.1+"
+      - name: "AGP 7.2.x on Gradle 7.3.1+ - plugin"
       - name: "AGP 7.2.x on Gradle 7.x"
       - name: "AGP 7.2.x on Gradle 7.x - plugin"
       ```
       Comment out the 7.x version if there's no newer stable yet.
     * After pushing CI changes:
-       * Add conversation to add new CI jobs to branch protection rules just before merging.
+       * Add review comment to add new CI jobs to branch protection rules just before merging.
  5. Update `README.md` table and surrounding text.
  6. Add/rename/delete `docs/debug/agpXXX-gradleYYY` folder to match CI combinations.
  7. Review this document if something was missing.

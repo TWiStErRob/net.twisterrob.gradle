@@ -1,0 +1,11 @@
+apply plugin: 'com.android.application'
+
+repositories {
+	google()
+	mavenCentral()
+}
+
+android {
+	namespace = "test.project"
+	compileSdkVersion 'android-33'
+}

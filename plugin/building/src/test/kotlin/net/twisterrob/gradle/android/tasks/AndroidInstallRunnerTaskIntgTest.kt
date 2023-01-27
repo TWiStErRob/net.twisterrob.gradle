@@ -50,7 +50,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 		@Language("java")
 		val activityCode = """
 			package ${packageName};
-	
+			
 			public class MainActivity extends android.app.Activity { }
 		""".trimIndent()
 		gradle.file(activityCode, "src/main/java/${packageName.replace('.', '/')}/MainActivity.java")
