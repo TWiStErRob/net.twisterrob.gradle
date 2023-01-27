@@ -24,7 +24,7 @@ dependencies {
 	testImplementation(testFixtures(projects.plugin.base))
 	testImplementation(testFixtures(projects.plugin.versioning))
 	// AndroidInstallRunnerTaskTest calls production code directly, so need com.android.xml.AndroidXPathFactory.
-	testImplementation(libs.android.tools.common)
+	testRuntimeOnly(libs.android.tools.common)
 }
 
 disableGradlePluginValidation()
