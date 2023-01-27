@@ -4,11 +4,14 @@ import net.twisterrob.gradle.test.Project
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledOnJre
+import org.junit.jupiter.api.condition.JRE
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
 class HtmlReportTaskUnitTest {
 
+	@DisabledOnJre(JRE.JAVA_8)
 	@Test fun `transformation error displays affected file names`() {
 		val project = Project()
 		project.plugins.apply("reporting-base")
