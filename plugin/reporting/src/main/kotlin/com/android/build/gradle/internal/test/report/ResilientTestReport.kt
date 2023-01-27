@@ -28,7 +28,7 @@ class ResilientTestReport(
 					val test = classResults.addTest(
 						testName, 0, device, template.project, template.flavor
 					)
-					test.ignored()
+					test.ignored(device, template.project, template.flavor)
 					//test.addFailure("Missing run data", "N/A", device, template.project, template.flavor)
 				}
 			}
