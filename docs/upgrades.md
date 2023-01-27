@@ -1,7 +1,7 @@
 # How to upgrade AGP in the project?
 
  1. Update compile AGP version:
-    * `libs.versions.toml`: change `agp` and `lint` to the latest stable.
+    * `libs.versions.toml`: change `agp` and `agp-tools` to the latest stable.
     * Run `gradlew jar` to make things compile.
     * Change `net.twisterrob.test.android.pluginVersion` to the same as `agp`.
  2. Update AGP compat versions
@@ -13,10 +13,11 @@
     * Review `AGPVersionsTest` to bump latest classpath version.
     * Review `AGPVersionsTest` if there's a new constant.
  4. Add new CI matrix based on AGP compatibility guide.
-    * For example if AGP 7.2.1 requires Gradle 7.3.1 and latest stable is 7.4.2, create the following combinations:
+    * These might already exist if you're bumping alpha/beta/rc/stable forward.
+    * For example if AGP 7.2.1 requires Gradle 7.3.1 and latest stable is Gradle 7.4.2, create the following combinations:
       ```yaml
-      - name: "AGP 7.2.x on Gradle 7.3+"
-      - name: "AGP 7.2.x on Gradle 7.3+ - plugin"
+      - name: "AGP 7.2.x on Gradle 7.3.1+"
+      - name: "AGP 7.2.x on Gradle 7.3.1+ - plugin"
       - name: "AGP 7.2.x on Gradle 7.x"
       - name: "AGP 7.2.x on Gradle 7.x - plugin"
       ```
