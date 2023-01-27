@@ -312,6 +312,7 @@ jobs:
           --stacktrace
           --continue
           ${{ matrix.test-task }}
+          -Pnet.twisterrob.gradle.build.hackKotlinMetadata=true
           -Pnet.twisterrob.gradle.build.verboseReports=true
           -Pnet.twisterrob.test.android.pluginVersion=${{ matrix.agp }}
           -Pnet.twisterrob.test.kotlin.pluginVersion=${{ matrix.kotlin }}

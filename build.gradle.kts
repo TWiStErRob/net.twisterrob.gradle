@@ -62,7 +62,7 @@ subprojects {
 	tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
 		kotlinOptions.verbose = true
 		kotlinOptions.languageVersion = deps.versions.kotlin.language.get()
-		kotlinOptions.apiVersion = deps.versions.kotlin.language.get()
+		kotlinOptions.apiVersion = deps.versions.kotlin.api.get()
 		kotlinOptions.jvmTarget = deps.versions.java.get()
 		kotlinOptions.suppressWarnings = false
 		kotlinOptions.allWarningsAsErrors = true
@@ -74,11 +74,18 @@ subprojects {
 			// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
 			"-Xno-optimized-callable-references"
 		)
-		if (kotlinOptions.languageVersion == "1.4") {
-			// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".
-			kotlinOptions.freeCompilerArgs += "-Xsuppress-version-warnings"
-		} else {
-			TODO("Remove -Xsuppress-version-warnings")
+		when (kotlinOptions.languageVersion) {
+			"1.3" ->  {
+				// Suppress "Language version 1.3 is deprecated and its support will be removed in a future version of Kotlin".
+				kotlinOptions.freeCompilerArgs += "-Xsuppress-version-warnings"
+			}
+			"1.4" -> {
+				// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".
+				kotlinOptions.freeCompilerArgs += "-Xsuppress-version-warnings"
+			}
+			else -> {
+				TODO("Remove -Xsuppress-version-warnings")
+			}
 		}
 	}
 
