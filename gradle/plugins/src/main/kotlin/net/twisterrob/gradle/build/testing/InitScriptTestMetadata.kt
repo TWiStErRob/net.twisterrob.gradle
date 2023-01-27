@@ -13,6 +13,7 @@ import java.io.File
 import java.util.Properties
 
 /**
+ * @see net.twisterrob.gradle.build.testing.InitScriptMetadataPlugin.createMetadataTask
  * @see org.gradle.plugin.devel.tasks.PluginUnderTestMetadata
  */
 @DisableCachingByDefault(because = "Not worth caching")
@@ -21,22 +22,22 @@ abstract class InitScriptTestMetadata : DefaultTask() {
 	init {
 		group = "Plugin development" // JavaGradlePluginPlugin.PLUGIN_DEVELOPMENT_GROUP
 		description = "Generates the metadata for init script used in plugin integration tests."
+		output.convention(project.layout.buildDirectory.file("initscript-test-metadata.properties"))
 	}
 
-	@get:Classpath
-	val initScriptClasspath: ConfigurableFileCollection = project.files()
-
 	// Covered by #initscriptClasspath, but has to be declared explicitly as input,
-	// so that it doesn't cross-pollinate executions in different rootProjects.
+	// so that it doesn't cross-pollinate executions in different checkout locations.
 	@get:Input
 	val paths: List<String>
 		get() = initScriptClasspath.files.map { file: File ->
 			file.absolutePath.replace(Regex("""\\"""), "/")
 		}
 
+	@get:Classpath
+	abstract val initScriptClasspath: ConfigurableFileCollection
+
 	@get:OutputFile
-	val output: RegularFileProperty = project.objects.fileProperty()
-		.convention(project.layout.buildDirectory.file("initscript-test-metadata.properties"))
+	abstract val output: RegularFileProperty
 
 	@TaskAction
 	fun generate() {
