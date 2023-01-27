@@ -59,6 +59,8 @@ jobs:
           ./gradlew
           --no-daemon
           --no-build-cache
+          --no-configuration-cache
+          --no-watch-fs
           --stacktrace
           --continue
           jar
@@ -148,6 +150,7 @@ jobs:
           --no-daemon
           --no-build-cache
           --no-configuration-cache
+          --no-watch-fs
           --stacktrace
           publishReleasePublicationToSonatypeRepository
           -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}
@@ -304,6 +307,8 @@ jobs:
           ./gradlew
           --no-daemon
           --no-build-cache
+          --no-configuration-cache
+          --no-watch-fs
           --stacktrace
           --continue
           ${{ matrix.test-task }}
