@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Remote Debug" type="Remote">
-    <module name="agp740-gradle76.buildSrc" />
+    <module name="agp740-gradle760.buildSrc" />
     <option name="USE_SOCKET_TRANSPORT" value="true" />
     <option name="SERVER_MODE" value="false" />
     <option name="SHMEM_ADDRESS" />
