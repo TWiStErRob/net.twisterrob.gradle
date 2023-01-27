@@ -19,9 +19,3 @@ tasks.named<Test>("test") {
 		jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
 	}
 }
-
-if (project.property("net.twisterrob.gradle.build.hackKotlinMetadata") == "true") {
-	tasks.jar {
-		exclude("META-INF/twister-compat-gradle.kotlin_module")
-	}
-}

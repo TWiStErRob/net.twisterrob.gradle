@@ -31,9 +31,3 @@ dependencies {
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
 }
-
-if (project.property("net.twisterrob.gradle.build.hackKotlinMetadata") == "true") {
-	tasks.jar {
-		exclude("META-INF/twister-convention-settings.kotlin_module")
-	}
-}
