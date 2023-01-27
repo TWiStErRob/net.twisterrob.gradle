@@ -177,7 +177,7 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
 		result.assertHasOutputLine("""Gradle version: 7.6""")
-		result.assertHasOutputLine("""PMD version: 6.39.0""")
+		result.assertHasOutputLine("""PMD version: 6.48.0""")
 	}
 
 	@Test fun `print checkstyle version (specific version)`() {
