@@ -12,7 +12,9 @@
  3. Add compatibility checks via `AGPVersions` if necessary.
     * Review `AGPVersionsTest` to bump latest classpath version.
     * Review `AGPVersionsTest` if there's a new constant.
- 4. Add new CI matrix based on AGP compatibility guide.
+ 4. Review tests
+     * `nagging.init.gradle.kts` might need bumping in AGP regexes.
+ 5. Add new CI matrix based on AGP compatibility guide.
     * These might already exist if you're bumping alpha/beta/rc/stable forward.
     * For example if AGP 7.2.1 requires Gradle 7.3.1 and latest stable is Gradle 7.4.2, create the following combinations:
       ```yaml
@@ -24,9 +26,9 @@
       Comment out the 7.x version if there's no newer stable yet.
     * After pushing CI changes:
        * Add review comment to add new CI jobs to branch protection rules just before merging.
- 5. Update `README.md` table and surrounding text.
- 6. Add/rename/delete `docs/debug/agpXXX-gradleYYY` folder to match CI combinations.
- 7. Review this document if something was missing.
+ 6. Update `README.md` table and surrounding text.
+ 7. Add/rename/delete `docs/debug/agpXXX-gradleYYY` folder to match CI combinations.
+ 8. Review this document if something was missing.
 
 
 # How to upgrade Gradle in the project?
@@ -37,8 +39,10 @@
       * in `/docs/examples/*/`
     * Test each with `gradlew build`.
  2. Update `net.twisterrob.gradle.runner.gradleVersion` to the same as `gradle-wrapper.properties`.
- 3. Review `VersionsTaskTest`
-    * some tests like `(Gradle X latest)` might need updating.
+ 3. Review tests
+    * `VersionsTaskTest....(Gradle X latest)` might need updating.
+    * `nagging.init.gradle.kts` might need bumping (both in Gradle version and doc URLs).
+    * `kotlin-plugin_app\build.gradle` might need bumping (both in Gradle version and doc URLs).
  4. Update CI.yml matrix and `publish-test-results` job
     * Update all Gradle `\d\.x` versions to the latest stable.
     * Keep all Gradle `\d\.\d\+` version on the latest patch.
