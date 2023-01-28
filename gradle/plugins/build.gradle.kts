@@ -58,12 +58,10 @@ dependencies {
 	compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
 
-kotlin {
-	sourceSets.named("main").configure {
-		// Import part of the project into gradle/plugins,
-		// so that it can be used in from precompiled plugins and build.gradle.kts. 
-		kotlin.srcDir("../../plugin/settings/src/main/kotlin")
-	}
+kotlin.sourceSets.named("main").configure {
+	// Create separate source-set for sharing code between the build and the project.
+	// See :plugin:settings for more info.
+	kotlin.srcDir("src/main/kotlin-published")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

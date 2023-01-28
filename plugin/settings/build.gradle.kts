@@ -1,6 +1,7 @@
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
+	id("idea")
 }
 
 base.archivesName.set("twister-convention-settings")
@@ -15,15 +16,19 @@ gradlePlugin {
 	}
 }
 
-kotlin {
-	sourceSets.named("main").configure {
-		// Split up the sources into multiple folders, so gradle/plugins can re-use some of them.
-		// Creating an extra folder for only publicly used sources.
-		// Therefore, everything in src/main/kotlin is re-used between this project and gradle/plugins.
-		// See gradle/plugins/build.gradle.kts > kotlin.sourceSets for more info.
-		kotlin.srcDir("src/main/kotlin-published")
-	}
+// Reusing code from /gradle/plugins included build and publishing it as part of this module's JAR.
+// Rather than directly including the source folder, it's first copied here.
+val sharedCodeFolder: File = file("src/main/kotlin-reused")
+kotlin.sourceSets.named("main").configure { kotlin.srcDir(sharedCodeFolder) }
+// The copied code is marked as generated for IDEA, so it warns when it's accidentally edited.
+idea.module.generatedSourceDirs.add(sharedCodeFolder)
+// This is to make sure that IDEA doesn't mess things up with duplicated source roots.
+val copyReusableSources = tasks.register<Copy>("copyReusableSources") {
+	// Need to hard-code path, no better sharing mechanism found yet: https://stackoverflow.com/q/73557522/253468
+	from(rootProject.file(gradle.includedBuild("plugins").projectDir.resolve("src/main/kotlin-published")))
+	into(sharedCodeFolder)
 }
+tasks.named("compileKotlin").configure { dependsOn(copyReusableSources) }
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
