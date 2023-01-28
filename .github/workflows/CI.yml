@@ -309,6 +309,7 @@ jobs:
           --no-build-cache
           --no-configuration-cache
           --no-watch-fs
+          --no-parallel
           --stacktrace
           --continue
           ${{ matrix.test-task }}
