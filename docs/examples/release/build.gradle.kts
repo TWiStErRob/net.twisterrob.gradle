@@ -1,7 +1,6 @@
 plugins {
 	id("com.android.application") version "7.4.0"
-	// TODEL Duplicate function hack from below, use plugin 0.15 variant.
-	// TODO enable doNotNagAbout and make org.gradle.warning.mode=fail when updating to 0.15.
+	// TODO enable doNotNagAbout below and make org.gradle.warning.mode=fail when updating to 0.15.
 	id("net.twisterrob.quality") version "0.14.1"
 }
 

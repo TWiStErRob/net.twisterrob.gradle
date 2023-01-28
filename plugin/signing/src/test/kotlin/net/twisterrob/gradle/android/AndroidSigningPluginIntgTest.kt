@@ -49,17 +49,6 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `applies signing config from properties (release)`(@TempDir temp: File) {
-		// > The Daemon will expire after the build after running out of JVM Metaspace.
-		// > The project memory settings are likely not configured or are configured to an insufficient value.
-		// > The daemon will restart for the next build, which may increase subsequent build times.
-		// > These settings can be adjusted by setting 'org.gradle.jvmargs' in 'gradle.properties'.
-		// > The currently configured max heap space is '512 MiB' and the configured max metaspace is '256 MiB'.
-		// > For more information on how to set these values, visit the user guide at
-		// > https://docs.gradle.org/8.0-rc-2/userguide/build_environment.html#configuring_jvm_memory
-		// > To disable this warning, set 'org.gradle.daemon.performance.disable-logging=true'.
-		// > Daemon will be stopped at the end of the build after running out of JVM Metaspace
-		gradle.file("org.gradle.jvmargs=-Xmx512m \"-XX:MaxMetaspaceSize=384m\"\n", "gradle.properties")
-
 		val generationParams = mapOf(
 			"-alias" to "gradle.plugin.test",
 			"-keyalg" to "RSA",
