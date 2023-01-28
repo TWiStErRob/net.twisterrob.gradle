@@ -27,8 +27,9 @@ kotlin {
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
+	// Expose some methods to TestKit runtime classpath.
+	implementation(projects.compat.gradle)
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
-	testImplementation(projects.compat.gradle)
 }
