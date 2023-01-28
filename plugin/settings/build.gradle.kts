@@ -29,6 +29,8 @@ val copyReusableSources = tasks.register<Copy>("copyReusableSources") {
 	into(sharedCodeFolder)
 }
 tasks.named("compileKotlin").configure { dependsOn(copyReusableSources) }
+tasks.named("detektMain").configure { dependsOn(copyReusableSources) }
+tasks.named("detekt").configure { dependsOn(copyReusableSources) }
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
