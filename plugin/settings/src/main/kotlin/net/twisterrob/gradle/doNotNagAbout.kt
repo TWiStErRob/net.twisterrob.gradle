@@ -17,10 +17,6 @@ import java.util.regex.Pattern
  *  - This is a hack, it's not guaranteed to work in future Gradle versions.
  *  - The messages may contain version numbers, which will change as you upgrade Gradle or plugins,
  *    so either suppress dynamically (example below), or be prepared to review the messages every upgrade.
- *  - Gradle 8 internals have changed,
- *    at that point the messages may contain the stack trace of the occurrence (depending on --stacktrace flag).
- *    This gives us the ability to specifically ignore an instance of a type of message.
- *    This is useful if multiple plugins are behind on fixing the deprecations.
  *  - `fail` was not a valid option for `--warning-mode` before Gradle 5.6.0.
  *
  * ### Example 1 - suppressing generic deprecation.
@@ -47,31 +43,7 @@ import java.util.regex.Pattern
  *  - The version check is optional, but encouraged, so hacks don't linger around longer than necessary.
  *  - The text is broken down into sentences, so it's more human-friendly in code.
  *
- * ### Example 2 - suppressing specific deprecation (Gradle 8+ only).
- * Realistic regex with stacktrace example with Gradle 8.0 and Android Gradle Plugin 7.4:
- * ```kotlin
- * // Ignore warning for https://issuetracker.google.com/issues/264177800 since Gradle 8.0,
- * // it's going to be fixed in AGP 7.4.1 or AGP 8.0.
- * if (com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION < "7.4.1") {
- *   val gradleVersion: String = GradleVersion.current().version
- *   doNotNagAbout(
- *     Regex.escape(
- *       "The Report.destination property has been deprecated. "
- *       + "This is scheduled to be removed in Gradle 9.0. "
- *       + "Please use the outputLocation property instead. "
- *       + "See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details."
- *     ) + ".*${Regex.escape("at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure")}.*"
- *   )
- * } else {
- *   error("AGP version changed, review deprecation warning suppression.")
- * }
- * ```
- * Notes (in addition to the notes from Example 1):
- *  - The stack trace is matched blanket as "contains" (`.*${...}.*`),
- *    and only one line is matched which identifies AGP as the source.
- *  - [Regex.escape] is used to prevent crazy-looking escape sequences.
- *
- * ### Example 3 - Partial match (discouraged)
+ * ### Example 2 - Partial match (discouraged)
  * For an example of partial match, sticking with Example 1, the regex could be:
  * ```kotlin
  * doNotNagAbout(Regex("""^.*org\.gradle\.work\.InputChanges.*$"""))
@@ -80,7 +52,7 @@ import java.util.regex.Pattern
  * because it may ignore too much and cause build breakages or delays in future upgrades of your builds.
  * That said, this is probably still better than using values other than `fail` for `org.gradle.warning.mode.
  *
- * @param message The regex provided will be used to match the entire message, including the stack trace in Gradle 8.
+ * @param message The regex provided will be used to match the entire message.
  * If you want to do a partial match, add `.*` to fill in the dynamic parts.
  * The flag [RegexOption.DOT_MATCHES_ALL] is enforced so `.` will match newlines and the regex is easier to write.
  * This can be disabled with `(?-s)` inline if you know what you're doing.
@@ -126,14 +98,7 @@ fun doNotNagAbout(message: Regex) {
  * @see doNotNagAbout for more details
  */
 fun doNotNagAbout(message: String) {
-	if (GradleVersion.version("8.0") <= GradleVersion.current().baseVersion) {
-		// Ignoring with "startsWith" to disregard the stack trace. It's not ideal, but it's
-		// the best we can do to counteract https://github.com/gradle/gradle/pull/22489 introduced in Gradle 8.0.
-		doNotNagAbout(Regex("(?s)${Regex.escape(message)}.*"))
-	} else {
-		// In old versions, go for exact match.
-		doNotNagAbout(Regex.fromLiteral(message))
-	}
+	doNotNagAbout(Regex.fromLiteral(message))
 }
 
 /**

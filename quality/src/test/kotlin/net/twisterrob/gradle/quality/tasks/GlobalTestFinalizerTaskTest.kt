@@ -12,7 +12,6 @@ import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import net.twisterrob.gradle.test.tasksIn
 import org.gradle.testkit.runner.TaskOutcome
-import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.either
@@ -75,11 +74,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 		}
 
 		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":test")!!.outcome)
-		if (GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion) {
-			assertEquals(TaskOutcome.NO_SOURCE, result.task(":testReport")!!.outcome)
-		} else {
-			assertEquals(TaskOutcome.SUCCESS, result.task(":testReport")!!.outcome)
-		}
+		assertEquals(TaskOutcome.SUCCESS, result.task(":testReport")!!.outcome)
 		result.assertNoOutputLine(Regex(""".*failing tests.*"""))
 		result.assertNoOutputLine(Regex(""".*See the report at.*"""))
 	}
@@ -100,11 +95,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 			run(script, "testReport")
 		}
 
-		if (GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion) {
-			assertEquals(TaskOutcome.NO_SOURCE, result.task(":testReport")!!.outcome)
-		} else {
-			assertEquals(TaskOutcome.SUCCESS, result.task(":testReport")!!.outcome)
-		}
+		assertEquals(TaskOutcome.SUCCESS, result.task(":testReport")!!.outcome)
 		assertThat(result.tasks, hasSize(1))
 		result.assertNoOutputLine(Regex(""".*failing tests.*"""))
 		result.assertNoOutputLine(Regex(""".*See the report at.*"""))

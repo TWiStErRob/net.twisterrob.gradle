@@ -191,11 +191,11 @@ fun ProjectLayout.dirCompat(project: Project, provider: Provider<File>): Provide
 	replaceWith = ReplaceWith("project.objects.fileProperty()")
 )
 fun DefaultTask.newInputFile(): RegularFileProperty {
-	val method = DefaultTask::class.java.getDeclaredMethod("newInputFile").apply {
+	val newInputFile = DefaultTask::class.java.getDeclaredMethod("newInputFile").apply {
 		// protected to public as this extension function is static and external to DefaultTask.
 		isAccessible = true
 	}
-	return method(this) as RegularFileProperty
+	return newInputFile(this) as RegularFileProperty
 }
 
 /**
@@ -211,11 +211,11 @@ fun DefaultTask.newInputFile(): RegularFileProperty {
 	replaceWith = ReplaceWith("project.objects.fileProperty()")
 )
 fun DefaultTask.newOutputFile(): RegularFileProperty {
-	val method = DefaultTask::class.java.getDeclaredMethod("newOutputFile").apply {
+	val newOutputFile = DefaultTask::class.java.getDeclaredMethod("newOutputFile").apply {
 		// protected to public as this extension function is static and external to DefaultTask.
 		isAccessible = true
 	}
-	return method(this) as RegularFileProperty
+	return newOutputFile(this) as RegularFileProperty
 }
 
 /**
@@ -231,8 +231,8 @@ fun DefaultTask.newOutputFile(): RegularFileProperty {
 	replaceWith = ReplaceWith("project.objects.fileProperty()")
 )
 fun ProjectLayout.fileProperty(): RegularFileProperty {
-	val method = ProjectLayout::class.java.getDeclaredMethod("fileProperty")
-	return method(this) as RegularFileProperty
+	val fileProperty = ProjectLayout::class.java.getDeclaredMethod("fileProperty")
+	return fileProperty(this) as RegularFileProperty
 }
 
 /**
@@ -248,8 +248,8 @@ fun ProjectLayout.fileProperty(): RegularFileProperty {
 	replaceWith = ReplaceWith("project.objects.directoryProperty()")
 )
 fun ProjectLayout.directoryProperty(): DirectoryProperty {
-	val method = ProjectLayout::class.java.getDeclaredMethod("directoryProperty")
-	return method(this) as DirectoryProperty
+	val directoryProperty = ProjectLayout::class.java.getDeclaredMethod("directoryProperty")
+	return directoryProperty(this) as DirectoryProperty
 }
 
 /**
@@ -278,44 +278,25 @@ val Project.archivesBaseNameCompat: String
 		}
 
 /**
- * Gradle 4.3-8.0 compatible version of [Report.getOutputLocation].get().
+ * Gradle 4.3-7.3 compatible version of [Report.getOutputLocation].get().
  *
- * @see Report.getOutputLocation
  * @see Report.getDestination
+ * @see Report.getOutputLocation
  */
-@Suppress("KDocUnresolvedReference")
 fun Report.getOutputLocationCompat(): File =
 	when {
 		GradleVersion.current().baseVersion < GradleVersion.version("6.1") -> {
 			@Suppress("DEPRECATION")
 			this.destination
 		}
-		GradleVersion.current().baseVersion < GradleVersion.version("8.0") -> {
-			// New in Gradle 6.1 with return type Provider<? extends FileSystemLocation>.
-			this.outputLocationCompat.get().asFile
-		}
 		else -> {
-			// Return type changed in Gradle 8.0 to Property<? extends FileSystemLocation>.
+			// New in Gradle 6.1.
 			this.outputLocation.get().asFile
 		}
 	}
 
 /**
- * Reflective access for the breaking change.
- * * [Return type of `outputLocation` changed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#report_getoutputlocation_return_type_changed_from_provider_to_property).
- *   [PR](https://github.com/gradle/gradle/pull/22232).
- *
- * @see Report.getOutputLocation
- */
-private val Report.outputLocationCompat: Provider<out FileSystemLocation>
-	get() {
-		val method = Report::class.java.getDeclaredMethod("getOutputLocation")
-		@Suppress("UNCHECKED_CAST")
-		return method(this) as Provider<out FileSystemLocation>
-	}
-
-/**
- * Gradle 4.3-7.8 compatible version of [ConfigurableReport.getOutputLocation].set().
+ * Gradle 4.3-7.3 compatible version of [ConfigurableReport.getOutputLocation].set().
  *
  * @see ConfigurableReport.setDestination
  * @see ConfigurableReport.getOutputLocation
@@ -336,7 +317,6 @@ fun ConfigurableReport.setOutputLocationCompat(destination: Provider<out FileSys
 		}
 		else -> {
 			// New in Gradle 6.1.
-			// Even though return value changed in Gradle 8.0, the smart cast makes it safe.
 			@Suppress("UNCHECKED_CAST")
 			when (this) {
 				is SingleFileReport -> outputLocation.set(destination as Provider<RegularFile>)
@@ -347,34 +327,11 @@ fun ConfigurableReport.setOutputLocationCompat(destination: Provider<out FileSys
 }
 
 /**
- * Polyfill as reflective call, as this method was...
- *  * Added in Gradle 1.0
- *  * [Deprecated in Gradle 7.1](https://github.com/gradle/gradle/commit/85fbb7cd5b7eae14dcff657f712583fcbd225ad6)
- *  * [Removed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#report_api_cleanup)
- *
- * @see Report.getOutputLocation
- */
-@Deprecated(
-	message = "Replaced with ConfigurableReport.outputLocation.",
-	replaceWith = ReplaceWith("outputLocation.set(value)")
-)
-private var Report.destination: File
-	get() {
-		val method = Report::class.java.getDeclaredMethod("getDestination")
-		return method(this) as File
-	}
-	set(value) {
-		val method = ConfigurableReport::class.java.getDeclaredMethod("setDestination", File::class.java)
-		method(this, value)
-	}
-
-/**
- * Gradle 4.3-8.0 compatible version of [Report.getRequired].
+ * Gradle 4.3-7.3 compatible version of [Report.getOutputLocation].
  *
  * @see ConfigurableReport.setRequired
  * @see ConfigurableReport.setEnabled
  */
-@Suppress("KDocUnresolvedReference")
 fun ConfigurableReport.setRequired(enabled: Boolean) {
 	when {
 		GradleVersion.current().baseVersion < GradleVersion.version("6.1") -> {
@@ -386,25 +343,3 @@ fun ConfigurableReport.setRequired(enabled: Boolean) {
 		}
 	}
 }
-
-/**
- * Polyfill as reflective call, as this method was...
- *  * Added in Gradle 1.0
- *  * [Deprecated in Gradle 7.1](https://github.com/gradle/gradle/commit/85fbb7cd5b7eae14dcff657f712583fcbd225ad6)
- *  * [Removed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#report_api_cleanup)
- *
- * @see ConfigurableReport.getRequired
- */
-@Deprecated(
-	message = "Replaced with ConfigurableReport.required.",
-	replaceWith = ReplaceWith("required.set(value)")
-)
-private var Report.isEnabled: Boolean
-	get() {
-		val method = Report::class.java.getDeclaredMethod("isEnabled")
-		return method(this) as Boolean
-	}
-	set(value) {
-		val method = ConfigurableReport::class.java.getDeclaredMethod("setEnabled", Boolean::class.java)
-		method(this, value)
-	}

@@ -111,7 +111,7 @@ subprojects {
 		properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
 	}
 
-	tasks.withType<ProcessResources>().configureEach {
+	tasks.withType<@Suppress("UnstableApiUsage") ProcessResources>().configureEach {
 		val propertyNamesToReplace = listOf(
 			"net.twisterrob.test.android.pluginVersion",
 			"net.twisterrob.test.kotlin.pluginVersion",
@@ -210,6 +210,7 @@ tasks.register("check") {
 project.tasks.register<TestReport>("testReport") {
 	group = LifecycleBasePlugin.VERIFICATION_GROUP
 	description = "Run and report on all tests in the project. Add `-x test` to just generate report."
+	@Suppress("UnstableApiUsage")
 	destinationDirectory.set(file("${buildDir}/reports/tests/all"))
 
 	val tests = subprojects
@@ -217,11 +218,13 @@ project.tasks.register<TestReport>("testReport") {
 		.onEach { it.ignoreFailures = true } // Let the tests finish, to get a final "all" report.
 	// Detach (.get()) the result directories,
 	// simply using reportOn(tests) or the binaryResultsDirectory providers, task dependencies would be created.
+	@Suppress("UnstableApiUsage")
 	testResults.from(tests.map { it.binaryResultsDirectory.get() })
 	// Force executing tests (if they're in the task graph), before reporting on them.
 	mustRunAfter(tests)
 
 	doLast {
+		@Suppress("UnstableApiUsage")
 		val reportFile = destinationDirectory.file("index.html").get().asFile
 		val failureRegex = Regex("""(?s).*<div class="infoBox" id="failures">\s*<div class="counter">(\d+)<\/div>.*""")
 		val failureMatch = failureRegex.matchEntire(reportFile.readText())
@@ -301,14 +304,3 @@ nexusPublishing {
 		}
 	}
 }
-
-val gradleVersion: String = GradleVersion.current().version
-
-// TODEL Gradle sync in IDEA 2022.3.1: https://youtrack.jetbrains.com/issue/IDEA-306975
-@Suppress("MaxLineLength")
-doNotNagAbout(
-	"The AbstractArchiveTask.archivePath property has been deprecated. " +
-			"This is scheduled to be removed in Gradle 9.0. " +
-			"Please use the archiveFile property instead. " +
-			"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath for more details."
-)
