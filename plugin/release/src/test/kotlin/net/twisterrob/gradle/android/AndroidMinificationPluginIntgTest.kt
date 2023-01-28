@@ -94,7 +94,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("properties")
 		val properties = """
-			android.useAndroidX=true
+			android.useAndroidX=false
 			${minification.gradleProperties}
 		""".trimIndent()
 		gradle.root.resolve("gradle.properties").appendText(properties)
