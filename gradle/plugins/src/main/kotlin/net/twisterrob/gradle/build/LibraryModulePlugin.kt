@@ -10,8 +10,10 @@ class LibraryModulePlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
 		project.plugins.apply("org.gradle.java-library")
+
 		project.plugins.apply("org.jetbrains.kotlin.jvm")
 		project.plugins.apply(JavaCompatibilityPlugin::class)
+
 		project.plugins.apply(DetektPlugin::class)
 	}
 }

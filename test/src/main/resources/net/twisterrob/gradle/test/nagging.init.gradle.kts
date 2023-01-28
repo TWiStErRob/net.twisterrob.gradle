@@ -18,7 +18,7 @@ initscript {
 
 apply<net.twisterrob.gradle.nagging.NaggingPlugin>()
 
-// Sorted by (Gradle, AGP).
+// Below nagging suppressions are sorted by (Gradle version, AGP version) lexicographically.
 
 doNotNagAbout(
 	"6.7.1",

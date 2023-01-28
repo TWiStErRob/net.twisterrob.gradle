@@ -30,4 +30,5 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
+	testImplementation(projects.compat.gradle)
 }

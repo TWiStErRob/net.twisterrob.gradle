@@ -15,6 +15,7 @@ import org.gradle.util.GradleVersion
  * because method references cannot pick up overloaded methods.
  *
  * @see doNotNagAbout for more details
+ * @see net.twisterrob.gradle.nagging.doNotNagAbout
  */
 fun doNotNagAboutPattern(gradle: String, agpRegex: String, messageRegex: String) {
 	if (GradleVersion.current().baseVersion != GradleVersion.version(gradle)) return

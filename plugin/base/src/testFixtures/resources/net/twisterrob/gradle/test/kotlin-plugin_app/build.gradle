@@ -6,6 +6,7 @@ buildscript {
 	dependencies {
 		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:@net.twisterrob.test.kotlin.pluginVersion@")
 		def gradleVersion = project.gradle.gradleVersion
+		// Note: .toString on GStrings are necessary because Groovy doesn't auto-convert it.
 		def doNotNagAbout = rootProject.ext["doNotNagAbout"]
 		if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.6.0") {
 			// https://youtrack.jetbrains.com/issue/KT-47867 was fixed in 1.6.0,

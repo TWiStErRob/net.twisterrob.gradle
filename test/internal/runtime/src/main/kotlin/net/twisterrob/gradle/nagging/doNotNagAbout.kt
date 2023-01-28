@@ -12,6 +12,7 @@ import org.gradle.util.GradleVersion
  * Overload for exact message matching.
  *
  * @see doNotNagAbout for more details
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutPattern
  */
 fun doNotNagAbout(gradle: String, agpRegex: String, message: String) {
 	if (GradleVersion.current().baseVersion != GradleVersion.version(gradle)) return

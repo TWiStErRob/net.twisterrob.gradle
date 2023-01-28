@@ -120,7 +120,7 @@ class GradleUtilsTest_doNotNagAbout : BaseIntgTest() {
 		@Language("gradle")
 		private fun nag(feature: String): String {
 			val varName = "builder${Integer.toHexString(feature.hashCode())}"
-			// Note: on older Gradles (e.g. 6.5.1) GradleVersion is not auto-imported.
+			// Note: on older Gradle versions (e.g. 6.5.1) GradleVersion is not auto-imported.
 			@Suppress("UnnecessaryQualifiedReference")
 			return """
 				// Create a fake deprecation warning for "${feature}" in the Gradle internals.
