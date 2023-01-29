@@ -29,6 +29,7 @@ fun JavaPluginExtension.withDokkaJar(project: Project, artifactTask: TaskProvide
 		project.configurations,
 		project.tasks,
 		project.objects,
-		project.serviceOf()
+		project.serviceOf(),
+		project.serviceOf(),
 	)
 }

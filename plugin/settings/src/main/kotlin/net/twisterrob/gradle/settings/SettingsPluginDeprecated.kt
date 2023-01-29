@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.settings
 
-import net.twisterrob.gradle.common.DeprecatedSettingsPlugin
+import net.twisterrob.gradle.internal.deprecation.DeprecatedSettingsPlugin
 
 internal class SettingsPluginDeprecated : DeprecatedSettingsPlugin(
 	oldName = "net.twisterrob.settings",

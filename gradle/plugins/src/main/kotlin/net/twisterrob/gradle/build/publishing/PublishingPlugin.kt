@@ -6,6 +6,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
@@ -220,22 +221,22 @@ private fun registerPublicationsTasks(project: Project) {
 		.matching {
 			it is MavenPublication && it.name.endsWith("PluginMarkerMaven")
 		}
-	project.tasks.register("publish${markersName.capitalize()}ToMavenLocal") task@{
+	project.tasks.register("publish${markersName.capitalized()}ToMavenLocal") task@{
 		group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 		description = "Publishes ${markersDescription} produced by this project to the local Maven cache."
 		markerPublications.all publication@{
 			val publication = this@publication.name
-			this@task.dependsOn("publish${publication.capitalize()}PublicationToMavenLocal")
+			this@task.dependsOn("publish${publication.capitalized()}PublicationToMavenLocal")
 		}
 	}
 	project.the<PublishingExtension>().repositories.all repository@{
 		val repository = this@repository.name
-		project.tasks.register("publish${markersName.capitalize()}To${repository.capitalize()}Repository") task@{
+		project.tasks.register("publish${markersName.capitalized()}To${repository.capitalized()}Repository") task@{
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Publishes ${markersDescription} produced by this project to the ${repository} repository."
 			markerPublications.all publication@{
 				val publication = this@publication.name
-				this@task.dependsOn("publish${publication.capitalize()}PublicationTo${repository.capitalize()}Repository")
+				this@task.dependsOn("publish${publication.capitalized()}PublicationTo${repository.capitalized()}Repository")
 			}
 		}
 	}

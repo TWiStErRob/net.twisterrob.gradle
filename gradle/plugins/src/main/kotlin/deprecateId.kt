@@ -5,6 +5,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.register
 import org.gradle.plugin.devel.PluginDeclaration
 import org.intellij.lang.annotations.Language
@@ -15,7 +16,7 @@ import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
  */
 fun PluginDeclaration.deprecateId(project: Project, oldId: String) {
 	val plugin = this
-	val taskName = "generate${oldId.capitalize()}To${id.capitalize()}DeprecationPlugin"
+	val taskName = "generate${oldId.capitalized()}To${id.capitalized()}DeprecationPlugin"
 	project.kotlinExtension.sourceSets.named("main").configure {
 		kotlin.srcDir(
 			project.tasks.register<DeprecatedPluginKotlinGeneratingTask>(taskName + "Sources") {
@@ -63,7 +64,7 @@ internal abstract class DeprecatedPluginKotlinGeneratingTask : DefaultTask() {
 		val deprecatedPluginSourceCode = """
 			package ${packageName}
 			
-			import net.twisterrob.gradle.common.DeprecatedProjectPlugin
+			import net.twisterrob.gradle.internal.deprecation.DeprecatedProjectPlugin
 			
 			internal class ${className}Deprecated : DeprecatedProjectPlugin(
 				oldName = "${oldName.get()}",

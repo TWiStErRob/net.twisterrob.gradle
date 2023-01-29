@@ -10,7 +10,7 @@ description = "Common: Shared classes between checkers (not to be consumed direc
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	implementation(projects.compat.agpBase)
-	implementation(projects.compat.gradle)
+	api(projects.compat.gradle)
 
 	compileOnly(libs.android.gradle)
 	// com.android.SdkConstants.FD_GENERATED

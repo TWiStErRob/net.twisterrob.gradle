@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("GradleUtils")
+
 package net.twisterrob.gradle
 
 import org.slf4j.ILoggerFactory
@@ -9,7 +12,8 @@ import java.lang.reflect.Method
  * Source: https://issuetracker.google.com/issues/247906487#comment10
  *
  * **WARNING**: Must be called early in the build before the loggers are created.
- * Author recommends putting in root build.gradle.
+ * If a class caches the logger (likely), they won't re-query it from the factory.
+ * Author recommends putting the calls in root build.gradle.
  *
  * Examples:
  * * `com.gradle.plugin-publish`: on every configured project where `org.gradle.signing` is also applied.

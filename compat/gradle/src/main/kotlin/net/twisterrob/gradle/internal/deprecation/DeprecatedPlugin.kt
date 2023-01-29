@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.common
+package net.twisterrob.gradle.internal.deprecation
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -32,9 +32,7 @@ open class DeprecatedSettingsPlugin(
 }
 
 private fun nagUserWithPluginDeprecation(logger: Logger, oldName: String, newName: String) {
-	if (GradleVersion.version("6.3") <= GradleVersion.current().baseVersion
-		&& GradleVersion.current().baseVersion <= GradleVersion.version("9.0")
-	) {
+	if (canNagUser(GradleVersion.current())) {
 		gradleInternalNagging(oldName, newName)
 	} else {
 		logger.warn("Plugin ${oldName} is deprecated, please use ${newName} instead.")
@@ -48,23 +46,6 @@ private fun gradleInternalNagging(oldName: String, newName: String) {
 	val builder: DeprecationMessageBuilder<*> = DeprecationLogger
 		.deprecatePlugin(oldName)
 		.replaceWith(newName)
-	builder.willBeRemovedInGradleNextMajor()
-	DeprecationLogger::class.java
-		.getDeclaredMethod("nagUserWith", DeprecationMessageBuilder::class.java, Class::class.java)
-		.apply { isAccessible = true }
-		.invoke(null, builder, Class.forName("net.twisterrob.gradle.common.DeprecatedPluginKt"))
-}
-
-private fun <T : DeprecationMessageBuilder<T>> DeprecationMessageBuilder<T>.willBeRemovedInGradleNextMajor() {
-	@Suppress("MagicNumber")
-	val nextMajor = when {
-		GradleVersion.current().baseVersion >= GradleVersion.version("8.0") -> 9
-		GradleVersion.current().baseVersion >= GradleVersion.version("7.0") -> 8
-		GradleVersion.current().baseVersion >= GradleVersion.version("6.3") -> 7
-		else -> error("Unsupported Gradle version: ${GradleVersion.current()}, willBeRemovedInGradleX doesn't exist yet.")
-	}
-	DeprecationMessageBuilder::class.java
-		.getDeclaredMethod("willBeRemovedInGradle$nextMajor")
-		.apply { isAccessible = true }
-		.invoke(this)
+		.willBeRemovedInGradleNextMajor(GradleVersion.current())
+	nagUserWith(builder, Class.forName("net.twisterrob.gradle.internal.deprecation.DeprecatedPluginKt"))
 }
