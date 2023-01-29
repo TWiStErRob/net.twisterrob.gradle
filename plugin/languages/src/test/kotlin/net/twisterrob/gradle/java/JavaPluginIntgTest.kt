@@ -10,6 +10,7 @@ import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertNoSource
 import net.twisterrob.gradle.test.assertSuccess
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -22,6 +23,10 @@ import org.junit.jupiter.api.extension.ExtendWith
 class JavaPluginIntgTest : BaseAndroidIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
+
+	@BeforeEach fun setMemory() {
+		gradle.file("org.gradle.jvmargs=-Xmx512M -XX:MaxMetaspaceSize=384M\n", "gradle.properties")
+	}
 
 	@Test fun `java plugin can be applied standalone`() {
 		@Language("gradle")
