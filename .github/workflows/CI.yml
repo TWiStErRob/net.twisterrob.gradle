@@ -5,12 +5,12 @@ on:
     branches-ignore:
       - renovate/configure
 
-#concurrency:
+concurrency:
   # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
   # On master, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
   # More info: https://stackoverflow.com/a/68422069/253468:
-  #group: ${{ github.ref == 'refs/heads/master' && format('ci-master-{0}', github.sha) || format('ci-{0}', github.ref) }}
-  #cancel-in-progress: true
+  group: ${{ github.ref == 'refs/heads/master' && format('ci-master-{0}', github.sha) || format('ci-{0}', github.ref) }}
+  cancel-in-progress: true
 
 jobs:
   # TODEL https://github.com/gradle/wrapper-validation-action/issues/69
@@ -175,7 +175,7 @@ jobs:
       # Value will be written in a later step using `>> $GITHUB_ENV`.
       GRADLE_VERSION: 0.0.0
     # Average observed execution time is 6-7 minutes, double it for timeout constraint.
-    timeout-minutes: 60
+    timeout-minutes: 30
     needs: validate
     steps:
       - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
@@ -311,7 +311,6 @@ jobs:
           --no-build-cache
           --no-configuration-cache
           --no-watch-fs
-          --no-parallel
           --stacktrace
           --continue
           ${{ matrix.test-task }}
@@ -388,7 +387,7 @@ jobs:
             kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
-            test-task: testReport :plugin:tests --info
+            test-task: testReport :plugin:tests
           - name: "AGP 7.4.x on Gradle 7.x"
             gradle: 7.6
             gradle-java: 11
@@ -404,7 +403,7 @@ jobs:
             kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
-            test-task: testReport :plugin:tests --info
+            test-task: testReport :plugin:tests
           - name: "AGP 7.4.x on Gradle 8.x"
             gradle: 8.0-rc-2
             gradle-java: 11
@@ -420,7 +419,7 @@ jobs:
             kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
-            test-task: testReport :plugin:tests --info
+            test-task: testReport :plugin:tests
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
