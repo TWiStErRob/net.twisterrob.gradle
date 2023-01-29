@@ -3,6 +3,7 @@ plugins {
 	//alias(libs.plugins.kotlin) // Can't apply since there's a mismatch between embedded Kotlin and latest Kotlin.
 	`kotlin-dsl`
 	alias(libs.plugins.detekt)
+	id("idea")
 }
 
 gradlePlugin {
@@ -58,10 +59,24 @@ dependencies {
 	compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
 
-kotlin.sourceSets.named("main").configure {
-	// Create separate source-set for sharing code between the build and the project.
-	// See :plugin:settings for more info.
-	kotlin.srcDir("src/main/kotlin-published")
+// Reusing code from :plugin:settings in the main project.
+run {
+	// Rather than directly including the source folder, it's first copied here.
+	val sharedCodeFolder: File = file("src/main/kotlin-shared")
+	kotlin.sourceSets.named("main").configure { kotlin.srcDir(sharedCodeFolder) }
+	// This is to make sure that IDEA doesn't mess things up with duplicated source roots.
+	val copyReusableSources = tasks.register<Copy>("copyReusableSources") {
+		// More robust: gradle.parent!!.rootProject.project(":plugin:settings").file("src/main/kotlin-shared")
+		// but at this point in the lifecycle the parent (including build) rootProject build is not available yet.
+		from(rootProject.file("../../plugin/settings/src/main/kotlin-shared"))
+		into(sharedCodeFolder)
+	}
+	// The copied code is marked as generated for IDEA, so it warns when it's accidentally edited.
+	idea.module.generatedSourceDirs.add(sharedCodeFolder)
+	// Some tasks will rely on this copied code, so make sure their inputs are appropriately marked. 
+	tasks.named("compileKotlin").configure { dependsOn(copyReusableSources) }
+	tasks.named("detektMain").configure { dependsOn(copyReusableSources) }
+	tasks.named("detekt").configure { dependsOn(copyReusableSources) }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

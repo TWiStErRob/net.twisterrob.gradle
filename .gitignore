@@ -7,7 +7,6 @@
 out/
 gradle/dependency-locks/*.lockfile
 /*.lockfile
-/plugin/settings/src/main/kotlin-reused/
 
 # IDEA Project files
 .idea/
