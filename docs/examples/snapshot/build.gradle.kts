@@ -28,7 +28,8 @@ if (com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION < "7.4.1") {
 		"The Report.destination property has been deprecated. " +
 				"This is scheduled to be removed in Gradle 9.0. " +
 				"Please use the outputLocation property instead. " +
-				"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details."
+				"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details.",
+		"at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure"
 	)
 } else {
 	error("AGP major version changed, review hack.")

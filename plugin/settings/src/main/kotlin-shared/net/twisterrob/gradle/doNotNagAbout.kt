@@ -30,7 +30,7 @@ import java.util.regex.Pattern
  * // it's going to be fixed in AGP 7.3.
  * if (com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION < "7.3") {
  *   val gradleVersion: String = GradleVersion.current().version
- *   doNotNagAbout(
+ *   doNotNagAbout( // doNotNagAbout(String)
  *     "IncrementalTaskInputs has been deprecated. "
  *     + "This is scheduled to be removed in Gradle 8.0. "
  *     + "On method 'IncrementalTask.taskAction\$gradle_core' use 'org.gradle.work.InputChanges' instead. "
@@ -54,13 +54,15 @@ import java.util.regex.Pattern
  * // it's going to be fixed in AGP 7.4.1 or AGP 8.0.
  * if (com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION < "7.4.1") {
  *   val gradleVersion: String = GradleVersion.current().version
- *   doNotNagAbout(
- *     Regex.escape(
- *       "The Report.destination property has been deprecated. "
- *       + "This is scheduled to be removed in Gradle 9.0. "
- *       + "Please use the outputLocation property instead. "
- *       + "See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details."
- *     ) + ".*${Regex.escape("at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure")}.*"
+ *   doNotNagAbout( // doNotNagAbout(Regex)
+ *     Regex(
+ *       Regex.escape(
+ *         "The Report.destination property has been deprecated. "
+ *         + "This is scheduled to be removed in Gradle 9.0. "
+ *         + "Please use the outputLocation property instead. "
+ *         + "See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details."
+ *       ) + ".*${Regex.escape("at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure")}.*"
+ *     )
  *   )
  * } else {
  *   error("AGP version changed, review deprecation warning suppression.")
@@ -74,6 +76,7 @@ import java.util.regex.Pattern
  * ### Example 3 - Partial match (discouraged)
  * For an example of partial match, sticking with Example 1, the regex could be:
  * ```kotlin
+ * // doNotNagAbout(Regex)
  * doNotNagAbout(Regex("""^.*org\.gradle\.work\.InputChanges.*$"""))
  * ```
  * Note that this is possible, but discouraged,
@@ -134,6 +137,30 @@ fun doNotNagAbout(message: String) {
 		// In old versions, go for exact match.
 		doNotNagAbout(Regex.fromLiteral(message))
 	}
+}
+
+/**
+ * Surgically ignoring messages coming from Gradle deprecation system.
+ *
+ * This overload is a convenience for matching simple deprecations coming from specific places.
+ * For example rewriting Example 2 from [doNotNagAbout] to use this overload:
+ * ```kotlin
+ * doNotNagAbout( // doNotNagAbout(String, String)
+ *   "The Report.destination property has been deprecated. "
+ *     + "This is scheduled to be removed in Gradle 9.0. "
+ *     + "Please use the outputLocation property instead. "
+ *     + "See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details.",
+ *   "at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure"
+ * )
+ * ```
+ *
+ * Warning: the stack trace matched against [stack] might not be the full trace,
+ * might need to use the top-most non-Gradle line to be sure it works.
+ *
+ * @see doNotNagAbout for more details
+ */
+fun doNotNagAbout(message: String, stack: String) {
+	doNotNagAbout(Regex("(?s)${Regex.escape(message)}.*${Regex.escape(stack)}.*"))
 }
 
 /**
