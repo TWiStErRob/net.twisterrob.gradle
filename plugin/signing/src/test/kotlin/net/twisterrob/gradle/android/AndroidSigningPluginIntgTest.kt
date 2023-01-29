@@ -28,6 +28,7 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@BeforeEach fun setMemory() {
+		// TODEL Workaround for https://github.com/gradle/gradle/issues/23698
 		gradle.file("org.gradle.jvmargs=-Xmx512M -XX:MaxMetaspaceSize=384M\n", "gradle.properties")
 	}
 
