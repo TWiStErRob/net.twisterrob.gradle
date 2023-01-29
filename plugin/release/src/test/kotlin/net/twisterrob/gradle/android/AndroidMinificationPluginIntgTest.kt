@@ -17,6 +17,7 @@ import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -29,6 +30,11 @@ import java.io.File
 class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
+
+	@BeforeEach fun setMemory() {
+		// TODEL Workaround for https://github.com/gradle/gradle/issues/23698
+		gradle.file("org.gradle.jvmargs=-Xmx512M -XX:MaxMetaspaceSize=384M\n", "gradle.properties")
+	}
 
 	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `default build setup minifies only release using AndroidX (debug) and (release)`(

@@ -13,6 +13,7 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.emptyString
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
@@ -25,6 +26,11 @@ import java.io.File
 class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
+
+	@BeforeEach fun setMemory() {
+		// TODEL Workaround for https://github.com/gradle/gradle/issues/23698
+		gradle.file("org.gradle.jvmargs=-Xmx512M -XX:MaxMetaspaceSize=384M\n", "gradle.properties")
+	}
 
 	@Test fun `logs error when keystore not valid (release)`() {
 		@Language("properties")

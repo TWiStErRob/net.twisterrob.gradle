@@ -170,7 +170,8 @@ open class GradleRunnerRule : TestRule {
 				```properties
 ${propertiesContentForLogging().prependIndent("\t\t\t\t")}
 				```
-				Running `gradle ${args.joinToString(" ")}` on ${buildFile.absolutePath}:
+				Running `gradle ${args.joinToString(" ")}`
+				on ${buildFile.absolutePath}:
 				```gradle
 ${buildContentForLogging().prependIndent("\t\t\t\t")}
 				```

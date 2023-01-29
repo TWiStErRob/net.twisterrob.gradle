@@ -169,3 +169,12 @@ doNotNagAbout(
 	// Example test: AndroidBuildPluginIntgTest.`adds custom resources and BuildConfig values`
 	"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'IncrementalTask.taskAction\$gradle_core' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/7.6/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
 )
+doNotNagAbout(
+	"8.0",
+	"""^(4\.\d\.\d|7\.0\.\d|7\.1\.\d|7\.2\.\d|7\.3\.\d|7\.4\.0)$""",
+	// Ignore warning for https://issuetracker.google.com/issues/264177800 since Gradle 8.0, it's going to be fixed in AGP 7.4.1.
+	// This only shows up during CONFIGURATION phase, and only if a test task is needed (about 4 tests at the moment).
+	// This means any build could trigger it, so putting it here into a global place to prevent false failures.
+	"The Report.destination property has been deprecated. This is scheduled to be removed in Gradle 9.0. Please use the outputLocation property instead. See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details.",
+	"at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure"
+)

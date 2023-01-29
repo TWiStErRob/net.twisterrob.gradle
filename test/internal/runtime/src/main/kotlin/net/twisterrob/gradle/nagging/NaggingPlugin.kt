@@ -22,7 +22,10 @@ class NaggingPlugin : Plugin<Gradle> {
 			// val doNotNagAbout = project.rootProject.extensions.extraProperties["doNotNagAbout"] as (String, String, String) -> Unit
 			// doNotNagAbout("7.4.2", """^7\.2\.\d$""", "message")
 
-			rootProject.extensions.extraProperties.set("doNotNagAbout", ::doNotNagAbout)
+			val doNotNagAboutRef: (String, String, String) -> Unit = ::doNotNagAbout
+			rootProject.extensions.extraProperties.set("doNotNagAbout", doNotNagAboutRef)
+			val doNotNagAboutStackRef: (String, String, String, String) -> Unit = ::doNotNagAbout
+			rootProject.extensions.extraProperties.set("doNotNagAboutStack", doNotNagAboutStackRef)
 			rootProject.extensions.extraProperties.set("doNotNagAboutPattern", ::doNotNagAboutPattern)
 		}
 	}
