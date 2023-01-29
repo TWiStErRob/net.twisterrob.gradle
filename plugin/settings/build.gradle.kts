@@ -15,9 +15,18 @@ gradlePlugin {
 	}
 }
 
+kotlin.sourceSets.named("main").configure {
+	// Create separate source-set for sharing code between the project and its build, see /gradle/plugins for more info.
+	// Note: the code is housed in this module so that it can be tested appropriately.
+	kotlin.srcDir("src/main/kotlin-shared")
+}
+
 dependencies {
 	implementation(gradleApiWithoutKotlin())
+	// Expose some methods to TestKit runtime classpath.
+	runtimeOnly(projects.compat.gradle)
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
+	testImplementation(projects.compat.gradle)
 }

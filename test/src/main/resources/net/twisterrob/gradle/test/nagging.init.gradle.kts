@@ -1,111 +1,24 @@
+import net.twisterrob.gradle.nagging.doNotNagAbout
+import net.twisterrob.gradle.nagging.doNotNagAboutPattern
 import org.gradle.util.GradleVersion
+import java.io.File
 
-/**
- * Overload for exact message matching.
- *
- * @see _doNotNagAboutPattern for more details
- */
-fun doNotNagAbout(gradle: String, agpRegex: String, message: String) {
-	if (GradleVersion.current().baseVersion == GradleVersion.version(gradle)) {
-		if (Regex(agpRegex) matches agpVersion) {
-			_doNotNagAboutPattern(Regex.fromLiteral(message))
-		}
+initscript {
+	dependencies {
+		// Essentially:
+		// classpath(files("test\\internal\\runtime\\build\\libs\\runtime-0.15-SNAPSHOT.jar"))
+		val initscriptMetadata = File(System.getProperty("net.twisterrob.gradle.test.initscript-runtime"))
+		java.util.Properties()
+			.apply { load(initscriptMetadata.reader()) }
+			.getProperty("initscript-classpath")
+			.split(File.pathSeparator)
+			.forEach { add("classpath", files(it)) }
 	}
 }
 
-/**
- * Overload for more dynamic message matching.
- *
- * This method is named with a suffix of `Pattern` to make it easily available,
- * because method references cannot pick up overloaded methods.
- *
- * @see _doNotNagAboutPattern for more details
- */
-fun doNotNagAboutPattern(gradle: String, agpRegex: String, messageRegex: String) {
-	if (GradleVersion.current().baseVersion == GradleVersion.version(gradle)) {
-		if (Regex(agpRegex) matches agpVersion) {
-			_doNotNagAboutPattern(Regex(messageRegex))
-		}
-	}
-}
+apply<net.twisterrob.gradle.nagging.NaggingPlugin>()
 
-rootProject {
-	// Groovy .ext === Kotlin .extensions.extraProperties === Kotlin DSL .extra
-	// Based on https://stackoverflow.com/a/19269037/253468
-	// Based on https://discuss.gradle.org/t/how-to-access-a-function-defined-in-init-gradle-in-build-script/6200/2
-
-	// Access from build.gradle:
-	// def doNotNagAbout = rootProject.ext["doNotNagAbout"]
-	// doNotNagAbout("7.4.2", "^7\\.2\\.\\d+\$", "message")
-
-	// Access from build.gradle.kts:
-	// val doNotNagAbout = project.rootProject.extra["doNotNagAbout"] as (String, String, String) -> Unit
-	// val doNotNagAbout = project.rootProject.extensions.extraProperties["doNotNagAbout"] as (String, String, String) -> Unit
-	// doNotNagAbout("7.4.2", """^7\.2\.\d$""", "message")
-
-	extensions.extraProperties.set("doNotNagAbout", ::doNotNagAbout)
-	extensions.extraProperties.set("doNotNagAboutPattern", ::doNotNagAboutPattern)
-}
-
-/**
- * Surgically ignoring messages like this will prevent actual executions from triggering
- * stack traces and warnings, which means that even with some warnings,
- * it's possible to use `org.gradle.warning.mode=fail`.
- */
-/*private*/ fun _doNotNagAboutPattern(message: Regex) {
-	// "fail" was not a valid option for --warning-mode before Gradle 5.6.0.
-	// In Gradle 4.7.0 (c633542) org.gradle.util.SingleMessageLogger#deprecatedFeatureHandler came to be in a refactor.
-	// In Gradle 6.2.0 it was split (247fd32) to org.gradle.util.DeprecationLogger#deprecatedFeatureHandler
-	// and then further split (308086a) to org.gradle.internal.deprecation.DeprecationLogger#deprecatedFeatureHandler
-	// and then renamed (a75aedd) to #DEPRECATED_FEATURE_HANDLER.
-	val loggerField =
-		if (GradleVersion.version("6.2.0") <= GradleVersion.current().baseVersion) {
-			Class.forName("org.gradle.internal.deprecation.DeprecationLogger")
-				.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
-				.apply { isAccessible = true }
-		} else if (GradleVersion.version("4.7.0") <= GradleVersion.current().baseVersion) {
-			Class.forName("org.gradle.util.SingleMessageLogger")
-				.getDeclaredField("deprecatedFeatureHandler")
-				.apply { isAccessible = true }
-		} else {
-			logger.warn("Cannot ignore deprecation (Gradle ${GradleVersion.current()} too old): $message")
-			return
-		}
-	val deprecationLogger: Any = loggerField.get(null)
-
-	// LoggingDeprecatedFeatureHandler#messages was added in Gradle 1.8.
-	val messagesField = org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler::class.java
-		.getDeclaredField("messages")
-		.apply { isAccessible = true }
-	@Suppress("UNCHECKED_CAST")
-	val messages: MutableSet<String> = messagesField.get(deprecationLogger) as MutableSet<String>
-
-	val ignore = if (messages is IgnoringSet) messages else IgnoringSet(messages)
-	messagesField.set(deprecationLogger, ignore)
-	logger.lifecycle("Ignoring deprecation: $message")
-	ignore.ignorePattern(message)
-}
-
-private class IgnoringSet(
-	private val backingSet: MutableSet<String>
-) : MutableSet<String> by backingSet {
-
-	private val ignores: MutableSet<Regex> = mutableSetOf()
-
-	fun ignorePattern(regex: Regex) {
-		ignores.add(regex)
-	}
-
-	override fun add(element: String): Boolean {
-		val isIgnored = ignores.any { it.matches(element) }
-		val isNew = backingSet.add(element)
-		return !isIgnored && isNew
-	}
-}
-
-private val agpVersion: String = System.getProperty("net.twisterrob.test.android.pluginVersion")
-	?: error("Property 'net.twisterrob.test.android.pluginVersion' is not set.")
-// Sorted by (Gradle, AGP) below here.
+// Below nagging suppressions are sorted by (Gradle version, AGP version) lexicographically.
 
 doNotNagAbout(
 	"6.7.1",

@@ -70,11 +70,11 @@ private val Test.binaryResultsDirectoryCompat: Any?
 	get() =
 		if (GradleVersion.current().baseVersion < GradleVersion.version("5.6")) {
 			@Suppress("DEPRECATION" /* Gradle 7, to be removed in Gradle 8 */)
-			binResultsDir
+			this.binResultsDir
 		} else {
 			// Need to create an indirection with a provider to keep it lazy,
 			// but also detach from the DirectoryProperty, which references its owning task.
-			project.provider { binaryResultsDirectory.get() }
+			project.provider { this.binaryResultsDirectory.get() }
 		}
 
 private var TestReport.destinationDirCompat: File

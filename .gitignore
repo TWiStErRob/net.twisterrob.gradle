@@ -3,6 +3,7 @@
 /build/
 /*/build/
 /*/*/build/
+/*/*/*/build/
 out/
 gradle/dependency-locks/*.lockfile
 /*.lockfile

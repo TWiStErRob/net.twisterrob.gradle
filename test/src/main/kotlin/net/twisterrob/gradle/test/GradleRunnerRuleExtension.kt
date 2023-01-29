@@ -12,8 +12,8 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 
 		override val extraArgs: Array<String>
 			get() = super.extraArgs + strictWarningMode() + arrayOf(
-				"--init-script=nagging.init.gradle.kts",
 				"--init-script=runtime.init.gradle.kts",
+				"--init-script=nagging.init.gradle.kts",
 			)
 
 		override fun setUp() {

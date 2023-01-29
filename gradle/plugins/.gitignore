@@ -1,0 +1,2 @@
+# Ignore "generated" code (copied here during build), see build.gradle.kts for more info.
+/src/main/kotlin-shared/

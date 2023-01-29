@@ -13,7 +13,7 @@ import java.io.File
 import java.net.URI
 
 /**
- * Simplified {@link org.junit.Rule} around {@link GradleRunner} to reduce code repetition.
+ * Simplified [org.junit.Rule] around [GradleRunner] to reduce code repetition.
  */
 @Suppress("BooleanPropertyNaming") // These are clear names.
 open class GradleRunnerRule : TestRule {

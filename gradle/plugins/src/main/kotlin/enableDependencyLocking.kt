@@ -1,3 +1,4 @@
+import net.twisterrob.gradle.slug
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.dsl.DependencyLockingHandler
