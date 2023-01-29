@@ -1,3 +1,5 @@
+import java.lang.management.ManagementFactory
+
 rootProject {
 	val gradleTasks = gradle.startParameter.taskNames
 	val gradleBuildFile = this.buildFile
@@ -19,7 +21,33 @@ rootProject {
 		"""
 		Gradle ${gradleVersion} worker #${gradleTestWorkerId} at ${gradleHome.absolutePath} with ${gradleDir?.absolutePath}.
 		Gradle Java: ${java} from ${javaHome}${if (javaHome != javaHomeEnv) " (JAVA_HOME = ${javaHomeEnv})" else ""}.
-		Running `gradle ${gradleTasks.joinToString(" ")}` on ${gradleBuildFile.absolutePath}.
+		${memoryDiagnostics()}
+		Running `gradle ${gradleTasks.joinToString(" ")}`
+		on ${gradleBuildFile.absolutePath}.
 	""".trimIndent()
 	)
+}
+
+// TODO deprecated without replacement https://github.com/gradle/gradle/issues/20151
+// Best effort for now as it won't work with configuration cache.
+gradle.buildFinished { println(memoryDiagnostics()) }
+
+fun memoryDiagnostics(): String {
+	fun format(max: Long?, used:Long): String {
+		fun mb(bytes: Long): String = "${bytes / 1024 / 1024}MB"
+		return if (max == null) {
+			"${mb(used)} (unlimited)"
+		} else {
+			"${mb(used)}/${mb(max)} (${mb(max - used)} free)"
+		}
+	}
+
+	val heap = Runtime.getRuntime()
+	heap.gc() // Best effort to get more accurate numbers.
+	val heapMax = heap.maxMemory().takeIf { it != Long.MAX_VALUE }
+	val heapUsed = heap.totalMemory() - heap.freeMemory()
+	val meta = ManagementFactory.getMemoryPoolMXBeans().single { it.name == "Metaspace" }
+	val metaMax = meta.usage.max.takeIf { it != -1L }
+	val metaUsed = meta.usage.used
+	return "Gradle memory: heap = ${format(heapMax, heapUsed)}, metaspace = ${format(metaMax, metaUsed)}."
 }
