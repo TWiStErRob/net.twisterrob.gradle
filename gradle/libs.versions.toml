@@ -18,7 +18,7 @@ jetbrains = "24.0.0"
 nexus = "1.1.0"
 
 # https://docs.gradle.com/enterprise/gradle-plugin/#release_history
-gradle-enterprise = "3.12.2"
+gradle-enterprise = "3.12.3"
 
 # See [lint] which is affected by this.
 # Versions: https://maven.google.com/web/index.html#com.android.tools.build:gradle
