@@ -37,7 +37,7 @@ kotlin.sourceSets.named("main").configure {
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
-	api(projects.common)
+	implementation(projects.compat.gradle)
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
