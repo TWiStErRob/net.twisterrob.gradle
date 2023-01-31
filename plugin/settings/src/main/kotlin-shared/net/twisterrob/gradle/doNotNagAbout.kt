@@ -24,6 +24,10 @@ import java.util.regex.Pattern
  *    This gives us the ability to specifically ignore an instance of a type of message.
  *    This is useful if multiple plugins are behind on fixing the deprecations.
  *  - `fail` was not a valid option for `--warning-mode` before Gradle 5.6.0.
+ *  - In case it's not working, enable diagnostic logging by putting this before the first `doNotNagAbout` call:
+ *    ```
+ *    System.setProperty("net.twisterrob.gradle.nagging.diagnostics", "true")
+ *    ```
  *
  * ### Example 1 - suppressing generic deprecation.
  * Realistic usage example with Gradle 7.5.1 and Android Gradle Plugin 7.2.2:
@@ -182,7 +186,11 @@ fun doNotNagAbout(message: String) {
  * @see doNotNagAbout for more details
  */
 fun doNotNagAbout(message: String, stack: String) {
-	doNotNagAbout(Regex("(?s)${Regex.escape(message)}.*${Regex.escape(stack)}.*"))
+	if (GradleVersion.version("8.0") <= GradleVersion.current().baseVersion) {
+		doNotNagAbout(Regex("(?s)${Regex.escape(message)}.*${Regex.escape(stack)}.*"))
+	} else {
+		error("Stack traces for deprecations are not available in ${GradleVersion.current()}.")
+	}
 }
 
 /**
@@ -203,16 +211,30 @@ private class IgnoringSet(
 	private val ignores: MutableSet<Regex> = mutableSetOf()
 
 	fun ignorePattern(regex: Regex) {
+		if (diagnostics) {
+			println("Ignoring pattern: ${regex}")
+		}
 		ignores.add(regex)
 	}
 
 	override fun add(element: String): Boolean {
 		val isIgnored = ignores.any { it.matches(element) }
 		val isNew = backingSet.add(element)
+		if (diagnostics) {
+			val state = if (isNew) "first seen" else "already added"
+			val ignores = ignores.joinToString(separator = "\n") {
+				val matching = if (it.matches(element)) "matching" else "not matching"
+				"Deprecation is ${matching} ignore pattern:\n```regex\n${it}\n```"
+			}
+			println("Nagging about ${state} deprecation:\n```\n${element}\n```\n${ignores}")
+		}
 		return !isIgnored && isNew
 	}
 
 	companion object {
+		private val diagnostics: Boolean
+			get() = System.getProperty("net.twisterrob.gradle.nagging.diagnostics", "false").toBoolean()
+
 		fun wrap(backingSet: MutableSet<String>): IgnoringSet =
 			if (backingSet is IgnoringSet) backingSet else IgnoringSet(backingSet)
 	}
