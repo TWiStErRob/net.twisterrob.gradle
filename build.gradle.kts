@@ -4,7 +4,7 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 plugins {
-	@Suppress("DSL_SCOPE_VIOLATION")
+	@Suppress("DSL_SCOPE_VIOLATION") // TODEL https://github.com/gradle/gradle/issues/22797
 	alias(libs.plugins.nexus)
 	id("net.twisterrob.gradle.build.module.root")
 }
