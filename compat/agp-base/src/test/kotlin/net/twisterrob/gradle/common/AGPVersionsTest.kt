@@ -50,7 +50,7 @@ class AGPVersionsTest {
 	@DisabledOnJre(JRE.JAVA_8)
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
 		// This is not using AGPVersion() because Renovate needs to update this one. See "Update AGP version test.".
-		val expected = AGPVersion.parse("7.4.0")
+		val expected = AGPVersion.parse("7.4.1")
 
 		val actual = AGPVersions.CLASSPATH
 
