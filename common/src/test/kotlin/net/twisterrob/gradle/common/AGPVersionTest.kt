@@ -30,7 +30,7 @@ class AGPVersionTest {
 		@JvmStatic
 		fun mavenGoogle(): List<Arguments> =
 			listOf(
-				Arguments.of("7.4.1", AGPVersion(7, 4, Stable, 0)),
+				Arguments.of("7.4.1", AGPVersion(7, 4, Stable, 1)),
 				Arguments.of("7.4.0", AGPVersion(7, 4, Stable, 0)),
 				Arguments.of("7.4.0-rc02", AGPVersion(7, 4, Candidate, 2)),
 				Arguments.of("7.4.0-beta01", AGPVersion(7, 4, Beta, 1)),
