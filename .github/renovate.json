@@ -12,7 +12,9 @@
 		{
 			"description": "Disable updating AGP compatibility dependencies, they have a specific version, and will break the build. Allow patches.",
 			"matchPackageNames": [
-				"com.android.tools.build:gradle"
+				"com.android.tools.build:gradle",
+				"com.android.tools.ddms:ddmlib",
+				"com.android.tools:common"
 			],
 			"matchPaths": [
 				"gradle/agp.versions.toml"
