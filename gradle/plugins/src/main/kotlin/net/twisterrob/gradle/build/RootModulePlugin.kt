@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.build
 
+import libs
 import net.twisterrob.gradle.build.detekt.DetektRootPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -9,5 +10,13 @@ class RootModulePlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
 		project.plugins.apply(DetektRootPlugin::class)
+
+		project.libs.versions.kotlin.let { kotlin ->
+			val target = kotlin.target.get()
+			val language = kotlin.language.get()
+			check(!target.startsWith(language)) {
+				error("Kotlin target version ($target) must be compatible with language version ($language).")
+			}
+		}
 	}
 }
