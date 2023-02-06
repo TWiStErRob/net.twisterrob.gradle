@@ -379,7 +379,7 @@ jobs:
             kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
-            test-task: testReport :plugin:tests
+            test-task: testReport :plugin:tests --info
           - name: "AGP 7.4.x on Gradle 7.x - plugin"
             gradle: 7.6
             gradle-java: 11
@@ -387,7 +387,7 @@ jobs:
             kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
-            test-task: testReport :plugin:tests
+            test-task: testReport :plugin:tests --info
           - name: "AGP 7.4.x on Gradle 8.x - plugin"
             gradle: 8.0-rc-5
             gradle-java: 11
@@ -395,7 +395,7 @@ jobs:
             kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
-            test-task: testReport :plugin:tests
+            test-task: testReport :plugin:tests --info
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
