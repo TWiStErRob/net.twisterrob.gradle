@@ -39,12 +39,12 @@ class AndroidSigningPluginIntgTest : BaseIntgTest() {
 
 		@Language("java")
 		val apkContentForProguard = """
-			package ${packageName};
+			package net.twisterrob.gradle.test_app;
 			class AClassToSatisfyProguard {
 				@android.webkit.JavascriptInterface public void f() {}
 			}
 		""".trimIndent()
-		gradle.file(apkContentForProguard, "src/main/java/${packageFolder}/AClassToSatisfyProguard.java")
+		gradle.file(apkContentForProguard, "src/main/java/net/twisterrob/gradle/test_app/AClassToSatisfyProguard.java")
 
 		val result = gradle.run(null, "assembleRelease").build()
 
