@@ -15,7 +15,7 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `logs error when keystore not valid (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.android-library'
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
