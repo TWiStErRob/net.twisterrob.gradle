@@ -29,7 +29,7 @@ class AndroidSigningPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-library'
+			apply plugin: 'net.twisterrob.android-app'
 		""".trimIndent()
 		val result = gradle.run(script, "assembleRelease").build()
 
