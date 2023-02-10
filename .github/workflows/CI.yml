@@ -6,29 +6,8 @@ jobs:
     runs-on: ubuntu-22.04
     env:
       JOB_NAME: ${{ matrix.name }} (${{ matrix.agp }} on ${{ matrix.gradle }})
-      # Capture which Gradle version is running the build to use in some steps.
-      # Value will be written in a later step using `>> $GITHUB_ENV`.
-      GRADLE_VERSION: 0.0.0
-    # Average observed execution time is 6-7 minutes, double it for timeout constraint.
     timeout-minutes: 12
     steps:
-      - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
-
-      - name: Set up JDK 17.
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: zulu
-
-      - name: Set up Android SDK.
-        uses: android-actions/setup-android@v2
-
-      - name: Install Android SDK components.
-        run: |
-          sdkmanager --update
-          sdkmanager --install "build-tools;${{ matrix.build-tools }}"
-          sdkmanager --install "platforms;android-30"
-
       - name: Set up JDK(s).
         run: |
           echo "JAVA8_HOME=$JAVA_HOME_8_X64" | tee --append $GITHUB_ENV
@@ -37,15 +16,6 @@ jobs:
 
       - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
         uses: actions/checkout@v3
-
-      - name: Download Gradle running the build.
-        run: |
-          # Run a no-op gradlew command in workspace.
-          ./gradlew --no-daemon --version | tee gradle.version.log
-          # Capture version for later usage.
-          # Note: the $ is very important no prevent matching the "Welcome to Gradle x.y.z!" line.
-          grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?(?:-rc-\d+)?)$' gradle.version.log > gradle.version
-          echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
 
       - name: Download Gradle ${{ matrix.gradle }} running the tests.
         run: |
@@ -57,42 +27,7 @@ jobs:
           # Run a no-op gradlew command in an empty project with a specific wrapper version.
           ./gradlew --no-daemon --version
 
-      - name: Cache Gradle ${{ env.GRADLE_VERSION }} files.
-        uses: actions/cache@v3
-        with:
-          path: |
-            # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ env.GRADLE_VERSION }}-all.zip"
-            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/${ gradle-dist-hash }/gradle-${{ env.GRADLE_VERSION }}-all.zip"
-            # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
-            #~/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/
-
-            # Prevent "Download https://repo1.maven.org/maven2/" during build
-            ~/.gradle/caches/modules-2/
-
-            # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build
-            ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
-          key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
-
-      - name: Cache Gradle Test Kit ${{ matrix.gradle }} files.
-        uses: actions/cache@v3
-        with:
-          path: |
-            # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ matrix.gradle }}-all.zip"
-            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/${ gradle-dist-hash }/gradle-${{ matrix.gradle }}-all.zip"
-            # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
-            #~/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/
-
-            # Prevent "Download https://repo1.maven.org/maven2/" during test runs
-            /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/
-
-            # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar'" during test runs
-            /tmp/.gradle-test-kit-${{ env.USER }}/caches/${{ matrix.gradle }}/generated-gradle-jars/
-          key: ${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}
-
       - name: Check ${{ env.JOB_NAME }}.
-        # To run specific test, replace `${{ matrix.test-task }}` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
         run: >
           ./gradlew
           --no-daemon
@@ -129,36 +64,9 @@ jobs:
           name: ${{ env.JOB_NAME }} Test Results HTMLs
           path: ${{ github.workspace }}/**/build/reports/tests/test/
 
-      - name: Cleanup Gradle files before caching.
-        run: |
-          # Don't cache lock files to prevent breaking future builds
-          rm -f  ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f  ~/.gradle/caches/modules-2/gc.properties
-          rm -fr ~/.gradle/caches/*/plugin-resolution/
-
-      - name: Cleanup Gradle Test Kit files before caching.
-        run: |
-          # Don't cache lock files to prevent breaking future builds
-          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/modules-2.lock
-          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/gc.properties
-          rm -fr /tmp/.gradle-test-kit-${{ env.USER }}/caches/*/plugin-resolution/
-
     strategy:
       fail-fast: false
       matrix:
-        # See https://docs.gradle.org/current/userguide/compatibility.html#kotlin.
-        # See https://developer.android.com/studio/releases/gradle-plugin#updating-gradle.
-        #gradle: []
-        # See https://developer.android.com/studio/releases/gradle-plugin.
-        #agp: []
-        # See https://developer.android.com/studio/releases/build-tools#notes.
-        #build-tools: []
-        # See android-all_kinds/build.gradle for more info.
-        #instant-api: []
-        # See https://kotlinlang.org/docs/releases.html.
-        #kotlin: []
-        # Potential to run specific test tasks, e.g. :plugin can be run separately.
-        #test-task: []
         include:
           - name: "AGP 7.4.x on Gradle 7.5+ - plugin"
             gradle: 7.5.1
@@ -182,27 +90,14 @@ jobs:
             instant-api: 30
             test-task: testReport :plugin:signing:test --info
 
-  # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
     name: 3 📢 Publish Tests Results
     runs-on: ubuntu-22.04
     needs: check
-    # The dependency job might be skipped, we don't need to run this job then.
     if: success() || failure()
-    # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
-    # It often runs out of time, because 1 of the many artifact downloads takes many minutes.
     timeout-minutes: 10
 
     steps:
-      # Below many steps simulate the following missing feature from download-artifact:
-      # https://github.com/actions/download-artifact/issues/103
-      #- name: Download Artifacts
-      #  uses: actions/download-artifact@v3
-      #  with:
-      #    name: * Test Results XMLs
-      #    path: artifacts
-      # The `if: success() || failure()` is there to publish as much as possible even if some artifacts are missing.
-
       - name: Download 'AGP 7.4.x on Gradle 7.5+ - plugin (7.4.1 on 7.5.1) Test Results XMLs' artifact.
         if: success() || failure()
         uses: actions/download-artifact@v3
@@ -223,10 +118,6 @@ jobs:
         with:
           name: AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0-rc-5) Test Results XMLs
           path: artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0-rc-5) Test Results XMLs
-
-      #- name: Display structure of downloaded files
-      #  run: ls -R
-      #  working-directory: artifacts
 
       - name: Publish "Test Results" check suite.
         if: success() || failure()
