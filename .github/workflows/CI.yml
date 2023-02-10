@@ -19,14 +19,8 @@ jobs:
       - name: Gradle status.
         run: ./gradlew --status
 
-      - name: Publish Gradle plugins to mavenLocal().
-        run: ./gradlew --no-daemon publishToMavenLocal
-
-      - name: Gradle status.
-        run: ./gradlew --status
-
-      - name: Verify docs/examples/local for snapshot.
-        working-directory: docs/examples/local
+      - name: Verify docs/examples/release for snapshot.
+        working-directory: docs/examples/release
         run: ./gradlew --stacktrace build --init-script ../../../test/src/main/resources/net/twisterrob/gradle/test/runtime.init.gradle.kts
 
       - name: Gradle status.
