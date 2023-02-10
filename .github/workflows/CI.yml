@@ -1,6 +1,34 @@
 name: CI # Check Gradle and AGP combinations
 on: push
 jobs:
+  
+  build:
+    name: 1 🔨 Build
+    runs-on: ubuntu-22.04
+    env:
+      JOB_NAME: ${{ matrix.name }} (${{ matrix.agp }} on ${{ matrix.gradle }})
+    timeout-minutes: 12
+    steps:
+      - name: Set up JDK 11.
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: zulu
+
+      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+        uses: actions/checkout@v3
+
+      - name: Publish Gradle plugins to mavenLocal().
+        # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
+        run: ./gradlew --no-daemon --no-build-cache --no-configuration-cache --stacktrace publishToMavenLocal
+
+      - name: Parse env.PROJECT_VERSION.
+        run: echo "PROJECT_VERSION=$(grep --color=never --perl-regexp --only-matching '(?<=^projectVersion=)(.*)$' gradle.properties)" | tee --append $GITHUB_ENV
+
+      - name: Verify docs/examples/local for snapshot.
+        working-directory: docs/examples/local
+        run: ./gradlew --stacktrace build --init-script ../../../test/src/main/resources/net/twisterrob/gradle/test/runtime.init.gradle.kts
+
   check:
     name: 2 🛠️ ${{ matrix.name }}
     runs-on: ubuntu-22.04
