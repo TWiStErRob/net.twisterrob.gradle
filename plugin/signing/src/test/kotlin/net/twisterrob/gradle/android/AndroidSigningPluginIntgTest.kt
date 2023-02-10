@@ -1,8 +1,6 @@
 package net.twisterrob.gradle.android
 
 import net.twisterrob.gradle.BaseIntgTest
-import net.twisterrob.gradle.test.GradleBuildTestResources
-import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSuccess
@@ -16,7 +14,28 @@ class AndroidSigningPluginIntgTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `logs error when keystore not valid (release)`() {
-		gradle.basedOn(GradleBuildTestResources.android)
+		@Language("gradle")
+		val build = """
+			buildscript {
+				repositories {
+					google()
+					mavenCentral()
+				}
+				dependencies {
+					classpath 'com.android.tools.build:gradle:${System.getProperty("net.twisterrob.test.android.pluginVersion")}'
+				}
+			}
+			repositories {
+				google() // for aapt2 internal binary
+				mavenCentral()
+			}
+			apply plugin: 'net.twisterrob.android-app'
+			android {
+				compileSdkVersion '${System.getProperty("net.twisterrob.test.android.compileSdkVersion")}'
+			}
+		""".trimIndent()
+		gradle.file(build, "build.gradle")
+		gradle.file("<manifest package=\"net.twisterrob.gradle.test_app\" />", "src", "main", "AndroidManifest.xml")
 
 		@Language("java")
 		val apkContentForProguard = """
@@ -27,11 +46,7 @@ class AndroidSigningPluginIntgTest : BaseIntgTest() {
 		""".trimIndent()
 		gradle.file(apkContentForProguard, "src/main/java/${packageFolder}/AClassToSatisfyProguard.java")
 
-		@Language("gradle")
-		val script = """
-			apply plugin: 'net.twisterrob.android-app'
-		""".trimIndent()
-		val result = gradle.run(script, "assembleRelease").build()
+		val result = gradle.run(null, "assembleRelease").build()
 
 		result.assertSuccess(":assembleRelease")
 	}
