@@ -21,7 +21,7 @@ jobs:
 
       - name: Verify docs/examples/release for snapshot.
         working-directory: docs/examples/release
-        run: ./gradlew --stacktrace build --init-script ../../../test/src/main/resources/net/twisterrob/gradle/test/runtime.init.gradle.kts
+        run: ./gradlew --stacktrace --info build --init-script ../../../test/src/main/resources/net/twisterrob/gradle/test/runtime.init.gradle.kts
 
       - name: Gradle status.
         run: ./gradlew --status
