@@ -208,31 +208,33 @@ private class IgnoringSet(
 	private val backingSet: MutableSet<String>
 ) : MutableSet<String> by backingSet {
 
-	private val ignores: MutableSet<Regex> = mutableSetOf()
+	private val ignorePatterns: MutableSet<Regex> = mutableSetOf()
 
 	fun ignorePattern(regex: Regex) {
-		if (diagnostics) {
+		if (isDiagnosticsEnabled) {
+			@Suppress("ForbiddenMethodCall") // This will be shown in the console, as the user explicitly asked for it.
 			println("Ignoring pattern: ${regex}")
 		}
-		ignores.add(regex)
+		ignorePatterns.add(regex)
 	}
 
 	override fun add(element: String): Boolean {
-		val isIgnored = ignores.any { it.matches(element) }
+		val isIgnored = ignorePatterns.any { it.matches(element) }
 		val isNew = backingSet.add(element)
-		if (diagnostics) {
+		if (isDiagnosticsEnabled) {
 			val state = if (isNew) "first seen" else "already added"
-			val ignores = ignores.joinToString(separator = "\n") {
-				val matching = if (it.matches(element)) "matching" else "not matching"
-				"Deprecation is ${matching} ignore pattern:\n```regex\n${it}\n```"
+			val ignores = ignorePatterns.joinToString(separator = "\n") { ignorePattern ->
+				val matching = if (ignorePattern.matches(element)) "matching" else "not matching"
+				"Deprecation is ${matching} ignore pattern:\n```regex\n${ignorePattern}\n```"
 			}
+			@Suppress("ForbiddenMethodCall") // This will be shown in the console, as the user explicitly asked for it.
 			println("Nagging about ${state} deprecation:\n```\n${element}\n```\n${ignores}")
 		}
 		return !isIgnored && isNew
 	}
 
 	companion object {
-		private val diagnostics: Boolean
+		private val isDiagnosticsEnabled: Boolean
 			get() = System.getProperty("net.twisterrob.gradle.nagging.diagnostics", "false").toBoolean()
 
 		fun wrap(backingSet: MutableSet<String>): IgnoringSet =
