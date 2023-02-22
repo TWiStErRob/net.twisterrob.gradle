@@ -27,18 +27,24 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       gradlew publishPluginMavenPublicationToSonatypeRepository
       gradlew publishAllPluginMarkerMavenPublicationsToSonatypeRepository
       ```  
-     _If this fails, fix and amend last commit._
+      * _If this fails, fix and amend last commit._
+      * > Failed to load staging profiles, server at https://s01.oss.sonatype.org/service/local/ responded with status code 401, body:
+
+        Means the username or password is wrong.
     * Open [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories), log in and close staging repository output at console to validate.
  1. Archive and final integration test.
     * Run `p:\repos\release\net.twisterrob.gradle\download-repo.bat`  
       Need to change mvn2get.json's `remote_repo_urls`.
-    * Use it in a real project from staging repository:  
-      Place it first to make sure Gradle resolves it, and update URL and version number exactly.
-      ```gradle
+    * Use it in a real project from staging repository (update URL and version number!):
+      ```kotlin
       repositories {
-          maven("https://s01.oss.sonatype.org/service/local/repositories/nettwisterrob-####/content/") {
-              name = "Sonatype Staging for net.twisterrob"
-              content {
+          exclusiveContent {
+              forRepository {
+                  maven("https://s01.oss.sonatype.org/service/local/repositories/nettwisterrob-####/content/") {
+                      name = "Sonatype Staging for net.twisterrob"
+                  }
+              }
+              filter {
                   includeVersionByRegex("""^net\.twisterrob\.gradle$""", ".*", "^${Regex.escape("x.y")}$")
               }
           }

@@ -15,21 +15,21 @@ jsr305 = "3.0.2"
 jetbrains = "24.0.0"
 
 # https://github.com/gradle-nexus/publish-plugin/releases
-nexus = "1.1.0"
+nexus = "1.2.0"
 
 # https://docs.gradle.com/enterprise/gradle-plugin/#release_history
-gradle-enterprise = "3.12.2"
+gradle-enterprise = "3.12.3"
 gradle-publish = "1.1.0"
 
 # See [lint] which is affected by this.
 # Versions: https://maven.google.com/web/index.html#com.android.tools.build:gradle
-agp = "7.4.0"
+agp = "7.4.1"
 
 # = 23.0.0 + [agp].
 # @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
 # @see builder-model//version.properties
 # Versions: https://maven.google.com/web/index.html#com.android.tools.lint:lint
-agp-tools = "30.4.0"
+agp-tools = "30.4.1"
 
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # Actual Kotlin version for dependencies. It has to be older to make sure AGP 3.x is still compatible.
@@ -37,7 +37,7 @@ kotlin-target = "1.4.32"
 # Actual Kotlin language and API version for compilation, it restricts language features and metadata.
 kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
-kotlin-build = "1.8.0"
+kotlin-build = "1.8.10"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
 kotlin-dokka = "1.7.20"
 
@@ -74,7 +74,7 @@ jfixture = "2.7.2"
 jfixture-kotlin = "1.0.0"
 
 # Versions: https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit
-svnkit = "1.10.9"
+svnkit = "1.10.10"
 # Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
 # Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
 # Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy

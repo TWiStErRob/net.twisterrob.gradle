@@ -21,9 +21,15 @@ pluginManagement {
 					useModule("com.android.tools.build:gradle:${requested.version}")
 				"net.twisterrob.quality" ->
 					useModule("net.twisterrob.gradle:twister-quality:${requested.version}")
+				"net.twisterrob.settings" ->
+					useModule("net.twisterrob.gradle:twister-convention-settings:${requested.version}")
 			}
 		}
 	}
+}
+
+plugins {
+	id("net.twisterrob.settings") version "0.15"
 }
 
 if (!JavaVersion.current().isJava11Compatible) {

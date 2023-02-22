@@ -31,7 +31,7 @@ pluginManagement {
 }
 
 plugins {
-	id("net.twisterrob.gradle.plugin.settings") version "0.15-SNAPSHOT"
+	id("net.twisterrob.gradle.plugin.settings") version "0.15.1-SNAPSHOT"
 }
 
 if (!JavaVersion.current().isJava11Compatible) {
