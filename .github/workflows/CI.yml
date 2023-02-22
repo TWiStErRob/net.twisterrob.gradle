@@ -90,7 +90,7 @@ jobs:
             gradle: 7.6
             agp: 7.4.1
           - name: "AGP 7.4.x on Gradle 8.x - plugin"
-            gradle: 8.0-rc-5
+            gradle: 8.0.1
             agp: 7.4.1
 
   publish-test-results:
@@ -115,12 +115,12 @@ jobs:
           name: AGP 7.4.x on Gradle 7.x - plugin (7.4.1 on 7.6) Test Results XMLs
           path: artifacts/AGP 7.4.x on Gradle 7.x - plugin (7.4.1 on 7.6) Test Results XMLs
 
-      - name: Download 'AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0-rc-5) Test Results XMLs' artifact.
+      - name: Download 'AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0.1) Test Results XMLs' artifact.
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0-rc-5) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0-rc-5) Test Results XMLs
+          name: AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0.1) Test Results XMLs
+          path: artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0.1) Test Results XMLs
 
       - name: Publish "Test Results" check suite.
         if: success() || failure()
