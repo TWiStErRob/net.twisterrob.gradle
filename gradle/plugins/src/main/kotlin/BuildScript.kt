@@ -18,6 +18,7 @@ import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
+import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.tasks.SourceSet
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.dependencies
@@ -70,6 +71,9 @@ val Project.base: BasePluginExtension
 
 val Project.gradlePlugin: GradlePluginDevelopmentExtension
 	get() = this.extensions.getByName<GradlePluginDevelopmentExtension>("gradlePlugin")
+
+val Project.publishing: PublishingExtension
+	get() = this.extensions.getByName<PublishingExtension>("publishing")
 
 internal val Project.versionCatalogs: VersionCatalogsExtension
 	get() = this.extensions.getByName<VersionCatalogsExtension>("versionCatalogs")

@@ -15,6 +15,7 @@ import net.twisterrob.gradle.test.runFailingBuild
 import net.twisterrob.gradle.test.tasksIn
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.containsStringIgnoringCase
@@ -44,7 +45,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -58,7 +59,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'java'
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -71,7 +72,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 	@Test fun `applies without a hitch to an Android project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -89,7 +90,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			allprojects {
-				apply plugin: 'net.twisterrob.checkstyle'
+				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			}
 		""".trimIndent()
 		// ":instant" is not supported yet, and won't be since it's deprecated in 3.6.x.
@@ -155,7 +156,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val rootProject = """
 			allprojects {
-				apply plugin: 'net.twisterrob.checkstyle'
+				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			}
 		""".trimIndent()
 
@@ -184,7 +185,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		""".trimIndent()
 		@Language("gradle")
 		val subProjectApplied = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			apply plugin: 'com.android.library'
 		""".trimIndent()
 
@@ -240,7 +241,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val applyCheckstyle = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
@@ -263,7 +264,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val build = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
@@ -292,7 +293,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val build = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
@@ -325,7 +326,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val applyCheckstyle = """
-			apply plugin: 'net.twisterrob.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -333,5 +334,30 @@ class CheckStylePluginTest : BaseIntgTest() {
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":checkstyleDebug")!!.outcome)
+	}
+
+	@Test fun `applying by the old name is deprecated`() {
+		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
+			val result = gradle.run("apply plugin: 'net.twisterrob.checkstyle'").build()
+			result.assertHasOutputLine(
+				"Plugin net.twisterrob.checkstyle is deprecated, " +
+						"please use net.twisterrob.gradle.plugin.checkstyle instead."
+			)
+		} else {
+			val result = gradle.run("apply plugin: 'net.twisterrob.checkstyle'").buildAndFail()
+			result.assertHasOutputLine(
+				Regex(
+					"""org\.gradle\.api\.GradleException: """ +
+							"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
+				)
+			)
+			result.assertHasOutputLine(
+				Regex(
+					"""The net\.twisterrob\.checkstyle plugin has been deprecated\. """
+							+ """This is scheduled to be removed in Gradle \d\.0\. """
+							+ """Please use the net\.twisterrob\.gradle\.plugin\.checkstyle plugin instead."""
+				)
+			)
+		}
 	}
 }

@@ -45,8 +45,8 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.checkstyle'
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
@@ -69,8 +69,8 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			subprojects { // i.e. :module
-				apply plugin: 'net.twisterrob.checkstyle'
-				apply plugin: 'net.twisterrob.pmd'
+				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			}
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
@@ -102,7 +102,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		val script = """
 			subprojects {
 				apply plugin: 'com.android.library'
-				apply plugin: 'net.twisterrob.checkstyle'
+				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			}
 			tasks.register('printViolationCounts', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
@@ -132,8 +132,8 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.checkstyle'
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()

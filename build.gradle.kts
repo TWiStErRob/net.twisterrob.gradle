@@ -178,15 +178,6 @@ subprojects {
 		}
 	}
 
-	plugins.withId("java-gradle-plugin") {
-		project.tasks.withType<ValidatePlugins>().configureEach {
-			ignoreFailures.set(false)
-			// TODO failOnWarning=true https://github.com/TWiStErRob/net.twisterrob.gradle/issues/291
-			failOnWarning.set(false)
-			enableStricterValidation.set(true)
-		}
-	}
-
 	if (project.property("net.twisterrob.gradle.build.verboseReports").toString().toBoolean()) {
 		tasks.withType<Test>().configureEach {
 			configureVerboseReportsForGithubActions()
@@ -276,7 +267,7 @@ project.tasks.register<Delete>("cleanDebug") {
 nexusPublishing {
 	repositories {
 		sonatype {
-			// For :publishReleasePublicationToSonatypeRepository, projectVersion suffix chooses repo.
+			// For :publish...PublicationToSonatypeRepository, projectVersion suffix chooses repo.
 			nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
 			snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
 

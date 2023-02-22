@@ -7,18 +7,38 @@ base.archivesName.set("twister-convention-languages")
 description = "Languages Convention Plugin: Gradle Plugin to apply Java and Kotlin conventions."
 
 gradlePlugin {
+	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.java") {
-			id = "net.twisterrob.java"
+		create("java") {
+			id = "net.twisterrob.gradle.plugin.java"
+			displayName = "Java Convention Plugin"
+			description = """
+				TWiStErRob's Convention plugin for Java modules.
+				Various defaults and hacks to make development easier.
+			""".trimIndent()
+			tags.set(setOf("conventions", "java"))
 			implementationClass = "net.twisterrob.gradle.java.JavaPlugin"
+			deprecateId(project, "net.twisterrob.java")
 		}
-		create("net.twisterrob.java-library") {
-			id = "net.twisterrob.java-library"
+		create("javaLibrary") {
+			id = "net.twisterrob.gradle.plugin.java-library"
+			displayName = "Java Library Convention Plugin"
+			description = """
+				TWiStErRob's Convention plugin for Java library modules.
+			""".trimIndent()
+			tags.set(setOf("conventions", "java"))
 			implementationClass = "net.twisterrob.gradle.java.JavaLibPlugin"
+			deprecateId(project, "net.twisterrob.java-library")
 		}
-		create("net.twisterrob.kotlin") {
-			id = "net.twisterrob.kotlin"
+		create("kotlin") {
+			id = "net.twisterrob.gradle.plugin.kotlin"
+			displayName = "Kotlin Convention Plugin"
+			description = """
+				TWiStErRob's Convention plugin for Kotlin modules.
+			""".trimIndent()
+			tags.set(setOf("conventions", "kotlin"))
 			implementationClass = "net.twisterrob.gradle.kotlin.KotlinPlugin"
+			deprecateId(project, "net.twisterrob.kotlin")
 		}
 	}
 }
@@ -28,7 +48,7 @@ dependencies {
 	api(projects.plugin.base)
 	compileOnly(libs.android.gradle)
 
-	// This plugin is part of the net.twisterrob.android-app plugin, not designed to work on its own.
+	// This plugin is part of the net.twisterrob.gradle.plugin.android-app plugin, not designed to work on its own.
 	runtimeOnly(projects.plugin)
 
 	testImplementation(projects.test.internal)

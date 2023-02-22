@@ -85,18 +85,18 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
-			"net.twisterrob.java", // :plugin:languages
-			"net.twisterrob.java-library", // :plugin:languages
-			// Kotlin: "net.twisterrob.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
-			// Android: "net.twisterrob.android-app", // :plugin
-			// Android: "net.twisterrob.android-library", // :plugin
-			// Android: "net.twisterrob.android-test", // :plugin
-			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
-			"net.twisterrob.gradle.test", // :test
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.java", // :plugin:languages
+			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
+			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
+			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-test", // :plugin
+			"net.twisterrob.gradle.plugin.quality", // :quality
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
+			"net.twisterrob.gradle.plugin.gradle.test", // :test
 		]
 	)
 	fun `empty project doesn't create tasks when using plugin`(pluginId: String) {
@@ -113,18 +113,18 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
-			"net.twisterrob.java", // :plugin:languages
-			"net.twisterrob.java-library", // :plugin:languages
-			"net.twisterrob.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
-			// Android: "net.twisterrob.android-app", // :plugin
-			// Android: "net.twisterrob.android-library", // :plugin
-			// Android: "net.twisterrob.android-test", // :plugin
-			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
-			"net.twisterrob.gradle.test", // :test
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.java", // :plugin:languages
+			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
+			"net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
+			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-test", // :plugin
+			"net.twisterrob.gradle.plugin.quality", // :quality
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
+			"net.twisterrob.gradle.plugin.gradle.test", // :test
 		]
 	)
 	fun `kotlin project doesn't create tasks when using plugin`(pluginId: String) {
@@ -142,15 +142,15 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
-			"net.twisterrob.java", // :plugin:languages
-			"net.twisterrob.java-library", // :plugin:languages
-			// Kotlin: "net.twisterrob.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
-			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
-			// Android: "net.twisterrob.gradle.test", // :test
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.java", // :plugin:languages
+			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
+			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
+			"net.twisterrob.gradle.plugin.quality", // :quality
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
+			// Android: "net.twisterrob.gradle.plugin.gradle.test", // :test
 		]
 	)
 	fun `android app project doesn't create tasks when using plugin`(pluginId: String) {
@@ -159,7 +159,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "net.twisterrob.android-app"
+			apply plugin: "net.twisterrob.gradle.plugin.android-app"
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -169,15 +169,15 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
-			"net.twisterrob.java", // :plugin:languages
-			"net.twisterrob.java-library", // :plugin:languages
-			// Kotlin: "net.twisterrob.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
-			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
-			// Android: "net.twisterrob.gradle.test", // :test
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.java", // :plugin:languages
+			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
+			// Kotlin: "net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
+			"net.twisterrob.gradle.plugin.quality", // :quality
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
+			// Android: "net.twisterrob.gradle.plugin.gradle.test", // :test
 		]
 	)
 	fun `android library project doesn't create tasks when using plugin`(pluginId: String) {
@@ -186,7 +186,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "net.twisterrob.android-library"
+			apply plugin: "net.twisterrob.gradle.plugin.android-library"
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -196,18 +196,18 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
-			"net.twisterrob.java", // :plugin:languages
-			"net.twisterrob.java-library", // :plugin:languages
-			"net.twisterrob.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
-			// Android: "net.twisterrob.android-app", // :plugin
-			// Android: "net.twisterrob.android-library", // :plugin
-			// Special: "net.twisterrob.android-test", // :plugin
-			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
-			// Android: "net.twisterrob.gradle.test", // :test
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.java", // :plugin:languages
+			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
+			"net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
+			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
+			// Special: "net.twisterrob.gradle.plugin.android-test", // :plugin
+			"net.twisterrob.gradle.plugin.quality", // :quality
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
+			// Android: "net.twisterrob.gradle.plugin.gradle.test", // :test
 		]
 	)
 	fun `android kotlin app project doesn't create tasks when using plugin`(pluginId: String) {
@@ -217,7 +217,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			${conditionalApplyKotlin("net.twisterrob.android-app")}
+			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")}
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -227,18 +227,18 @@ class PluginIntegrationTest : BaseIntgTest() {
 	@ParameterizedTest(name = "{0}")
 	@ValueSource(
 		strings = [
-			"net.twisterrob.root", // :plugin:base
-			"net.twisterrob.java", // :plugin:languages
-			"net.twisterrob.java-library", // :plugin:languages
-			"net.twisterrob.kotlin", // :plugin:languages
-			"net.twisterrob.vcs", // :plugin:versioning
-			// Android: "net.twisterrob.android-app", // :plugin
-			// Android: "net.twisterrob.android-library", // :plugin
-			// Special: "net.twisterrob.android-test", // :plugin
-			"net.twisterrob.quality", // :quality
-			"net.twisterrob.pmd", // :pmd
-			"net.twisterrob.checkstyle", // :checkstyle
-			// Android: "net.twisterrob.gradle.test", // :test
+			"net.twisterrob.gradle.plugin.root", // :plugin:base
+			"net.twisterrob.gradle.plugin.java", // :plugin:languages
+			"net.twisterrob.gradle.plugin.java-library", // :plugin:languages
+			"net.twisterrob.gradle.plugin.kotlin", // :plugin:languages
+			"net.twisterrob.gradle.plugin.vcs", // :plugin:versioning
+			// Android: "net.twisterrob.gradle.plugin.android-app", // :plugin
+			// Android: "net.twisterrob.gradle.plugin.android-library", // :plugin
+			// Special: "net.twisterrob.gradle.plugin.android-test", // :plugin
+			"net.twisterrob.gradle.plugin.quality", // :quality
+			"net.twisterrob.gradle.plugin.pmd", // :pmd
+			"net.twisterrob.gradle.plugin.checkstyle", // :checkstyle
+			// Android: "net.twisterrob.gradle.plugin.gradle.test", // :test
 		]
 	)
 	fun `android kotlin library project doesn't create tasks when using plugin`(pluginId: String) {
@@ -248,7 +248,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			${conditionalApplyKotlin("net.twisterrob.android-library")}
+			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-library")}
 			apply plugin: "${pluginId}"
 		""".trimIndent()
 
@@ -263,17 +263,17 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			${conditionalApplyKotlin("net.twisterrob.android-app")} // :plugin
-			// Android: apply plugin: "net.twisterrob.android-library" // :plugin
-			apply plugin: "net.twisterrob.root" // :plugin:base
-			apply plugin: "net.twisterrob.java" // :plugin:languages
-			apply plugin: "net.twisterrob.java-library" // :plugin:languages
-			apply plugin: "net.twisterrob.kotlin" // :plugin:languages
-			apply plugin: "net.twisterrob.vcs" // :plugin:versioning
-			apply plugin: "net.twisterrob.quality" // :quality
-			apply plugin: "net.twisterrob.pmd" // :pmd
-			apply plugin: "net.twisterrob.checkstyle" // :checkstyle
-			// Android: apply plugin: "net.twisterrob.gradle.test" // :test
+			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")} // :plugin
+			// Android: apply plugin: "net.twisterrob.gradle.plugin.android-library" // :plugin
+			apply plugin: "net.twisterrob.gradle.plugin.root" // :plugin:base
+			apply plugin: "net.twisterrob.gradle.plugin.java" // :plugin:languages
+			apply plugin: "net.twisterrob.gradle.plugin.java-library" // :plugin:languages
+			apply plugin: "net.twisterrob.gradle.plugin.kotlin" // :plugin:languages
+			apply plugin: "net.twisterrob.gradle.plugin.vcs" // :plugin:versioning
+			apply plugin: "net.twisterrob.gradle.plugin.quality" // :quality
+			apply plugin: "net.twisterrob.gradle.plugin.pmd" // :pmd
+			apply plugin: "net.twisterrob.gradle.plugin.checkstyle" // :checkstyle
+			// Android: apply plugin: "net.twisterrob.gradle.plugin.gradle.test" // :test
 		""".trimIndent()
 
 		verifyTasksNotCreated(script)

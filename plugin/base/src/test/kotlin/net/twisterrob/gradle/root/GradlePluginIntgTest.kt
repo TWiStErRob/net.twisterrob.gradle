@@ -27,7 +27,7 @@ class GradlePluginIntgTest : BaseIntgTest() {
 		assumeThat(gradle.root.resolve("gradlew.bat"), not(anExistingFile()))
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.root'
+			apply plugin: 'net.twisterrob.gradle.plugin.root'
 		""".trimIndent()
 
 		val result = gradle.run(script, "debugWrapper").build()
@@ -39,7 +39,7 @@ class GradlePluginIntgTest : BaseIntgTest() {
 		gradle.file("", "gradlew.bat")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.root'
+			apply plugin: 'net.twisterrob.gradle.plugin.root'
 		""".trimIndent()
 
 		val result = gradle.run(script, "debugWrapper").build()
@@ -52,7 +52,7 @@ class GradlePluginIntgTest : BaseIntgTest() {
 		gradle.file("", "gradlew.bat")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.root'
+			apply plugin: 'net.twisterrob.gradle.plugin.root'
 		""".trimIndent()
 
 		gradle.run(script, "debugWrapper").build()

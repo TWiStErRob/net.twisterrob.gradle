@@ -13,6 +13,7 @@ import net.twisterrob.gradle.test.runFailingBuild
 import net.twisterrob.gradle.test.tasksIn
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.containsStringIgnoringCase
@@ -43,7 +44,7 @@ class PmdPluginTest : BaseIntgTest() {
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -57,7 +58,7 @@ class PmdPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'java'
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -71,7 +72,7 @@ class PmdPluginTest : BaseIntgTest() {
 		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -89,7 +90,7 @@ class PmdPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			allprojects {
-				apply plugin: 'net.twisterrob.pmd'
+				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			}
 		""".trimIndent()
 		// ":instant" is not supported yet, and won't be since it's deprecated in 3.6.x.
@@ -155,7 +156,7 @@ class PmdPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val rootProject = """
 			allprojects {
-				apply plugin: 'net.twisterrob.pmd'
+				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			}
 		""".trimIndent()
 
@@ -184,7 +185,7 @@ class PmdPluginTest : BaseIntgTest() {
 		""".trimIndent()
 		@Language("gradle")
 		val subProjectApplied = """
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			apply plugin: 'com.android.library'
 		""".trimIndent()
 
@@ -240,7 +241,7 @@ class PmdPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val applyPmd = """
 			import org.gradle.util.GradleVersion
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			pmd {
 				toolVersion = '5.6.1'
 				if (GradleVersion.version("6.0.0") <= GradleVersion.current().baseVersion) {
@@ -278,5 +279,30 @@ class PmdPluginTest : BaseIntgTest() {
 			"Validate count to allow no more violations",
 			result.failReason, containsString("4 PMD rule violations were found.")
 		)
+	}
+
+	@Test fun `applying by the old name is deprecated`() {
+		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
+			val result = gradle.run("apply plugin: 'net.twisterrob.pmd'").build()
+			result.assertHasOutputLine(
+				"Plugin net.twisterrob.pmd is deprecated, " +
+						"please use net.twisterrob.gradle.plugin.pmd instead."
+			)
+		} else {
+			val result = gradle.run("apply plugin: 'net.twisterrob.pmd'").buildAndFail()
+			result.assertHasOutputLine(
+				Regex(
+					"""org\.gradle\.api\.GradleException: """ +
+							"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
+				)
+			)
+			result.assertHasOutputLine(
+				Regex(
+					"""The net\.twisterrob\.pmd plugin has been deprecated\. """
+							+ """This is scheduled to be removed in Gradle \d\.0\. """
+							+ """Please use the net\.twisterrob\.gradle\.plugin\.pmd plugin instead."""
+				)
+			)
+		}
 	}
 }

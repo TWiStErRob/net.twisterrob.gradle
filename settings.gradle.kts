@@ -8,7 +8,7 @@ pluginManagement {
 plugins {
 	id("com.gradle.enterprise")
 	// Allows using classes / functions from gradle/plugins project.
-	id("net.twisterrob.gradle.plugins.settings")
+	id("net.twisterrob.gradle.build.settings")
 }
 
 // buildscript { enableDependencyLocking(settings) }

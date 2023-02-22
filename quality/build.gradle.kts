@@ -8,10 +8,17 @@ base.archivesName.set("twister-quality")
 description = "Quality: All quality plugins bundled in one."
 
 gradlePlugin {
+	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.quality") {
-			id = "net.twisterrob.quality"
+		create("quality") {
+			id = "net.twisterrob.gradle.plugin.quality"
+			displayName = "Gradle Quality Plugins"
+			description = """
+				Sane defaults for Checkstyle, PMD, Lint, Test reports which make multi-module Gradle project CI easier.
+			""".trimIndent()
+			tags.set(setOf("multi-module", "android", "reporting", "quality", "static-checks", "CI", "checkstyle", "pmd"))
 			implementationClass = "net.twisterrob.gradle.quality.QualityPlugin"
+			deprecateId(project, "net.twisterrob.quality")
 		}
 	}
 }

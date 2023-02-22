@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.root
 
-import net.twisterrob.gradle.base.BaseExposedPlugin
+import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 

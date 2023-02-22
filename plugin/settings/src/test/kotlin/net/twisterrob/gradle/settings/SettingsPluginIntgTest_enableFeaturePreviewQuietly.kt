@@ -38,7 +38,7 @@ class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 			rootProject.name = "my-root"
 			
 			plugins {
-				id("net.twisterrob.settings")
+				id("net.twisterrob.gradle.plugin.settings")
 			}
 			
 			enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
@@ -69,7 +69,7 @@ class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 			import net.twisterrob.gradle.settings.enableFeaturePreviewQuietly
 			
 			plugins {
-				id("net.twisterrob.settings")
+				id("net.twisterrob.gradle.plugin.settings")
 			}
 			
 			rootProject.name = "my-root"
@@ -102,7 +102,7 @@ class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 			import static net.twisterrob.gradle.settings.SettingsUtils.enableFeaturePreviewQuietly
 			
 			plugins {
-				id("net.twisterrob.settings")
+				id("net.twisterrob.gradle.plugin.settings")
 			}
 			
 			rootProject.name = "my-root"

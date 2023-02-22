@@ -61,7 +61,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			dependencies {
 				implementation 'androidx.annotation:annotation:1.1.0'
 			}
@@ -107,7 +107,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			dependencies {
 				compileOnly 'com.android.support:support-annotations:27.1.1'
 			}
@@ -136,7 +136,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -153,7 +153,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -170,7 +170,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -203,7 +203,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease", "--info").build()
@@ -227,7 +227,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		createFileToMakeSureProguardPasses()
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			android.buildTypes.debug.minifyEnabled = true
 		""".trimIndent()
 
@@ -248,7 +248,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			dependencies {
 				implementation project(':lib')
 			}
@@ -258,7 +258,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val libGradle = """
-			apply plugin: 'net.twisterrob.android-library'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
 			android.defaultConfig.consumerProguardFile 'proguard.pro'
 		""".trimIndent()
 		gradle.file(libGradle, "lib", "build.gradle")

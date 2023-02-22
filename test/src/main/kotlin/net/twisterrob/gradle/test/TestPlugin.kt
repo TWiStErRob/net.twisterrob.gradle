@@ -1,13 +1,14 @@
 package net.twisterrob.gradle.test
 
-import org.gradle.api.Plugin
+import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.Project
 import java.net.JarURLConnection
 import java.util.jar.Attributes
 
-class TestPlugin : Plugin<Project> {
+class TestPlugin : BaseExposedPlugin() {
 
-	override fun apply(project: Project) {
+	override fun apply(target: Project) {
+		super.apply(target)
 		project.plugins.apply("java-gradle-plugin")
 
 		with(project.dependencies) {
