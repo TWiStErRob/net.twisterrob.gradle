@@ -18,6 +18,7 @@ import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -286,6 +287,48 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		// check if submodule config is included
 		assertThat(gradle.mergedProguardConfiguration("release").readText(), containsString(dummyProguardClass))
 	}
+
+	@Test fun `extract task wires with Android Lint correctly`() {
+//		val minification = Minification.R8
+		@Language("java")
+		val someClass = """
+			package ${packageName};
+			public class SomeClass {
+				@androidx.annotation.Keep
+				public void usedMethod() { }
+				// no reason to -keep it, it'll be optimized away
+				public void unusedMethod() { }
+			}
+		""".trimIndent()
+		gradle.file(someClass, "src/main/java/${packageFolder}/SomeClass.java")
+
+		@Language("properties")
+		val properties = """
+			android.useAndroidX=true
+		""".trimIndent()
+		gradle.root.resolve("gradle.properties").appendText(properties)
+
+		@Language("gradle")
+		val script = """
+			println(gradle.startParameter.isParallelProjectExecutionEnabled())
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			dependencies {
+				implementation 'androidx.annotation:annotation:1.1.0'
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script, "extractProguardFiles", "extractMinificationRules", "lintRelease").build()
+
+		result.assertSuccess(":lintRelease")
+		result.assertNoTask(":lintDebug")
+		val releaseMethods = gradle.root.apk("release").toDexParser().listMethods()
+		val debugMethods = gradle.root.apk("debug").toDexParser().listMethods()
+		val unusedMethod = dexMethod("${packageName}.SomeClass", "unusedMethod")
+		val usedMethod = dexMethod("${packageName}.SomeClass", "usedMethod")
+		assertThat(debugMethods, hasItems(unusedMethod, usedMethod))
+		assertThat(releaseMethods, allOf(hasItem(usedMethod), not(hasItem(unusedMethod))))
+	}
+
 
 	private fun BuildResult.assertExtractMinificationRulesRunsSuccessfully() {
 		this.assertSuccess(":extractMinificationRules")
