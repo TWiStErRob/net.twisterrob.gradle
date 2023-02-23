@@ -6,6 +6,7 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
+import com.android.build.gradle.internal.lint.LintModelWriterTask
 import com.android.build.gradle.internal.tasks.ProguardConfigurableTask
 import com.android.build.gradle.internal.tasks.R8Task
 import net.twisterrob.gradle.common.AGPVersions
@@ -146,6 +147,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 			// REPORT allow tasks to generate ProGuard files, this must be possible because aapt generates one.
 			project.tasks.withType<AndroidLintGlobalTask>().configureEach { it.mustRunAfter(task) }
 			project.tasks.withType<AndroidLintAnalysisTask>().configureEach { it.mustRunAfter(task) }
+			project.tasks.withType<LintModelWriterTask>().configureEach { it.mustRunAfter(task) }
 		}
 	}
 
