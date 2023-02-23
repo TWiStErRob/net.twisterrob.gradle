@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.junitpioneer.jupiter.Issue
 import java.io.File
 
 /**
@@ -288,6 +289,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		assertThat(gradle.mergedProguardConfiguration("release").readText(), containsString(dummyProguardClass))
 	}
 
+	@Issue("https://github.com/TWiStErRob/net.twisterrob.gradle/issues/214")
 	@Test fun `extract task wires with Android Lint correctly`() {
 		gradle.settingsFile.appendText("include ':lib'")
 
@@ -308,8 +310,9 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			dependencies { implementation project(':lib') }
 			android.lint.checkDependencies = true
+			tasks.named("lint") { dependsOn("lintRelease") } // By default this is not the case in AGP 7.x.
 		""".trimIndent()
-		val result = gradle.run(script, "build").build()
+		val result = gradle.run(script, "extractMinificationRules", "build").build()
 
 		result.assertSuccess(":extractMinificationRules")
 		result.assertSuccess(":lintRelease")

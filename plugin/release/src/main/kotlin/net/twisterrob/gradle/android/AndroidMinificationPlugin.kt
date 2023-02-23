@@ -144,11 +144,10 @@ class AndroidMinificationPlugin : BasePlugin() {
 
 	private fun lintDependsOnGenerateRulesTask(task: TaskProvider<Task>) {
 		if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
-			println(task)
 			// REPORT allow tasks to generate ProGuard files, this must be possible because aapt generates one.
 			project.tasks.withType<AndroidLintGlobalTask>().configureEach { it.mustRunAfter(task) }
 			project.tasks.withType<AndroidLintAnalysisTask>().configureEach { it.mustRunAfter(task) }
-//			project.tasks.withType<LintModelWriterTask>().configureEach { it.mustRunAfter(task) }
+			project.tasks.withType<LintModelWriterTask>().configureEach { it.mustRunAfter(task) }
 		}
 	}
 
