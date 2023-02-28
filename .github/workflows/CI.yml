@@ -678,7 +678,7 @@ jobs:
           - name: "AGP 7.4.x on Gradle 7.5+"
             gradle: 7.5.1
             gradle-java: 11
-            agp: 7.4.1
+            agp: 7.4.2
             kotlin: 1.6.21
             build-tools: 30.0.3
             instant-api: 30
@@ -686,7 +686,7 @@ jobs:
           - name: "AGP 7.4.x on Gradle 7.5+ - plugin"
             gradle: 7.5.1
             gradle-java: 11
-            agp: 7.4.1
+            agp: 7.4.2
             kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
@@ -694,7 +694,7 @@ jobs:
           - name: "AGP 7.4.x on Gradle 7.x"
             gradle: 7.6
             gradle-java: 11
-            agp: 7.4.1
+            agp: 7.4.2
             kotlin: 1.6.21
             build-tools: 30.0.3
             instant-api: 30
@@ -702,7 +702,7 @@ jobs:
           - name: "AGP 7.4.x on Gradle 7.x - plugin"
             gradle: 7.6
             gradle-java: 11
-            agp: 7.4.1
+            agp: 7.4.2
             kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
@@ -710,7 +710,7 @@ jobs:
           - name: "AGP 7.4.x on Gradle 8.x"
             gradle: 8.0-rc-5
             gradle-java: 11
-            agp: 7.4.1
+            agp: 7.4.2
             kotlin: 1.6.21
             build-tools: 30.0.3
             instant-api: 30
@@ -718,7 +718,7 @@ jobs:
           - name: "AGP 7.4.x on Gradle 8.x - plugin"
             gradle: 8.0-rc-5
             gradle-java: 11
-            agp: 7.4.1
+            agp: 7.4.2
             kotlin: 1.6.21
             build-tools: 32.0.0
             instant-api: 30
@@ -997,47 +997,47 @@ jobs:
           name: AGP 7.3.x on Gradle 7.x - plugin (7.3.1 on 7.6) Test Results XMLs
           path: artifacts/AGP 7.3.x on Gradle 7.x - plugin (7.3.1 on 7.6) Test Results XMLs
 
-      - name: Download 'AGP 7.4.x on Gradle 7.5+ (7.4.1 on 7.5.1) Test Results XMLs' artifact.
+      - name: Download 'AGP 7.4.x on Gradle 7.5+ (7.4.2 on 7.5.1) Test Results XMLs' artifact.
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 7.5+ (7.4.1 on 7.5.1) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 7.5+ (7.4.1 on 7.5.1) Test Results XMLs
+          name: AGP 7.4.x on Gradle 7.5+ (7.4.2 on 7.5.1) Test Results XMLs
+          path: artifacts/AGP 7.4.x on Gradle 7.5+ (7.4.2 on 7.5.1) Test Results XMLs
 
-      - name: Download 'AGP 7.4.x on Gradle 7.5+ - plugin (7.4.1 on 7.5.1) Test Results XMLs' artifact.
+      - name: Download 'AGP 7.4.x on Gradle 7.5+ - plugin (7.4.2 on 7.5.1) Test Results XMLs' artifact.
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 7.5+ - plugin (7.4.1 on 7.5.1) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 7.5+ - plugin (7.4.1 on 7.5.1) Test Results XMLs
+          name: AGP 7.4.x on Gradle 7.5+ - plugin (7.4.2 on 7.5.1) Test Results XMLs
+          path: artifacts/AGP 7.4.x on Gradle 7.5+ - plugin (7.4.2 on 7.5.1) Test Results XMLs
 
-      - name: Download 'AGP 7.4.x on Gradle 7.x (7.4.1 on 7.6) Test Results XMLs' artifact.
+      - name: Download 'AGP 7.4.x on Gradle 7.x (7.4.2 on 7.6) Test Results XMLs' artifact.
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 7.x (7.4.1 on 7.6) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 7.x (7.4.1 on 7.6) Test Results XMLs
+          name: AGP 7.4.x on Gradle 7.x (7.4.2 on 7.6) Test Results XMLs
+          path: artifacts/AGP 7.4.x on Gradle 7.x (7.4.2 on 7.6) Test Results XMLs
 
-      - name: Download 'AGP 7.4.x on Gradle 7.x - plugin (7.4.1 on 7.6) Test Results XMLs' artifact.
+      - name: Download 'AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6) Test Results XMLs' artifact.
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 7.x - plugin (7.4.1 on 7.6) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 7.x - plugin (7.4.1 on 7.6) Test Results XMLs
+          name: AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6) Test Results XMLs
+          path: artifacts/AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6) Test Results XMLs
 
-      - name: Download 'AGP 7.4.x on Gradle 8.x (7.4.1 on 8.0-rc-5) Test Results XMLs' artifact.
+      - name: Download 'AGP 7.4.x on Gradle 8.x (7.4.2 on 8.0-rc-5) Test Results XMLs' artifact.
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 8.x (7.4.1 on 8.0-rc-5) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 8.x (7.4.1 on 8.0-rc-5) Test Results XMLs
+          name: AGP 7.4.x on Gradle 8.x (7.4.2 on 8.0-rc-5) Test Results XMLs
+          path: artifacts/AGP 7.4.x on Gradle 8.x (7.4.2 on 8.0-rc-5) Test Results XMLs
 
-      - name: Download 'AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0-rc-5) Test Results XMLs' artifact.
+      - name: Download 'AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.0-rc-5) Test Results XMLs' artifact.
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0-rc-5) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.1 on 8.0-rc-5) Test Results XMLs
+          name: AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.0-rc-5) Test Results XMLs
+          path: artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.0-rc-5) Test Results XMLs
 
       #- name: Display structure of downloaded files
       #  run: ls -R

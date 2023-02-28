@@ -23,13 +23,13 @@ gradle-publish = "1.1.0"
 
 # See [lint] which is affected by this.
 # Versions: https://maven.google.com/web/index.html#com.android.tools.build:gradle
-agp = "7.4.1"
+agp = "7.4.2"
 
 # = 23.0.0 + [agp].
 # @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
 # @see builder-model//version.properties
 # Versions: https://maven.google.com/web/index.html#com.android.tools.lint:lint
-agp-tools = "30.4.1"
+agp-tools = "30.4.2"
 
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # Actual Kotlin version for dependencies. It has to be older to make sure AGP 3.x is still compatible.
