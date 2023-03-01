@@ -1,11 +1,11 @@
 package net.twisterrob.gradle.build.compilation
 
+import libs
 import net.twisterrob.gradle.plugins.settings.TargetJvmVersionRule
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.withModule
-import versionCatalogs
 
 class JavaCompatibilityPlugin : Plugin<Project> {
 	override fun apply(target: Project) {
@@ -29,7 +29,7 @@ class JavaCompatibilityPlugin : Plugin<Project> {
 			// so that the produced jars can still be used with Java 8.
 			// https://docs.gradle.org/current/userguide/component_metadata_rules.html
 
-			val javaVersion = target.versionCatalogs.named("libs").findVersion("java").get()
+			val javaVersion = target.libs.versions.java.get()
 				.let { JavaVersion.toVersion(it).majorVersion.toInt() }
 
 			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle") { params(javaVersion) }
