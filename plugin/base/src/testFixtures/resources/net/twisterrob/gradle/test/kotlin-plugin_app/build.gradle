@@ -13,12 +13,12 @@ buildscript {
 			// https://youtrack.jetbrains.com/issue/KT-47867 was fixed in 1.6.0,
 			// so disable these warnings for anything that uses Kotlin < 1.6.
 			doNotNagAbout(
-					"7.6",
+					"7.6.1",
 					/^.*$/,
 					"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'KaptWithoutKotlincTask.compile' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation".toString()
 			)
 			doNotNagAbout(
-					"7.6",
+					"7.6.1",
 					/^.*$/,
 					"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'AbstractKotlinCompile.execute' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation".toString()
 			)
