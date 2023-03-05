@@ -5,11 +5,9 @@ import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.provider.Provider
 
 fun Configuration.replaceHamcrestDependencies(project: Project) {
-	// TODEL https://github.com/gradle/gradle/issues/15383#ref-issue-1054658077
-	// Note: project.libs.hamcrest errors with NoClassDefFoundError: LibrariesForLibs
-	val versionCatalog = project.rootProject.versionCatalogs.named("libs")
-	val hamcrest = versionCatalog.findLibrary("hamcrest").get()
-	resolutionStrategy.eachDependency { replaceHamcrestDependencies(hamcrest) }
+	resolutionStrategy.eachDependency {
+		replaceHamcrestDependencies(project.libs.hamcrest)
+	}
 }
 
 /**

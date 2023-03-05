@@ -7,7 +7,6 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.file.SourceDirectorySet
@@ -74,9 +73,6 @@ val Project.gradlePlugin: GradlePluginDevelopmentExtension
 
 val Project.publishing: PublishingExtension
 	get() = this.extensions.getByName<PublishingExtension>("publishing")
-
-internal val Project.versionCatalogs: VersionCatalogsExtension
-	get() = this.extensions.getByName<VersionCatalogsExtension>("versionCatalogs")
 
 /**
  * Alternative solution: https://stackoverflow.com/a/64825340/253468

@@ -3,7 +3,7 @@ java = "1.8"
 
 # Changelog: https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md
 # GitHub Releases: https://github.com/tomasbjerre/violations-lib/tags
-violations = "1.156.1"
+violations = "1.156.2"
 
 # JSR 305: Annotations for Software Defect Detection
 # Documentation: https://jcp.org/en/jsr/detail?id=305
@@ -12,13 +12,13 @@ jsr305 = "3.0.2"
 # Documentation: https://www.jetbrains.com/help/idea/annotating-source-code.html
 # Repository: https://github.com/JetBrains/java-annotations
 # Artifacts: https://repo1.maven.org/maven2/org/jetbrains/annotations/
-jetbrains = "24.0.0"
+jetbrains = "24.0.1"
 
 # https://github.com/gradle-nexus/publish-plugin/releases
 nexus = "1.2.0"
 
 # https://docs.gradle.com/enterprise/gradle-plugin/#release_history
-gradle-enterprise = "3.12.3"
+gradle-enterprise = "3.12.4"
 gradle-publish = "1.1.0"
 
 # See [lint] which is affected by this.
@@ -39,7 +39,7 @@ kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
 kotlin-build = "1.8.10"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
-kotlin-dokka = "1.7.20"
+kotlin-dokka = "1.8.10"
 
 detekt = "1.22.0"
 
