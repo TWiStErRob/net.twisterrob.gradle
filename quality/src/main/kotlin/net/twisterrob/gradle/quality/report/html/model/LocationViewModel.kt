@@ -66,14 +66,26 @@ class LocationViewModel(violation: Violation) {
 	 * `rootProject.projectDir` + [locationRelativeToProject] + [fileName]
 	 */
 	val locationRelativeToProject: String
-		get() = module.rootProject.relativePath(loc.file.parentFile) + File.separator
+		get() =
+			if (isLocationExternal) {
+				loc.file.parentFile.absolutePath + File.separator
+			} else {
+				val relativeOrAbsoluteFile = loc.file.parentFile.relativeToOrSelf(module.rootDir).toString()
+				(if (relativeOrAbsoluteFile == "") "." else relativeOrAbsoluteFile) + File.separator
+			}
 
 	/**
 	 * The directory of the file, relative to the module root, so the absolute path is:
 	 * `module.projectDir` + [locationRelativeToModule] + [fileName]
 	 */
 	val locationRelativeToModule: String
-		get() = module.relativePath(loc.file.parentFile) + File.separator
+		get() =
+			if (isLocationExternal) {
+				loc.file.parentFile.absolutePath + File.separator
+			} else {
+				val relativeOrAbsoluteFile = loc.file.parentFile.relativeToOrSelf(module.projectDir).toString()
+				(if (relativeOrAbsoluteFile == "") "." else relativeOrAbsoluteFile) + File.separator
+			}
 
 	/**
 	 * Whether this location is outside the project root.
@@ -86,7 +98,11 @@ class LocationViewModel(violation: Violation) {
 	 * Assumption: the root project physically contains all the other modules.
 	 */
 	val isLocationExternal: Boolean
-		get() = (module.rootProject.relativePath(loc.file.parentFile) + File.separator).startsWith("")
+		get() =
+			when (val relativePath = loc.file.relativeToOrNull(module.rootDir)) {
+				null -> true
+				else -> relativePath.isRooted || relativePath.parent == ".."
+			}
 
 	val startLine: Int
 		get() = loc.startLine

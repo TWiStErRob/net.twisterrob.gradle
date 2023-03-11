@@ -398,20 +398,22 @@ class LocationViewModelTest {
 
 				val sut = LocationViewModel(fixtViolation)
 
-				assertEquals(fixtViolation.location.file.absolutePath, sut.locationRelativeToProject)
-				assertEquals(fixtViolation.location.file.absolutePath, sut.locationRelativeToModule)
+				val absoluteParent = fixtViolation.location.file.parentFile.absolutePath
+				assertEquals("${absoluteParent}${File.separator}", sut.locationRelativeToProject)
+				assertEquals("${absoluteParent}${File.separator}", sut.locationRelativeToModule)
 			}
 
 			@Test fun `file outside the root module from parent module`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", parentProject)
-					location.setField("file", innerProject.rootDir.resolve("../some.file"))
+					location.setField("file", parentProject.rootDir.resolve("../some.file"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
 
-				assertEquals(fixtViolation.location.file.absolutePath, sut.locationRelativeToProject)
-				assertEquals(fixtViolation.location.file.absolutePath, sut.locationRelativeToModule)
+				val absoluteParent = fixtViolation.location.file.parentFile.absolutePath
+				assertEquals("${absoluteParent}${File.separator}", sut.locationRelativeToProject)
+				assertEquals("${absoluteParent}${File.separator}", sut.locationRelativeToModule)
 			}
 
 			@Test fun `file outside the root module from inner module`() {
@@ -422,8 +424,9 @@ class LocationViewModelTest {
 
 				val sut = LocationViewModel(fixtViolation)
 
-				assertEquals(fixtViolation.location.file.absolutePath, sut.locationRelativeToProject)
-				assertEquals(fixtViolation.location.file.absolutePath, sut.locationRelativeToModule)
+				val absoluteParent = fixtViolation.location.file.parentFile.absolutePath
+				assertEquals("${absoluteParent}${File.separator}", sut.locationRelativeToProject)
+				assertEquals("${absoluteParent}${File.separator}", sut.locationRelativeToModule)
 			}
 
 			@OptIn(ExperimentalStdlibApi::class)
@@ -440,8 +443,9 @@ class LocationViewModelTest {
 
 				val sut = LocationViewModel(fixtViolation)
 
-				assertEquals(fixtViolation.location.file.absolutePath, sut.locationRelativeToProject)
-				assertEquals(fixtViolation.location.file.absolutePath, sut.locationRelativeToModule)
+				val absoluteParent = fixtViolation.location.file.parentFile.absolutePath
+				assertEquals("${absoluteParent}${File.separator}", sut.locationRelativeToProject)
+				assertEquals("${absoluteParent}${File.separator}", sut.locationRelativeToModule)
 			}
 		}
 	}

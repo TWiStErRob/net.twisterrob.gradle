@@ -87,7 +87,7 @@ class ViolationsRendererTest {
 					 fileAbsoluteAsUrl="${fixtViolation.location.file.toURI()}"
 					 pathRelativeToProject=".${File.separator}"
 					 pathRelativeToModule=".${File.separator}"
-					 fileIsExternal="true"
+					 fileIsExternal="false"
 					 startLine="${fixtViolation.location.startLine}"
 					 endLine="${fixtViolation.location.endLine}"
 					 column="${fixtViolation.location.column}">
@@ -144,7 +144,7 @@ class ViolationsRendererTest {
 	@Test fun `renderXml renders a violation with external file`(@TempDir temp: File) {
 		val fixtViolation: Violation = fixture.build {
 			location.setField("module", ProjectBuilder().withProjectDir(temp).build())
-			location.setField("file", File("A:\\${fixture.build<String>()}"))
+			location.setField("file", File("A:\\${fixture.build<String>()}\\${fixture.build<String>()}"))
 		}
 		val fixtCategory: Category = fixture.build()
 		val fixtReporter: Reporter = fixture.build()
@@ -165,8 +165,8 @@ class ViolationsRendererTest {
 					 file="${fixtViolation.location.file.absolutePath}"
 					 fileName="${fixtViolation.location.file.name}"
 					 fileAbsoluteAsUrl="${fixtViolation.location.file.toURI()}"
-					 pathRelativeToProject=".${File.separator}"
-					 pathRelativeToModule=".${File.separator}"
+					 pathRelativeToProject="${fixtViolation.location.file.parent}${File.separator}"
+					 pathRelativeToModule="${fixtViolation.location.file.parent}${File.separator}"
 					 fileIsExternal="true"
 					 startLine="${fixtViolation.location.startLine}"
 					 endLine="${fixtViolation.location.endLine}"
@@ -182,17 +182,12 @@ class ViolationsRendererTest {
 					 category="${fixtViolation.category}"
 					 severity="${fixtViolation.severity}">
 					<message><![CDATA[${fixtViolation.message}]]></message>
-					<context type="code" language="binary"
-						 startLine="${fixtViolation.location.startLine - 2}"
-						 endLine="${fixtViolation.location.endLine + 2}">
+					<context type="error"
+						 message="java.io.FileNotFoundException: ${fixtViolation.location.file}
+							 (The system cannot find the path specified)">
 						<![CDATA[
-							Line 1\n
-							Line 2\n
-							Line 3\n
-							Line 4\n
-							Line 5\n
-							Line 6\n
-							Line 7
+							java.io.FileNotFoundException: ${fixtViolation.location.file}
+							 (The system cannot find the path specified)
 						]]>
 					</context>
 				</details>
@@ -216,7 +211,7 @@ class ViolationsRendererTest {
 
 		val rendered = render(violations)
 
-		assertEquals(expected.unformat(), rendered)
+		assertEquals(expected.unformat(), rendered.cleanStackTraces())
 	}
 
 	companion object {
@@ -241,6 +236,14 @@ private fun Violation.Location.generateTestContent() {
 }
 
 private fun @receiver:Language("xml") String.unformat(): String =
-	lines().joinToString(separator = "") {
-		it.trimStart('\t').replace("\\n", System.lineSeparator())
-	}
+	this
+		.lines()
+		.joinToString(separator = "") {
+			it.trimStart('\t').replace("\\n", System.lineSeparator())
+		}
+
+private fun @receiver:Language("xml") String.cleanStackTraces(): String =
+	this
+		.lines()
+		.filterNot { it.startsWith("\tat ") }
+		.joinToString(separator = "")
