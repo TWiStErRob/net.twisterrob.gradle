@@ -59,6 +59,7 @@ class ViolationsRendererTest {
 		assertEquals(expected.unformat(), rendered)
 	}
 
+	@Suppress("LongMethod")
 	@Test fun `renderXml renders a violation`(@TempDir temp: File) {
 		val fixtViolation: Violation = fixture.build {
 			location.setField("file", temp.resolve(fixture.build<String>()))
