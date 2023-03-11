@@ -5,6 +5,9 @@ import org.gradle.api.Project
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
+internal fun JFixture.buildProjectPath(levels: Int = 1): String =
+	(1..levels).joinToString("") { ":${build<String>()}" }
+
 internal fun mockProject(path: String): Project =
 	mock<Project>().also {
 		whenever(it.path).thenReturn(path)
@@ -20,4 +23,8 @@ internal fun Any.setField(name: String, value: Any?) {
 }
 
 internal inline fun <reified T> JFixture.build(block: T.() -> Unit = {}): T =
-	this.create(T::class.java).apply(block)
+	if (T::class == Any::class) {
+		error("There's no point in building a random Object, use build<T>() instead.")
+	} else {
+		this.create(T::class.java).apply(block)
+	}

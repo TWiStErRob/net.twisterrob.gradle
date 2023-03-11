@@ -159,7 +159,7 @@ class LintMessageDetailsSplitterTest {
 		private fun createAndroidLintFixture(): JFixture {
 			return JFixture().apply {
 				customise().lazyInstance(Project::class.java) {
-					mockProject(":" + build())
+					mockProject(buildProjectPath())
 				}
 				customise().lazyInstance(Task::class.java) { mock() }
 				customise().intercept(Violation::class.java) {
