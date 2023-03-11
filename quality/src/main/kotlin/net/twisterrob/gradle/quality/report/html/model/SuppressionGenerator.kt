@@ -43,7 +43,7 @@ private val Violation.ignorePath: String
 	get() {
 		val vm = LocationViewModel(this)
 		return when {
-			vm.isLocationExternal -> this.location.file.name
+			vm.isLocationExternal -> vm.fileName
 			this.location.file.isDirectory -> vm.locationRelativeToModule.replace("\\", "/") + vm.fileName
 			else -> vm.locationRelativeToModule.replace("\\", "/") + vm.fileName
 		}
