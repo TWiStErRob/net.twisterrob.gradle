@@ -3,8 +3,6 @@ package net.twisterrob.gradle.quality.report.html
 import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.report.html.model.build
-import net.twisterrob.gradle.quality.report.html.model.buildProjectPath
-import net.twisterrob.gradle.quality.report.html.model.mockProject
 import net.twisterrob.gradle.quality.report.html.model.setField
 import net.twisterrob.gradle.test.ProjectBuilder
 import org.gradle.api.Project
@@ -17,7 +15,6 @@ import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 import java.io.File
 import java.io.StringWriter
 
@@ -25,10 +22,8 @@ import java.io.StringWriter
 class ViolationsRendererTest {
 
 	private val fixture = JFixture().apply {
-		customise().lazyInstance(Project::class.java) {
-			mockProject(buildProjectPath())
-		}
-		customise().lazyInstance(Task::class.java) { mock() }
+		customise().lazyInstance(Project::class.java, ::mock)
+		customise().lazyInstance(Task::class.java, ::mock)
 	}
 
 	@Test fun `xmlWriter produces a supported writer for test`() {
@@ -64,88 +59,6 @@ class ViolationsRendererTest {
 
 	@Suppress("LongMethod")
 	@Test fun `renderXml renders a violation`(@TempDir temp: File) {
-		val fixtViolation: Violation = fixture.build {
-			location.setField("file", temp.resolve(fixture.build<String>()))
-			location.setField("startLine", 3)
-			location.setField("endLine", 5)
-			location.generateTestContent()
-			whenever(location.module.relativePath(location.file.parentFile)).thenReturn("relative")
-		}
-		val fixtCategory: Category = fixture.build()
-		val fixtReporter: Reporter = fixture.build()
-		val violations: Map<Category, Map<Reporter, List<Violation>>> =
-			mapOf(fixtCategory to mapOf(fixtReporter to listOf(fixtViolation)))
-
-		@Language("XML")
-		val expected = """<?xml version="1.0" encoding="utf-8"?>
-			<violations project="test project">
-			<category name="${fixtCategory}">
-			<reporter name="${fixtReporter}">
-			<violation>
-				<location
-					 module="${fixtViolation.location.module.path}"
-					 modulePrefix=""
-					 moduleName="${fixtViolation.location.module.name}"
-					 variant="${fixtViolation.location.variant}"
-					 file="${fixtViolation.location.file.absolutePath}"
-					 fileName="${fixtViolation.location.file.name}"
-					 fileAbsoluteAsUrl="${fixtViolation.location.file.toURI()}"
-					 pathRelativeToProject="relative${File.separator}"
-					 pathRelativeToModule="relative${File.separator}"
-					 fileIsExternal="true"
-					 startLine="${fixtViolation.location.startLine}"
-					 endLine="${fixtViolation.location.endLine}"
-					 column="${fixtViolation.location.column}">
-				</location>
-				<source
-					 parser="${fixtViolation.source.parser}"
-					 source="${fixtViolation.source.source}"
-					 reporter="${fixtViolation.source.reporter}">
-				</source>
-				<details
-					 rule="${fixtViolation.rule}"
-					 category="${fixtViolation.category}"
-					 severity="${fixtViolation.severity}">
-					<message><![CDATA[${fixtViolation.message}]]></message>
-					<context type="code" language="binary"
-						 startLine="${fixtViolation.location.startLine - 2}"
-						 endLine="${fixtViolation.location.endLine + 2}">
-						<![CDATA[
-							Line 1\n
-							Line 2\n
-							Line 3\n
-							Line 4\n
-							Line 5\n
-							Line 6\n
-							Line 7
-						]]>
-					</context>
-				</details>
-				<specific
-					 key="${fixtViolation.specifics.asSequence().elementAt(0).key}"
-					 value="${fixtViolation.specifics.asSequence().elementAt(0).value}">
-				</specific>
-				<specific
-					 key="${fixtViolation.specifics.asSequence().elementAt(1).key}"
-					 value="${fixtViolation.specifics.asSequence().elementAt(1).value}">
-				</specific>
-				<specific
-					 key="${fixtViolation.specifics.asSequence().elementAt(2).key}"
-					 value="${fixtViolation.specifics.asSequence().elementAt(2).value}">
-				</specific>
-			</violation>
-			</reporter>
-			</category>
-			</violations>
-		""".trimIndent()
-
-		val rendered = render(violations)
-
-		assertEquals(expected.unformat(), rendered)
-	}
-
-	@Suppress("LongMethod")
-	@Test fun `renderXml renders a violation in a real project`(@TempDir temp: File) {
 		val fixtViolation: Violation = fixture.build {
 			location.setField("module", ProjectBuilder().withProjectDir(temp).build())
 			location.setField("file", temp.resolve(fixture.build<String>()))
@@ -228,7 +141,7 @@ class ViolationsRendererTest {
 
 	@EnabledOnOs(OS.WINDOWS)
 	@Suppress("LongMethod")
-	@Test fun `renderXml renders a violation in a real project with external file`(@TempDir temp: File) {
+	@Test fun `renderXml renders a violation with external file`(@TempDir temp: File) {
 		val fixtViolation: Violation = fixture.build {
 			location.setField("module", ProjectBuilder().withProjectDir(temp).build())
 			location.setField("file", File("A:\\${fixture.build<String>()}"))
