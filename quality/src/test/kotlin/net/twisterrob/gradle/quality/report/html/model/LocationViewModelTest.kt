@@ -261,6 +261,17 @@ class LocationViewModelTest {
 				assertTrue(sut.isLocationExternal)
 			}
 
+			@Test fun `file more outside the root module is external the root project`() {
+				val fixtViolation: Violation = fixture.build {
+					location.setField("module", rootProject)
+					location.setField("file", rootProject.rootDir.resolve("../../some.file"))
+				}
+
+				val sut = LocationViewModel(fixtViolation)
+
+				assertTrue(sut.isLocationExternal)
+			}
+
 			@OptIn(ExperimentalStdlibApi::class)
 			@EnabledOnOs(OS.WINDOWS)
 			@Test fun `file on a different drive is external the project`() {

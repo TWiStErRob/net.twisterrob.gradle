@@ -102,27 +102,13 @@ class LocationViewModel(violation: Violation) {
 	val isLocationExternal: Boolean
 		get() {
 			val relativePath = loc.file.relativeToOrNull(module.rootDir)
-			println(
-				"""
-					isLocationExternal: ${this}
-					loc.file: ${loc.file}
-					loc.file.absolutePath: ${loc.file.absolutePath}
-					module: ${module}
-					module.projectDir: ${module.projectDir}
-					module.rootDir: ${module.rootDir}
-					relativePath: ${relativePath}
-					relativePath?.isAbsolute: ${relativePath?.isAbsolute}
-					relativePath?.isRooted: ${relativePath?.isRooted}
-					relativePath?.parent: ${relativePath?.parent}
-				""".trimIndent()
-			)
 			return when {
 				// Different drives on Windows.
 				relativePath == null -> true
 				// Absolute path.
 				relativePath.isRooted -> true
 				// Relative path, but outside the project.
-				relativePath.parent == ".." -> true
+				relativePath.startsWith("..") -> true
 				// Relative path inside the project.
 				else -> false
 			}
