@@ -158,6 +158,7 @@ class ViolationsRendererTest {
 private fun Violation.Location.generateTestContent() {
 	assertTrue(this.startLine < this.endLine)
 	val contents = (1..this.endLine + 10).joinToString("\n") { "Line $it" }
+	file.parentFile.mkdirs()
 	file.writeText(contents)
 }
 
