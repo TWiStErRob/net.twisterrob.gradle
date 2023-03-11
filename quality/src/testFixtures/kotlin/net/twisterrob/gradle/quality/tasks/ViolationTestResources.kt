@@ -46,21 +46,21 @@ class ViolationTestResources(
 			get() = read("ViolationTestResources/everything/violations.xml")
 				// <violations project="..."
 				.replace(
-					"""(?<=project=")junit10687324202215608680(?=")""".toRegex(),
+					"""(?<=project=")junit14110403642675258434(?=")""".toRegex(),
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <location file="..."
-				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit10687324202215608680((?:\\[^"]+)+)(?=")""".toRegex()) { match ->
+				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit14110403642675258434((?:\\[^"]+)+)(?=")""".toRegex()) { match ->
 					val group1 = match.groups[1]!!.value
 					rootProject.absolutePath + group1.replace("\\", File.separator)
 				}
 				// <location fileAbsoluteAsUrl="..."
-				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10687324202215608680((?:/[^"]+)+)(?=")""".toRegex()) { match ->
+				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit14110403642675258434((?:/[^"]+)+)(?=")""".toRegex()) { match ->
 					val group1 = match.groups[1]!!.value
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
 				// <violation[details/@rule="IconMissingDensityFolder"]/description
-				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit10687324202215608680""".toRegex()) {
+				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit14110403642675258434""".toRegex()) {
 					// Not replacing the rest of the path with File.separator, because this is just text,
 					// but the rootDir is dynamic in the source lint report in test resources.
 					rootProject.absolutePath.replace("\\", "\\\\")
@@ -94,22 +94,22 @@ class ViolationTestResources(
 			get() = read("ViolationTestResources/everything/violations.html")
 				// <title>...
 				.replace(
-					"""(?<=<title>)junit10687324202215608680""".toRegex(),
+					"""(?<=<title>)junit14110403642675258434""".toRegex(),
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <h1 id="top">Violations report for ...</h1>
 				.replace(
-					"""junit10687324202215608680(?=</h1>)""".toRegex(),
+					"""junit14110403642675258434(?=</h1>)""".toRegex(),
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <script>render.markdown(`...\`...\`...`)</script>
-				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit10687324202215608680""".toRegex()) {
+				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit14110403642675258434""".toRegex()) {
 					// Not replacing the rest of the path with File.separator, because this is just text,
 					// but the rootDir is dynamic in the source lint report in test resources.
 					rootProject.absolutePath.replace("\\", "\\\\")
 				}
 				// <a class="file" href="file:/...">src\main\<b>
-				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit10687324202215608680((?:/[^"]+)+)(?=")""".toRegex()) { match ->
+				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit14110403642675258434((?:/[^"]+)+)(?=")""".toRegex()) { match ->
 					val group1 = match.groups[1]!!.value
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
