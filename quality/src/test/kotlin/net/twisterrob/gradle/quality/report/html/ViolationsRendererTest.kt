@@ -18,6 +18,7 @@ import java.io.File
 import java.io.StringWriter
 import kotlin.test.assertEquals
 
+@Suppress("CheckTagEmptyBody")
 class ViolationsRendererTest {
 
 	private val fixture = JFixture().apply {
@@ -36,43 +37,26 @@ class ViolationsRendererTest {
 	}
 
 	@Test fun `renderXml writes preamble`() {
-		val out = StringWriter()
-		out.xmlWriter().use { renderXml(it, emptyMap(), "", "some/path/to.xsl") }
+		@Language("XML")
+		val expected = """<?xml version="1.0" encoding="utf-8"?>
+			<?xml-stylesheet type="text/xsl" href="some/path/to.xsl"?>
+			<violations project="test project"></violations>
+		""".trimIndent()
 
-		assertEquals(
-			"""
-				<?xml version="1.0" encoding="utf-8"?>
-				<?xml-stylesheet type="text/xsl" href="some/path/to.xsl"?>
-				<violations project=""></violations>
-			""".unformat(),
-			out.toString()
-		)
-	}
+		val rendered = render(xslPath = "some/path/to.xsl")
 
-	@Test fun `renderXml writes preamble without stylesheet`() {
-		val out = StringWriter()
-		out.xmlWriter().use { renderXml(it, emptyMap(), "") }
-
-		assertEquals(
-			"""
-				<?xml version="1.0" encoding="utf-8"?>
-				<violations project=""></violations>
-			""".unformat(),
-			out.toString()
-		)
+		assertEquals(expected.unformat(), rendered)
 	}
 
 	@Test fun `renderXml writes project name on root`() {
-		val out = StringWriter()
-		out.xmlWriter().use { renderXml(it, emptyMap(), "project name") }
+		@Language("XML")
+		val expected = """<?xml version="1.0" encoding="utf-8"?>
+			<violations project="test project"></violations>
+		""".trimIndent()
 
-		assertEquals(
-			"""
-				<?xml version="1.0" encoding="utf-8"?>
-				<violations project="project name"></violations>
-			""".unformat(),
-			out.toString()
-		)
+		val rendered = render()
+
+		assertEquals(expected.unformat(), rendered)
 	}
 
 	@Test fun `renderXml renders a violation`(@TempDir temp: File) {
@@ -83,16 +67,16 @@ class ViolationsRendererTest {
 			location.generateTestContent()
 			whenever(location.module.relativePath(location.file.parentFile)).thenReturn("relative")
 		}
-		val problems: Map<Category, Map<Reporter, List<Violation>>> =
-			mapOf("test-category" to mapOf("test-reporter" to listOf(fixtViolation)))
+		val fixtCategory: Category = fixture.build()
+		val fixtReporter: Reporter = fixture.build()
+		val violations: Map<Category, Map<Reporter, List<Violation>>> =
+			mapOf(fixtCategory to mapOf(fixtReporter to listOf(fixtViolation)))
 
-		@Language("xml")
-		val expected = """
-			<?xml version="1.0" encoding="utf-8"?>
-			<?xml-stylesheet type="text/xsl" href="some/path/to.xsl"?>
-			<violations project="project name">
-			<category name="test-category">
-			<reporter name="test-reporter">
+		@Language("XML")
+		val expected = """<?xml version="1.0" encoding="utf-8"?>
+			<violations project="test project">
+			<category name="${fixtCategory}">
+			<reporter name="${fixtReporter}">
 			<violation>
 				<location
 					 module="${fixtViolation.location.module.path}"
@@ -140,7 +124,6 @@ class ViolationsRendererTest {
 				<specific
 					 key="${fixtViolation.specifics.asSequence().elementAt(1).key}"
 					 value="${fixtViolation.specifics.asSequence().elementAt(1).value}">
-					 
 				</specific>
 				<specific
 					 key="${fixtViolation.specifics.asSequence().elementAt(2).key}"
@@ -152,10 +135,22 @@ class ViolationsRendererTest {
 			</violations>
 		""".trimIndent()
 
-		val out = StringWriter()
-		out.xmlWriter().use { renderXml(it, problems, "project name", "some/path/to.xsl") }
+		val rendered = render(violations)
 
-		assertEquals(expected.unformat(), out.toString())
+		assertEquals(expected.unformat(), rendered)
+	}
+
+	companion object {
+
+		private fun render(
+			violations: Map<Category, Map<Reporter, List<Violation>>> = emptyMap(),
+			projectName: String = "test project",
+			xslPath: String? = null
+		): String {
+			val out = StringWriter()
+			out.xmlWriter().use { renderXml(it, violations, projectName, xslPath) }
+			return out.toString()
+		}
 	}
 }
 
