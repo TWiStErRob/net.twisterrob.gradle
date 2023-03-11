@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
-internal fun project(path: String): Project =
+internal fun mockProject(path: String): Project =
 	mock<Project>().also {
 		whenever(it.path).thenReturn(path)
 		whenever(it.name).thenReturn(path.substringAfterLast(":"))

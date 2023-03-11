@@ -20,7 +20,7 @@ class CodeContextTest {
 
 	private val fixture = JFixture().apply {
 		customise().lazyInstance(Project::class.java) {
-			project(":" + build())
+			mockProject(":" + build())
 		}
 		customise().lazyInstance(Task::class.java) { mock() }
 	}
@@ -28,7 +28,7 @@ class CodeContextTest {
 	class MissingLocation {
 		private val fixture = JFixture().apply {
 			customise().lazyInstance(Project::class.java) {
-				project(":" + build())
+				mockProject(":" + build())
 			}
 			customise().lazyInstance(Task::class.java) { mock() }
 		}

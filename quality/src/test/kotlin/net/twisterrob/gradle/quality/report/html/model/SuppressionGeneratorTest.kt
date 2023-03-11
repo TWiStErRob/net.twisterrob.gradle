@@ -54,7 +54,7 @@ class SuppressionGeneratorTest {
 		private fun createAndroidLintFixture(): JFixture {
 			return JFixture().apply {
 				customise().lazyInstance(Project::class.java) {
-					project(":" + build())
+					mockProject(":" + build())
 				}
 				customise().lazyInstance(Task::class.java) { mock() }
 				customise().intercept(Violation::class.java) {
