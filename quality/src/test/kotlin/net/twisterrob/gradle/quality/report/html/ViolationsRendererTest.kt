@@ -9,6 +9,7 @@ import net.twisterrob.gradle.quality.report.html.model.setField
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -16,7 +17,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.io.File
 import java.io.StringWriter
-import kotlin.test.assertEquals
 
 @Suppress("CheckTagEmptyBody")
 class ViolationsRendererTest {
