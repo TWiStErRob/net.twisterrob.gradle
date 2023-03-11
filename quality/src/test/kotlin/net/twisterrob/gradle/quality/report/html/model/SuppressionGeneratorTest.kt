@@ -8,6 +8,7 @@ import org.gradle.api.Task
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.mockito.kotlin.mock
@@ -19,85 +20,107 @@ class SuppressionGeneratorTest {
 
 	private val sut = SuppressionGenerator()
 
-	@Test
-	fun `unknown files are suppressed with lint-xml`() {
-		val input = fixture.build<Violation>().apply {
-			// `this.location.file` is fixture'd.
+	@Nested
+	inner class `Android Lint suppressions` {
+
+		@Test
+		fun `java files are suppressed with annotation`() {
+			val input = fixture.build<Violation>().apply {
+				this.location.setField("file", File(fixture.build<String>() + ".java"))
+			}
+			@Language("java")
+			val expected = """
+				@SuppressLint("${input.rule}") // TODO Explanation.
+			""".trimIndent()
+
+			val output = sut.getSuppression(input)
+
+			assertEquals(expected, output)
 		}
-		@Language("XML")
-		val expected = """
-			<issue id="${input.rule}">
-			    <!-- TODO Explanation. -->
-			    <ignore path="${input.location.file.name}" />
-			</issue>
-		""".trimIndent()
 
-		val output = sut.getSuppression(input)
+		@Test
+		fun `kotlin files are suppressed with annotation`() {
+			val input = fixture.build<Violation>().apply {
+				this.location.setField("file", File(fixture.build<String>() + ".kt"))
+			}
+			@Language("kotlin")
+			val expected = """
+				@SuppressLint("${input.rule}") // TODO Explanation.
+			""".trimIndent()
 
-		assertEquals(expected, output)
-	}
+			val output = sut.getSuppression(input)
 
-	@Test
-	fun `unknown directories are suppressed with lint-xml`(@TempDir temp: File) {
-		val input = fixture.build<Violation>().apply {
-			location.setField("file", temp.resolve("some/dir").also { assertTrue(it.mkdirs()) })
+			assertEquals(expected, output)
 		}
-		@Language("XML")
-		val expected = """
-			<issue id="${input.rule}">
-			    <!-- TODO Explanation. -->
-			    <ignore path="dir" />
-			</issue>
-		""".trimIndent()
 
-		val output = sut.getSuppression(input)
+		@Test
+		fun `xml files are suppressed with attribute`() {
+			val input = fixture.build<Violation>().apply {
+				this.location.setField("file", File(fixture.build<String>() + ".xml"))
+			}
+			@Language("XML")
+			val expected = """
+				tools:ignore="${input.rule}"
+			""".trimIndent()
 
-		assertEquals(expected, output)
-	}
+			val output = sut.getSuppression(input)
 
-	@Test
-	fun `xml files are suppressed with attribute`() {
-		val input = fixture.build<Violation>().apply {
-			this.location.setField("file", File(fixture.build<String>() + ".xml"))
+			assertEquals(expected, output)
 		}
-		@Language("XML")
-		val expected = """
-			tools:ignore="${input.rule}"
-		""".trimIndent()
 
-		val output = sut.getSuppression(input)
+		@Test
+		fun `unknown nested files are suppressed with lint-xml`() {
+			val input = fixture.build<Violation>().apply {
+				location.setField("file", location.module.projectDir.resolve("some/relative/file"))
+			}
+			@Language("XML")
+			val expected = """
+				<issue id="${input.rule}">
+				    <!-- TODO Explanation. -->
+				    <ignore path="some/relative/file" />
+				</issue>
+			""".trimIndent()
 
-		assertEquals(expected, output)
-	}
+			val output = sut.getSuppression(input)
 
-	@Test
-	fun `java files are suppressed with annotation`() {
-		val input = fixture.build<Violation>().apply {
-			this.location.setField("file", File(fixture.build<String>() + ".java"))
+			assertEquals(expected, output)
 		}
-		@Language("java")
-		val expected = """
-			@SuppressLint("${input.rule}") // TODO Explanation.
-		""".trimIndent()
 
-		val output = sut.getSuppression(input)
+		@Test
+		fun `unknown external directories are suppressed with lint-xml`(@TempDir temp: File) {
+			val input = fixture.build<Violation>().apply {
+				location.setField("file", temp.resolve("some/dir").also { assertTrue(it.mkdirs()) })
+			}
+			@Language("XML")
+			val expected = """
+				<issue id="${input.rule}">
+				    <!-- TODO Explanation. -->
+				    <ignore path="dir" />
+				</issue>
+			""".trimIndent()
 
-		assertEquals(expected, output)
-	}
+			val output = sut.getSuppression(input)
 
-	@Test
-	fun `kotlin files are suppressed with annotation`() {
-		val input = fixture.build<Violation>().apply {
-			this.location.setField("file", File(fixture.build<String>() + ".kt"))
+			assertEquals(expected, output)
 		}
-		@Language("kotlin")
-		val expected = """
-			@SuppressLint("${input.rule}") // TODO Explanation.
-		""".trimIndent()
 
-		val output = sut.getSuppression(input)
+		@Test
+		fun `unknown external files are suppressed with lint-xml`(@TempDir temp: File) {
+			val input = fixture.build<Violation>().apply {
+				location.setField("file", temp.resolve("some/file.name"))
+			}
+			@Language("XML")
+			val expected = """
+				<issue id="${input.rule}">
+				    <!-- TODO Explanation. -->
+				    <ignore path="file.name" />
+				</issue>
+			""".trimIndent()
 
-		assertEquals(expected, output)
+			val output = sut.getSuppression(input)
+
+			assertEquals(expected, output)
+		}
 	}
 
 	companion object {
