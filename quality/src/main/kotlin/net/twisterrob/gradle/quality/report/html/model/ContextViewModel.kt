@@ -44,6 +44,7 @@ sealed class ContextViewModel {
 		val type: String get() = "code"
 		val language: String
 			get() = when (v.location.file.extension) {
+				"" -> "binary"
 				"kt" -> "kotlin"
 				"kts" -> "kotlin"
 				else -> v.location.file.extension

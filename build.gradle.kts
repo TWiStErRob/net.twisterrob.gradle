@@ -72,7 +72,8 @@ subprojects {
 			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
 			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
 			// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
-			"-Xno-optimized-callable-references"
+			"-Xno-optimized-callable-references",
+			"-opt-in=kotlin.RequiresOptIn",
 		)
 		if (kotlinOptions.languageVersion == "1.4") {
 			// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".

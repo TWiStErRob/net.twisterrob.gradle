@@ -6,6 +6,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.matchesPattern
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.mockito.kotlin.mock
@@ -20,18 +21,13 @@ class CodeContextTest {
 
 	private val fixture = JFixture().apply {
 		customise().lazyInstance(Project::class.java) {
-			project(":" + build())
+			mockProject(buildProjectPath())
 		}
 		customise().lazyInstance(Task::class.java) { mock() }
 	}
 
-	class MissingLocation {
-		private val fixture = JFixture().apply {
-			customise().lazyInstance(Project::class.java) {
-				project(":" + build())
-			}
-			customise().lazyInstance(Task::class.java) { mock() }
-		}
+	@Nested
+	inner class MissingLocation {
 
 		private val model = ContextViewModel.CodeContext(
 			fixture.build<Violation>().apply {

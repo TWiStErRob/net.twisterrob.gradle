@@ -8,29 +8,30 @@ class SuppressionGenerator {
 		when (v.source.reporter) {
 			"ANDROIDLINT" -> {
 				when (v.location.file.extension) {
-					"java" -> """@SuppressLint("${v.rule}") // TODO explanation"""
-					"kt" -> """@SuppressLint("${v.rule}") // TODO explanation"""
+					"java" -> """@SuppressLint("${v.rule}") // TODO Explanation."""
+					"kt" -> """@SuppressLint("${v.rule}") // TODO Explanation."""
+					"kts" -> """@Suppress("${v.rule}") // TODO Explanation."""
 					"xml" -> """tools:ignore="${v.rule}""""
-					"gradle" -> """//noinspection ${v.rule} TODO explanation"""
+					"gradle" -> """//noinspection ${v.rule} TODO Explanation."""
 					else -> """
-						|<issue id="${v.rule}" severity="ignore">
-						|    <!-- TODO explanation -->
-						|    <ignore path="${if (v.isLocationExternal) v.location.file.name else v.locationRelativeToModule}" />
-						|</issue>
-					""".trimMargin()
+						<issue id="${v.rule}">
+						    <!-- TODO Explanation. -->
+						    <ignore path="${v.ignorePath}" />
+						</issue>
+					""".trimIndent()
 				}
 			}
 
 			"CHECKSTYLE" ->
 				when (v.location.file.extension) {
-					"java" -> """@SuppressWarnings("checkstyle:${v.rule}") // TODO explanation"""
-					"kt" -> """@Suppress("checkstyle:${v.rule}") // TODO explanation"""
+					"java" -> """@SuppressWarnings("checkstyle:${v.rule}") // TODO Explanation."""
+					"kt" -> """@Suppress("checkstyle:${v.rule}") // TODO Explanation."""
 					else -> null
 				}
 			"PMD" ->
 				when (v.location.file.extension) {
-					"java" -> """@SuppressWarnings("PMD.${v.rule}") // TODO explanation"""
-					"kt" -> """@Suppress("PMD.${v.rule}") // TODO explanation"""
+					"java" -> """@SuppressWarnings("PMD.${v.rule}") // TODO Explanation."""
+					"kt" -> """@Suppress("PMD.${v.rule}") // TODO Explanation."""
 					else -> null
 				}
 
@@ -38,8 +39,12 @@ class SuppressionGenerator {
 		}
 }
 
-private val Violation.isLocationExternal: Boolean
-	get() = LocationViewModel(this).isLocationExternal
-
-private val Violation.locationRelativeToModule: String
-	get() = LocationViewModel(this).locationRelativeToModule
+private val Violation.ignorePath: String
+	get() {
+		val vm = LocationViewModel(this)
+		return when {
+			vm.isLocationExternal -> vm.fileName
+			this.location.file.isDirectory -> vm.locationRelativeToModule.replace("\\", "/") + vm.fileName
+			else -> vm.locationRelativeToModule.replace("\\", "/") + vm.fileName
+		}
+	}
