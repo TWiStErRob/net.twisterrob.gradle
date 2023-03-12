@@ -29,7 +29,7 @@ pluginManagement {
 }
 
 plugins {
-	id("net.twisterrob.settings") version "0.15"
+	id("net.twisterrob.settings") version "0.15.1"
 }
 
 if (!JavaVersion.current().isJava11Compatible) {
