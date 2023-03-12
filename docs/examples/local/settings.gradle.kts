@@ -18,7 +18,7 @@ pluginManagement {
 				mavenLocal()
 			}
 			filter {
-				includeGroupByRegex("""^net\.twisterrob\.gradle\.plugin\..*$""")
+				includeGroupByRegex("""^net\.twisterrob\.gradle\.plugin\.[^.]+$""")
 				includeGroupByRegex("""^net\.twisterrob\.gradle$""")
 			}
 		}

@@ -23,7 +23,7 @@ pluginManagement {
 				}
 			}
 			filter {
-				includeGroupByRegex("""^net\.twisterrob\.gradle\.plugin\..*$""")
+				includeGroupByRegex("""^net\.twisterrob\.gradle\.plugin\.[^.]+$""")
 				includeGroupByRegex("""^net\.twisterrob\.gradle$""")
 			}
 		}
