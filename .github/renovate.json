@@ -35,10 +35,10 @@
 			"enabled": false
 		},
 		{
-			"description": "Disable updating Quality plugin in example projects, they're part of the release process.",
+			"description": "Disable updating plugins in example projects, they're part of the release process.",
 			"matchPackageNames": [
-				"net.twisterrob.quality",
-				"net.twisterrob.gradle.plugin.quality"
+				"net.twisterrob.gradle.plugin.quality",
+				"net.twisterrob.gradle.plugin.settings"
 			],
 			"matchPaths": [
 				"docs/examples/release/**",
