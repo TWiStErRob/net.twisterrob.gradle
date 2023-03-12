@@ -90,16 +90,15 @@ private fun MavenPublication.setupArtifactPublication(project: Project) {
 
 private fun MavenPublication.fixMarkers(project: Project) {
 	project.gradlePlugin.plugins.forEach { plugin ->
-		project.publishing.publications
-			.getByName<MavenPublication>("${plugin.name}PluginMarkerMaven")
-			.pom
-			.withXml {
+		project.publishing.publications.named<MavenPublication>("${plugin.name}PluginMarkerMaven") {
+			pom.withXml {
 				asNode()
 					.getChild("dependencies")
 					.getChild("dependency")
 					.getChild("artifactId")
 					.setValue(this@fixMarkers.artifactId)
 			}
+		}
 	}
 }
 
