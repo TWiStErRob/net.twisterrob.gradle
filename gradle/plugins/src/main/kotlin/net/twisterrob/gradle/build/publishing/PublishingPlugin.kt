@@ -38,7 +38,8 @@ class PublishingPlugin : Plugin<Project> {
 			project.publishing.apply {
 				publications {
 					register<MavenPublication>("library") {
-						setupArtifactPublication(project)
+						setupModuleIdentity(project)
+						setupPublication(project)
 						// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
 						from(project.components["java"])
 					}
@@ -61,7 +62,8 @@ class PublishingPlugin : Plugin<Project> {
 				project.publishing.apply {
 					publications {
 						named<MavenPublication>("pluginMaven").configure pluginMaven@{
-							setupArtifactPublication(project)
+							setupModuleIdentity(project)
+							setupPublication(project)
 							handleTestFixtures()
 							// TODEL work around https://github.com/gradle/gradle/issues/23551
 							fixMarkers(project)
@@ -69,7 +71,7 @@ class PublishingPlugin : Plugin<Project> {
 						withType<MavenPublication>()
 							.matching { it.name.endsWith("PluginMarkerMaven") }
 							.configureEach pluginMarkerMaven@{
-								setupMarkerPublication(project)
+								setupPublication(project)
 							}
 					}
 				}
@@ -85,22 +87,14 @@ class PublishingPlugin : Plugin<Project> {
 	}
 }
 
-private fun MavenPublication.setupArtifactPublication(project: Project) {
+private fun MavenPublication.setupPublication(project: Project) {
 	project.configure<SigningExtension> {
-		sign(this@setupArtifactPublication)
-	}
-	setupModuleIdentity(project)
-	setupLinks(project)
-	reorderNodes(project)
-}
-private fun MavenPublication.setupMarkerPublication(project: Project) {
-	project.configure<SigningExtension> {
-		sign(this@setupMarkerPublication)
+		sign(this@setupPublication)
 	}
 	setupLinks(project)
 	reorderNodes(project)
 }
-
+ 
 private fun MavenPublication.fixMarkers(project: Project) {
 	project.gradlePlugin.plugins.forEach { plugin ->
 		// Needs to be eager getByName rather than named because we're already inside a named block at call-site.
