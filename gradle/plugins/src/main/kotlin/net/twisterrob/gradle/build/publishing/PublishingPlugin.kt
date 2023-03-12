@@ -15,6 +15,7 @@ import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
+import org.gradle.kotlin.dsl.withType
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.DokkaTask
 import publishing
@@ -65,6 +66,11 @@ class PublishingPlugin : Plugin<Project> {
 							// TODEL work around https://github.com/gradle/gradle/issues/23551
 							fixMarkers(project)
 						}
+						withType<MavenPublication>()
+							.matching { it.name.endsWith("PluginMarkerMaven") }
+							.configureEach pluginMarkerMaven@{
+								setupMarkerPublication(project)
+							}
 					}
 				}
 			}
@@ -87,10 +93,18 @@ private fun MavenPublication.setupArtifactPublication(project: Project) {
 	setupLinks(project)
 	reorderNodes(project)
 }
+private fun MavenPublication.setupMarkerPublication(project: Project) {
+	project.configure<SigningExtension> {
+		sign(this@setupMarkerPublication)
+	}
+	setupLinks(project)
+	reorderNodes(project)
+}
 
 private fun MavenPublication.fixMarkers(project: Project) {
 	project.gradlePlugin.plugins.forEach { plugin ->
-		project.publishing.publications.named<MavenPublication>("${plugin.name}PluginMarkerMaven") {
+		// Needs to be eager getByName rather than named because we're already inside a named block at call-site.
+		project.publishing.publications.getByName<MavenPublication>("${plugin.name}PluginMarkerMaven") {
 			pom.withXml {
 				asNode()
 					.getChild("dependencies")
