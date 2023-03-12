@@ -94,7 +94,7 @@ private fun MavenPublication.setupPublication(project: Project) {
 	setupLinks(project)
 	reorderNodes(project)
 }
- 
+
 private fun MavenPublication.fixMarkers(project: Project) {
 	project.gradlePlugin.plugins.forEach { plugin ->
 		// Needs to be eager getByName rather than named because we're already inside a named block at call-site.
