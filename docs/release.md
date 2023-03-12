@@ -7,6 +7,7 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
     * `gradle.properties`: remove `-SNAPSHOT` suffix
       Double-check that version is `x.y`
     * `README.md`: review compatibility table
+    * Label the PR `a:feature`, `in:meta`.
  1. Upload
     * Set up credentials
         * `sonatypeUsername` is the account name of https://s01.oss.sonatype.org/
@@ -60,6 +61,7 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
     * `docs/examples/local/build.gradle.kts` + `settings.gradle.kts`: plugin version `x.z-SNAPSHOT`
     * `docs/examples/snapshot/build.gradle.kts` + `settings.gradle.kts`: plugin version `x.z-SNAPSHOT`
     * `docs/examples/release/build.gradle.kts` + `settings.gradle.kts`: plugin version `x.y`
+    * Label the PR `a:feature`, `in:meta`.
  1. [Create milestone](https://github.com/TWiStErRob/net.twisterrob.gradle/milestones/new) `vx.z`, if doesn't exist yet.
 
 [1]: https://github.com/TWiStErRob/.github/blob/main/RELEASE.md#release-process
