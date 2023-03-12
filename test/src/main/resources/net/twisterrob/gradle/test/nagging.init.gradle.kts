@@ -170,7 +170,7 @@ doNotNagAbout(
 	"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'IncrementalTask.taskAction\$gradle_core' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
 )
 doNotNagAbout(
-	"8.0",
+	"8.0.2",
 	"""^(4\.\d\.\d|7\.0\.\d|7\.1\.\d|7\.2\.\d|7\.3\.\d|7\.4\.0)$""",
 	// Ignore warning for https://issuetracker.google.com/issues/264177800 since Gradle 8.0, it's going to be fixed in AGP 7.4.1.
 	// This only shows up during CONFIGURATION phase, and only if a test task is needed (about 4 tests at the moment).

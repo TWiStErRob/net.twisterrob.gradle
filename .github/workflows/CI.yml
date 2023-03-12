@@ -16,45 +16,45 @@ jobs:
   # TODEL https://github.com/gradle/wrapper-validation-action/issues/69
   # Lifted out to do at once, because action is not stable enough for parallel workflows ^.
   validate:
-    name: 0 🦺 Validation
+    name: "0 🦺 Validation"
     runs-on: ubuntu-22.04
     timeout-minutes: 2
     steps:
-      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v3
 
-      - name: Validate Gradle Wrapper JARs.
+      - name: "Validate Gradle Wrapper JARs."
         uses: gradle/wrapper-validation-action@v1
 
   build:
-    name: 1 🔨 Build
+    name: "1 🔨 Build"
     runs-on: ubuntu-22.04
     # A run took 5.5 minutes, give it a bit of a buffer (there's networking involved, download and upload), and constrain.
     timeout-minutes: 20
     needs: validate
     steps:
-      - name: Set up JDK 17.
+      - name: "Set up JDK 17."
         uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: zulu
 
-      - name: Set up Android SDK.
+      - name: "Set up Android SDK."
         uses: android-actions/setup-android@v2
 
-      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v3
 
-      - name: Validate Gradle Wrapper JARs.
+      - name: "Validate Gradle Wrapper JARs."
         uses: gradle/wrapper-validation-action@v1
 
       # Check publicly available release version first, this should be independent of repository state.
-      - name: Verify docs/examples/release.
+      - name: "Verify docs/examples/release."
         working-directory: docs/examples/release
         if: success() || failure()
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
-      - name: Build Gradle plugins.
+      - name: "Build Gradle plugins."
         run: >
           ./gradlew
           --no-daemon
@@ -69,68 +69,68 @@ jobs:
           detektReportMergeSarif
           detektReportMergeXml
 
-      - name: Upload "Detekt Results" artifact.
+      - name: "Upload 'Detekt Results' artifact."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Detekt Results
+          name: 'Detekt Results'
           path: |
             ${{ github.workspace }}/**/build/reports/detekt/detekt.*
             ${{ github.workspace }}/build/reports/detekt/merge.*
 
-      - name: Publish "Code scanning results / detekt" GitHub Code Scanning analysis.
+      - name: "Publish 'Code scanning results / detekt' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
           sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif
 
-      - name: Cancel other jobs on Build failure, no need to check / test it.
+      - name: "Cancel other jobs on Build failure, no need to check / test it."
         if: failure()
         uses: andymckay/cancel-action@0.3
 
-      - name: Publish Gradle plugins to mavenLocal().
+      - name: "Publish Gradle plugins to mavenLocal()."
         # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
         run: ./gradlew --no-daemon --no-build-cache --no-configuration-cache --stacktrace publishToMavenLocal
 
-      - name: Upload "Gradle Plugin Validation Report" artifact.
+      - name: "Upload 'Gradle Plugin Validation Report' artifact."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Gradle Plugin Validation Report
+          name: 'Gradle Plugin Validation Report'
           path: |
             ${{ github.workspace }}/**/build/reports/plugin-development/validation-report.txt
 
-      - name: Upload JARs, Maven and Gradle metadata as "Intermediate Artifacts" artifact.
+      - name: "Upload JARs, Maven and Gradle metadata as 'Intermediate Artifacts' artifact."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Intermediate Artifacts
+          name: 'Intermediate Artifacts'
           path: |
             ${{ github.workspace }}/**/build/libs/*.jar
             ${{ github.workspace }}/**/build/publications/release/module.json
             ${{ github.workspace }}/**/build/publications/release/pom-default.xml
 
-      - name: Upload "mavenLocal()" artifact.
+      - name: "Upload 'mavenLocal()' artifact."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: mavenLocal
+          name: 'mavenLocal'
           path: |
             ~/.m2/repository/**
 
-      - name: Parse env.PROJECT_VERSION.
+      - name: "Parse env.PROJECT_VERSION."
         run: echo "PROJECT_VERSION=$(grep --color=never --perl-regexp --only-matching '(?<=^projectVersion=)(.*)$' gradle.properties)" | tee --append $GITHUB_ENV
 
-      - name: Calculate env.SNAPSHOT_VERSION for branches.
+      - name: "Calculate env.SNAPSHOT_VERSION for branches."
         # ${{ github.event.pull_request.number }} is not available for push.
         if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref != 'refs/heads/master'
         run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION | sed -re "s/^(.*)(-SNAPSHOT)$/\1.$(echo ${{ github.ref }} | sed -re 's/^refs\/heads\///' | tr / -)\2/")" | tee --append $GITHUB_ENV
 
-      - name: Calculate env.SNAPSHOT_VERSION for master.
+      - name: "Calculate env.SNAPSHOT_VERSION for master."
         if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/master'
         run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION)" | tee --append $GITHUB_ENV
 
-      - name: Verify docs/examples/local for release.
+      - name: "Verify docs/examples/local for release."
         working-directory: docs/examples/local
         if: env.SNAPSHOT_VERSION == ''
         run: |
@@ -138,12 +138,12 @@ jobs:
           sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}-SNAPSHOT"/version "${{ env.PROJECT_VERSION }}"/g' settings.gradle.kts
           ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
-      - name: Verify docs/examples/local for snapshot.
+      - name: "Verify docs/examples/local for snapshot."
         working-directory: docs/examples/local
         if: env.SNAPSHOT_VERSION != ''
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
-      - name: Publish Gradle plugins to Sonatype Snapshot with version ${{ env.SNAPSHOT_VERSION }}.
+      - name: "Publish Gradle plugins to Sonatype Snapshot with version ${{ env.SNAPSHOT_VERSION }}."
         if: env.SNAPSHOT_VERSION != ''
         # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
         run: >
@@ -160,7 +160,7 @@ jobs:
           -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
           -PprojectVersion=${{ env.SNAPSHOT_VERSION }}
 
-      - name: Verify docs/examples/snapshot with version ${{ env.SNAPSHOT_VERSION }}.
+      - name: "Verify docs/examples/snapshot with version ${{ env.SNAPSHOT_VERSION }}."
         working-directory: docs/examples/snapshot
         if: env.SNAPSHOT_VERSION != ''
         run: |
@@ -169,29 +169,29 @@ jobs:
           ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
   check:
-    name: 2 🛠️ ${{ matrix.name }}
+    name: "2 🛠️ ${{ matrix.name }}"
     runs-on: ubuntu-22.04
     env:
-      JOB_NAME: ${{ matrix.name }} (${{ matrix.agp }} on ${{ matrix.gradle }})
+      JOB_NAME: '${{ matrix.name }} (${{ matrix.agp }} on ${{ matrix.gradle }})'
       # Capture which Gradle version is running the build to use in some steps.
       # Value will be written in a later step using `>> $GITHUB_ENV`.
-      GRADLE_VERSION: 0.0.0
+      GRADLE_VERSION: '0.0.0'
     # Average observed execution time is 6-7 minutes, double it for timeout constraint.
     timeout-minutes: 30
     needs: validate
     steps:
       - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
 
-      - name: Set up JDK 17.
+      - name: "Set up JDK 17."
         uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: zulu
 
-      - name: Set up Android SDK.
+      - name: "Set up Android SDK."
         uses: android-actions/setup-android@v2
 
-      - name: Install Android SDK components.
+      - name: "Install Android SDK components."
         run: |
           # The following are already done by setup-android@v2 action:
           # sdkmanager --install "cmdline-tools;latest"
@@ -222,7 +222,7 @@ jobs:
           echo sdkmanager --install "platforms;android-30"
           sdkmanager --install "platforms;android-30"
 
-      - name: Set up JDK(s).
+      - name: "Set up JDK(s)."
         run: |
           echo "JAVA8_HOME=$JAVA_HOME_8_X64" | tee --append $GITHUB_ENV
           echo "JAVA11_HOME=$JAVA_HOME_11_X64" | tee --append $GITHUB_ENV
@@ -239,7 +239,7 @@ jobs:
             ;;
           esac
 
-      - name: Checkout ${{ github.ref }} branch in ${{ github.repository }} repository.
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v3
 
       # TODEL https://github.com/gradle/wrapper-validation-action/issues/69
@@ -252,7 +252,7 @@ jobs:
       # To prevent "Welcome to Gradle <version>! Here are the highlights of this release:" in build log, use:
       #- run: touch ~/.gradle/notifications/5.6.4/release-features.rendered
 
-      - name: Download Gradle running the build.
+      - name: "Download Gradle running the build."
         run: |
           # Run a no-op gradlew command in workspace.
           ./gradlew --no-daemon --version | tee gradle.version.log
@@ -261,7 +261,7 @@ jobs:
           grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?(?:-rc-\d+)?)$' gradle.version.log > gradle.version
           echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
 
-      - name: Download Gradle ${{ matrix.gradle }} running the tests.
+      - name: "Download Gradle ${{ matrix.gradle }} running the tests."
         run: |
           # Create an empty project with wrapper using ${{ matrix.gradle }}.
           mkdir ~/gradle-${{ matrix.gradle }}
@@ -271,7 +271,7 @@ jobs:
           # Run a no-op gradlew command in an empty project with a specific wrapper version.
           ./gradlew --no-daemon --version
 
-      - name: Cache Gradle ${{ env.GRADLE_VERSION }} files.
+      - name: "Cache Gradle ${{ env.GRADLE_VERSION }} files."
         uses: actions/cache@v3
         with:
           path: |
@@ -283,13 +283,13 @@ jobs:
             # Prevent "Download https://repo1.maven.org/maven2/" during build
             ~/.gradle/caches/modules-2/
 
-            # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build
+            # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build.
             ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
           key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
           restore-keys: |
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
-      - name: Cache Gradle Test Kit ${{ matrix.gradle }} files.
+      - name: "Cache Gradle Test Kit ${{ matrix.gradle }} files."
         uses: actions/cache@v3
         with:
           path: |
@@ -298,14 +298,14 @@ jobs:
             # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
             #~/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/
 
-            # Prevent "Download https://repo1.maven.org/maven2/" during test runs
+            # Prevent "Download https://repo1.maven.org/maven2/" during test runs.
             /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/
 
-            # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar'" during test runs
+            # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar'" during test runs.
             /tmp/.gradle-test-kit-${{ env.USER }}/caches/${{ matrix.gradle }}/generated-gradle-jars/
           key: ${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}
 
-      - name: Check ${{ env.JOB_NAME }}.
+      - name: "Check ${{ env.JOB_NAME }}."
         # To run specific test, replace `${{ matrix.test-task }}` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
         run: >
           ./gradlew
@@ -322,35 +322,35 @@ jobs:
           -Pnet.twisterrob.gradle.runner.gradleVersion=${{ matrix.gradle }}
           -Pnet.twisterrob.test.gradle.javaHomeEnv=JAVA_HOME_${{ matrix.gradle-java }}_X64
 
-      - name: Upload "${{ env.JOB_NAME }} Test Results XMLs" artifact.
+      - name: "Upload '${{ env.JOB_NAME }} Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.JOB_NAME }} Test Results XMLs
-          path: ${{ github.workspace }}/**/build/test-results/test/TEST-*.xml
+          name: '${{ env.JOB_NAME }} Test Results XMLs'
+          path: '${{ github.workspace }}/**/build/test-results/test/TEST-*.xml'
 
-      - name: Upload "${{ env.JOB_NAME }} Test Results HTML" artifact.
+      - name: "Upload '${{ env.JOB_NAME }} Test Results HTML' artifact."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.JOB_NAME }} Test Results HTML
-          path: ${{ github.workspace }}/build/reports/tests/all/
+          name: '${{ env.JOB_NAME }} Test Results HTML'
+          path: '${{ github.workspace }}/build/reports/tests/all/'
 
-      - name: Upload "${{ env.JOB_NAME }} Test Results HTMLs" artifact.
+      - name: "Upload '${{ env.JOB_NAME }} Test Results HTMLs' artifact."
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.JOB_NAME }} Test Results HTMLs
-          path: ${{ github.workspace }}/**/build/reports/tests/test/
+          name: '${{ env.JOB_NAME }} Test Results HTMLs'
+          path: '${{ github.workspace }}/**/build/reports/tests/test/'
 
-      - name: Cleanup Gradle files before caching.
+      - name: "Cleanup Gradle files before caching."
         run: |
           # Don't cache lock files to prevent breaking future builds
           rm -f  ~/.gradle/caches/modules-2/modules-2.lock
           rm -f  ~/.gradle/caches/modules-2/gc.properties
           rm -fr ~/.gradle/caches/*/plugin-resolution/
 
-      - name: Cleanup Gradle Test Kit files before caching.
+      - name: "Cleanup Gradle Test Kit files before caching."
         run: |
           # Don't cache lock files to prevent breaking future builds
           rm -f  /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/modules-2.lock
@@ -375,265 +375,265 @@ jobs:
         #test-task: []
         include:
           - name: "AGP 3.3.x on Gradle 5.x"
-            gradle: 5.4.1
-            gradle-java: 8
-            agp: 3.3.3
-            build-tools: 28.0.3
-            instant-api: 27
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '5.4.1'
+            gradle-java: '8'
+            agp: '3.3.3'
+            build-tools: '28.0.3'
+            instant-api: '27'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 3.4.x on Gradle 5.1.1+"
-            gradle: 5.6.4
-            gradle-java: 8
-            agp: 3.4.3
-            build-tools: 28.0.3
-            instant-api: 28
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '5.6.4'
+            gradle-java: '8'
+            agp: '3.4.3'
+            build-tools: '28.0.3'
+            instant-api: '28'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 3.5.x on Gradle 5.4.1-5.6.4"
-            gradle: 5.6.4
-            gradle-java: 8
-            agp: 3.5.4
-            build-tools: 28.0.3
-            instant-api: 28
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '5.6.4'
+            gradle-java: '8'
+            agp: '3.5.4'
+            build-tools: '28.0.3'
+            instant-api: '28'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 3.5.x on Gradle 6.x"
-            gradle: 6.7.1
-            gradle-java: 8
-            agp: 3.5.4
-            build-tools: 28.0.3
-            instant-api: 28
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '6.7.1'
+            gradle-java: '8'
+            agp: '3.5.4'
+            build-tools: '28.0.3'
+            instant-api: '28'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 3.6.x on Gradle 5.6.4+"
-            gradle: 5.6.4
-            gradle-java: 8
-            agp: 3.6.4
-            build-tools: 28.0.3
-            instant-api: 28
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '5.6.4'
+            gradle-java: '8'
+            agp: '3.6.4'
+            build-tools: '28.0.3'
+            instant-api: '28'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 3.6.x on Gradle 6.x"
-            gradle: 6.7.1
-            gradle-java: 8
-            agp: 3.6.4
-            build-tools: 28.0.3
-            instant-api: 28
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '6.7.1'
+            gradle-java: '8'
+            agp: '3.6.4'
+            build-tools: '28.0.3'
+            instant-api: '28'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 4.0.x on Gradle 6.1.1+"
-            gradle: 6.1.1
-            gradle-java: 8
-            agp: 4.0.2
-            build-tools: 29.0.2
-            instant-api: 29
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '6.1.1'
+            gradle-java: '8'
+            agp: '4.0.2'
+            build-tools: '29.0.2'
+            instant-api: '29'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 4.0.x on Gradle 6.1.1+ - plugin"
-            gradle: 6.1.1
-            gradle-java: 8
-            agp: 4.0.2
-            build-tools: 32.0.0
-            instant-api: 29
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '6.1.1'
+            gradle-java: '8'
+            agp: '4.0.2'
+            build-tools: '32.0.0'
+            instant-api: '29'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 4.0.x on Gradle 6.x"
-            gradle: 6.7.1
-            gradle-java: 8
-            agp: 4.0.2
-            build-tools: 29.0.2
-            instant-api: 29
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '6.7.1'
+            gradle-java: '8'
+            agp: '4.0.2'
+            build-tools: '29.0.2'
+            instant-api: '29'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 4.0.x on Gradle 6.x - plugin"
-            gradle: 6.7.1
-            gradle-java: 8
-            agp: 4.0.2
-            build-tools: 32.0.0
-            instant-api: 29
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '6.7.1'
+            gradle-java: '8'
+            agp: '4.0.2'
+            build-tools: '32.0.0'
+            instant-api: '29'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 4.1.x on Gradle 6.5+"
-            gradle: 6.5.1
-            gradle-java: 8
-            agp: 4.1.3
-            build-tools: 29.0.2
-            instant-api: 29
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '6.5.1'
+            gradle-java: '8'
+            agp: '4.1.3'
+            build-tools: '29.0.2'
+            instant-api: '29'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 4.1.x on Gradle 6.5+ - plugin"
-            gradle: 6.5.1
-            gradle-java: 8
-            agp: 4.1.3
-            build-tools: 32.0.0
-            instant-api: 29
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '6.5.1'
+            gradle-java: '8'
+            agp: '4.1.3'
+            build-tools: '32.0.0'
+            instant-api: '29'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 4.1.x on Gradle 6.x"
-            gradle: 6.7.1
-            gradle-java: 8
-            agp: 4.1.3
-            build-tools: 29.0.2
-            instant-api: 29
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '6.7.1'
+            gradle-java: '8'
+            agp: '4.1.3'
+            build-tools: '29.0.2'
+            instant-api: '29'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 4.1.x on Gradle 6.x - plugin"
-            gradle: 6.7.1
-            gradle-java: 8
-            agp: 4.1.3
-            build-tools: 32.0.0
-            instant-api: 29
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '6.7.1'
+            gradle-java: '8'
+            agp: '4.1.3'
+            build-tools: '32.0.0'
+            instant-api: '29'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 4.2.x on Gradle 6.7.1+"
-            gradle: 6.7.1
-            gradle-java: 8
-            agp: 4.2.2
-            build-tools: 30.0.2
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '6.7.1'
+            gradle-java: '8'
+            agp: '4.2.2'
+            build-tools: '30.0.2'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 4.2.x on Gradle 6.7.1+ - plugin"
-            gradle: 6.7.1
-            gradle-java: 8
-            agp: 4.2.2
-            build-tools: 32.0.0
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '6.7.1'
+            gradle-java: '8'
+            agp: '4.2.2'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 4.2.x on Gradle 6.x"
-            gradle: 6.9.4
-            gradle-java: 8
-            agp: 4.2.2
-            build-tools: 30.0.2
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '6.9.4'
+            gradle-java: '8'
+            agp: '4.2.2'
+            build-tools: '30.0.2'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 4.2.x on Gradle 6.x - plugin"
-            gradle: 6.9.4
-            gradle-java: 8
-            agp: 4.2.2
-            build-tools: 32.0.0
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '6.9.4'
+            gradle-java: '8'
+            agp: '4.2.2'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 4.2.x on Gradle 7.x"
-            gradle: 7.6.1
-            gradle-java: 8
-            agp: 4.2.2
-            build-tools: 30.0.2
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '7.6.1'
+            gradle-java: '8'
+            agp: '4.2.2'
+            build-tools: '30.0.2'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 4.2.x on Gradle 7.x - plugin"
-            gradle: 7.6.1
-            gradle-java: 8
-            agp: 4.2.2
-            build-tools: 32.0.0
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '7.6.1'
+            gradle-java: '8'
+            agp: '4.2.2'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           # From AGP 7 onwards it requires JDK 11 for Gradle to run on.
           # > com.android.builder.errors.EvalIssueException:
           # > Android Gradle plugin requires Java 11 to run. You are currently using Java 1.8.
           #	>     at com.android.build.gradle.internal.plugins.BasePlugin.checkMinJvmVersion(BasePlugin.java:1024)
           - name: "AGP 7.0.x on Gradle 7.0+"
-            gradle: 7.0.2
-            gradle-java: 11
-            agp: 7.0.4
-            build-tools: 30.0.2
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '7.0.2'
+            gradle-java: '11'
+            agp: '7.0.4'
+            build-tools: '30.0.2'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.0.x on Gradle 7.0+ - plugin"
-            gradle: 7.0.2
-            gradle-java: 11
-            agp: 7.0.4
-            build-tools: 32.0.0
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '7.0.2'
+            gradle-java: '11'
+            agp: '7.0.4'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 7.0.x on Gradle 7.x"
-            gradle: 7.6.1
-            gradle-java: 11
-            agp: 7.0.4
-            build-tools: 30.0.2
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '7.6.1'
+            gradle-java: '11'
+            agp: '7.0.4'
+            build-tools: '30.0.2'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.0.x on Gradle 7.x - plugin"
-            gradle: 7.6.1
-            gradle-java: 11
-            agp: 7.0.4
-            build-tools: 32.0.0
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '7.6.1'
+            gradle-java: '11'
+            agp: '7.0.4'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 7.1.x on Gradle 7.2+"
-            gradle: 7.2
-            gradle-java: 11
-            agp: 7.1.3
-            build-tools: 30.0.2
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '7.2'
+            gradle-java: '11'
+            agp: '7.1.3'
+            build-tools: '30.0.2'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.1.x on Gradle 7.2+ - plugin"
-            gradle: 7.2
-            gradle-java: 11
-            agp: 7.1.3
-            build-tools: 32.0.0
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '7.2'
+            gradle-java: '11'
+            agp: '7.1.3'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 7.1.x on Gradle 7.x"
-            gradle: 7.6.1
-            gradle-java: 11
-            agp: 7.1.3
-            build-tools: 30.0.2
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '7.6.1'
+            gradle-java: '11'
+            agp: '7.1.3'
+            build-tools: '30.0.2'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.1.x on Gradle 7.x - plugin"
-            gradle: 7.6.1
-            gradle-java: 11
-            agp: 7.1.3
-            build-tools: 32.0.0
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '7.6.1'
+            gradle-java: '11'
+            agp: '7.1.3'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 7.2.x on Gradle 7.3+"
-            gradle: 7.3.3
-            gradle-java: 11
-            agp: 7.2.2
-            build-tools: 30.0.2
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '7.3.3'
+            gradle-java: '11'
+            agp: '7.2.2'
+            build-tools: '30.0.2'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.2.x on Gradle 7.3+ - plugin"
-            gradle: 7.3.3
-            gradle-java: 11
-            agp: 7.2.2
-            build-tools: 32.0.0
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '7.3.3'
+            gradle-java: '11'
+            agp: '7.2.2'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 7.2.x on Gradle 7.x"
-            gradle: 7.6.1
-            gradle-java: 11
-            agp: 7.2.2
-            build-tools: 30.0.2
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :quality:tests
+            gradle: '7.6.1'
+            gradle-java: '11'
+            agp: '7.2.2'
+            build-tools: '30.0.2'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.2.x on Gradle 7.x - plugin"
-            gradle: 7.6.1
-            gradle-java: 11
-            agp: 7.2.2
-            build-tools: 32.0.0
-            instant-api: 30
-            kotlin: 1.4.32
-            test-task: testReport :plugin:tests
+            gradle: '7.6.1'
+            gradle-java: '11'
+            agp: '7.2.2'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
             # See GradlePluginUtils.kt > pluginList: AGP 7.3 requires Kotlin 1.5.20+.
             # 1.5.32 would be enough, but have to jump further forward because:
             # org.jetbrains.kotlin.gradle.internal.kapt.KaptWithoutKotlincTask.kotlinStdlibClasspath is eagerly initialized.
@@ -644,89 +644,89 @@ jobs:
             # classpath files('.../kotlin-stdlib-1.5.32.jar')
             # and jarSearchingUtil.kt > hasEntry assumes that all "files" are .jar.
           - name: "AGP 7.3.x on Gradle 7.4+"
-            gradle: 7.4.2
-            gradle-java: 11
-            agp: 7.3.1
-            kotlin: 1.6.21
-            build-tools: 30.0.3
-            instant-api: 30
-            test-task: testReport :quality:tests
+            gradle: '7.4.2'
+            gradle-java: '11'
+            agp: '7.3.1'
+            kotlin: '1.6.21'
+            build-tools: '30.0.3'
+            instant-api: '30'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.3.x on Gradle 7.4+ - plugin"
-            gradle: 7.4.2
-            gradle-java: 11
-            agp: 7.3.1
-            kotlin: 1.6.21
-            build-tools: 32.0.0
-            instant-api: 30
-            test-task: testReport :plugin:tests
+            gradle: '7.4.2'
+            gradle-java: '11'
+            agp: '7.3.1'
+            kotlin: '1.6.21'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 7.3.x on Gradle 7.x"
-            gradle: 7.6.1
-            gradle-java: 11
-            agp: 7.3.1
-            kotlin: 1.6.21
-            build-tools: 30.0.3
-            instant-api: 30
-            test-task: testReport :quality:tests
+            gradle: '7.6.1'
+            gradle-java: '11'
+            agp: '7.3.1'
+            kotlin: '1.6.21'
+            build-tools: '30.0.3'
+            instant-api: '30'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.3.x on Gradle 7.x - plugin"
-            gradle: 7.6.1
-            gradle-java: 11
-            agp: 7.3.1
-            kotlin: 1.6.21
-            build-tools: 32.0.0
-            instant-api: 30
-            test-task: testReport :plugin:tests
+            gradle: '7.6.1'
+            gradle-java: '11'
+            agp: '7.3.1'
+            kotlin: '1.6.21'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 7.4.x on Gradle 7.5+"
-            gradle: 7.5.1
-            gradle-java: 11
-            agp: 7.4.2
-            kotlin: 1.6.21
-            build-tools: 30.0.3
-            instant-api: 30
-            test-task: testReport :quality:tests
+            gradle: '7.5.1'
+            gradle-java: '11'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            build-tools: '30.0.3'
+            instant-api: '30'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.4.x on Gradle 7.5+ - plugin"
-            gradle: 7.5.1
-            gradle-java: 11
-            agp: 7.4.2
-            kotlin: 1.6.21
-            build-tools: 32.0.0
-            instant-api: 30
-            test-task: testReport :plugin:tests
+            gradle: '7.5.1'
+            gradle-java: '11'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 7.4.x on Gradle 7.x"
-            gradle: 7.6.1
-            gradle-java: 11
-            agp: 7.4.2
-            kotlin: 1.6.21
-            build-tools: 30.0.3
-            instant-api: 30
-            test-task: testReport :quality:tests
+            gradle: '7.6.1'
+            gradle-java: '11'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            build-tools: '30.0.3'
+            instant-api: '30'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.4.x on Gradle 7.x - plugin"
-            gradle: 7.6.1
-            gradle-java: 11
-            agp: 7.4.2
-            kotlin: 1.6.21
-            build-tools: 32.0.0
-            instant-api: 30
-            test-task: testReport :plugin:tests
+            gradle: '7.6.1'
+            gradle-java: '11'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 7.4.x on Gradle 8.x"
-            gradle: 8.0-rc-5
-            gradle-java: 11
-            agp: 7.4.2
-            kotlin: 1.6.21
-            build-tools: 30.0.3
-            instant-api: 30
-            test-task: testReport :quality:tests
+            gradle: '8.0.2'
+            gradle-java: '11'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            build-tools: '30.0.3'
+            instant-api: '30'
+            test-task: 'testReport :quality:tests'
           - name: "AGP 7.4.x on Gradle 8.x - plugin"
-            gradle: 8.0-rc-5
-            gradle-java: 11
-            agp: 7.4.2
-            kotlin: 1.6.21
-            build-tools: 32.0.0
-            instant-api: 30
-            test-task: testReport :plugin:tests
+            gradle: '8.0.2'
+            gradle-java: '11'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            build-tools: '32.0.0'
+            instant-api: '30'
+            test-task: 'testReport :plugin:tests'
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
-    name: 3 📢 Publish Tests Results
+    name: "3 📢 Publish Tests Results"
     runs-on: ubuntu-22.04
     needs: check
     # The dependency job might be skipped, we don't need to run this job then.
@@ -745,310 +745,310 @@ jobs:
       #    path: artifacts
       # The `if: success() || failure()` is there to publish as much as possible even if some artifacts are missing.
 
-      - name: Download 'AGP 3.3.x on Gradle 5.x (3.3.3 on 5.4.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 3.3.x on Gradle 5.x (3.3.3 on 5.4.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 3.3.x on Gradle 5.x (3.3.3 on 5.4.1) Test Results XMLs
-          path: artifacts/AGP 3.3.x on Gradle 5.x (3.3.3 on 5.4.1) Test Results XMLs
+          name: 'AGP 3.3.x on Gradle 5.x (3.3.3 on 5.4.1) Test Results XMLs'
+          path: 'artifacts/AGP 3.3.x on Gradle 5.x (3.3.3 on 5.4.1) Test Results XMLs'
 
-      - name: Download 'AGP 3.4.x on Gradle 5.1.1+ (3.4.3 on 5.6.4) Test Results XMLs' artifact.
+      - name: "Download 'AGP 3.4.x on Gradle 5.1.1+ (3.4.3 on 5.6.4) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 3.4.x on Gradle 5.1.1+ (3.4.3 on 5.6.4) Test Results XMLs
-          path: artifacts/AGP 3.4.x on Gradle 5.1.1+ (3.4.3 on 5.6.4) Test Results XMLs
+          name: 'AGP 3.4.x on Gradle 5.1.1+ (3.4.3 on 5.6.4) Test Results XMLs'
+          path: 'artifacts/AGP 3.4.x on Gradle 5.1.1+ (3.4.3 on 5.6.4) Test Results XMLs'
 
-      - name: Download 'AGP 3.5.x on Gradle 5.4.1-5.6.4 (3.5.4 on 5.6.4) Test Results XMLs' artifact.
+      - name: "Download 'AGP 3.5.x on Gradle 5.4.1-5.6.4 (3.5.4 on 5.6.4) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 3.5.x on Gradle 5.4.1-5.6.4 (3.5.4 on 5.6.4) Test Results XMLs
-          path: artifacts/AGP 3.5.x on Gradle 5.4.1-5.6.4 (3.5.4 on 5.6.4) Test Results XMLs
+          name: 'AGP 3.5.x on Gradle 5.4.1-5.6.4 (3.5.4 on 5.6.4) Test Results XMLs'
+          path: 'artifacts/AGP 3.5.x on Gradle 5.4.1-5.6.4 (3.5.4 on 5.6.4) Test Results XMLs'
 
-      - name: Download 'AGP 3.5.x on Gradle 6.x (3.5.4 on 6.7.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 3.5.x on Gradle 6.x (3.5.4 on 6.7.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 3.5.x on Gradle 6.x (3.5.4 on 6.7.1) Test Results XMLs
-          path: artifacts/AGP 3.5.x on Gradle 6.x (3.5.4 on 6.7.1) Test Results XMLs
+          name: 'AGP 3.5.x on Gradle 6.x (3.5.4 on 6.7.1) Test Results XMLs'
+          path: 'artifacts/AGP 3.5.x on Gradle 6.x (3.5.4 on 6.7.1) Test Results XMLs'
 
-      - name: Download 'AGP 3.6.x on Gradle 5.6.4+ (3.6.4 on 5.6.4) Test Results XMLs' artifact.
+      - name: "Download 'AGP 3.6.x on Gradle 5.6.4+ (3.6.4 on 5.6.4) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 3.6.x on Gradle 5.6.4+ (3.6.4 on 5.6.4) Test Results XMLs
-          path: artifacts/AGP 3.6.x on Gradle 5.6.4+ (3.6.4 on 5.6.4) Test Results XMLs
+          name: 'AGP 3.6.x on Gradle 5.6.4+ (3.6.4 on 5.6.4) Test Results XMLs'
+          path: 'artifacts/AGP 3.6.x on Gradle 5.6.4+ (3.6.4 on 5.6.4) Test Results XMLs'
 
-      - name: Download 'AGP 3.6.x on Gradle 6.x (3.6.4 on 6.7.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 3.6.x on Gradle 6.x (3.6.4 on 6.7.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 3.6.x on Gradle 6.x (3.6.4 on 6.7.1) Test Results XMLs
-          path: artifacts/AGP 3.6.x on Gradle 6.x (3.6.4 on 6.7.1) Test Results XMLs
+          name: 'AGP 3.6.x on Gradle 6.x (3.6.4 on 6.7.1) Test Results XMLs'
+          path: 'artifacts/AGP 3.6.x on Gradle 6.x (3.6.4 on 6.7.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.0.x on Gradle 6.1.1+ (4.0.2 on 6.1.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.0.x on Gradle 6.1.1+ (4.0.2 on 6.1.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.0.x on Gradle 6.1.1+ (4.0.2 on 6.1.1) Test Results XMLs
-          path: artifacts/AGP 4.0.x on Gradle 6.1.1+ (4.0.2 on 6.1.1) Test Results XMLs
+          name: 'AGP 4.0.x on Gradle 6.1.1+ (4.0.2 on 6.1.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.0.x on Gradle 6.1.1+ (4.0.2 on 6.1.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.0.x on Gradle 6.1.1+ - plugin (4.0.2 on 6.1.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.0.x on Gradle 6.1.1+ - plugin (4.0.2 on 6.1.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.0.x on Gradle 6.1.1+ - plugin (4.0.2 on 6.1.1) Test Results XMLs
-          path: artifacts/AGP 4.0.x on Gradle 6.1.1+ - plugin (4.0.2 on 6.1.1) Test Results XMLs
+          name: 'AGP 4.0.x on Gradle 6.1.1+ - plugin (4.0.2 on 6.1.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.0.x on Gradle 6.1.1+ - plugin (4.0.2 on 6.1.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.0.x on Gradle 6.x (4.0.2 on 6.7.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.0.x on Gradle 6.x (4.0.2 on 6.7.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.0.x on Gradle 6.x (4.0.2 on 6.7.1) Test Results XMLs
-          path: artifacts/AGP 4.0.x on Gradle 6.x (4.0.2 on 6.7.1) Test Results XMLs
+          name: 'AGP 4.0.x on Gradle 6.x (4.0.2 on 6.7.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.0.x on Gradle 6.x (4.0.2 on 6.7.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.0.x on Gradle 6.x - plugin (4.0.2 on 6.7.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.0.x on Gradle 6.x - plugin (4.0.2 on 6.7.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.0.x on Gradle 6.x - plugin (4.0.2 on 6.7.1) Test Results XMLs
-          path: artifacts/AGP 4.0.x on Gradle 6.x - plugin (4.0.2 on 6.7.1) Test Results XMLs
+          name: 'AGP 4.0.x on Gradle 6.x - plugin (4.0.2 on 6.7.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.0.x on Gradle 6.x - plugin (4.0.2 on 6.7.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.1.x on Gradle 6.5+ (4.1.3 on 6.5.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.1.x on Gradle 6.5+ (4.1.3 on 6.5.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.1.x on Gradle 6.5+ (4.1.3 on 6.5.1) Test Results XMLs
-          path: artifacts/AGP 4.1.x on Gradle 6.5+ (4.1.3 on 6.5.1) Test Results XMLs
+          name: 'AGP 4.1.x on Gradle 6.5+ (4.1.3 on 6.5.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.1.x on Gradle 6.5+ (4.1.3 on 6.5.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.1.x on Gradle 6.5+ - plugin (4.1.3 on 6.5.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.1.x on Gradle 6.5+ - plugin (4.1.3 on 6.5.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.1.x on Gradle 6.5+ - plugin (4.1.3 on 6.5.1) Test Results XMLs
-          path: artifacts/AGP 4.1.x on Gradle 6.5+ - plugin (4.1.3 on 6.5.1) Test Results XMLs
+          name: 'AGP 4.1.x on Gradle 6.5+ - plugin (4.1.3 on 6.5.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.1.x on Gradle 6.5+ - plugin (4.1.3 on 6.5.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.1.x on Gradle 6.x (4.1.3 on 6.7.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.1.x on Gradle 6.x (4.1.3 on 6.7.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.1.x on Gradle 6.x (4.1.3 on 6.7.1) Test Results XMLs
-          path: artifacts/AGP 4.1.x on Gradle 6.x (4.1.3 on 6.7.1) Test Results XMLs
+          name: 'AGP 4.1.x on Gradle 6.x (4.1.3 on 6.7.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.1.x on Gradle 6.x (4.1.3 on 6.7.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.1.x on Gradle 6.x - plugin (4.1.3 on 6.7.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.1.x on Gradle 6.x - plugin (4.1.3 on 6.7.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.1.x on Gradle 6.x - plugin (4.1.3 on 6.7.1) Test Results XMLs
-          path: artifacts/AGP 4.1.x on Gradle 6.x - plugin (4.1.3 on 6.7.1) Test Results XMLs
+          name: 'AGP 4.1.x on Gradle 6.x - plugin (4.1.3 on 6.7.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.1.x on Gradle 6.x - plugin (4.1.3 on 6.7.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.2.x on Gradle 6.7.1+ (4.2.2 on 6.7.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.2.x on Gradle 6.7.1+ (4.2.2 on 6.7.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.2.x on Gradle 6.7.1+ (4.2.2 on 6.7.1) Test Results XMLs
-          path: artifacts/AGP 4.2.x on Gradle 6.7.1+ (4.2.2 on 6.7.1) Test Results XMLs
+          name: 'AGP 4.2.x on Gradle 6.7.1+ (4.2.2 on 6.7.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.2.x on Gradle 6.7.1+ (4.2.2 on 6.7.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.2.x on Gradle 6.7.1+ - plugin (4.2.2 on 6.7.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.2.x on Gradle 6.7.1+ - plugin (4.2.2 on 6.7.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.2.x on Gradle 6.7.1+ - plugin (4.2.2 on 6.7.1) Test Results XMLs
-          path: artifacts/AGP 4.2.x on Gradle 6.7.1+ - plugin (4.2.2 on 6.7.1) Test Results XMLs
+          name: 'AGP 4.2.x on Gradle 6.7.1+ - plugin (4.2.2 on 6.7.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.2.x on Gradle 6.7.1+ - plugin (4.2.2 on 6.7.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.4) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.4) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.4) Test Results XMLs
-          path: artifacts/AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.4) Test Results XMLs
+          name: 'AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.4) Test Results XMLs'
+          path: 'artifacts/AGP 4.2.x on Gradle 6.x (4.2.2 on 6.9.4) Test Results XMLs'
 
-      - name: Download 'AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.4) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.4) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.4) Test Results XMLs
-          path: artifacts/AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.4) Test Results XMLs
+          name: 'AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.4) Test Results XMLs'
+          path: 'artifacts/AGP 4.2.x on Gradle 6.x - plugin (4.2.2 on 6.9.4) Test Results XMLs'
 
-      - name: Download 'AGP 4.2.x on Gradle 7.x (4.2.2 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.2.x on Gradle 7.x (4.2.2 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.2.x on Gradle 7.x (4.2.2 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 4.2.x on Gradle 7.x (4.2.2 on 7.6.1) Test Results XMLs
+          name: 'AGP 4.2.x on Gradle 7.x (4.2.2 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.2.x on Gradle 7.x (4.2.2 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.6.1) Test Results XMLs
+          name: 'AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 4.2.x on Gradle 7.x - plugin (4.2.2 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.0.x on Gradle 7.0+ (7.0.4 on 7.0.2) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.0.x on Gradle 7.0+ (7.0.4 on 7.0.2) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.0.x on Gradle 7.0+ (7.0.4 on 7.0.2) Test Results XMLs
-          path: artifacts/AGP 7.0.x on Gradle 7.0+ (7.0.4 on 7.0.2) Test Results XMLs
+          name: 'AGP 7.0.x on Gradle 7.0+ (7.0.4 on 7.0.2) Test Results XMLs'
+          path: 'artifacts/AGP 7.0.x on Gradle 7.0+ (7.0.4 on 7.0.2) Test Results XMLs'
 
-      - name: Download 'AGP 7.0.x on Gradle 7.0+ - plugin (7.0.4 on 7.0.2) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.0.x on Gradle 7.0+ - plugin (7.0.4 on 7.0.2) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.0.x on Gradle 7.0+ - plugin (7.0.4 on 7.0.2) Test Results XMLs
-          path: artifacts/AGP 7.0.x on Gradle 7.0+ - plugin (7.0.4 on 7.0.2) Test Results XMLs
+          name: 'AGP 7.0.x on Gradle 7.0+ - plugin (7.0.4 on 7.0.2) Test Results XMLs'
+          path: 'artifacts/AGP 7.0.x on Gradle 7.0+ - plugin (7.0.4 on 7.0.2) Test Results XMLs'
 
-      - name: Download 'AGP 7.0.x on Gradle 7.x (7.0.4 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.0.x on Gradle 7.x (7.0.4 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.0.x on Gradle 7.x (7.0.4 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 7.0.x on Gradle 7.x (7.0.4 on 7.6.1) Test Results XMLs
+          name: 'AGP 7.0.x on Gradle 7.x (7.0.4 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.0.x on Gradle 7.x (7.0.4 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.0.x on Gradle 7.x - plugin (7.0.4 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.0.x on Gradle 7.x - plugin (7.0.4 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.0.x on Gradle 7.x - plugin (7.0.4 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 7.0.x on Gradle 7.x - plugin (7.0.4 on 7.6.1) Test Results XMLs
+          name: 'AGP 7.0.x on Gradle 7.x - plugin (7.0.4 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.0.x on Gradle 7.x - plugin (7.0.4 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.1.x on Gradle 7.2+ (7.1.3 on 7.2) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.1.x on Gradle 7.2+ (7.1.3 on 7.2) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.1.x on Gradle 7.2+ (7.1.3 on 7.2) Test Results XMLs
-          path: artifacts/AGP 7.1.x on Gradle 7.2+ (7.1.3 on 7.2) Test Results XMLs
+          name: 'AGP 7.1.x on Gradle 7.2+ (7.1.3 on 7.2) Test Results XMLs'
+          path: 'artifacts/AGP 7.1.x on Gradle 7.2+ (7.1.3 on 7.2) Test Results XMLs'
 
-      - name: Download 'AGP 7.1.x on Gradle 7.2+ - plugin (7.1.3 on 7.2) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.1.x on Gradle 7.2+ - plugin (7.1.3 on 7.2) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.1.x on Gradle 7.2+ - plugin (7.1.3 on 7.2) Test Results XMLs
-          path: artifacts/AGP 7.1.x on Gradle 7.2+ - plugin (7.1.3 on 7.2) Test Results XMLs
+          name: 'AGP 7.1.x on Gradle 7.2+ - plugin (7.1.3 on 7.2) Test Results XMLs'
+          path: 'artifacts/AGP 7.1.x on Gradle 7.2+ - plugin (7.1.3 on 7.2) Test Results XMLs'
 
-      - name: Download 'AGP 7.1.x on Gradle 7.x (7.1.3 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.1.x on Gradle 7.x (7.1.3 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.1.x on Gradle 7.x (7.1.3 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 7.1.x on Gradle 7.x (7.1.3 on 7.6.1) Test Results XMLs
+          name: 'AGP 7.1.x on Gradle 7.x (7.1.3 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.1.x on Gradle 7.x (7.1.3 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.1.x on Gradle 7.x - plugin (7.1.3 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.1.x on Gradle 7.x - plugin (7.1.3 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.1.x on Gradle 7.x - plugin (7.1.3 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 7.1.x on Gradle 7.x - plugin (7.1.3 on 7.6.1) Test Results XMLs
+          name: 'AGP 7.1.x on Gradle 7.x - plugin (7.1.3 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.1.x on Gradle 7.x - plugin (7.1.3 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.2.x on Gradle 7.3+ (7.2.2 on 7.3.3) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.2.x on Gradle 7.3+ (7.2.2 on 7.3.3) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.2.x on Gradle 7.3+ (7.2.2 on 7.3.3) Test Results XMLs
-          path: artifacts/AGP 7.2.x on Gradle 7.3+ (7.2.2 on 7.3.3) Test Results XMLs
+          name: 'AGP 7.2.x on Gradle 7.3+ (7.2.2 on 7.3.3) Test Results XMLs'
+          path: 'artifacts/AGP 7.2.x on Gradle 7.3+ (7.2.2 on 7.3.3) Test Results XMLs'
 
-      - name: Download 'AGP 7.2.x on Gradle 7.3+ - plugin (7.2.2 on 7.3.3) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.2.x on Gradle 7.3+ - plugin (7.2.2 on 7.3.3) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.2.x on Gradle 7.3+ - plugin (7.2.2 on 7.3.3) Test Results XMLs
-          path: artifacts/AGP 7.2.x on Gradle 7.3+ - plugin (7.2.2 on 7.3.3) Test Results XMLs
+          name: 'AGP 7.2.x on Gradle 7.3+ - plugin (7.2.2 on 7.3.3) Test Results XMLs'
+          path: 'artifacts/AGP 7.2.x on Gradle 7.3+ - plugin (7.2.2 on 7.3.3) Test Results XMLs'
 
-      - name: Download 'AGP 7.2.x on Gradle 7.x (7.2.2 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.2.x on Gradle 7.x (7.2.2 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.2.x on Gradle 7.x (7.2.2 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 7.2.x on Gradle 7.x (7.2.2 on 7.6.1) Test Results XMLs
+          name: 'AGP 7.2.x on Gradle 7.x (7.2.2 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.2.x on Gradle 7.x (7.2.2 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.2.x on Gradle 7.x - plugin (7.2.2 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.2.x on Gradle 7.x - plugin (7.2.2 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.2.x on Gradle 7.x - plugin (7.2.2 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 7.2.x on Gradle 7.x - plugin (7.2.2 on 7.6.1) Test Results XMLs
+          name: 'AGP 7.2.x on Gradle 7.x - plugin (7.2.2 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.2.x on Gradle 7.x - plugin (7.2.2 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.3.x on Gradle 7.4+ (7.3.1 on 7.4.2) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.3.x on Gradle 7.4+ (7.3.1 on 7.4.2) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.3.x on Gradle 7.4+ (7.3.1 on 7.4.2) Test Results XMLs
-          path: artifacts/AGP 7.3.x on Gradle 7.4+ (7.3.1 on 7.4.2) Test Results XMLs
+          name: 'AGP 7.3.x on Gradle 7.4+ (7.3.1 on 7.4.2) Test Results XMLs'
+          path: 'artifacts/AGP 7.3.x on Gradle 7.4+ (7.3.1 on 7.4.2) Test Results XMLs'
 
-      - name: Download 'AGP 7.3.x on Gradle 7.4+ - plugin (7.3.1 on 7.4.2) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.3.x on Gradle 7.4+ - plugin (7.3.1 on 7.4.2) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.3.x on Gradle 7.4+ - plugin (7.3.1 on 7.4.2) Test Results XMLs
-          path: artifacts/AGP 7.3.x on Gradle 7.4+ - plugin (7.3.1 on 7.4.2) Test Results XMLs
+          name: 'AGP 7.3.x on Gradle 7.4+ - plugin (7.3.1 on 7.4.2) Test Results XMLs'
+          path: 'artifacts/AGP 7.3.x on Gradle 7.4+ - plugin (7.3.1 on 7.4.2) Test Results XMLs'
 
-      - name: Download 'AGP 7.3.x on Gradle 7.x (7.3.1 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.3.x on Gradle 7.x (7.3.1 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.3.x on Gradle 7.x (7.3.1 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 7.3.x on Gradle 7.x (7.3.1 on 7.6.1) Test Results XMLs
+          name: 'AGP 7.3.x on Gradle 7.x (7.3.1 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.3.x on Gradle 7.x (7.3.1 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.3.x on Gradle 7.x - plugin (7.3.1 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.3.x on Gradle 7.x - plugin (7.3.1 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.3.x on Gradle 7.x - plugin (7.3.1 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 7.3.x on Gradle 7.x - plugin (7.3.1 on 7.6.1) Test Results XMLs
+          name: 'AGP 7.3.x on Gradle 7.x - plugin (7.3.1 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.3.x on Gradle 7.x - plugin (7.3.1 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.4.x on Gradle 7.5+ (7.4.2 on 7.5.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.4.x on Gradle 7.5+ (7.4.2 on 7.5.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 7.5+ (7.4.2 on 7.5.1) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 7.5+ (7.4.2 on 7.5.1) Test Results XMLs
+          name: 'AGP 7.4.x on Gradle 7.5+ (7.4.2 on 7.5.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.4.x on Gradle 7.5+ (7.4.2 on 7.5.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.4.x on Gradle 7.5+ - plugin (7.4.2 on 7.5.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.4.x on Gradle 7.5+ - plugin (7.4.2 on 7.5.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 7.5+ - plugin (7.4.2 on 7.5.1) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 7.5+ - plugin (7.4.2 on 7.5.1) Test Results XMLs
+          name: 'AGP 7.4.x on Gradle 7.5+ - plugin (7.4.2 on 7.5.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.4.x on Gradle 7.5+ - plugin (7.4.2 on 7.5.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.4.x on Gradle 7.x (7.4.2 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.4.x on Gradle 7.x (7.4.2 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 7.x (7.4.2 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 7.x (7.4.2 on 7.6.1) Test Results XMLs
+          name: 'AGP 7.4.x on Gradle 7.x (7.4.2 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.4.x on Gradle 7.x (7.4.2 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6.1) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6.1) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6.1) Test Results XMLs
+          name: 'AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6.1) Test Results XMLs'
 
-      - name: Download 'AGP 7.4.x on Gradle 8.x (7.4.2 on 8.0-rc-5) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.4.x on Gradle 8.x (7.4.2 on 8.0.2) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 8.x (7.4.2 on 8.0-rc-5) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 8.x (7.4.2 on 8.0-rc-5) Test Results XMLs
+          name: 'AGP 7.4.x on Gradle 8.x (7.4.2 on 8.0.2) Test Results XMLs'
+          path: 'artifacts/AGP 7.4.x on Gradle 8.x (7.4.2 on 8.0.2) Test Results XMLs'
 
-      - name: Download 'AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.0-rc-5) Test Results XMLs' artifact.
+      - name: "Download 'AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.0.2) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.0-rc-5) Test Results XMLs
-          path: artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.0-rc-5) Test Results XMLs
+          name: 'AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.0.2) Test Results XMLs'
+          path: 'artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.0.2) Test Results XMLs'
 
       #- name: Display structure of downloaded files
       #  run: ls -R
       #  working-directory: artifacts
 
-      - name: Publish "Test Results" check suite.
+      - name: "Publish 'Test Results' check suite."
         if: success() || failure()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          check_name: 0 🔔 Test Results
+          check_name: '0 🔔 Test Results'
           comment_mode: off
           report_individual_runs: true
           test_changes_limit: 0
-          junit_files: artifacts/* Test Results XMLs/**/*.xml
+          junit_files: 'artifacts/* Test Results XMLs/**/*.xml'
