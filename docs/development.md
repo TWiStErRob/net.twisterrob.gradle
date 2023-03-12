@@ -37,6 +37,7 @@ maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
    name = "Sonatype 01: SNAPSHOTs"
    content {
        includeGroup("net.twisterrob.gradle")
+       includeGroupByRegex("net\.twisterrob\.gradle\.plugin\..*")
    }
    mavenContent {
        snapshotsOnly()
@@ -56,17 +57,19 @@ gradlew publishToMavenLocal
 ```
 
 #### Consume
+`settings.gradle(.kts)`:
 ```gradle
-buildscript {
+pluginManagement {
 	repositories {
 		mavenLocal() // make sure it's first
+		...
 	}
 }
 ```
-and then business as usual (e.g. `buildscript { dependencies { classpath "..."` etc. see [README.md](../README.md#quick-setup)).
+and then business as usual (e.g. `plugins { ...` etc. see [README.md](../README.md#quick-setup)).
 
 
-## Using the `-SNAPSHOT` from a local build
+### Using the `-SNAPSHOT` from a local build
 This bypasses Gradle's dependency management and uses jars directly. The drawback is that each transitive dependency has to be manually added.
 
 <details>
@@ -115,12 +118,12 @@ The project is using a modular architecture to reduce coupling and so it's possi
 
 | Module (location): summary | Distributed Artifact,<br>Gradle Plugin ID,<br>JVM Package |
 | --- | --- |
-| **quality** ([`/quality`](../quality)):<br>All quality plugins bundled in one.<br> |`classpath 'net.twisterrob.gradle:twister-quality:+'`<br>`apply plugin: 'net.twisterrob.quality'`<br>`import net.twisterrob.gradle.quality;` |
+| **quality** ([`/quality`](../quality)):<br>All quality plugins bundled in one.<br> | `classpath 'net.twisterrob.gradle:twister-quality:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.quality'`<br>`import net.twisterrob.gradle.quality;` |
 | **common** ([`/common`](../common)):<br>Shared classes between checkers.<br>_Not to be consumed directly._ | `classpath 'net.twisterrob.gradle:twister-quality-common:+'`<br>`// apply plugin: N/A`<br>`import net.twisterrob.gradle.common;` |
-| **checkstyle** ([`/checkers/checkstyle`](../checkers/checkstyle)):<br>Checkstyle setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-checkstyle:+'`<br>`apply plugin: 'net.twisterrob.checkstyle'`<br>`import net.twisterrob.gradle.checkstyle;` |
-| **pmd** ([`/checkers/pmd`](../checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-pmd:+'`<br>`apply plugin: 'net.twisterrob.pmd'`<br>`import net.twisterrob.gradle.pmd;` |
-| **test** ([`/test`](../test)):<br>[Gradle test plugin and resources.](../test/README.md) | `classpath 'net.twisterrob.gradle:twister-gradle-test:+'`<br>`apply plugin: 'net.twisterrob.gradle.test'`<br>`import net.twisterrob.gradle.test;` |
-| **plugin** ([`/plugin`](../plugin)):<br>[Gradle Android plugin conventions.](../plugin/README.md) | `classpath 'net.twisterrob.gradle:twister-convention-plugins:+'`<br>`apply plugin: 'net.twisterrob.android-app'`<br>`apply plugin: 'net.twisterrob.root'`<br>`import net.twisterrob.gradle.android;` |
+| **checkstyle** ([`/checkers/checkstyle`](../checkers/checkstyle)):<br>Checkstyle setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-checkstyle:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'`<br>`import net.twisterrob.gradle.checkstyle;` |
+| **pmd** ([`/checkers/pmd`](../checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-pmd:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.pmd'`<br>`import net.twisterrob.gradle.pmd;` |
+| **test** ([`/test`](../test)):<br>[Gradle test plugin and resources.](../test/README.md) | `classpath 'net.twisterrob.gradle:twister-gradle-test:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'`<br>`import net.twisterrob.gradle.test;` |
+| **plugin** ([`/plugin`](../plugin)):<br>[Gradle Android plugin conventions.](../plugin/README.md) | `classpath 'net.twisterrob.gradle:twister-convention-plugins:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.android-app'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.root'`<br>`import net.twisterrob.gradle.android;` |
 
 
 ## Used languages

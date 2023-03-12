@@ -8,10 +8,21 @@ base.archivesName.set("twister-quality-pmd")
 description = "PMD: PMD quality setup plugin for Gradle."
 
 gradlePlugin {
+	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.pmd") {
-			id = "net.twisterrob.pmd"
+		create("pmd") {
+			id = "net.twisterrob.gradle.plugin.pmd"
+			displayName = "PMD Convention Plugin"
+			description = """
+				TWiStErRob's Convention plugin for PMD.
+				
+				Features:
+				 * Automatic setup of PMD configuration
+				 * Conventional location: config/pmd/pmd.xml
+			""".trimIndent()
+			tags.set(setOf("conventions", "pmd"))
 			implementationClass = "net.twisterrob.gradle.pmd.PmdPlugin"
+			deprecateId(project, "net.twisterrob.pmd")
 		}
 	}
 }

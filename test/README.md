@@ -5,7 +5,7 @@ Helps integration testing of Gradle plugins and tasks.
 ## Usage
 
 ```groovy
-apply plugin: 'net.twisterrob.gradle.test'
+apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'
 
 dependencies {
 	// Test framework (`GradleRunnerRule` is written for JUnit)

@@ -7,7 +7,6 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.file.SourceDirectorySet
@@ -18,6 +17,7 @@ import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
+import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.tasks.SourceSet
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.dependencies
@@ -71,8 +71,8 @@ val Project.base: BasePluginExtension
 val Project.gradlePlugin: GradlePluginDevelopmentExtension
 	get() = this.extensions.getByName<GradlePluginDevelopmentExtension>("gradlePlugin")
 
-internal val Project.versionCatalogs: VersionCatalogsExtension
-	get() = this.extensions.getByName<VersionCatalogsExtension>("versionCatalogs")
+val Project.publishing: PublishingExtension
+	get() = this.extensions.getByName<PublishingExtension>("publishing")
 
 /**
  * Alternative solution: https://stackoverflow.com/a/64825340/253468

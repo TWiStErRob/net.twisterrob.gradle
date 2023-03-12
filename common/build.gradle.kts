@@ -5,12 +5,12 @@ plugins {
 }
 
 base.archivesName.set("twister-quality-common")
-description = "Common: Shared classes between checkers. (Not to be consumed directly.)"
+description = "Common: Shared classes between checkers (not to be consumed directly)."
 
 dependencies {
 	implementation(gradleApiWithoutKotlin())
 	implementation(projects.compat.agpBase)
-	implementation(projects.compat.gradle)
+	api(projects.compat.gradle)
 
 	compileOnly(libs.android.gradle)
 	// com.android.SdkConstants.FD_GENERATED

@@ -374,8 +374,8 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'org.gradle.reporting-base'
-			apply plugin: 'net.twisterrob.checkstyle'
-			apply plugin: 'net.twisterrob.pmd'
+			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 

@@ -31,7 +31,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 		""".trimIndent()
 
 		val result = gradle.run(script, "jar").build()
@@ -46,7 +46,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
 				testImplementation "org.testng:testng:6.14.3"
 			}
@@ -65,7 +65,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
 				testImplementation "junit:junit:4.13.1"
 			}
@@ -101,7 +101,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.kotlin'
+			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 		""".trimIndent()
 
 		val result = gradle.run(script, "jar").buildAndFail()
@@ -109,5 +109,31 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 		result.assertNoOutputLine(""".*Build was configured to prefer settings repositories over project repositories but repository 'MavenRepo' was added by plugin 'net\.twisterrob\.kotlin'""".toRegex())
 		result.assertNoOutputLine(""".*Build was configured to prefer settings repositories over project repositories but repository '.*' was added by plugin '.*'""".toRegex())
 		result.assertHasOutputLine(""".*Cannot resolve external dependency (.*) because no repositories are defined\.""".toRegex())
+	}
+
+	@Test fun `applying by the old name is deprecated`() {
+		gradle.basedOn(GradleBuildTestResources.kotlin)
+		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
+			val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").build()
+			result.assertHasOutputLine(
+				"Plugin net.twisterrob.kotlin is deprecated, " +
+						"please use net.twisterrob.gradle.plugin.kotlin instead."
+			)
+		} else {
+			val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").buildAndFail()
+			result.assertHasOutputLine(
+				Regex(
+					"""org\.gradle\.api\.GradleException: """ +
+							"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
+				)
+			)
+			result.assertHasOutputLine(
+				Regex(
+					"""The net\.twisterrob\.kotlin plugin has been deprecated\. """
+							+ """This is scheduled to be removed in Gradle \d\.0\. """
+							+ """Please use the net\.twisterrob\.gradle\.plugin\.kotlin plugin instead."""
+				)
+			)
+		}
 	}
 }

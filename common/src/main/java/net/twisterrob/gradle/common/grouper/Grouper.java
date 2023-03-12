@@ -23,7 +23,7 @@ import org.codehaus.groovy.runtime.NullObject;
  * {@linkplain AbstractGrouper#representative implementation details}.
  * <p>
  * Usage from Java: {@code Grouper.create(asList(a,b,c)).getGrouper().by("f1").by("f2").group()}
- * <br/>
+ * <br>
  * Usage from Groovy: {@code Grouper.create([a,b,c]).grouper['f1']['f2'].group()}
  * </p>
  */
@@ -173,7 +173,10 @@ abstract class AbstractGrouper extends GroovyObjectSupport {
 	}
 
 	/**
-	 * for Groovy to have [] operator
+	 * For Groovy to have [] operator.
+	 * 
+	 * @param fieldName name of the field to group on
+	 * @return chained {@link Grouper}   
 	 */
 	@SuppressWarnings("unused")
 	public @Nonnull Grouper<?, ?> getAt(@Nonnull String fieldName) {

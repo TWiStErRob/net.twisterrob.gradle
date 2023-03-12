@@ -4,7 +4,7 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 plugins {
-	@Suppress("DSL_SCOPE_VIOLATION")
+	@Suppress("DSL_SCOPE_VIOLATION") // TODEL https://github.com/gradle/gradle/issues/22797
 	alias(libs.plugins.nexus)
 	id("net.twisterrob.gradle.build.module.root")
 }
@@ -72,7 +72,8 @@ subprojects {
 			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
 			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
 			// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
-			"-Xno-optimized-callable-references"
+			"-Xno-optimized-callable-references",
+			"-opt-in=kotlin.RequiresOptIn",
 		)
 		if (kotlinOptions.languageVersion == "1.4") {
 			// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".
@@ -178,15 +179,6 @@ subprojects {
 		}
 	}
 
-	plugins.withId("java-gradle-plugin") {
-		project.tasks.withType<ValidatePlugins>().configureEach {
-			ignoreFailures.set(false)
-			// TODO failOnWarning=true https://github.com/TWiStErRob/net.twisterrob.gradle/issues/291
-			failOnWarning.set(false)
-			enableStricterValidation.set(true)
-		}
-	}
-
 	if (project.property("net.twisterrob.gradle.build.verboseReports").toString().toBoolean()) {
 		tasks.withType<Test>().configureEach {
 			configureVerboseReportsForGithubActions()
@@ -276,7 +268,7 @@ project.tasks.register<Delete>("cleanDebug") {
 nexusPublishing {
 	repositories {
 		sonatype {
-			// For :publishReleasePublicationToSonatypeRepository, projectVersion suffix chooses repo.
+			// For :publish...PublicationToSonatypeRepository, projectVersion suffix chooses repo.
 			nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
 			snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
 
@@ -311,7 +303,7 @@ doNotNagAbout(
 			"This is scheduled to be removed in Gradle 9.0. " +
 			"Please use the archiveFile property instead. " +
 			"See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.tasks.bundling.AbstractArchiveTask.html#org.gradle.api.tasks.bundling.AbstractArchiveTask:archivePath for more details.",
-	"at org.jetbrains.plugins.gradle.tooling.builder.ExternalProjectBuilderImpl\$_getSourceSets_closure3"
+	"at org.jetbrains.plugins.gradle.tooling.builder.ExternalProjectBuilderImpl\$_getSourceSets_closure"
 )
 // TODEL Gradle sync in IDEA 2022.3.1: https://youtrack.jetbrains.com/issue/IDEA-306975
 @Suppress("MaxLineLength")

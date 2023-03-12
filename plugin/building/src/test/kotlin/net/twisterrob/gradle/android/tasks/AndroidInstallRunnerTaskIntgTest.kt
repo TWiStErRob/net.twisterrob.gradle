@@ -57,7 +57,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.android-app'
+			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			afterEvaluate {
 				// Don't always try to install the APK, as we may have no emulator,
 				// but still assemble the APK, as the run task needs AndroidManifest.xml.

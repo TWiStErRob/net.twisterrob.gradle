@@ -7,8 +7,8 @@ import com.android.build.api.variant.impl.VariantOutputImpl
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.internal.dsl.DefaultConfig
-import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId

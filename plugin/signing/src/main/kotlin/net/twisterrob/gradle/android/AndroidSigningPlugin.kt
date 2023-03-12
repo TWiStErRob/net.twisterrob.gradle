@@ -2,7 +2,7 @@ package net.twisterrob.gradle.android
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.dsl.SigningConfig
-import net.twisterrob.gradle.base.BasePlugin
+import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
 

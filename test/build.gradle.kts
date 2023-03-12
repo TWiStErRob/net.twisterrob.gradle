@@ -7,10 +7,20 @@ base.archivesName.set("twister-gradle-test")
 description = "Test: Gradle test plugin."
 
 gradlePlugin {
+	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
 	plugins {
-		create("net.twisterrob.gradle.test") {
-			id = "net.twisterrob.gradle.test"
+		create("gradleTest") {
+			id = "net.twisterrob.gradle.plugin.gradle.test"
+			displayName = "Gradle Testing Plugin"
+			description = """
+				TWiStErRob's testing helper plugin and testing utilities for Gradle based integration tests.
+				
+				A wrapper for `org.gradle.testkit.runner.GradleRunner` to reduce boilerplate.
+				Also contains helpers for building a project on disk from code and assert the results of an execution.
+			""".trimIndent()
+			tags.set(setOf("gradle", "test", "plugin-development"))
 			implementationClass = "net.twisterrob.gradle.test.TestPlugin"
+			deprecateId(project, "net.twisterrob.gradle.test")
 		}
 	}
 }
@@ -23,6 +33,8 @@ dependencies {
 	compileOnly(libs.mockito.kotlin)
 	compileOnly(libs.annotations.jsr305)
 	compileOnly(libs.annotations.jetbrains)
+
+	api(projects.common)
 
 	testImplementation(gradleApiWithoutKotlin())
 	testImplementation(gradleTestKitWithoutKotlin())

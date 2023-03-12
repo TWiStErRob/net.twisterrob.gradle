@@ -3,8 +3,8 @@ package net.twisterrob.gradle.kotlin
 import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.android.hasAndroidTest
-import net.twisterrob.gradle.base.BasePlugin
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
+import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
@@ -22,8 +22,8 @@ class KotlinPlugin : BasePlugin() {
 
 		if (project.plugins.hasAndroid()) {
 			// CONSIDER https://github.com/griffio/dagger2-kotlin/blob/master/README.md
-			project.plugins.apply("kotlin-android")
-			project.plugins.apply("kotlin-kapt")
+			project.plugins.apply("org.jetbrains.kotlin.android")
+			project.plugins.apply("org.jetbrains.kotlin.kapt")
 			if (shouldAddAutoRepositoriesTo(project)) {
 				project.repositories.mavenCentral()
 			}
@@ -38,7 +38,7 @@ class KotlinPlugin : BasePlugin() {
 				it.java.srcDir("src/${it.name}/kotlin")
 			}
 		} else {
-			project.plugins.apply("kotlin")
+			project.plugins.apply("org.jetbrains.kotlin.jvm")
 			if (shouldAddAutoRepositoriesTo(project)) {
 				project.repositories.mavenCentral()
 			}

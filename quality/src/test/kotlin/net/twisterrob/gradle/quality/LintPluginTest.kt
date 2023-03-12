@@ -148,7 +148,7 @@ class LintPluginTest : BaseIntgTest() {
 				// :module\d:parseDebugLibraryResources causes this, but somehow only in this test for AGP 3.5 on Gradle 5.
 				"Injecting the input artifact of a transform as a File has been deprecated. This is scheduled to be removed in Gradle 6.0. Declare the input artifact as Provider<FileSystemLocation> instead."
 			)
-			apply plugin: 'net.twisterrob.quality'
+			apply plugin: 'net.twisterrob.gradle.plugin.quality'
 		""".trimIndent()
 
 		val message =
