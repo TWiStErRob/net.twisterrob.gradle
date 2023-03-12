@@ -7,9 +7,9 @@ on:
 
 concurrency:
   # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
-  # On master, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
+  # On main, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
   # More info: https://stackoverflow.com/a/68422069/253468:
-  group: ${{ github.ref == 'refs/heads/master' && format('ci-master-{0}', github.sha) || format('ci-{0}', github.ref) }}
+  group: ${{ github.ref == 'refs/heads/main' && format('ci-main-{0}', github.sha) || format('ci-{0}', github.ref) }}
   cancel-in-progress: true
 
 jobs:
@@ -125,11 +125,11 @@ jobs:
 
       - name: "Calculate env.SNAPSHOT_VERSION for branches."
         # ${{ github.event.pull_request.number }} is not available for push.
-        if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref != 'refs/heads/master'
+        if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref != 'refs/heads/main'
         run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION | sed -re "s/^(.*)(-SNAPSHOT)$/\1.$(echo ${{ github.ref }} | sed -re 's/^refs\/heads\///' | tr / -)\2/")" | tee --append $GITHUB_ENV
 
-      - name: "Calculate env.SNAPSHOT_VERSION for master."
-        if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/master'
+      - name: "Calculate env.SNAPSHOT_VERSION for main."
+        if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/main'
         run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION)" | tee --append $GITHUB_ENV
 
       - name: "Verify docs/examples/local for release."

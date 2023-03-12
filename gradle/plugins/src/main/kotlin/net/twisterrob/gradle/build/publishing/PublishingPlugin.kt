@@ -172,7 +172,7 @@ private fun MavenPublication.setupLinks(project: Project) {
 		scm {
 			connection.set("scm:git:github.com/TWiStErRob/net.twisterrob.gradle.git")
 			developerConnection.set("scm:git:ssh://github.com/TWiStErRob/net.twisterrob.gradle.git")
-			url.set("https://github.com/TWiStErRob/net.twisterrob.gradle/tree/master")
+			url.set("https://github.com/TWiStErRob/net.twisterrob.gradle/tree/main")
 		}
 		licenses {
 			license {

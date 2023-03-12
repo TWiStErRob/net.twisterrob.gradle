@@ -2,8 +2,8 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
 
 ## Publish release `x.y`
 
- 1. Make sure local copy is on latest `master`  
-    `git fetch -p & git checkout master & git reset --hard origin/master`
+ 1. Make sure local copy is on latest `main`  
+    `git fetch -p & git checkout main & git reset --hard origin/main`
     * `gradle.properties`: remove `-SNAPSHOT` suffix
       Double-check that version is `x.y`
     * `README.md`: review compatibility table
@@ -51,12 +51,12 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       }
       ```
  1. Repeat previous steps as necessary.
- 1. Merge the PR to `master`.
+ 1. Merge the PR to `main`.
  1. Release staging repository at [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories)
  1. Watch [Maven Central](https://repo1.maven.org/maven2/net/twisterrob/gradle/twister-quality/) for the artifact to appear. May take a few minutes.
 
 ## Prepare next release `x.z`
- 1. Create a PR titled "Pre-Release x.z" to `master` with the following changes:
+ 1. Create a PR titled "Pre-Release x.z" to `main` with the following changes:
     * `gradle.properties`: version number `x.z-SNAPSHOT`
     * `docs/examples/local/build.gradle.kts` + `settings.gradle.kts`: plugin version `x.z-SNAPSHOT`
     * `docs/examples/snapshot/build.gradle.kts` + `settings.gradle.kts`: plugin version `x.z-SNAPSHOT`
