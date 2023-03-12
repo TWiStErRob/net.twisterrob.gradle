@@ -15,6 +15,7 @@ import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
+import org.gradle.kotlin.dsl.withType
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.DokkaTask
 import publishing
@@ -37,6 +38,7 @@ class PublishingPlugin : Plugin<Project> {
 			project.publishing.apply {
 				publications {
 					register<MavenPublication>("library") {
+						setupModuleIdentity(project)
 						setupPublication(project)
 						// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
 						from(project.components["java"])
@@ -60,11 +62,17 @@ class PublishingPlugin : Plugin<Project> {
 				project.publishing.apply {
 					publications {
 						named<MavenPublication>("pluginMaven").configure pluginMaven@{
+							setupModuleIdentity(project)
 							setupPublication(project)
 							handleTestFixtures()
 							// TODEL work around https://github.com/gradle/gradle/issues/23551
 							fixMarkers(project)
 						}
+						withType<MavenPublication>()
+							.matching { it.name.endsWith("PluginMarkerMaven") }
+							.configureEach pluginMarkerMaven@{
+								setupPublication(project)
+							}
 					}
 				}
 			}
@@ -83,23 +91,22 @@ private fun MavenPublication.setupPublication(project: Project) {
 	project.configure<SigningExtension> {
 		sign(this@setupPublication)
 	}
-	setupModuleIdentity(project)
 	setupLinks(project)
 	reorderNodes(project)
 }
-
+ 
 private fun MavenPublication.fixMarkers(project: Project) {
 	project.gradlePlugin.plugins.forEach { plugin ->
-		project.publishing.publications
-			.getByName<MavenPublication>("${plugin.name}PluginMarkerMaven")
-			.pom
-			.withXml {
+		// Needs to be eager getByName rather than named because we're already inside a named block at call-site.
+		project.publishing.publications.getByName<MavenPublication>("${plugin.name}PluginMarkerMaven") {
+			pom.withXml {
 				asNode()
 					.getChild("dependencies")
 					.getChild("dependency")
 					.getChild("artifactId")
 					.setValue(this@fixMarkers.artifactId)
 			}
+		}
 	}
 }
 
@@ -169,7 +176,7 @@ private fun MavenPublication.setupLinks(project: Project) {
 		}
 		licenses {
 			license {
-				name.set("MIT")
+				name.set("Unlicense")
 				url.set("https://github.com/TWiStErRob/net.twisterrob.gradle/blob/v${project.version}/LICENCE")
 			}
 		}
