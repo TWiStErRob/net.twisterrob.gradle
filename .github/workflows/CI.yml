@@ -78,7 +78,7 @@ jobs:
             ${{ github.workspace }}/**/build/reports/detekt/detekt.*
             ${{ github.workspace }}/build/reports/detekt/merge.*
 
-      - name: "Publish "Code scanning results / detekt" GitHub Code Scanning analysis."
+      - name: "Publish 'Code scanning results / detekt' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
