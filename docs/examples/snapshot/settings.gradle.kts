@@ -23,7 +23,7 @@ pluginManagement {
 				}
 			}
 			filter {
-				includeGroupByRegex("""^net\.twisterrob\.gradle\.plugin\..*$""")
+				includeGroupByRegex("""^net\.twisterrob\.gradle\.plugin\.[^.]+$""")
 				includeGroupByRegex("""^net\.twisterrob\.gradle$""")
 			}
 		}
@@ -31,7 +31,7 @@ pluginManagement {
 }
 
 plugins {
-	id("net.twisterrob.gradle.plugin.settings") version "0.15.1-SNAPSHOT"
+	id("net.twisterrob.gradle.plugin.settings") version "0.16-SNAPSHOT"
 }
 
 if (!JavaVersion.current().isJava11Compatible) {
