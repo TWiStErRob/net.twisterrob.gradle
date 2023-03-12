@@ -37,7 +37,7 @@ class PublishingPlugin : Plugin<Project> {
 			project.publishing.apply {
 				publications {
 					register<MavenPublication>("library") {
-						setupPublication(project)
+						setupArtifactPublication(project)
 						// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
 						from(project.components["java"])
 					}
@@ -60,7 +60,7 @@ class PublishingPlugin : Plugin<Project> {
 				project.publishing.apply {
 					publications {
 						named<MavenPublication>("pluginMaven").configure pluginMaven@{
-							setupPublication(project)
+							setupArtifactPublication(project)
 							handleTestFixtures()
 							// TODEL work around https://github.com/gradle/gradle/issues/23551
 							fixMarkers(project)
@@ -79,9 +79,9 @@ class PublishingPlugin : Plugin<Project> {
 	}
 }
 
-private fun MavenPublication.setupPublication(project: Project) {
+private fun MavenPublication.setupArtifactPublication(project: Project) {
 	project.configure<SigningExtension> {
-		sign(this@setupPublication)
+		sign(this@setupArtifactPublication)
 	}
 	setupModuleIdentity(project)
 	setupLinks(project)
