@@ -23,10 +23,9 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       ```
     * Publish files to Sonatype
       ```shell
-      gradlew publishLibraryPublicationToSonatypeRepository
-      gradlew publishPluginMavenPublicationToSonatypeRepository
-      gradlew publishAllPluginMarkerMavenPublicationsToSonatypeRepository
+      gradlew publishLibraryPublicationToSonatypeRepository publishPluginMavenPublicationToSonatypeRepository publishAllPluginMarkerMavenPublicationsToSonatypeRepository
       ```  
+      (Note: all tasks have to be executed at once, otherwise it creates multiple staging repositories.)
       * _If this fails, fix and amend last commit._
       * > Failed to load staging profiles, server at https://s01.oss.sonatype.org/service/local/ responded with status code 401, body:
 
