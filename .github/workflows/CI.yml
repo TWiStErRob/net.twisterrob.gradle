@@ -283,7 +283,7 @@ jobs:
             # Prevent "Download https://repo1.maven.org/maven2/" during build
             ~/.gradle/caches/modules-2/
 
-            # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar" during buil
+            # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build.
             ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
           key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
           restore-keys: |
@@ -298,10 +298,10 @@ jobs:
             # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
             #~/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/
 
-            # Prevent "Download https://repo1.maven.org/maven2/" during test runs
+            # Prevent "Download https://repo1.maven.org/maven2/" during test runs.
             /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/
 
-            # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar" during test run
+            # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar'" during test runs.
             /tmp/.gradle-test-kit-${{ env.USER }}/caches/${{ matrix.gradle }}/generated-gradle-jars/
           key: ${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}
 
