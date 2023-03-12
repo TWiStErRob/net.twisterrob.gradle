@@ -176,7 +176,7 @@ private fun MavenPublication.setupLinks(project: Project) {
 		}
 		licenses {
 			license {
-				name.set("MIT")
+				name.set("Unlicense")
 				url.set("https://github.com/TWiStErRob/net.twisterrob.gradle/blob/v${project.version}/LICENCE")
 			}
 		}
