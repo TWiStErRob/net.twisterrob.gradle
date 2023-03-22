@@ -205,14 +205,6 @@ jobs:
           # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
           echo sdkmanager --install "build-tools;${{ matrix.build-tools }}"
           sdkmanager --install "build-tools;${{ matrix.build-tools }}"
-          # Patch AGP 4.x v SDK Build Tools 31/32 incompatibility: https://stackoverflow.com/a/68430992/253468
-          # Installed Build Tools revision 32.0.0 is corrupted. Remove and install again using the SDK Manager.
-          # Build-tool 32.0.0 is missing DX at /usr/local/lib/android/sdk/build-tools/32.0.0/dx
-          echo "Symlinking ${ANDROID_HOME}/build-tools/${{ matrix.build-tools }}/dx <- d8 and same for lib/dx.jar <- d8.jar."
-          test -e ${ANDROID_HOME}/build-tools/${{ matrix.build-tools }}/dx \
-              || ln --symbolic --verbose d8 ${ANDROID_HOME}/build-tools/${{ matrix.build-tools }}/dx
-          test -e ${ANDROID_HOME}/build-tools/${{ matrix.build-tools }}/lib/dx.jar \
-              || ln --symbolic --verbose d8.jar ${ANDROID_HOME}/build-tools/${{ matrix.build-tools }}/lib/dx.jar
 
           # InstantAppExtension overrides compileSdkVersion, see android-all_kinds/build.gradle
           echo sdkmanager --install "platforms;android-${{ matrix.instant-api }}"
