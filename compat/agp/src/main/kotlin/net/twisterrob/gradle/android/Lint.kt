@@ -15,14 +15,14 @@ import org.gradle.api.Incubating
 var Lint.isAbortOnErrorCompat: Boolean
 	get() =
 		when {
-			AGPVersions.CLASSPATH >= AGPVersions.v71x -> this.abortOnError
-			AGPVersions.CLASSPATH compatible AGPVersions.v70x -> this.isAbortOnError70x
+			AGPVersions.v71x <= AGPVersions.CLASSPATH -> this.abortOnError
+			AGPVersions.v70x <= AGPVersions.CLASSPATH -> this.isAbortOnError70x
 			else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
 		}
 	set(value) {
 		when {
-			AGPVersions.CLASSPATH >= AGPVersions.v71x -> this.abortOnError = value
-			AGPVersions.CLASSPATH compatible AGPVersions.v70x -> this.isAbortOnError70x = value
+			AGPVersions.v71x <= AGPVersions.CLASSPATH -> this.abortOnError = value
+			AGPVersions.v70x <= AGPVersions.CLASSPATH -> this.isAbortOnError70x = value
 			else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
 		}
 	}

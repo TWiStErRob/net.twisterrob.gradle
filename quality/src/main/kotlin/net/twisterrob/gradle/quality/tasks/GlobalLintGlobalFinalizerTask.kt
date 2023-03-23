@@ -109,11 +109,9 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 		override fun configure(task: GlobalLintGlobalFinalizerTask) {
 			task.group = JavaBasePlugin.VERIFICATION_GROUP
-			if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
-				// A more specific version of mustRunAfter(subproject.tasks.withType(AndroidLintTask::class.java)).
-				// That would include lintRelease, lintDebug, lintFixDebug, lintFixRelease.
-				task.mustRunAfter(task.xmlReports)
-			}
+			// A more specific version of mustRunAfter(subproject.tasks.withType(AndroidLintTask::class.java)).
+			// That would include lintRelease, lintDebug, lintFixDebug, lintFixRelease.
+			task.mustRunAfter(task.xmlReports)
 			// Not a necessity, just a convenience, make sure we run after the :*:lint lifecycle tasks.
 			// Using .map {} instead of .flatMap {} to prevent configuration of these tasks.
 			task.mustRunAfter(task.project.allprojects.map { it.tasks.withType(AndroidLintGlobalTask::class.java) })

@@ -100,7 +100,7 @@ class AndroidBuildPlugin : BasePlugin() {
 		private fun BaseExtension.configureLint() {
 			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 			when {
-				AGPVersions.v71x < AGPVersions.CLASSPATH -> {
+				AGPVersions.v71x <= AGPVersions.CLASSPATH -> {
 					@Suppress("UnstableApiUsage")
 					with((this as CommonExtension<*, *, *, *>).lint) {
 						xmlReport = false
@@ -181,21 +181,9 @@ class AndroidBuildPlugin : BasePlugin() {
 				project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
 			val vcsTaskProvider =
 				project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
-			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
-			when {
-				AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
-					project.androidComponents.finalizeDsl {
-						if (twisterrob.isDecorateBuildConfig && buildFeatures.buildConfig != false) {
-							project.decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
-						}
-					}
-				}
-				else -> {
-					project.beforeAndroidTasksCreated {
-						if (twisterrob.isDecorateBuildConfig && buildFeatures.buildConfig != false) {
-							project.decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
-						}
-					}
+			project.androidComponents.finalizeDsl {
+				if (twisterrob.isDecorateBuildConfig && buildFeatures.buildConfig != false) {
+					project.decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
 				}
 			}
 		}

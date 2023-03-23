@@ -82,8 +82,8 @@ fun Project.intermediateRegularFile(relativePath: String): Provider<RegularFile>
 val BaseVariantData.taskContainerCompat: TaskContainer
 	get() =
 		when {
-			AGPVersions.CLASSPATH >= AGPVersions.v74x -> this.taskContainerCompat74x
-			AGPVersions.CLASSPATH >= AGPVersions.v70x -> this.taskContainerCompat41x
+			AGPVersions.v74x <= AGPVersions.CLASSPATH -> this.taskContainerCompat74x
+			AGPVersions.v70x <= AGPVersions.CLASSPATH -> this.taskContainerCompat41x
 			else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
 		}
 
