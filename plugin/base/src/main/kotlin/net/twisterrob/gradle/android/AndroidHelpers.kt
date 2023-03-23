@@ -15,14 +15,9 @@ import com.android.build.gradle.TestExtension
 import com.android.build.gradle.TestPlugin
 import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.internal.dsl.BuildType
-import com.android.build.gradle.internal.scope.TaskContainer
-import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.build.gradle.tasks.ManifestProcessorTask
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
-import net.twisterrob.gradle.common.AGPVersions
-import net.twisterrob.gradle.internal.android.taskContainerCompat41x
-import net.twisterrob.gradle.internal.android.taskContainerCompat74x
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
@@ -78,14 +73,6 @@ fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType)
 
 fun Project.intermediateRegularFile(relativePath: String): Provider<RegularFile> =
 	this.layout.buildDirectory.file("${SdkConstants.FD_INTERMEDIATES}/$relativePath")
-
-val BaseVariantData.taskContainerCompat: TaskContainer
-	get() =
-		when {
-			AGPVersions.v74x <= AGPVersions.CLASSPATH -> this.taskContainerCompat74x
-			AGPVersions.v70x <= AGPVersions.CLASSPATH -> this.taskContainerCompat41x
-			else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
-		}
 
 val ManifestProcessorTask.manifestFile: Provider<File>
 	get() =
