@@ -1,8 +1,10 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ResValue
+import com.android.build.api.variant.impl.ApplicationVariantImpl
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.api.BaseVariantImpl
@@ -18,6 +20,7 @@ import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
 import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
@@ -82,13 +85,10 @@ class AndroidBuildPlugin : BasePlugin() {
 			if (project.plugins.hasAndroid()) {
 				android.variants.all(::fixVariantTaskGroups)
 			}
-			project.plugins.withType<AppPlugin> {
-				android.variants.all { variant ->
-					registerRunTask(
-						project,
-						variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
-					)
-				}
+		}
+		project.plugins.withType<AppPlugin> {
+			project.androidComponentsApplication.onVariants { variant ->
+				registerRunTask(project, variant)
 			}
 		}
 	}
@@ -184,16 +184,13 @@ class AndroidBuildPlugin : BasePlugin() {
 			vcsTaskProvider.addBuildConfigFields(project)
 		}
 
-		private fun registerRunTask(
-			project: Project,
-			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.ApkVariant
-		) {
-			val install = variant.installProvider ?: return
+		private fun registerRunTask(project: Project, variant: ApplicationVariant) {
+			val variantImpl: ApplicationVariantImpl = variant.unwrapCast()
 			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize()}") {
-				dependsOn(install)
-				this.manifestFile.set(variant.outputs.single().processManifestProvider.flatMap { it.manifestFile })
+				this.dependsOn(project.provider { variantImpl.taskContainer.installTask })
+				this.manifestFile.set(variant.artifacts.get(SingleArtifact.MERGED_MANIFEST))
 				this.applicationId.set(variant.applicationId)
-				this.updateDescription(variant.description)
+				this.updateDescription(variantImpl.description)
 			}
 		}
 

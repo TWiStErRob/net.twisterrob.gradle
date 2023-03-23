@@ -3,6 +3,7 @@ package net.twisterrob.gradle.android.tasks
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.TaskManager
 import com.android.xml.AndroidXPathFactory
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Input
@@ -14,7 +15,6 @@ import org.gradle.work.DisableCachingByDefault
 import org.intellij.lang.annotations.Language
 import org.jetbrains.annotations.VisibleForTesting
 import org.xml.sax.InputSource
-import java.io.File
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPathConstants
@@ -27,11 +27,11 @@ abstract class AndroidInstallRunnerTask : Exec() {
 
 	@get:InputFile
 	@get:PathSensitive(PathSensitivity.RELATIVE)
-	abstract val manifestFile: Property<File>
+	abstract val manifestFile: RegularFileProperty
 
 	@get:InputFile
 	@get:PathSensitive(PathSensitivity.ABSOLUTE)
-	abstract val adbExecutable: Property<File>
+	abstract val adbExecutable: RegularFileProperty
 
 	init {
 		group = TaskManager.INSTALL_GROUP
@@ -39,7 +39,7 @@ abstract class AndroidInstallRunnerTask : Exec() {
 		// Always execute as device state cannot be used by Gradle for up-to-date check.
 		outputs.upToDateWhen { false }
 		@Suppress("LeakingThis")
-		adbExecutable.convention(project.provider {
+		adbExecutable.fileProvider(project.provider {
 			val android: BaseExtension = project.extensions.getByName<BaseExtension>("android")
 			android.adbExecutable
 		})
