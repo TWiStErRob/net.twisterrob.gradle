@@ -1,16 +1,12 @@
 package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.checkstyle.CheckStyleTask
-import net.twisterrob.gradle.common.AGPVersions
-import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.common.nullSafeSum
 import net.twisterrob.gradle.pmd.PmdTask
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
-import net.twisterrob.gradle.quality.gather.LintGlobalReportGathererPre7
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
-import net.twisterrob.gradle.quality.gather.LintVariantReportGathererPre7
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.html.deduplicate
@@ -138,21 +134,12 @@ abstract class BaseViolationsTask : DefaultTask() {
 			val gradleGatherers = listOf(
 				QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
 				QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
-//				ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination})
-//				TestReportGatherer<>("test", Test)
+//				ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination}),
+//				TestReportGatherer<>("test", Test),
 			)
-			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
-			val agpGatherers = when {
-				AGPVersions.CLASSPATH >= AGPVersions.v70x ->
-					listOf(
-						LintReportGatherer(),
-					)
-				else ->
-					listOf(
-						LintVariantReportGathererPre7(),
-						LintGlobalReportGathererPre7(ALL_VARIANTS_NAME),
-					)
-			}
+			val agpGatherers = listOf(
+				LintReportGatherer(),
+			)
 			return@run (gradleGatherers + agpGatherers) as List<TaskReportGatherer<Task>>
 		}
 	}

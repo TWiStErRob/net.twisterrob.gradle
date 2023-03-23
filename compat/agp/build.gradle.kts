@@ -10,7 +10,6 @@ dependencies {
 	implementation(gradleApiWithoutKotlin())
 	compileOnly(libs.android.gradle)
 	implementation(projects.compat.agpBase)
-	implementation(projects.compat.agp42x)
 	implementation(projects.compat.agp70x)
 	implementation(projects.compat.agp71x)
 	implementation(projects.compat.agp72x)

@@ -8,16 +8,11 @@ import com.android.build.gradle.internal.scope.InternalArtifactType
 import net.twisterrob.gradle.android.androidComponents
 import net.twisterrob.gradle.android.isAbortOnErrorCompat
 import net.twisterrob.gradle.common.AGPVersions
-import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.internal.android.unwrapCast
-import net.twisterrob.gradle.internal.lint.collectXmlReport
-import net.twisterrob.gradle.internal.lint.configureXmlReport
-import net.twisterrob.gradle.internal.lint.lintGlobalTasks
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
-import net.twisterrob.gradle.quality.gather.LintGlobalReportGathererPre7
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -29,7 +24,6 @@ import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.TaskCollection
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.withType
 import se.bjurr.violations.lib.model.Violation
@@ -49,12 +43,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	@TaskAction
 	fun failOnFailures() {
-		val gatherer =
-			if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
-				LintReportGatherer()
-			} else {
-				LintGlobalReportGathererPre7(ALL_VARIANTS_NAME)
-			}
+		val gatherer = LintReportGatherer()
 		val violationsByFile = xmlReports
 			.get()
 			.map { it.asFile }
@@ -93,20 +82,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 		override fun preConfigure(project: Project, taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
 			project.allprojects.forEach { subproject ->
 				subproject.plugins.withType<AndroidBasePlugin> {
-					if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
-						subproject.configureReports(taskProvider)
-					} else {
-						subproject.configureReportsPre7(taskProvider)
-					}
-				}
-			}
-		}
-
-		private fun Project.configureReportsPre7(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
-			taskProvider.configure { finalizerTask ->
-				lintGlobalTasks.configureXmlReport()
-				lintGlobalTasks.collectXmlReport {
-					finalizerTask.xmlReports.add(it)
+					subproject.configureReports(taskProvider)
 				}
 			}
 		}
@@ -140,17 +116,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			}
 			// Not a necessity, just a convenience, make sure we run after the :*:lint lifecycle tasks.
 			// Using .map {} instead of .flatMap {} to prevent configuration of these tasks.
-			task.mustRunAfter(task.project.allprojects.map { it.lintTasks })
+			task.mustRunAfter(task.project.allprojects.map { it.tasks.withType(AndroidLintGlobalTask::class.java) })
 		}
 	}
 }
-
-private val Project.lintTasks: TaskCollection<*>
-	get() =
-		@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
-		when {
-			AGPVersions.CLASSPATH >= AGPVersions.v70x ->
-				this.tasks.withType(AndroidLintGlobalTask::class.java)
-			else ->
-				this.lintGlobalTasks
-		}
