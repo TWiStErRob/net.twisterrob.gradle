@@ -10,9 +10,6 @@ import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.test.compile.generateKotlinCompilationCheck
 import net.twisterrob.test.compile.generateKotlinCompilationCheckTest
-import org.gradle.util.GradleVersion
-import org.hamcrest.Matchers.greaterThanOrEqualTo
-import org.hamcrest.assumeThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -78,13 +75,6 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `does not add repositories when it would fail`() {
-		// See https://docs.gradle.org/6.8/release-notes.html#central-declaration-of-repositories.
-		assumeThat(
-			"Feature added in Gradle 6.8",
-			gradle.gradleVersion.baseVersion,
-			greaterThanOrEqualTo(GradleVersion.version("6.8"))
-		)
-
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 		// Somewhere after Kotlin 1.4.32 and before 1.5.32 there was a behavior change:
 		// Not having a source code would trigger compileKotlin to be NO-SOURCE.
@@ -113,27 +103,19 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 	@Test fun `applying by the old name is deprecated`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
-		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
-			val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").build()
-			result.assertHasOutputLine(
-				"Plugin net.twisterrob.kotlin is deprecated, " +
-						"please use net.twisterrob.gradle.plugin.kotlin instead."
+		val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").buildAndFail()
+		result.assertHasOutputLine(
+			Regex(
+				"""org\.gradle\.api\.GradleException: """ +
+						"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
 			)
-		} else {
-			val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").buildAndFail()
-			result.assertHasOutputLine(
-				Regex(
-					"""org\.gradle\.api\.GradleException: """ +
-							"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
-				)
+		)
+		result.assertHasOutputLine(
+			Regex(
+				"""The net\.twisterrob\.kotlin plugin has been deprecated\. """
+						+ """This is scheduled to be removed in Gradle \d\.0\. """
+						+ """Please use the net\.twisterrob\.gradle\.plugin\.kotlin plugin instead."""
 			)
-			result.assertHasOutputLine(
-				Regex(
-					"""The net\.twisterrob\.kotlin plugin has been deprecated\. """
-							+ """This is scheduled to be removed in Gradle \d\.0\. """
-							+ """Please use the net\.twisterrob\.gradle\.plugin\.kotlin plugin instead."""
-				)
-			)
-		}
+		)
 	}
 }

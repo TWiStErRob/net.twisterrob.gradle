@@ -39,7 +39,7 @@ class PmdPluginTest : BaseIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
-	private val pmd = PmdTestResources { gradle.gradleVersion }
+	private val pmd = PmdTestResources()
 
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
@@ -240,13 +240,10 @@ class PmdPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val applyPmd = """
-			import org.gradle.util.GradleVersion
 			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 			pmd {
 				toolVersion = '5.6.1'
-				if (GradleVersion.version("6.0.0") <= GradleVersion.current().baseVersion) {
-					incrementalAnalysis.set(false)
-				}
+				incrementalAnalysis.set(false)
 			}
 			tasks.withType(${Pmd::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
@@ -282,27 +279,19 @@ class PmdPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
-			val result = gradle.run("apply plugin: 'net.twisterrob.pmd'").build()
-			result.assertHasOutputLine(
-				"Plugin net.twisterrob.pmd is deprecated, " +
-						"please use net.twisterrob.gradle.plugin.pmd instead."
+		val result = gradle.run("apply plugin: 'net.twisterrob.pmd'").buildAndFail()
+		result.assertHasOutputLine(
+			Regex(
+				"""org\.gradle\.api\.GradleException: """ +
+						"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
 			)
-		} else {
-			val result = gradle.run("apply plugin: 'net.twisterrob.pmd'").buildAndFail()
-			result.assertHasOutputLine(
-				Regex(
-					"""org\.gradle\.api\.GradleException: """ +
-							"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
-				)
+		)
+		result.assertHasOutputLine(
+			Regex(
+				"""The net\.twisterrob\.pmd plugin has been deprecated\. """
+						+ """This is scheduled to be removed in Gradle \d\.0\. """
+						+ """Please use the net\.twisterrob\.gradle\.plugin\.pmd plugin instead."""
 			)
-			result.assertHasOutputLine(
-				Regex(
-					"""The net\.twisterrob\.pmd plugin has been deprecated\. """
-							+ """This is scheduled to be removed in Gradle \d\.0\. """
-							+ """Please use the net\.twisterrob\.gradle\.plugin\.pmd plugin instead."""
-				)
-			)
-		}
+		)
 	}
 }

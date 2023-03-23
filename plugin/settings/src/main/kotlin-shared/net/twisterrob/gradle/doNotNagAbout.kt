@@ -101,18 +101,21 @@ fun doNotNagAbout(message: Regex) {
 	// In Gradle 6.2.0 it was split (247fd32) to org.gradle.util.DeprecationLogger#deprecatedFeatureHandler
 	// and then further split (308086a) to org.gradle.internal.deprecation.DeprecationLogger#deprecatedFeatureHandler
 	// and then renamed (a75aedd) to #DEPRECATED_FEATURE_HANDLER.
-	val loggerField =
-		if (GradleVersion.version("6.2.0") <= GradleVersion.current().baseVersion) {
+	val loggerField = when {
+		GradleVersion.version("6.2.0") <= GradleVersion.current().baseVersion -> {
 			Class.forName("org.gradle.internal.deprecation.DeprecationLogger")
 				.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
 				.apply { isAccessible = true }
-		} else if (GradleVersion.version("4.7.0") <= GradleVersion.current().baseVersion) {
+		}
+		GradleVersion.version("4.7.0") <= GradleVersion.current().baseVersion -> {
 			Class.forName("org.gradle.util.SingleMessageLogger")
 				.getDeclaredField("deprecatedFeatureHandler")
 				.apply { isAccessible = true }
-		} else {
+		}
+		else -> {
 			error("Gradle ${GradleVersion.current()} too old, cannot ignore deprecation: $message")
 		}
+	}
 	val deprecationLogger: Any = loggerField.get(null)
 
 	// LoggingDeprecatedFeatureHandler#messages was added in Gradle 1.8.
@@ -137,13 +140,16 @@ fun doNotNagAbout(message: Regex) {
  * @see doNotNagAbout for more details
  */
 fun doNotNagAbout(message: String) {
-	if (GradleVersion.version("8.0") <= GradleVersion.current().baseVersion) {
-		// Ignoring with "startsWith" to disregard the stack trace. It's not ideal, but it's
-		// the best we can do to counteract https://github.com/gradle/gradle/pull/22489 introduced in Gradle 8.0.
-		doNotNagAbout(Regex("(?s)${Regex.escape(message)}.*"))
-	} else {
-		// In old versions, go for exact match.
-		doNotNagAbout(Regex.fromLiteral(message))
+	when {
+		GradleVersion.version("8.0") <= GradleVersion.current().baseVersion -> {
+			// Ignoring with "startsWith" to disregard the stack trace. It's not ideal, but it's
+			// the best we can do to counteract https://github.com/gradle/gradle/pull/22489 introduced in Gradle 8.0.
+			doNotNagAbout(Regex("(?s)${Regex.escape(message)}.*"))
+		}
+		else -> {
+			// In old versions, go for exact match.
+			doNotNagAbout(Regex.fromLiteral(message))
+		}
 	}
 }
 

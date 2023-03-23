@@ -35,7 +35,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	private val checkstyle = CheckstyleTestResources()
-	private val pmd = PmdTestResources { gradle.gradleVersion }
+	private val pmd = PmdTestResources()
 
 	@Test fun `get total violation counts on root project`() {
 		gradle.file(checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")

@@ -11,9 +11,6 @@ import net.twisterrob.gradle.test.move
 import net.twisterrob.gradle.test.root
 import org.gradle.api.artifacts.ArtifactRepositoryContainer
 import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
-import org.gradle.util.GradleVersion
-import org.hamcrest.Matchers.greaterThanOrEqualTo
-import org.hamcrest.assumeThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -60,13 +57,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `does not add repositories automatically when it would fail`() {
-		// See https://docs.gradle.org/6.8/release-notes.html#central-declaration-of-repositories.
-		assumeThat(
-			"Feature added in Gradle 6.8",
-			gradle.gradleVersion.baseVersion,
-			greaterThanOrEqualTo(GradleVersion.version("6.8"))
-		)
-
 		gradle.buildFile.writeText(gradle.buildFile.readText().removeTopLevelRepositoryBlock())
 
 		@Language("gradle")

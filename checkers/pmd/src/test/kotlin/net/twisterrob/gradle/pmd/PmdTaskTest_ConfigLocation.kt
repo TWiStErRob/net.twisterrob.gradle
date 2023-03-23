@@ -31,14 +31,11 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 
 		@Language("gradle")
 		private val SCRIPT_CONFIGURE_PMD: String = """
-			import org.gradle.util.GradleVersion
 			subprojects { // i.e. :module
 				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
 				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
 				pmd {
-					if (GradleVersion.version("6.0.0") <= GradleVersion.current().baseVersion) {
-						incrementalAnalysis.set(false)
-					}
+					incrementalAnalysis.set(false)
 				}
 				tasks.withType(${Pmd::class.java.name}).configureEach {
 					// output all violations to the console so that we can parse the results
@@ -50,7 +47,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
-	private val pmd = PmdTestResources { gradle.gradleVersion }
+	private val pmd = PmdTestResources()
 
 	@Test fun `uses rootProject pmd config as a fallback`() {
 		gradle.file(pmd.simple.config, *CONFIG_PATH)

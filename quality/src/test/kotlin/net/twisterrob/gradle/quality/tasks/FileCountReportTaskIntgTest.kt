@@ -30,7 +30,7 @@ class FileCountReportTaskIntgTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	private val checkstyle = CheckstyleTestResources()
-	private val pmd = PmdTestResources { gradle.gradleVersion }
+	private val pmd = PmdTestResources()
 
 	@Test fun `get total violation counts`() {
 		gradle.file(checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")

@@ -1,6 +1,5 @@
 import net.twisterrob.gradle.nagging.doNotNagAbout
 import net.twisterrob.gradle.nagging.doNotNagAboutPattern
-import org.gradle.util.GradleVersion
 import java.io.File
 
 initscript {

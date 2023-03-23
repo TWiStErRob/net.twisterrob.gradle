@@ -12,7 +12,6 @@ import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
-import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
@@ -78,13 +77,7 @@ class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 
 		val result = executeBuild()
 		assertEquals(TaskOutcome.FAILED, result.task(":module:checkstyleDebug")!!.outcome)
-		val expectedError = when {
-			gradle.gradleVersion.baseVersion < GradleVersion.version("5.0") ->
-				"Unable to create a Checker: configLocation"
-			else ->
-				"Unable to create Root Module: config"
-		}
-		assertThat(result.failReason, containsString(expectedError))
+		assertThat(result.failReason, containsString("Unable to create Root Module: config"))
 		result.assertHasOutputLine("""While auto-configuring configFile for task ':module:checkstyleDebug', there was no configuration found at:""")
 	}
 

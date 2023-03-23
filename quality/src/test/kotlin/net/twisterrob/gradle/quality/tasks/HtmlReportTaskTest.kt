@@ -283,13 +283,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 	@Test fun `task is capable of handling huge number of violations`() {
 		gradle.basedOn("android-root_app")
 		gradle.basedOn("lint-UnusedResources")
-		/**
-		 * Not sure why but on this version this test build runs out of memory, consistently, but only on CI.
-		 * I tried to lower the number of violations to 2500 first, that helped, but then the test ran out of memory.
-		 */
-		val specificallyWeirdVersion = AGPVersions.UNDER_TEST compatible AGPVersions.v42x
-				&& GradleVersion.current().baseVersion == GradleVersion.version("6.9.2")
-		val count = if (specificallyWeirdVersion) 2000 else 2500
 		@Language("gradle")
 		val script = """
 			dumpMemory("starting build")
@@ -306,7 +299,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 						// After many tries and empirical measurements, it was still flaky on each execution on GitHub.
 						// Since then I bumped Xmx from 128 to 256 and the count from 1500 to 3000.
 						// This should be stable and catch any regressions, if the processing goes non-linear.
-						$count.times {
+						2500.times {
 							writer.write(
 								'<issue id="MyLint" category="Performance" severity="Warning"' +
 								'       message="Fake lint" summary="Fake lint" explanation="Fake lint&#10;"' +
@@ -351,7 +344,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 	@Test fun `runs on multiple reports`(test: TestInfo) {
 		val violations = ViolationTestResources(gradle.root)
 		val checkstyle = CheckstyleTestResources()
-		val pmd = PmdTestResources { gradle.gradleVersion }
+		val pmd = PmdTestResources()
 		gradle.basedOn("android-root_app")
 		listOf(
 			"Autofill",

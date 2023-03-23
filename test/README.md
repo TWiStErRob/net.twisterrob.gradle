@@ -109,9 +109,9 @@ This is discouraged, but sometimes necessary (e.g. the feature on the older Grad
 
 ```kotlin
 assumeThat(
-   "Feature X was added in Gradle 6.8.",
+   "Feature X was added in Gradle 7.2.",
    gradle.gradleVersion.baseVersion,
-   greaterThanOrEqualTo(GradleVersion.version("6.8"))
+   greaterThanOrEqualTo(GradleVersion.version("7.2"))
 )
 ```
 where `gradle` is a `GradleRunnerRule` instance, and `gradle.gradleVersion` is pretty much equivalent to:
