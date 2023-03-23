@@ -94,7 +94,6 @@ class AndroidMinificationPlugin : BasePlugin() {
 		}
 	}
 
-	@Suppress("CognitiveComplexMethod")
 	private fun BaseExtension.generateVariantRules(extractMinificationRules: TaskProvider<Task>) {
 		project.afterEvaluate { project ->
 			variants.configureEach { variant ->

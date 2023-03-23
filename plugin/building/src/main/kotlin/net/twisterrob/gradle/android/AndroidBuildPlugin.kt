@@ -16,7 +16,6 @@ import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addB
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.NamedDomainObjectContainer
@@ -98,29 +97,14 @@ class AndroidBuildPlugin : BasePlugin() {
 	companion object {
 
 		private fun BaseExtension.configureLint() {
-			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
-			when {
-				AGPVersions.v71x <= AGPVersions.CLASSPATH -> {
-					@Suppress("UnstableApiUsage")
-					with((this as CommonExtension<*, *, *, *>).lint) {
-						xmlReport = false
-						checkAllWarnings = true
-						abortOnError = true
-						disable.add("Assert")
-						disable.add("GoogleAppIndexingWarning")
-						fatal.add("StopShip") // http://stackoverflow.com/q/33504186/253468
-					}
-				}
-				else -> {
-					@Suppress("DEPRECATION")
-					with(lintOptions) {
-						xmlReport = false
-						isCheckAllWarnings = true
-						isAbortOnError = true
-						disable("Assert", "GoogleAppIndexingWarning")
-						fatal("StopShip") // http://stackoverflow.com/q/33504186/253468
-					}
-				}
+			@Suppress("UnstableApiUsage")
+			(this as CommonExtension<*, *, *, *>).lint {
+				xmlReport = false
+				checkAllWarnings = true
+				abortOnError = true
+				disable.add("Assert")
+				disable.add("GoogleAppIndexingWarning")
+				fatal.add("StopShip") // http://stackoverflow.com/q/33504186/253468
 			}
 		}
 
