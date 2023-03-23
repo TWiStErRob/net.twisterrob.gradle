@@ -34,7 +34,6 @@ object AGPVersions {
 					?: error("Property 'net.twisterrob.test.android.pluginVersion' is not set.")
 			)
 
-	val v41x: AGPVersion = AGPVersion(major = 4, minor = 1, type = null, patch = null)
 	val v7xx: AGPVersion = AGPVersion(major = 7, minor = null, type = null, patch = null)
 	val v70x: AGPVersion = AGPVersion(major = 7, minor = 0, type = null, patch = null)
 	val v71x: AGPVersion = AGPVersion(major = 7, minor = 1, type = null, patch = null)
