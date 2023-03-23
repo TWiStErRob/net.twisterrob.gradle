@@ -70,7 +70,7 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				configureBuildResValues()
 			}
 			with(packagingOptions) {
-				resources.excludes.addAll(knownUnneededFiles)
+				resources.excludes.addAll(knownUnneededFiles())
 			}
 			decorateBuildConfig(project, twisterrob)
 		}
@@ -142,7 +142,7 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		/**
 		 * Configure files we don't need in APKs.
 		 */
-		val knownUnneededFiles = listOf(
+		fun knownUnneededFiles(): List<String> = listOf(
 			// support-annotations-28.0.0.jar contains this file
 			// it's for Android Gradle Plugin at best, if at all used
 			"META-INF/proguard/androidx-annotations.pro",
@@ -218,8 +218,10 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		}
 
 		private fun addPackageName(variant: ApplicationVariant) {
-			val comment =
-				"Package name for use in resources, for example in preferences.xml to launch an intent from the right package, or for ContentProviders' <provider android:authorities, or <searchable android:searchSuggestAuthority."
+			val comment = "Package name for use in resources, for example " +
+					"in preferences.xml to launch an intent from the right package, " +
+					"or for ContentProviders' <provider android:authorities, " +
+					"or <searchable android:searchSuggestAuthority."
 			variant.resValues.put(
 				variant.makeResValueKey("string", "app_package"),
 				ResValue(variant.applicationId.get(), comment)
