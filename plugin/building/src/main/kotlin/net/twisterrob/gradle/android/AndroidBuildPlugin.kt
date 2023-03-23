@@ -1,17 +1,9 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.artifact.SingleArtifact
-import com.android.build.api.component.impl.AndroidTestImpl
-import com.android.build.api.component.impl.TestFixturesImpl
-import com.android.build.api.component.impl.UnitTestImpl
 import com.android.build.api.dsl.CommonExtension
-import com.android.build.api.variant.AndroidTest
 import com.android.build.api.variant.ApplicationVariant
-import com.android.build.api.variant.HasAndroidTest
-import com.android.build.api.variant.HasTestFixtures
 import com.android.build.api.variant.ResValue
-import com.android.build.api.variant.TestFixtures
-import com.android.build.api.variant.UnitTest
 import com.android.build.api.variant.Variant
 import com.android.build.api.variant.impl.ApplicationVariantImpl
 import com.android.build.api.variant.impl.VariantImpl
@@ -219,14 +211,9 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 					task.description = "Compiles Java sources for ${variantImpl.description}."
 				}
 			}
-			variantImpl.fixMetadata()
-			variant.unitTest?.unwrapCast<UnitTest, UnitTestImpl>()?.fixMetadata()
-			if (variant is HasAndroidTest) {
-				(variant.androidTest?.unwrapCast<AndroidTest, AndroidTestImpl>())?.fixMetadata()
-			}
-			if (variant is HasTestFixtures) {
-				(variant.testFixtures?.unwrapCast<TestFixtures, TestFixturesImpl>())?.fixMetadata()
-			}
+			variant.components
+				.filterIsInstance<ComponentCreationConfig>()
+				.forEach(ComponentCreationConfig::fixMetadata)
 		}
 
 		private fun addPackageName(variant: ApplicationVariant) {
