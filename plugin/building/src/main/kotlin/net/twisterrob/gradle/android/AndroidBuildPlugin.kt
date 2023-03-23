@@ -1,17 +1,24 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.component.impl.AndroidTestImpl
+import com.android.build.api.component.impl.TestFixturesImpl
+import com.android.build.api.component.impl.UnitTestImpl
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.variant.AndroidTest
 import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.variant.HasAndroidTest
+import com.android.build.api.variant.HasTestFixtures
 import com.android.build.api.variant.ResValue
+import com.android.build.api.variant.TestFixtures
+import com.android.build.api.variant.UnitTest
+import com.android.build.api.variant.Variant
 import com.android.build.api.variant.impl.ApplicationVariantImpl
+import com.android.build.api.variant.impl.VariantImpl
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.internal.api.BaseVariantImpl
-import com.android.build.gradle.internal.api.androidTestVariant
-import com.android.build.gradle.internal.api.productionVariant
-import com.android.build.gradle.internal.api.unitTestVariant
-import com.android.build.gradle.internal.api.variantData
+import com.android.build.gradle.BasePlugin
+import com.android.build.gradle.internal.component.ComponentCreationConfig
 import com.android.build.gradle.internal.dsl.BuildType
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
@@ -19,7 +26,6 @@ import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addB
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
-import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.NamedDomainObjectContainer
@@ -40,7 +46,7 @@ open class AndroidBuildPluginExtension {
 	}
 }
 
-class AndroidBuildPlugin : BasePlugin() {
+class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -81,9 +87,15 @@ class AndroidBuildPlugin : BasePlugin() {
 				project.androidComponentsApplication.onVariants(callback = ::addPackageName)
 			}
 		}
-		project.afterEvaluate {
-			if (project.plugins.hasAndroid()) {
-				android.variants.all(::fixVariantTaskGroups)
+		project.plugins.withType<BasePlugin> {
+			project.androidComponents.onVariants { variant ->
+				// This needs to be inside onVariants,
+				// because it's not possible to register onVariants callback in afterEvaluate.
+				project.afterEvaluate {
+					// This has to be called in afterEvaluate, to make sure that Tasks are created for variants.
+					// See VariantManager.hasCreatedTasks for when this happens.
+					fixVariantTaskGroups(variant)
+				}
 			}
 		}
 		project.plugins.withType<AppPlugin> {
@@ -194,24 +206,27 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 		}
 
-		private fun fixVariantTaskGroups(
-			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant
-		) {
-			fun BaseVariantImpl.fixTaskMetadata() {
-				val variantImpl = this
-				variantData.taskContainerCompat.compileTask.configure { task ->
+		private fun fixVariantTaskGroups(variant: Variant) {
+			val variantImpl = variant.unwrapCast<Variant, VariantImpl<*>>()
+			fun ComponentCreationConfig.fixMetadata() {
+				taskContainer.compileTask.configure { task ->
 					// This is now done in TaskManager, at createCompileAnchorTask.
 					task.group = org.gradle.api.plugins.BasePlugin.BUILD_GROUP
 					task.description = "Compiles sources for ${variantImpl.description}."
 				}
-				variantData.taskContainerCompat.javacTask.configure { task ->
+				taskContainer.javacTask.configure { task ->
 					task.group = org.gradle.api.plugins.BasePlugin.BUILD_GROUP
 					task.description = "Compiles Java sources for ${variantImpl.description}."
 				}
 			}
-			variant.productionVariant.fixTaskMetadata()
-			variant.androidTestVariant?.fixTaskMetadata()
-			variant.unitTestVariant?.fixTaskMetadata()
+			variantImpl.fixMetadata()
+			variant.unitTest?.unwrapCast<UnitTest, UnitTestImpl>()?.fixMetadata()
+			if (variant is HasAndroidTest) {
+				(variant.androidTest?.unwrapCast<AndroidTest, AndroidTestImpl>())?.fixMetadata()
+			}
+			if (variant is HasTestFixtures) {
+				(variant.testFixtures?.unwrapCast<TestFixtures, TestFixturesImpl>())?.fixMetadata()
+			}
 		}
 
 		private fun addPackageName(variant: ApplicationVariant) {
