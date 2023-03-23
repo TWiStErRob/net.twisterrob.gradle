@@ -7,10 +7,10 @@ import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
 import net.twisterrob.gradle.android.androidComponents
 import net.twisterrob.gradle.android.isAbortOnErrorCompat
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.internal.android.unwrapCast
+import net.twisterrob.gradle.internal.android.onVariantsCompat
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
@@ -96,8 +96,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				android.lint.isAbortOnErrorCompat = false
 				android.lint.xmlReport = true
 			}
-			// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.
-			androidComponents.onVariants(androidComponents.selector().all()) { variant ->
+			androidComponents.onVariantsCompat { variant ->
 				if (variant !is TestVariant) {
 					taskProvider.configure { task ->
 						val artifacts = variant.artifacts.unwrapCast<ArtifactsImpl>()

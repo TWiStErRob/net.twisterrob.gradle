@@ -21,6 +21,7 @@ import com.android.build.gradle.tasks.ManifestProcessorTask
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import net.twisterrob.gradle.common.AGPVersions
+import net.twisterrob.gradle.internal.android.onVariantsCompat
 import net.twisterrob.gradle.internal.android.taskContainerCompat41x
 import net.twisterrob.gradle.internal.android.taskContainerCompat74x
 import org.gradle.api.DomainObjectCollection
@@ -90,7 +91,7 @@ val ManifestProcessorTask.manifestFile: Provider<File>
 fun Project.addBuildConfigField(name: String, type: String, value: Provider<out Serializable>) {
 	val androidComponents: AndroidComponentsExtension<*, *, *> =
 		this.extensions.getByName<AndroidComponentsExtension<*, *, *>>("androidComponents")
-	androidComponents.onVariants { variant ->
+	androidComponents.onVariantsCompat { variant ->
 		variant.buildConfigFields.put(name, value.map { BuildConfigField(type = type, value = it, comment = null) })
 	}
 }

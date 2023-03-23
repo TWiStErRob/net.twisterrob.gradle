@@ -18,6 +18,7 @@ import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addB
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
+import net.twisterrob.gradle.internal.android.onVariantsCompat
 import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.NamedDomainObjectContainer
@@ -77,11 +78,11 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 		project.plugins.withType<AppPlugin> {
 			if (twisterrob.isDecorateBuildConfig) {
-				project.androidComponentsApplication.onVariants(callback = ::addPackageName)
+				project.androidComponentsApplication.onVariantsCompat(::addPackageName)
 			}
 		}
 		project.plugins.withType<BasePlugin> {
-			project.androidComponents.onVariants { variant ->
+			project.androidComponents.onVariantsCompat { variant ->
 				// This needs to be inside onVariants,
 				// because it's not possible to register onVariants callback in afterEvaluate.
 				project.afterEvaluate {
@@ -92,7 +93,7 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			}
 		}
 		project.plugins.withType<AppPlugin> {
-			project.androidComponentsApplication.onVariants { variant ->
+			project.androidComponentsApplication.onVariantsCompat { variant ->
 				registerRunTask(project, variant)
 			}
 		}

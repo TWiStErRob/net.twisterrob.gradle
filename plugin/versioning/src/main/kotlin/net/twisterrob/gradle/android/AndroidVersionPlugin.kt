@@ -8,6 +8,7 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.internal.android.onVariantsCompat
 import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId
@@ -174,8 +175,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	private fun init() {
 		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
 		version.versionByProperties(readVersion(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME)))
-		// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.
-		project.androidComponents.onVariants(project.androidComponents.selector().all()) { variant ->
+		project.androidComponents.onVariantsCompat { variant ->
 			if (version.isRenameAPK) {
 				renameAPK(variant as ApplicationVariant)
 			}

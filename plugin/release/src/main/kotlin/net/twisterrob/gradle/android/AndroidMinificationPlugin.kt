@@ -10,6 +10,7 @@ import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.lint.LintModelWriterTask
 import com.android.build.gradle.internal.tasks.R8Task
 import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.internal.android.onVariantsCompat
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
@@ -75,7 +76,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 		}
 
 		lintDependsOnGenerateRulesTask(extractMinificationRules)
-		project.androidComponents.onVariants { variant ->
+		project.androidComponents.onVariantsCompat { variant ->
 			generateVariantRules(variant, extractMinificationRules)
 		}
 	}
