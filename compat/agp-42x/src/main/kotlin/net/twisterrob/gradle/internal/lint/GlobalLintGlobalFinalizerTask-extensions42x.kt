@@ -1,8 +1,6 @@
 package net.twisterrob.gradle.internal.lint
 
 import com.android.build.gradle.tasks.LintGlobalTask
-import net.twisterrob.gradle.compat.filePropertyCompat
-import net.twisterrob.gradle.compat.fileProviderCompat
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.RegularFileProperty
@@ -28,8 +26,8 @@ fun TaskCollection<LintGlobalTask>.collectXmlReport(reportDiscovered: (RegularFi
 private val LintGlobalTask.xmlOutputProperty: RegularFileProperty
 	get() =
 		project.objects
-			.filePropertyCompat(this, false)
-			.fileProviderCompat(this, project.provider { this.xmlOutput })
+			.fileProperty()
+			.fileProvider(project.provider { this.xmlOutput })
 
 private val Task.wasLaunchedExplicitly: Boolean
 	get() = path in project.gradle.startParameter.taskNames

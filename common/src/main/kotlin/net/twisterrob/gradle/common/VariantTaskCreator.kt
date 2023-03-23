@@ -2,7 +2,6 @@ package net.twisterrob.gradle.common
 
 import com.android.SdkConstants.FD_GENERATED
 import net.twisterrob.gradle.compat.setOutputLocationCompat
-import net.twisterrob.gradle.compat.setRequired
 import org.gradle.api.Action
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
@@ -181,11 +180,11 @@ T : VerificationTask {
 			val reportsDir = reporting.baseDirectory
 			with(task.reports) {
 				getByName("xml") { xml ->
-					xml.setRequired(true)
+					xml.required.set(true)
 					xml.setOutputLocationCompat(reportsDir.file("${baseName}${fullSuffix}.xml"))
 				}
 				getByName("html") { html ->
-					html.setRequired(true)
+					html.required.set(true)
 					html.setOutputLocationCompat(reportsDir.file("${baseName}${fullSuffix}.html"))
 				}
 			}
