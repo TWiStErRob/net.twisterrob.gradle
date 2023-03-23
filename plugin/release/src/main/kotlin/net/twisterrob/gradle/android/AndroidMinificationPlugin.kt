@@ -7,13 +7,10 @@ import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.lint.LintModelWriterTask
-import com.android.build.gradle.internal.tasks.ProguardConfigurableTask
 import com.android.build.gradle.internal.tasks.R8Task
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
@@ -36,10 +33,8 @@ class AndroidMinificationPlugin : BasePlugin() {
 		val myProguardRulesFile = proguardBase.resolve("twisterrob.pro")
 		val myDebugProguardRulesFile = proguardBase.resolve("twisterrob-debug.pro")
 		val myReleaseProguardRulesFile = proguardBase.resolve("twisterrob-release.pro")
-		val generatedProguardRulesFile = proguardBase.resolve("generated.pro")
 
 		android.apply {
-			defaultConfig.proguardFiles.add(generatedProguardRulesFile)
 			defaultConfig.proguardFiles.add(defaultAndroidRulesFile)
 			defaultConfig.proguardFiles.add(myProguardRulesFile)
 
@@ -79,7 +74,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 		}
 
 		lintDependsOnGenerateRulesTask(extractMinificationRules)
-		android.generateVariantRules(generatedProguardRulesFile, extractMinificationRules)
+		android.generateVariantRules(extractMinificationRules)
 	}
 
 	private fun BaseExtension.setupAutoProguardFiles() {
@@ -100,42 +95,12 @@ class AndroidMinificationPlugin : BasePlugin() {
 	}
 
 	@Suppress("CognitiveComplexMethod")
-	private fun BaseExtension.generateVariantRules(targetFile: File, extractMinificationRules: TaskProvider<Task>) {
+	private fun BaseExtension.generateVariantRules(extractMinificationRules: TaskProvider<Task>) {
 		project.afterEvaluate { project ->
 			variants.configureEach { variant ->
-				val isFlavorless = variant.flavorName == ""
-				if (!isFlavorless) {
-					// Cannot do this simply because AGP doesn't provide a DSL surface for adding proguard rules for variants.
-					// It's possible to add for buildType and flavors, but since the mapping file is for variants,
-					// the `generate...` task would not be able to create a distinct file.
-					project.logger.warn(
-						"This project uses flavors, it's not possible to generate variant based rules for ${variant.name}."
-					)
-				}
-				val generateProguardRulesTask = createGenerateProguardRules(variant, targetFile)
-				if (isFlavorless) {
-					lintDependsOnGenerateRulesTask(generateProguardRulesTask)
-				}
-				proguardTaskClass()
-					?.let { project.tasks.withType(it) }
-					?.configureEach { obfuscationTask ->
-						if (obfuscationTask.variantName == variant.name) {
-							obfuscationTask.dependsOn(extractMinificationRules)
-							if (isFlavorless) {
-								obfuscationTask.dependsOn(generateProguardRulesTask)
-							}
-						}
-					}
-				val generateR8RulesTask = createGenerateR8Rules(variant, targetFile)
-				if (isFlavorless) {
-					lintDependsOnGenerateRulesTask(generateR8RulesTask)
-				}
 				project.tasks.withType<R8Task>().configureEach { obfuscationTask ->
 					if (obfuscationTask.variantName == variant.name) {
 						obfuscationTask.dependsOn(extractMinificationRules)
-						if (isFlavorless) {
-							obfuscationTask.dependsOn(generateR8RulesTask)
-						}
 					}
 				}
 			}
@@ -143,70 +108,11 @@ class AndroidMinificationPlugin : BasePlugin() {
 	}
 
 	private fun lintDependsOnGenerateRulesTask(task: TaskProvider<Task>) {
-		if (AGPVersions.CLASSPATH >= AGPVersions.v70x) {
-			// REPORT allow tasks to generate ProGuard files, this must be possible because aapt generates one.
-			project.tasks.withType<AndroidLintGlobalTask>().configureEach { it.mustRunAfter(task) }
-			project.tasks.withType<AndroidLintAnalysisTask>().configureEach { it.mustRunAfter(task) }
-			project.tasks.withType<LintModelWriterTask>().configureEach { it.mustRunAfter(task) }
-		}
+		// REPORT allow tasks to generate ProGuard files, this must be possible because aapt generates one.
+		project.tasks.withType<AndroidLintGlobalTask>().configureEach { it.mustRunAfter(task) }
+		project.tasks.withType<AndroidLintAnalysisTask>().configureEach { it.mustRunAfter(task) }
+		project.tasks.withType<LintModelWriterTask>().configureEach { it.mustRunAfter(task) }
 	}
-
-	/**
-	 * AGP 7 fully removed support for this task. This will only return a value in < [AGPVersions.v70x].
-	 */
-	private fun proguardTaskClass(): Class<out ProguardConfigurableTask>? =
-		try {
-			@Suppress("UNCHECKED_CAST")
-			Class.forName("com.android.build.gradle.internal.tasks.ProguardTask")
-					as Class<out ProguardConfigurableTask>
-		} catch (ignore: ClassNotFoundException) {
-			null
-		}
-
-	/**
-	 * Duplicate code, see also [createGenerateProguardRules].
-	 */
-	private fun createGenerateR8Rules(
-		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
-		outputFile: File,
-	): TaskProvider<Task> =
-		project.tasks.register<Task>("generate${variant.name.capitalize()}R8MinificationRules") {
-			description = "Generates printConfiguration for R8 if supported."
-			val mappingFolder: Provider<File> = variant.mappingFileProvider.map { it.singleFile.parentFile }
-			inputs.property("targetFolder", mappingFolder)
-			outputs.file(outputFile)
-			doFirst {
-				outputFile.parentFile.mkdirs()
-				outputFile.createNewFile()
-				if (AGPVersions.CLASSPATH < AGPVersions.v41x) { // STOPSHIP fully remove
-					outputFile.appendText("-printconfiguration ${mappingFolder.get().resolve("configuration.txt")}\n")
-				}
-			}
-		}
-
-	/**
-	 * Duplicate code, see also [createGenerateR8Rules].
-	 */
-	private fun createGenerateProguardRules(
-		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
-		outputFile: File,
-	): TaskProvider<Task> =
-		project.tasks.register<Task>("generate${variant.name.capitalize()}ProguardMinificationRules") {
-			description = "Generates printConfiguration and dump options for ProGuard."
-			val mappingFolder: Provider<File> = variant.mappingFileProvider.map { it.singleFile.parentFile }
-			inputs.property("targetFolder", mappingFolder)
-			outputs.file(outputFile)
-			doFirst {
-				outputFile.parentFile.mkdirs()
-				outputFile.createNewFile()
-				outputFile.writeText(
-					"""
-						-printconfiguration ${mappingFolder.get().resolve("configuration.txt")}
-						-dump ${mappingFolder.get().resolve("dump.txt")}
-					""".trimIndent()
-				)
-			}
-		}
 
 	private fun copy(internalName: String, targetFile: File) {
 		targetFile.parentFile.mkdirs()

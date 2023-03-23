@@ -10,13 +10,6 @@ enum class Minification(
 	val gradleProperties: String,
 ) {
 
-	ProGuard(
-		debugTaskName = "minifyDebugWithProguard",
-		releaseTaskName = "minifyReleaseWithProguard",
-		gradleProperties = """
-			android.enableR8=false
-		""".trimIndent()
-	),
 	R8(
 		debugTaskName = "minifyDebugWithR8",
 		releaseTaskName = "minifyReleaseWithR8",
@@ -47,7 +40,7 @@ enum class Minification(
 					// This also means that `android.enableR8` doesn't exist anymore.
 					listOf(R8, R8Full)
 				else ->
-					listOf(ProGuard, R8, R8Full)
+					AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
 			}
 	}
 }
