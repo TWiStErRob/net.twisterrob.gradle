@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.Variant
-import com.android.build.api.variant.impl.ApplicationVariantImpl
 import com.android.build.api.variant.impl.BuiltArtifactsImpl
 import com.android.build.gradle.BaseExtension
 import com.android.builder.model.BuildType
@@ -50,7 +50,7 @@ class AndroidReleasePlugin : BasePlugin() {
 		val version = android.defaultConfig.extensions.getByType<AndroidVersionExtension>()
 		val withBuildType = project.androidComponents.selector().withBuildType(buildType.name)
 		project.androidComponents.onVariants(withBuildType) { variant ->
-			val appVariant = variant.unwrapCast<Variant, ApplicationVariantImpl>()
+			val appVariant = variant.unwrapCast<Variant, ApplicationVariant>()
 			val releaseVariantTask = registerReleaseTask(version, appVariant)
 			releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
 		}
@@ -59,7 +59,7 @@ class AndroidReleasePlugin : BasePlugin() {
 
 	private fun registerReleaseTask(
 		version: AndroidVersionExtension,
-		variant: ApplicationVariantImpl // STOPSHIP
+		variant: ApplicationVariant
 	): TaskProvider<Zip> =
 		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
@@ -82,7 +82,7 @@ class AndroidReleasePlugin : BasePlugin() {
 				copy.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 			}
 
-			if (variant.minifiedEnabled) {
+			if (variant.isMinifyEnabled) {
 				val mappingFileProvider = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
 				archiveMappingFile(mappingFileProvider.map { it.asFile })
 			}
