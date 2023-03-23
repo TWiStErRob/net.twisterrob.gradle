@@ -1,14 +1,15 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
+import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.AndroidBasePlugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
-import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 
-/**
- * New in AGP 4.2, stable in AGP 7.0.
- */
 val Project.androidComponents: AndroidComponentsExtension<*, *, *>
 	get() {
 		// REPORT hasPlugin("com.android.base") should be equivalent, but returns false during plugins.withType<ABP> { }
@@ -16,5 +17,21 @@ val Project.androidComponents: AndroidComponentsExtension<*, *, *>
 		if (!this.plugins.hasPlugin(AndroidBasePlugin::class.java)) {
 			throw PluginInstantiationException("Cannot use this before the Android plugins are applied.")
 		}
-		return this.extensions["androidComponents"] as AndroidComponentsExtension<*, *, *>
+		return this.extensions.getByName<AndroidComponentsExtension<*, *, *>>("androidComponents")
+	}
+
+val Project.androidComponentsApplication: ApplicationAndroidComponentsExtension
+	get() {
+		if (!this.plugins.hasPlugin(AppPlugin::class.java)) {
+			throw PluginInstantiationException("Cannot use this without the Android application plugin being applied.")
+		}
+		return this.extensions.getByName<ApplicationAndroidComponentsExtension>("androidComponents")
+	}
+
+val Project.androidComponentsLibrary: LibraryAndroidComponentsExtension
+	get() {
+		if (!this.plugins.hasPlugin(LibraryPlugin::class.java)) {
+			throw PluginInstantiationException("Cannot use this without the Android library plugin being applied.")
+		}
+		return this.extensions.getByName<LibraryAndroidComponentsExtension>("androidComponents")
 	}

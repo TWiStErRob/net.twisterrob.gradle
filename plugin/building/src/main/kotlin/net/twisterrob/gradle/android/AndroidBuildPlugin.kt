@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.variant.ResValue
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.api.BaseVariantImpl
@@ -73,7 +75,7 @@ class AndroidBuildPlugin : BasePlugin() {
 
 		project.plugins.withType<AppPlugin> {
 			if (twisterrob.isDecorateBuildConfig) {
-				android.variants.all(::addPackageName)
+				project.androidComponentsApplication.onVariants(callback = ::addPackageName)
 			}
 		}
 		project.afterEvaluate {
@@ -156,7 +158,7 @@ class AndroidBuildPlugin : BasePlugin() {
 			"**/README.txt",
 			"**/README.md",
 		)
-		
+
 		private fun BaseExtension.decorateBuildConfig(project: Project, twisterrob: AndroidBuildPluginExtension) {
 			val buildTimeTaskProvider =
 				project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
@@ -215,11 +217,13 @@ class AndroidBuildPlugin : BasePlugin() {
 			variant.unitTestVariant?.fixTaskMetadata()
 		}
 
-		private fun addPackageName(
-			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant
-		) {
-			// Package name for use e.g. in preferences to launch intent from the right package or for content providers
-			variant.resValue("string", "app_package", variant.applicationId)
+		private fun addPackageName(variant: ApplicationVariant) {
+			val comment =
+				"Package name for use in resources, for example in preferences.xml to launch an intent from the right package, or for ContentProviders' <provider android:authorities, or <searchable android:searchSuggestAuthority."
+			variant.resValues.put(
+				variant.makeResValueKey("string", "app_package"),
+				ResValue(variant.applicationId.get(), comment)
+			)
 		}
 	}
 }
