@@ -201,11 +201,12 @@ class AndroidBuildPlugin : BasePlugin() {
 			fun BaseVariantImpl.fixTaskMetadata() {
 				val variantImpl = this
 				variantData.taskContainerCompat.compileTask.configure { task ->
-					task.group = "Build"
+					// This is now done in TaskManager, at createCompileAnchorTask.
+					task.group = org.gradle.api.plugins.BasePlugin.BUILD_GROUP
 					task.description = "Compiles sources for ${variantImpl.description}."
 				}
 				variantData.taskContainerCompat.javacTask.configure { task ->
-					task.group = "Build"
+					task.group = org.gradle.api.plugins.BasePlugin.BUILD_GROUP
 					task.description = "Compiles Java sources for ${variantImpl.description}."
 				}
 			}
