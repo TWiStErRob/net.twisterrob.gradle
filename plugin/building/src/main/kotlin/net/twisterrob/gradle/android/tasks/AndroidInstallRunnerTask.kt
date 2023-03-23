@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.android.tasks
 
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.TaskManager
 import com.android.xml.AndroidXPathFactory
+import net.twisterrob.gradle.android.androidComponents
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Exec
@@ -10,7 +10,6 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
-import org.gradle.kotlin.dsl.getByName
 import org.gradle.work.DisableCachingByDefault
 import org.intellij.lang.annotations.Language
 import org.jetbrains.annotations.VisibleForTesting
@@ -39,10 +38,7 @@ abstract class AndroidInstallRunnerTask : Exec() {
 		// Always execute as device state cannot be used by Gradle for up-to-date check.
 		outputs.upToDateWhen { false }
 		@Suppress("LeakingThis")
-		adbExecutable.fileProvider(project.provider {
-			val android: BaseExtension = project.extensions.getByName<BaseExtension>("android")
-			android.adbExecutable
-		})
+		adbExecutable.convention(project.androidComponents.sdkComponents.adb)
 	}
 
 	fun updateDescription(variant: String) {
