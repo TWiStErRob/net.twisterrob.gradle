@@ -6,7 +6,7 @@ import net.twisterrob.gradle.common.AGPVersions
 fun TestResult.ignoredCompat(device: String, project: String, flavorName: String) {
 	when {
 		AGPVersions.CLASSPATH >= AGPVersions.v74x -> this.ignoredCompat74x(device, project, flavorName)
-		AGPVersions.CLASSPATH >= AGPVersions.v40x -> this.ignoredCompat40x()
-		else -> AGPVersions.olderThan4NotSupported(AGPVersions.CLASSPATH)
+		AGPVersions.CLASSPATH >= AGPVersions.v70x -> this.ignoredCompat40x()
+		else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
 	}
 }

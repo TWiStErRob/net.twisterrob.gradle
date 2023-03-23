@@ -2,7 +2,6 @@ package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.addBuildConfigField
 import net.twisterrob.gradle.android.intermediateRegularFile
-import net.twisterrob.gradle.common.AGPVersions
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFileProperty
@@ -51,8 +50,6 @@ abstract class CalculateBuildTimeTask : DefaultTask() {
 	companion object {
 
 		internal fun TaskProvider<CalculateBuildTimeTask>.addBuildConfigFields(project: Project) {
-			if (AGPVersions.CLASSPATH < AGPVersions.v41x) get().writeBuildTime()
-
 			val buildTimeField = this
 				.flatMap(CalculateBuildTimeTask::buildTimeFile)
 				.map { file ->

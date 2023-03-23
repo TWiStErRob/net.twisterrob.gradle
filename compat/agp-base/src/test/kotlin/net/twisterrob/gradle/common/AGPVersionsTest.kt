@@ -17,16 +17,6 @@ import kotlin.reflect.full.declaredMembers
 
 class AGPVersionsTest {
 
-	@Test fun `olderThan4NotSupported returns the right message`() {
-		val version = AGPVersion(1, 2, AGPVersion.ReleaseType.Stable, 4)
-
-		val ex = assertThrows<IllegalStateException> {
-			AGPVersions.olderThan4NotSupported(version)
-		}
-
-		assertEquals("AGP 1.2.Stable.4 is not supported, because it's older than 4.*.*.*", ex.message)
-	}
-
 	@Test fun `olderThan7NotSupported returns the right message`() {
 		val version = AGPVersion(1, 2, AGPVersion.ReleaseType.Stable, 4)
 
@@ -35,16 +25,6 @@ class AGPVersionsTest {
 		}
 
 		assertEquals("AGP 1.2.Stable.4 is not supported, because it's older than 7.*.*.*", ex.message)
-	}
-
-	@Test fun `otherThan4NotSupported returns the right message`() {
-		val version = AGPVersion(1, 2, AGPVersion.ReleaseType.Stable, 4)
-
-		val ex = assertThrows<IllegalStateException> {
-			AGPVersions.otherThan4NotSupported(version)
-		}
-
-		assertEquals("AGP 1.2.Stable.4 is not supported, because it's not compatible with 4.*.*.*", ex.message)
 	}
 
 	@DisabledOnJre(JRE.JAVA_8)

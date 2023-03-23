@@ -37,11 +37,7 @@ object AGPVersions {
 	val v32x: AGPVersion = AGPVersion(major = 3, minor = 2, type = null, patch = null)
 	val v33x: AGPVersion = AGPVersion(major = 3, minor = 3, type = null, patch = null)
 	val v34x: AGPVersion = AGPVersion(major = 3, minor = 4, type = null, patch = null)
-	val v36x: AGPVersion = AGPVersion(major = 3, minor = 6, type = null, patch = null)
-	val v4xx: AGPVersion = AGPVersion(major = 4, minor = null, type = null, patch = null)
-	val v40x: AGPVersion = AGPVersion(major = 4, minor = 0, type = null, patch = null)
 	val v41x: AGPVersion = AGPVersion(major = 4, minor = 1, type = null, patch = null)
-	val v42x: AGPVersion = AGPVersion(major = 4, minor = 2, type = null, patch = null)
 	val v7xx: AGPVersion = AGPVersion(major = 7, minor = null, type = null, patch = null)
 	val v70x: AGPVersion = AGPVersion(major = 7, minor = 0, type = null, patch = null)
 	val v71x: AGPVersion = AGPVersion(major = 7, minor = 1, type = null, patch = null)
@@ -92,17 +88,7 @@ object AGPVersions {
 		}
 
 	@Throws(IllegalStateException::class)
-	fun olderThan4NotSupported(version: AGPVersion): Nothing {
-		error("AGP ${version} is not supported, because it's older than ${v4xx}")
-	}
-
-	@Throws(IllegalStateException::class)
 	fun olderThan7NotSupported(version: AGPVersion): Nothing {
 		error("AGP ${version} is not supported, because it's older than ${v7xx}")
-	}
-
-	@Throws(IllegalStateException::class)
-	fun otherThan4NotSupported(version: AGPVersion): Nothing {
-		error("AGP ${version} is not supported, because it's not compatible with ${v4xx}")
 	}
 }

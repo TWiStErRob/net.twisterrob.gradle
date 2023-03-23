@@ -237,30 +237,16 @@ class LintPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `ignores disabled variants (direct setup)`() {
-		if (AGPVersions.UNDER_TEST < AGPVersions.v41x) {
-			// Disabling all variants is not supported:
-			// A problem was found with the configuration of task ':module2:lint' (type 'LintGlobalTask').
-			// > No value has been specified for property 'lintClassPath'.
-			return
-		}
 		val result = `ignores disabled submodule lint tasks` {
 			val build2 = gradle.buildFile.parentFile.resolve("module2/build.gradle")
 			build2.appendText(System.lineSeparator())
-			if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) {
-				build2.appendText(
-					"""
+			build2.appendText(
+				"""
 					androidComponents {
 						beforeVariants(selector().all()) { enabled = false }
 					}
 				""".trimIndent()
-				)
-			} else {
-				build2.appendText(
-					"""
-					android.variantFilter { ignore = true }
-				""".trimIndent()
-				)
-			}
+			)
 			it
 		}
 		if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) {

@@ -178,7 +178,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 			doFirst {
 				outputFile.parentFile.mkdirs()
 				outputFile.createNewFile()
-				if (AGPVersions.CLASSPATH < AGPVersions.v41x) {
+				if (AGPVersions.CLASSPATH < AGPVersions.v41x) { // STOPSHIP fully remove
 					outputFile.appendText("-printconfiguration ${mappingFolder.get().resolve("configuration.txt")}\n")
 				}
 			}
