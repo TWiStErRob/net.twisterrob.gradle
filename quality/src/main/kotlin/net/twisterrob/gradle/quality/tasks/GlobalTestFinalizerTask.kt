@@ -2,14 +2,12 @@ package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedOnly
-import net.twisterrob.gradle.compat.setRequired
 import net.twisterrob.gradle.quality.gather.TestReportGatherer
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.TestReport
 import org.gradle.kotlin.dsl.withType
@@ -54,7 +52,7 @@ open class GlobalTestFinalizerTask : TestReport() {
 				.flatMap { it.tasks.withType<Test>() } // Forces to create the tasks.
 				.onEach { test ->
 					// Make sure we have XML output, otherwise can't figure out if test failed.
-					test.reports.junitXml.setRequired(true)
+					test.reports.junitXml.required.set(true)
 					// Let the tests/build finish, to get a final "all" report.
 					test.ignoreFailures = !test.wasLaunchedOnly
 				}
@@ -68,71 +66,55 @@ open class GlobalTestFinalizerTask : TestReport() {
 }
 
 private val Test.binaryResultsDirectoryCompat: Any?
-	get() =
-		if (GradleVersion.current().baseVersion < GradleVersion.version("5.6")) {
-			@Suppress("DEPRECATION")
-			this.binResultsDir
-		} else {
-			// Need to create an indirection with a provider to keep it lazy,
-			// but also detach from the DirectoryProperty, which references its owning task.
-			project.provider { this.binaryResultsDirectory.get() }
-		}
+	// Need to create an indirection with a provider to keep it lazy,
+	// but also detach from the DirectoryProperty, which references its owning task.
+	get() = project.provider { this.binaryResultsDirectory.get() }
 
-/**
- * Polyfill as reflective call, as this method was...
- *  * Originally added as [Test.binResultsDir] as [org.gradle.api.Incubating].
- *  * [Refactored to AbstractTestTask in Gradle 4.4](https://github.com/gradle/gradle/pull/3234)
- *  * [Deprecated in Gradle 6.0](https://github.com/gradle/gradle/pull/10473)
- *  * [Removed in Gradle 8.0](https://docs.gradle.org/8.0-rc-1/userguide/upgrading_version_7.html#abstracttesttask_api_cleanup)
- *
- * @see AbstractTestTask.getBinaryResultsDirectory
- */
-@Deprecated(
-	message = "Replaced with AbstractTestTask.binaryResultsDirectory.",
-	replaceWith = ReplaceWith("binaryResultsDirectory.set(value)")
-)
-@Suppress("VarCouldBeVal")
-private var AbstractTestTask.binResultsDir: File
-	get() {
-		val method = AbstractTestTask::class.java.getDeclaredMethod("getBinResultsDir")
-		return method(this) as File
-	}
-	set(value) {
-		val method = AbstractTestTask::class.java.getDeclaredMethod("setBinResultsDir", File::class.java)
-		method(this, value)
-	}
-
+@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 private var TestReport.destinationDirCompat: File
 	get() =
-		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 9 */)
-			this.destinationDir
-		} else {
-			this.destinationDirectory.get().asFile
+		when {
+			GradleVersion.version("7.4") <= GradleVersion.current().baseVersion -> {
+				this.destinationDirectory.get().asFile
+			}
+			else -> {
+				@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 9 */)
+				this.destinationDir
+			}
 		}
 	set(value) {
-		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 8 */)
-			this.destinationDir = value
-		} else {
-			this.destinationDirectory.set(value)
+		when {
+			GradleVersion.version("7.4") <= GradleVersion.current().baseVersion -> {
+				this.destinationDirectory.set(value)
+			}
+			else -> {
+				@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 9 */)
+				this.destinationDir = value
+			}
 		}
 	}
 
+@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 private var TestReport.testResultsCompat: FileCollection
 	get() =
-		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION")
-			this.testResultDirs
-		} else {
-			this.testResults
+		when {
+			GradleVersion.version("7.4") <= GradleVersion.current().baseVersion -> {
+				this.testResults
+			}
+			else -> {
+				@Suppress("DEPRECATION" /* Gradle 7.6, removed in Gradle 8 */)
+				this.testResultDirs
+			}
 		}
 	set(value) {
-		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION" /* Gradle 7.4, to be removed in Gradle 9 */)
-			this.reportOn(value)
-		} else {
-			this.testResults.from(value)
+		when {
+			GradleVersion.version("7.4") <= GradleVersion.current().baseVersion -> {
+				this.testResults.from(value)
+			}
+			else -> {
+				@Suppress("DEPRECATION" /* Gradle 7.4, to be removed in Gradle 9 */)
+				this.reportOn(value)
+			}
 		}
 	}
 

@@ -70,11 +70,3 @@ dependencies {
 tasks.register("tests") {
 	dependsOn(allprojects.map { it.tasks.named("test") })
 }
-
-allprojects {
-	tasks.withType<Test>().configureEach {
-		onlyIf {
-			it.project.property("net.twisterrob.test.android.pluginVersion").toString() >= "4.0.0"
-		}
-	}
-}

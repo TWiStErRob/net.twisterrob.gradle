@@ -9,7 +9,6 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertNoSource
 import net.twisterrob.gradle.test.assertSuccess
-import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -41,28 +40,20 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `applying java by the old name is deprecated`() {
-		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
-			val result = gradle.run("apply plugin: 'net.twisterrob.java'").build()
-			result.assertHasOutputLine(
-				"Plugin net.twisterrob.java is deprecated, " +
-						"please use net.twisterrob.gradle.plugin.java instead."
+		val result = gradle.run("apply plugin: 'net.twisterrob.java'").buildAndFail()
+		result.assertHasOutputLine(
+			Regex(
+				"""org\.gradle\.api\.GradleException: """ +
+						"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
 			)
-		} else {
-			val result = gradle.run("apply plugin: 'net.twisterrob.java'").buildAndFail()
-			result.assertHasOutputLine(
-				Regex(
-					"""org\.gradle\.api\.GradleException: """ +
-							"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
-				)
+		)
+		result.assertHasOutputLine(
+			Regex(
+				"""The net\.twisterrob\.java plugin has been deprecated\. """
+						+ """This is scheduled to be removed in Gradle \d\.0\. """
+						+ """Please use the net\.twisterrob\.gradle\.plugin\.java plugin instead."""
 			)
-			result.assertHasOutputLine(
-				Regex(
-					"""The net\.twisterrob\.java plugin has been deprecated\. """
-							+ """This is scheduled to be removed in Gradle \d\.0\. """
-							+ """Please use the net\.twisterrob\.gradle\.plugin\.java plugin instead."""
-				)
-			)
-		}
+		)
 	}
 
 	@Test fun `java-library plugin can be applied standalone`() {
@@ -82,28 +73,20 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `applying java-library by the old name is deprecated`() {
-		if (gradle.gradleVersion.baseVersion < GradleVersion.version("6.3")) {
-			val result = gradle.run("apply plugin: 'net.twisterrob.java-library'").build()
-			result.assertHasOutputLine(
-				"Plugin net.twisterrob.java-library is deprecated, " +
-						"please use net.twisterrob.gradle.plugin.java-library instead."
+		val result = gradle.run("apply plugin: 'net.twisterrob.java-library'").buildAndFail()
+		result.assertHasOutputLine(
+			Regex(
+				"""org\.gradle\.api\.GradleException: """ +
+						"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
 			)
-		} else {
-			val result = gradle.run("apply plugin: 'net.twisterrob.java-library'").buildAndFail()
-			result.assertHasOutputLine(
-				Regex(
-					"""org\.gradle\.api\.GradleException: """ +
-							"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d.0"""
-				)
+		)
+		result.assertHasOutputLine(
+			Regex(
+				"""The net\.twisterrob\.java-library plugin has been deprecated\. """
+						+ """This is scheduled to be removed in Gradle \d\.0\. """
+						+ """Please use the net\.twisterrob\.gradle\.plugin\.java-library plugin instead."""
 			)
-			result.assertHasOutputLine(
-				Regex(
-					"""The net\.twisterrob\.java-library plugin has been deprecated\. """
-							+ """This is scheduled to be removed in Gradle \d\.0\. """
-							+ """Please use the net\.twisterrob\.gradle\.plugin\.java-library plugin instead."""
-				)
-			)
-		}
+		)
 	}
 
 	@Test fun `default-enabled warnings can be turned off`() {

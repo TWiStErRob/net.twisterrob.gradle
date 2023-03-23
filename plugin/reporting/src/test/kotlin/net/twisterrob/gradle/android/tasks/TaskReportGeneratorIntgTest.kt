@@ -8,7 +8,6 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.root
-import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.io.FileMatchers.anExistingDirectory
@@ -58,12 +57,8 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script, "generateHtmlReportFromXml").buildAndFail()
 
-		val expectedError = when {
-			gradle.gradleVersion.baseVersion < GradleVersion.version("7.0") ->
-				"No value has been specified for property 'output'."
-			else ->
-				"Type '${TestReportGenerator::class.qualifiedName}' property 'output' doesn't have a configured value."
-		}
+		val expectedError =
+			"Type '${TestReportGenerator::class.qualifiedName}' property 'output' doesn't have a configured value."
 		assertThat(result.failReason, containsString(expectedError))
 	}
 
@@ -80,12 +75,8 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script, "generateHtmlReportFromXml").buildAndFail()
 
-		val expectedError = when {
-			gradle.gradleVersion.baseVersion < GradleVersion.version("7.0") ->
-				"No value has been specified for property 'input'."
-			else ->
-				"Type '${TestReportGenerator::class.qualifiedName}' property 'input' doesn't have a configured value."
-		}
+		val expectedError =
+			"Type '${TestReportGenerator::class.qualifiedName}' property 'input' doesn't have a configured value."
 		assertThat(result.failReason, containsString(expectedError))
 	}
 }

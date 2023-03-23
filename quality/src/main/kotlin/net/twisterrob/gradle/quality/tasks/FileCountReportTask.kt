@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.common.grouper.Grouper
-import net.twisterrob.gradle.compat.conventionCompat
 import net.twisterrob.gradle.dsl.reporting
 import net.twisterrob.gradle.quality.Violations
 import org.gradle.api.file.RegularFileProperty
@@ -17,7 +16,7 @@ abstract class FileCountReportTask : BaseViolationsTask() {
 	abstract val output: RegularFileProperty
 
 	init {
-		output.conventionCompat(project.reporting.baseDirectory.file("violations.count"))
+		output.convention(project.reporting.baseDirectory.file("violations.count"))
 	}
 
 	override fun processViolations(violations: Grouper.Start<Violations>) {

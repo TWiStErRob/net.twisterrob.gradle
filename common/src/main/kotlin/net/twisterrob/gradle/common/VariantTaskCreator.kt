@@ -1,8 +1,6 @@
 package net.twisterrob.gradle.common
 
 import com.android.SdkConstants.FD_GENERATED
-import net.twisterrob.gradle.compat.setOutputLocationCompat
-import net.twisterrob.gradle.compat.setRequired
 import org.gradle.api.Action
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
@@ -13,9 +11,11 @@ import org.gradle.api.reporting.ConfigurableReport
 import org.gradle.api.reporting.ReportContainer
 import org.gradle.api.reporting.Reporting
 import org.gradle.api.reporting.ReportingExtension
+import org.gradle.api.reporting.SingleFileReport
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.VerificationTask
+import org.gradle.kotlin.dsl.named
 import java.io.File
 
 @Suppress("DEPRECATION" /* AGP 7.0 */)
@@ -180,13 +180,13 @@ T : VerificationTask {
 				?: error("Cannot find reporting extension, did you apply `reporting` plugin?")
 			val reportsDir = reporting.baseDirectory
 			with(task.reports) {
-				getByName("xml") { xml ->
-					xml.setRequired(true)
-					xml.setOutputLocationCompat(reportsDir.file("${baseName}${fullSuffix}.xml"))
+				named<SingleFileReport>("xml").configure { xml ->
+					xml.required.set(true)
+					xml.outputLocation.set(reportsDir.file("${baseName}${fullSuffix}.xml"))
 				}
-				getByName("html") { html ->
-					html.setRequired(true)
-					html.setOutputLocationCompat(reportsDir.file("${baseName}${fullSuffix}.html"))
+				named<SingleFileReport>("html").configure { html ->
+					html.required.set(true)
+					html.outputLocation.set(reportsDir.file("${baseName}${fullSuffix}.html"))
 				}
 			}
 		}

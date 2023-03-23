@@ -2,8 +2,6 @@ package net.twisterrob.gradle.quality.tasks
 
 import com.android.utils.SdkUtils
 import net.twisterrob.gradle.common.grouper.Grouper
-import net.twisterrob.gradle.compat.conventionCompat
-import net.twisterrob.gradle.compat.flatMapCompat
 import net.twisterrob.gradle.dsl.reporting
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.bestXMLTransformerFactory
@@ -57,10 +55,10 @@ abstract class HtmlReportTask : BaseViolationsTask() {
 	abstract val xsl: RegularFileProperty
 
 	init {
-		xml.conventionCompat(project.reporting.baseDirectory.file("violations.xml"))
-		html.conventionCompat(project.reporting.baseDirectory.file("violations.html"))
-		xsl.conventionCompat(
-			xml.flatMapCompat { regular ->
+		xml.convention(project.reporting.baseDirectory.file("violations.xml"))
+		html.convention(project.reporting.baseDirectory.file("violations.html"))
+		xsl.convention(
+			xml.flatMap { regular ->
 				project.layout.file(project.provider {
 					regular.asFile.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl")
 				})

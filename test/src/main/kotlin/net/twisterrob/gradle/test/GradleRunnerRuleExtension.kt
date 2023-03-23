@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.test
 
-import org.gradle.util.GradleVersion
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
@@ -11,7 +10,9 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 	private val rule = object : GradleRunnerRule() {
 
 		override val extraArgs: Array<String>
-			get() = super.extraArgs + strictWarningMode() + arrayOf(
+			get() = super.extraArgs + arrayOf(
+				// https://docs.gradle.org/5.6/release-notes.html#fail-the-build-on-deprecation-warnings
+				"--warning-mode=fail",
 				"--init-script=runtime.init.gradle.kts",
 				"--init-script=nagging.init.gradle.kts",
 			)
@@ -22,14 +23,6 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 			file(readResource("runtime.init.gradle.kts"), "runtime.init.gradle.kts")
 			//javaHome = File(System.getenv(System.getProperty("net.twisterrob.test.gradle.javaHomeEnv")))
 		}
-
-		private fun strictWarningMode(): Array<String> =
-			if (GradleVersion.version("5.6") <= gradleVersion) {
-				// https://docs.gradle.org/5.6/release-notes.html#fail-the-build-on-deprecation-warnings
-				arrayOf("--warning-mode=fail")
-			} else {
-				emptyArray() // "fail" was not a valid option for --warning-mode before Gradle 5.6.
-			}
 
 		private fun readResource(name: String): String {
 			val initGradle = GradleRunnerRuleExtension::class.java.getResourceAsStream(name)

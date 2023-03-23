@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.quality.gather
 
 import net.twisterrob.gradle.common.TargetChecker
-import net.twisterrob.gradle.compat.getOutputLocationCompat
 import org.gradle.api.Task
 import org.gradle.api.reporting.ReportContainer
 import org.gradle.api.reporting.Reporting
@@ -20,10 +19,12 @@ T : TargetChecker,
 T : Reporting<out ReportContainer<out SingleFileReport>> {
 
 	override fun getParsableReportLocation(task: T): File =
-		task.reports.getByName("xml").getOutputLocationCompat()
+		@Suppress("MaxChainedCallsOnSameLine") // Simple enough.
+		task.reports.getByName("xml").outputLocation.get().asFile
 
 	override fun getHumanReportLocation(task: T): File =
-		task.reports.getByName("html").getOutputLocationCompat()
+		@Suppress("MaxChainedCallsOnSameLine") // Simple enough.
+		task.reports.getByName("html").outputLocation.get().asFile
 
 	override fun getName(task: T): String =
 		task.checkTargetName
