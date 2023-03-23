@@ -66,42 +66,53 @@ open class GlobalTestFinalizerTask : TestReport() {
 }
 
 private val Test.binaryResultsDirectoryCompat: Any?
-	get() = // STOPSHIP inline?
-		// Need to create an indirection with a provider to keep it lazy,
-		// but also detach from the DirectoryProperty, which references its owning task.
-		project.provider { this.binaryResultsDirectory.get() }
+	// Need to create an indirection with a provider to keep it lazy,
+	// but also detach from the DirectoryProperty, which references its owning task.
+	get() = project.provider { this.binaryResultsDirectory.get() }
 
 private var TestReport.destinationDirCompat: File
-	get() = // STOPSHIP did the new version exist in 7.0?
-		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 9 */)
-			this.destinationDir
-		} else {
-			this.destinationDirectory.get().asFile
+	get() =
+		when {
+			GradleVersion.version("7.4") <= GradleVersion.current().baseVersion -> {
+				this.destinationDirectory.get().asFile
+			}
+			else -> {
+				@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 9 */)
+				this.destinationDir
+			}
 		}
 	set(value) {
-		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 8 */)
-			this.destinationDir = value
-		} else {
-			this.destinationDirectory.set(value)
+		when {
+			GradleVersion.version("7.4") <= GradleVersion.current().baseVersion -> {
+				this.destinationDirectory.set(value)
+			}
+			else -> {
+				@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 9 */)
+				this.destinationDir = value
+			}
 		}
 	}
 
 private var TestReport.testResultsCompat: FileCollection
-	get() = // STOPSHIP did the new version exist in 7.0?
-		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION")
-			this.testResultDirs
-		} else {
-			this.testResults
+	get() =
+		when {
+			GradleVersion.version("7.4") <= GradleVersion.current().baseVersion -> {
+				this.testResults
+			}
+			else -> {
+				@Suppress("DEPRECATION" /* Gradle 7.6, removed in Gradle 8 */)
+				this.testResultDirs
+			}
 		}
 	set(value) {
-		if (GradleVersion.current().baseVersion < GradleVersion.version("7.4")) {
-			@Suppress("DEPRECATION" /* Gradle 7.4, to be removed in Gradle 9 */)
-			this.reportOn(value)
-		} else {
-			this.testResults.from(value)
+		when {
+			GradleVersion.version("7.4") <= GradleVersion.current().baseVersion -> {
+				this.testResults.from(value)
+			}
+			else -> {
+				@Suppress("DEPRECATION" /* Gradle 7.4, to be removed in Gradle 9 */)
+				this.reportOn(value)
+			}
 		}
 	}
 

@@ -18,7 +18,7 @@ import org.gradle.util.GradleVersion
 import java.io.File
 
 /**
- * Gradle 4.3-8.0 compatible version of [Report.getOutputLocation].get().
+ * Gradle 6.1-8.0 compatible version of [Report.getOutputLocation].get().
  *
  * @see Report.getOutputLocation
  * @see Report.getDestination
@@ -26,14 +26,15 @@ import java.io.File
 @Suppress("KDocUnresolvedReference")
 fun Report.getOutputLocationCompat(): File = // STOPSHIP provider
 	when {
-		GradleVersion.current().baseVersion < GradleVersion.version("8.0") -> {
-			// New in Gradle 6.1 with return type Provider<? extends FileSystemLocation>.
-			this.outputLocationCompat.get().asFile
-		}
-		else -> {
+		GradleVersion.version("8.0") <= GradleVersion.current().baseVersion -> {
 			// Return type changed in Gradle 8.0 to Property<? extends FileSystemLocation>.
 			this.outputLocation.get().asFile
 		}
+		GradleVersion.version("6.1") <= GradleVersion.current().baseVersion -> {
+			// New in Gradle 6.1 with return type Provider<? extends FileSystemLocation>.
+			this.outputLocationCompat.get().asFile
+		}
+		else -> error("Lowest supported version is Gradle 7.0")
 	}
 
 /**
