@@ -9,7 +9,6 @@ import com.android.build.gradle.internal.api.productionVariant
 import com.android.build.gradle.internal.api.unitTestVariant
 import com.android.build.gradle.internal.api.variantData
 import com.android.build.gradle.internal.dsl.BuildType
-import com.android.build.gradle.internal.dsl.PackagingOptions
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addBuildConfigFields
@@ -58,10 +57,8 @@ class AndroidBuildPlugin : BasePlugin() {
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
 
 			with(defaultConfig) {
-				@Suppress("DEPRECATION" /* AGP 7.0 */)
-				minSdkVersion(VERSION_SDK_MINIMUM)
-				@Suppress("DEPRECATION" /* AGP 7.0 */)
-				targetSdkVersion(VERSION_SDK_TARGET)
+				minSdk = VERSION_SDK_MINIMUM
+				targetSdk = VERSION_SDK_TARGET
 				vectorDrawables.useSupportLibrary = true
 			}
 			with(buildTypes) {
@@ -69,7 +66,7 @@ class AndroidBuildPlugin : BasePlugin() {
 				configureBuildResValues()
 			}
 			with(packagingOptions) {
-				excludeKnownFiles()
+				resources.excludes.addAll(knownUnneededFiles)
 			}
 			decorateBuildConfig(project, twisterrob)
 		}
@@ -138,28 +135,28 @@ class AndroidBuildPlugin : BasePlugin() {
 		/**
 		 * Configure files we don't need in APKs.
 		 */
-		@Suppress("DEPRECATION" /* AGP 7.0 */)
-		private fun PackagingOptions.excludeKnownFiles() {
+		val knownUnneededFiles = listOf(
 			// support-annotations-28.0.0.jar contains this file
 			// it's for Android Gradle Plugin at best, if at all used
-			exclude("META-INF/proguard/androidx-annotations.pro")
+			"META-INF/proguard/androidx-annotations.pro",
 
 			// Each Android Support Library component has a separate entry for storing version.
 			// Probably used by Google Play to do statistics, gracefully opt out of this.
-			exclude("META-INF/android.*.version")
-			exclude("META-INF/androidx.*.version")
+			"META-INF/android.*.version",
+			"META-INF/androidx.*.version",
 
-			// Kotlin builds these things in, found no docs so far about their necessity, so try to exclude
-			exclude("**/*.kotlin_metadata")
-			exclude("**/*.kotlin_module")
-			exclude("**/*.kotlin_builtins")
+			// Needed for compiling against top-level functions. Since APK is end product, this is not necessary.
+			"**/*.kotlin_metadata",
+			// Kotlin builds these things in, found no docs so far about their necessity, so try to exclude.
+			"**/*.kotlin_module",
+			"**/*.kotlin_builtins",
 
 			// Readmes
 			// (e.g. hamcrest-library-2.1.jar and hamcrest-core-2.1.jar both pack a readme to encourage upgrade)
-			exclude("**/README.txt")
-			exclude("**/README.md")
-		}
-
+			"**/README.txt",
+			"**/README.md",
+		)
+		
 		private fun BaseExtension.decorateBuildConfig(project: Project, twisterrob: AndroidBuildPluginExtension) {
 			val buildTimeTaskProvider =
 				project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
