@@ -6,9 +6,14 @@ import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.AndroidBasePlugin
+import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.getByName
+
+fun Project.androidComponents(block: Action<AndroidComponentsExtension<*, *, *>>) {
+	block.execute(this.androidComponents)
+}
 
 val Project.androidComponents: AndroidComponentsExtension<*, *, *>
 	get() {
@@ -20,6 +25,10 @@ val Project.androidComponents: AndroidComponentsExtension<*, *, *>
 		return this.extensions.getByName<AndroidComponentsExtension<*, *, *>>("androidComponents")
 	}
 
+fun Project.androidComponentsApplication(block: Action<ApplicationAndroidComponentsExtension>) {
+	block.execute(this.androidComponentsApplication)
+}
+
 val Project.androidComponentsApplication: ApplicationAndroidComponentsExtension
 	get() {
 		if (!this.plugins.hasPlugin(AppPlugin::class.java)) {
@@ -27,6 +36,10 @@ val Project.androidComponentsApplication: ApplicationAndroidComponentsExtension
 		}
 		return this.extensions.getByName<ApplicationAndroidComponentsExtension>("androidComponents")
 	}
+
+fun Project.androidComponentsLibrary(block: Action<LibraryAndroidComponentsExtension>) {
+	block.execute(this.androidComponentsLibrary)
+}
 
 val Project.androidComponentsLibrary: LibraryAndroidComponentsExtension
 	get() {
