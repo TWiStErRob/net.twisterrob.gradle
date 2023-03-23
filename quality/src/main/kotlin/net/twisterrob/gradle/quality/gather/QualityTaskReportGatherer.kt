@@ -5,7 +5,6 @@ import org.gradle.api.Task
 import org.gradle.api.reporting.ReportContainer
 import org.gradle.api.reporting.Reporting
 import org.gradle.api.reporting.SingleFileReport
-import org.gradle.kotlin.dsl.getByName
 import se.bjurr.violations.lib.model.Violation
 import se.bjurr.violations.lib.reports.Parser
 import java.io.File
@@ -20,10 +19,12 @@ T : TargetChecker,
 T : Reporting<out ReportContainer<out SingleFileReport>> {
 
 	override fun getParsableReportLocation(task: T): File =
-		task.reports.getByName<SingleFileReport>("xml").outputLocation.get().asFile
+		@Suppress("MaxChainedCallsOnSameLine") // Simple enough.
+		task.reports.getByName("xml").outputLocation.get().asFile
 
 	override fun getHumanReportLocation(task: T): File =
-		task.reports.getByName<SingleFileReport>("html").outputLocation.get().asFile
+		@Suppress("MaxChainedCallsOnSameLine") // Simple enough.
+		task.reports.getByName("html").outputLocation.get().asFile
 
 	override fun getName(task: T): String =
 		task.checkTargetName

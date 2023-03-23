@@ -11,9 +11,11 @@ class TestReportGatherer<T>(
 ) : TaskReportGatherer<T>(taskType) where T : Test {
 
 	override fun getParsableReportLocation(task: T): File =
+		@Suppress("MaxChainedCallsOnSameLine") // Simple enough.
 		task.reports.junitXml.outputLocation.get().asFile
 
 	override fun getHumanReportLocation(task: T): File =
+		@Suppress("MaxChainedCallsOnSameLine") // Simple enough.
 		task.reports.html.outputLocation.get().asFile
 
 	override fun getName(task: T): String =
