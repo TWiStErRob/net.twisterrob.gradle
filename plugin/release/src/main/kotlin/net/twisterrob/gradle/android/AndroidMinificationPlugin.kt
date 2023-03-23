@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.SdkConstants
+import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
@@ -74,7 +75,9 @@ class AndroidMinificationPlugin : BasePlugin() {
 		}
 
 		lintDependsOnGenerateRulesTask(extractMinificationRules)
-		android.generateVariantRules(extractMinificationRules)
+		project.androidComponents.onVariants { variant ->
+			generateVariantRules(variant, extractMinificationRules)
+		}
 	}
 
 	private fun BaseExtension.setupAutoProguardFiles() {
@@ -94,13 +97,11 @@ class AndroidMinificationPlugin : BasePlugin() {
 		}
 	}
 
-	private fun BaseExtension.generateVariantRules(extractMinificationRules: TaskProvider<Task>) {
+	private fun generateVariantRules(variant: Variant, extractMinificationRules: TaskProvider<Task>) {
 		project.afterEvaluate { project ->
-			variants.configureEach { variant ->
-				project.tasks.withType<R8Task>().configureEach { obfuscationTask ->
-					if (obfuscationTask.variantName == variant.name) {
-						obfuscationTask.dependsOn(extractMinificationRules)
-					}
+			project.tasks.withType<R8Task>().configureEach { obfuscationTask ->
+				if (obfuscationTask.variantName == variant.name) {
+					obfuscationTask.dependsOn(extractMinificationRules)
 				}
 			}
 		}

@@ -57,17 +57,6 @@ fun PluginContainer.hasAndroid(): Boolean =
 fun PluginContainer.hasAndroidTest(): Boolean =
 	hasPlugin("com.android.test")
 
-val BaseExtension.variants:
-		DomainObjectSet<out @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant>
-	get() =
-		when (this) {
-			is AppExtension -> applicationVariants
-			is LibraryExtension -> libraryVariants
-			is TestExtension -> applicationVariants
-			is TestedExtension -> testVariants
-			else -> throw IllegalArgumentException("Unknown extension: $this")
-		}
-
 fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) {
 	configureEach { buildType ->
 		if (buildType.name == name) {
