@@ -70,6 +70,7 @@ private val Test.binaryResultsDirectoryCompat: Any?
 	// but also detach from the DirectoryProperty, which references its owning task.
 	get() = project.provider { this.binaryResultsDirectory.get() }
 
+@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 private var TestReport.destinationDirCompat: File
 	get() =
 		when {
@@ -93,6 +94,7 @@ private var TestReport.destinationDirCompat: File
 		}
 	}
 
+@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 private var TestReport.testResultsCompat: FileCollection
 	get() =
 		when {
