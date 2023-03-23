@@ -3,6 +3,11 @@ package net.twisterrob.gradle.android
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.internal.api.BaseVariantImpl
+import com.android.build.gradle.internal.api.androidTestVariant
+import com.android.build.gradle.internal.api.productionVariant
+import com.android.build.gradle.internal.api.unitTestVariant
+import com.android.build.gradle.internal.api.variantData
 import com.android.build.gradle.internal.dsl.BuildType
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
@@ -72,6 +77,9 @@ class AndroidBuildPlugin : BasePlugin() {
 			}
 		}
 		project.afterEvaluate {
+			if (project.plugins.hasAndroid()) {
+				android.variants.all(::fixVariantTaskGroups)
+			}
 			project.plugins.withType<AppPlugin> {
 				android.variants.all { variant ->
 					registerRunTask(
@@ -185,6 +193,25 @@ class AndroidBuildPlugin : BasePlugin() {
 				this.applicationId.set(variant.applicationId)
 				this.updateDescription(variant.description)
 			}
+		}
+
+		private fun fixVariantTaskGroups(
+			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant
+		) {
+			fun BaseVariantImpl.fixTaskMetadata() {
+				val variantImpl = this
+				variantData.taskContainerCompat.compileTask.configure { task ->
+					task.group = "Build"
+					task.description = "Compiles sources for ${variantImpl.description}."
+				}
+				variantData.taskContainerCompat.javacTask.configure { task ->
+					task.group = "Build"
+					task.description = "Compiles Java sources for ${variantImpl.description}."
+				}
+			}
+			variant.productionVariant.fixTaskMetadata()
+			variant.androidTestVariant?.fixTaskMetadata()
+			variant.unitTestVariant?.fixTaskMetadata()
 		}
 
 		private fun addPackageName(
