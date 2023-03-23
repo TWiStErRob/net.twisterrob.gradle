@@ -2,13 +2,10 @@ package net.twisterrob.gradle.checkstyle
 
 import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.Project
-import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleReports
-import org.gradle.api.provider.Provider
 import org.gradle.api.reporting.CustomizableHtmlReport
 import org.gradle.api.reporting.SingleFileReport
 import org.gradle.api.tasks.Internal
-import java.io.File
 
 class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTask>(
 	project,

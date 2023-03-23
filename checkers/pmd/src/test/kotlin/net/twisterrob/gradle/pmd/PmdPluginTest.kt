@@ -13,7 +13,6 @@ import net.twisterrob.gradle.test.runFailingBuild
 import net.twisterrob.gradle.test.tasksIn
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.TaskOutcome
-import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.containsStringIgnoringCase
