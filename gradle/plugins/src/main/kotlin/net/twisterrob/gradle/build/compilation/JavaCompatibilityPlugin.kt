@@ -10,7 +10,8 @@ import org.gradle.kotlin.dsl.withModule
 class JavaCompatibilityPlugin : Plugin<Project> {
 	override fun apply(target: Project) {
 		target.dependencies.components {
-			// Between AGP 7.4.0-alpha04-09, Google changed the Java compiler and class file format to be Java 11. 
+			// AGP 8.0.0-alpha10 requires Java 17 (https://issuetracker.google.com/issues/241546506)
+			// Google changed the Java compiler and class file format to be Java 17. 
 			// ```
 			// Execution failed for task ':compat:agp-74x:compileKotlin'.
 			// > Could not resolve all files for configuration ':compat:agp-74x:compileClasspath'.
@@ -29,18 +30,18 @@ class JavaCompatibilityPlugin : Plugin<Project> {
 			// so that the produced jars can still be used with Java 8.
 			// https://docs.gradle.org/current/userguide/component_metadata_rules.html
 
-			val javaVersion = target.libs.versions.java.get()
-				.let { JavaVersion.toVersion(it).majorVersion.toInt() }
+			//val javaVersion = target.libs.versions.java.get()
+			//	.let { JavaVersion.toVersion(it).majorVersion.toInt() }
 
-			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-api") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-settings-api") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:builder") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:builder-model") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:builder-test-api") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:manifest-merger") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:aapt2-proto") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:aaptcompiler") { params(javaVersion) }
+			//withModule<TargetJvmVersionRule>("com.android.tools.build:gradle") { params(javaVersion) }
+			//withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-api") { params(javaVersion) }
+			//withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-settings-api") { params(javaVersion) }
+			//withModule<TargetJvmVersionRule>("com.android.tools.build:builder") { params(javaVersion) }
+			//withModule<TargetJvmVersionRule>("com.android.tools.build:builder-model") { params(javaVersion) }
+			//withModule<TargetJvmVersionRule>("com.android.tools.build:builder-test-api") { params(javaVersion) }
+			//withModule<TargetJvmVersionRule>("com.android.tools.build:manifest-merger") { params(javaVersion) }
+			//withModule<TargetJvmVersionRule>("com.android.tools.build:aapt2-proto") { params(javaVersion) }
+			//withModule<TargetJvmVersionRule>("com.android.tools.build:aaptcompiler") { params(javaVersion) }
 		}
 	}
 }
