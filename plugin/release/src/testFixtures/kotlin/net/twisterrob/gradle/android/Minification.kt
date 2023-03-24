@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.android
 
-import net.twisterrob.gradle.common.AGPVersions
 import org.intellij.lang.annotations.Language
 
 enum class Minification(
@@ -10,6 +9,16 @@ enum class Minification(
 	val gradleProperties: String,
 ) {
 
+	// ProGuard support was deprecated in AGP 4.2 and removed in AGP 7.0.
+	// This also means that `android.enableR8` doesn't exist anymore.
+	//ProGuard(
+	//	debugTaskName = "minifyDebugWithProguard",
+	//	releaseTaskName = "minifyReleaseWithProguard",
+	//	gradleProperties = """
+	//		android.enableR8=false
+	//	""".trimIndent()
+	//),
+
 	R8(
 		debugTaskName = "minifyDebugWithR8",
 		releaseTaskName = "minifyReleaseWithR8",
@@ -17,6 +26,7 @@ enum class Minification(
 			android.enableR8.fullMode=false
 		""".trimIndent()
 	),
+
 	R8Full(
 		debugTaskName = "minifyDebugWithR8",
 		releaseTaskName = "minifyReleaseWithR8",
@@ -24,6 +34,7 @@ enum class Minification(
 			android.enableR8.fullMode=true
 		""".trimIndent()
 	),
+
 	;
 
 	companion object {
@@ -32,13 +43,6 @@ enum class Minification(
 		 */
 		@JvmStatic
 		fun agpBasedParams(): List<Minification> =
-			when {
-				AGPVersions.v70x <= AGPVersions.UNDER_TEST ->
-					// ProGuard support was deprecated in AGP 4.2 and removed in AGP 7.0.
-					// This also means that `android.enableR8` doesn't exist anymore.
-					listOf(R8, R8Full)
-				else ->
-					AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
-			}
+			Minification.values().toList()
 	}
 }
