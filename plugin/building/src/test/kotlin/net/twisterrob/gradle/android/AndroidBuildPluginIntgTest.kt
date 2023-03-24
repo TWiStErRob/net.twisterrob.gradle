@@ -352,12 +352,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			import ${packageName}.R
 
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
-			// Specify SDK version to prevent failing on different JVMs.
-			// [Robolectric] WARN: Android SDK 29 requires Java 9 (have Java 8).
-			// Tests won't be run on SDK 29 unless explicitly requested.
-			// java.lang.UnsupportedOperationException:
-			// Failed to create a Robolectric sandbox: Android SDK 29 requires Java 9 (have Java 8)
-			@org.robolectric.annotation.Config(sdk = [org.robolectric.annotation.Config.OLDEST_SDK])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
@@ -429,12 +423,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			import ${packageName}.R
 
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
-			// Specify SDK version to prevent failing on different JVMs.
-			// [Robolectric] WARN: Android SDK 29 requires Java 9 (have Java 8).
-			// Tests won't be run on SDK 29 unless explicitly requested.
-			// java.lang.UnsupportedOperationException:
-			// Failed to create a Robolectric sandbox: Android SDK 29 requires Java 9 (have Java 8)
-			@org.robolectric.annotation.Config(sdk = [org.robolectric.annotation.Config.OLDEST_SDK])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
