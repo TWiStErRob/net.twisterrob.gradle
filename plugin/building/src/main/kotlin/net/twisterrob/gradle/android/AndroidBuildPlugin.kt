@@ -143,27 +143,28 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		/**
 		 * Configure files we don't need in APKs.
 		 */
-		fun knownUnneededFiles(): List<String> = listOf(
-			// support-annotations-28.0.0.jar contains this file
-			// it's for Android Gradle Plugin at best, if at all used
-			"META-INF/proguard/androidx-annotations.pro",
+		fun knownUnneededFiles(): List<String> =
+			listOf(
+				// support-annotations-28.0.0.jar contains this file
+				// it's for Android Gradle Plugin at best, if at all used
+				"META-INF/proguard/androidx-annotations.pro",
 
-			// Each Android Support Library component has a separate entry for storing version.
-			// Probably used by Google Play to do statistics, gracefully opt out of this.
-			"META-INF/android.*.version",
-			"META-INF/androidx.*.version",
+				// Each Android Support Library component has a separate entry for storing version.
+				// Probably used by Google Play to do statistics, gracefully opt out of this.
+				"META-INF/android.*.version",
+				"META-INF/androidx.*.version",
 
-			// Needed for compiling against top-level functions. Since APK is end product, this is not necessary.
-			"**/*.kotlin_metadata",
-			// Kotlin builds these things in, found no docs so far about their necessity, so try to exclude.
-			"**/*.kotlin_module",
-			"**/*.kotlin_builtins",
+				// Needed for compiling against top-level functions. Since APK is end product, this is not necessary.
+				"**/*.kotlin_metadata",
+				// Kotlin builds these things in, found no docs so far about their necessity, so try to exclude.
+				"**/*.kotlin_module",
+				"**/*.kotlin_builtins",
 
-			// Readmes
-			// (e.g. hamcrest-library-2.1.jar and hamcrest-core-2.1.jar both pack a readme to encourage upgrade)
-			"**/README.txt",
-			"**/README.md",
-		)
+				// Readmes
+				// (e.g. hamcrest-library-2.1.jar and hamcrest-core-2.1.jar both pack a readme to encourage upgrade)
+				"**/README.txt",
+				"**/README.md",
+			)
 
 		private fun BaseExtension.decorateBuildConfig(project: Project, twisterrob: AndroidBuildPluginExtension) {
 			val buildTimeTaskProvider =
