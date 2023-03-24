@@ -304,7 +304,7 @@ idea {
 			"docs/examples/release/build",
 			"docs/examples/snapshot/.gradle",
 			"docs/examples/snapshot/build",
-		)
+		) + allprojects.map { it.projectDir.relativeTo(rootDir).resolve("build/unPackagedTestResources").toString() } 
 		excludeDirs.addAll(excludes.map { rootDir.resolve(it) })
 	}
 }
