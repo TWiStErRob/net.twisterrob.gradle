@@ -105,10 +105,6 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, hasZipEntry("${packageName}@10203004-v1.2.3#4+release.apk"))
 			assertThat(archive, hasZipEntry("proguard_configuration.txt"))
 			when (minification) {
-				Minification.ProGuard -> {
-					assertThat(archive, hasZipEntry("proguard_dump.txt"))
-					assertThat(archive, hasZipEntry("proguard_mapping.txt"))
-				}
 				Minification.R8 -> {
 					assertThat(archive, hasZipEntry("proguard_mapping.txt"))
 				}
@@ -122,7 +118,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, not(hasZipEntry("output.json")))
 			assertThat(archive, not(hasZipEntry("metadata.json")))
 			assertThat(archive, not(hasZipEntry("output-metadata.json")))
-			assertThat(archive, hasEntryCount(equalTo(if (minification == Minification.ProGuard) 6 else 5)))
+			assertThat(archive, hasEntryCount(equalTo(5)))
 			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
 		}
 	}

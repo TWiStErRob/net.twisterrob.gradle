@@ -29,15 +29,11 @@ listOf("checkstyle", "pmd").forEach {
 
 include(":compat:agp")
 include(":compat:agp-base")
-include(":compat:agp-40x")
-include(":compat:agp-41x")
-include(":compat:agp-42x")
 include(":compat:agp-70x")
 include(":compat:agp-71x")
 include(":compat:agp-72x")
 include(":compat:agp-73x")
 include(":compat:agp-74x")
-include(":compat:agp-latest")
 include(":compat:gradle")
 include(":compat:kotlin-base")
 

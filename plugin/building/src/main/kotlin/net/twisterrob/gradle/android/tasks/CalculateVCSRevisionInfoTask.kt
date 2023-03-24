@@ -2,7 +2,6 @@ package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.addBuildConfigField
 import net.twisterrob.gradle.android.intermediateRegularFile
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -40,8 +39,6 @@ abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 	companion object {
 
 		internal fun TaskProvider<CalculateVCSRevisionInfoTask>.addBuildConfigFields(project: Project) {
-			if (AGPVersions.CLASSPATH < AGPVersions.v41x) get().writeVCS()
-
 			val revisionField = this.flatMap { it.revisionFile }.map {
 				""""${it.asFile.readText()}""""
 			}

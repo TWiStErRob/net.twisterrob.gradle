@@ -12,7 +12,6 @@ class AndroidAppPlugin : BaseExposedPlugin() {
 		super.apply(target)
 
 		project.apply<VCSPlugin>()
-		project.apply<AndroidLifecyclePlugin>()
 		project.plugins.apply("com.android.application")
 
 		project.apply<JavaPlugin>()

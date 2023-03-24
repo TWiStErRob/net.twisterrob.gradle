@@ -93,11 +93,8 @@ class CheckStylePluginTest : BaseIntgTest() {
 			}
 		""".trimIndent()
 		// ":instant" is not supported yet, and won't be since it's deprecated in 3.6.x.
-		val modules = arrayOf(":app", ":library", ":library:nested", ":test") +
-				if (AGPVersions.UNDER_TEST < AGPVersions.v34x)
-					arrayOf(":feature", ":base")
-				else
-					emptyArray() // TODO arrayOf(":dynamic-feature")
+		// TODO add :dynamic-feature
+		val modules = arrayOf(":app", ":library", ":library:nested", ":test")
 
 		val result = gradle.runBuild {
 			basedOn("android-all_kinds")

@@ -34,11 +34,7 @@ class LintPluginTest : BaseIntgTest() {
 	 * This means that violations are counted double from AGP 7 onwards.
 	 * This is counteracted in [net.twisterrob.gradle.quality.report.html.deduplicate] by merging duplicate lints.
 	 */
-	private val variantMultiplier: Int =
-		when {
-			AGPVersions.UNDER_TEST > AGPVersions.v70x -> 2
-			else -> 1
-		}
+	private val variantMultiplier: Int = 2
 
 	@Test fun `passes when no lint violations found`() {
 		val modules: Array<String> = arrayOf(
@@ -170,7 +166,7 @@ class LintPluginTest : BaseIntgTest() {
 			AGPVersions.v70x <= AGPVersions.UNDER_TEST ->
 				listOf("lintDebug", "lintRelease")
 			else ->
-				listOf("lint")
+				AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
 		}
 		val result = `ignores disabled submodule lint tasks` {
 			it + System.lineSeparator() + disabledTasks.joinToString(separator = System.lineSeparator()) { taskName ->
@@ -198,7 +194,7 @@ class LintPluginTest : BaseIntgTest() {
 								tasks.lintRelease.enabled = false
 								tasks.lintReportRelease.enabled = false
 							}
-						"""
+						""".trimIndent()
 					}
 					AGPVersions.v70x <= AGPVersions.UNDER_TEST -> {
 						"""
@@ -207,14 +203,10 @@ class LintPluginTest : BaseIntgTest() {
 								tasks.lintDebug.enabled = false
 								tasks.lintRelease.enabled = false
 							}
-						"""
+						""".trimIndent()
 					}
-					else -> {
-						"""
-							tasks.lint.enabled = false
-						"""
-					}
-				}.trimIndent()
+					else -> AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
+				}
 			)
 			it
 		}
@@ -229,47 +221,27 @@ class LintPluginTest : BaseIntgTest() {
 				assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintDebug")!!.outcome)
 				assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintRelease")!!.outcome)
 			}
-			else -> {
-				assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lint")!!.outcome)
-			}
+			else -> AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
 		}
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}
 
 	@Test fun `ignores disabled variants (direct setup)`() {
-		if (AGPVersions.UNDER_TEST < AGPVersions.v41x) {
-			// Disabling all variants is not supported:
-			// A problem was found with the configuration of task ':module2:lint' (type 'LintGlobalTask').
-			// > No value has been specified for property 'lintClassPath'.
-			return
-		}
 		val result = `ignores disabled submodule lint tasks` {
 			val build2 = gradle.buildFile.parentFile.resolve("module2/build.gradle")
 			build2.appendText(System.lineSeparator())
-			if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) {
-				build2.appendText(
-					"""
+			build2.appendText(
+				"""
 					androidComponents {
 						beforeVariants(selector().all()) { enabled = false }
 					}
 				""".trimIndent()
-				)
-			} else {
-				build2.appendText(
-					"""
-					android.variantFilter { ignore = true }
-				""".trimIndent()
-				)
-			}
+			)
 			it
 		}
-		if (AGPVersions.UNDER_TEST >= AGPVersions.v70x) {
-			assertEquals(TaskOutcome.UP_TO_DATE, result.task(":module2:lint")!!.outcome)
-			assertNull(result.task(":module2:lintDebug"))
-			assertNull(result.task(":module2:lintRelease"))
-		} else {
-			assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
-		}
+		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":module2:lint")!!.outcome)
+		assertNull(result.task(":module2:lintDebug"))
+		assertNull(result.task(":module2:lintRelease"))
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}
 

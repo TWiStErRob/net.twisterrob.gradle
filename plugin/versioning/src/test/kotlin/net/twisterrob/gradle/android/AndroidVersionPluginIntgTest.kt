@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.android
 
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -55,20 +54,10 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val result = gradle.run(script, "assembleDebug").build()
 
 		result.assertSuccess(":assembleDebug")
-		val fileName = when {
-			AGPVersions.UNDER_TEST >= AGPVersions.v41x -> "${packageName}.debug@1234-vnull+debug.apk"
-			AGPVersions.UNDER_TEST >= AGPVersions.v40x -> "${packageName}.debug@1234-vd+debug.apk"
-			else -> AGPVersions.olderThan4NotSupported(AGPVersions.UNDER_TEST)
-		}
-		val noVersionNameSet = when {
-			AGPVersions.UNDER_TEST >= AGPVersions.v41x -> ""
-			AGPVersions.UNDER_TEST >= AGPVersions.v40x -> "d"
-			else -> AGPVersions.olderThan4NotSupported(AGPVersions.UNDER_TEST)
-		}
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", fileName),
+			apk = gradle.root.apk("debug", "${packageName}.debug@1234-vnull+debug.apk"),
 			versionCode = "1234",
-			versionName = noVersionNameSet
+			versionName = ""
 		)
 	}
 
@@ -98,21 +87,11 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		val result = gradle.run(script, "assembleDebugAndroidTest").build()
 
 		result.assertSuccess(":assembleDebugAndroidTest")
-		val fileName = when {
-			AGPVersions.UNDER_TEST >= AGPVersions.v41x -> "${packageName}.debug.test@1234-vnull+debug-androidTest.apk"
-			AGPVersions.UNDER_TEST >= AGPVersions.v40x -> "${packageName}.debug.test@1234-vd+debug-androidTest.apk"
-			else -> AGPVersions.olderThan4NotSupported(AGPVersions.UNDER_TEST)
-		}
-		val noVersionNameSet = when {
-			AGPVersions.UNDER_TEST >= AGPVersions.v41x -> ""
-			AGPVersions.UNDER_TEST >= AGPVersions.v40x -> "d"
-			else -> AGPVersions.olderThan4NotSupported(AGPVersions.UNDER_TEST)
-		}
 		assertDefaultBadging(
 			applicationId = "${packageName}.debug.test",
-			apk = gradle.root.apk("androidTest/debug", fileName),
+			apk = gradle.root.apk("androidTest/debug", "${packageName}.debug.test@1234-vnull+debug-androidTest.apk"),
 			versionCode = "1234",
-			versionName = noVersionNameSet,
+			versionName = "",
 			isAndroidTestApk = true
 		)
 	}

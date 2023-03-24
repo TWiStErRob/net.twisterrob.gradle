@@ -1,20 +1,19 @@
 package net.twisterrob.gradle.android.tasks
 
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.TaskManager
 import com.android.xml.AndroidXPathFactory
+import net.twisterrob.gradle.android.androidComponents
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
-import org.gradle.kotlin.dsl.getByName
 import org.gradle.work.DisableCachingByDefault
 import org.intellij.lang.annotations.Language
 import org.jetbrains.annotations.VisibleForTesting
 import org.xml.sax.InputSource
-import java.io.File
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPathConstants
@@ -27,11 +26,11 @@ abstract class AndroidInstallRunnerTask : Exec() {
 
 	@get:InputFile
 	@get:PathSensitive(PathSensitivity.RELATIVE)
-	abstract val manifestFile: Property<File>
+	abstract val manifestFile: RegularFileProperty
 
 	@get:InputFile
 	@get:PathSensitive(PathSensitivity.ABSOLUTE)
-	abstract val adbExecutable: Property<File>
+	abstract val adbExecutable: RegularFileProperty
 
 	init {
 		group = TaskManager.INSTALL_GROUP
@@ -39,10 +38,7 @@ abstract class AndroidInstallRunnerTask : Exec() {
 		// Always execute as device state cannot be used by Gradle for up-to-date check.
 		outputs.upToDateWhen { false }
 		@Suppress("LeakingThis")
-		adbExecutable.convention(project.provider {
-			val android: BaseExtension = project.extensions.getByName<BaseExtension>("android")
-			android.adbExecutable
-		})
+		adbExecutable.convention(project.androidComponents.sdkComponents.adb)
 	}
 
 	fun updateDescription(variant: String) {
@@ -50,7 +46,7 @@ abstract class AndroidInstallRunnerTask : Exec() {
 	}
 
 	override fun exec() {
-		val activityClass = getMainActivity(manifestFile.get().inputStream())
+		val activityClass = getMainActivity(manifestFile.get().asFile.inputStream())
 			?: error("Cannot get MAIN/LAUNCHER activity from ${manifestFile.get()}.")
 		// doesn't work: setCommandLine(android.adbExe, "shell", "am", "start", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", variant.applicationId)
 		setCommandLine(adbExecutable.get(), "shell", "am", "start", "-n", "${applicationId.get()}/${activityClass}")

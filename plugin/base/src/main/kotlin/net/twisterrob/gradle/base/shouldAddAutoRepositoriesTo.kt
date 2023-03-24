@@ -6,7 +6,7 @@ import org.gradle.api.initialization.resolve.RepositoriesMode
 
 @Suppress("UnstableApiUsage")
 fun shouldAddAutoRepositoriesTo(project: Project): Boolean =
-	@Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+	@Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA") // kotlinc needs this, IDEA doesn't recognize it.
 	when (project.settings.dependencyResolutionManagement.repositoriesMode.get()) {
 		RepositoriesMode.PREFER_PROJECT -> {
 			// Project is using defaults, or explicitly preferring these repositories.

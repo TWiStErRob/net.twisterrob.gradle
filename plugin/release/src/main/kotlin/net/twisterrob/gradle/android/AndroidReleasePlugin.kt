@@ -1,19 +1,16 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.Variant
-import com.android.build.api.variant.impl.ApplicationVariantImpl
 import com.android.build.api.variant.impl.BuiltArtifactsImpl
 import com.android.build.gradle.BaseExtension
 import com.android.builder.model.BuildType
-import com.android.builder.model.ProductFlavor
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.UnknownTaskException
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
@@ -31,18 +28,9 @@ class AndroidReleasePlugin : BasePlugin() {
 		super.apply(target)
 		val android = project.extensions.getByName<BaseExtension>("android")
 		val releaseEachTask = registerReleaseEachTask()
-		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
-			android.buildTypes.forEach { buildType ->
-				val releaseBuildTypeTask = registerReleaseTasks(android, buildType)
-				releaseEachTask.configure { it.dependsOn(releaseBuildTypeTask) }
-			}
-		} else {
-			project.afterEvaluate {
-				android.buildTypes.forEach { buildType ->
-					val releaseBuildTypeTask = registerReleaseTasks(android, buildType)
-					releaseEachTask.configure { it.dependsOn(releaseBuildTypeTask) }
-				}
-			}
+		android.buildTypes.configureEach { buildType ->
+			val releaseBuildTypeTask = registerReleaseTasks(android, buildType)
+			releaseEachTask.configure { it.dependsOn(releaseBuildTypeTask) }
 		}
 	}
 
@@ -60,81 +48,18 @@ class AndroidReleasePlugin : BasePlugin() {
 		LOG.debug("Creating tasks for {}", buildType.name)
 
 		val version = android.defaultConfig.extensions.getByType<AndroidVersionExtension>()
-		if (AGPVersions.CLASSPATH > AGPVersions.v70x) {
-			val withBuildType = project.androidComponents.selector().withBuildType(buildType.name)
-			project.androidComponents.onVariants(withBuildType) { variant ->
-				val appVariant = variant.unwrapCast<Variant, ApplicationVariantImpl>()
-				val releaseVariantTask = registerReleaseTask(version, appVariant)
-				releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
-			}
-		} else {
-			android.variants.matching { it.buildType.name == buildType.name }.all { variant ->
-				variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
-				val releaseVariantTask = registerReleaseTask(version, variant)
-				releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
-				variant.productFlavors.forEach { flavor ->
-					val releaseFlavorTask = registerFlavorTask(flavor)
-					releaseFlavorTask.configure { it.dependsOn(releaseVariantTask) }
-				}
-			}
+		val withBuildType = project.androidComponents.selector().withBuildType(buildType.name)
+		project.androidComponents.onVariants(withBuildType) { variant ->
+			val appVariant = variant.unwrapCast<Variant, ApplicationVariant>()
+			val releaseVariantTask = registerReleaseTask(version, appVariant)
+			releaseBuildTypeTask.configure { it.dependsOn(releaseVariantTask) }
 		}
-
 		return releaseBuildTypeTask
 	}
 
 	private fun registerReleaseTask(
 		version: AndroidVersionExtension,
-		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
-	): TaskProvider<Zip> =
-		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
-			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
-			description = "Assembles and archives apk and its ProGuard mapping for ${variant.description}"
-			destinationDirectory.fileProvider(project.provider { defaultReleaseDir.resolve(DEFAULT_DIR) })
-			val releaseZipFileName = with(variant) {
-				val versionCode = versionCode.toLong()
-				version.formatArtifactName(project, "archive", applicationId, versionCode, versionName) + ".zip"
-			}
-			archiveFileName.set(releaseZipFileName)
-
-			fun useOutput(variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant) {
-				dependsOn(variant.assembleProvider)
-				from(variant.packageApplicationProvider.get().outputDirectory) {
-					it.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
-				}
-			}
-
-			useOutput(variant)
-			if (variant is @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.internal.api.TestedVariant) {
-				variant.testVariant?.let(::useOutput)
-			}
-			if (variant.buildType.isMinifyEnabled) {
-				archiveMappingFile(variant.mappingFileProvider.map { it.singleFile })
-			}
-
-			doFirst(closureOf<Zip> { failIfAlreadyArchived() })
-			doLast(closureOf<Zip> { printResultingArchive() })
-		}
-
-	private fun registerFlavorTask(flavor: ProductFlavor): TaskProvider<Task> {
-		val releaseFlavorTaskName = "release${flavor.name.capitalize()}"
-		// Get the flavor task in case it was already registered by another variant.
-		var releaseFlavorTask = try {
-			project.tasks.named(releaseFlavorTaskName)
-		} catch (ignore: UnknownTaskException) {
-			null // maybeRegister()
-		}
-		if (releaseFlavorTask == null) {
-			releaseFlavorTask = project.tasks.register<Task>(releaseFlavorTaskName) {
-				group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
-				description = "Assembles and archives all builds for flavor ${flavor.name}"
-			}
-		}
-		return releaseFlavorTask
-	}
-
-	private fun registerReleaseTask(
-		version: AndroidVersionExtension,
-		variant: ApplicationVariantImpl
+		variant: ApplicationVariant
 	): TaskProvider<Zip> =
 		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
@@ -157,7 +82,7 @@ class AndroidReleasePlugin : BasePlugin() {
 				copy.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 			}
 
-			if (variant.minifiedEnabled) {
+			if (variant.isMinifyEnabledCompat) {
 				val mappingFileProvider = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
 				archiveMappingFile(mappingFileProvider.map { it.asFile })
 			}

@@ -173,10 +173,6 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":${minification.releaseTaskName}")
 		when (minification) {
-			Minification.ProGuard -> {
-				assertThat(gradle.root.resolve("build/outputs/mapping/release/dump.txt"), anExistingFile())
-			}
-
 			Minification.R8 -> {
 				// Not supported on R8 at AGP 4.x.
 				result.assertNoOutputLine(""".*R8: Ignoring option: -dump.*""".toRegex())
@@ -322,11 +318,6 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 	private fun BuildResult.assertAppliedProguardFile(minification: Minification, variant: String, fileName: String) {
 		when (minification) {
-			Minification.ProGuard -> {
-				// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
-				assertHasOutputLine("Applying ProGuard configuration file .*${Regex.escape(fileName)}".toRegex())
-			}
-
 			Minification.R8,
 			Minification.R8Full -> {
 				val configFile = gradle.root.resolve("build/intermediates/proguard-rules/${fileName}")
@@ -348,11 +339,6 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 	private fun BuildResult.assertNoAppliedProguardFile(minification: Minification, variant: String, fileName: String) {
 		when (minification) {
-			Minification.ProGuard -> {
-				// com.android.build.gradle.internal.transforms.ProGuardTransform.doMinification uses LOG.info
-				assertNoOutputLine(".*${Regex.escape(fileName)}.*".toRegex())
-			}
-
 			Minification.R8,
 			Minification.R8Full -> {
 				assertThat(gradle.mergedProguardConfiguration(variant).readText(), not(containsString(fileName)))

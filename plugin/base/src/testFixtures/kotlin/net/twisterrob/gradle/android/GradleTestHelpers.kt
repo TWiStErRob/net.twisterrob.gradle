@@ -2,9 +2,8 @@ package net.twisterrob.gradle.android
 
 import com.android.ddmlib.AndroidDebugBridge
 import com.jakewharton.dex.DexMethod
-import net.twisterrob.gradle.common.AGPVersions
-import net.twisterrob.test.withRootCause
 import net.twisterrob.test.process.assertOutput
+import net.twisterrob.test.withRootCause
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
@@ -27,13 +26,7 @@ fun File.apk(
 	variant: String,
 	fileName: String = run {
 		val variantSuffix = if (variant != "release") ".${variant}" else ""
-		val versionName = when {
-			AGPVersions.UNDER_TEST compatible AGPVersions.v40x ->
-				if ("debug" in variant) "d" else "null"
-			else ->
-				"null"
-		}
-		"${packageName}${variantSuffix}@-1-v${versionName}+${variant}.apk"
+		"${packageName}${variantSuffix}@-1-vnull+${variant}.apk"
 	}
 ): File =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
@@ -78,12 +71,7 @@ fun assertDefaultDebugBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
-	versionName: String = when {
-		AGPVersions.UNDER_TEST compatible AGPVersions.v40x ->
-			"d"
-		else ->
-			""
-	},
+	versionName: String = "",
 	compileSdkVersion: Int = VERSION_SDK_COMPILE,
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
@@ -191,8 +179,8 @@ fun assertDefaultBadging(
 					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 					supports-screens: 'small' 'normal' 'large' 'xlarge'
 					supports-any-density: 'true'
-					locales:${if (AGPVersions.UNDER_TEST compatible AGPVersions.v41x) "" else " '--_--'"}
-					densities:${if (AGPVersions.UNDER_TEST compatible AGPVersions.v41x) "" else " '160'"}
+					locales: '--_--'
+					densities: '160'
 				""".trimIndent()
 			}
 		}

@@ -1,23 +1,23 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.variant.ResValue
+import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.internal.api.BaseVariantImpl
-import com.android.build.gradle.internal.api.androidTestVariant
-import com.android.build.gradle.internal.api.productionVariant
-import com.android.build.gradle.internal.api.unitTestVariant
-import com.android.build.gradle.internal.api.variantData
+import com.android.build.gradle.BasePlugin
+import com.android.build.gradle.internal.component.ComponentCreationConfig
 import com.android.build.gradle.internal.dsl.BuildType
-import com.android.build.gradle.internal.dsl.PackagingOptions
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
-import net.twisterrob.gradle.common.AGPVersions
-import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.internal.android.description
+import net.twisterrob.gradle.internal.android.taskContainer
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
@@ -37,7 +37,7 @@ open class AndroidBuildPluginExtension {
 	}
 }
 
-class AndroidBuildPlugin : BasePlugin() {
+class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -59,10 +59,8 @@ class AndroidBuildPlugin : BasePlugin() {
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
 
 			with(defaultConfig) {
-				@Suppress("DEPRECATION" /* AGP 7.0 */)
-				minSdkVersion(VERSION_SDK_MINIMUM)
-				@Suppress("DEPRECATION" /* AGP 7.0 */)
-				targetSdkVersion(VERSION_SDK_TARGET)
+				minSdk = VERSION_SDK_MINIMUM
+				targetSdk = VERSION_SDK_TARGET
 				vectorDrawables.useSupportLibrary = true
 			}
 			with(buildTypes) {
@@ -70,27 +68,30 @@ class AndroidBuildPlugin : BasePlugin() {
 				configureBuildResValues()
 			}
 			with(packagingOptions) {
-				excludeKnownFiles()
+				resources.excludes.addAll(knownUnneededFiles())
 			}
 			decorateBuildConfig(project, twisterrob)
 		}
 
 		project.plugins.withType<AppPlugin> {
 			if (twisterrob.isDecorateBuildConfig) {
-				android.variants.all(::addPackageName)
+				project.androidComponentsApplication.onVariantsCompat(::addPackageName)
 			}
 		}
-		project.afterEvaluate {
-			if (project.plugins.hasAndroid()) {
-				android.variants.all(::fixVariantTaskGroups)
-			}
-			project.plugins.withType<AppPlugin> {
-				android.variants.all { variant ->
-					registerRunTask(
-						project,
-						variant as @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
-					)
+		project.plugins.withType<BasePlugin> {
+			project.androidComponents.onVariantsCompat { variant ->
+				// This needs to be inside onVariants,
+				// because it's not possible to register onVariants callback in afterEvaluate.
+				project.afterEvaluate {
+					// This has to be called in afterEvaluate, to make sure that Tasks are created for variants.
+					// See VariantManager.hasCreatedTasks for when this happens.
+					fixVariantTaskGroups(variant)
 				}
+			}
+		}
+		project.plugins.withType<AppPlugin> {
+			project.androidComponentsApplication.onVariantsCompat { variant ->
+				registerRunTask(project, variant)
 			}
 		}
 	}
@@ -98,29 +99,14 @@ class AndroidBuildPlugin : BasePlugin() {
 	companion object {
 
 		private fun BaseExtension.configureLint() {
-			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
-			when {
-				AGPVersions.v71x < AGPVersions.CLASSPATH -> {
-					@Suppress("UnstableApiUsage")
-					with((this as CommonExtension<*, *, *, *>).lint) {
-						xmlReport = false
-						checkAllWarnings = true
-						abortOnError = true
-						disable.add("Assert")
-						disable.add("GoogleAppIndexingWarning")
-						fatal.add("StopShip") // http://stackoverflow.com/q/33504186/253468
-					}
-				}
-				else -> {
-					@Suppress("DEPRECATION")
-					with(lintOptions) {
-						xmlReport = false
-						isCheckAllWarnings = true
-						isAbortOnError = true
-						disable("Assert", "GoogleAppIndexingWarning")
-						fatal("StopShip") // http://stackoverflow.com/q/33504186/253468
-					}
-				}
+			@Suppress("UnstableApiUsage")
+			(this as CommonExtension<*, *, *, *>).lint {
+				xmlReport = false
+				checkAllWarningsCompat = true
+				abortOnErrorCompat = true
+				disable.add("Assert")
+				disable.add("GoogleAppIndexingWarning")
+				fatalCompat("StopShip") // http://stackoverflow.com/q/33504186/253468
 			}
 		}
 
@@ -154,48 +140,37 @@ class AndroidBuildPlugin : BasePlugin() {
 		/**
 		 * Configure files we don't need in APKs.
 		 */
-		@Suppress("DEPRECATION" /* AGP 7.0 */)
-		private fun PackagingOptions.excludeKnownFiles() {
-			// support-annotations-28.0.0.jar contains this file
-			// it's for Android Gradle Plugin at best, if at all used
-			exclude("META-INF/proguard/androidx-annotations.pro")
+		fun knownUnneededFiles(): List<String> =
+			listOf(
+				// support-annotations-28.0.0.jar contains this file
+				// it's for Android Gradle Plugin at best, if at all used
+				"META-INF/proguard/androidx-annotations.pro",
 
-			// Each Android Support Library component has a separate entry for storing version.
-			// Probably used by Google Play to do statistics, gracefully opt out of this.
-			exclude("META-INF/android.*.version")
-			exclude("META-INF/androidx.*.version")
+				// Each Android Support Library component has a separate entry for storing version.
+				// Probably used by Google Play to do statistics, gracefully opt out of this.
+				"META-INF/android.*.version",
+				"META-INF/androidx.*.version",
 
-			// Kotlin builds these things in, found no docs so far about their necessity, so try to exclude
-			exclude("**/*.kotlin_metadata")
-			exclude("**/*.kotlin_module")
-			exclude("**/*.kotlin_builtins")
+				// Needed for compiling against top-level functions. Since APK is end product, this is not necessary.
+				"**/*.kotlin_metadata",
+				// Kotlin builds these things in, found no docs so far about their necessity, so try to exclude.
+				"**/*.kotlin_module",
+				"**/*.kotlin_builtins",
 
-			// Readmes
-			// (e.g. hamcrest-library-2.1.jar and hamcrest-core-2.1.jar both pack a readme to encourage upgrade)
-			exclude("**/README.txt")
-			exclude("**/README.md")
-		}
+				// Readmes
+				// (e.g. hamcrest-library-2.1.jar and hamcrest-core-2.1.jar both pack a readme to encourage upgrade)
+				"**/README.txt",
+				"**/README.md",
+			)
 
 		private fun BaseExtension.decorateBuildConfig(project: Project, twisterrob: AndroidBuildPluginExtension) {
 			val buildTimeTaskProvider =
 				project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
 			val vcsTaskProvider =
 				project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
-			@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
-			when {
-				AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
-					project.androidComponents.finalizeDsl {
-						if (twisterrob.isDecorateBuildConfig && buildFeatures.buildConfig != false) {
-							project.decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
-						}
-					}
-				}
-				else -> {
-					project.beforeAndroidTasksCreated {
-						if (twisterrob.isDecorateBuildConfig && buildFeatures.buildConfig != false) {
-							project.decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
-						}
-					}
+			project.androidComponents.finalizeDsl {
+				if (twisterrob.isDecorateBuildConfig && buildFeatures.buildConfig != false) {
+					project.decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
 				}
 			}
 		}
@@ -213,43 +188,41 @@ class AndroidBuildPlugin : BasePlugin() {
 			vcsTaskProvider.addBuildConfigFields(project)
 		}
 
-		private fun registerRunTask(
-			project: Project,
-			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.ApkVariant
-		) {
-			val install = variant.installProvider ?: return
+		private fun registerRunTask(project: Project, variant: ApplicationVariant) {
 			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize()}") {
-				dependsOn(install)
-				this.manifestFile.set(variant.outputs.single().processManifestProvider.flatMap { it.manifestFile })
+				this.dependsOn(project.provider { variant.taskContainer.installTask })
+				this.manifestFile.set(variant.artifacts.get(SingleArtifact.MERGED_MANIFEST))
 				this.applicationId.set(variant.applicationId)
 				this.updateDescription(variant.description)
 			}
 		}
 
-		private fun fixVariantTaskGroups(
-			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant
-		) {
-			fun BaseVariantImpl.fixTaskMetadata() {
-				val variantImpl = this
-				variantData.taskContainerCompat.compileTask.configure { task ->
-					task.group = "Build"
-					task.description = "Compiles sources for ${variantImpl.description}."
+		private fun fixVariantTaskGroups(variant: Variant) {
+			fun ComponentCreationConfig.fixMetadata() {
+				taskContainer.compileTask.configure { task ->
+					// This is now done in TaskManager, at createCompileAnchorTask.
+					task.group = org.gradle.api.plugins.BasePlugin.BUILD_GROUP
+					task.description = "Compiles sources for ${variant.description}."
 				}
-				variantData.taskContainerCompat.javacTask.configure { task ->
-					task.group = "Build"
-					task.description = "Compiles Java sources for ${variantImpl.description}."
+				taskContainer.javacTask.configure { task ->
+					task.group = org.gradle.api.plugins.BasePlugin.BUILD_GROUP
+					task.description = "Compiles Java sources for ${variant.description}."
 				}
 			}
-			variant.productionVariant.fixTaskMetadata()
-			variant.androidTestVariant?.fixTaskMetadata()
-			variant.unitTestVariant?.fixTaskMetadata()
+			variant.componentsCompat
+				.filterIsInstance<ComponentCreationConfig>()
+				.forEach(ComponentCreationConfig::fixMetadata)
 		}
 
-		private fun addPackageName(
-			@Suppress("DEPRECATION" /* AGP 7.0 */) variant: com.android.build.gradle.api.BaseVariant
-		) {
-			// Package name for use e.g. in preferences to launch intent from the right package or for content providers
-			variant.resValue("string", "app_package", variant.applicationId)
+		private fun addPackageName(variant: ApplicationVariant) {
+			val comment = "Package name for use in resources, for example " +
+					"in preferences.xml to launch an intent from the right package, " +
+					"or for ContentProviders' <provider android:authorities, " +
+					"or <searchable android:searchSuggestAuthority."
+			variant.resValues.put(
+				variant.makeResValueKey("string", "app_package"),
+				ResValue(variant.applicationId.get(), comment)
+			)
 		}
 	}
 }

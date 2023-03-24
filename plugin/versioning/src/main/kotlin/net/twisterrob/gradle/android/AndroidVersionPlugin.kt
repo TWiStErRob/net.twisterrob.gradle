@@ -7,7 +7,6 @@ import com.android.build.api.variant.impl.VariantOutputImpl
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.internal.dsl.DefaultConfig
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
@@ -22,7 +21,6 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
-import org.gradle.kotlin.dsl.withType
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -170,38 +168,15 @@ class AndroidVersionPlugin : BasePlugin() {
 		// When the Android application plugin is applied, we can set up the defaults and the DSL.
 		project.plugins.withId<AppPlugin>("com.android.application") { init() }
 		// Just before the project is finished evaluating, configure a bit more.
-		@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
-		when {
-			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
-				project.androidComponents.finalizeDsl { autoVersion() }
-			}
-			else -> {
-				project.beforeAndroidTasksCreated { autoVersion() }
-			}
-		}
+		project.androidComponents.finalizeDsl { autoVersion() }
 	}
 
 	private fun init() {
 		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
 		version.versionByProperties(readVersion(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME)))
-		@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
-		when {
-			AGPVersions.CLASSPATH >= AGPVersions.v70x -> {
-				// AGP 7.4 compatibility: calling onVariants$default somehow changed, being explicit about params helps.
-				project.androidComponents.onVariants(project.androidComponents.selector().all()) { variant ->
-					if (version.isRenameAPK) {
-						renameAPKPost7(variant as ApplicationVariant)
-					}
-				}
-			}
-			else -> {
-				project.beforeAndroidTasksCreated {
-					android.applicationVariants.all { variant ->
-						if (version.isRenameAPK) {
-							renameAPKPre7(variant, variant)
-						}
-					}
-				}
+		project.androidComponents.onVariantsCompat { variant ->
+			if (version.isRenameAPK) {
+				renameAPK(variant as ApplicationVariant)
 			}
 		}
 
@@ -222,7 +197,8 @@ class AndroidVersionPlugin : BasePlugin() {
 		}
 	}
 
-	private fun renameAPKPost7(variant: ApplicationVariant) {
+	private fun renameAPK(variant: ApplicationVariant) {
+		// TODO replace with new Variant API transformation.
 		val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
 		val androidTestOutput = variant.androidTestCompat?.let { androidTest ->
 			val androidTestImpl = androidTest.unwrapCast<AndroidTest, AndroidTestImpl>()
@@ -253,34 +229,6 @@ class AndroidVersionPlugin : BasePlugin() {
 				)
 				artifactName.apk
 			})
-		}
-	}
-
-	/**
-	 * AGP 4.1 doesn't propagate versionName and versionCode to androidTest variant any more.
-	 *
-	 * @param variant the APK to rename
-	 * @param source the versioned APK
-	 */
-	private fun renameAPKPre7(
-		variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant,
-		source: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariant
-	) {
-		// only called for applicationVariants and their testVariants so filter should be safe
-		variant.outputs.withType<@Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.ApkVariantOutput> {
-			val artifactName = version.formatArtifactName(
-				project, variant.name, variant.applicationId, source.versionCode.toLong(), source.versionName
-			)
-			outputFileName = artifactName.apk
-		}
-		if (variant is @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.internal.api.TestedVariant) {
-			// TODO this is a Hail Mary trying to propagate version to androidTest APK, but has no effect.
-			// Maybe? https://github.com/android/gradle-recipes/blob/bd8336e32ae512c630911287ea29b45a6bacb73b/BuildSrc/setVersionsFromTask/buildSrc/src/main/kotlin/CustomPlugin.kt
-//			variant.testVariant?.outputs?.withType<ApkVariantOutput> {
-//				versionNameOverride = source.versionName
-//				versionCodeOverride = source.versionCode
-//			}
-			variant.testVariant?.run { renameAPKPre7(this, source) }
 		}
 	}
 
