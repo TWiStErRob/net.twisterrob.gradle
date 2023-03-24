@@ -42,7 +42,6 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 		val android = project.extensions.getByName<BaseExtension>("android")
-		// STOPSHIP replace with androidComponents.registerDslExtension
 		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
 		if (shouldAddAutoRepositoriesTo(project)) {
