@@ -1,7 +1,0 @@
-apply plugin: 'com.android.feature'
-
-dependencies {
-	application project(':app')
-
-	implementation project(':base')
-}

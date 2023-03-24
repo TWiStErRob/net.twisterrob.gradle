@@ -17,14 +17,7 @@ allprojects {
 		mavenCentral()
 	}
 	plugins.withType(com.android.build.gradle.api.AndroidBasePlugin) {
-		if ("@net.twisterrob.test.android.pluginVersion@" >= "7.0.0") {
-			// AndroidBasePlugin is applied whenever the basics are ready.
-			android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
-		} else {
-			// Need to delay setting this, because AndroidBasePlugin is the first plugin to apply.
-			afterEvaluate {
-				android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
-			}
-		}
+		// AndroidBasePlugin is applied whenever the basics are ready.
+		android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
 	}
 }
