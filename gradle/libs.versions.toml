@@ -79,9 +79,7 @@ svnkit = "1.10.11"
 # Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
 # Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
 # Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
-# TODO can't go further AGP 3.x and 4.x need Java 8 compatible versions
-# and jgit 6.x requires Java 11: https://wiki.eclipse.org/JGit/New_and_Noteworthy/6.0
-jgit = "5.13.1.202206130422-r"
+jgit = "6.5.0.202303070854-r"
 
 # Explicitly using an outdated version of diffuse, don't remember why.
 # Versions: https://github.com/JakeWharton/diffuse/tags
