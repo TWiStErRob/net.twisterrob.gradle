@@ -12,7 +12,8 @@ import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.getByName
 
 /**
- * No API constant in AGP, hardcoded in
+ * No API constant in AGP.
+ * Hardcoded in
  *  * [com.android.build.gradle.internal.plugins.AppPlugin.createComponentExtension]
  *  * [com.android.build.gradle.internal.plugins.LibraryPlugin.createComponentExtension]
  *  * [com.android.build.gradle.internal.plugins.TestPlugin.createComponentExtension]

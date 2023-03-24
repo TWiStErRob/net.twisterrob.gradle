@@ -15,6 +15,7 @@ import org.gradle.api.Incubating
  */
 @get:Incubating
 @set:Incubating
+@Suppress("BooleanPropertyNaming") // Following AGP's naming.
 var Lint.abortOnErrorCompat: Boolean
 	get() =
 		when {

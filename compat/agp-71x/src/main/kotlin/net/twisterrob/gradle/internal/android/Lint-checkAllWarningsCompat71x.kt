@@ -5,4 +5,5 @@ import org.gradle.api.Incubating
 
 @get:Incubating
 @set:Incubating
-var Lint.checkAllWarningsCompat71x: Boolean by Lint::checkAllWarnings 
+@Suppress("BooleanPropertyNaming") // Following AGP's naming.
+var Lint.checkAllWarningsCompat71x: Boolean by Lint::checkAllWarnings

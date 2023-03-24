@@ -6,4 +6,4 @@ import org.gradle.api.Incubating
 @Incubating
 fun Lint.fatalCompat71x(id: String) {
 	this.fatal.add(id)
-} 
+}
