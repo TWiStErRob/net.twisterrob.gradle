@@ -5,12 +5,12 @@ import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
+import net.twisterrob.gradle.android.abortOnErrorCompat
 import net.twisterrob.gradle.android.androidComponents
-import net.twisterrob.gradle.android.isAbortOnErrorCompat
+import net.twisterrob.gradle.android.onVariantsCompat
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.internal.android.unwrapCast
-import net.twisterrob.gradle.internal.android.onVariantsCompat
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
@@ -93,7 +93,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
 				// `android { lintOptions { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
-				android.lint.isAbortOnErrorCompat = false
+				android.lint.abortOnErrorCompat = false
 				android.lint.xmlReport = true
 			}
 			androidComponents.onVariantsCompat { variant ->

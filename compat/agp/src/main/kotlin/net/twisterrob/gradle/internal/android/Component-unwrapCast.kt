@@ -1,12 +1,11 @@
 package net.twisterrob.gradle.internal.android
 
-import com.android.build.api.artifact.Artifacts
-import com.android.build.api.component.analytics.AnalyticsEnabledArtifacts
 import com.android.build.api.component.analytics.AnalyticsEnabledComponent
 import com.android.build.api.variant.Component
 
 /**
- * Works for [AnalyticsEnabledComponent] subclasses (last checked AGP 7.0.3):
+ * Works for [AnalyticsEnabledComponent] subclasses (last checked AGP 7.0.3).
+ *
  * @see com.android.build.api.component.analytics.AnalyticsEnabledTestFixtures
  *
  * @see com.android.build.api.component.analytics.AnalyticsEnabledVariant
@@ -24,13 +23,5 @@ fun <C : Component, T : C> C.unwrapCast(): T =
 	@Suppress("UseIfInsteadOfWhen") // Preferred for instanceof type checks.
 	when (this) {
 		is AnalyticsEnabledComponent -> this.delegate.unwrapCast()
-		else -> this as T
-	}
-
-@Suppress("UNCHECKED_CAST")
-fun <T : Artifacts> Artifacts.unwrapCast(): T =
-	@Suppress("UseIfInsteadOfWhen") // Preferred for instanceof type checks.
-	when (this) {
-		is AnalyticsEnabledArtifacts -> this.delegate.unwrapCast()
 		else -> this as T
 	}

@@ -37,6 +37,8 @@ object AGPVersions {
 	val v7xx: AGPVersion = AGPVersion(major = 7, minor = null, type = null, patch = null)
 	val v70x: AGPVersion = AGPVersion(major = 7, minor = 0, type = null, patch = null)
 	val v71x: AGPVersion = AGPVersion(major = 7, minor = 1, type = null, patch = null)
+	val v72x: AGPVersion = AGPVersion(major = 7, minor = 2, type = null, patch = null)
+	val v73x: AGPVersion = AGPVersion(major = 7, minor = 3, type = null, patch = null)
 	val v74x: AGPVersion = AGPVersion(major = 7, minor = 4, type = null, patch = null)
 
 	/**

@@ -5,8 +5,6 @@ import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ResValue
 import com.android.build.api.variant.Variant
-import com.android.build.api.variant.impl.ApplicationVariantImpl
-import com.android.build.api.variant.impl.VariantImpl
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.BasePlugin
@@ -18,8 +16,8 @@ import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addB
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask
 import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companion.addBuildConfigFields
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
-import net.twisterrob.gradle.internal.android.onVariantsCompat
-import net.twisterrob.gradle.internal.android.unwrapCast
+import net.twisterrob.gradle.internal.android.description
+import net.twisterrob.gradle.internal.android.taskContainer
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
@@ -105,11 +103,11 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			@Suppress("UnstableApiUsage")
 			(this as CommonExtension<*, *, *, *>).lint {
 				xmlReport = false
-				checkAllWarnings = true
-				abortOnError = true
+				checkAllWarningsCompat = true
+				abortOnErrorCompat = true
 				disable.add("Assert")
 				disable.add("GoogleAppIndexingWarning")
-				fatal.add("StopShip") // http://stackoverflow.com/q/33504186/253468
+				fatalCompat("StopShip") // http://stackoverflow.com/q/33504186/253468
 			}
 		}
 
@@ -192,29 +190,27 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		}
 
 		private fun registerRunTask(project: Project, variant: ApplicationVariant) {
-			val variantImpl: ApplicationVariantImpl = variant.unwrapCast()
 			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize()}") {
-				this.dependsOn(project.provider { variantImpl.taskContainer.installTask })
+				this.dependsOn(project.provider { variant.taskContainer.installTask })
 				this.manifestFile.set(variant.artifacts.get(SingleArtifact.MERGED_MANIFEST))
 				this.applicationId.set(variant.applicationId)
-				this.updateDescription(variantImpl.description)
+				this.updateDescription(variant.description)
 			}
 		}
 
 		private fun fixVariantTaskGroups(variant: Variant) {
-			val variantImpl = variant.unwrapCast<Variant, VariantImpl<*>>()
 			fun ComponentCreationConfig.fixMetadata() {
 				taskContainer.compileTask.configure { task ->
 					// This is now done in TaskManager, at createCompileAnchorTask.
 					task.group = org.gradle.api.plugins.BasePlugin.BUILD_GROUP
-					task.description = "Compiles sources for ${variantImpl.description}."
+					task.description = "Compiles sources for ${variant.description}."
 				}
 				taskContainer.javacTask.configure { task ->
 					task.group = org.gradle.api.plugins.BasePlugin.BUILD_GROUP
-					task.description = "Compiles Java sources for ${variantImpl.description}."
+					task.description = "Compiles Java sources for ${variant.description}."
 				}
 			}
-			variant.components
+			variant.componentsCompat
 				.filterIsInstance<ComponentCreationConfig>()
 				.forEach(ComponentCreationConfig::fixMetadata)
 		}

@@ -37,7 +37,7 @@ dependencies {
 	implementation(projects.compat.agpBase)
 	implementation(projects.compat.agp70x)
 	implementation(projects.compat.agp74x)
-	api(projects.compat.agpLatest)
+	api(projects.compat.agp)
 
 	testImplementation(projects.test.internal)
 

@@ -8,7 +8,6 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.common.BasePlugin
-import net.twisterrob.gradle.internal.android.onVariantsCompat
 import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId
@@ -199,6 +198,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	}
 
 	private fun renameAPK(variant: ApplicationVariant) {
+		// TODO replace with new Variant API transformation.
 		val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
 		val androidTestOutput = variant.androidTestCompat?.let { androidTest ->
 			val androidTestImpl = androidTest.unwrapCast<AndroidTest, AndroidTestImpl>()

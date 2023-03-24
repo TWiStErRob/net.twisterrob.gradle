@@ -82,7 +82,7 @@ class AndroidReleasePlugin : BasePlugin() {
 				copy.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 			}
 
-			if (variant.isMinifyEnabled) {
+			if (variant.isMinifyEnabledCompat) {
 				val mappingFileProvider = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
 				archiveMappingFile(mappingFileProvider.map { it.asFile })
 			}

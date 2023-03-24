@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.internal.android
+package net.twisterrob.gradle.android
 
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.AndroidComponentsExtension
@@ -6,6 +6,9 @@ import com.android.build.api.variant.Variant
 import com.android.build.api.variant.VariantBuilder
 
 /**
+ * Compatibility version for [AndroidComponentsExtension.onVariants] DSL:
+ * `androidComponents.onVariants { }`.
+ *
  * Need to duplicate this method, because the signature changed among 7.x versions.
  * When compiling against AGP 7.4, the following error is thrown upon executing the code on AGP 7.3 and below:
  * ```text
@@ -14,6 +17,7 @@ import com.android.build.api.variant.VariantBuilder
  * AndroidComponentsExtension, VariantSelector, Function1, int, Object)'
  * ```
  * This is because:
+ *
  * AGP 7.4 generated
  * ```java
  * @Metadata(mv = {1, 6, 0}, ...)
@@ -43,14 +47,4 @@ fun <DslExtensionT : CommonExtension<*, *, *, *>, VariantBuilderT : VariantBuild
 	callback: (VariantT) -> Unit
 ) {
 	this.onVariants(selector().all(), callback)
-}
-
-/**
- * See [onVariantsCompat] for explanation.
- */
-fun <DslExtensionT : CommonExtension<*, *, *, *>, VariantBuilderT : VariantBuilder, VariantT : Variant>
-		AndroidComponentsExtension<DslExtensionT, VariantBuilderT, VariantT>.beforeVariantsCompat(
-	callback: (VariantBuilderT) -> Unit
-) {
-	this.beforeVariants(selector().all(), callback)
 }
