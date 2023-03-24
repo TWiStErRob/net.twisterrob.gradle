@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import junit.runner.Version
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -325,9 +326,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation 'junit:junit:4.13.1'
+				testImplementation 'junit:junit:${Version.id()}'
 				testImplementation 'org.robolectric:robolectric:4.9.2'
-				testImplementation 'androidx.test:core:1.3.0'
+				testImplementation 'androidx.test:core:1.5.0'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test).configureEach {
@@ -383,9 +384,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation 'junit:junit:4.13.1'
+				testImplementation 'junit:junit:${Version.id()}'
 				testImplementation 'org.robolectric:robolectric:4.9.2'
-				testImplementation 'androidx.test:core:1.3.0'
+				testImplementation 'androidx.test:core:1.5.0'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test).configureEach {
@@ -447,7 +448,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation 'junit:junit:4.13.1'
+				testImplementation 'junit:junit:${Version.id()}'
 				testImplementation 'org.robolectric:robolectric:4.9.2'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true

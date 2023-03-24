@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.kotlin
 
+import junit.runner.Version
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
@@ -45,7 +46,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation "org.testng:testng:6.14.3"
+				testImplementation "org.testng:testng:7.7.1"
 			}
 		""".trimIndent()
 
@@ -64,7 +65,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation "junit:junit:4.13.1"
+				testImplementation "junit:junit:${Version.id()}"
 			}
 		""".trimIndent()
 
