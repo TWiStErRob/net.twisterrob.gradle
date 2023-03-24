@@ -21,7 +21,7 @@ class ViolationTestResources(
 	 *  1. Replace the project name (junit...) in this file with the new name.
 	 *  1. Run the test again to validate.
 	 *  1. Amend the commit to include changes in this file.
-	 *  1. Run the test with Java 8 and Java 11 set in `Settings | Build, Execution, Deployment | Build Tools | Gradle`.
+	 *  1. Run the test with Java 11 set in `Settings | Build, Execution, Deployment | Build Tools | Gradle`.
 	 */
 	inner class Everything {
 		val checkstyleReport: String
@@ -118,25 +118,6 @@ class ViolationTestResources(
 					val group1 = match.groups[1]!!.value
 					val group2 = match.groups[2]!!.value
 					group1 + group2.replace("\\", File.separator)
-				}
-				// The XSL transformation on Java 8 doesn't acknowledge the <xsl:output indent="yes"> attribute,
-				// so we need to clean up the whitespace to match it.
-				.run {
-					if (ManagementFactory.getRuntimeMXBean().specVersion == "1.8") {
-						// Note: alternatives TransformerFactory.setAttribute and Transformer.setOutputProperty fail,
-						// because com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet.transferOutputSettings
-						// doesn't support setIndentNumber on method="html".
-						// https://stackoverflow.com/q/2402212/253468#comment129395550_2402212
-						this
-							.replace("""(?m)^ +(?=\t*)""".toRegex(), "")
-							.replace("""(?<=\))\r\n\t\t\t\r\n(?=</li>)""".toRegex(), "\r\n\t\t\t")
-							.replace(
-								"""(?<=<div class="violation" xml:space="preserve">)\r\n\t\t\t(?=<span class="title")""".toRegex(),
-								"\r\n\t\t\t\r\n"
-							)
-					} else {
-						this
-					}
 				}
 				// The XSL transformation will produce system-specific separators
 				// (on CI/Unix this is different from the captured Windows line endings).
