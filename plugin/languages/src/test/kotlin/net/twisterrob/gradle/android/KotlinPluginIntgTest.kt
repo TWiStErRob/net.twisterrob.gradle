@@ -32,7 +32,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation "junit:junit:${Version.id()}"
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 
@@ -52,7 +52,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation "junit:junit:${Version.id()}"
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 
@@ -73,7 +73,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.gradle.plugin.android-test'
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				implementation "junit:junit:${Version.id()}"
+				implementation("junit:junit:${Version.id()}")
 			}
 			android.targetProjectPath = ':'
 		"""

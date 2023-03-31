@@ -46,7 +46,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation "org.testng:testng:7.7.1"
+				testImplementation("org.testng:testng:7.7.1")
 			}
 		""".trimIndent()
 
@@ -65,7 +65,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation "junit:junit:${Version.id()}"
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 

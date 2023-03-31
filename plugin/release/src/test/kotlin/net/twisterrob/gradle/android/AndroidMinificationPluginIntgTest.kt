@@ -59,7 +59,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			dependencies {
-				implementation 'androidx.annotation:annotation:1.6.0'
+				implementation("androidx.annotation:annotation:1.6.0")
 			}
 		""".trimIndent()
 
@@ -105,7 +105,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			dependencies {
-				compileOnly 'com.android.support:support-annotations:28.0.0'
+				compileOnly("com.android.support:support-annotations:28.0.0")
 			}
 		""".trimIndent()
 
