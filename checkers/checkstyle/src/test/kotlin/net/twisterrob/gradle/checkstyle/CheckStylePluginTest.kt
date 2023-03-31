@@ -108,7 +108,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.NO_SOURCE),
-			hasItems(*(tasksIn(modules, "checkstyleRelease", "checkstyleDebug") - exceptions))
+			hasItems(*tasksIn(modules, "checkstyleRelease", "checkstyleDebug") - exceptions)
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.UP_TO_DATE),

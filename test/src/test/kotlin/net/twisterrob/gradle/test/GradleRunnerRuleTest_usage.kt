@@ -80,7 +80,7 @@ class GradleRunnerRuleTest_usage : BaseIntgTest() {
 
 	@Test fun `buildFile from multiple basedOn merged into one including script`(@TempDir temp: File) {
 		fun generateFolder(name: String): File {
-			val folder = temp.resolve("base_$name").also { it.mkdirs() }
+			val folder = temp.resolve("base_$name").apply { mkdirs() }
 			folder
 				.resolve("build.gradle")
 				.writeText("""println("basedOn($name)")${System.lineSeparator()}""")

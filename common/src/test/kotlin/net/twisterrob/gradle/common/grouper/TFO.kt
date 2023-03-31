@@ -10,7 +10,7 @@ internal class TFO private constructor(
 ) {
 
 	override fun toString(): String =
-		String.format("%s-%s-%s", e, f, g)
+		"$e-$f-$g"
 
 	companion object {
 

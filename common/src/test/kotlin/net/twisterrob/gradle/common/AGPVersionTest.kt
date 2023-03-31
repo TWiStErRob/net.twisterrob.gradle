@@ -27,6 +27,7 @@ class AGPVersionTest {
 		/**
 		 * List of AGP versions from https://maven.google.com/web/index.html#com.android.tools.build:gradle.
 		 */
+		@Suppress("LongMethod")
 		@JvmStatic
 		fun mavenGoogle(): List<Arguments> =
 			listOf(
@@ -326,6 +327,7 @@ class AGPVersionTest {
 		/**
 		 * List of AGP versions from https://mvnrepository.com/artifact/com.android.tools.build/gradle.
 		 */
+		@Suppress("LongMethod")
 		@JvmStatic
 		fun mavenCentral(): List<Arguments> =
 			listOf(

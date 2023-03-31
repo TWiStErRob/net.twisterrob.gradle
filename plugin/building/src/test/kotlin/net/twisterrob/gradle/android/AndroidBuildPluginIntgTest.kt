@@ -20,7 +20,9 @@ import java.time.LocalDate
 import java.time.ZoneOffset
 
 /**
- * Note: if Robolectric tests fail with
+ * Tests for [AndroidBuildPlugin].
+ *
+ *  Note: if Robolectric tests fail with
  * > java.lang.IllegalArgumentException: URI is not hierarchical
  * >     at java.base/sun.nio.fs.WindowsUriSupport.fromUri(WindowsUriSupport.java:122)
  *
@@ -236,11 +238,11 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			// intentionally allprojects and not subprojects so it runs on the plugin-less root project too
 			allprojects {
 				// Ideal implementation would be this, but somehow it's too late at this point.
-//				project.plugins.whenPluginAdded { plugin ->
-//					if (plugin instanceof com.android.build.gradle.AppPlugin) {
-//						android.compileSdkVersion = 23
-//					}
-//				}
+			//	project.plugins.whenPluginAdded { plugin ->
+			//		if (plugin instanceof com.android.build.gradle.AppPlugin) {
+			//			android.compileSdkVersion = 23
+			//		}
+			//	}
 				afterEvaluate {
 					def android = project.extensions.findByName("android")
 					if (android != null) {
@@ -272,6 +274,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 	}
 
+	@Suppress("LongMethod") // Multiple files are listed in this one method.
 	@Test fun `can disable buildConfig decoration (debug)`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 
@@ -349,6 +352,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":testDebugUnitTest")
 	}
 
+	@Suppress("LongMethod") // Multiple files are listed in this one method.
 	@Test fun `adds custom resources and BuildConfig values`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 

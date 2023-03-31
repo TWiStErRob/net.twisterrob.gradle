@@ -115,11 +115,11 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		assertThat(
 			result.output, containsString(
 				"""
-				module        	variant  	checkstyle
-				:EmptyBlock   	*        	         3
-				:MemberName   	*        	         2
-				:UnusedImports	*        	         4
-				Summary       	(total: 9)	         9
+					module        	variant  	checkstyle
+					:EmptyBlock   	*        	         3
+					:MemberName   	*        	         2
+					:UnusedImports	*        	         4
+					Summary       	(total: 9)	         9
 				""".trimIndent().replace(Regex("""\r?\n"""), System.lineSeparator())
 			)
 		)
@@ -199,13 +199,25 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		}
 
 		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
-		result.assertNoOutputLine(Regex("""Some problems were found with the configuration of task ':printViolationCount'\..*"""))
+		result.assertNoOutputLine(
+			"""
+				Some problems were found with the configuration of task ':printViolationCount'\..*
+			""".trimIndent().toRegex()
+		)
 		result.assertNoOutputLine(Regex(""" - File '(.*)' specified for property '.*' does not exist\."""))
 		result.assertHasOutputLine("Summary\t(total: 0)")
 		when {
 			AGPVersions.v71x <= AGPVersions.UNDER_TEST -> {
-				result.assertHasOutputLine(Regex("""Missing report for task ':lintReportDebug'.*: .*\blint-results-debug.xml"""))
-				result.assertHasOutputLine(Regex("""Missing report for task ':lintReportRelease'.*: .*\blint-results-release.xml"""))
+				result.assertHasOutputLine(
+					"""
+						Missing report for task ':lintReportDebug'.*: .*\blint-results-debug.xml
+					""".trimIndent().toRegex()
+				)
+				result.assertHasOutputLine(
+					"""
+						Missing report for task ':lintReportRelease'.*: .*\blint-results-release.xml
+					""".trimIndent().toRegex()
+				)
 			}
 			AGPVersions.v70x <= AGPVersions.UNDER_TEST -> {
 				result.assertHasOutputLine(Regex("""Missing report for task ':lintDebug'.*: .*\blint-results-debug.xml"""))

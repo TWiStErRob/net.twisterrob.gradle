@@ -87,7 +87,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 			dependencyResolutionManagement {
 				repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 			}
-		"""
+		""".trimIndent()
 		gradle.settingsFile.writeText(settings)
 
 		@Language("gradle")
@@ -97,9 +97,21 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script, "jar").buildAndFail()
 
-		result.assertNoOutputLine(""".*Build was configured to prefer settings repositories over project repositories but repository 'MavenRepo' was added by plugin 'net\.twisterrob\.kotlin'""".toRegex())
-		result.assertNoOutputLine(""".*Build was configured to prefer settings repositories over project repositories but repository '.*' was added by plugin '.*'""".toRegex())
-		result.assertHasOutputLine(""".*Cannot resolve external dependency (.*) because no repositories are defined\.""".toRegex())
+		result.assertNoOutputLine(
+			"""
+				.*Build was configured to prefer settings repositories over project repositories but repository 'MavenRepo' was added by plugin 'net\.twisterrob\.kotlin'
+			""".trimIndent().toRegex()
+		)
+		result.assertNoOutputLine(
+			"""
+				.*Build was configured to prefer settings repositories over project repositories but repository '.*' was added by plugin '.*'
+			""".trimIndent().toRegex()
+		)
+		result.assertHasOutputLine(
+			"""
+				.*Cannot resolve external dependency (.*) because no repositories are defined\.
+			""".trimIndent().toRegex()
+		)
 	}
 
 	@Test fun `applying by the old name is deprecated`() {

@@ -41,7 +41,11 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		val result = gradle.run(script, "assembleRelease").build()
 
 		result.assertSuccess(":assembleRelease")
-		result.assertHasOutputLine("""Keystore file \(from RELEASE_STORE_FILE\) '.*non-existent.file.*' is not valid\.""".toRegex())
+		result.assertHasOutputLine(
+			"""
+				Keystore file \(from RELEASE_STORE_FILE\) '.*non-existent.file.*' is not valid\.
+			""".trimIndent().toRegex()
+		)
 		verifyWithJarSigner(gradle.root.apk("release").absolutePath).also {
 			assertThat(it, containsString("jar is unsigned."))
 		}

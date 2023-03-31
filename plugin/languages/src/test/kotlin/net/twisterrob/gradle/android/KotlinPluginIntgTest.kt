@@ -14,7 +14,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 /**
- * [KotlinPlugin] interop with Android modules
+ * Test [KotlinPlugin] interop with Android modules.
+ *
  * @see KotlinPlugin
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
@@ -76,7 +77,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 				implementation("junit:junit:${Version.id()}")
 			}
 			android.targetProjectPath = ':'
-		"""
+		""".trimIndent()
 		gradle.file(appScript, "test", "build.gradle")
 		@Language("xml")
 		val androidManifest = """

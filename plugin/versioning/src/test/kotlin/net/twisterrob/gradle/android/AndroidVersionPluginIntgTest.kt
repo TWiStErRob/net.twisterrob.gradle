@@ -303,8 +303,16 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		val result = gradle.run(script, "assembleRelease").buildAndFail()
 
-		result.assertHasOutputLine(""".*android\.defaultConfig\.versionCode is set to 0, but it should be a positive integer\..*""".toRegex())
-		result.assertHasOutputLine(""".*See https://developer\.android\.com/studio/publish/versioning#appversioning for more information\..*""".toRegex())
+		result.assertHasOutputLine(
+			"""
+				.*android\.defaultConfig\.versionCode is set to 0, but it should be a positive integer\..*
+			""".trimIndent().toRegex()
+		)
+		result.assertHasOutputLine(
+			"""
+				.*See https://developer\.android\.com/studio/publish/versioning#appversioning for more information\..*
+			""".trimIndent().toRegex()
+		)
 	}
 
 	@Test fun `autoVersion can be turned off even when the file exists`() {
@@ -384,6 +392,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
+	@Suppress("LongMethod") // Variants are fun, aren't they.
 	@Test fun `variant versioning works`() {
 		@Language("gradle")
 		val script = """

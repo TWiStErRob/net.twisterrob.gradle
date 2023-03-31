@@ -17,16 +17,16 @@ class TestPluginTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	/**
-	 * Set up a full Gradle project in a test that has a test to test the plugin that helps testing Gradle.
+	 * Set up a full Gradle project in a test that has a test to test the plugin that helps to test Gradle.
 	 *
-	 * Let's break that down:<ul>
-	 * <li>This test sets up a Gradle project with:<ul>
-	 *     <li>{@code apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'}
-	 *     <li>{@code Testception.groovy}
-	 *     </ul>
-	 * <li>{@code Testception} sets up a simple Gradle build and checks its output.
-	 * <li>{@code Testception} is being run from {@code :test} task in the project that's set up in this test method.
+	 * Let's break that down:
+	 *  * This test sets up a Gradle project with:
+	 *    * `apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'`
+	 *    * `Testception.groovy`
+	 *  * `Testception` sets up a simple Gradle build and checks its output.
+	 *  * `Testception` is being run from `:test` task in the project that's set up in this test method.
 	 */
+	@Suppress("LongMethod") // Multiple files are listed in this one method.
 	@Test fun `gradle test plugin test`() {
 		val triplet = "\"\"\""
 		@Suppress("GrPackage") // It will be written to the right folder.

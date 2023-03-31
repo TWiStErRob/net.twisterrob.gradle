@@ -108,7 +108,7 @@ class PmdPluginTest : BaseIntgTest() {
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),
-			hasItems(*(tasksIn(modules, "pmdRelease", "pmdDebug") - exceptions))
+			hasItems(*tasksIn(modules, "pmdRelease", "pmdDebug") - exceptions)
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),

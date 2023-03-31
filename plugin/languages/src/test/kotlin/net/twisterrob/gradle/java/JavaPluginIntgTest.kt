@@ -182,6 +182,10 @@ class JavaPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertNoOutputLine("""Note: .*Deprecation.java uses or overrides a deprecated API.""".toRegex())
 		result.assertNoOutputLine("""Note: Recompile with -Xlint:deprecation for details.""".toRegex())
 		val pack = Regex.escape(packageName)
-		result.assertHasOutputLine(""".*Deprecation.java:5: warning: \[deprecation\] (${pack}\.)?DeprecatedClass in ${pack} has been deprecated""".toRegex())
+		result.assertHasOutputLine(
+			"""
+				.*Deprecation.java:5: warning: \[deprecation\] (${pack}\.)?DeprecatedClass in ${pack} has been deprecated
+			""".trimIndent().toRegex()
+		)
 	}
 }
