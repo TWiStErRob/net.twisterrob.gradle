@@ -17,16 +17,14 @@ class TableGeneratorTest {
 				)
 			),
 			"module2" to mapOf(
-				"variant2" to mapOf(
-				),
+				"variant2" to emptyMap(),
 				"variant3" to mapOf(
 					"checkstyle" to 0,
 					"unchecked" to null
 				)
 			),
 			"module3" to mapOf(
-				"variant2" to mapOf(
-				)
+				"variant2" to emptyMap()
 			)
 		)
 	}

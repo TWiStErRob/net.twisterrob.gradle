@@ -99,6 +99,10 @@ style:
     # Default 2 is not enough, usually a single guard and a condition simply violates this.
     max: 3
 
+  UnnecessaryInnerClass:
+    ignoreAnnotated:
+      - 'org.junit.jupiter.api.Nested'
+
   UnnecessaryParentheses:
     # Match IntelliJ IDEA Kotlin Plugin's UnclearPrecedenceOfBinaryExpression setup.
     allowForUnclearPrecedence: true

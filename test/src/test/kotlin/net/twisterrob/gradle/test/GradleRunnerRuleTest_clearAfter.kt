@@ -118,7 +118,7 @@ class GradleRunnerRuleTest_clearAfter {
 		@Nested
 		inner class `clearAfterSuccess set through System property` {
 
-			private var clearAfterSuccessProperty = SystemProperty("net.twisterrob.gradle.runner.clearAfterSuccess")
+			private val clearAfterSuccessProperty = SystemProperty("net.twisterrob.gradle.runner.clearAfterSuccess")
 
 			@BeforeEach fun setUp() {
 				clearAfterSuccessProperty.backup()
@@ -224,7 +224,7 @@ class GradleRunnerRuleTest_clearAfter {
 		@Nested
 		inner class `clearAfterFailure set through System property` {
 
-			private var clearAfterFailureProperty = SystemProperty("net.twisterrob.gradle.runner.clearAfterFailure")
+			private val clearAfterFailureProperty = SystemProperty("net.twisterrob.gradle.runner.clearAfterFailure")
 
 			@BeforeEach fun setUp() {
 				clearAfterFailureProperty.backup()

@@ -72,10 +72,10 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("properties")
 		val props = """
 			# suppress inspection "UnusedProperty" for whole file
-			RELEASE_STORE_FILE=${temp.resolve(generationParams["-keystore"]!!).absolutePath.replace("\\", "\\\\")}
-			RELEASE_STORE_PASSWORD=${generationParams["-storepass"]}
-			RELEASE_KEY_ALIAS=${generationParams["-alias"]}
-			RELEASE_KEY_PASSWORD=${generationParams["-keypass"]}
+			RELEASE_STORE_FILE=${temp.resolve(generationParams.getValue("-keystore")).absolutePath.replace("\\", "\\\\")}
+			RELEASE_STORE_PASSWORD=${generationParams.getValue("-storepass")}
+			RELEASE_KEY_ALIAS=${generationParams.getValue("-alias")}
+			RELEASE_KEY_PASSWORD=${generationParams.getValue("-keypass")}
 		""".trimIndent()
 		gradle.root.resolve("gradle.properties").appendText(props)
 

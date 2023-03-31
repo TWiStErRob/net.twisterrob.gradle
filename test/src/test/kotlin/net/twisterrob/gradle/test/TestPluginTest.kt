@@ -59,7 +59,8 @@ class TestPluginTest : BaseIntgTest() {
 		""".trimIndent()
 		gradle.file(testFileContents, "src/test/groovy/net/twisterrob/gradle/test/test/Testception.groovy")
 
-		val artifactPath = System.getProperties()["net.twisterrob.gradle.test.artifactPath"].toString()
+		val artifactPath = System.getProperty("net.twisterrob.gradle.test.artifactPath")
+			?: error("Missing property: net.twisterrob.gradle.test.artifactPath")
 		@Language("gradle")
 		val script = """
 			apply plugin: 'groovy'

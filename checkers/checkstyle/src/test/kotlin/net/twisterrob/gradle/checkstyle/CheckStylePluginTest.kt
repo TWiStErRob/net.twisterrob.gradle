@@ -128,8 +128,8 @@ class CheckStylePluginTest : BaseIntgTest() {
 			":module3:sub1",
 			":module3:sub2"
 		)
-		modules.forEach {
-			gradle.settingsFile.appendText("include '${it}'${endl}")
+		modules.forEach { modulePath ->
+			gradle.settingsFile.appendText("include '${modulePath}'${endl}")
 
 			@Language("gradle")
 			val subProject = """
@@ -138,10 +138,10 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 			@Language("xml")
 			val manifest = """
-				<manifest package="project${it.replace(":", ".")}" />
+				<manifest package="project${modulePath.replace(":", ".")}" />
 			""".trimIndent()
 
-			val subPath = it.split(":").toTypedArray()
+			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}

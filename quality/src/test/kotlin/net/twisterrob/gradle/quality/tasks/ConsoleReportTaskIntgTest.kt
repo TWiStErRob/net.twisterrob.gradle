@@ -87,7 +87,6 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 	@Test fun `get per module violation counts`() {
 		checkstyle.multi.contents.forEach { (name, content) ->
 			val match = VIOLATION_PATTERN.matchEntire(name) ?: error("$name doesn't match $VIOLATION_PATTERN")
-			println("Building module from ${name}")
 			val checkName = match.groups[1]!!.value
 			@Suppress("UNUSED_VARIABLE")
 			val checkCount = match.groups[2]!!.value.toInt()

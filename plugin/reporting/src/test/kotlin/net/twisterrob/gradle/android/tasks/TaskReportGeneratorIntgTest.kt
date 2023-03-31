@@ -30,7 +30,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			//noinspection GroovyAssignabilityCheck
-			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.qualifiedName}) {
+			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.java.name}) {
 				input.set(new File(rootDir, 'my_test_input'))
 				output.set(new File(buildDir, 'my_test_results'))
 				//outputs.upToDateWhen { false }
@@ -50,7 +50,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			//noinspection GroovyAssignabilityCheck
-			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.qualifiedName}) {
+			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.java.name}) {
 				input.set(new File(rootDir, 'subfolder'))
 			}
 		""".trimIndent()
@@ -58,7 +58,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 		val result = gradle.run(script, "generateHtmlReportFromXml").buildAndFail()
 
 		val expectedError =
-			"Type '${TestReportGenerator::class.qualifiedName}' property 'output' doesn't have a configured value."
+			"Type '${TestReportGenerator::class.java.name}' property 'output' doesn't have a configured value."
 		assertThat(result.failReason, containsString(expectedError))
 	}
 
@@ -68,7 +68,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			//noinspection GroovyAssignabilityCheck
-			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.qualifiedName}) {
+			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.java.name}) {
 				output.set(new File(rootDir, 'subfolder'))
 			}
 		""".trimIndent()
@@ -76,7 +76,7 @@ class TaskReportGeneratorIntgTest : BaseIntgTest() {
 		val result = gradle.run(script, "generateHtmlReportFromXml").buildAndFail()
 
 		val expectedError =
-			"Type '${TestReportGenerator::class.qualifiedName}' property 'input' doesn't have a configured value."
+			"Type '${TestReportGenerator::class.java.name}' property 'input' doesn't have a configured value."
 		assertThat(result.failReason, containsString(expectedError))
 	}
 }

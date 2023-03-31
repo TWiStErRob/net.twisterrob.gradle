@@ -226,7 +226,9 @@ class ViolationsRendererTest {
 			xslPath: String? = null
 		): String {
 			val out = StringWriter()
-			out.xmlWriter().use { renderXml(it, violations, projectName, xslPath) }
+			out.xmlWriter().use {
+				renderXml(to = it, from = violations, projectName = projectName, xslPath = xslPath)
+			}
 			return out.toString()
 		}
 	}

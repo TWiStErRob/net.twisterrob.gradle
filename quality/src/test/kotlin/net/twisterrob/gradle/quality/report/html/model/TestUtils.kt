@@ -9,10 +9,10 @@ internal fun JFixture.buildProjectPath(levels: Int = 1): String =
 	(1..levels).joinToString("") { ":${build<String>()}" }
 
 internal fun mockProject(path: String): Project =
-	mock<Project>().also {
-		whenever(it.path).thenReturn(path)
-		whenever(it.name).thenReturn(path.substringAfterLast(":"))
-		whenever(it.rootProject).thenReturn(it)
+	mock<Project>().also { project ->
+		whenever(project.path).thenReturn(path)
+		whenever(project.name).thenReturn(path.substringAfterLast(":"))
+		whenever(project.rootProject).thenReturn(project)
 	}
 
 internal fun Any.setField(name: String, value: Any?) {
