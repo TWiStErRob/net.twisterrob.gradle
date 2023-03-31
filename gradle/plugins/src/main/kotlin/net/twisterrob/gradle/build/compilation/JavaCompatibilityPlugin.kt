@@ -1,17 +1,20 @@
 package net.twisterrob.gradle.build.compilation
 
-import libs
-import net.twisterrob.gradle.plugins.settings.TargetJvmVersionRule
-import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.withModule
 
 class JavaCompatibilityPlugin : Plugin<Project> {
 	override fun apply(target: Project) {
 		target.dependencies.components {
 			// AGP 8.0.0-alpha10 requires Java 17 (https://issuetracker.google.com/issues/241546506)
-			// Google changed the Java compiler and class file format to be Java 17. 
+			// But Google didn't change the Java compiler and class file format to be Java 17 yet.
+			// Even AGP 8.1.0-alpha11 is published with Java 11 bytecode
+			// according to its gradle-module-metadata and class header.
+
+			// =================================================================================================
+			// The original hack to downgrade Java 11 to Java 8 is left here, because expect it'll be back soon.
+			// =================================================================================================
+
 			// ```
 			// Execution failed for task ':compat:agp-74x:compileKotlin'.
 			// > Could not resolve all files for configuration ':compat:agp-74x:compileClasspath'.
