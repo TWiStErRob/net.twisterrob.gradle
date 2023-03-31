@@ -15,6 +15,7 @@ import java.io.FileNotFoundException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
+@Suppress("NamedArguments")
 class CodeContextTest {
 
 	@TempDir lateinit var temp: File

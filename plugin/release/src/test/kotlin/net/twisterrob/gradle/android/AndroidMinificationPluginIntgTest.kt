@@ -3,7 +3,6 @@ package net.twisterrob.gradle.android
 import com.jakewharton.dex.DexParser.Companion.toDexParser
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
-import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertNoTask
 import net.twisterrob.gradle.test.assertSuccess

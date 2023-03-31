@@ -17,7 +17,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 /**
- * [AndroidInstallRunnerTask] via [AndroidBuildPlugin]
+ * Test [AndroidInstallRunnerTask] via [AndroidBuildPlugin].
+ *
  * @see AndroidInstallRunnerTask
  * @see AndroidBuildPlugin
  */
@@ -73,7 +74,11 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 			result.assertSuccess(":runDebug")
 			// line is output to stderr, so no control over being on a new line
 			result.assertNoOutputLine(""".*no devices/emulators found.*""".toRegex())
-			result.assertNoOutputLine("""Error: Activity class \{${packageName}\.debug/${packageName}\.MainActivity\} does not exist\.""".toRegex())
+			result.assertNoOutputLine(
+				"""
+					Error: Activity class \{${packageName}\.debug/${packageName}\.MainActivity\} does not exist\.
+				""".trimIndent().toRegex()
+			)
 		} else {
 			val result = gradle.run(script, "runDebug").buildAndFail()
 

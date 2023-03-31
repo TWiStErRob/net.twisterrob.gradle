@@ -108,7 +108,7 @@ class PmdPluginTest : BaseIntgTest() {
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),
-			hasItems(*(tasksIn(modules, "pmdRelease", "pmdDebug") - exceptions))
+			hasItems(*tasksIn(modules, "pmdRelease", "pmdDebug") - exceptions)
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),
@@ -128,8 +128,8 @@ class PmdPluginTest : BaseIntgTest() {
 			":module3:sub1",
 			":module3:sub2"
 		)
-		modules.forEach {
-			gradle.settingsFile.appendText("include '${it}'${endl}")
+		modules.forEach { modulePath ->
+			gradle.settingsFile.appendText("include '${modulePath}'${endl}")
 
 			@Language("gradle")
 			val subProject = """
@@ -138,10 +138,10 @@ class PmdPluginTest : BaseIntgTest() {
 
 			@Language("xml")
 			val manifest = """
-				<manifest package="project${it.replace(":", ".")}" />
+				<manifest package="project${modulePath.replace(":", ".")}" />
 			""".trimIndent()
 
-			val subPath = it.split(":").toTypedArray()
+			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
@@ -193,16 +193,16 @@ class PmdPluginTest : BaseIntgTest() {
 			":module3:sub2"
 		)
 		val applyTo = arrayOf(":module2", ":module2:sub1", ":module3:sub2")
-		modules.forEach {
-			gradle.settingsFile.appendText("include '${it}'${endl}")
+		modules.forEach { modulePath ->
+			gradle.settingsFile.appendText("include '${modulePath}'${endl}")
 
-			val subProject = if (it in applyTo) subProjectApplied else subProjectNotApplied
+			val subProject = if (modulePath in applyTo) subProjectApplied else subProjectNotApplied
 			@Language("xml")
 			val manifest = """
-				<manifest package="project${it.replace(":", ".")}" />
+				<manifest package="project${modulePath.replace(":", ".")}" />
 			""".trimIndent()
 
-			val subPath = it.split(":").toTypedArray()
+			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
 			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}

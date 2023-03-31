@@ -345,14 +345,14 @@ class PluginIntegrationTest : BaseIntgTest() {
 		if (KotlinVersion(1, 5, 30) <= KotlinVersions.UNDER_TEST) {
 			// Location is not relevant since Kotlin 1.5.30, we can put this plugin in any location.
 			"""
-			apply plugin: "kotlin-android"
-			apply plugin: "${androidPluginId}"
+				apply plugin: "kotlin-android"
+				apply plugin: "${androidPluginId}"
 			""".trimIndent()
 		} else {
 			// Location is relevant before Kotlin 1.5.30, we have to put this after the Android plugin.
 			"""
-			apply plugin: "${androidPluginId}"
-			apply plugin: "kotlin-android"
+				apply plugin: "${androidPluginId}"
+				apply plugin: "kotlin-android"
 			""".trimIndent()
 		}
 }

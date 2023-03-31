@@ -217,16 +217,17 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	private inline fun assertArchive(archive: File, crossinline assertions: (File) -> Unit) {
 		try {
 			assertThat(archive.absolutePath, archive, anExistingFile())
-		} catch (ex: Throwable) {
+		} catch (@Suppress("SwallowedException") ex: Throwable) { // Detekt doesn't see into withRootCause.
 			val contents = archive
 				.parentFile
-				.listFiles().orEmpty()
+				.listFiles()
+				.orEmpty()
 				.joinToString(prefix = "'${archive.parentFile}' contents:\n", separator = "\n")
 			throw ex.withRootCause(IOException(contents))
 		}
 		try {
 			assertions(archive)
-		} catch (ex: Throwable) {
+		} catch (@Suppress("SwallowedException") ex: Throwable) { // Detekt doesn't see into withRootCause.
 			val contents = ZipFile(archive)
 				.entries()
 				.asSequence()

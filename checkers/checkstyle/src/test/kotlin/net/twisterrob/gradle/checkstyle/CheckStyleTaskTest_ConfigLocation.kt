@@ -78,7 +78,11 @@ class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 		val result = executeBuild()
 		assertEquals(TaskOutcome.FAILED, result.task(":module:checkstyleDebug")!!.outcome)
 		assertThat(result.failReason, containsString("Unable to create Root Module: config"))
-		result.assertHasOutputLine("""While auto-configuring configFile for task ':module:checkstyleDebug', there was no configuration found at:""")
+		result.assertHasOutputLine(
+			"""
+				While auto-configuring configFile for task ':module:checkstyleDebug', there was no configuration found at:
+			""".trimIndent()
+		)
 	}
 
 	@Test fun `does not warn about missing configuration when not executed`() {

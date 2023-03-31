@@ -129,10 +129,10 @@ class DocumentationGeneratorTest {
 				"message",
 				// Two tabs and newlines are from realistic data.
 				"""
-				Avoid printStackTrace(); use a logger call instead.
-				${"\t\t"}
-				
-				Best Practices https://pmd.github.io/pmd-6.39.0/pmd_rules_java_bestpractices.html#avoidprintstacktrace
+					Avoid printStackTrace(); use a logger call instead.
+					${"\t\t"}
+					
+					Best Practices https://pmd.github.io/pmd-6.39.0/pmd_rules_java_bestpractices.html#avoidprintstacktrace
 				""".trimIndent()
 			)
 		}

@@ -85,7 +85,11 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 		val result = executeBuild()
 		assertEquals(TaskOutcome.FAILED, result.task(":module:pmdDebug")!!.outcome)
 		assertThat(result.failReason, containsString("No rulesets specified"))
-		result.assertHasOutputLine("""While auto-configuring ruleSetFiles for task ':module:pmdDebug', there was no configuration found at:""")
+		result.assertHasOutputLine(
+			"""
+				While auto-configuring ruleSetFiles for task ':module:pmdDebug', there was no configuration found at:
+			""".trimIndent()
+		)
 	}
 
 	@Test fun `does not warn about missing configuration when not executed`() {

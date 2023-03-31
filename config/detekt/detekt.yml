@@ -60,12 +60,15 @@ naming:
   BooleanPropertyNaming:
     allowedPattern: '^(is|has|are|was)'
 
+  ClassNaming:
+    classPattern: '[A-Z][a-zA-Z0-9]*(Test(_[a-zA-Z0-9]+)?)?'
+
   FunctionMaxLength:
     excludes:
       - '**/src/test/kotlin/**'
 
 style:
-  
+
   ClassOrdering:
     excludes:
       - '**/src/test/kotlin/**'
@@ -76,6 +79,14 @@ style:
       - 'STOPSHIP'
       #- 'TODO'
 
+  MaxLineLength:
+    # It's unavoidable to have some long lines when stacktraces or links are added as comments.
+    excludeCommentStatements: true
+
+  MultilineRawStringIndentation:
+    # Indentation by default is assuming spaces, but due to tabs being used, we only want 1 indent level.
+    indentSize: 1
+
   NoTabs:
     # I'm a tab guy, I don't pay for space in advance.
     active: false
@@ -84,17 +95,13 @@ style:
     # TODEL https://github.com/detekt/detekt/issues/5133
     active: false
 
-  MaxLineLength:
-    # It's unavoidable to have some long lines when stacktraces or links are added as comments.
-    excludeCommentStatements: true
-  
-  MultilineRawStringIndentation:
-    # Indentation by default is assuming spaces, but due to tabs being used, we only want 1 indent level.
-    indentSize: 1
-
   ReturnCount:
     # Default 2 is not enough, usually a single guard and a condition simply violates this.
     max: 3
+
+  UnnecessaryInnerClass:
+    ignoreAnnotated:
+      - 'org.junit.jupiter.api.Nested'
 
   UnnecessaryParentheses:
     # Match IntelliJ IDEA Kotlin Plugin's UnclearPrecedenceOfBinaryExpression setup.

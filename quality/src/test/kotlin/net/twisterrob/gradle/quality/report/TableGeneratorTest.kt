@@ -17,16 +17,14 @@ class TableGeneratorTest {
 				)
 			),
 			"module2" to mapOf(
-				"variant2" to mapOf(
-				),
+				"variant2" to emptyMap(),
 				"variant3" to mapOf(
 					"checkstyle" to 0,
 					"unchecked" to null
 				)
 			),
 			"module3" to mapOf(
-				"variant2" to mapOf(
-				)
+				"variant2" to emptyMap()
 			)
 		)
 	}
@@ -44,7 +42,7 @@ class TableGeneratorTest {
 			module2	variant3 	         0	N/A	      N/A
 			module3	variant2 	       N/A	N/A	      N/A
 			Summary	(total: 6)	         1	  5	      N/A
-		""".prepare()
+		""".trimIndent().normalizeLineEndings()
 		assertEquals(expected, result)
 	}
 
@@ -59,7 +57,7 @@ class TableGeneratorTest {
 			module1	variant2 	       N/A	  3	      N/A
 			module2	variant3 	         0	N/A	      N/A
 			Summary	(total: 6)	         1	  5	      N/A
-		""".prepare()
+		""".trimIndent().normalizeLineEndings()
 		assertEquals(expected, result)
 	}
 
@@ -76,7 +74,7 @@ class TableGeneratorTest {
 			module2	variant3 	         0	N/A
 			module3	variant2 	       N/A	N/A
 			Summary	(total: 6)	         1	  5
-		""".prepare()
+		""".trimIndent().normalizeLineEndings()
 		assertEquals(expected, result)
 	}
 
@@ -91,7 +89,7 @@ class TableGeneratorTest {
 			module1	variant2 	       N/A	  3
 			module2	variant3 	         0	N/A
 			Summary	(total: 6)	         1	  5
-		""".prepare()
+		""".trimIndent().normalizeLineEndings()
 		assertEquals(expected, result)
 	}
 
@@ -103,7 +101,7 @@ class TableGeneratorTest {
 		val expected = """
 			module 	variant${"   "}
 			Summary	(total: 0)
-		""".prepare()
+		""".trimIndent().normalizeLineEndings()
 		assertEquals(expected, result)
 	}
 
@@ -121,7 +119,7 @@ class TableGeneratorTest {
 		val expected = """
 			module 	variant${"   "}
 			Summary	(total: 0)
-		""".prepare()
+		""".trimIndent().normalizeLineEndings()
 		assertEquals(expected, result)
 	}
 
@@ -142,12 +140,10 @@ class TableGeneratorTest {
 			module2	variant2${"  "}
 			module3	variant3${"  "}
 			Summary	(total: 0)
-		""".prepare()
+		""".trimIndent().normalizeLineEndings()
 		assertEquals(expected, result)
 	}
 }
 
-private fun String.prepare(): String =
-	this
-		.trimIndent()
-		.replace(Regex("""\r?\n"""), System.lineSeparator())
+private fun String.normalizeLineEndings(): String =
+	this.replace(Regex("""\r?\n"""), System.lineSeparator())

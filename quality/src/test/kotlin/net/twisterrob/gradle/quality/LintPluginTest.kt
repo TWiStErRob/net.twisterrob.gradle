@@ -168,8 +168,8 @@ class LintPluginTest : BaseIntgTest() {
 			else ->
 				AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
 		}
-		val result = `ignores disabled submodule lint tasks` {
-			it + System.lineSeparator() + disabledTasks.joinToString(separator = System.lineSeparator()) { taskName ->
+		val result = `ignores disabled submodule lint tasks` { buildScript ->
+			buildScript + System.lineSeparator() + disabledTasks.joinToString(separator = System.lineSeparator()) { taskName ->
 				"evaluationDependsOn(':module2').tasks.getByName('${taskName}').enabled = false"
 			}
 		}
@@ -180,7 +180,7 @@ class LintPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `ignores disabled submodule lint tasks (direct setup)`() {
-		val result = `ignores disabled submodule lint tasks` {
+		val result = `ignores disabled submodule lint tasks` { buildScript ->
 			val build2 = gradle.buildFile.parentFile.resolve("module2/build.gradle")
 			build2.appendText(System.lineSeparator())
 			build2.appendText(
@@ -208,7 +208,7 @@ class LintPluginTest : BaseIntgTest() {
 					else -> AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
 				}
 			)
-			it
+			buildScript
 		}
 		when {
 			AGPVersions.v71x <= AGPVersions.UNDER_TEST -> {
@@ -227,7 +227,7 @@ class LintPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `ignores disabled variants (direct setup)`() {
-		val result = `ignores disabled submodule lint tasks` {
+		val result = `ignores disabled submodule lint tasks` { buildScript ->
 			val build2 = gradle.buildFile.parentFile.resolve("module2/build.gradle")
 			build2.appendText(System.lineSeparator())
 			build2.appendText(
@@ -237,7 +237,7 @@ class LintPluginTest : BaseIntgTest() {
 					}
 				""".trimIndent()
 			)
-			it
+			buildScript
 		}
 		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":module2:lint")!!.outcome)
 		assertNull(result.task(":module2:lintDebug"))

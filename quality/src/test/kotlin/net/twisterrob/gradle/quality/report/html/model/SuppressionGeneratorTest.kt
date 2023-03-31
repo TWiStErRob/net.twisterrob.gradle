@@ -88,8 +88,9 @@ class SuppressionGeneratorTest {
 
 		@Test
 		fun `unknown external directories are suppressed with lint-xml`(@TempDir temp: File) {
+			val tempDir = temp.resolve("some/dir").apply { assertTrue(mkdirs()) }
 			val input = fixture.build<Violation>().apply {
-				location.setField("file", temp.resolve("some/dir").also { assertTrue(it.mkdirs()) })
+				location.setField("file", tempDir)
 			}
 			@Language("XML")
 			val expected = """
