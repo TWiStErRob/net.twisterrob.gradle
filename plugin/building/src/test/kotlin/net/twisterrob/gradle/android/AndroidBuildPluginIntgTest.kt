@@ -279,15 +279,16 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val kotlinTestClass = """
 			import ${packageName}.BuildConfig
 			import org.hamcrest.MatcherAssert.assertThat
+			import org.junit.Test
 			
 			class BuildConfigTest {
-				@org.junit.Test fun testRevision() {
+				@Test fun testRevision() {
 					assertThat(BuildConfig::class, hasNoConstant("REVISION"))
 				}
-				@org.junit.Test fun testRevisionNumber() {
+				@Test fun testRevisionNumber() {
 					assertThat(BuildConfig::class, hasNoConstant("REVISION_NUMBER"))
 				}
-				@org.junit.Test fun testBuildTime() {
+				@Test fun testBuildTime() {
 					assertThat(BuildConfig::class, hasNoConstant("BUILD_TIME"))
 				}
 				// not using org.hamcrest.CoreMatchers.not, because describeMismatch is not implemented.
@@ -302,7 +303,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 								val field = item.java.getDeclaredField(prop).apply { isAccessible = true }
 								val value = try { field.get(null) } catch (ex: Exception) { ex }
 								// @formatter:on
-								mismatchDescription.appendValue(field).appendText(" existed with value: ").appendValue(value);
+								mismatchDescription.appendValue(field).appendText(" existed with value: ").appendValue(value)
 								return false
 							} catch (ex: NoSuchFieldException) {
 								return true
@@ -355,7 +356,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
-				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
+				@Test fun test() { // using Robolectric to access resources at runtime
 					val res = androidx.test.core.app.ApplicationProvider
 							.getApplicationContext<android.content.Context>()
 							.resources
@@ -422,18 +423,18 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val kotlinTestClass = """
 			import ${packageName}.BuildConfig
 			import ${packageName}.R
-
+			import org.junit.Test
+			
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
-				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
+				@Test fun test() { // using Robolectric to access resources at runtime
 					printProperty("BUILD_TIME", (BuildConfig.BUILD_TIME as java.util.Date).time)
 				}
 				private fun printProperty(prop: String, value: Any?) {
 					println(BuildConfig.BUILD_TYPE + "." + prop + "=" + value)
 				}
 			}
-
 		""".trimIndent()
 		gradle.file(kotlinTestClass, "src/test/kotlin/test.kt")
 

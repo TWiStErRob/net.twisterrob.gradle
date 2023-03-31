@@ -29,41 +29,42 @@ class TestPluginTest : BaseIntgTest() {
 	 */
 	@Test fun `gradle test plugin test`() {
 		val triplet = "\"\"\""
+		@Suppress("GrPackage") // It will be written to the right folder.
 		@Language("groovy")
 		val testFileContents = """
-			//noinspection GrPackage it will be written to the right folder
-			package net.twisterrob.gradle.test
-
+			package net.twisterrob.gradle.test.test
+			
+			import net.twisterrob.gradle.test.GradleRunnerRule
 			import org.junit.Rule
 			import org.junit.Test
-
+			
 			class Testception {
-
+			
 				@Rule public final GradleRunnerRule gradle = new GradleRunnerRule()
-
+			
 				@Test void "gradle script test"() {
 					given:
 					//@Language("gradle")
 					def script = ${triplet}\
 						println 'Hello World'
 					${triplet}.stripIndent()
-
+			
 					when:
 					def result = gradle.run(script).build()
-
+			
 					then:
 					result.assertHasOutputLine(/Hello World/)
 				}
 			}
 		""".trimIndent()
-		gradle.file(testFileContents, "src/test/groovy/net/twisterrob/gradle/test/Testception.groovy")
+		gradle.file(testFileContents, "src/test/groovy/net/twisterrob/gradle/test/test/Testception.groovy")
 
 		val artifactPath = System.getProperties()["net.twisterrob.gradle.test.artifactPath"].toString()
 		@Language("gradle")
 		val script = """
 			apply plugin: 'groovy'
 			apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'
-
+			
 			repositories {
 				ivy {
 					// make /test/build/libs/X-0.0.jar available as 'net.twisterrob.gradle:X:0.0'
@@ -95,6 +96,6 @@ class TestPluginTest : BaseIntgTest() {
 		}
 
 		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
-		result.assertHasOutputLine("net.twisterrob.gradle.test.Testception > gradle script test: SUCCESS")
+		result.assertHasOutputLine("net.twisterrob.gradle.test.test.Testception > gradle script test: SUCCESS")
 	}
 }
