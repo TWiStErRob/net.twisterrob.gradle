@@ -356,7 +356,8 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val kotlinTestClass = """
 			import ${packageName}.BuildConfig
 			import ${packageName}.R
-
+			import org.junit.Test
+			
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
