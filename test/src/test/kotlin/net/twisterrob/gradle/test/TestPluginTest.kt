@@ -82,7 +82,6 @@ class TestPluginTest : BaseIntgTest() {
 				mavenCentral()
 			}
 			dependencies {
-				testImplementation 'org.jetbrains.kotlin:kotlin-stdlib:${KotlinVersion.CURRENT}'
 				testImplementation 'junit:junit:${Version.id()}'
 			}
 			// output test execution result so we can verify it actually ran
