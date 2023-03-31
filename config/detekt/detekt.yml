@@ -65,7 +65,7 @@ naming:
       - '**/src/test/kotlin/**'
 
 style:
-  
+
   ClassOrdering:
     excludes:
       - '**/src/test/kotlin/**'
@@ -79,7 +79,7 @@ style:
   MaxLineLength:
     # It's unavoidable to have some long lines when stacktraces or links are added as comments.
     excludeCommentStatements: true
-  
+
   MultilineRawStringIndentation:
     # Indentation by default is assuming spaces, but due to tabs being used, we only want 1 indent level.
     indentSize: 1
