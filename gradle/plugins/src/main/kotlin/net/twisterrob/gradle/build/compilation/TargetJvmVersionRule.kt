@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.plugins.settings
+package net.twisterrob.gradle.build.compilation
 
 import org.gradle.api.artifacts.CacheableRule
 import org.gradle.api.artifacts.ComponentMetadataContext

@@ -7,6 +7,7 @@ plugins {
 	@Suppress("DSL_SCOPE_VIOLATION") // TODEL https://github.com/gradle/gradle/issues/22797
 	alias(libs.plugins.nexus)
 	id("net.twisterrob.gradle.build.module.root")
+	id("idea")
 }
 
 val projectVersion: String by project
@@ -291,6 +292,20 @@ nexusPublishing {
 			// Set via -PsonatypePassword to gradlew, or ORG_GRADLE_PROJECT_sonatypePassword env var.
 			//password.set(sonatypePassword)
 		}
+	}
+}
+
+idea {
+	module {
+		val excludes = listOf(
+			"docs/examples/local/.gradle",
+			"docs/examples/local/build",
+			"docs/examples/release/.gradle",
+			"docs/examples/release/build",
+			"docs/examples/snapshot/.gradle",
+			"docs/examples/snapshot/build",
+		) + allprojects.map { it.projectDir.relativeTo(rootDir).resolve("build/unPackagedTestResources").toString() } 
+		excludeDirs.addAll(excludes.map { rootDir.resolve(it) })
 	}
 }
 

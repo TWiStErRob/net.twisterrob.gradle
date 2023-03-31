@@ -31,8 +31,7 @@ class TableGenerator(
 			byModuleByVariantByParserCounts
 				.values
 				.asSequence()
-				// Note: Kotlin 1.4 introduced Sequence.flatMap(()->Iterable), Gradle <6.8 uses Kotlin 1.3.x
-				.flatMap { it.values.asSequence() }
+				.flatMap { it.values }
 				.map { it[parser] }
 				.reduce(::safeAdd)
 		}

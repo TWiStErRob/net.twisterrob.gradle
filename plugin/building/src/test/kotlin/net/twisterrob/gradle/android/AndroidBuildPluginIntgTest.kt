@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import junit.runner.Version
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -278,15 +279,16 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val kotlinTestClass = """
 			import ${packageName}.BuildConfig
 			import org.hamcrest.MatcherAssert.assertThat
+			import org.junit.Test
 			
 			class BuildConfigTest {
-				@org.junit.Test fun testRevision() {
+				@Test fun testRevision() {
 					assertThat(BuildConfig::class, hasNoConstant("REVISION"))
 				}
-				@org.junit.Test fun testRevisionNumber() {
+				@Test fun testRevisionNumber() {
 					assertThat(BuildConfig::class, hasNoConstant("REVISION_NUMBER"))
 				}
-				@org.junit.Test fun testBuildTime() {
+				@Test fun testBuildTime() {
 					assertThat(BuildConfig::class, hasNoConstant("BUILD_TIME"))
 				}
 				// not using org.hamcrest.CoreMatchers.not, because describeMismatch is not implemented.
@@ -301,7 +303,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 								val field = item.java.getDeclaredField(prop).apply { isAccessible = true }
 								val value = try { field.get(null) } catch (ex: Exception) { ex }
 								// @formatter:on
-								mismatchDescription.appendValue(field).appendText(" existed with value: ").appendValue(value);
+								mismatchDescription.appendValue(field).appendText(" existed with value: ").appendValue(value)
 								return false
 							} catch (ex: NoSuchFieldException) {
 								return true
@@ -325,9 +327,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation 'junit:junit:4.13.1'
+				testImplementation("junit:junit:${Version.id()}")
 				testImplementation 'org.robolectric:robolectric:4.9.2'
-				testImplementation 'androidx.test:core:1.3.0'
+				// Can't use the latest version, 1.4.1-alpha01 is the last version that's compatible with Kotlin 1.4.32.
+				// > e: .../transformed/core-1.5.0-api.jar!/META-INF/androidx.test.core.kotlin_module:
+				// > Module was compiled with an incompatible version of Kotlin.
+				// > The binary version of its metadata is 1.7.1, expected version is 1.4.2.
+				testImplementation("androidx.test:core:1.4.1-alpha01")
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test).configureEach {
@@ -350,17 +356,12 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val kotlinTestClass = """
 			import ${packageName}.BuildConfig
 			import ${packageName}.R
-
+			import org.junit.Test
+			
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
-			// Specify SDK version to prevent failing on different JVMs.
-			// [Robolectric] WARN: Android SDK 29 requires Java 9 (have Java 8).
-			// Tests won't be run on SDK 29 unless explicitly requested.
-			// java.lang.UnsupportedOperationException:
-			// Failed to create a Robolectric sandbox: Android SDK 29 requires Java 9 (have Java 8)
-			@org.robolectric.annotation.Config(sdk = [org.robolectric.annotation.Config.OLDEST_SDK])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
-				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
+				@Test fun test() { // using Robolectric to access resources at runtime
 					val res = androidx.test.core.app.ApplicationProvider
 							.getApplicationContext<android.content.Context>()
 							.resources
@@ -389,9 +390,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation 'junit:junit:4.13.1'
+				testImplementation("junit:junit:${Version.id()}")
 				testImplementation 'org.robolectric:robolectric:4.9.2'
-				testImplementation 'androidx.test:core:1.3.0'
+				// Can't use the latest version, 1.4.1-alpha01 is the last version that's compatible with Kotlin 1.4.32.
+				// > e: .../transformed/core-1.5.0-api.jar!/META-INF/androidx.test.core.kotlin_module:
+				// > Module was compiled with an incompatible version of Kotlin.
+				// > The binary version of its metadata is 1.7.1, expected version is 1.4.2.
+				testImplementation("androidx.test:core:1.4.1-alpha01")
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test).configureEach {
@@ -427,24 +432,18 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val kotlinTestClass = """
 			import ${packageName}.BuildConfig
 			import ${packageName}.R
-
+			import org.junit.Test
+			
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
-			// Specify SDK version to prevent failing on different JVMs.
-			// [Robolectric] WARN: Android SDK 29 requires Java 9 (have Java 8).
-			// Tests won't be run on SDK 29 unless explicitly requested.
-			// java.lang.UnsupportedOperationException:
-			// Failed to create a Robolectric sandbox: Android SDK 29 requires Java 9 (have Java 8)
-			@org.robolectric.annotation.Config(sdk = [org.robolectric.annotation.Config.OLDEST_SDK])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
-				@org.junit.Test fun test() { // using Robolectric to access resources at runtime
+				@Test fun test() { // using Robolectric to access resources at runtime
 					printProperty("BUILD_TIME", (BuildConfig.BUILD_TIME as java.util.Date).time)
 				}
 				private fun printProperty(prop: String, value: Any?) {
 					println(BuildConfig.BUILD_TYPE + "." + prop + "=" + value)
 				}
 			}
-
 		""".trimIndent()
 		gradle.file(kotlinTestClass, "src/test/kotlin/test.kt")
 
@@ -459,7 +458,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
 			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
 			dependencies {
-				testImplementation 'junit:junit:4.13.1'
+				testImplementation("junit:junit:${Version.id()}")
 				testImplementation 'org.robolectric:robolectric:4.9.2'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true

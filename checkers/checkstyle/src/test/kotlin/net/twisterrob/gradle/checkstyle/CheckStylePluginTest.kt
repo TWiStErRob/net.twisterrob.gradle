@@ -2,7 +2,6 @@ package net.twisterrob.gradle.checkstyle
 
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.TaskConfigurator
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
