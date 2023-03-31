@@ -97,7 +97,7 @@
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
 			"matchStrings": [
-				"'AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?<currentValue>.*) on (?:.*)\\) Test Results (?:XMLs|HTMLs|HTML)'"
+				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?<currentValue>.*) on (?:.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
 			],
 			"versioningTemplate": "gradle"
 		},
@@ -139,7 +139,7 @@
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"'AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?:.*) on (?<currentValue>.*)\\) Test Results (?:XMLs|HTMLs|HTML)'"
+				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?:.*) on (?<currentValue>.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
 			],
 			"versioningTemplate": "gradle"
 		},
@@ -169,7 +169,7 @@
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"\t\t\t\t\t\"(?<currentValue>\\d+(\\.\\d+)+(-rc-\\d+)?)\","
+				"\t\t\t\t\t\"(?<currentValue>\\d+(?:\\.\\d+)+(?:-rc-\\d+)?)\","
 			],
 			"versioningTemplate": "gradle"
 		},
