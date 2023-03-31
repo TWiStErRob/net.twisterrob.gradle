@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.pmd
 
 import net.twisterrob.gradle.BaseIntgTest
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
