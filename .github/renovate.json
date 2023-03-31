@@ -86,7 +86,7 @@
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
 			"matchStrings": [
-				"  agp: (?<currentValue>.*)"
+				"  agp: '(?<currentValue>.*)'"
 			],
 			"versioningTemplate": "gradle"
 		},
@@ -97,7 +97,7 @@
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
 			"matchStrings": [
-				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?<currentValue>.*) on (?:.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
+				"'AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?<currentValue>.*) on (?:.*)\\) Test Results (?:XMLs|HTMLs|HTML)'"
 			],
 			"versioningTemplate": "gradle"
 		},
@@ -129,7 +129,7 @@
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"  gradle: (?<currentValue>.*)"
+				"  gradle: '(?<currentValue>.*)'"
 			],
 			"versioningTemplate": "gradle"
 		},
@@ -139,7 +139,7 @@
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?:.*) on (?<currentValue>.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
+				"'AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?:.*) on (?<currentValue>.*)\\) Test Results (?:XMLs|HTMLs|HTML)'"
 			],
 			"versioningTemplate": "gradle"
 		},
@@ -150,6 +150,47 @@
 			"depNameTemplate": "gradle",
 			"matchStrings": [
 				"net.twisterrob.gradle.runner.gradleVersion=(?<currentValue>.*)"
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update Gradle nagging constants.",
+			"fileMatch": [ "^test/src/main/resources/net/twisterrob/gradle/test/nagging\\.init\\.gradle\\.kts$" ],
+			"datasourceTemplate": "gradle-version",
+			"depNameTemplate": "gradle",
+			"matchStrings": [
+				"\t\"(?<currentValue>\\d+(\\.\\d+)+(-rc-\\d+)?)\","
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update Gradle nagging constants - Kotlin.",
+			"fileMatch": [ "^plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/build\\.gradle$" ],
+			"datasourceTemplate": "gradle-version",
+			"depNameTemplate": "gradle",
+			"matchStrings": [
+				"\t\t\t\t\t\"(?<currentValue>\\d+(\\.\\d+)+(-rc-\\d+)?)\","
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update Gradle latest tests.",
+			"fileMatch": ["^quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest\\.kt$"],
+			"datasourceTemplate": "gradle-version",
+			"depNameTemplate": "gradle",
+			"matchStrings": [
+				"\t\tgradle\\.gradleVersion = GradleVersion\\.version\\(\"(?<currentValue>.*)\"\\)",
+				"\t\tresult\\.assertHasOutputLine\\(\"\"\"Gradle version: (?<currentValue>.*)\"\"\"\\)"
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update Gradle latest compatibility.",
+			"fileMatch": ["^README\\.md$"],
+			"datasourceTemplate": "gradle-version",
+			"depNameTemplate": "gradle",
+			"matchStrings": [
+				"on Gradle .* — (?<currentValue>.*) where compatible."
 			],
 			"versioningTemplate": "gradle"
 		}
