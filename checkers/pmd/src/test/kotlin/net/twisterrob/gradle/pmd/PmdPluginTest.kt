@@ -107,8 +107,7 @@ class PmdPluginTest : BaseIntgTest() {
 		val exceptions = arrayOf(
 			// These tasks are not generated because their modules are special.
 			":test:pmdRelease",
-			// :feature module is deprecated in AGP 4.x and support for it was removed.
-			*tasksIn(arrayOf(":feature", ":base"), "pmdEach", "pmdRelease", "pmdDebug")
+			*tasksIn(arrayOf(":base"), "pmdEach", "pmdRelease", "pmdDebug")
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),
