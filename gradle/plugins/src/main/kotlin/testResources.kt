@@ -12,6 +12,7 @@ fun Project.exposeTestResources() {
 	val packageTestResources = tasks.register<Copy>("packageTestResources") {
 		from(project.java.sourceSets.named("test").map { it.resources })
 		into(project.layout.buildDirectory.dir("packagedTestResources"))
+		doFirst { delete(destinationDir) }
 	}
 	val testResources = configurations.create("exposedTestResources")
 	artifacts {
@@ -33,6 +34,7 @@ fun Project.pullTestResourcesFrom(project: ProjectDependency) {
 	val copyResources = tasks.register<Copy>("copyExposedTestResources") {
 		from(testResources)
 		into(layout.buildDirectory.dir("unPackagedTestResources"))
+		doFirst { delete(destinationDir) }
 	}
 	java.sourceSets.named("test").configure {
 		resources.srcDir(copyResources)
