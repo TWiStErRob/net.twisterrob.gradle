@@ -134,16 +134,11 @@ class CheckStylePluginTest : BaseIntgTest() {
 			@Language("gradle")
 			val subProject = """
 				apply plugin: 'com.android.library'
-			""".trimIndent()
-
-			@Language("xml")
-			val manifest = """
-				<manifest package="project${modulePath.replace(":", ".")}" />
+				android.namespace = "project${modulePath.replace(":", ".")}"
 			""".trimIndent()
 
 			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
-			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
 		gradle.file(checkstyle.empty.config, "config", "checkstyle", "checkstyle.xml")
@@ -174,15 +169,6 @@ class CheckStylePluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applies to individual subprojects`() {
-		@Language("gradle")
-		val subProjectNotApplied = """
-			apply plugin: 'com.android.library'
-		""".trimIndent()
-		@Language("gradle")
-		val subProjectApplied = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
-			apply plugin: 'com.android.library'
-		""".trimIndent()
 
 		val modules = arrayOf(
 			":module1",
@@ -196,15 +182,22 @@ class CheckStylePluginTest : BaseIntgTest() {
 		modules.forEach { module ->
 			gradle.settingsFile.appendText("include '${module}'${endl}")
 
-			val subProject = if (module in applyTo) subProjectApplied else subProjectNotApplied
-			@Language("xml")
-			val manifest = """
-				<manifest package="project${module.replace(":", ".")}" />
-			""".trimIndent()
+			@Suppress("MandatoryBracesIfStatements") // Language annotation doesn't work on implicit block return.
+			@Language("gradle")
+			val subProject = if (module in applyTo)
+				"""
+					apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+					apply plugin: 'com.android.library'
+					android.namespace = "project${module.replace(":", ".")}"
+				""".trimIndent()
+			else
+				"""
+					apply plugin: 'com.android.library'
+					android.namespace = "project${module.replace(":", ".")}"
+				""".trimIndent()
 
 			val subPath = module.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
-			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
 		gradle.file(checkstyle.empty.config, "config", "checkstyle", "checkstyle.xml")

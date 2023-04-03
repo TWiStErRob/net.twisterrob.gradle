@@ -192,18 +192,14 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 			@Language("gradle")
 			val subProject = """
 				apply plugin: 'com.android.library'
+				android.namespace = "project${modulePath.replace(":", ".")}"
 				dependencies {
 					testImplementation 'junit:junit:${Version.id()}'
 				}
 			""".trimIndent()
-			@Language("xml")
-			val manifest = """
-				<manifest package="project${modulePath.replace(":", ".")}" />
-			""".trimIndent()
 
 			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
-			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 			if (modulePath in applyTo) {
 				gradle.file(testFile, *subPath, "src", "test", "java", "Tests.java")
 			}

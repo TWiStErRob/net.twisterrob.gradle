@@ -26,7 +26,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 	companion object {
 		private val CONFIG_PATH_CS: Array<String> = arrayOf("config", "checkstyle", "checkstyle.xml")
 		private val CONFIG_PATH_PMD: Array<String> = arrayOf("config", "pmd", "pmd.xml")
-		private val MANIFEST_PATH: Array<String> = arrayOf("src", "main", "AndroidManifest.xml")
+		private val BUILD_SCRIPT_PATH: Array<String> = arrayOf("build.gradle")
 		private val SOURCE_PATH: Array<String> = arrayOf("src", "main", "java")
 
 		private val VIOLATION_PATTERN: Regex = Regex("""([A-Z][a-zA-Z0-9_]+?)_(\d)\.java""")
@@ -92,17 +92,19 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 			val checkCount = match.groups[2]!!.value.toInt()
 			val checkstyleXmlContents = checkstyle.multi.config.replace("CheckName", checkName)
 			gradle.file(checkstyleXmlContents, checkName, *CONFIG_PATH_CS)
-			gradle.file("""<manifest package="checkstyle.${checkName}" />""", checkName, *MANIFEST_PATH)
+			@Language("gradle")
+			val buildScript = """
+				apply plugin: 'com.android.library'
+				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+				android.namespace = "checkstyle.${checkName}"
+			""".trimIndent()
+			gradle.file(buildScript, checkName, *BUILD_SCRIPT_PATH)
 			gradle.file(content, checkName, *SOURCE_PATH, name)
 			gradle.settingsFile.appendText("include ':${checkName}'${System.lineSeparator()}")
 		}
 
 		@Language("gradle")
 		val script = """
-			subprojects {
-				apply plugin: 'com.android.library'
-				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
-			}
 			tasks.register('printViolationCounts', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
 

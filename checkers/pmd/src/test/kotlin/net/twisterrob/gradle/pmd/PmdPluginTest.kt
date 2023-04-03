@@ -134,16 +134,11 @@ class PmdPluginTest : BaseIntgTest() {
 			@Language("gradle")
 			val subProject = """
 				apply plugin: 'com.android.library'
-			""".trimIndent()
-
-			@Language("xml")
-			val manifest = """
-				<manifest package="project${modulePath.replace(":", ".")}" />
+				android.namespace = "project${modulePath.replace(":", ".")}"
 			""".trimIndent()
 
 			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
-			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
 		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
@@ -174,15 +169,6 @@ class PmdPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applies to individual subprojects`() {
-		@Language("gradle")
-		val subProjectNotApplied = """
-			apply plugin: 'com.android.library'
-		""".trimIndent()
-		@Language("gradle")
-		val subProjectApplied = """
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
-			apply plugin: 'com.android.library'
-		""".trimIndent()
 
 		val modules = arrayOf(
 			":module1",
@@ -196,15 +182,22 @@ class PmdPluginTest : BaseIntgTest() {
 		modules.forEach { modulePath ->
 			gradle.settingsFile.appendText("include '${modulePath}'${endl}")
 
-			val subProject = if (modulePath in applyTo) subProjectApplied else subProjectNotApplied
-			@Language("xml")
-			val manifest = """
-				<manifest package="project${modulePath.replace(":", ".")}" />
-			""".trimIndent()
+			@Suppress("MandatoryBracesIfStatements") // Language annotation doesn't work on implicit block return.
+			@Language("gradle")
+			val subProject = if (modulePath in applyTo)
+				"""
+					apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+					apply plugin: 'com.android.library'
+					android.namespace = "project${modulePath.replace(":", ".")}"
+				""".trimIndent()
+			else
+				"""
+					apply plugin: 'com.android.library'
+					android.namespace = "project${modulePath.replace(":", ".")}"
+				""".trimIndent()
 
 			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
-			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
 		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")

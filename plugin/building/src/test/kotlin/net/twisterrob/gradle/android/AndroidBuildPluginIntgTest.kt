@@ -220,6 +220,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val appGradle = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			android.namespace = "${packageName}"
 			afterEvaluate {
 				println(android.compileSdkVersion)
 			}
