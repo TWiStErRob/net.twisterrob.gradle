@@ -297,14 +297,29 @@ nexusPublishing {
 
 idea {
 	module {
-		val excludes = listOf(
+		val unpackagedResources = allprojects
+			.map { it.projectDir.relativeTo(rootDir).resolve("build/unPackagedTestResources").toString() }
+		val examples = listOf(
 			"docs/examples/local/.gradle",
 			"docs/examples/local/build",
 			"docs/examples/release/.gradle",
 			"docs/examples/release/build",
 			"docs/examples/snapshot/.gradle",
 			"docs/examples/snapshot/build",
-		) + allprojects.map { it.projectDir.relativeTo(rootDir).resolve("build/unPackagedTestResources").toString() } 
+		)
+		val debuggers = file("docs/debug")
+			.listFiles { file: File -> file.isDirectory }
+			.flatMap { 
+				listOf(
+					it.resolve(".gradle"),
+					it.resolve("build"),
+					it.resolve("buildSrc/.gradle"),
+					it.resolve("buildSrc/build"),
+					it.resolve(".idea")
+				)
+			}
+			.map { it.path }
+		val excludes = examples + debuggers + unpackagedResources 
 		excludeDirs.addAll(excludes.map { rootDir.resolve(it) })
 	}
 }
