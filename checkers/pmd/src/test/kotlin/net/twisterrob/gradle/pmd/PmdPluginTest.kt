@@ -94,6 +94,10 @@ class PmdPluginTest : BaseIntgTest() {
 		// ":instant" is not supported yet, and won't be since it's deprecated in 3.6.x.
 		// TODO add :dynamic-feature
 		val modules = arrayOf(":app", ":library", ":library:nested", ":test")
+		// Add empty manifest, so PMD task picks it up.
+		gradle.file("<manifest />", "library", "src", "main", "AndroidManifest.xml")
+		gradle.file("<manifest />", "library", "nested", "src", "main", "AndroidManifest.xml")
+		gradle.file("<manifest />", "test", "src", "main", "AndroidManifest.xml")
 
 		val result = gradle.runBuild {
 			basedOn("android-all_kinds")
@@ -139,6 +143,8 @@ class PmdPluginTest : BaseIntgTest() {
 
 			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
+			// Add empty manifest, so PMD task picks it up.
+			gradle.file("<manifest />", *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
 		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
@@ -169,7 +175,6 @@ class PmdPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applies to individual subprojects`() {
-
 		val modules = arrayOf(
 			":module1",
 			":module2",
@@ -198,6 +203,8 @@ class PmdPluginTest : BaseIntgTest() {
 
 			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
+			// Add empty manifest, so PMD task picks it up.
+			gradle.file("<manifest />", *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
 		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")

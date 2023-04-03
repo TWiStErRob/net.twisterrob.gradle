@@ -11,6 +11,7 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSkipped
 import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.delete
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -44,6 +45,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 				</application>
 			</manifest>
 		""".trimIndent()
+		gradle.delete("src/main/AndroidManifest.xml")
 		gradle.file(androidManifest, "src/main/AndroidManifest.xml")
 
 		@Language("java")
