@@ -14,7 +14,6 @@ allprojects {
 		mavenCentral() // quality plugin needs to be downloaded in test
 	}
 	plugins.withType(com.android.build.gradle.BasePlugin) {
-		// BEWARE: InstantAppExtension overrides compileSdkVersion and hard-codes it (see ANDROID_INSTANT_API_LEVEL)
 		android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
 	}
 }
