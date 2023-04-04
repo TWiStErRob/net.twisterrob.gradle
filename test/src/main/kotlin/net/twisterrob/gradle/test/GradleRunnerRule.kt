@@ -147,9 +147,7 @@ open class GradleRunnerRule : TestRule {
 	//@Test:when
 	fun run(@Language("gradle") script: String?, vararg tasks: String): GradleRunner {
 		if (script != null) {
-			val (pluginsBlockN, restN) = splitPluginsBlock(script)
-			val (pluginsBlockO, restO) = splitPluginsBlock(buildFile.readText())
-			buildFile.writeText(pluginsBlockO + pluginsBlockN + restO + restN)
+			buildFile.addContents(script, TouchMode.MERGE_GRADLE)
 		}
 		val args = arrayOf(*tasks, *extraArgs)
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
@@ -180,13 +178,6 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 			""".trimIndent()
 		)
 		return runner.withArguments(*args)
-	}
-
-	private fun splitPluginsBlock(script: String): Pair<String, String> {
-		@Suppress("RegExpRedundantEscape")
-		val pluginsRegex = Regex("""(.*)(plugins\s*\{\s*[^}]*\s*\}\s*)(.*)""")
-		val match = pluginsRegex.find(script) ?: return "" to script
-		return match.groups[2]!!.value to pluginsRegex.replace(script, "$1$3")
 	}
 
 	private fun buildContentForLogging(): String =
@@ -242,38 +233,24 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 
 	fun file(contents: String, vararg path: String) {
-		getFile(*path).appendText(contents)
+		file(contents, TouchMode.APPEND, *path)
 	}
 
 	fun file(contents: String, mode: TouchMode, vararg path: String) {
 		val file = getFile(*path)
-		when (mode) {
-			TouchMode.CREATE -> {
-				require(!file.exists()) { "File already exists: ${file.absolutePath}" }
-				file.writeText(contents)
-			}
-			TouchMode.OVERWRITE -> {
-				require(file.exists()) { "File does not exist: ${file.absolutePath}" }
-				file.writeText(contents)
-			}
-			TouchMode.APPEND -> {
-				require(file.exists()) { "File does not exist: ${file.absolutePath}" }
-				file.appendText(contents)
-			}
-			TouchMode.PREPEND -> {
-				require(file.exists()) { "File does not exist: ${file.absolutePath}" }
-				file.prependText(contents)
-			}
-		}
+		file.addContents(contents, mode)
 	}
 
+	/**
+	 * The returned file will exist.
+	 */
 	@Suppress("ReturnCount")
 	private fun getFile(vararg path: String): File {
 		if (path.size == 1 && path[0] == "build.gradle") {
-			return buildFile
+			return buildFile.also { it.createNewFile() }
 		}
 		if (path.size == 1 && path[0] == "gradle.properties") {
-			return propertiesFile
+			return propertiesFile.also { it.createNewFile() }
 		}
 		if (1 < path.size) {
 			val folders = path.sliceArray(0..path.size - 2)
@@ -313,9 +290,8 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 		println("Deploying ${folder} into ${temp.root}")
 		folder.copyRecursively(temp.root, overwrite = false) onError@{ file, ex ->
 			if (file == buildFile && ex is FileAlreadyExistsException) {
-				val originalBuildFile = buildFile.readText()
 				val newBuildFile = folder.resolve(buildFile.name).readText()
-				buildFile.writeText(originalBuildFile + newBuildFile)
+				buildFile.addContents(newBuildFile, TouchMode.MERGE_GRADLE)
 				return@onError OnErrorAction.SKIP
 			}
 			throw ex
@@ -324,11 +300,71 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 	//endregion
 
+	private fun File.addContents(
+		contents: String,
+		mode: TouchMode,
+	) {
+		when (mode) {
+			TouchMode.CREATE -> {
+				require(!this.exists()) { "File already exists: ${this.absolutePath}" }
+				this.writeText(contents)
+			}
+			TouchMode.OVERWRITE -> {
+				require(exists()) { "File does not exist: ${this.absolutePath}" }
+				this.writeText(contents)
+			}
+			TouchMode.APPEND -> {
+				require(exists()) { "File does not exist: ${this.absolutePath}" }
+				this.appendText(contents)
+			}
+			TouchMode.PREPEND -> {
+				require(exists()) { "File does not exist: ${this.absolutePath}" }
+				this.prependText(contents)
+			}
+			TouchMode.MERGE_GRADLE -> {
+				@Suppress("RegExpRedundantEscape")
+				fun topLevelBlocksNamed(name: String): Regex =
+					Regex("""(?s)(.*?)(${name}\s*\{\s*.*?\s*\n\})(?:\n(?!${name}\s*\{)|$)(.*)""")
+
+				fun splitPluginsBlock(script: String): Triple<String?, String?, String?> {
+					val buildscriptRegex = topLevelBlocksNamed("buildscript")
+					val buildscriptMatch = buildscriptRegex.find(script)
+					val buildscriptBlock = buildscriptMatch?.let { it.groups[2]?.value }
+					val scriptWithoutBuildscript = if (buildscriptMatch != null)
+						buildscriptRegex.replace(script, "$1$3")
+					else
+						script
+
+					val pluginsRegex = topLevelBlocksNamed("plugins")
+					val pluginsMatch = pluginsRegex.find(scriptWithoutBuildscript)
+					val pluginsBlock = pluginsMatch?.let { it.groups[2]?.value }
+					val scriptWithoutBuildscriptAndPlugins = if (pluginsMatch != null)
+						pluginsRegex.replace(scriptWithoutBuildscript, "$1$3")
+					else
+						scriptWithoutBuildscript
+
+					return Triple(
+						buildscriptBlock,
+						pluginsBlock,
+						scriptWithoutBuildscriptAndPlugins.takeIf { it.isNotBlank() }
+					)
+				}
+
+				val originalContents = if (this.exists()) this.readText() else ""
+				val (buildscriptO, pluginsBlockO, restO) = splitPluginsBlock(originalContents)
+				val (buildscriptN, pluginsBlockN, restN) = splitPluginsBlock(contents)
+				val blocks = listOfNotNull(buildscriptO, buildscriptN, pluginsBlockO, pluginsBlockN, restO, restN)
+				this.writeText(blocks.joinToString(separator = "\n"))
+			}
+		}
+	}
+
 	enum class TouchMode {
 		CREATE,
 		OVERWRITE,
 		APPEND,
 		PREPEND,
+		MERGE_GRADLE,
 	}
 
 	private fun File.prependText(text: String) {
