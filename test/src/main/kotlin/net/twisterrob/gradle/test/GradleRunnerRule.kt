@@ -135,7 +135,6 @@ open class GradleRunnerRule : TestRule {
 		check(buildFile == File(runner.projectDir, "build.gradle")) {
 			"${buildFile} is not within ${runner.projectDir}."
 		}
-		fixClassPath(runner)
 		System.getProperty("net.twisterrob.gradle.runner.gradleVersion", null)?.let {
 			gradleVersion = GradleVersion.version(it)
 		}
@@ -190,26 +189,6 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 		} else {
 			"${propertiesFile.name} does not exist."
 		}
-
-	/**
-	 * This is a workaround because runner.withPluginClasspath() doesn't seem to work.
-	 */
-	private fun fixClassPath(runner: GradleRunner) {
-		val classPaths = runner
-			.pluginClasspath
-			.joinToString(System.lineSeparator()) {
-				"classpath files('${it.absolutePath.replace("\\", "\\\\")}')"
-			}
-		@Language("gradle")
-		val buildscript = @Suppress("MultilineRawStringIndentation") """
-			buildscript {
-				dependencies {
-${classPaths.prependIndent("\t\t\t\t\t")}
-				}
-			}
-		""".trimIndent() + System.lineSeparator()
-		buildFile.appendText(buildscript)
-	}
 	//endregion
 
 	//region Helper methods
