@@ -289,9 +289,14 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println("Deploying ${folder} into ${temp.root}")
 		folder.copyRecursively(temp.root, overwrite = false) onError@{ file, ex ->
-			if (file == buildFile && ex is FileAlreadyExistsException) {
+			if (ex !is FileAlreadyExistsException) throw ex
+			if (file == buildFile) {
 				val newBuildFile = folder.resolve(buildFile.name).readText()
 				buildFile.addContents(newBuildFile, TouchMode.MERGE_GRADLE)
+				return@onError OnErrorAction.SKIP
+			} else if (file == settingsFile) {
+				val newSettingsFile = folder.resolve(settingsFile.name).readText()
+				settingsFile.addContents(newSettingsFile, TouchMode.MERGE_GRADLE)
 				return@onError OnErrorAction.SKIP
 			}
 			throw ex
@@ -325,7 +330,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 
 				fun extractBlock(name: String, script: String): Pair<String?, String?> {
 					@Suppress("RegExpRedundantEscape")
-					val regex = Regex("""(?s)(.*?)(${name}\s*\{\s*.*?\s*\n\})(?:\n(?!${name}\s*\{)|$)(.*)""")
+					val regex = Regex("""(?sm)(.*?)(^${name}\s*\{\s*.*?\s*\n\})(?:\n(?!${name}\s*\{)|\Z)(.*)""")
 					val match = regex.find(script)
 					val block = match?.let { it.groups[2]?.value }
 					val removed = if (match != null) {

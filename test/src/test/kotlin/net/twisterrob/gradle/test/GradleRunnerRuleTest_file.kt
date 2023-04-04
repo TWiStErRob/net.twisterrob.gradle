@@ -206,6 +206,37 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 			)
 		}
 
+		@Test fun `leaves nested plugins blocks alone`() {
+			mergeTest(
+				script1 = """
+					allprojects {
+						plugins {
+							id("net.twisterrob.gradle.plugin.checkstyle")
+						}
+					}
+				""".trimIndent(),
+				script2 = """
+					subprojects {
+						plugins {
+							id("net.twisterrob.gradle.plugin.pmd")
+						}
+					}
+				""".trimIndent(),
+				mergeExpectation = """
+					allprojects {
+						plugins {
+							id("net.twisterrob.gradle.plugin.checkstyle")
+						}
+					}
+					subprojects {
+						plugins {
+							id("net.twisterrob.gradle.plugin.pmd")
+						}
+					}
+				""".trimIndent()
+			)
+		}
+
 		@Suppress("IncorrectPluginDslStructure") // Intentionally bad.
 		@Test fun `messy full merge into correct script`() {
 			mergeTest(

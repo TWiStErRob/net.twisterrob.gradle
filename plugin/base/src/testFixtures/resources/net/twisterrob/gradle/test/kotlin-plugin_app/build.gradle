@@ -4,7 +4,8 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:@net.twisterrob.test.kotlin.pluginVersion@")
+		// Needs to be disabled here and added in a different way, see testInjectedPluginClasspath.
+		//classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:@net.twisterrob.test.kotlin.pluginVersion@")
 		def gradleVersion = project.gradle.gradleVersion
 		// Note: .toString on GStrings are necessary because Groovy doesn't auto-convert it.
 		def doNotNagAbout = rootProject.ext["doNotNagAbout"]

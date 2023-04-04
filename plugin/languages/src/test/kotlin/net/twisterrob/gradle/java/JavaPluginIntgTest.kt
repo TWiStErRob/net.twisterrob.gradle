@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.java
 
-import net.twisterrob.gradle.android.BaseAndroidIntgTest
+import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.android.packageFolder
 import net.twisterrob.gradle.android.packageName
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith
  * @see JavaLibPlugin
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class JavaPluginIntgTest : BaseAndroidIntgTest() {
+class JavaPluginIntgTest : BaseIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 

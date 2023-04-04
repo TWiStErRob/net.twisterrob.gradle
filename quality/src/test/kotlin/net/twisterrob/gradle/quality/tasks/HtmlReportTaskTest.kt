@@ -39,6 +39,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 		""".trimIndent()
@@ -59,6 +60,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
@@ -83,6 +85,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
@@ -106,6 +109,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
@@ -137,6 +141,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
@@ -173,6 +178,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
@@ -204,6 +210,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
@@ -228,6 +235,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
@@ -253,6 +261,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
@@ -278,6 +287,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
@@ -303,10 +313,11 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.basedOn("lint-UnusedResources")
 		@Language("gradle")
 		val script = """
-			dumpMemory("starting build")
 			plugins {
 				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
+			dumpMemory("starting build")
 			File xml = project.file("build/reports/lint-results-debug.xml")
 			def generate = tasks.register('generateBigReport') {
 				outputs.file(xml)

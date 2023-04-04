@@ -46,6 +46,9 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
+	testInjectedPluginClasspath(libs.android.gradle) {
+		version { require(property("net.twisterrob.test.android.pluginVersion").toString()) }
+	}
 
 	testFixturesApi(libs.svnkit)
 	testFixturesApi(libs.jgit)

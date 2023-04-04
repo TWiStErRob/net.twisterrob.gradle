@@ -23,6 +23,9 @@ class VersionsTaskTest : BaseIntgTest() {
 	@Test fun `print missing versions`() {
 		@Language("gradle")
 		val script = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
@@ -43,6 +46,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.checkstyle")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
@@ -63,6 +67,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.pmd")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
@@ -83,6 +88,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.checkstyle")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
@@ -103,6 +109,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.pmd")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
@@ -121,6 +128,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.checkstyle")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			checkstyle {
 				toolVersion = '6.0'
@@ -141,6 +149,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		val script = """
 			plugins {
 				id("org.gradle.pmd")
+				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			pmd {
 				toolVersion = '5.0.0'

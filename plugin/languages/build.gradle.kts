@@ -53,4 +53,10 @@ dependencies {
 
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
+	testInjectedPluginClasspath(libs.android.gradle) {
+		version { require(property("net.twisterrob.test.android.pluginVersion").toString()) }
+	}
+	testInjectedPluginClasspath(libs.kotlin.gradle) {
+		version { require(property("net.twisterrob.test.kotlin.pluginVersion").toString()) }
+	}
 }

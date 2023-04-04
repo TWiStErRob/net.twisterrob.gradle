@@ -19,7 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith
  * @see TestReportGenerator
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class TaskReportGeneratorIntgTest : BaseIntgTest() {
+class TestReportGeneratorIntgTest : BaseIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
