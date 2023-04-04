@@ -189,6 +189,26 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 		} else {
 			"${propertiesFile.name} does not exist."
 		}
+
+	/**
+	 * This is useful when we want to run the build from the outer world manually with `gradlew`.
+	 */
+	fun generateExplicitClassPath() {
+		val classPaths = runner
+			.pluginClasspath
+			.joinToString(System.lineSeparator()) {
+				"""classpath files("${it.absolutePath.replace("\\", "\\\\")}")"""
+			}
+		@Language("gradle")
+		val buildscript = @Suppress("MultilineRawStringIndentation") """
+			buildscript {
+				dependencies {
+${classPaths.prependIndent("\t\t\t\t\t")}
+				}
+			}
+		""".trimIndent() + System.lineSeparator()
+		buildFile.prependText(buildscript)
+	}
 	//endregion
 
 	//region Helper methods
@@ -233,7 +253,7 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 			}
 			TouchMode.PREPEND -> {
 				require(file.exists()) { "File does not exist: ${file.absolutePath}" }
-				file.writeText(contents + file.readText())
+				file.prependText(contents)
 			}
 		}
 	}
@@ -300,5 +320,9 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 		OVERWRITE,
 		APPEND,
 		PREPEND,
+	}
+
+	private fun File.prependText(text: String) {
+		this.writeText(text + this.readText())
 	}
 }
