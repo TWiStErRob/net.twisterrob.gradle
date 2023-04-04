@@ -1,1 +1,5 @@
 apply plugin: 'com.android.dynamic-feature'
+
+android {
+	namespace = "test.project.dynamic_feature"
+}

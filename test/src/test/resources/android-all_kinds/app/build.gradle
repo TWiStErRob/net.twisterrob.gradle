@@ -1,1 +1,5 @@
 apply plugin: 'com.android.application'
+
+android {
+	namespace = "test.project.app"
+}

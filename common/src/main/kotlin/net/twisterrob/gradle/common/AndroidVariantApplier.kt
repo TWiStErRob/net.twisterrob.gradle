@@ -21,10 +21,6 @@ class AndroidVariantApplier(val project: Project) {
 		project.plugins.withId("com.android.library") {
 			variantsClosure.execute(android<LibraryExtension>().libraryVariants)
 		}
-		project.plugins.withId("com.android.feature") {
-			// These types of feature modules were deprecated and removed in AGP 4.x.
-			//variantsClosure.execute(android<FeatureExtension>().featureVariants)
-		}
 		project.plugins.withId("com.android.dynamic-feature") {
 			variantsClosure.execute(android<AppExtension>().applicationVariants)
 		}

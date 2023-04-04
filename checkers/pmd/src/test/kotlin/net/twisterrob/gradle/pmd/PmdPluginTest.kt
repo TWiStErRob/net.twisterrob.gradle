@@ -93,6 +93,10 @@ class PmdPluginTest : BaseIntgTest() {
 		""".trimIndent()
 		// TODO add :dynamic-feature
 		val modules = arrayOf(":app", ":library", ":library:nested", ":test")
+		// Add empty manifest, so PMD task picks it up.
+		gradle.file("<manifest />", "library", "src", "main", "AndroidManifest.xml")
+		gradle.file("<manifest />", "library", "nested", "src", "main", "AndroidManifest.xml")
+		gradle.file("<manifest />", "test", "src", "main", "AndroidManifest.xml")
 
 		val result = gradle.runBuild {
 			basedOn("android-all_kinds")
@@ -102,8 +106,7 @@ class PmdPluginTest : BaseIntgTest() {
 		val exceptions = arrayOf(
 			// These tasks are not generated because their modules are special.
 			":test:pmdRelease",
-			// :feature module is deprecated in AGP 4.x and support for it was removed.
-			*tasksIn(arrayOf(":feature", ":base"), "pmdEach", "pmdRelease", "pmdDebug")
+			*tasksIn(arrayOf(":base"), "pmdEach", "pmdRelease", "pmdDebug")
 		)
 		assertThat(
 			result.taskPaths(TaskOutcome.SUCCESS),
@@ -133,16 +136,13 @@ class PmdPluginTest : BaseIntgTest() {
 			@Language("gradle")
 			val subProject = """
 				apply plugin: 'com.android.library'
-			""".trimIndent()
-
-			@Language("xml")
-			val manifest = """
-				<manifest package="project${modulePath.replace(":", ".")}" />
+				android.namespace = "project${modulePath.replace(":", ".")}"
 			""".trimIndent()
 
 			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
-			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
+			// Add empty manifest, so PMD task picks it up.
+			gradle.file("<manifest />", *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
 		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
@@ -173,16 +173,6 @@ class PmdPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applies to individual subprojects`() {
-		@Language("gradle")
-		val subProjectNotApplied = """
-			apply plugin: 'com.android.library'
-		""".trimIndent()
-		@Language("gradle")
-		val subProjectApplied = """
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
-			apply plugin: 'com.android.library'
-		""".trimIndent()
-
 		val modules = arrayOf(
 			":module1",
 			":module2",
@@ -195,15 +185,24 @@ class PmdPluginTest : BaseIntgTest() {
 		modules.forEach { modulePath ->
 			gradle.settingsFile.appendText("include '${modulePath}'${endl}")
 
-			val subProject = if (modulePath in applyTo) subProjectApplied else subProjectNotApplied
-			@Language("xml")
-			val manifest = """
-				<manifest package="project${modulePath.replace(":", ".")}" />
-			""".trimIndent()
+			@Suppress("MandatoryBracesIfStatements") // Language annotation doesn't work on implicit block return.
+			@Language("gradle")
+			val subProject = if (modulePath in applyTo)
+				"""
+					apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+					apply plugin: 'com.android.library'
+					android.namespace = "project${modulePath.replace(":", ".")}"
+				""".trimIndent()
+			else
+				"""
+					apply plugin: 'com.android.library'
+					android.namespace = "project${modulePath.replace(":", ".")}"
+				""".trimIndent()
 
 			val subPath = modulePath.split(":").toTypedArray()
 			gradle.file(subProject, *subPath, "build.gradle")
-			gradle.file(manifest, *subPath, "src", "main", "AndroidManifest.xml")
+			// Add empty manifest, so PMD task picks it up.
+			gradle.file("<manifest />", *subPath, "src", "main", "AndroidManifest.xml")
 		}
 
 		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")

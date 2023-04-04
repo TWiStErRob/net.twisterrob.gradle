@@ -17,6 +17,7 @@ allprojects {
 apply plugin: 'com.android.application'
 
 android {
+	namespace = "test.project"
 	compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
 }
 

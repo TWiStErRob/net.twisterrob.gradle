@@ -76,14 +76,10 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 			dependencies {
 				implementation("junit:junit:${Version.id()}")
 			}
+			android.namespace = "${packageName}.test"
 			android.targetProjectPath = ':'
 		""".trimIndent()
 		gradle.file(appScript, "test", "build.gradle")
-		@Language("xml")
-		val androidManifest = """
-			<manifest package="${packageName}.test" />
-		""".trimIndent()
-		gradle.file(androidManifest, "test/src/main/AndroidManifest.xml")
 
 		@Language("gradle")
 		val script = """

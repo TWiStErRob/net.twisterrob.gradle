@@ -1,2 +1,1 @@
-<!-- See also net.twisterrob.gradle.android.GradleTestHelpersKt.packageName. -->
-<manifest package="net.twisterrob.gradle.test_app" />
+<manifest />

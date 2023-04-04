@@ -34,7 +34,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 
 		@Language("xml")
 		val androidManifest = """
-			<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="$packageName">
+			<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 				<application>
 					<activity android:name=".MainActivity">
 						<intent-filter>
@@ -59,10 +59,11 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val script = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			android.namespace = "${packageName}"
 			afterEvaluate {
 				// Don't always try to install the APK, as we may have no emulator,
 				// but still assemble the APK, as the run task needs AndroidManifest.xml.
-				tasks.installDebug.enabled = $hasDevices
+				tasks.installDebug.enabled = ${hasDevices}
 			}
 		""".trimIndent()
 

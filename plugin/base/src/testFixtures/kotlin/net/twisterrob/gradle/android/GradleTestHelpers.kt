@@ -15,7 +15,7 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 /**
- * @see /android-plugin_app/src/main/AndroidManifest.xml
+ * @see /android-plugin_app/build.gradle
  */
 const val packageName: String = "net.twisterrob.gradle.test_app"
 

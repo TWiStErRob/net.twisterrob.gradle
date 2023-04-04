@@ -65,7 +65,7 @@ run {
 	val sharedCodeFolder: File = file("src/main/kotlin-shared")
 	kotlin.sourceSets.named("main").configure { kotlin.srcDir(sharedCodeFolder) }
 	// This is to make sure that IDEA doesn't mess things up with duplicated source roots.
-	val copyReusableSources = tasks.register<Copy>("copyReusableSources") {
+	val copyReusableSources = tasks.register<Sync>("copyReusableSources") {
 		// More robust: gradle.parent!!.rootProject.project(":plugin:settings").file("src/main/kotlin-shared")
 		// but at this point in the lifecycle the parent (including build) rootProject build is not available yet.
 		from(rootProject.file("../../plugin/settings/src/main/kotlin-shared"))

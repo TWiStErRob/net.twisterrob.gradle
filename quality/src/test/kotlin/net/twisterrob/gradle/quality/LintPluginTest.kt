@@ -46,21 +46,12 @@ class LintPluginTest : BaseIntgTest() {
 			@Language("gradle")
 			val subProject = """
 				apply plugin: 'com.android.library'
-				android {
-					lintOptions {
-						check = [] // nothing
-					}
-				}
-			""".trimIndent()
-
-			@Language("xml")
-			val manifest = """
-				<manifest package="project.${module}" />
+				android.namespace = "project.${module}"
+				android.lintOptions.check = [] // nothing
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")
 			gradle.settingsFile.appendText("include ':${module}'${endl}")
-			gradle.file(manifest, module, "src", "main", "AndroidManifest.xml")
 		}
 
 		@Language("gradle")
@@ -307,23 +298,14 @@ class LintPluginTest : BaseIntgTest() {
 			@Language("gradle")
 			val subProject = """
 				apply plugin: 'com.android.library'
-				android {
-					lintOptions {
-						//noinspection GroovyAssignabilityCheck
-						check = ['LongLogTag']
-					}
-				}
-			""".trimIndent()
-
-			@Language("xml")
-			val manifest = """
-				<manifest package="project.${module}" />
+				android.namespace = "project.${module}"
+				//noinspection GroovyAssignabilityCheck
+				android.lintOptions.check = ['LongLogTag']
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")
 			gradle.settingsFile.appendText("include ':${module}'${endl}")
 			gradle.file(lintViolation, module, "src", "main", "java", "fail1.java")
-			gradle.file(manifest, module, "src", "main", "AndroidManifest.xml")
 		}
 	}
 

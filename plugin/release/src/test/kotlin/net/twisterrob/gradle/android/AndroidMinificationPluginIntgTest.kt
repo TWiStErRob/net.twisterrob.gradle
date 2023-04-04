@@ -250,14 +250,10 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val libGradle = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
+			android.namespace = "${packageName}.lib"
 			android.defaultConfig.consumerProguardFile 'proguard.pro'
 		""".trimIndent()
 		gradle.file(libGradle, "lib", "build.gradle")
-		@Language("xml")
-		val androidManifest = """
-			<manifest package="${packageName}.lib" />
-		""".trimIndent()
-		gradle.file(androidManifest, "lib", "src", "main", "AndroidManifest.xml")
 		val dummyProguardClass = "some.dummy.thing.SoItShowsUpInTheMergeConfiguration"
 
 		@Language("proguard")
@@ -285,14 +281,9 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("gradle")
 		val libGradle = """
 			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
+			android.namespace = "${packageName}.lib"
 		""".trimIndent()
 		gradle.file(libGradle, "lib", "build.gradle")
-
-		@Language("xml")
-		val libManifest = """
-			<manifest package="${packageName}.lib" />
-		""".trimIndent()
-		gradle.file(libManifest, "lib", "src", "main", "AndroidManifest.xml")
 
 		@Language("gradle")
 		val script = """
