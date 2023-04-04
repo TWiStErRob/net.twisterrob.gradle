@@ -19,12 +19,16 @@ object GradleBuildTestResources {
 		val build: String
 			get() = read("android-plugin_app/build.gradle")
 
+		val settings: String
+			get() = read("android-plugin_app/settings.gradle.kts")
+
 		val manifest: String
 			get() = read("android-plugin_app/src/main/AndroidManifest.xml")
 	}
 
 	fun GradleRunnerRule.basedOn(project: AndroidProject) {
 		file(project.build, "build.gradle")
+		file(project.settings, "settings.gradle.kts")
 		file(project.manifest, "src", "main", "AndroidManifest.xml")
 	}
 
