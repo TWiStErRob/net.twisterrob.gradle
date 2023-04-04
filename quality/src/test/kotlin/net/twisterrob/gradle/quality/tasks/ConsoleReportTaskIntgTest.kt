@@ -45,8 +45,10 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+				id("net.twisterrob.gradle.plugin.pmd")
+			}
 
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
@@ -69,8 +71,10 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			subprojects { // i.e. :module
-				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
-				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+				plugins {
+					id("net.twisterrob.gradle.plugin.checkstyle")
+					id("net.twisterrob.gradle.plugin.pmd")
+				}
 			}
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
@@ -94,8 +98,10 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 			gradle.file(checkstyleXmlContents, checkName, *CONFIG_PATH_CS)
 			@Language("gradle")
 			val buildScript = """
-				apply plugin: 'com.android.library'
-				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+				plugins {
+					id("com.android.library")
+					id("net.twisterrob.gradle.plugin.checkstyle")
+				}
 				android.namespace = "checkstyle.${checkName}"
 			""".trimIndent()
 			gradle.file(buildScript, checkName, *BUILD_SCRIPT_PATH)
@@ -133,8 +139,10 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+				id("net.twisterrob.gradle.plugin.pmd")
+			}
 
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()

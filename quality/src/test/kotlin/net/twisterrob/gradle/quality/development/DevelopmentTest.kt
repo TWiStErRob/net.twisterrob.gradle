@@ -50,7 +50,9 @@ class DevelopmentTest : BaseIntgTest() {
 		gradle.file(lintResultsXml, "build", "reports", "lint-results.xml")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
@@ -69,7 +71,9 @@ class DevelopmentTest : BaseIntgTest() {
 		gradle.file(violationContents, "src", "main", "java", "LintFailure.java")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			android.lintOptions.checkOnly("SecureRandom")
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 		""".trimIndent()

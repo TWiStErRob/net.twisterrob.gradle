@@ -27,7 +27,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can use version block (debug) and (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { println("version block!") }
 		""".trimIndent()
 
@@ -47,7 +49,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can give versionCode (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.versionCode = 1234
 		""".trimIndent()
 
@@ -64,7 +68,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can give versionCode (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.versionCode = 1234
 		""".trimIndent()
 
@@ -80,7 +86,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can give versionCode androidTest (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.versionCode = 1234
 		""".trimIndent()
 
@@ -99,7 +107,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can give versionName (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.versionName = "_custom_"
 		""".trimIndent()
 
@@ -115,7 +125,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can give versionName (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.versionName = "_custom_"
 		""".trimIndent()
 
@@ -131,7 +143,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can give versionName androidTest (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.versionName = "_custom_"
 		""".trimIndent()
 
@@ -149,7 +163,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can customize version (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 
@@ -166,7 +182,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can customize version (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 
@@ -183,7 +201,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can turn off autoVersion before setting versions (debug) and (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version.autoVersion = false
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
@@ -204,7 +224,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can customize version propagates androidTest (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 
@@ -226,7 +248,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can customize version without rename (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { renameAPK = false; major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 		val projectName = "gradle-test-project"
@@ -245,7 +269,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can customize version without rename (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { renameAPK = false; major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 		val projectName = "gradle-test-project"
@@ -274,7 +300,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.versionCode = 6789
 			android.defaultConfig.versionName = "_custom_"
 		""".trimIndent()
@@ -298,7 +326,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").buildAndFail()
@@ -327,7 +357,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version.autoVersion = false
 			android.defaultConfig.versionName = "_custom_"
 		""".trimIndent()
@@ -353,7 +385,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3/*; build = 4*/ }
 		""".trimIndent()
 
@@ -378,7 +412,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3/*; build = 4*/ }
 		""".trimIndent()
 
@@ -396,7 +432,9 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `variant versioning works`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			android {
 				testBuildType "staging"

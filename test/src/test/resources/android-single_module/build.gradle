@@ -8,13 +8,15 @@ buildscript {
 	}
 }
 
+plugins {
+	id("com.android.application")
+}
+
 allprojects {
 	repositories {
 		mavenCentral()
 	}
 }
-
-apply plugin: 'com.android.application'
 
 android {
 	namespace = "test.project"

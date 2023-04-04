@@ -16,10 +16,14 @@ class AndroidTestPluginIntgTest : BaseAndroidIntgTest() {
 
 	@Test fun `applying by the old name is deprecated`() {
 		val script = """
-			apply plugin: 'net.twisterrob.android-test'
+			plugins {
+				id("net.twisterrob.android-test")
+			}
 			android.targetProjectPath = ':'
 		""".trimIndent()
+
 		val result = gradle.run(script).buildAndFail()
+
 		result.assertHasOutputLine(
 			Regex(
 				"""org\.gradle\.api\.GradleException: """ +

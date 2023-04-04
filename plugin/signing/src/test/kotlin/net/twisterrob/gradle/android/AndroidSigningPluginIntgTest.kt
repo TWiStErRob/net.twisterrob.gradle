@@ -35,7 +35,9 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -81,7 +83,9 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			// Increase minimum version to avoid ignoring the signature:
 			// > jarsigner WARNING: The jar will be treated as unsigned,
 			// > because it is signed with a weak algorithm that is now disabled by the security property

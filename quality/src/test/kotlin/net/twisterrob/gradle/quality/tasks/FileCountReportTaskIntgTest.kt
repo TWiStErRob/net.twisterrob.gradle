@@ -40,8 +40,10 @@ class FileCountReportTaskIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+				id("net.twisterrob.gradle.plugin.pmd")
+			}
 
 			tasks.register('printViolationCount', ${FileCountReportTask::class.java.name})
 		""".trimIndent()
@@ -64,8 +66,10 @@ class FileCountReportTaskIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+				id("net.twisterrob.gradle.plugin.pmd")
+			}
 
 			tasks.register('printViolationCount', ${FileCountReportTask::class.java.name}) {
 				output.set(file("problems.txt"))

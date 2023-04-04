@@ -29,7 +29,9 @@ class QualityPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.quality'
+				plugins {
+					id("net.twisterrob.gradle.plugin.quality")
+				}
 			}
 			tasks.named('violationReportConsole').configure { println("Configuring " + it) }
 		""".trimIndent()
@@ -52,7 +54,9 @@ class QualityPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.quality'
+				plugins {
+					id("net.twisterrob.gradle.plugin.quality")
+				}
 			}
 			tasks.named('violationReportHtml').configure { println("Configuring " + it) }
 		""".trimIndent()
@@ -75,7 +79,9 @@ class QualityPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.quality'
+				plugins {
+					id("net.twisterrob.gradle.plugin.quality")
+				}
 				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}).configureEach {
 					println("Added " + it)
 				}
@@ -96,7 +102,9 @@ class QualityPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.quality'
+				plugins {
+					id("net.twisterrob.gradle.plugin.quality")
+				}
 				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}).configureEach {
 					println("Added " + it)
 				}

@@ -3,6 +3,7 @@ package net.twisterrob.gradle.android
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -15,7 +16,15 @@ class AndroidLibraryPluginIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.android-library'").buildAndFail()
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.android-library")
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script).buildAndFail()
+
 		result.assertHasOutputLine(
 			Regex(
 				"""org\.gradle\.api\.GradleException: """ +

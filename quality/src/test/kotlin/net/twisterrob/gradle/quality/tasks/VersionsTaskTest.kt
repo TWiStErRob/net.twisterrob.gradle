@@ -41,7 +41,9 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'checkstyle'
+			plugins {
+				id("org.gradle.checkstyle")
+			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
@@ -59,7 +61,9 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'pmd'
+			plugins {
+				id("org.gradle.pmd")
+			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
@@ -77,7 +81,9 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'checkstyle'
+			plugins {
+				id("org.gradle.checkstyle")
+			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
@@ -95,7 +101,9 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'pmd'
+			plugins {
+				id("org.gradle.pmd")
+			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
@@ -111,7 +119,9 @@ class VersionsTaskTest : BaseIntgTest() {
 	@Test fun `print checkstyle version (specific version)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'checkstyle'
+			plugins {
+				id("org.gradle.checkstyle")
+			}
 			checkstyle {
 				toolVersion = '6.0'
 			}
@@ -129,7 +139,9 @@ class VersionsTaskTest : BaseIntgTest() {
 	@Test fun `print pmd version (specific version)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'pmd'
+			plugins {
+				id("org.gradle.pmd")
+			}
 			pmd {
 				toolVersion = '5.0.0'
 			}

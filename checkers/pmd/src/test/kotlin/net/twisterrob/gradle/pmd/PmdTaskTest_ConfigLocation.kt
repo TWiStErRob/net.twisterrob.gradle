@@ -32,8 +32,11 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 		@Language("gradle")
 		private val SCRIPT_CONFIGURE_PMD: String = """
 			subprojects { // i.e. :module
-				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
-				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
+				plugins {
+					id("net.twisterrob.gradle.plugin.pmd")
+					// TODO figure out why this is needed to set toolVersion when Pmd task works anyway
+					id("org.gradle.pmd")
+				}
 				pmd {
 					incrementalAnalysis.set(false)
 				}

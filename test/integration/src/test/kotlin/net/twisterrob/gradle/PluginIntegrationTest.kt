@@ -104,7 +104,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "${pluginId}"
+			plugins {
+				id("${pluginId}")
+			}
 		""".trimIndent()
 
 		verifyTasksNotCreated(script)
@@ -133,7 +135,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "${pluginId}"
+			plugins {
+				id("${pluginId}")
+			}
 		""".trimIndent()
 
 		verifyTasksNotCreated(script)
@@ -159,8 +163,10 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "net.twisterrob.gradle.plugin.android-app"
-			apply plugin: "${pluginId}"
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+				id("${pluginId}")
+			}
 		""".trimIndent()
 
 		verifyTasksNotCreated(script)
@@ -186,8 +192,10 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: "net.twisterrob.gradle.plugin.android-library"
-			apply plugin: "${pluginId}"
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-library")
+				id("${pluginId}")
+			}
 		""".trimIndent()
 
 		verifyTasksNotCreated(script)
@@ -218,7 +226,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")}
-			apply plugin: "${pluginId}"
+			plugins {
+				id("${pluginId}")
+			}
 		""".trimIndent()
 
 		verifyTasksNotCreated(script)
@@ -249,7 +259,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-library")}
-			apply plugin: "${pluginId}"
+			plugins {
+				id("${pluginId}")
+			}
 		""".trimIndent()
 
 		verifyTasksNotCreated(script)
@@ -264,16 +276,18 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")} // :plugin
-			// Android: apply plugin: "net.twisterrob.gradle.plugin.android-library" // :plugin
-			apply plugin: "net.twisterrob.gradle.plugin.root" // :plugin:base
-			apply plugin: "net.twisterrob.gradle.plugin.java" // :plugin:languages
-			apply plugin: "net.twisterrob.gradle.plugin.java-library" // :plugin:languages
-			apply plugin: "net.twisterrob.gradle.plugin.kotlin" // :plugin:languages
-			apply plugin: "net.twisterrob.gradle.plugin.vcs" // :plugin:versioning
-			apply plugin: "net.twisterrob.gradle.plugin.quality" // :quality
-			apply plugin: "net.twisterrob.gradle.plugin.pmd" // :pmd
-			apply plugin: "net.twisterrob.gradle.plugin.checkstyle" // :checkstyle
-			// Android: apply plugin: "net.twisterrob.gradle.plugin.gradle.test" // :test
+			plugins {
+				// Android: id("net.twisterrob.gradle.plugin.android-library") // :plugin
+				id("net.twisterrob.gradle.plugin.root") // :plugin:base
+				id("net.twisterrob.gradle.plugin.java") // :plugin:languages
+				id("net.twisterrob.gradle.plugin.java-library") // :plugin:languages
+				id("net.twisterrob.gradle.plugin.kotlin") // :plugin:languages
+				id("net.twisterrob.gradle.plugin.vcs") // :plugin:versioning
+				id("net.twisterrob.gradle.plugin.quality") // :quality
+				id("net.twisterrob.gradle.plugin.pmd") // :pmd
+				id("net.twisterrob.gradle.plugin.checkstyle") // :checkstyle
+				// Android: id("net.twisterrob.gradle.plugin.gradle.test") // :test
+			}
 		""".trimIndent()
 
 		verifyTasksNotCreated(script)
@@ -345,14 +359,18 @@ class PluginIntegrationTest : BaseIntgTest() {
 		if (KotlinVersion(1, 5, 30) <= KotlinVersions.UNDER_TEST) {
 			// Location is not relevant since Kotlin 1.5.30, we can put this plugin in any location.
 			"""
-				apply plugin: "kotlin-android"
-				apply plugin: "${androidPluginId}"
+				plugins {
+					id("org.jetbrains.kotlin.android")
+					id("${androidPluginId}")
+				}
 			""".trimIndent()
 		} else {
 			// Location is relevant before Kotlin 1.5.30, we have to put this after the Android plugin.
 			"""
-				apply plugin: "${androidPluginId}"
-				apply plugin: "kotlin-android"
+				plugins {
+					id("${androidPluginId}")
+					id("org.jetbrains.kotlin.android")
+				}
 			""".trimIndent()
 		}
 }

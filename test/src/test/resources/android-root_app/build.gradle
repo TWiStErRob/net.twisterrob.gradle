@@ -8,12 +8,14 @@ buildscript {
 	}
 }
 
+plugins {
+	id("com.android.application")
+}
+
 repositories {
 	google() // for aapt2 internal binary
 	mavenCentral()
 }
-
-apply plugin: 'com.android.application'
 
 android {
 	namespace = "test.project"

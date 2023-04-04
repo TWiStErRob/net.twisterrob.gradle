@@ -45,7 +45,9 @@ class LintPluginTest : BaseIntgTest() {
 		modules.forEach { module ->
 			@Language("gradle")
 			val subProject = """
-				apply plugin: 'com.android.library'
+				plugins {
+					id("com.android.library")
+				}
 				android.namespace = "project.${module}"
 				android.lintOptions.check = [] // nothing
 			""".trimIndent()
@@ -128,7 +130,9 @@ class LintPluginTest : BaseIntgTest() {
 		@Suppress("MaxLineLength")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.quality'
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 		""".trimIndent()
 
 		val message =
@@ -297,7 +301,9 @@ class LintPluginTest : BaseIntgTest() {
 		modules.forEach { module ->
 			@Language("gradle")
 			val subProject = """
-				apply plugin: 'com.android.library'
+				plugins {
+					id("com.android.library")
+				}
 				android.namespace = "project.${module}"
 				//noinspection GroovyAssignabilityCheck
 				android.lintOptions.check = ['LongLogTag']

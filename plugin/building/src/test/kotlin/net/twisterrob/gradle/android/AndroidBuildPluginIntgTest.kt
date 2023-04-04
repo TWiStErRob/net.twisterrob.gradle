@@ -47,7 +47,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			afterEvaluate {
 				println("repoNames=" + repositories.names)
 			}
@@ -64,7 +66,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			afterEvaluate {
 				println("repoNames=" + repositories.names)
 			}
@@ -92,7 +96,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `default build setup is simple and produces default output (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
@@ -106,7 +112,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `default build setup is simple and produces default output (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -120,7 +128,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can override minSdkVersion (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.minSdkVersion = 10
 		""".trimIndent()
 
@@ -136,7 +146,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can override minSdkVersion (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.minSdkVersion = 10
 		""".trimIndent()
 
@@ -152,7 +164,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can override targetSdkVersion (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.targetSdkVersion = 19
 		""".trimIndent()
 
@@ -168,7 +182,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can override targetSdkVersion (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.targetSdkVersion = 19
 			android.lintOptions.disable("ExpiredTargetSdkVersion")
 		""".trimIndent()
@@ -185,7 +201,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can override compileSdkVersion (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.compileSdkVersion = 23
 		""".trimIndent()
 
@@ -202,7 +220,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can override compileSdkVersion (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.compileSdkVersion = 23
 		""".trimIndent()
 
@@ -219,7 +239,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can override compileSdkVersion centrally (debug)`() {
 		@Language("gradle")
 		val appGradle = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.namespace = "${packageName}"
 			afterEvaluate {
 				println(android.compileSdkVersion)
@@ -266,7 +288,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `can disable buildConfig generation (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-library")
+			}
 			android.buildFeatures.buildConfig = false
 		""".trimIndent()
 
@@ -326,10 +350,14 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-library")
+			}
 			android.twisterrob.decorateBuildConfig = false
 			
-			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
+			plugins {
+				id("net.twisterrob.gradle.plugin.kotlin")
+			}
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
 				testImplementation 'org.robolectric:robolectric:4.9.2'
@@ -392,8 +420,10 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
-			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+				id("net.twisterrob.gradle.plugin.kotlin")
+			}
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
 				testImplementation 'org.robolectric:robolectric:4.9.2'
@@ -460,8 +490,10 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
-			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+				id("net.twisterrob.gradle.plugin.kotlin")
+			}
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
 				testImplementation 'org.robolectric:robolectric:4.9.2'
@@ -486,7 +518,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `metadata of compilation tasks is present`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "tasks").build()
@@ -530,7 +564,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `annotation processors are excluded from the classpath (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			dependencies {
 				implementation "com.google.auto.service:auto-service:1.0-rc6"
 			}

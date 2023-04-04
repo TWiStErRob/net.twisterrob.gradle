@@ -66,7 +66,9 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 	@Test fun `gathers results from empty project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.quality'
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -89,7 +91,9 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.quality'
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 			dependencies {
 				testImplementation 'junit:junit:${Version.id()}'
 			}
@@ -115,7 +119,9 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.quality'
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 			dependencies {
 				testImplementation 'junit:junit:${Version.id()}'
 			}
@@ -136,7 +142,9 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.quality'
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 			dependencies {
 				testImplementation 'junit:junit:${Version.id()}'
 			}
@@ -157,7 +165,9 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.quality'
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 			dependencies {
 				testImplementation 'junit:junit:${Version.id()}'
 			}
@@ -191,7 +201,9 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 			@Language("gradle")
 			val subProject = """
-				apply plugin: 'com.android.library'
+				plugins {
+					id("com.android.library")
+				}
 				android.namespace = "project${modulePath.replace(":", ".")}"
 				dependencies {
 					testImplementation 'junit:junit:${Version.id()}'
@@ -207,7 +219,9 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.quality'
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {

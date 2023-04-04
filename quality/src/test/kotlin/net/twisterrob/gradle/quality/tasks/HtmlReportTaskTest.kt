@@ -37,7 +37,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.basedOn("android-root_app")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
@@ -55,7 +57,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.basedOn("android-root_app")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 			    html.set(project.file("my_report/htmldir/htmlname.htmlext"))
@@ -77,7 +81,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.basedOn("android-root_app")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 			}
@@ -98,7 +104,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.file(SIMPLE_XSL, "src", "input.xsl")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 			    xsl.set(project.file("my_report/xsldir/xslname.xslext"))
@@ -127,7 +135,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.file(SIMPLE_XSL, "src", "input.xsl")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 				xslTemplate.set(project.file("src/input.xsl"))
@@ -161,7 +171,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		checks.forEach { check -> gradle.basedOn("lint-$check") }
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.defaultConfig.targetSdkVersion 28 // to trigger Autofill
@@ -190,7 +202,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.basedOn("lint-UnusedResources")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lintOptions {
@@ -212,7 +226,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.basedOn("lint-UnusedResources")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lintOptions {
@@ -235,7 +251,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.basedOn("lint-UnusedResources")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lintOptions {
@@ -258,7 +276,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.basedOn("lint-UnusedResources")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lintOptions {
@@ -284,7 +304,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			dumpMemory("starting build")
-			apply plugin: 'org.gradle.reporting-base'
+			plugins {
+				id("org.gradle.reporting-base")
+			}
 			File xml = project.file("build/reports/lint-results-debug.xml")
 			def generate = tasks.register('generateBigReport') {
 				outputs.file(xml)
@@ -364,9 +386,11 @@ class HtmlReportTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+			plugins {
+				id("org.gradle.reporting-base")
+				id("net.twisterrob.gradle.plugin.checkstyle")
+				id("net.twisterrob.gradle.plugin.pmd")
+			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 

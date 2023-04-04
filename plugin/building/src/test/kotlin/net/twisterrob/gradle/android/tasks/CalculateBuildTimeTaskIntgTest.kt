@@ -20,7 +20,9 @@ class CalculateBuildTimeTaskIntgTest : BaseAndroidIntgTest() {
 	@Test fun `will stay up to date`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
+			plugins {
+				id("net.twisterrob.gradle.plugin.vcs")
+			}
 			tasks.register("calculateBuildConfigBuildTime", ${CalculateBuildTimeTask::class.java.name})
 		""".trimIndent()
 
@@ -34,7 +36,9 @@ class CalculateBuildTimeTaskIntgTest : BaseAndroidIntgTest() {
 	@Test fun `will stay up to date with custom value`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
+			plugins {
+				id("net.twisterrob.gradle.plugin.vcs")
+			}
 			tasks.register("calculateBuildConfigBuildTime", ${CalculateBuildTimeTask::class.java.name}) {
 				buildTime.set(1234L)
 			}

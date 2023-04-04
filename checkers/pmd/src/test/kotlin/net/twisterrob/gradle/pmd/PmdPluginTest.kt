@@ -42,7 +42,9 @@ class PmdPluginTest : BaseIntgTest() {
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+			plugins {
+				id("net.twisterrob.gradle.plugin.pmd")
+			}
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -55,8 +57,10 @@ class PmdPluginTest : BaseIntgTest() {
 	@Test fun `does not apply to a Java project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'java'
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+			plugins {
+				id("java")
+				id("net.twisterrob.gradle.plugin.pmd")
+			}
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -70,7 +74,9 @@ class PmdPluginTest : BaseIntgTest() {
 		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+			plugins {
+				id("net.twisterrob.gradle.plugin.pmd")
+			}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -88,7 +94,9 @@ class PmdPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+				plugins {
+					id("net.twisterrob.gradle.plugin.pmd")
+				}
 			}
 		""".trimIndent()
 		// TODO add :dynamic-feature
@@ -135,7 +143,9 @@ class PmdPluginTest : BaseIntgTest() {
 
 			@Language("gradle")
 			val subProject = """
-				apply plugin: 'com.android.library'
+				plugins {
+					id("com.android.library")
+				}
 				android.namespace = "project${modulePath.replace(":", ".")}"
 			""".trimIndent()
 
@@ -150,7 +160,9 @@ class PmdPluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val rootProject = """
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+				plugins {
+					id("net.twisterrob.gradle.plugin.pmd")
+				}
 			}
 		""".trimIndent()
 
@@ -189,13 +201,17 @@ class PmdPluginTest : BaseIntgTest() {
 			@Language("gradle")
 			val subProject = if (modulePath in applyTo)
 				"""
-					apply plugin: 'net.twisterrob.gradle.plugin.pmd'
-					apply plugin: 'com.android.library'
+					plugins {
+						id("net.twisterrob.gradle.plugin.pmd")
+						id("com.android.library")
+					}
 					android.namespace = "project${modulePath.replace(":", ".")}"
 				""".trimIndent()
 			else
 				"""
-					apply plugin: 'com.android.library'
+					plugins {
+						id("com.android.library")
+					}
 					android.namespace = "project${modulePath.replace(":", ".")}"
 				""".trimIndent()
 
@@ -233,7 +249,9 @@ class PmdPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val applyPmd = """
-			apply plugin: 'net.twisterrob.gradle.plugin.pmd'
+			plugins {
+				id("net.twisterrob.gradle.plugin.pmd")
+			}
 			pmd {
 				toolVersion = '5.6.1'
 				incrementalAnalysis.set(false)
@@ -272,7 +290,13 @@ class PmdPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.pmd'").buildAndFail()
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.pmd")
+			}
+		""".trimIndent()
+		val result = gradle.run(script).buildAndFail()
 		result.assertHasOutputLine(
 			Regex(
 				"""org\.gradle\.api\.GradleException: """ +

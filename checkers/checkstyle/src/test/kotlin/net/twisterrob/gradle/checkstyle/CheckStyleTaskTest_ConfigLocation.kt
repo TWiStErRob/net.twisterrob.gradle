@@ -30,7 +30,9 @@ class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 		@Language("gradle")
 		private val SCRIPT_CONFIGURE_CHECKSTYLE: String = """
 			subprojects { // i.e. :module
-				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+				plugins {
+					id("net.twisterrob.gradle.plugin.checkstyle")
+				}
 				tasks.withType(${Checkstyle::class.java.name}).configureEach {
 					// output all violations to the console so that we can parse the results
 					showViolations = true

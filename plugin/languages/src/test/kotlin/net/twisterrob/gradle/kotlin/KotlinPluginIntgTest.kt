@@ -29,7 +29,9 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
+			plugins {
+				id("net.twisterrob.gradle.plugin.kotlin")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "jar").build()
@@ -44,7 +46,9 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
+			plugins {
+				id("net.twisterrob.gradle.plugin.kotlin")
+			}
 			dependencies {
 				testImplementation("org.testng:testng:7.7.1")
 			}
@@ -63,7 +67,9 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
+			plugins {
+				id("net.twisterrob.gradle.plugin.kotlin")
+			}
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
 			}
@@ -92,7 +98,9 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
+			plugins {
+				id("net.twisterrob.gradle.plugin.kotlin")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "jar").buildAndFail()
@@ -116,7 +124,15 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 	@Test fun `applying by the old name is deprecated`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
-		val result = gradle.run("apply plugin: 'net.twisterrob.kotlin'").buildAndFail()
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.kotlin")
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script).buildAndFail()
+
 		result.assertHasOutputLine(
 			Regex(
 				"""org\.gradle\.api\.GradleException: """ +

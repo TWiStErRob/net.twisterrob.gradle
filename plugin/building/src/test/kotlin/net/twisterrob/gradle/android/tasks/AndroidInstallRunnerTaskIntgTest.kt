@@ -58,7 +58,9 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.namespace = "${packageName}"
 			afterEvaluate {
 				// Don't always try to install the APK, as we may have no emulator,
