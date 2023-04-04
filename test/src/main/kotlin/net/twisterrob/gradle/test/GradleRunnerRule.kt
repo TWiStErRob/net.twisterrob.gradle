@@ -147,7 +147,9 @@ open class GradleRunnerRule : TestRule {
 	//@Test:when
 	fun run(@Language("gradle") script: String?, vararg tasks: String): GradleRunner {
 		if (script != null) {
-			buildFile.appendText(script)
+			val (pluginsBlockN, restN) = splitPluginsBlock(script)
+			val (pluginsBlockO, restO) = splitPluginsBlock(buildFile.readText())
+			buildFile.writeText(pluginsBlockO + pluginsBlockN + restO + restN)
 		}
 		val args = arrayOf(*tasks, *extraArgs)
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
@@ -178,6 +180,13 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 			""".trimIndent()
 		)
 		return runner.withArguments(*args)
+	}
+
+	private fun splitPluginsBlock(script: String): Pair<String, String> {
+		@Suppress("RegExpRedundantEscape")
+		val pluginsRegex = Regex("""(.*)(plugins\s*\{\s*[^}]*\s*\}\s*)(.*)""")
+		val match = pluginsRegex.find(script) ?: return "" to script
+		return match.groups[2]!!.value to pluginsRegex.replace(script, "$1$3")
 	}
 
 	private fun buildContentForLogging(): String =
