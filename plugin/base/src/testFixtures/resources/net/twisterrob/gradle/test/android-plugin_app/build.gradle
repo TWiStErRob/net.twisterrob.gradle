@@ -16,6 +16,6 @@ project.plugins.withType(com.android.build.gradle.internal.plugins.BasePlugin).c
 		// See also net.twisterrob.gradle.android.GradleTestHelpersKt.packageName.
 		namespace = "net.twisterrob.gradle.test_app"
 
-		compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
+		compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
 	}
 }

@@ -7,9 +7,3 @@ buildscript {
 		classpath 'com.android.tools.build:gradle:@net.twisterrob.test.android.pluginVersion@'
 	}
 }
-
-allprojects {
-	plugins.withType(com.android.build.gradle.BasePlugin) {
-		android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
-	}
-}

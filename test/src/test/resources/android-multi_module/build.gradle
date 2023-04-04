@@ -11,6 +11,6 @@ buildscript {
 allprojects {
 	plugins.withType(com.android.build.gradle.api.AndroidBasePlugin) {
 		// AndroidBasePlugin is applied whenever the basics are ready.
-		android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
+		android.compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
 	}
 }

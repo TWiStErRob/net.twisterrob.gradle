@@ -14,7 +14,7 @@ plugins {
 
 android {
 	namespace = "test.project"
-	compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
+	compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
 }
 
 dependencies {

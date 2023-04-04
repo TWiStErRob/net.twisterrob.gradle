@@ -8,4 +8,5 @@ dependencies {
 
 android {
 	namespace = "test.project.library"
+	compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
 }
