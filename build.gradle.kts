@@ -121,7 +121,14 @@ subprojects {
 		)
 		val properties = propertyNamesToReplace.keysToMap { project.property(it) }
 		properties.forEach { (name, value) -> inputs.property(name, value) }
-		filesMatching(listOf("**/build.gradle", "**/settings.gradle")) {
+		val processedFiles = listOf(
+			"**/build.gradle",
+			"**/build.gradle.kts",
+			"**/settings.gradle",
+			"**/settings.gradle.kts",
+			"**/gradle.properties",
+		)
+		filesMatching(processedFiles) {
 			val replacements = properties + mapOf(
 				// custom replacements (`"name" to value`) would come here
 			)
