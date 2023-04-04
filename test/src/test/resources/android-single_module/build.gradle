@@ -12,12 +12,6 @@ plugins {
 	id("com.android.application")
 }
 
-allprojects {
-	repositories {
-		mavenCentral()
-	}
-}
-
 android {
 	namespace = "test.project"
 	compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'

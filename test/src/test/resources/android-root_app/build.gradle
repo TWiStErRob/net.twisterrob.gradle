@@ -12,11 +12,6 @@ plugins {
 	id("com.android.application")
 }
 
-repositories {
-	google() // for aapt2 internal binary
-	mavenCentral()
-}
-
 android {
 	namespace = "test.project"
 	compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'

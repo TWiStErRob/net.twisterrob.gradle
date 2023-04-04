@@ -9,10 +9,6 @@ buildscript {
 }
 
 allprojects {
-	repositories {
-		google() // for aapt2 internal binary
-		mavenCentral() // quality plugin needs to be downloaded in test
-	}
 	plugins.withType(com.android.build.gradle.BasePlugin) {
 		android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
 	}

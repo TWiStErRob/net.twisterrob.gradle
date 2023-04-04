@@ -9,13 +9,6 @@ buildscript {
 }
 
 allprojects {
-	repositories {
-		// Needed for com.android.tools.lint:lint-gradle resolution.
-		// Needed for com.android.tools.build:aapt2 resolution on AGP 3.x.
-		google()
-		// Needed for lint dependencies.
-		mavenCentral()
-	}
 	plugins.withType(com.android.build.gradle.api.AndroidBasePlugin) {
 		// AndroidBasePlugin is applied whenever the basics are ready.
 		android.compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'

@@ -76,7 +76,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val settingsGradle = """
-			dependencyResolutionManagement {
+			dependencyResolutionManagement { // STOPSHIP review at the end
 				repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 				repositories {
 					google()
