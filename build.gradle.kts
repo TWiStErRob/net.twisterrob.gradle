@@ -7,7 +7,7 @@ plugins {
 	@Suppress("DSL_SCOPE_VIOLATION") // TODEL https://github.com/gradle/gradle/issues/22797
 	alias(libs.plugins.nexus)
 	id("net.twisterrob.gradle.build.module.root")
-	id("idea")
+	id("org.gradle.idea")
 }
 
 val projectVersion: String by project
@@ -129,7 +129,7 @@ subprojects {
 		}
 	}
 
-	plugins.withId("kotlin") {
+	plugins.withId("org.jetbrains.kotlin.jvm") {
 		dependencies {
 			// Make sure we don't have many versions of Kotlin lying around.
 			add("compileOnly", enforcedPlatform(deps.kotlin.bom))
@@ -149,7 +149,7 @@ subprojects {
 		}
 	}
 
-	plugins.withId("java") {
+	plugins.withId("org.gradle.java") {
 		val java = extensions.getByName<JavaPluginExtension>("java")
 		java.sourceCompatibility = JavaVersion.toVersion(deps.versions.java.get())
 		java.targetCompatibility = JavaVersion.toVersion(deps.versions.java.get())

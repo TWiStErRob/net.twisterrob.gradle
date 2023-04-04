@@ -59,7 +59,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("java")
+				id("org.gradle.java")
 				id("net.twisterrob.gradle.plugin.checkstyle")
 			}
 		""".trimIndent()
