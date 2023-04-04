@@ -5,6 +5,7 @@ import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
+import net.twisterrob.gradle.test.GradleRunnerRule.TouchMode.PREPEND
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
@@ -63,24 +64,29 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `get total violation counts`() {
+		gradle.basedOn("android-single_module")
 		gradle.file(checkstyle.simple.content, "module", *SOURCE_PATH, "Cs.java")
 		gradle.file(checkstyle.simple.config, *CONFIG_PATH_CS)
 		gradle.file(pmd.simple.content1, "module", *SOURCE_PATH, "Pmd.java")
 		gradle.file(pmd.simple.config, *CONFIG_PATH_PMD)
 
 		@Language("gradle")
-		val script = """
-			subprojects { // i.e. :module
-				plugins {
-					id("net.twisterrob.gradle.plugin.checkstyle")
-					id("net.twisterrob.gradle.plugin.pmd")
-				}
+		val moduleBuildScript = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+				id("net.twisterrob.gradle.plugin.pmd")
 			}
+			
+		""".trimIndent()
+
+		gradle.file(moduleBuildScript, mode = PREPEND, "module", *BUILD_SCRIPT_PATH)
+
+		@Language("gradle")
+		val script = """
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
-			basedOn("android-single_module")
 			run(script, "checkstyleAll", "pmdAll", "printViolationCount")
 		}
 
@@ -89,6 +95,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `get per module violation counts`() {
+		gradle.basedOn("android-multi_module")
 		checkstyle.multi.contents.forEach { (name, content) ->
 			val match = VIOLATION_PATTERN.matchEntire(name) ?: error("$name doesn't match $VIOLATION_PATTERN")
 			val checkName = match.groups[1]!!.value
@@ -115,7 +122,6 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		""".trimIndent()
 
 		val result = gradle.runBuild {
-			basedOn("android-multi_module")
 			run(script, "checkstyleAll", "printViolationCounts")
 		}
 

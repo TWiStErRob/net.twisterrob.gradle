@@ -1,15 +1,5 @@
-buildscript {
-	repositories {
-		google()
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:@net.twisterrob.test.android.pluginVersion@'
-	}
-}
-
 plugins {
-	id("com.android.application")
+	id("com.android.application") version "@net.twisterrob.test.android.pluginVersion@"
 }
 
 android {

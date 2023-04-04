@@ -181,7 +181,6 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 		return runner.withArguments(*args)
 	}
 
-
 	private fun buildContentForLogging(): String =
 		buildFile.readText()
 
@@ -236,6 +235,28 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 
 	fun file(contents: String, vararg path: String) {
 		getFile(*path).appendText(contents)
+	}
+
+	fun file(contents: String, mode: TouchMode, vararg path: String) {
+		val file = getFile(*path)
+		when (mode) {
+			TouchMode.CREATE -> {
+				require(!file.exists()) { "File already exists: ${file.absolutePath}" }
+				file.writeText(contents)
+			}
+			TouchMode.OVERWRITE -> {
+				require(file.exists()) { "File does not exist: ${file.absolutePath}" }
+				file.writeText(contents)
+			}
+			TouchMode.APPEND -> {
+				require(file.exists()) { "File does not exist: ${file.absolutePath}" }
+				file.appendText(contents)
+			}
+			TouchMode.PREPEND -> {
+				require(file.exists()) { "File does not exist: ${file.absolutePath}" }
+				file.writeText(contents + file.readText())
+			}
+		}
 	}
 
 	@Suppress("ReturnCount")
@@ -294,4 +315,11 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 		return this
 	}
 	//endregion
+
+	enum class TouchMode {
+		CREATE,
+		OVERWRITE,
+		APPEND,
+		PREPEND,
+	}
 }
