@@ -247,10 +247,10 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	@Suppress("ReturnCount")
 	private fun getFile(vararg path: String): File {
 		if (path.size == 1 && path[0] == "build.gradle") {
-			return buildFile.also { it.createNewFile() }
+			return buildFile.apply { createNewFile() }
 		}
 		if (path.size == 1 && path[0] == "gradle.properties") {
-			return propertiesFile.also { it.createNewFile() }
+			return propertiesFile.apply { createNewFile() }
 		}
 		if (1 < path.size) {
 			val folders = path.sliceArray(0..path.size - 2)
@@ -322,31 +322,29 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 				this.prependText(contents)
 			}
 			TouchMode.MERGE_GRADLE -> {
-				@Suppress("RegExpRedundantEscape")
-				fun topLevelBlocksNamed(name: String): Regex =
-					Regex("""(?s)(.*?)(${name}\s*\{\s*.*?\s*\n\})(?:\n(?!${name}\s*\{)|$)(.*)""")
+
+				fun extractBlock(name: String, script: String): Pair<String?, String?> {
+					@Suppress("RegExpRedundantEscape")
+					val regex = Regex("""(?s)(.*?)(${name}\s*\{\s*.*?\s*\n\})(?:\n(?!${name}\s*\{)|$)(.*)""")
+					val match = regex.find(script)
+					val block = match?.let { it.groups[2]?.value }
+					val removed = if (match != null) {
+						regex.replace(script, "$1$3")
+					} else {
+						script
+					}
+					return block to removed.takeIf { it.isNotBlank() }
+				}
 
 				fun splitPluginsBlock(script: String): Triple<String?, String?, String?> {
-					val buildscriptRegex = topLevelBlocksNamed("buildscript")
-					val buildscriptMatch = buildscriptRegex.find(script)
-					val buildscriptBlock = buildscriptMatch?.let { it.groups[2]?.value }
-					val scriptWithoutBuildscript = if (buildscriptMatch != null)
-						buildscriptRegex.replace(script, "$1$3")
-					else
-						script
-
-					val pluginsRegex = topLevelBlocksNamed("plugins")
-					val pluginsMatch = pluginsRegex.find(scriptWithoutBuildscript)
-					val pluginsBlock = pluginsMatch?.let { it.groups[2]?.value }
-					val scriptWithoutBuildscriptAndPlugins = if (pluginsMatch != null)
-						pluginsRegex.replace(scriptWithoutBuildscript, "$1$3")
-					else
-						scriptWithoutBuildscript
-
+					val (buildscriptBlock, scriptWithoutBuildscript) =
+						extractBlock("buildscript", script)
+					val (pluginsBlock, scriptWithoutBuildscriptAndPlugins) =
+						extractBlock("plugins", scriptWithoutBuildscript ?: "")
 					return Triple(
 						buildscriptBlock,
 						pluginsBlock,
-						scriptWithoutBuildscriptAndPlugins.takeIf { it.isNotBlank() }
+						scriptWithoutBuildscriptAndPlugins
 					)
 				}
 
