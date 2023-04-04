@@ -27,11 +27,6 @@ class AndroidVariantApplier(val project: Project) {
 		project.plugins.withId("com.android.test") {
 			variantsClosure.execute(android<TestExtension>().applicationVariants)
 		}
-		project.plugins.withId("com.android.instantapp") {
-			//android<InstantAppExtension>()
-			// has no variants, but don't call back, because there's no way to tell if this happened
-			//variantsClosure.execute(new DefaultDomainObjectSet<>(BaseVariant))
-		}
 	}
 
 	inline fun <reified T : BaseExtension> android(): T =

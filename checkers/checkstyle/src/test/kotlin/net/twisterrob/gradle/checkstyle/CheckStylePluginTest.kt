@@ -91,7 +91,6 @@ class CheckStylePluginTest : BaseIntgTest() {
 				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
 			}
 		""".trimIndent()
-		// ":instant" is not supported yet, and won't be since it's deprecated in 3.6.x.
 		// TODO add :dynamic-feature
 		val modules = arrayOf(":app", ":library", ":library:nested", ":test")
 
