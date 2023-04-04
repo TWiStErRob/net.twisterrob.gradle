@@ -11,6 +11,7 @@ class GradlePluginModulePlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
 		project.plugins.apply("org.gradle.java-gradle-plugin")
+		project.plugins.apply("net.twisterrob.gradle.build.testing.plugin-under-test-metadata-extras")
 		project.plugins.apply(InitScriptMetadataPlugin::class)
 
 		project.plugins.apply("org.jetbrains.kotlin.jvm")
