@@ -297,26 +297,22 @@ nexusPublishing {
 
 idea {
 	module {
-		val examples = listOf(
-			"docs/examples/local/.gradle",
-			"docs/examples/local/build",
-			"docs/examples/release/.gradle",
-			"docs/examples/release/build",
-			"docs/examples/snapshot/.gradle",
-			"docs/examples/snapshot/build",
-		).map { rootDir.resolve(it) }
+		fun excludedInProject(dir: File): List<File> =
+			listOf(
+				dir.resolve(".gradle"),
+				dir.resolve("build"),
+				dir.resolve("buildSrc/.gradle"),
+				dir.resolve("buildSrc/build"),
+				dir.resolve(".idea"),
+			)
+
+		val examples = listOf("local", "release", "snapshot")
+			.map { rootDir.resolve("docs/examples").resolve(it) }
+			.flatMap(::excludedInProject)
 		val debuggers = rootDir
 			.resolve("docs/debug")
 			.listFiles { file: File -> file.isDirectory }
-			.flatMap { debugDir ->
-				listOf(
-					debugDir.resolve(".gradle"),
-					debugDir.resolve("build"),
-					debugDir.resolve("buildSrc/.gradle"),
-					debugDir.resolve("buildSrc/build"),
-					debugDir.resolve(".idea"),
-				)
-			}
+			.flatMap(::excludedInProject)
 		val unpackagedResources = allprojects.map { it.projectDir.resolve("build/unPackagedTestResources") }
 		excludeDirs.addAll(examples + debuggers + unpackagedResources)
 	}
