@@ -41,11 +41,6 @@ gradlePlugin {
 	}
 }
 
-repositories {
-	mavenCentral()
-	gradlePluginPortal()
-}
-
 // Note on `plugins { }`: when the version is declared in the plugins block (`plugins { id(...) version "..." }`),
 // the referenced dependencies are visible by IntelliJ Gradle Sync, but the breakpoints are not hit.
 // Declaring all the dependencies in this project resolves this issue.
