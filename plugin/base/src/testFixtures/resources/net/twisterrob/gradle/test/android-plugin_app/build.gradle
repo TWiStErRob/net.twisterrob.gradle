@@ -4,8 +4,6 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		// STOPSHIP see what paparazzi does
-		// STOPSHIP try just a versioned plugins block now that the merger handles ordering
 		// Needs to be disabled here and added in a different way, see testInjectedPluginClasspath.
 		//classpath 'com.android.tools.build:gradle:@net.twisterrob.test.android.pluginVersion@'
 	}
