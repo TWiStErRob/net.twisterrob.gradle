@@ -43,7 +43,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `adds automatic repositories`() {
-		gradle.buildFile.writeText(gradle.buildFile.readText().removeTopLevelRepositoryBlock())
+		gradle.file("", GradleRunnerRule.TouchMode.OVERWRITE, "settings.gradle")
 
 		@Language("gradle")
 		val script = """
@@ -62,7 +62,17 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `does not add repositories automatically when it would fail`() {
-		gradle.buildFile.writeText(gradle.buildFile.readText().removeTopLevelRepositoryBlock())
+		@Language("gradle")
+		val settingsGradle = """
+			dependencyResolutionManagement {
+				repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+				repositories {
+					google()
+					mavenCentral()
+				}
+			}
+		""".trimIndent()
+		gradle.file(settingsGradle, "settings.gradle") // STOPSHIP
 
 		@Language("gradle")
 		val script = """
@@ -73,18 +83,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				println("repoNames=" + repositories.names)
 			}
 		""".trimIndent()
-
-		@Language("gradle")
-		val settingsGradle = """
-			dependencyResolutionManagement { // STOPSHIP review at the end
-				repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-				repositories {
-					google()
-					mavenCentral()
-				}
-			}
-		""".trimIndent()
-		gradle.file(settingsGradle, "settings.gradle")
 
 		val result = gradle.run(script, "assembleDebug").build()
 
@@ -258,6 +256,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
+			plugins {
+				id("com.android.application") apply false
+			}
 			// intentionally allprojects and not subprojects so it runs on the plugin-less root project too
 			allprojects {
 				// Ideal implementation would be this, but somehow it's too late at this point.
@@ -352,12 +353,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val script = """
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-library")
-			}
-			android.twisterrob.decorateBuildConfig = false
-			
-			plugins {
 				id("net.twisterrob.gradle.plugin.kotlin")
 			}
+			android.twisterrob.decorateBuildConfig = false
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
 				testImplementation 'org.robolectric:robolectric:4.9.2'
@@ -586,9 +584,5 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	companion object {
 		private const val GOOGLE: String = DefaultRepositoryHandler.GOOGLE_REPO_NAME
 		private const val MAVEN_CENTRAL: String = ArtifactRepositoryContainer.DEFAULT_MAVEN_CENTRAL_REPO_NAME
-
-		/** Remove default from [GradleBuildTestResources.AndroidProject.build]. */
-		private fun String.removeTopLevelRepositoryBlock(): String =
-			this.replace("""(?s)\nrepositories \{.*?\n\}""".toRegex(), "")
 	}
 }

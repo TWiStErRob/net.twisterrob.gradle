@@ -38,6 +38,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 	}
 
 	override lateinit var gradle: GradleRunnerRule
+
 	private val checkstyle = CheckstyleTestResources()
 
 	@Test fun `does not apply to empty project`() {
@@ -90,21 +91,23 @@ class CheckStylePluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applies to all types of subprojects`() {
+		gradle.basedOn("android-all_kinds")
 		gradle.file(checkstyle.empty.config, "config", "checkstyle", "checkstyle.xml")
-		@Language("gradle")
-		val script = """
-			allprojects {
+		// TODO add :dynamic-feature
+		val modules = arrayOf(":app", ":library", ":library:nested", ":test")
+		modules.forEach { modulePath ->
+			@Language("gradle")
+			val subProject = """
 				plugins {
 					id("net.twisterrob.gradle.plugin.checkstyle")
 				}
-			}
-		""".trimIndent()
-		// TODO add :dynamic-feature
-		val modules = arrayOf(":app", ":library", ":library:nested", ":test")
+			""".trimIndent()
+			val subPath = modulePath.substringAfter(':').split(":").toTypedArray()
+			gradle.file(subProject, GradleRunnerRule.TouchMode.MERGE_GRADLE, *subPath, "build.gradle")
+		}
 
 		val result = gradle.runBuild {
-			basedOn("android-all_kinds")
-			run(script, "checkstyleEach")
+			run(null, "checkstyleEach")
 		}
 
 		val exceptions = arrayOf(
@@ -153,10 +156,11 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val rootProject = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle") apply false
+			}
 			allprojects {
-				plugins {
-					id("net.twisterrob.gradle.plugin.checkstyle")
-				}
+				apply plugin: "net.twisterrob.gradle.plugin.checkstyle"
 			}
 		""".trimIndent()
 
@@ -179,7 +183,6 @@ class CheckStylePluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applies to individual subprojects`() {
-
 		val modules = arrayOf(
 			":module1",
 			":module2",

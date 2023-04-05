@@ -233,6 +233,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 
 	fun file(contents: String, vararg path: String) {
+		// STOPSHIP change to CREATE
 		file(contents, TouchMode.APPEND, *path)
 	}
 

@@ -9,6 +9,10 @@ buildscript {
 	}
 }
 
+plugins {
+	id("com.android.application")
+}
+
 // Need to delay configuration of android extension to the point where the plugin is applied.
 // This is because it's not possible to apply the `com.android.application` plugin in advance.
 // Each test will apply it if and when necessary through net.twisterrob.android-* plugins.

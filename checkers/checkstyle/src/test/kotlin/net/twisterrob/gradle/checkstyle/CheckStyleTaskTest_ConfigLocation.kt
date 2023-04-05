@@ -26,22 +26,23 @@ import kotlin.test.assertEquals
 class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 
 	companion object {
+
 		private val CONFIG_PATH: Array<String> = arrayOf("config", "checkstyle", "checkstyle.xml")
+
 		@Language("gradle")
 		private val SCRIPT_CONFIGURE_CHECKSTYLE: String = """
-			subprojects { // i.e. :module
-				plugins {
-					id("net.twisterrob.gradle.plugin.checkstyle")
-				}
-				tasks.withType(${Checkstyle::class.java.name}).configureEach {
-					// output all violations to the console so that we can parse the results
-					showViolations = true
-				}
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+			}
+			tasks.withType(${Checkstyle::class.java.name}).configureEach {
+				// output all violations to the console so that we can parse the results
+				showViolations = true
 			}
 		""".trimIndent()
 	}
 
 	override lateinit var gradle: GradleRunnerRule
+
 	private val checkstyle = CheckstyleTestResources()
 
 	@Test fun `uses rootProject checkstyle config as a fallback`() {
@@ -95,19 +96,20 @@ class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 
 		val result = gradle.runBuild {
 			basedOn("android-single_module")
-			run(SCRIPT_CONFIGURE_CHECKSTYLE, ":module:tasks")
+			run(null, ":module:tasks")
 		}
 		assertEquals(TaskOutcome.SUCCESS, result.task(":module:tasks")!!.outcome)
 		result.assertNoOutputLine(Regex("""While auto-configuring configFile for task '.*"""))
 	}
 
 	private fun executeBuild(): BuildResult {
+		gradle.basedOn("android-single_module")
 		gradle.file(checkstyle.simple.content, "module", "src", "main", "java", "Checkstyle.java")
 		// see also @Test/given for configuration file location setup
+		gradle.file(SCRIPT_CONFIGURE_CHECKSTYLE, GradleRunnerRule.TouchMode.MERGE_GRADLE, "module", "build.gradle")
 
 		return gradle.runFailingBuild {
-			basedOn("android-single_module")
-			run(SCRIPT_CONFIGURE_CHECKSTYLE, ":module:checkstyleDebug")
+			run(null, ":module:checkstyleDebug")
 		}
 	}
 
@@ -115,7 +117,6 @@ class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 		// build should only fail if failing config wins the preference,
 		// otherwise it's BUILD SUCCESSFUL or CheckstyleException: Unable to find: ...xml
 		assertEquals(TaskOutcome.FAILED, this.task(":module:checkstyleDebug")!!.outcome)
-
 		assertThat(this.failReason, containsString("Checkstyle rule violations were found"))
 		this.assertHasOutputLine(checkstyle.simple.message)
 		this.assertNoOutputLine(Regex("""While auto-configuring configFile for task '.*"""))

@@ -4,4 +4,5 @@ plugins {
 
 android {
 	namespace = "test.project.library.nested"
+	compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
 }

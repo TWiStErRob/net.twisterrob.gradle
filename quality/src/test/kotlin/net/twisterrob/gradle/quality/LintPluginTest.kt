@@ -58,7 +58,9 @@ class LintPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: ${LintPlugin::class.qualifiedName}
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -82,7 +84,9 @@ class LintPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: ${LintPlugin::class.qualifiedName}
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -105,7 +109,9 @@ class LintPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: ${LintPlugin::class.qualifiedName}
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -241,12 +247,16 @@ class LintPluginTest : BaseIntgTest() {
 	}
 
 	@CheckReturnValue
-	private fun `ignores disabled submodule lint tasks`(extraSetup: (String) -> String): BuildResult {
+	private fun `ignores disabled submodule lint tasks`(
+		extraSetup: (/*@Language("gradle")*/ String) -> /*@Language("gradle")*/ String
+	): BuildResult {
 		`set up 3 modules with a lint failures`()
 
 		@Language("gradle")
 		var script = """
-			apply plugin: ${LintPlugin::class.qualifiedName}
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 		""".trimIndent()
 
 		script = extraSetup(script)
@@ -272,7 +282,9 @@ class LintPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: ${LintPlugin::class.qualifiedName}
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality")
+			}
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {

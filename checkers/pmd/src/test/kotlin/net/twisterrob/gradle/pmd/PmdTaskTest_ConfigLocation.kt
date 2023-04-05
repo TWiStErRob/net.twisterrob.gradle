@@ -31,19 +31,17 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 
 		@Language("gradle")
 		private val SCRIPT_CONFIGURE_PMD: String = """
-			subprojects { // i.e. :module
-				plugins {
-					id("net.twisterrob.gradle.plugin.pmd")
-					// TODO figure out why this is needed to set toolVersion when Pmd task works anyway
-					id("org.gradle.pmd")
-				}
-				pmd {
-					incrementalAnalysis.set(false)
-				}
-				tasks.withType(${Pmd::class.java.name}).configureEach {
-					// output all violations to the console so that we can parse the results
-					consoleOutput = true
-				}
+			plugins {
+				id("net.twisterrob.gradle.plugin.pmd")
+				// TODO figure out why this is needed to set toolVersion when Pmd task works anyway
+				id("org.gradle.pmd")
+			}
+			pmd {
+				incrementalAnalysis.set(false)
+			}
+			tasks.withType(${Pmd::class.java.name}).configureEach {
+				// output all violations to the console so that we can parse the results
+				consoleOutput = true
 			}
 		""".trimIndent()
 	}
@@ -74,7 +72,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 
 	@Test fun `uses local module pmd config over rootProject pmd config`() {
 		gradle.file(pmd.empty.config, *CONFIG_PATH)
-		gradle.file(pmd.simple.config, "module", * CONFIG_PATH)
+		gradle.file(pmd.simple.config, "module", *CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
@@ -110,12 +108,13 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 	}
 
 	private fun executeBuild(): BuildResult {
+		gradle.basedOn("android-single_module")
 		gradle.file(pmd.simple.content1, "module", "src", "main", "java", "WithoutPackage.java")
 		gradle.file(pmd.simple.content2, "module", "src", "main", "java", "pmd", "PrintStack.java")
 		// see also @Test/given for configuration file location setup
+		gradle.file(SCRIPT_CONFIGURE_PMD, GradleRunnerRule.TouchMode.MERGE_GRADLE, "module", "build.gradle")
 
 		return gradle.runFailingBuild {
-			basedOn("android-single_module")
 			run(SCRIPT_CONFIGURE_PMD, ":module:pmdDebug")
 		}
 	}

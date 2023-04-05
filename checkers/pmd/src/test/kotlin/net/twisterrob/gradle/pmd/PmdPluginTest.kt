@@ -90,25 +90,27 @@ class PmdPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applies to all types of subprojects`() {
+		gradle.basedOn("android-all_kinds")
 		gradle.file(pmd.empty.config, "config", "pmd", "pmd.xml")
-		@Language("gradle")
-		val script = """
-			allprojects {
+		// TODO add :dynamic-feature
+		val modules = arrayOf(":app", ":library", ":library:nested", ":test")
+		modules.forEach { modulePath ->
+			@Language("gradle")
+			val subProject = """
 				plugins {
 					id("net.twisterrob.gradle.plugin.pmd")
 				}
-			}
-		""".trimIndent()
-		// TODO add :dynamic-feature
-		val modules = arrayOf(":app", ":library", ":library:nested", ":test")
+			""".trimIndent()
+			val subPath = modulePath.substringAfter(':').split(":").toTypedArray()
+			gradle.file(subProject, GradleRunnerRule.TouchMode.MERGE_GRADLE, *subPath, "build.gradle")
+		}
 		// Add empty manifest, so PMD task picks it up.
 		gradle.file("<manifest />", "library", "src", "main", "AndroidManifest.xml")
 		gradle.file("<manifest />", "library", "nested", "src", "main", "AndroidManifest.xml")
 		gradle.file("<manifest />", "test", "src", "main", "AndroidManifest.xml")
 
 		val result = gradle.runBuild {
-			basedOn("android-all_kinds")
-			run(script, "pmdEach")
+			run(null, "pmdEach")
 		}
 
 		val exceptions = arrayOf(
@@ -159,10 +161,11 @@ class PmdPluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val rootProject = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.pmd") apply false
+			}
 			allprojects {
-				plugins {
-					id("net.twisterrob.gradle.plugin.pmd")
-				}
+				apply plugin: "net.twisterrob.gradle.plugin.pmd"
 			}
 		""".trimIndent()
 
@@ -252,7 +255,7 @@ class PmdPluginTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.pmd")
 			}
-			pmd {
+			pmd { // STOPSHIP remove
 				toolVersion = '5.6.1'
 				incrementalAnalysis.set(false)
 			}
