@@ -114,7 +114,6 @@ class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 	private fun BuildResult.verifyMissingContentCheckWasRun() {
 		// build should only fail if failing config wins the preference,
 		// otherwise it's BUILD SUCCESSFUL or CheckstyleException: Unable to find: ...xml
-		// STOPSHIP see if there's a better way than !!, this.assertTaskOutcome?
 		assertEquals(TaskOutcome.FAILED, this.task(":module:checkstyleDebug")!!.outcome)
 
 		assertThat(this.failReason, containsString("Checkstyle rule violations were found"))
