@@ -330,7 +330,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 
 				fun extractBlock(name: String, script: String): Pair<String?, String?> {
 					@Suppress("RegExpRedundantEscape")
-					val regex = Regex("""(?sm)(.*?)(^${name}\s*\{\s*.*?\s*\n\})(?:\n(?!${name}\s*\{)|\Z)(.*)""")
+					val regex = Regex("""(?sm)(.*?)(^${name}\s*\{\s*.*?\s*\r?\n\})(?:\r?\n(?!${name}\s*\{)|\Z)(.*)""")
 					val match = regex.find(script)
 					val block = match?.let { it.groups[2]?.value }
 					val removed = if (match != null) {
@@ -342,8 +342,9 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 				}
 
 				fun splitPluginsBlock(script: String): Triple<String?, String?, String?> {
+					val normalizedLineEndings = script.prependIndent("")
 					val (buildscriptBlock, scriptWithoutBuildscript) =
-						extractBlock("buildscript", script)
+						extractBlock("buildscript", normalizedLineEndings)
 					val (pluginsBlock, scriptWithoutBuildscriptAndPlugins) =
 						extractBlock("plugins", scriptWithoutBuildscript ?: "")
 					return Triple(

@@ -206,6 +206,52 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 			)
 		}
 
+		@Test fun `plugins block with content is merged in the right order`() {
+			mergeTest(
+				script1 = """
+					buildscript {
+					}
+					// after buildscript
+				""".trimIndent(),
+				script2 = """
+					plugins {
+					}
+					println("after plugins")
+				""".trimIndent(),
+				mergeExpectation = """
+					buildscript {
+					}
+					plugins {
+					}
+					// after buildscript
+					println("after plugins")
+				""".trimIndent()
+			)
+		}
+
+		@Test fun `plugins block with content is merged in the right order - Windows`() {
+			mergeTest(
+				script1 = """
+					buildscript {
+					}
+					// after buildscript
+				""".trimIndent().replace("\n", "\r\n"),
+				script2 = """
+					plugins {
+					}
+					println("after plugins")
+				""".trimIndent().replace("\n", "\r\n"),
+				mergeExpectation = """
+					buildscript {
+					}
+					plugins {
+					}
+					// after buildscript
+					println("after plugins")
+				""".trimIndent()
+			)
+		}
+
 		@Test fun `leaves nested plugins blocks alone`() {
 			mergeTest(
 				script1 = """
