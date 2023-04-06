@@ -109,6 +109,11 @@ subprojects {
 			properties["net.twisterrob.gradle.runner.clearAfterSuccess"] = "false"
 			properties["net.twisterrob.gradle.runner.clearAfterFailure"] = "false"
 		}
+		val tmpdir = project.property("net.twisterrob.test.java.io.tmpdir").toString()
+		if (tmpdir.isNotEmpty()) {
+			// Used in GradleTestKitDirRelocator.
+			properties["java.io.tmpdir"] = tmpdir
+		}
 		properties.forEach { (name, value) -> inputs.property(name, value) }
 		properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
 	}
