@@ -32,7 +32,7 @@ class QualityPluginTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			allprojects {
-				apply plugin: "net.twisterrob.gradle.plugin.quality"
+				apply plugin: 'net.twisterrob.gradle.plugin.quality'
 			}
 			tasks.named('violationReportConsole').configure { println("Configuring " + it) }
 		""".trimIndent()
@@ -58,7 +58,7 @@ class QualityPluginTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			allprojects {
-				apply plugin: "net.twisterrob.gradle.plugin.quality"
+				apply plugin: 'net.twisterrob.gradle.plugin.quality'
 			}
 			tasks.named('violationReportHtml').configure { println("Configuring " + it) }
 		""".trimIndent()
@@ -84,7 +84,7 @@ class QualityPluginTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			allprojects {
-				apply plugin: "net.twisterrob.gradle.plugin.quality"
+				apply plugin: 'net.twisterrob.gradle.plugin.quality'
 				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}).configureEach {
 					println("Added " + it)
 				}
@@ -108,7 +108,7 @@ class QualityPluginTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			allprojects {
-				apply plugin: "net.twisterrob.gradle.plugin.quality"
+				apply plugin: 'net.twisterrob.gradle.plugin.quality'
 				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}).configureEach {
 					println("Added " + it)
 				}

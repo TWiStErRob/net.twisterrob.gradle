@@ -5,7 +5,6 @@ import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
-import net.twisterrob.gradle.test.GradleRunnerRule.TouchMode.PREPEND
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
@@ -79,7 +78,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 			
 		""".trimIndent()
 
-		gradle.file(moduleBuildScript, mode = PREPEND, "module", *BUILD_SCRIPT_PATH)
+		gradle.file(moduleBuildScript, GradleRunnerRule.TouchMode.MERGE_GRADLE, "module", *BUILD_SCRIPT_PATH)
 
 		@Language("gradle")
 		val script = """

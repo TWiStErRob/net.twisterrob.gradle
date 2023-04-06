@@ -206,8 +206,8 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 ${classPaths.prependIndent("\t\t\t\t\t")}
 				}
 			}
-		""".trimIndent() + System.lineSeparator()
-		buildFile.prependText(buildscript)
+		""".trimIndent()
+		file(buildscript, TouchMode.MERGE_GRADLE, buildFile.absolutePath)
 	}
 	//endregion
 
@@ -372,8 +372,8 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 		PREPEND,
 		MERGE_GRADLE,
 	}
+}
 
-	private fun File.prependText(text: String) {
-		this.writeText(text + this.readText())
-	}
+private fun File.prependText(text: String) {
+	this.writeText(text + this.readText())
 }
