@@ -2,23 +2,23 @@ package net.twisterrob.gradle.pmd
 
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.pmd.test.PmdTestResources
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
-import net.twisterrob.gradle.test.ContentMergeMode
+import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see PmdTask
@@ -85,7 +85,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 		}
 
 		val result = executeBuild()
-		assertEquals(TaskOutcome.FAILED, result.task(":module:pmdDebug")!!.outcome)
+		result.assertFailed(":module:pmdDebug")
 		assertThat(result.failReason, containsString("No rulesets specified"))
 		result.assertHasOutputLine(
 			"""
@@ -104,7 +104,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 			basedOn("android-single_module")
 			run(SCRIPT_CONFIGURE_PMD, ":module:tasks")
 		}
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module:tasks")!!.outcome)
+		result.assertSuccess(":module:tasks")
 		result.assertNoOutputLine(Regex("""While auto-configuring ruleSetFiles for task '.*"""))
 	}
 
@@ -123,7 +123,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 	private fun BuildResult.verifyMissingContentCheckWasRun() {
 		// build should only fail if failing config wins the preference,
 		// otherwise it's BUILD SUCCESSFUL or RuleSetNotFoundException: Can't find resource "....xml" for rule "null".
-		assertEquals(TaskOutcome.FAILED, this.task(":module:pmdDebug")!!.outcome)
+		this.assertFailed(":module:pmdDebug")
 		assertThat(this.failReason, containsString("2 PMD rule violations were found."))
 		this.assertHasOutputLine(pmd.simple.message1)
 		this.assertHasOutputLine(pmd.simple.message2)

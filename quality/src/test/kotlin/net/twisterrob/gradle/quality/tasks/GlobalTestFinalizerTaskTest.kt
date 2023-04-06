@@ -4,9 +4,13 @@ import junit.runner.Version
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertNoSource
 import net.twisterrob.gradle.test.assertNoTask
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.assertUpToDate
 import net.twisterrob.gradle.test.minus
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
@@ -23,7 +27,6 @@ import org.hamcrest.Matchers.startsWith
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see GlobalTestFinalizerTask
@@ -76,11 +79,11 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 			run(script, "test", "testReport")
 		}
 
-		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":test")!!.outcome)
+		result.assertUpToDate(":test")
 		if (GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion) {
-			assertEquals(TaskOutcome.NO_SOURCE, result.task(":testReport")!!.outcome)
+			result.assertNoSource(":testReport")
 		} else {
-			assertEquals(TaskOutcome.SUCCESS, result.task(":testReport")!!.outcome)
+			result.assertSuccess(":testReport")
 		}
 		result.assertNoOutputLine(Regex(""".*failing tests.*"""))
 		result.assertNoOutputLine(Regex(""".*See the report at.*"""))
@@ -105,9 +108,9 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 		}
 
 		if (GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion) {
-			assertEquals(TaskOutcome.NO_SOURCE, result.task(":testReport")!!.outcome)
+			result.assertNoSource(":testReport")
 		} else {
-			assertEquals(TaskOutcome.SUCCESS, result.task(":testReport")!!.outcome)
+			result.assertSuccess(":testReport")
 		}
 		assertThat(result.tasks, hasSize(1))
 		result.assertNoOutputLine(Regex(""".*failing tests.*"""))
@@ -132,8 +135,8 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 			run(script, "test", "testReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
-		assertEquals(TaskOutcome.FAILED, result.task(":testReport")!!.outcome)
+		result.assertSuccess(":test")
+		result.assertFailed(":testReport")
 		result.assertHasOutputLine(Regex("""> There were ${3 + 3} failing tests. See the report at: .*"""))
 	}
 
@@ -155,7 +158,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 			run(script, "testDebugUnitTest")
 		}
 
-		assertEquals(TaskOutcome.FAILED, result.task(":testDebugUnitTest")!!.outcome)
+		result.assertFailed(":testDebugUnitTest")
 		result.assertNoTask(":testReport")
 		result.assertHasOutputLine(Regex("""> There were failing tests. See the report at: .*"""))
 	}
@@ -230,12 +233,12 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 		}
 
 		applyTo.forEach { module ->
-			assertEquals(TaskOutcome.SUCCESS, result.task("$module:testDebugUnitTest")!!.outcome)
+			result.assertSuccess("$module:testDebugUnitTest")
 		}
 		(modules - applyTo).forEach { module ->
-			assertEquals(TaskOutcome.NO_SOURCE, result.task("$module:testDebugUnitTest")!!.outcome)
+			result.assertNoSource("$module:testDebugUnitTest")
 		}
-		assertEquals(TaskOutcome.FAILED, result.task(":testReport")!!.outcome)
+		result.assertFailed(":testReport")
 		result.assertHasOutputLine(Regex("""> There were ${applyTo.size * 3} failing tests. See the report at: .*"""))
 
 		val allTasks = result.tasks.map { it.path }

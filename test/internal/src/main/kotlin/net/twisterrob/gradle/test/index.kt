@@ -65,7 +65,7 @@ private fun File.type(): String =
 	}
 
 fun BuildResult.assertNoTask(taskPath: String) {
-	assertNull(task(taskPath))
+	assertNull(this.task(taskPath), "${taskPath} task found")
 }
 
 /**
@@ -73,31 +73,31 @@ fun BuildResult.assertNoTask(taskPath: String) {
  * Note: this means that [TaskOutcome.UP_TO_DATE] and [TaskOutcome.NO_SOURCE] is not "success"!
  */
 fun BuildResult.assertSuccess(taskPath: String) {
-	assertOutcome(taskPath, SUCCESS)
+	this.assertOutcome(taskPath, SUCCESS)
 }
 
 fun BuildResult.assertFailed(taskPath: String) {
-	assertOutcome(taskPath, FAILED)
+	this.assertOutcome(taskPath, FAILED)
 }
 
 fun BuildResult.assertSkipped(taskPath: String) {
-	assertOutcome(taskPath, SKIPPED)
+	this.assertOutcome(taskPath, SKIPPED)
 }
 
 fun BuildResult.assertUpToDate(taskPath: String) {
-	assertOutcome(taskPath, UP_TO_DATE)
+	this.assertOutcome(taskPath, UP_TO_DATE)
 }
 
 fun BuildResult.assertFromCache(taskPath: String) {
-	assertOutcome(taskPath, FROM_CACHE)
+	this.assertOutcome(taskPath, FROM_CACHE)
 }
 
 fun BuildResult.assertNoSource(taskPath: String) {
-	assertOutcome(taskPath, NO_SOURCE)
+	this.assertOutcome(taskPath, NO_SOURCE)
 }
 
 fun BuildResult.assertOutcome(taskPath: String, outcome: TaskOutcome) {
-	val task = task(taskPath)
+	val task = this.task(taskPath)
 	assertNotNull(task, "${taskPath} task not found")
 	task!! // TODEL https://github.com/junit-team/junit5/issues/1866
 	assertEquals(outcome, task.outcome)

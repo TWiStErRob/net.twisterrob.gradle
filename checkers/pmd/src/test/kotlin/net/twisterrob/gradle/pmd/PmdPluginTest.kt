@@ -2,10 +2,12 @@ package net.twisterrob.gradle.pmd
 
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.pmd.test.PmdTestResources
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
-import net.twisterrob.gradle.test.ContentMergeMode
+import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.minus
 import net.twisterrob.gradle.test.runBuild
@@ -23,7 +25,6 @@ import org.hamcrest.Matchers.startsWith
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see PmdPlugin
@@ -85,9 +86,9 @@ class PmdPluginTest : BaseIntgTest() {
 			run(script, "pmdEach")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":pmdEach")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":pmdDebug")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":pmdRelease")!!.outcome)
+		result.assertSuccess(":pmdEach")
+		result.assertSuccess(":pmdDebug")
+		result.assertSuccess(":pmdRelease")
 	}
 
 	@Test fun `applies to all types of subprojects`() {
@@ -270,7 +271,7 @@ class PmdPluginTest : BaseIntgTest() {
 			run(applyPmd, ":pmdDebug")
 		}
 
-		assertEquals(TaskOutcome.FAILED, result.task(":pmdDebug")!!.outcome)
+		result.assertFailed(":pmdDebug")
 		result.assertHasOutputLine(
 			"Inline rule violation",
 			Regex(""".*src.main.java.Pmd\.java:2:\s+Inline custom message""")

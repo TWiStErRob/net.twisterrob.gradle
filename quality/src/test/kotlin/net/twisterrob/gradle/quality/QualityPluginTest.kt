@@ -6,8 +6,8 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.runBuild
-import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.matchesPattern
@@ -15,7 +15,6 @@ import org.hamcrest.Matchers.not
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see QualityPlugin
@@ -42,7 +41,7 @@ class QualityPluginTest : BaseIntgTest() {
 			run(script, "violationReportConsole")
 		}
 
-		assertEquals(SUCCESS, result.task(":violationReportConsole")!!.outcome)
+		result.assertSuccess(":violationReportConsole")
 		val allOtherTasks = result.tasks.map { it.path } - ":violationReportConsole"
 		assertThat(allOtherTasks, not(hasItems(matchesPattern(""":violationReportConsole$"""))))
 		result.assertHasOutputLine(
@@ -68,7 +67,7 @@ class QualityPluginTest : BaseIntgTest() {
 			run(script, "violationReportHtml")
 		}
 
-		assertEquals(SUCCESS, result.task(":violationReportHtml")!!.outcome)
+		result.assertSuccess(":violationReportHtml")
 		val allOtherTasks = result.tasks.map { it.path } - ":violationReportHtml"
 		assertThat(allOtherTasks, not(hasItems(matchesPattern(""":violationReportHtml$"""))))
 		result.assertHasOutputLine(
@@ -96,7 +95,7 @@ class QualityPluginTest : BaseIntgTest() {
 			run(script, "lint")
 		}
 
-		assertEquals(SUCCESS, result.task(":lint")!!.outcome)
+		result.assertSuccess(":lint")
 		result.assertHasOutputLine("one task added for finalizer", "Added task ':lint'")
 		result.assertNoOutputLine("no other tasks added as finalizer", Regex("""Added task ':(.+?):lint'"""))
 	}
@@ -120,7 +119,7 @@ class QualityPluginTest : BaseIntgTest() {
 			run(script, "lint")
 		}
 
-		assertEquals(SUCCESS, result.task(":lint")!!.outcome)
+		result.assertSuccess(":lint")
 		result.assertNoOutputLine("no tasks added as finalizer", Regex("""Added task '(.*?):lint'"""))
 	}
 }

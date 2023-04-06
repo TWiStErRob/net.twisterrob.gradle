@@ -4,19 +4,18 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.pmd.test.PmdTestResources
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
-import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.runBuild
-import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see ConsoleReportTask
@@ -161,7 +160,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 			run(null, "checkstyleAll", "pmdAll", "printViolationCount")
 		}
 
-		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
+		result.assertSuccess(":printViolationCount")
 	}
 
 	@Test fun `gather lint report when lint-xmlOutput is set`() {
@@ -179,7 +178,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 			run(script, "lintDebug", "lintRelease", "printViolationCount")
 		}
 
-		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
+		result.assertSuccess(":printViolationCount")
 		result.assertHasOutputLine("Summary\t(total: 1)\t   1\t          0")
 	}
 
@@ -197,7 +196,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 			run(script, "lint", "lintDebug", "lintRelease", "lintVitalRelease", "printViolationCount")
 		}
 
-		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
+		result.assertSuccess(":printViolationCount")
 		result.assertHasOutputLine("Summary\t(total: 1)\t   1\t          0")
 	}
 
@@ -213,7 +212,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 			run(script, "printViolationCount", "--info")
 		}
 
-		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
+		result.assertSuccess(":printViolationCount")
 		result.assertNoOutputLine(
 			"""
 				Some problems were found with the configuration of task ':printViolationCount'\..*

@@ -4,21 +4,23 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertNoTask
+import net.twisterrob.gradle.test.assertSkipped
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.assertUpToDate
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItems
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import javax.annotation.CheckReturnValue
-import kotlin.test.assertEquals
 
 /**
  * @see LintPlugin
@@ -71,10 +73,10 @@ class LintPluginTest : BaseIntgTest() {
 		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
 		assertThat(lintTasks, hasItems(":module1:lint", ":module2:lint", ":module3:lint"))
 		assertThat(lintTasks.last(), equalTo(":lint"))
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module1:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
+		result.assertSuccess(":module1:lint")
+		result.assertSuccess(":module2:lint")
+		result.assertSuccess(":module3:lint")
+		result.assertSuccess(":lint")
 		result.assertNoOutputLine(Regex(""".*Ran lint on subprojects.*"""))
 		result.assertNoOutputLine(Regex(""".*See reports in subprojects.*"""))
 	}
@@ -97,10 +99,10 @@ class LintPluginTest : BaseIntgTest() {
 		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
 		assertThat(lintTasks, hasItems(":module1:lint", ":module2:lint", ":module3:lint"))
 		assertThat(lintTasks.last(), equalTo(":lint"))
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module1:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
+		result.assertSuccess(":module1:lint")
+		result.assertSuccess(":module2:lint")
+		result.assertSuccess(":module3:lint")
+		result.assertSuccess(":lint")
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 1 + 1) * variantMultiplier} issues found\."""))
 	}
 
@@ -122,10 +124,10 @@ class LintPluginTest : BaseIntgTest() {
 		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
 		assertThat(lintTasks, hasItems(":module1:lint", ":module2:lint", ":module3:lint"))
 		assertThat(lintTasks.last(), equalTo(":lint"))
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module1:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module2:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
+		result.assertSuccess(":module1:lint")
+		result.assertSuccess(":module2:lint")
+		result.assertSuccess(":module3:lint")
+		result.assertSuccess(":lint")
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 1 + 1) * variantMultiplier} issues found\."""))
 	}
 
@@ -175,7 +177,7 @@ class LintPluginTest : BaseIntgTest() {
 			}
 		}
 		disabledTasks.forEach { taskName ->
-			assertEquals(TaskOutcome.SKIPPED, result.task(":module2:${taskName}")!!.outcome)
+			result.assertSkipped(":module2:${taskName}")
 		}
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}
@@ -213,14 +215,14 @@ class LintPluginTest : BaseIntgTest() {
 		}
 		when {
 			AGPVersions.v71x <= AGPVersions.UNDER_TEST -> {
-				assertEquals(TaskOutcome.UP_TO_DATE, result.task(":module2:lint")!!.outcome)
-				assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintDebug")!!.outcome)
-				assertEquals(null, result.task(":module2:lintRelease"))
+				result.assertUpToDate(":module2:lint")
+				result.assertSkipped(":module2:lintDebug")
+				result.assertNoTask(":module2:lintRelease")
 			}
 			AGPVersions.v70x <= AGPVersions.UNDER_TEST -> {
-				assertEquals(TaskOutcome.UP_TO_DATE, result.task(":module2:lint")!!.outcome)
-				assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintDebug")!!.outcome)
-				assertEquals(TaskOutcome.SKIPPED, result.task(":module2:lintRelease")!!.outcome)
+				result.assertUpToDate(":module2:lint")
+				result.assertSkipped(":module2:lintDebug")
+				result.assertSkipped(":module2:lintRelease")
 			}
 			else -> AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
 		}
@@ -240,9 +242,9 @@ class LintPluginTest : BaseIntgTest() {
 			)
 			buildScript
 		}
-		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":module2:lint")!!.outcome)
-		assertNull(result.task(":module2:lintDebug"))
-		assertNull(result.task(":module2:lintRelease"))
+		result.assertUpToDate(":module2:lint")
+		result.assertNoTask(":module2:lintDebug")
+		result.assertNoTask(":module2:lintRelease")
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}
 
@@ -269,9 +271,9 @@ class LintPluginTest : BaseIntgTest() {
 		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
 		assertThat(lintTasks, hasItems(":module1:lint", ":module2:lint", ":module3:lint"))
 		assertThat(lintTasks.last(), equalTo(":lint"))
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module1:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module3:lint")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":lint")!!.outcome)
+		result.assertSuccess(":module1:lint")
+		result.assertSuccess(":module3:lint")
+		result.assertSuccess(":lint")
 		// se.bjurr.violations.lib.reports.Parser.findViolations swallows exceptions, so must check logs
 		result.assertNoOutputLine(Regex("""Error when parsing.* as ANDROIDLINT"""))
 		return result
@@ -292,7 +294,7 @@ class LintPluginTest : BaseIntgTest() {
 			run(script, "lint", ":lint")
 		}
 
-		assertEquals(TaskOutcome.FAILED, result.task(":lint")!!.outcome)
+		result.assertFailed(":lint")
 		result.assertHasOutputLine(Regex("""> Ran lint on subprojects: ${(1 + 1 + 1) * variantMultiplier} issues found\."""))
 	}
 

@@ -3,11 +3,15 @@ package net.twisterrob.gradle.checkstyle
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.TaskConfigurator
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
-import net.twisterrob.gradle.test.ContentMergeMode
+import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertNoSource
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.assertUpToDate
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.minus
 import net.twisterrob.gradle.test.runBuild
@@ -25,7 +29,6 @@ import org.hamcrest.Matchers.startsWith
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see CheckStylePlugin
@@ -86,9 +89,9 @@ class CheckStylePluginTest : BaseIntgTest() {
 			run(script, "checkstyleEach")
 		}
 
-		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":checkstyleEach")!!.outcome)
-		assertEquals(TaskOutcome.NO_SOURCE, result.task(":checkstyleDebug")!!.outcome)
-		assertEquals(TaskOutcome.NO_SOURCE, result.task(":checkstyleRelease")!!.outcome)
+		result.assertUpToDate(":checkstyleEach")
+		result.assertNoSource(":checkstyleDebug")
+		result.assertNoSource(":checkstyleRelease")
 	}
 
 	@Test fun `applies to all types of subprojects`() {
@@ -260,7 +263,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 			run(applyCheckstyle, ":checkstyleDebug")
 		}
 
-		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
+		result.assertFailed(":checkstyleDebug")
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
 		result.assertHasOutputLine(Regex(""".*\[ERROR] src.main.java.Checkstyle\.java:1: .*? \[Header]"""))
 	}
@@ -286,7 +289,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 			run(build, ":checkstyleDebug")
 		}
 
-		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
+		result.assertFailed(":checkstyleDebug")
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
 		result.assertHasOutputLine(Regex(""".*custom.Checkstyle\.java:1: .*? \[Header]"""))
 	}
@@ -323,7 +326,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 			run(build, ":checkstyleDebug")
 		}
 
-		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
+		result.assertFailed(":checkstyleDebug")
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
 		result.assertHasOutputLine(Regex(""".*com.example.foo.Checkstyle\.java:1: .*? \[Header]"""))
 		result.assertNoOutputLine(Regex(""".*com.example.bar.Checkstyle\.java.*"""))
@@ -347,7 +350,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 			run(applyCheckstyle, ":checkstyleDebug")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":checkstyleDebug")!!.outcome)
+		result.assertSuccess(":checkstyleDebug")
 	}
 
 	@Test fun `applying by the old name is deprecated`() {

@@ -5,11 +5,12 @@ import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.assertUpToDate
 import net.twisterrob.gradle.test.projectFile
 import net.twisterrob.gradle.test.root
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.test.testName
-import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.not
@@ -47,7 +48,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(script, "htmlReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 		assertThat(gradle.violationsReport("xsl"), anExistingFile())
 		assertThat(gradle.violationsReport("xml"), anExistingFile())
 		assertThat(gradle.violationsReport("html"), anExistingFile())
@@ -71,7 +72,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(script, "htmlReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 		assertThat(gradle.projectFile("my_report/xmldir/xmlname.xmlext"), anExistingFile())
 		assertThat(gradle.projectFile("my_report/htmldir/htmlname.htmlext"), anExistingFile())
 		assertThat(gradle.projectFile("my_report/xsldir/xslname.xslext"), anExistingFile())
@@ -93,7 +94,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(script, "htmlReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 		assertThat(gradle.violationsReport("html"), anExistingFile())
 		assertThat(gradle.projectFile("my_report/xmldir/xmlname.xmlext"), anExistingFile())
 		assertThat(gradle.projectFile("my_report/xmldir/violations.xsl"), anExistingFile())
@@ -118,7 +119,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(script, "htmlReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 		assertThat(gradle.violationsReport("html"), anExistingFile())
 		assertThat(gradle.projectFile("my_report/xmldir/xmlname.xmlext"), anExistingFile())
 		assertThat(gradle.projectFile("my_report/xsldir/xslname.xslext"), anExistingFile())
@@ -148,7 +149,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(script, "htmlReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 		assertThat(gradle.violationsReport("html"), anExistingFile())
 		assertThat(gradle.projectFile("my_report/xmldir/xmlname.xmlext"), anExistingFile())
 		assertThat(gradle.projectFile("my_report/xmldir/input.xsl"), anExistingFile())
@@ -187,7 +188,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(script, "lint", "htmlReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 		assertThat(gradle.violationsReport("xsl"), anExistingFile())
 		assertThat(gradle.violationsReport("xml"), anExistingFile())
 		assertThat(gradle.violationsReport("html"), anExistingFile())
@@ -215,7 +216,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(null, "htmlReport")
 		}
 
-		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":htmlReport")!!.outcome)
+		result.assertUpToDate(":htmlReport")
 	}
 
 	@Test fun `task is re-executed when lint results are changed`() {
@@ -240,7 +241,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(null, "lint", "htmlReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 	}
 
 	@Test fun `task can be cleaned to force re-run`() {
@@ -263,8 +264,8 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(null, "cleanHtmlReport", "htmlReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":cleanHtmlReport")!!.outcome)
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":cleanHtmlReport")
+		result.assertSuccess(":htmlReport")
 	}
 
 	@Test fun `clean task removes output`() {
@@ -287,7 +288,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(null, "cleanHtmlReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":cleanHtmlReport")!!.outcome)
+		result.assertSuccess(":cleanHtmlReport")
 		assertThat(gradle.violationsReport("xml"), not(anExistingFile()))
 		assertThat(gradle.violationsReport("xslt"), not(anExistingFile()))
 		assertThat(gradle.violationsReport("html"), not(anExistingFile()))
@@ -351,7 +352,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			}
 		})
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 		//val violationsReport = gradle.violationsReport("html").readText()
 		//assertEquals(count, """<div class="violation"""".toRegex().findAll(violationsReport).count())
 	}
@@ -392,7 +393,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			run(script, "htmlReport")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 		assertThat(gradle.violationsReport("xsl"), anExistingFile())
 		assertThat(gradle.violationsReport("xml"), anExistingFile())
 		assertThat(gradle.violationsReport("html"), anExistingFile())
