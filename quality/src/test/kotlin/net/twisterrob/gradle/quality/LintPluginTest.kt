@@ -51,7 +51,7 @@ class LintPluginTest : BaseIntgTest() {
 					id("com.android.library")
 				}
 				android.namespace = "project.${module}"
-				android.lint.checkOnly += [] // nothing
+				//android.lint.checkOnly = [] // nothing
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")
@@ -319,7 +319,7 @@ class LintPluginTest : BaseIntgTest() {
 					id("com.android.library")
 				}
 				android.namespace = "project.${module}"
-				android.lint.checkOnly += "LongLogTag"
+				android.lint.checkOnly.add("LongLogTag")
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")

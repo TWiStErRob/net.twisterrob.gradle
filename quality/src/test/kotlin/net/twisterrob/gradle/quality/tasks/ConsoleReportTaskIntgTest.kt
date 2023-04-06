@@ -171,7 +171,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		val script = """
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
 			android.lint.xmlOutput = new File(buildDir, "reports/my-lint/results.xml")
-			android.lint.checkOnly += "UnusedResources"
+			android.lint.checkOnly.add("UnusedResources")
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -189,7 +189,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
-			android.lint.checkOnly += "UnusedResources"
+			android.lint.checkOnly.add("UnusedResources")
 		""".trimIndent()
 
 		val result = gradle.runBuild {

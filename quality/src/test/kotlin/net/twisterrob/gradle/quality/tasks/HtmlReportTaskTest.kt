@@ -180,7 +180,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			android.defaultConfig.targetSdk = 28 // to trigger Autofill
 			android.lint {
 				abortOnError = false
-				${checks.joinToString(separator = "\n\t\t\t\t") { """checkOnly += "$it"""" }}
+				${checks.joinToString(separator = "\n\t\t\t\t") { """checkOnly.add("$it")""" }}
 			}
 		""".trimIndent()
 
@@ -206,8 +206,8 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lint {
-				checkOnly += "UnusedIds"
-				checkOnly += "UnusedResources"
+				checkOnly.add("UnusedIds")
+				checkOnly.add("UnusedResources")
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()
@@ -230,8 +230,8 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lint {
-				checkOnly += "IconMissingDensityFolder"
-				checkOnly += "UnusedResources"
+				checkOnly.add("IconMissingDensityFolder")
+				checkOnly.add("UnusedResources")
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()
@@ -255,7 +255,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lint {
-				checkOnly += "UnusedResources"
+				checkOnly.add("UnusedResources")
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()
@@ -279,7 +279,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.lint {
-				checkOnly += "UnusedResources"
+				checkOnly.add("UnusedResources")
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()

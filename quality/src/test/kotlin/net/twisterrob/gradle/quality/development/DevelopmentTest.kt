@@ -67,7 +67,7 @@ class DevelopmentTest : BaseIntgTest() {
 		gradle.file(violationContents, "src", "main", "java", "LintFailure.java")
 		@Language("gradle")
 		val script = """
-			android.lint.checkOnly += "SecureRandom"
+			android.lint.checkOnly.add("SecureRandom")
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
