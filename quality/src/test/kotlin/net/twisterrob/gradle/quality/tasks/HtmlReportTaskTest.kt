@@ -176,7 +176,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
-			android.defaultConfig.targetSdkVersion 28 // to trigger Autofill
+			android.defaultConfig.targetSdk = 28 // to trigger Autofill
 			android.lint {
 				abortOnError = false
 				${checks.joinToString(separator = "\n\t\t\t\t") { """checkOnly += "$it"""" }}

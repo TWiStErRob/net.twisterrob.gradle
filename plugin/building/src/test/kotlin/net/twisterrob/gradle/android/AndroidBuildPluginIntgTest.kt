@@ -147,13 +147,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
-	@Test fun `can override targetSdkVersion (debug)`() {
+	@Test fun `can override targetSdk (debug)`() {
 		@Language("gradle")
 		val script = """
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.defaultConfig.targetSdkVersion = 19
+			android.defaultConfig.targetSdk = 19
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
@@ -165,13 +165,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
-	@Test fun `can override targetSdkVersion (release)`() {
+	@Test fun `can override targetSdk (release)`() {
 		@Language("gradle")
 		val script = """
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.defaultConfig.targetSdkVersion = 19
+			android.defaultConfig.targetSdk = 19
 			android.lint.disable("ExpiredTargetSdkVersion")
 		""".trimIndent()
 
@@ -184,13 +184,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
-	@Test fun `can override compileSdkVersion (debug)`() {
+	@Test fun `can override compileSdk (debug)`() {
 		@Language("gradle")
 		val script = """
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.compileSdkVersion = 23
+			android.compileSdk = 23
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
@@ -203,13 +203,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
-	@Test fun `can override compileSdkVersion (release)`() {
+	@Test fun `can override compileSdk (release)`() {
 		@Language("gradle")
 		val script = """
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.compileSdkVersion = 23
+			android.compileSdk = 23
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
