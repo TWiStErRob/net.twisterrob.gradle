@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.test
 
+import org.gradle.testkit.runner.internal.DefaultGradleRunner
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
@@ -21,6 +22,7 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 			super.setUp()
 			file(readResource("nagging.init.gradle.kts"), "nagging.init.gradle.kts")
 			file(readResource("runtime.init.gradle.kts"), "runtime.init.gradle.kts")
+			(runner as DefaultGradleRunner).withJvmArguments("-Xmx1g")
 			//javaHome = File(System.getenv(System.getProperty("net.twisterrob.test.gradle.javaHomeEnv")))
 		}
 
