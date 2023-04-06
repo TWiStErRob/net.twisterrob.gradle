@@ -1,9 +1,9 @@
 package net.twisterrob.test
 
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.opentest4j.AssertionFailedError
-import kotlin.test.assertSame
 
 class WithRootCauseKtTest {
 	@Test
