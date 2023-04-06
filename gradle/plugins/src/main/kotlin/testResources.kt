@@ -10,8 +10,7 @@ import org.gradle.kotlin.dsl.register
  */
 fun Project.exposeTestResources() {
 	val packageTestResources = tasks.register<Sync>("packageTestResources") {
-		// STOPSHIP this should happen on consumer side
-		from(project.java.sourceSets.named("test").map { tasks.named(it.processResourcesTaskName) })
+		from(project.java.sourceSets.named("test").map { it.resources })
 		into(project.layout.buildDirectory.dir("packagedTestResources"))
 	}
 	val testResources = configurations.create("exposedTestResources")
