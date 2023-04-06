@@ -16,6 +16,9 @@ class AndroidLibraryPluginIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `applying by the old name is deprecated`() {
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
+
 		@Language("gradle")
 		val script = """
 			plugins {

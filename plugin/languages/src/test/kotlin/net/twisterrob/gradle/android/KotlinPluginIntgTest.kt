@@ -24,6 +24,8 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `can test kotlin with JUnit in Android Library`() {
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.generateKotlinCompilationCheck()
 		gradle.generateKotlinCompilationCheckTest()

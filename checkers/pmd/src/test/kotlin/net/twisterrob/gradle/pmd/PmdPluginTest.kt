@@ -255,7 +255,7 @@ class PmdPluginTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.pmd")
 			}
-			pmd { // STOPSHIP remove
+			pmd {
 				toolVersion = '5.6.1'
 				incrementalAnalysis.set(false)
 			}

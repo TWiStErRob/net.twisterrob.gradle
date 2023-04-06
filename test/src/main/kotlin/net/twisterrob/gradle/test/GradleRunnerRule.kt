@@ -233,8 +233,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 
 	fun file(contents: String, vararg path: String) {
-		// STOPSHIP change to CREATE
-		file(contents, TouchMode.APPEND, *path)
+		file(contents, TouchMode.CREATE, *path)
 	}
 
 	fun file(contents: String, mode: TouchMode, vararg path: String) {
@@ -312,26 +311,29 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	) {
 		when (mode) {
 			TouchMode.CREATE -> {
-				require(!this.exists()) { "File already exists: ${this.absolutePath}" }
+				require(!this.exists() || this.length() == 0L) {
+					"File already exists: ${this.absolutePath}\n${this.readText()}"
+				}
 				this.writeText(contents)
 			}
 			TouchMode.OVERWRITE -> {
-				require(exists()) { "File does not exist: ${this.absolutePath}" }
+				require(this.exists()) { "File does not exist: ${this.absolutePath}" }
 				this.writeText(contents)
 			}
 			TouchMode.APPEND -> {
-				require(exists()) { "File does not exist: ${this.absolutePath}" }
+				require(this.exists()) { "File does not exist: ${this.absolutePath}" }
 				this.appendText(contents)
 			}
 			TouchMode.PREPEND -> {
-				require(exists()) { "File does not exist: ${this.absolutePath}" }
+				require(this.exists()) { "File does not exist: ${this.absolutePath}" }
 				this.prependText(contents)
 			}
 			TouchMode.MERGE_GRADLE -> {
-
+				// This works with both existing and non-existing files.
+				val originalContents = if (this.exists()) this.readText() else ""
 				fun extractBlock(name: String, script: String): Pair<String?, String?> {
 					@Suppress("RegExpRedundantEscape")
-					val regex = Regex("""(?sm)(.*?)(^${name}\s*\{\s*.*?\s*\r?\n\})(?:\r?\n(?!${name}\s*\{)|\Z)(.*)""")
+					val regex = Regex("""(?sm)(.*?)(^${name}\s*\{\s*?.*?\s*?\r?\n\})(?:\r?\n(?!${name}\s*\{)|\Z)(.*)""")
 					val match = regex.find(script)
 					val block = match?.let { it.groups[2]?.value }
 					val removed = if (match != null) {
@@ -355,7 +357,6 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 					)
 				}
 
-				val originalContents = if (this.exists()) this.readText() else ""
 				val (buildscriptO, pluginsBlockO, restO) = splitPluginsBlock(originalContents)
 				val (buildscriptN, pluginsBlockN, restN) = splitPluginsBlock(contents)
 				val blocks = listOfNotNull(buildscriptO, buildscriptN, pluginsBlockO, pluginsBlockN, restO, restN)

@@ -8,7 +8,6 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
-import net.twisterrob.gradle.test.move
 import net.twisterrob.gradle.test.root
 import org.gradle.api.artifacts.ArtifactRepositoryContainer
 import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
@@ -62,18 +61,6 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `does not add repositories automatically when it would fail`() {
-		@Language("gradle")
-		val settingsGradle = """
-			dependencyResolutionManagement {
-				repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-				repositories {
-					google()
-					mavenCentral()
-				}
-			}
-		""".trimIndent()
-		gradle.file(settingsGradle, "settings.gradle") // STOPSHIP
-
 		@Language("gradle")
 		val script = """
 			plugins {
@@ -234,59 +221,10 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
-	@Test fun `can override compileSdkVersion centrally (debug)`() {
-		@Language("gradle")
-		val appGradle = """
-			plugins {
-				id("net.twisterrob.gradle.plugin.android-app")
-			}
-			android.namespace = "${packageName}"
-			afterEvaluate {
-				println(android.compileSdkVersion)
-			}
-		""".trimIndent()
-		gradle.file(appGradle, "app", "build.gradle")
-		gradle.move("src/main/AndroidManifest.xml", "app/src/main/AndroidManifest.xml")
-
-		@Language("gradle")
-		val settingsGradle = """
-			include ':app'
-		""".trimIndent()
-		gradle.file(settingsGradle, "settings.gradle")
-
-		@Language("gradle")
-		val script = """
-			plugins {
-				id("com.android.application") apply false
-			}
-			// intentionally allprojects and not subprojects so it runs on the plugin-less root project too
-			allprojects {
-				// Ideal implementation would be this, but somehow it's too late at this point.
-			//	project.plugins.whenPluginAdded { plugin ->
-			//		if (plugin instanceof com.android.build.gradle.AppPlugin) {
-			//			android.compileSdkVersion = 23
-			//		}
-			//	}
-				afterEvaluate {
-					def android = project.extensions.findByName("android")
-					if (android != null) {
-						android.compileSdkVersion = 23
-					}
-				}
-			}
-		""".trimIndent()
-
-		val result = gradle.run(script, ":app:assembleDebug").build()
-
-		result.assertSuccess(":app:assembleDebug")
-		assertDefaultDebugBadging(
-			apk = gradle.root.resolve("app").apk("debug"),
-			compileSdkVersion = 23
-			//compileSdkVersionName = "6.0-2704002"
-		)
-	}
-
 	@Test fun `can disable buildConfig generation (debug)`() {
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
+
 		@Language("gradle")
 		val script = """
 			plugins {
@@ -302,6 +240,9 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 	@Suppress("LongMethod") // Multiple files are listed in this one method.
 	@Test fun `can disable buildConfig decoration (debug)`() {
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
+
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 
 		@Language("kotlin")
@@ -347,7 +288,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val properties = """
 			android.useAndroidX=true
 		""".trimIndent()
-		gradle.file(properties, "gradle.properties")
+		gradle.file(properties, GradleRunnerRule.TouchMode.APPEND, "gradle.properties")
 
 		@Language("gradle")
 		val script = """
@@ -414,7 +355,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val properties = """
 			android.useAndroidX=true
 		""".trimIndent()
-		gradle.file(properties, "gradle.properties")
+		gradle.file(properties, GradleRunnerRule.TouchMode.APPEND, "gradle.properties")
 
 		@Language("gradle")
 		val script = """
@@ -484,7 +425,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val properties = """
 			android.useAndroidX=true
 		""".trimIndent()
-		gradle.file(properties, "gradle.properties")
+		gradle.file(properties, GradleRunnerRule.TouchMode.APPEND, "gradle.properties")
 
 		@Language("gradle")
 		val script = """

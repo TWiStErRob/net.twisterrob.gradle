@@ -58,6 +58,33 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 			)
 		}
 
+		@Test fun `empty plugins blocks with comments`() {
+			mergeTest(
+				script1 = """
+					// before1
+					plugins {
+					}
+					// after1
+				""".trimIndent(),
+				script2 = """
+					// before2
+					plugins {
+					}
+					// after2
+				""".trimIndent(),
+				mergeExpectation = """
+					plugins {
+					}
+					plugins {
+					}
+					// before1
+					// after1
+					// before2
+					// after2
+				""".trimIndent()
+			)
+		}
+
 		@Test fun `empty plugins and buildscript blocks in correct order`() {
 			mergeTest(
 				script1 = """
@@ -91,6 +118,37 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 					buildscript {
 					}
 					plugins {
+					}
+				""".trimIndent()
+			)
+		}
+
+		@Test fun `empty plugins block with another block after it`() {
+			mergeTest(
+				script1 = """
+					plugins {
+					}
+					foo1 {
+						// foo1
+					}
+				""".trimIndent(),
+				script2 = """
+					plugins {
+					}
+					foo2 {
+						// foo2
+					}
+				""".trimIndent(),
+				mergeExpectation = """
+					plugins {
+					}
+					plugins {
+					}
+					foo1 {
+						// foo1
+					}
+					foo2 {
+						// foo2
 					}
 				""".trimIndent()
 			)
