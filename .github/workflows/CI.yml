@@ -179,7 +179,7 @@ jobs:
       # Value will be written in a later step using `>> $GITHUB_ENV`.
       GRADLE_VERSION: '0.0.0'
     # Average observed execution time is 6-7 minutes, double it for timeout constraint.
-    timeout-minutes: 30
+    timeout-minutes: 45
     needs: validate
     steps:
       - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
