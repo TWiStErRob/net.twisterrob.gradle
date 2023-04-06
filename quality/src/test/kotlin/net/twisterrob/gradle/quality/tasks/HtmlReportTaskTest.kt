@@ -38,7 +38,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
@@ -59,7 +58,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
@@ -84,7 +82,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
@@ -108,7 +105,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
@@ -140,7 +136,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
@@ -177,7 +172,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
@@ -206,7 +200,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
@@ -231,7 +224,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
@@ -257,7 +249,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
@@ -282,7 +273,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
@@ -309,7 +299,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
 			dumpMemory("starting build")
@@ -393,7 +382,6 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.gradle.reporting-base")
 				id("net.twisterrob.gradle.plugin.checkstyle")
 				id("net.twisterrob.gradle.plugin.pmd")
 			}
