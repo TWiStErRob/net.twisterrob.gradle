@@ -2,9 +2,9 @@ package net.twisterrob.gradle
 
 import net.twisterrob.gradle.internal.deprecation.canNagUser
 import net.twisterrob.gradle.internal.deprecation.nextMajorVersion
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
-import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.runBuild
@@ -16,6 +16,7 @@ import org.hamcrest.Matchers.lessThan
 import org.hamcrest.assumeThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assumptions.assumeTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -26,9 +27,18 @@ import org.junit.jupiter.api.extension.ExtendWith
 class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
+	@BeforeEach fun applySettingsPlugin() {
+		@Language("gradle")
+		val settings = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.settings")
+			}
+		""".trimIndent()
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
+	}
+
 	@Test fun `ensure that nagging works`() {
 		assumeTrue(canNagUser(gradle.gradleVersion))
-		applySettingsPlugin()
 
 		val script = """
 			${nag("""Fake nagging for test""")}
@@ -42,7 +52,6 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 
 	@Test fun `disable nagging for specific feature`() {
 		assumeTrue(canNagUser(gradle.gradleVersion))
-		applySettingsPlugin()
 
 		val buildFileLine =
 			if (GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion) {
@@ -89,7 +98,6 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 
 	@Test fun `deprecation can be suppressed with stack trace`() {
 		assumeThat(gradle.gradleVersion.baseVersion, greaterThanOrEqualTo(GradleVersion.version("8.0")))
-		applySettingsPlugin()
 
 		val gradleVersion = nextMajorVersion(gradle.gradleVersion)
 		@Suppress("UnnecessaryQualifiedReference")
@@ -111,7 +119,6 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 
 	@Test fun `deprecation can be suppressed with stack trace (specific instance)`() {
 		assumeThat(gradle.gradleVersion.baseVersion, greaterThanOrEqualTo(GradleVersion.version("8.0")))
-		applySettingsPlugin()
 
 		val gradleVersion = nextMajorVersion(gradle.gradleVersion)
 		@Suppress("UnnecessaryQualifiedReference")
@@ -131,16 +138,6 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		result.assertNoOutputLine("Build file '${gradle.buildFile.absolutePath}': line 12")
 		result.assertHasOutputLine("Build file '${gradle.buildFile.absolutePath}': line 20")
 		result.verifyNagging("Fake nagging for test", 20)
-	}
-
-	private fun applySettingsPlugin() {
-		@Language("gradle")
-		val settings = """
-			plugins {
-				id("net.twisterrob.gradle.plugin.settings")
-			}
-		""".trimIndent()
-		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 	}
 
 	private fun BuildResult.verifyNagging(feature: String, line: Int) {
