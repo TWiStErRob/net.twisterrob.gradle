@@ -49,7 +49,7 @@ class LintPluginTest : BaseIntgTest() {
 					id("com.android.library")
 				}
 				android.namespace = "project.${module}"
-				android.lintOptions.check = [] // nothing
+				android.lint.checkOnly += [] // nothing
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")
@@ -317,8 +317,7 @@ class LintPluginTest : BaseIntgTest() {
 					id("com.android.library")
 				}
 				android.namespace = "project.${module}"
-				//noinspection GroovyAssignabilityCheck
-				android.lintOptions.check = ['LongLogTag']
+				android.lint.checkOnly += "LongLogTag"
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")

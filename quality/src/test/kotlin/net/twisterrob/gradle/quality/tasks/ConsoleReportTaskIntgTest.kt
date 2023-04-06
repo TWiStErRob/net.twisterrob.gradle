@@ -164,15 +164,15 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		assertEquals(SUCCESS, result.task(":printViolationCount")!!.outcome)
 	}
 
-	@Test fun `gather lint report when lintOptions-xmlOutput is set`() {
+	@Test fun `gather lint report when lint-xmlOutput is set`() {
 		gradle.basedOn("android-root_app")
 		gradle.basedOn("lint-UnusedResources")
 
 		@Language("gradle")
 		val script = """
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
-			android.lintOptions.xmlOutput = new File(buildDir, "reports/my-lint/results.xml")
-			android.lintOptions.check = ['UnusedResources']
+			android.lint.xmlOutput = new File(buildDir, "reports/my-lint/results.xml")
+			android.lint.checkOnly += "UnusedResources"
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -190,7 +190,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			tasks.register('printViolationCount', ${ConsoleReportTask::class.java.name})
-			android.lintOptions.check = ['UnusedResources']
+			android.lint.checkOnly += "UnusedResources"
 		""".trimIndent()
 
 		val result = gradle.runBuild {

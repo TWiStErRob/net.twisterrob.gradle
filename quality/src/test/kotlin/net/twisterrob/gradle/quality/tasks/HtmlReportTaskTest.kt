@@ -183,12 +183,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
 			android.defaultConfig.targetSdkVersion 28 // to trigger Autofill
-			android.lintOptions {
+			android.lint {
 				abortOnError = false
-				//noinspection GroovyAssignabilityCheck
-				check = [
-					${checks.joinToString(separator = ",\n\t\t\t\t\t") { "'$it'" }}
-				]
+				${checks.joinToString(separator = "\n\t\t\t\t") { """checkOnly += "$it"""" }}
 			}
 		""".trimIndent()
 
@@ -214,9 +211,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
-			android.lintOptions {
-				//noinspection GroovyAssignabilityCheck
-				check = ['UnusedIds', 'UnusedResources']
+			android.lint {
+				checkOnly += "UnusedIds"
+				checkOnly += "UnusedResources"
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()
@@ -239,9 +236,9 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
-			android.lintOptions {
-				//noinspection GroovyAssignabilityCheck
-				check = ['IconMissingDensityFolder', 'UnusedResources']
+			android.lint {
+				checkOnly += "IconMissingDensityFolder"
+				checkOnly += "UnusedResources"
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()
@@ -265,9 +262,8 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
-			android.lintOptions {
-				//noinspection GroovyAssignabilityCheck
-				check = ['UnusedResources']
+			android.lint {
+				checkOnly += "UnusedResources"
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()
@@ -291,9 +287,8 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			}
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 
-			android.lintOptions {
-				//noinspection GroovyAssignabilityCheck
-				check = ['UnusedResources']
+			android.lint {
+				checkOnly += "UnusedResources"
 			}
 		""".trimIndent()
 		gradle.run(script, "lint", "htmlReport").build()

@@ -311,7 +311,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
 			dependencies { implementation project(':lib') }
-			android.lintOptions.checkDependencies = true
+			android.lint.checkDependencies = true
 			tasks.named("lint") { dependsOn("lintRelease") } // By default this is not the case in AGP 7.x.
 		""".trimIndent()
 		val result = gradle.run(script, "extractMinificationRules", "build").build()

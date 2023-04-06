@@ -172,7 +172,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
 			android.defaultConfig.targetSdkVersion = 19
-			android.lintOptions.disable("ExpiredTargetSdkVersion")
+			android.lint.disable("ExpiredTargetSdkVersion")
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
