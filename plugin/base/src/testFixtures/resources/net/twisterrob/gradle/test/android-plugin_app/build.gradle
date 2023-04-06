@@ -1,14 +1,3 @@
-buildscript {
-	repositories {
-		google()
-		mavenCentral()
-	}
-	dependencies {
-		// Needs to be disabled here and added in a different way, see testInjectedPluginClasspath.
-		//classpath 'com.android.tools.build:gradle:@net.twisterrob.test.android.pluginVersion@'
-	}
-}
-
 plugins {
 	id("com.android.application")
 }
