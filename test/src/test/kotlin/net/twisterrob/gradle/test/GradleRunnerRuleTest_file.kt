@@ -310,6 +310,98 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 			)
 		}
 
+		@Test fun `imports and code`() {
+			mergeTest(
+				script1 = """
+					import org.gradle.api.Project
+					// code1
+				""".trimIndent(),
+				script2 = """
+					import org.gradle.api.Task
+					// code2
+				""".trimIndent(),
+				mergeExpectation = """
+					import org.gradle.api.Project
+					import org.gradle.api.Task
+					// code1
+					// code2
+				""".trimIndent()
+			)
+		}
+
+		@Test fun `imports and code with spacing`() {
+			mergeTest(
+				script1 = """
+					import org.gradle.api.Project
+					
+					// code1
+				""".trimIndent(),
+				script2 = """
+					import org.gradle.api.Task
+					
+					// code2
+				""".trimIndent(),
+				mergeExpectation = """
+					import org.gradle.api.Project
+					import org.gradle.api.Task
+					
+					// code1
+					
+					// code2
+				""".trimIndent()
+			)
+		}
+
+		@Test fun `multi-imports and code`() {
+			mergeTest(
+				script1 = """
+					import org.gradle.api.Project
+					import java.io.File
+					// code1
+				""".trimIndent(),
+				script2 = """
+					import org.gradle.api.Task
+					import java.io.InputStream
+					// code2
+				""".trimIndent(),
+				mergeExpectation = """
+					import org.gradle.api.Project
+					import java.io.File
+					import org.gradle.api.Task
+					import java.io.InputStream
+					// code1
+					// code2
+				""".trimIndent()
+			)
+		}
+
+		@Test fun `plugins, buildscripts and imports`() {
+			mergeTest(
+				script1 = """
+					import org.gradle.api.Project
+					plugins {
+						id("some.plugin")
+					}
+					// code
+				""".trimIndent(),
+				script2 = """
+					import static org.gradle.api.plugins.JavaPlugin.*
+					buildscript {
+					}
+				""".trimIndent(),
+				mergeExpectation = """
+					import org.gradle.api.Project
+					import static org.gradle.api.plugins.JavaPlugin.*
+					buildscript {
+					}
+					plugins {
+						id("some.plugin")
+					}
+					// code
+				""".trimIndent()
+			)
+		}
+
 		@Test fun `leaves nested plugins blocks alone`() {
 			mergeTest(
 				script1 = """
