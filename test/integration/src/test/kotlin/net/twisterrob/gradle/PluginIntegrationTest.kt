@@ -85,7 +85,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		verifySingleTaskCreated(script, ":lazilyRegistered")
 	}
 
-	@ParameterizedTest(name = "{0}")
+	@ParameterizedTest(name = "{0} - {displayName}")
 	@ValueSource(
 		strings = [
 			"net.twisterrob.gradle.plugin.root", // :plugin:base
@@ -115,7 +115,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		verifyTasksNotCreated(script)
 	}
 
-	@ParameterizedTest(name = "{0}")
+	@ParameterizedTest(name = "{0} - {displayName}")
 	@ValueSource(
 		strings = [
 			"net.twisterrob.gradle.plugin.root", // :plugin:base
@@ -146,7 +146,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		verifyTasksNotCreated(script)
 	}
 
-	@ParameterizedTest(name = "{0}")
+	@ParameterizedTest(name = "{0} - {displayName}")
 	@ValueSource(
 		strings = [
 			"net.twisterrob.gradle.plugin.root", // :plugin:base
@@ -177,7 +177,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		verifyTasksNotCreated(script)
 	}
 
-	@ParameterizedTest(name = "{0}")
+	@ParameterizedTest(name = "{0} - {displayName}")
 	@ValueSource(
 		strings = [
 			"net.twisterrob.gradle.plugin.root", // :plugin:base
@@ -208,7 +208,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		verifyTasksNotCreated(script)
 	}
 
-	@ParameterizedTest(name = "{0}")
+	@ParameterizedTest(name = "{0} - {displayName}")
 	@ValueSource(
 		strings = [
 			"net.twisterrob.gradle.plugin.root", // :plugin:base
@@ -243,7 +243,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		verifyTasksNotCreated(script)
 	}
 
-	@ParameterizedTest(name = "{0}")
+	@ParameterizedTest(name = "{0} - {displayName}")
 	@ValueSource(
 		strings = [
 			"net.twisterrob.gradle.plugin.root", // :plugin:base
