@@ -151,8 +151,6 @@ subprojects {
 			add("api", deps.kotlin.stdlib)
 			add("api", deps.kotlin.stdlib.jdk8)
 			add("api", deps.kotlin.reflect)
-
-			add("testImplementation", deps.kotlin.test)
 		}
 	}
 
