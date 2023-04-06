@@ -331,7 +331,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 			ContentMergeMode.MERGE_GRADLE -> {
 				// This works with both existing and non-existing files.
 				val originalContents = if (this.exists()) this.readText() else ""
-				fun extractBlock(name: String, script: String): Pair<String?, String?> {
+				fun extractBlock(name: String, script: String): Pair<String?, String> {
 					@Suppress("RegExpRedundantEscape")
 					val regex = Regex("""(?sm)(.*?)(^${name}\s*\{\s*?.*?\s*?\r?\n\})(?:\r?\n(?!${name}\s*\{)|\Z)(.*)""")
 					val match = regex.find(script)
@@ -341,7 +341,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 					} else {
 						script
 					}
-					return block to removed.takeIf { it.isNotBlank() }
+					return block to removed
 				}
 
 				fun splitPluginsBlock(script: String): Triple<String?, String?, String?> {
@@ -349,11 +349,11 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 					val (buildscriptBlock, scriptWithoutBuildscript) =
 						extractBlock("buildscript", normalizedLineEndings)
 					val (pluginsBlock, scriptWithoutBuildscriptAndPlugins) =
-						extractBlock("plugins", scriptWithoutBuildscript ?: "")
+						extractBlock("plugins", scriptWithoutBuildscript)
 					return Triple(
 						buildscriptBlock,
 						pluginsBlock,
-						scriptWithoutBuildscriptAndPlugins
+						scriptWithoutBuildscriptAndPlugins.takeIf { it.isNotBlank() }
 					)
 				}
 
