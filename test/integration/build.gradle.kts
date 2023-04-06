@@ -15,6 +15,7 @@ dependencies {
 	implementation(projects.compat.kotlinBase)
 
 	testImplementation(projects.test.internal)
+	testImplementation(projects.compat.agpBase)
 	testImplementation(testFixtures(projects.plugin.base))
 	testInjectedPluginClasspath(libs.android.gradle) {
 		version { require(property("net.twisterrob.test.android.pluginVersion").toString()) }

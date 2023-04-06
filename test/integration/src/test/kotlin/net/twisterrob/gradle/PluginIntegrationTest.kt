@@ -1,5 +1,6 @@
 package net.twisterrob.gradle
 
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.KotlinVersions
 import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleBuildTestResources
@@ -333,6 +334,24 @@ class PluginIntegrationTest : BaseIntgTest() {
 			val created: MutableMap<Task, Throwable> = mutableMapOf()
 			gradle.taskGraph.whenReady {
 				created.remove(created.keys.single { it.path == ":help" })
+				/*@formatter:off*/
+				${
+					@Suppress("UseIfInsteadOfWhen")
+					when {
+						AGPVersions.UNDER_TEST compatible AGPVersions.v72x -> {
+							// Known bad tasks on AGP 7.2: old version, situation unlikely to change.
+							"""
+								created.keys.filter { it.path == ":compileDebugRenderscript" || it.path == ":compileReleaseRenderscript" }.forEach(created::remove)
+							""".trimIndent()
+						}
+						else -> {
+							"""
+								// No exceptions other than :help above.
+							""".trimIndent()
+						}
+					}
+				}
+				/*@formatter:on*/
 				if (created.isNotEmpty()) {
 					val traces = created.entries.joinToString("\n") { (task, error) ->
 						"${'$'}{task.path}: ${'$'}{error.stackTraceToString()}"
