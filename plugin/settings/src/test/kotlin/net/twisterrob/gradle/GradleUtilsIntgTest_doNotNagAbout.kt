@@ -4,6 +4,7 @@ import net.twisterrob.gradle.internal.deprecation.canNagUser
 import net.twisterrob.gradle.internal.deprecation.nextMajorVersion
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.runBuild
@@ -139,7 +140,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.settings")
 			}
 		""".trimIndent()
-		gradle.file(settings, GradleRunnerRule.TouchMode.MERGE_GRADLE, "settings.gradle.kts")
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 	}
 
 	private fun BuildResult.verifyNagging(feature: String, line: Int) {

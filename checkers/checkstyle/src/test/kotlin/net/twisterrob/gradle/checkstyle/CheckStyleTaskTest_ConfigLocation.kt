@@ -4,6 +4,7 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
@@ -106,7 +107,7 @@ class CheckStyleTaskTest_ConfigLocation : BaseIntgTest() {
 		gradle.basedOn("android-single_module")
 		gradle.file(checkstyle.simple.content, "module", "src", "main", "java", "Checkstyle.java")
 		// see also @Test/given for configuration file location setup
-		gradle.file(SCRIPT_CONFIGURE_CHECKSTYLE, GradleRunnerRule.TouchMode.MERGE_GRADLE, "module", "build.gradle")
+		gradle.file(SCRIPT_CONFIGURE_CHECKSTYLE, ContentMergeMode.MERGE_GRADLE, "module", "build.gradle")
 
 		return gradle.runFailingBuild {
 			run(null, ":module:checkstyleDebug")

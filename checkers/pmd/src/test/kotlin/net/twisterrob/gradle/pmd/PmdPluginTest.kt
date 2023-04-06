@@ -4,6 +4,7 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.minus
@@ -102,7 +103,7 @@ class PmdPluginTest : BaseIntgTest() {
 				}
 			""".trimIndent()
 			val subPath = modulePath.substringAfter(':').split(":").toTypedArray()
-			gradle.file(subProject, GradleRunnerRule.TouchMode.MERGE_GRADLE, *subPath, "build.gradle")
+			gradle.file(subProject, ContentMergeMode.MERGE_GRADLE, *subPath, "build.gradle")
 		}
 		// Add empty manifest, so PMD task picks it up.
 		gradle.file("<manifest />", "library", "src", "main", "AndroidManifest.xml")

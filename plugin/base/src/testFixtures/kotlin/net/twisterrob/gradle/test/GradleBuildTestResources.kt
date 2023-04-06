@@ -10,7 +10,7 @@ object GradleBuildTestResources {
 	}
 
 	fun GradleRunnerRule.basedOn(project: KotlinProject) {
-		file(project.build, GradleRunnerRule.TouchMode.MERGE_GRADLE, "build.gradle")
+		file(project.build, ContentMergeMode.MERGE_GRADLE, "build.gradle")
 	}
 
 	val android: AndroidProject = object : AndroidProject {}
@@ -27,7 +27,7 @@ object GradleBuildTestResources {
 	}
 
 	fun GradleRunnerRule.basedOn(project: AndroidProject) {
-		file(project.build, GradleRunnerRule.TouchMode.MERGE_GRADLE, "build.gradle")
+		file(project.build, ContentMergeMode.MERGE_GRADLE, "build.gradle")
 		file(project.settings, "settings.gradle.kts")
 		file(project.manifest, "src", "main", "AndroidManifest.xml")
 	}

@@ -31,8 +31,8 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 			@Language("gradle")
 			mergeExpectation: String
 		) {
-			gradle.file(script1, GradleRunnerRule.TouchMode.MERGE_GRADLE, "build.gradle")
-			gradle.file(script2, GradleRunnerRule.TouchMode.MERGE_GRADLE, "build.gradle")
+			gradle.file(script1, ContentMergeMode.MERGE_GRADLE, "build.gradle")
+			gradle.file(script2, ContentMergeMode.MERGE_GRADLE, "build.gradle")
 
 			val merged = gradle.buildFile.readText()
 

@@ -5,6 +5,7 @@ import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
@@ -42,7 +43,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	}
 
 	@Test fun `adds automatic repositories`() {
-		gradle.file("", GradleRunnerRule.TouchMode.OVERWRITE, "settings.gradle")
+		gradle.file("", ContentMergeMode.OVERWRITE, "settings.gradle")
 
 		@Language("gradle")
 		val script = """
@@ -288,7 +289,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val properties = """
 			android.useAndroidX=true
 		""".trimIndent()
-		gradle.file(properties, GradleRunnerRule.TouchMode.APPEND, "gradle.properties")
+		gradle.file(properties, ContentMergeMode.APPEND, "gradle.properties")
 
 		@Language("gradle")
 		val script = """
@@ -355,7 +356,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val properties = """
 			android.useAndroidX=true
 		""".trimIndent()
-		gradle.file(properties, GradleRunnerRule.TouchMode.APPEND, "gradle.properties")
+		gradle.file(properties, ContentMergeMode.APPEND, "gradle.properties")
 
 		@Language("gradle")
 		val script = """
@@ -425,7 +426,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		val properties = """
 			android.useAndroidX=true
 		""".trimIndent()
-		gradle.file(properties, GradleRunnerRule.TouchMode.APPEND, "gradle.properties")
+		gradle.file(properties, ContentMergeMode.APPEND, "gradle.properties")
 
 		@Language("gradle")
 		val script = """

@@ -147,7 +147,7 @@ open class GradleRunnerRule : TestRule {
 	//@Test:when
 	fun run(@Language("gradle") script: String?, vararg tasks: String): GradleRunner {
 		if (script != null) {
-			buildFile.addContents(script, TouchMode.MERGE_GRADLE)
+			buildFile.addContents(script, ContentMergeMode.MERGE_GRADLE)
 		}
 		val args = arrayOf(*tasks, *extraArgs)
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
@@ -207,7 +207,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 				}
 			}
 		""".trimIndent()
-		file(buildscript, TouchMode.MERGE_GRADLE, buildFile.absolutePath)
+		file(buildscript, ContentMergeMode.MERGE_GRADLE, buildFile.absolutePath)
 	}
 	//endregion
 
@@ -233,10 +233,10 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 
 	fun file(contents: String, vararg path: String) {
-		file(contents, TouchMode.CREATE, *path)
+		file(contents, ContentMergeMode.CREATE, *path)
 	}
 
-	fun file(contents: String, mode: TouchMode, vararg path: String) {
+	fun file(contents: String, mode: ContentMergeMode, vararg path: String) {
 		val file = getFile(*path)
 		file.addContents(contents, mode)
 	}
@@ -292,11 +292,11 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 			if (ex !is FileAlreadyExistsException) throw ex
 			if (file == buildFile) {
 				val newBuildFile = folder.resolve(buildFile.name).readText()
-				buildFile.addContents(newBuildFile, TouchMode.MERGE_GRADLE)
+				buildFile.addContents(newBuildFile, ContentMergeMode.MERGE_GRADLE)
 				return@onError OnErrorAction.SKIP
 			} else if (file == settingsFile) {
 				val newSettingsFile = folder.resolve(settingsFile.name).readText()
-				settingsFile.addContents(newSettingsFile, TouchMode.MERGE_GRADLE)
+				settingsFile.addContents(newSettingsFile, ContentMergeMode.MERGE_GRADLE)
 				return@onError OnErrorAction.SKIP
 			}
 			throw ex
@@ -307,28 +307,28 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 
 	private fun File.addContents(
 		contents: String,
-		mode: TouchMode,
+		mode: ContentMergeMode,
 	) {
 		when (mode) {
-			TouchMode.CREATE -> {
+			ContentMergeMode.CREATE -> {
 				require(!this.exists() || this.length() == 0L) {
 					"File already exists: ${this.absolutePath}\n${this.readText()}"
 				}
 				this.writeText(contents)
 			}
-			TouchMode.OVERWRITE -> {
+			ContentMergeMode.OVERWRITE -> {
 				require(this.exists()) { "File does not exist: ${this.absolutePath}" }
 				this.writeText(contents)
 			}
-			TouchMode.APPEND -> {
+			ContentMergeMode.APPEND -> {
 				require(this.exists()) { "File does not exist: ${this.absolutePath}" }
 				this.appendText(contents)
 			}
-			TouchMode.PREPEND -> {
+			ContentMergeMode.PREPEND -> {
 				require(this.exists()) { "File does not exist: ${this.absolutePath}" }
 				this.prependText(contents)
 			}
-			TouchMode.MERGE_GRADLE -> {
+			ContentMergeMode.MERGE_GRADLE -> {
 				// This works with both existing and non-existing files.
 				val originalContents = if (this.exists()) this.readText() else ""
 				fun extractBlock(name: String, script: String): Pair<String?, String?> {
@@ -364,14 +364,14 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 			}
 		}
 	}
+}
 
-	enum class TouchMode {
-		CREATE,
-		OVERWRITE,
-		APPEND,
-		PREPEND,
-		MERGE_GRADLE,
-	}
+enum class ContentMergeMode {
+	CREATE,
+	OVERWRITE,
+	APPEND,
+	PREPEND,
+	MERGE_GRADLE,
 }
 
 private fun File.prependText(text: String) {

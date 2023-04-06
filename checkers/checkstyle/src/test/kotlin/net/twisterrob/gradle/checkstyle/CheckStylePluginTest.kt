@@ -5,6 +5,7 @@ import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.TaskConfigurator
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
@@ -103,7 +104,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 				}
 			""".trimIndent()
 			val subPath = modulePath.substringAfter(':').split(":").toTypedArray()
-			gradle.file(subProject, GradleRunnerRule.TouchMode.MERGE_GRADLE, *subPath, "build.gradle")
+			gradle.file(subProject, ContentMergeMode.MERGE_GRADLE, *subPath, "build.gradle")
 		}
 
 		val result = gradle.runBuild {

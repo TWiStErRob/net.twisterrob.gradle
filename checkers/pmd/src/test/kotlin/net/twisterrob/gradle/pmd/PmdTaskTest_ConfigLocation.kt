@@ -4,6 +4,7 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.failReason
@@ -112,7 +113,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 		gradle.file(pmd.simple.content1, "module", "src", "main", "java", "WithoutPackage.java")
 		gradle.file(pmd.simple.content2, "module", "src", "main", "java", "pmd", "PrintStack.java")
 		// see also @Test/given for configuration file location setup
-		gradle.file(SCRIPT_CONFIGURE_PMD, GradleRunnerRule.TouchMode.MERGE_GRADLE, "module", "build.gradle")
+		gradle.file(SCRIPT_CONFIGURE_PMD, ContentMergeMode.MERGE_GRADLE, "module", "build.gradle")
 
 		return gradle.runFailingBuild {
 			run(SCRIPT_CONFIGURE_PMD, ":module:pmdDebug")
