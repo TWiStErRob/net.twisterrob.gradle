@@ -1,6 +1,7 @@
 package net.twisterrob.gradle
 
 import net.twisterrob.gradle.common.KotlinVersions
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -26,10 +27,11 @@ class PluginIntegrationTest : BaseIntgTest() {
 	 */
 	@Test
 	fun `eagerly created task is detected`() {
-		gradle.file(settings, "settings.gradle.kts")
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
 		@Language("gradle")
 		val script = """
+			//noinspection ConfigurationAvoidance intentionally eager.
 			task eagerlyCreated { }
 		""".trimIndent()
 
@@ -41,10 +43,11 @@ class PluginIntegrationTest : BaseIntgTest() {
 	 */
 	@Test
 	fun `created task is detected`() {
-		gradle.file(settings, "settings.gradle.kts")
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
 		@Language("gradle")
 		val script = """
+			//noinspection ConfigurationAvoidance intentionally eager.
 			tasks.create("eagerlyCreated") { }
 		""".trimIndent()
 
@@ -56,7 +59,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 	 */
 	@Test
 	fun `registered task is not detected`() {
-		gradle.file(settings, "settings.gradle.kts")
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
 		@Language("gradle")
 		val script = """
@@ -71,7 +74,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 	 */
 	@Test
 	fun `registered task that is materialized is detected`() {
-		gradle.file(settings, "settings.gradle.kts")
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
 		@Language("gradle")
 		val script = """
@@ -100,7 +103,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		]
 	)
 	fun `empty project doesn't create tasks when using plugin`(pluginId: String) {
-		gradle.file(settings, "settings.gradle.kts")
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
 		@Language("gradle")
 		val script = """
@@ -130,8 +133,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 		]
 	)
 	fun `kotlin project doesn't create tasks when using plugin`(pluginId: String) {
-		gradle.file(settings, "settings.gradle.kts")
 		gradle.basedOn(GradleBuildTestResources.kotlin)
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
 		@Language("gradle")
 		val script = """
@@ -158,8 +161,10 @@ class PluginIntegrationTest : BaseIntgTest() {
 		]
 	)
 	fun `android app project doesn't create tasks when using plugin`(pluginId: String) {
-		gradle.file(settings, "settings.gradle.kts")
 		gradle.basedOn(GradleBuildTestResources.android)
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
 		@Language("gradle")
 		val script = """
@@ -187,8 +192,10 @@ class PluginIntegrationTest : BaseIntgTest() {
 		]
 	)
 	fun `android library project doesn't create tasks when using plugin`(pluginId: String) {
-		gradle.file(settings, "settings.gradle.kts")
 		gradle.basedOn(GradleBuildTestResources.android)
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
 		@Language("gradle")
 		val script = """
@@ -219,13 +226,15 @@ class PluginIntegrationTest : BaseIntgTest() {
 		]
 	)
 	fun `android kotlin app project doesn't create tasks when using plugin`(pluginId: String) {
-		gradle.file(settings, "settings.gradle.kts")
 		gradle.basedOn(GradleBuildTestResources.android)
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
 		gradle.basedOn(GradleBuildTestResources.kotlin)
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
+		val kotlinPluginApply = conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")
 		@Language("gradle")
-		val script = """
-			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")}
+		val script = kotlinPluginApply + """
 			plugins {
 				id("${pluginId}")
 			}
@@ -252,13 +261,15 @@ class PluginIntegrationTest : BaseIntgTest() {
 		]
 	)
 	fun `android kotlin library project doesn't create tasks when using plugin`(pluginId: String) {
-		gradle.file(settings, "settings.gradle.kts")
 		gradle.basedOn(GradleBuildTestResources.android)
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
 		gradle.basedOn(GradleBuildTestResources.kotlin)
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
+		val kotlinPluginApply = conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-library")
 		@Language("gradle")
-		val script = """
-			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-library")}
+		val script = kotlinPluginApply + """
 			plugins {
 				id("${pluginId}")
 			}
@@ -269,13 +280,15 @@ class PluginIntegrationTest : BaseIntgTest() {
 
 	@Test
 	fun `android kotlin project doesn't create tasks when using all plugins`() {
-		gradle.file(settings, "settings.gradle.kts")
 		gradle.basedOn(GradleBuildTestResources.android)
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
 		gradle.basedOn(GradleBuildTestResources.kotlin)
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
+		val kotlinPluginApply = conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app") // :plugin
 		@Language("gradle")
-		val script = """
-			${conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")} // :plugin
+		val script = kotlinPluginApply + """
 			plugins {
 				// Android: id("net.twisterrob.gradle.plugin.android-library") // :plugin
 				id("net.twisterrob.gradle.plugin.root") // :plugin:base
@@ -363,7 +376,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 					id("org.jetbrains.kotlin.android")
 					id("${androidPluginId}")
 				}
-			""".trimIndent()
+				
+			""".trimIndent() // Newline at end is important so that it can be prepended to other scripts.
 		} else {
 			// Location is relevant before Kotlin 1.5.30, we have to put this after the Android plugin.
 			"""
@@ -371,6 +385,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 					id("${androidPluginId}")
 					id("org.jetbrains.kotlin.android")
 				}
-			""".trimIndent()
+				
+			""".trimIndent() // Newline at end is important so that it can be prepended to other scripts.
 		}
 }
