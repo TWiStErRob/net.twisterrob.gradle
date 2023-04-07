@@ -4,9 +4,11 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFileOrDirectory
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.NullSource
 import org.junit.jupiter.params.provider.ValueSource
@@ -17,8 +19,6 @@ import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 class GradleRunnerRuleTest_clearAfter {
 
@@ -154,7 +154,7 @@ class GradleRunnerRuleTest_clearAfter {
 		}
 
 		@Test fun `clearAfterFailure triggers by default`() {
-			assertFailsWith<SimulatedTestFailure> {
+			assertThrows<SimulatedTestFailure> {
 				sut.evaluate()
 			}
 
@@ -164,7 +164,7 @@ class GradleRunnerRuleTest_clearAfter {
 		@Test fun `clearAfterFailure triggers when null`() {
 			gradle.clearAfterFailure = null
 
-			assertFailsWith<SimulatedTestFailure> {
+			assertThrows<SimulatedTestFailure> {
 				sut.evaluate()
 			}
 
@@ -180,7 +180,7 @@ class GradleRunnerRuleTest_clearAfter {
 
 			@Test
 			fun `keeps project folder`() {
-				assertFailsWith<SimulatedTestFailure> {
+				assertThrows<SimulatedTestFailure> {
 					sut.evaluate()
 				}
 
@@ -204,7 +204,7 @@ class GradleRunnerRuleTest_clearAfter {
 			}
 
 			@Test fun `removes project folder`() {
-				assertFailsWith<SimulatedTestFailure> {
+				assertThrows<SimulatedTestFailure> {
 					sut.evaluate()
 				}
 
@@ -237,7 +237,7 @@ class GradleRunnerRuleTest_clearAfter {
 			@Test fun `'true' removes project folder`() {
 				clearAfterFailureProperty.set("true")
 
-				assertFailsWith<SimulatedTestFailure> {
+				assertThrows<SimulatedTestFailure> {
 					sut.evaluate()
 				}
 
@@ -247,7 +247,7 @@ class GradleRunnerRuleTest_clearAfter {
 			@Test fun `'false' keeps project folder`() {
 				clearAfterFailureProperty.set("false")
 
-				assertFailsWith<SimulatedTestFailure> {
+				assertThrows<SimulatedTestFailure> {
 					sut.evaluate()
 				}
 

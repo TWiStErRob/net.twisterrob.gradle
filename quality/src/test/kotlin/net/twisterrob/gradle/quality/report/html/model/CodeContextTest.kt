@@ -6,14 +6,14 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.matchesPattern
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import org.mockito.kotlin.mock
 import java.io.File
 import java.io.FileNotFoundException
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 @Suppress("NamedArguments")
 class CodeContextTest {
@@ -38,7 +38,7 @@ class CodeContextTest {
 
 		@Test
 		fun `render exception when violation points to a missing location`() {
-			val ex = assertFailsWith<FileNotFoundException> { model.data }
+			val ex = assertThrows<FileNotFoundException> { model.data }
 
 			assertThat(
 				ex.message,
@@ -48,7 +48,7 @@ class CodeContextTest {
 
 		@Test
 		fun `render exception with full path when violation points to a missing location`() {
-			val ex = assertFailsWith<FileNotFoundException> { model.data }
+			val ex = assertThrows<FileNotFoundException> { model.data }
 
 			assertThat(
 				ex.message,
@@ -58,8 +58,8 @@ class CodeContextTest {
 
 		@Test
 		fun `send invalid start and end lines when violation points to a missing location`() {
-			assertFailsWith<FileNotFoundException> { model.startLine }
-			assertFailsWith<FileNotFoundException> { model.endLine }
+			assertThrows<FileNotFoundException> { model.startLine }
+			assertThrows<FileNotFoundException> { model.endLine }
 		}
 	}
 
@@ -214,14 +214,14 @@ class CodeContextTest {
 		val origin = temp.resolve("source.file").apply { writeText(input) }
 
 		val model = createModel(origin, requestedStart, requestedEnd)
-		val ex = assertFailsWith<IllegalStateException> { model.data }
+		val ex = assertThrows<IllegalStateException> { model.data }
 
 		val fileName = ".*${Regex.escape(origin.name)}"
 		assertThat(
 			ex.message,
 			matchesPattern("""Invalid location in ${fileName}: requested ${requestedStart} to ${requestedEnd}\b.*""")
 		)
-		assertFailsWith<IllegalStateException> { model.startLine }
-		assertFailsWith<IllegalStateException> { model.endLine }
+		assertThrows<IllegalStateException> { model.startLine }
+		assertThrows<IllegalStateException> { model.endLine }
 	}
 }

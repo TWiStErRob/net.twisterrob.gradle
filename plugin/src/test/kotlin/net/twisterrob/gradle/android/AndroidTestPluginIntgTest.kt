@@ -15,11 +15,18 @@ class AndroidTestPluginIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `applying by the old name is deprecated`() {
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
+
 		val script = """
-			apply plugin: 'net.twisterrob.android-test'
+			plugins {
+				id("net.twisterrob.android-test")
+			}
 			android.targetProjectPath = ':'
 		""".trimIndent()
+
 		val result = gradle.run(script).buildAndFail()
+
 		result.assertHasOutputLine(
 			Regex(
 				"""org\.gradle\.api\.GradleException: """ +

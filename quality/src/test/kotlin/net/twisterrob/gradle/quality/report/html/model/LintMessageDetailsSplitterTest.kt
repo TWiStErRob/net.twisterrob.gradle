@@ -4,9 +4,9 @@ import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
-import kotlin.test.assertEquals
 
 class LintMessageDetailsSplitterTest {
 

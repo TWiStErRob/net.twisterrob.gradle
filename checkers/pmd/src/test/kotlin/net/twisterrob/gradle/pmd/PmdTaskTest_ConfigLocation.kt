@@ -4,20 +4,21 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.failReason
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see PmdTask
@@ -31,16 +32,17 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 
 		@Language("gradle")
 		private val SCRIPT_CONFIGURE_PMD: String = """
-			subprojects { // i.e. :module
-				apply plugin: 'net.twisterrob.gradle.plugin.pmd'
-				apply plugin: 'pmd' // TODO figure out why this is needed to set toolVersion when Pmd task works anyway
-				pmd {
-					incrementalAnalysis.set(false)
-				}
-				tasks.withType(${Pmd::class.java.name}).configureEach {
-					// output all violations to the console so that we can parse the results
-					consoleOutput = true
-				}
+			plugins {
+				id("net.twisterrob.gradle.plugin.pmd")
+				// TODO figure out why this is needed to set toolVersion when Pmd task works anyway
+				id("org.gradle.pmd")
+			}
+			pmd {
+				incrementalAnalysis.set(false)
+			}
+			tasks.withType(${Pmd::class.java.name}).configureEach {
+				// output all violations to the console so that we can parse the results
+				consoleOutput = true
 			}
 		""".trimIndent()
 	}
@@ -71,7 +73,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 
 	@Test fun `uses local module pmd config over rootProject pmd config`() {
 		gradle.file(pmd.empty.config, *CONFIG_PATH)
-		gradle.file(pmd.simple.config, "module", * CONFIG_PATH)
+		gradle.file(pmd.simple.config, "module", *CONFIG_PATH)
 
 		executeBuild().verifyMissingContentCheckWasRun()
 	}
@@ -83,7 +85,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 		}
 
 		val result = executeBuild()
-		assertEquals(TaskOutcome.FAILED, result.task(":module:pmdDebug")!!.outcome)
+		result.assertFailed(":module:pmdDebug")
 		assertThat(result.failReason, containsString("No rulesets specified"))
 		result.assertHasOutputLine(
 			"""
@@ -102,17 +104,18 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 			basedOn("android-single_module")
 			run(SCRIPT_CONFIGURE_PMD, ":module:tasks")
 		}
-		assertEquals(TaskOutcome.SUCCESS, result.task(":module:tasks")!!.outcome)
+		result.assertSuccess(":module:tasks")
 		result.assertNoOutputLine(Regex("""While auto-configuring ruleSetFiles for task '.*"""))
 	}
 
 	private fun executeBuild(): BuildResult {
+		gradle.basedOn("android-single_module")
 		gradle.file(pmd.simple.content1, "module", "src", "main", "java", "WithoutPackage.java")
 		gradle.file(pmd.simple.content2, "module", "src", "main", "java", "pmd", "PrintStack.java")
 		// see also @Test/given for configuration file location setup
+		gradle.file(SCRIPT_CONFIGURE_PMD, ContentMergeMode.MERGE_GRADLE, "module", "build.gradle")
 
 		return gradle.runFailingBuild {
-			basedOn("android-single_module")
 			run(SCRIPT_CONFIGURE_PMD, ":module:pmdDebug")
 		}
 	}
@@ -120,7 +123,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 	private fun BuildResult.verifyMissingContentCheckWasRun() {
 		// build should only fail if failing config wins the preference,
 		// otherwise it's BUILD SUCCESSFUL or RuleSetNotFoundException: Can't find resource "....xml" for rule "null".
-		assertEquals(TaskOutcome.FAILED, this.task(":module:pmdDebug")!!.outcome)
+		this.assertFailed(":module:pmdDebug")
 		assertThat(this.failReason, containsString("2 PMD rule violations were found."))
 		this.assertHasOutputLine(pmd.simple.message1)
 		this.assertHasOutputLine(pmd.simple.message2)

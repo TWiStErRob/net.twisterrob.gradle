@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.test
+package net.twisterrob.gradle.test.testkit
 
 import org.gradle.internal.Factory
 import org.gradle.internal.service.DefaultServiceRegistry

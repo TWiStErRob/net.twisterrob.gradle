@@ -1,5 +1,8 @@
-apply plugin: 'com.android.application'
+plugins {
+	id("com.android.application")
+}
 
 android {
 	namespace = "test.project.app"
+	compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
 }

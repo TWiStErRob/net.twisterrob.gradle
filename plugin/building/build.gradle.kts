@@ -32,4 +32,10 @@ dependencies {
 	testImplementation(testFixtures(projects.plugin.versioning))
 	// AndroidInstallRunnerTaskTest calls production code directly, so need com.android.xml.AndroidXPathFactory.
 	testRuntimeOnly(libs.android.tools.common)
+	testInjectedPluginClasspath(libs.android.gradle) {
+		version { require(property("net.twisterrob.test.android.pluginVersion").toString()) }
+	}
+	testInjectedPluginClasspath(libs.kotlin.gradle) {
+		version { require(property("net.twisterrob.test.kotlin.pluginVersion").toString()) }
+	}
 }

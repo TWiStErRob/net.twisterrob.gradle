@@ -3,7 +3,7 @@ plugins {
 	//alias(libs.plugins.kotlin) // Can't apply since there's a mismatch between embedded Kotlin and latest Kotlin.
 	`kotlin-dsl`
 	alias(libs.plugins.detekt)
-	id("idea")
+	id("org.gradle.idea")
 }
 
 gradlePlugin {
@@ -39,11 +39,6 @@ gradlePlugin {
 			implementationClass = "net.twisterrob.gradle.build.publishing.PublishingPlugin"
 		}
 	}
-}
-
-repositories {
-	mavenCentral()
-	gradlePluginPortal()
 }
 
 // Note on `plugins { }`: when the version is declared in the plugins block (`plugins { id(...) version "..." }`),

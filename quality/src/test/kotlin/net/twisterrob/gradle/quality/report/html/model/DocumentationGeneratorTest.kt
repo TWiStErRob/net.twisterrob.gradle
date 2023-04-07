@@ -4,12 +4,12 @@ import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.mockito.kotlin.mock
 import java.net.URI
-import kotlin.test.assertEquals
 
 class DocumentationGeneratorTest {
 

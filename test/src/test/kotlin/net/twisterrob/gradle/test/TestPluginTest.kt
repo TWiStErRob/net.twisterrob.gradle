@@ -2,11 +2,9 @@ package net.twisterrob.gradle.test
 
 import junit.runner.Version
 import net.twisterrob.gradle.BaseIntgTest
-import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see TestPlugin
@@ -21,7 +19,7 @@ class TestPluginTest : BaseIntgTest() {
 	 *
 	 * Let's break that down:
 	 *  * This test sets up a Gradle project with:
-	 *    * `apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'`
+	 *    * `plugins { id("net.twisterrob.gradle.plugin.gradle.test") }`
 	 *    * `Testception.groovy`
 	 *  * `Testception` sets up a simple Gradle build and checks its output.
 	 *  * `Testception` is being run from `:test` task in the project that's set up in this test method.
@@ -63,8 +61,10 @@ class TestPluginTest : BaseIntgTest() {
 			?: error("Missing property: net.twisterrob.gradle.test.artifactPath")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'groovy'
-			apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'
+			plugins {
+				id("org.gradle.groovy")
+				id("net.twisterrob.gradle.plugin.gradle.test")
+			}
 			
 			repositories {
 				ivy {
@@ -95,7 +95,7 @@ class TestPluginTest : BaseIntgTest() {
 			run(script, "test")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
+		result.assertSuccess(":test")
 		result.assertHasOutputLine("net.twisterrob.gradle.test.test.Testception > gradle script test: SUCCESS")
 	}
 }

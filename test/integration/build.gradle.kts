@@ -15,12 +15,12 @@ dependencies {
 	implementation(projects.compat.kotlinBase)
 
 	testImplementation(projects.test.internal)
+	testImplementation(projects.compat.agpBase)
 	testImplementation(testFixtures(projects.plugin.base))
-}
-
-tasks.withType<Test>().configureEach {
-	onlyIf {
-		it.project.property("net.twisterrob.test.android.pluginVersion").toString() == "7.3.0" &&
-		it.project.property("net.twisterrob.test.kotlin.pluginVersion").toString() == "1.6.21"
+	testInjectedPluginClasspath(libs.android.gradle) {
+		version { require(property("net.twisterrob.test.android.pluginVersion").toString()) }
+	}
+	testInjectedPluginClasspath(libs.kotlin.gradle) {
+		version { require(property("net.twisterrob.test.kotlin.pluginVersion").toString()) }
 	}
 }

@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.test
 
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
+import net.twisterrob.gradle.test.testkit.setJavaHome
 import org.gradle.api.internal.tasks.testing.worker.TestWorker
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.internal.DefaultGradleRunner
@@ -106,12 +108,12 @@ open class GradleRunnerRule : TestRule {
 		}
 	}
 
-	internal fun before() {
+	protected fun before() {
 		temp.create()
 		setUp()
 	}
 
-	internal fun after(success: Boolean) {
+	protected fun after(success: Boolean) {
 		tearDown()
 		@Suppress("ComplexCondition")
 		if ((success && needClearAfterSuccess) || (!success && needClearAfterFailure)) {
@@ -135,7 +137,6 @@ open class GradleRunnerRule : TestRule {
 		check(buildFile == File(runner.projectDir, "build.gradle")) {
 			"${buildFile} is not within ${runner.projectDir}."
 		}
-		fixClassPath(runner)
 		System.getProperty("net.twisterrob.gradle.runner.gradleVersion", null)?.let {
 			gradleVersion = GradleVersion.version(it)
 		}
@@ -148,7 +149,7 @@ open class GradleRunnerRule : TestRule {
 	//@Test:when
 	fun run(@Language("gradle") script: String?, vararg tasks: String): GradleRunner {
 		if (script != null) {
-			buildFile.appendText(script)
+			ContentMergeMode.MERGE_GRADLE.merge(buildFile, script)
 		}
 		val args = arrayOf(*tasks, *extraArgs)
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
@@ -181,7 +182,6 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 		return runner.withArguments(*args)
 	}
 
-
 	private fun buildContentForLogging(): String =
 		buildFile.readText()
 
@@ -193,13 +193,13 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 		}
 
 	/**
-	 * This is a workaround because runner.withPluginClasspath() doesn't seem to work.
+	 * This is useful when we want to run the build from the outer world manually with `gradlew`.
 	 */
-	private fun fixClassPath(runner: GradleRunner) {
+	fun generateExplicitClassPath() {
 		val classPaths = runner
 			.pluginClasspath
 			.joinToString(System.lineSeparator()) {
-				"classpath files('${it.absolutePath.replace("\\", "\\\\")}')"
+				"""classpath files("${it.absolutePath.replace("\\", "\\\\")}")"""
 			}
 		@Language("gradle")
 		val buildscript = @Suppress("MultilineRawStringIndentation") """
@@ -208,8 +208,8 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 ${classPaths.prependIndent("\t\t\t\t\t")}
 				}
 			}
-		""".trimIndent() + System.lineSeparator()
-		buildFile.appendText(buildscript)
+		""".trimIndent()
+		file(buildscript, ContentMergeMode.MERGE_GRADLE, buildFile.absolutePath)
 	}
 	//endregion
 
@@ -235,16 +235,24 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 
 	fun file(contents: String, vararg path: String) {
-		getFile(*path).appendText(contents)
+		file(contents, ContentMergeMode.CREATE, *path)
 	}
 
+	fun file(contents: String, mode: ContentMergeMode, vararg path: String) {
+		val file = getFile(*path)
+		mode.merge(file, contents)
+	}
+
+	/**
+	 * The returned file will exist.
+	 */
 	@Suppress("ReturnCount")
 	private fun getFile(vararg path: String): File {
 		if (path.size == 1 && path[0] == "build.gradle") {
-			return buildFile
+			return buildFile.apply { createNewFile() }
 		}
 		if (path.size == 1 && path[0] == "gradle.properties") {
-			return propertiesFile
+			return propertiesFile.apply { createNewFile() }
 		}
 		if (1 < path.size) {
 			val folders = path.sliceArray(0..path.size - 2)
@@ -283,10 +291,14 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println("Deploying ${folder} into ${temp.root}")
 		folder.copyRecursively(temp.root, overwrite = false) onError@{ file, ex ->
-			if (file == buildFile && ex is FileAlreadyExistsException) {
-				val originalBuildFile = buildFile.readText()
+			if (ex !is FileAlreadyExistsException) throw ex
+			if (file == buildFile) {
 				val newBuildFile = folder.resolve(buildFile.name).readText()
-				buildFile.writeText(originalBuildFile + newBuildFile)
+				ContentMergeMode.MERGE_GRADLE.merge(buildFile, newBuildFile)
+				return@onError OnErrorAction.SKIP
+			} else if (file == settingsFile) {
+				val newSettingsFile = folder.resolve(settingsFile.name).readText()
+				ContentMergeMode.MERGE_GRADLE.merge(settingsFile, newSettingsFile)
 				return@onError OnErrorAction.SKIP
 			}
 			throw ex
@@ -295,3 +307,4 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 	//endregion
 }
+

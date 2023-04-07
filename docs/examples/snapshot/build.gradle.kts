@@ -10,13 +10,7 @@ android {
 		targetSdk = 33
 
 		namespace = "net.twisterrob.quality.examples.snapshot"
-		applicationId = "net.twisterrob.quality.examples.snapshot"
 		versionCode = 1
 		versionName = "1.0"
 	}
-}
-
-repositories {
-	google()
-	mavenCentral()
 }

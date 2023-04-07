@@ -5,9 +5,14 @@ import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.TaskConfigurator
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.assertNoSource
+import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.assertUpToDate
 import net.twisterrob.gradle.test.failReason
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.minus
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
@@ -24,7 +29,6 @@ import org.hamcrest.Matchers.startsWith
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see CheckStylePlugin
@@ -38,12 +42,15 @@ class CheckStylePluginTest : BaseIntgTest() {
 	}
 
 	override lateinit var gradle: GradleRunnerRule
+
 	private val checkstyle = CheckstyleTestResources()
 
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+			}
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -56,8 +63,10 @@ class CheckStylePluginTest : BaseIntgTest() {
 	@Test fun `does not apply to a Java project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'java'
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+			plugins {
+				id("org.gradle.java")
+				id("net.twisterrob.gradle.plugin.checkstyle")
+			}
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -70,7 +79,9 @@ class CheckStylePluginTest : BaseIntgTest() {
 	@Test fun `applies without a hitch to an Android project`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+			}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -78,25 +89,29 @@ class CheckStylePluginTest : BaseIntgTest() {
 			run(script, "checkstyleEach")
 		}
 
-		assertEquals(TaskOutcome.UP_TO_DATE, result.task(":checkstyleEach")!!.outcome)
-		assertEquals(TaskOutcome.NO_SOURCE, result.task(":checkstyleDebug")!!.outcome)
-		assertEquals(TaskOutcome.NO_SOURCE, result.task(":checkstyleRelease")!!.outcome)
+		result.assertUpToDate(":checkstyleEach")
+		result.assertNoSource(":checkstyleDebug")
+		result.assertNoSource(":checkstyleRelease")
 	}
 
 	@Test fun `applies to all types of subprojects`() {
+		gradle.basedOn("android-all_kinds")
 		gradle.file(checkstyle.empty.config, "config", "checkstyle", "checkstyle.xml")
-		@Language("gradle")
-		val script = """
-			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
-			}
-		""".trimIndent()
 		// TODO add :dynamic-feature
 		val modules = arrayOf(":app", ":library", ":library:nested", ":test")
+		modules.forEach { modulePath ->
+			@Language("gradle")
+			val subProject = """
+				plugins {
+					id("net.twisterrob.gradle.plugin.checkstyle")
+				}
+			""".trimIndent()
+			val subPath = modulePath.substringAfter(':').split(":").toTypedArray()
+			gradle.file(subProject, ContentMergeMode.MERGE_GRADLE, *subPath, "build.gradle")
+		}
 
 		val result = gradle.runBuild {
-			basedOn("android-all_kinds")
-			run(script, "checkstyleEach")
+			run(null, "checkstyleEach")
 		}
 
 		val exceptions = arrayOf(
@@ -131,7 +146,9 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 			@Language("gradle")
 			val subProject = """
-				apply plugin: 'com.android.library'
+				plugins {
+					id("com.android.library")
+				}
 				android.namespace = "project${modulePath.replace(":", ".")}"
 			""".trimIndent()
 
@@ -143,8 +160,11 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val rootProject = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle") apply false
+			}
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+				apply plugin: "net.twisterrob.gradle.plugin.checkstyle"
 			}
 		""".trimIndent()
 
@@ -167,7 +187,6 @@ class CheckStylePluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `applies to individual subprojects`() {
-
 		val modules = arrayOf(
 			":module1",
 			":module2",
@@ -184,13 +203,17 @@ class CheckStylePluginTest : BaseIntgTest() {
 			@Language("gradle")
 			val subProject = if (module in applyTo)
 				"""
-					apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
-					apply plugin: 'com.android.library'
+					plugins {
+						id("net.twisterrob.gradle.plugin.checkstyle")
+						id("com.android.library")
+					}
 					android.namespace = "project${module.replace(":", ".")}"
 				""".trimIndent()
 			else
 				"""
-					apply plugin: 'com.android.library'
+					plugins {
+						id("com.android.library")
+					}
 					android.namespace = "project${module.replace(":", ".")}"
 				""".trimIndent()
 
@@ -227,7 +250,9 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val applyCheckstyle = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+			}
 			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
@@ -238,7 +263,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 			run(applyCheckstyle, ":checkstyleDebug")
 		}
 
-		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
+		result.assertFailed(":checkstyleDebug")
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
 		result.assertHasOutputLine(Regex(""".*\[ERROR] src.main.java.Checkstyle\.java:1: .*? \[Header]"""))
 	}
@@ -250,7 +275,9 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val build = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+			}
 			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
@@ -262,7 +289,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 			run(build, ":checkstyleDebug")
 		}
 
-		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
+		result.assertFailed(":checkstyleDebug")
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
 		result.assertHasOutputLine(Regex(""".*custom.Checkstyle\.java:1: .*? \[Header]"""))
 	}
@@ -279,7 +306,9 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val build = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+			}
 			tasks.withType(${Checkstyle::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
@@ -297,7 +326,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 			run(build, ":checkstyleDebug")
 		}
 
-		assertEquals(TaskOutcome.FAILED, result.task(":checkstyleDebug")!!.outcome)
+		result.assertFailed(":checkstyleDebug")
 		assertThat(result.failReason, containsString("Checkstyle rule violations were found"))
 		result.assertHasOutputLine(Regex(""".*com.example.foo.Checkstyle\.java:1: .*? \[Header]"""))
 		result.assertNoOutputLine(Regex(""".*com.example.bar.Checkstyle\.java.*"""))
@@ -312,18 +341,26 @@ class CheckStylePluginTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val applyCheckstyle = """
-			apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+			}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
 			run(applyCheckstyle, ":checkstyleDebug")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":checkstyleDebug")!!.outcome)
+		result.assertSuccess(":checkstyleDebug")
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.checkstyle'").buildAndFail()
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.checkstyle")
+			}
+		""".trimIndent()
+		val result = gradle.run(script).buildAndFail()
 		result.assertHasOutputLine(
 			Regex(
 				"""org\.gradle\.api\.GradleException: """ +

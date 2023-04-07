@@ -42,7 +42,9 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `assemble doesn't need env var`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assemble", "assembleAndroidTest").build()
@@ -58,7 +60,9 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `needs environment variable to release (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "releaseDebug").buildAndFail()
@@ -69,7 +73,9 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `needs environment variable to release (release)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "releaseRelease").buildAndFail()
@@ -85,7 +91,9 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			afterEvaluate {
 				tasks.named("releaseRelease", Zip) { destinationDirectory.set(file('releases/release')) }
@@ -126,7 +134,9 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 	@Test fun `test app (debug)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			afterEvaluate {
 				tasks.named("releaseDebug", Zip) { destinationDirectory.set(file('releases/debug')) }
@@ -167,7 +177,9 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			afterEvaluate {
 				tasks.named("releaseRelease", Zip) { destinationDirectory.set(file('releases/release')) }
@@ -191,7 +203,9 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			afterEvaluate {
 				tasks.named("releaseRelease", Zip) { destinationDirectory.set(file('releases/release')) }

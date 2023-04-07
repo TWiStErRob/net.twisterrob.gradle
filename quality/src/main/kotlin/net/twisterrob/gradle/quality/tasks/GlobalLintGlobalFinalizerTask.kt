@@ -91,7 +91,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			androidComponents.finalizeDsl { android ->
 				// Make sure we have XML output, otherwise can't figure out if it failed.
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
-				// `android { lintOptions { ... } }` DSL configuration.
+				// `android { lint { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
 				android.lint.abortOnErrorCompat = false
 				android.lint.xmlReport = true

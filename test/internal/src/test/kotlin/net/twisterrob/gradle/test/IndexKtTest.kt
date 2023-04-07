@@ -3,7 +3,7 @@ package net.twisterrob.gradle.test
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import kotlin.test.assertFailsWith
+import org.junit.jupiter.api.assertThrows
 
 class IndexKtTest {
 
@@ -80,13 +80,13 @@ class IndexKtTest {
 		}
 
 		@Test fun `fails on empty module name`() {
-			assertFailsWith<IllegalArgumentException> {
+			assertThrows<IllegalArgumentException> {
 				tasksIn(arrayOf(""), "task")
 			}
 		}
 
 		@Test fun `fails on empty task name`() {
-			assertFailsWith<IllegalArgumentException> {
+			assertThrows<IllegalArgumentException> {
 				tasksIn(arrayOf(":module"), "")
 			}
 		}

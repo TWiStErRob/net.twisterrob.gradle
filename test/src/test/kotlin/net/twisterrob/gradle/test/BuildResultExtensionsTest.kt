@@ -1,13 +1,13 @@
 package net.twisterrob.gradle.test
 
 import org.gradle.testkit.runner.BuildResult
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
-import kotlin.test.assertEquals
 
 @ExtendWith(MockitoExtension::class)
 class BuildResultExtensionsTest {

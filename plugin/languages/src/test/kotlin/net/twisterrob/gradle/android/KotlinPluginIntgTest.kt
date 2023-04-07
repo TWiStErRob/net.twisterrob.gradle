@@ -24,14 +24,18 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `can test kotlin with JUnit in Android Library`() {
+		// Default build.gradle has the app plugin applied.
+		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.generateKotlinCompilationCheck()
 		gradle.generateKotlinCompilationCheckTest()
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
-			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-library")
+				id("net.twisterrob.gradle.plugin.kotlin")
+			}
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
 			}
@@ -50,8 +54,10 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
-			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+				id("net.twisterrob.gradle.plugin.kotlin")
+			}
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
 			}
@@ -71,8 +77,10 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 		gradle.settingsFile.writeText("include ':test'")
 		@Language("gradle")
 		val appScript = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-test'
-			apply plugin: 'net.twisterrob.gradle.plugin.kotlin'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-test")
+				id("net.twisterrob.gradle.plugin.kotlin")
+			}
 			dependencies {
 				implementation("junit:junit:${Version.id()}")
 			}
@@ -83,7 +91,9 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, ":test:compileDebugSources").build()
