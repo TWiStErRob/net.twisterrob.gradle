@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.test
 
+import net.twisterrob.gradle.test.testkit.setJavaHome
 import org.gradle.api.internal.tasks.testing.worker.TestWorker
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.internal.DefaultGradleRunner
@@ -106,12 +107,12 @@ open class GradleRunnerRule : TestRule {
 		}
 	}
 
-	internal fun before() {
+	protected fun before() {
 		temp.create()
 		setUp()
 	}
 
-	internal fun after(success: Boolean) {
+	protected fun after(success: Boolean) {
 		tearDown()
 		@Suppress("ComplexCondition")
 		if ((success && needClearAfterSuccess) || (!success && needClearAfterFailure)) {

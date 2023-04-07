@@ -1,11 +1,11 @@
 package net.twisterrob.gradle.android
 
 import junit.runner.Version
+import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
-import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
@@ -13,7 +13,6 @@ import net.twisterrob.gradle.test.root
 import org.gradle.api.artifacts.ArtifactRepositoryContainer
 import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.time.LocalDate
@@ -36,11 +35,6 @@ import java.time.ZoneOffset
 class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
-
-	@BeforeEach fun setMemory() {
-		// TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/147
-		gradle.file("org.gradle.jvmargs=-Xmx384M\n", "gradle.properties")
-	}
 
 	@Test fun `adds automatic repositories`() {
 		gradle.file("", ContentMergeMode.OVERWRITE, "settings.gradle")
