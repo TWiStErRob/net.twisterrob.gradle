@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.test
 
+import net.twisterrob.gradle.test.fixtures.mergeGradleScripts
 import net.twisterrob.gradle.test.testkit.setJavaHome
 import org.gradle.api.internal.tasks.testing.worker.TestWorker
 import org.gradle.testkit.runner.GradleRunner
@@ -332,60 +333,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 			ContentMergeMode.MERGE_GRADLE -> {
 				// This works with both existing and non-existing files.
 				val originalContents = if (this.exists()) this.readText() else ""
-				fun extractBlock(regex: Regex, script: String): Pair<String?, String> {
-					val match = regex.find(script)
-					val block = match?.let { it.groups[2]?.value }
-					val removed = if (match != null) {
-						regex.replace(script, "$1$3")
-					} else {
-						script
-					}
-					return block to removed
-				}
-
-				data class Blocks(
-					val imports: String?,
-					val buildscript: String?,
-					val plugins: String?,
-					val imperativeCode: String?
-				)
-
-				fun splitBlocks(script: String): Blocks {
-					val importsRegex =
-						Regex("""(?sm)(.*?)((?:^import\s+[^\r\n]+?\r?\n)*import\s+[^\r\n]+?)\r?\n(.*)""")
-
-					fun blockRegex(name: String): Regex =
-						@Suppress("RegExpRedundantEscape")
-						Regex("""(?sm)(.*?)(^${name}\s*\{\s*?.*?\s*?\r?\n\})(?:\r?\n(?!${name}\s*\{)|\Z)(.*)""")
-
-					val normalizedLineEndings = script.prependIndent("")
-					val (importsBlock, scriptWithoutImports) =
-						extractBlock(importsRegex, normalizedLineEndings)
-					val (buildscriptBlock, scriptWithoutBuildscript) =
-						extractBlock(blockRegex("buildscript"), scriptWithoutImports)
-					val (pluginsBlock, scriptWithoutBuildscriptAndPlugins) =
-						extractBlock(blockRegex("plugins"), scriptWithoutBuildscript)
-					return Blocks(
-						imports = importsBlock,
-						buildscript = buildscriptBlock,
-						plugins = pluginsBlock,
-						imperativeCode = scriptWithoutBuildscriptAndPlugins.takeIf { it.isNotBlank() }
-					)
-				}
-
-				val original = splitBlocks(originalContents)
-				val new = splitBlocks(contents)
-				val blocks = listOfNotNull(
-					original.imports,
-					new.imports,
-					original.buildscript,
-					new.buildscript,
-					original.plugins,
-					new.plugins,
-					original.imperativeCode,
-					new.imperativeCode
-				)
-				this.writeText(blocks.joinToString(separator = "\n"))
+				this.writeText(mergeGradleScripts(originalContents, contents))
 			}
 		}
 	}

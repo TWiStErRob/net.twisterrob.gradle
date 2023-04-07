@@ -1,11 +1,10 @@
-package net.twisterrob.gradle.test
+package net.twisterrob.gradle.test.fixtures
 
-import net.twisterrob.gradle.BaseIntgTest
+import net.twisterrob.gradle.test.GradleRunnerRule
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * Tests for writing a file to the Gradle project.
@@ -13,12 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith
  * These would be perfect for parameterization, but IDEA can't jump to the test case definition on failure,
  * nor it can debug a specific test case, so using a simple method call instead.
  *
+ * @see mergeGradleScripts
  * @see GradleRunnerRule.addContents
  */
-@ExtendWith(GradleRunnerRuleExtension::class)
-class GradleRunnerRuleTest_file : BaseIntgTest() {
-
-	override lateinit var gradle: GradleRunnerRule
+class mergeGradleScriptsTest {
 
 	@Nested
 	inner class `gradle scripts can be merged` {
@@ -31,10 +28,7 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 			@Language("gradle")
 			mergeExpectation: String
 		) {
-			gradle.file(script1, ContentMergeMode.MERGE_GRADLE, "build.gradle")
-			gradle.file(script2, ContentMergeMode.MERGE_GRADLE, "build.gradle")
-
-			val merged = gradle.buildFile.readText()
+			val merged = mergeGradleScripts(script1, script2)
 
 			assertEquals(mergeExpectation, merged)
 		}
@@ -211,7 +205,7 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 				script1 = """
 					buildscript {
 						dependencies {
-							classpath("...")
+							classpath("foo:bar:baz")
 						}
 					}
 					println("hello")
@@ -224,7 +218,7 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 				mergeExpectation = """
 					buildscript {
 						dependencies {
-							classpath("...")
+							classpath("foo:bar:baz")
 						}
 					}
 					plugins {
@@ -245,7 +239,7 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 				script2 = """
 					buildscript {
 						dependencies {
-							classpath("...")
+							classpath("foo:bar:baz")
 						}
 					}
 					println("hello")
@@ -253,7 +247,7 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 				mergeExpectation = """
 					buildscript {
 						dependencies {
-							classpath("...")
+							classpath("foo:bar:baz")
 						}
 					}
 					plugins {
@@ -402,6 +396,7 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 			)
 		}
 
+		@Suppress("GroovyAssignabilityCheck") // Intentionally wrong.
 		@Test fun `leaves nested plugins blocks alone`() {
 			mergeTest(
 				script1 = """
@@ -440,7 +435,7 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 					buildscript {
 						dependencies {
 							// Comment that has { } in it.
-							classpath("...")
+							classpath("foo:bar:baz")
 						}
 					}
 					plugins {
@@ -456,24 +451,24 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 					}
 					buildscript {
 						dependencies {
-							classpath("...")
+							classpath("foo:bar:baz")
 						}
 					}
 					// More script.
 					dependencies {
-						implementation("...")
+						implementation("foo:bar:baz")
 					}
 				""".trimIndent(),
 				mergeExpectation = """
 					buildscript {
 						dependencies {
 							// Comment that has { } in it.
-							classpath("...")
+							classpath("foo:bar:baz")
 						}
 					}
 					buildscript {
 						dependencies {
-							classpath("...")
+							classpath("foo:bar:baz")
 						}
 					}
 					plugins {
@@ -487,7 +482,7 @@ class GradleRunnerRuleTest_file : BaseIntgTest() {
 					println("world")
 					// More script.
 					dependencies {
-						implementation("...")
+						implementation("foo:bar:baz")
 					}
 				""".trimIndent()
 			)
