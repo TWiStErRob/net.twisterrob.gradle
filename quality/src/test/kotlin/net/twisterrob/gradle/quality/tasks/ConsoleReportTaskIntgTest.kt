@@ -4,12 +4,12 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.pmd.test.PmdTestResources
-import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.runBuild
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString

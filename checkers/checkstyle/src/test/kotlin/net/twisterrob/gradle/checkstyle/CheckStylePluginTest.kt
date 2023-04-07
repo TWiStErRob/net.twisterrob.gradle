@@ -3,7 +3,6 @@ package net.twisterrob.gradle.checkstyle
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
 import net.twisterrob.gradle.common.TaskConfigurator
-import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertFailed
@@ -13,6 +12,7 @@ import net.twisterrob.gradle.test.assertNoSource
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.assertUpToDate
 import net.twisterrob.gradle.test.failReason
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.minus
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild

@@ -2,13 +2,13 @@ package net.twisterrob.gradle
 
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.KotlinVersions
-import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

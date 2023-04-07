@@ -2,11 +2,11 @@ package net.twisterrob.gradle
 
 import net.twisterrob.gradle.internal.deprecation.canNagUser
 import net.twisterrob.gradle.internal.deprecation.nextMajorVersion
-import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.testkit.runner.BuildResult

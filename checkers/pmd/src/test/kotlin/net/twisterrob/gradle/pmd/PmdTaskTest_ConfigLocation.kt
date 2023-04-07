@@ -2,7 +2,6 @@ package net.twisterrob.gradle.pmd
 
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.pmd.test.PmdTestResources
-import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertFailed
@@ -10,6 +9,7 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.failReason
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.api.plugins.quality.Pmd

@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.android
 
 import junit.runner.Version
-import net.twisterrob.gradle.test.ContentMergeMode
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -9,6 +8,7 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.root
 import org.gradle.api.artifacts.ArtifactRepositoryContainer
 import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler

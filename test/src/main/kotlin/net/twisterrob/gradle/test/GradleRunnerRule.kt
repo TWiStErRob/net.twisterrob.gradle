@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.test
 
-import net.twisterrob.gradle.test.fixtures.mergeGradleScripts
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.testkit.setJavaHome
 import org.gradle.api.internal.tasks.testing.worker.TestWorker
 import org.gradle.testkit.runner.GradleRunner
@@ -149,7 +149,7 @@ open class GradleRunnerRule : TestRule {
 	//@Test:when
 	fun run(@Language("gradle") script: String?, vararg tasks: String): GradleRunner {
 		if (script != null) {
-			buildFile.addContents(script, ContentMergeMode.MERGE_GRADLE)
+			ContentMergeMode.MERGE_GRADLE.merge(buildFile, script)
 		}
 		val args = arrayOf(*tasks, *extraArgs)
 		val gradleTestWorkerId: String? by systemProperty(TestWorker.WORKER_ID_SYS_PROPERTY)
@@ -240,7 +240,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 
 	fun file(contents: String, mode: ContentMergeMode, vararg path: String) {
 		val file = getFile(*path)
-		file.addContents(contents, mode)
+		mode.merge(file, contents)
 	}
 
 	/**
@@ -294,11 +294,11 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 			if (ex !is FileAlreadyExistsException) throw ex
 			if (file == buildFile) {
 				val newBuildFile = folder.resolve(buildFile.name).readText()
-				buildFile.addContents(newBuildFile, ContentMergeMode.MERGE_GRADLE)
+				ContentMergeMode.MERGE_GRADLE.merge(buildFile, newBuildFile)
 				return@onError OnErrorAction.SKIP
 			} else if (file == settingsFile) {
 				val newSettingsFile = folder.resolve(settingsFile.name).readText()
-				settingsFile.addContents(newSettingsFile, ContentMergeMode.MERGE_GRADLE)
+				ContentMergeMode.MERGE_GRADLE.merge(buildFile, newSettingsFile)
 				return@onError OnErrorAction.SKIP
 			}
 			throw ex
@@ -306,47 +306,5 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 		return this
 	}
 	//endregion
-
-	private fun File.addContents(
-		contents: String,
-		mode: ContentMergeMode,
-	) {
-		when (mode) {
-			ContentMergeMode.CREATE -> {
-				require(!this.exists() || this.length() == 0L) {
-					"File already exists: ${this.absolutePath}\n${this.readText()}"
-				}
-				this.writeText(contents)
-			}
-			ContentMergeMode.OVERWRITE -> {
-				require(this.exists()) { "File does not exist: ${this.absolutePath}" }
-				this.writeText(contents)
-			}
-			ContentMergeMode.APPEND -> {
-				require(this.exists()) { "File does not exist: ${this.absolutePath}" }
-				this.appendText(contents)
-			}
-			ContentMergeMode.PREPEND -> {
-				require(this.exists()) { "File does not exist: ${this.absolutePath}" }
-				this.prependText(contents)
-			}
-			ContentMergeMode.MERGE_GRADLE -> {
-				// This works with both existing and non-existing files.
-				val originalContents = if (this.exists()) this.readText() else ""
-				this.writeText(mergeGradleScripts(originalContents, contents))
-			}
-		}
-	}
 }
 
-enum class ContentMergeMode {
-	CREATE,
-	OVERWRITE,
-	APPEND,
-	PREPEND,
-	MERGE_GRADLE,
-}
-
-private fun File.prependText(text: String) {
-	this.writeText(text + this.readText())
-}

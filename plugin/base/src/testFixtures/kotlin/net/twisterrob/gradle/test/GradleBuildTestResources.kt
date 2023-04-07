@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.test
 
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
+
 object GradleBuildTestResources {
 
 	val kotlin: KotlinProject = object : KotlinProject {}
