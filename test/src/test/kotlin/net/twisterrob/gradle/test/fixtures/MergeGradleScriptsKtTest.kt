@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.test.fixtures
 
-import net.twisterrob.gradle.test.GradleRunnerRule
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
@@ -13,9 +12,9 @@ import org.junit.jupiter.api.Test
  * nor it can debug a specific test case, so using a simple method call instead.
  *
  * @see mergeGradleScripts
- * @see GradleRunnerRule.addContents
+ * @see ContentMergeMode.MERGE_GRADLE
  */
-class mergeGradleScriptsTest {
+class MergeGradleScriptsKtTest {
 
 	@Nested
 	inner class `gradle scripts can be merged` {
