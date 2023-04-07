@@ -298,7 +298,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 				return@onError OnErrorAction.SKIP
 			} else if (file == settingsFile) {
 				val newSettingsFile = folder.resolve(settingsFile.name).readText()
-				ContentMergeMode.MERGE_GRADLE.merge(buildFile, newSettingsFile)
+				ContentMergeMode.MERGE_GRADLE.merge(settingsFile, newSettingsFile)
 				return@onError OnErrorAction.SKIP
 			}
 			throw ex
