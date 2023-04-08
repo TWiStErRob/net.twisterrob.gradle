@@ -25,10 +25,12 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.UntrackedTask
 import org.gradle.kotlin.dsl.withType
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
 
+@UntrackedTask(because = "This task is only used to fail the build if there are any violations.")
 abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	/**
