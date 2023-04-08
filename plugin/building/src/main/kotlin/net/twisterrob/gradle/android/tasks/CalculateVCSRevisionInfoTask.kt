@@ -6,11 +6,13 @@ import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.getByType
 
+@CacheableTask
 abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 
 	@get:OutputFile

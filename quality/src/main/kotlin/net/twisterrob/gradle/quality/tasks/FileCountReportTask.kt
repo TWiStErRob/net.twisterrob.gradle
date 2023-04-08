@@ -4,9 +4,11 @@ import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.dsl.reporting
 import net.twisterrob.gradle.quality.Violations
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.OutputFile
 import java.io.File
 
+@CacheableTask
 abstract class FileCountReportTask : BaseViolationsTask() {
 
 	private val outputFile: File

@@ -8,6 +8,7 @@ import net.twisterrob.gradle.quality.report.bestXMLTransformerFactory
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
@@ -18,6 +19,7 @@ import java.io.File
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
+@CacheableTask
 abstract class HtmlReportTask : BaseViolationsTask() {
 
 	private val xmlFile: File
