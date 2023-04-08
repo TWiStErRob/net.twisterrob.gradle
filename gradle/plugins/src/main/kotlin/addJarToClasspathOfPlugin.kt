@@ -19,5 +19,7 @@ fun Project.addJarToClasspathOfPlugin() {
 		// To work around this: prepend the final JAR file on the classpath:
 		val jar = tasks.named<Jar>("jar").get()
 		pluginClasspath.setFrom(files(jar.archiveFile) + pluginClasspath)
+
+		// TODO check if org.gradle.api.plugins.JavaBasePlugin.COMPILE_CLASSPATH_PACKAGING_SYSTEM_PROPERTY might help.
 	}
 }
