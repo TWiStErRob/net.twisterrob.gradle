@@ -3,11 +3,10 @@ plugins {
 	id("org.gradle.pmd")
 }
 
-configurations {
-	// Add checkstyle to a known configuration, so that it's resolved by IDEA Gradle Sync import.
-	compileOnly.configure { extendsFrom(pmd.get()) }
-}
-
 pmd {
 	toolVersion = PmdPlugin.DEFAULT_PMD_VERSION
+}
+
+configurations {
+	sourcesOnly.configure { extendsFrom(pmd.get()) }
 }
