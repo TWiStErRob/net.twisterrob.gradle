@@ -34,6 +34,10 @@ gradlePlugin {
 			id = "net.twisterrob.gradle.build.module.library"
 			implementationClass = "net.twisterrob.gradle.build.LibraryModulePlugin"
 		}
+		create("moduleBrowser") {
+			id = "net.twisterrob.gradle.build.module.browser"
+			implementationClass = "net.twisterrob.gradle.build.BrowserModulePlugin"
+		}
 		create("publishing") {
 			id = "net.twisterrob.gradle.build.publish"
 			implementationClass = "net.twisterrob.gradle.build.publishing.PublishingPlugin"
