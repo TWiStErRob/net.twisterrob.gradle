@@ -17,8 +17,7 @@ class GradlePluginValidationPlugin : Plugin<Project> {
 			val validatePlugins = project.tasks.named<ValidatePlugins>("validatePlugins")
 			validatePlugins.configure {
 				ignoreFailures.set(false)
-				// TODO failOnWarning=true https://github.com/TWiStErRob/net.twisterrob.gradle/issues/291
-				failOnWarning.set(false)
+				failOnWarning.set(true)
 				enableStricterValidation.set(true)
 			}
 
