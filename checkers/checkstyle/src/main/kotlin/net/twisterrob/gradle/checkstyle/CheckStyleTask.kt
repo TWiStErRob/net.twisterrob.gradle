@@ -4,8 +4,10 @@ import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.TargetChecker
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.quality.Checkstyle
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 
+@CacheableTask
 open class CheckStyleTask : Checkstyle(), TargetChecker {
 
 	@Input

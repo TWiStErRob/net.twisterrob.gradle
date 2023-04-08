@@ -2,10 +2,12 @@ package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.addBuildConfigField
 import net.twisterrob.gradle.android.intermediateRegularFile
+import net.twisterrob.gradle.internal.safeWriteText
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
@@ -15,6 +17,7 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
+@CacheableTask
 abstract class CalculateBuildTimeTask : DefaultTask() {
 
 	/**
@@ -44,7 +47,7 @@ abstract class CalculateBuildTimeTask : DefaultTask() {
 
 	@TaskAction
 	fun writeBuildTime() {
-		buildTimeFile.writeText(buildTime.get().toString())
+		buildTimeFile.safeWriteText(buildTime.get().toString())
 	}
 
 	companion object {

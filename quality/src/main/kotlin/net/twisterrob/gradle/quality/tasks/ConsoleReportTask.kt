@@ -3,8 +3,9 @@ package net.twisterrob.gradle.quality.tasks
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.TableGenerator
+import org.gradle.api.tasks.UntrackedTask
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@UntrackedTask(because = "It is used to inspect state, output is console.")
 abstract class ConsoleReportTask : BaseViolationsTask() {
 
 	override fun processViolations(violations: Grouper.Start<Violations>) {

@@ -14,9 +14,11 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.TestReport
 import org.gradle.kotlin.dsl.withType
 import org.gradle.util.GradleVersion
+import org.gradle.work.DisableCachingByDefault
 import se.bjurr.violations.lib.model.SEVERITY
 import java.io.File
 
+@DisableCachingByDefault(because = "Base class is not cacheable yet. (Gradle 8.0)")
 open class GlobalTestFinalizerTask : TestReport() {
 
 	init {
