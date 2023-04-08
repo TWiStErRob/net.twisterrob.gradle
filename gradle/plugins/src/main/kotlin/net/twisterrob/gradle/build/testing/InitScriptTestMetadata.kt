@@ -16,7 +16,7 @@ import java.util.Properties
  * @see net.twisterrob.gradle.build.testing.InitScriptMetadataPlugin.createMetadataTask
  * @see org.gradle.plugin.devel.tasks.PluginUnderTestMetadata
  */
-@DisableCachingByDefault(because = "Not worth caching")
+@DisableCachingByDefault(because = "Not worth caching.")
 abstract class InitScriptTestMetadata : DefaultTask() {
 
 	init {

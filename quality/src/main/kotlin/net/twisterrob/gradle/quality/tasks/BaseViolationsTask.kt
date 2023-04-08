@@ -21,7 +21,7 @@ import org.gradle.api.tasks.UntrackedTask
 import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
 
-@UntrackedTask(because = "Abstract super-class, not to be instantiated directly")
+@UntrackedTask(because = "Abstract super-class, not to be instantiated directly.")
 abstract class BaseViolationsTask : DefaultTask() {
 
 	init {
