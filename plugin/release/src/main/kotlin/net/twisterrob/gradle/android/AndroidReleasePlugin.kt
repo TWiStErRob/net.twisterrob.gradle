@@ -7,6 +7,7 @@ import com.android.build.api.variant.impl.BuiltArtifactsImpl
 import com.android.build.gradle.BaseExtension
 import com.android.builder.model.BuildType
 import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.ext.zip
 import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
@@ -78,13 +79,12 @@ class AndroidReleasePlugin : BasePlugin() {
 			inputs.property("variant-versionName", out.versionName)
 			inputs.property("variant-versionCode", out.versionCode)
 
-			archiveFileName.convention(project.provider {
-				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "UnsafeCallOnNullableType")
-				val versionCode = out.versionCode.get()!!.toLong()
-				val versionName = out.versionName.get()
-				val applicationId = variant.applicationId.get()
-				version.formatArtifactName(project, "archive", applicationId, versionCode, versionName) + ".zip"
-			})
+			archiveFileName.convention(
+				variant.applicationId.zip(out.versionCode, out.versionName) { applicationId, versionCode, versionName ->
+					val versionCodeL = versionCode!!.toLong()
+					version.formatArtifactName(project, "archive", applicationId, versionCodeL, versionName) + ".zip"
+				}
+			)
 
 			from(variant.artifacts.get(SingleArtifact.APK)) { copy ->
 				copy.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
