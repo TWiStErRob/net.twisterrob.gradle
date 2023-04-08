@@ -25,13 +25,6 @@ dependencies {
 	api(libs.mockk)
 
 	api(libs.jfixture.java)
-
-	// TODO use buildSrc sourceOnly configuration
-	// only here so IDEA can browse the source files of this dependency when getting a stack trace or finding usages
-	testRuntimeOnly(libs.android.lint.main) { isTransitive = false }
-	testRuntimeOnly(libs.android.lint.api) { isTransitive = false }
-	testRuntimeOnly(libs.android.lint.gradle) { isTransitive = false }
-	testRuntimeOnly(libs.android.lint.checks) { isTransitive = false }
 }
 
 tasks.named<Test>("test") {
