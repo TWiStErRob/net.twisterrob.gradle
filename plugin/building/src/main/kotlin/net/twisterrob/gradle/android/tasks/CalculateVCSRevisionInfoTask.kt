@@ -32,8 +32,8 @@ abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 
 	@TaskAction
 	fun writeVCS() {
-		revisionFile.writeText(vcs.current.revision)
-		revisionNumberFile.writeText(vcs.current.revisionNumber.toString())
+		revisionFile.safeWriteText(vcs.current.revision)
+		revisionNumberFile.safeWriteText(vcs.current.revisionNumber.toString())
 	}
 
 	companion object {

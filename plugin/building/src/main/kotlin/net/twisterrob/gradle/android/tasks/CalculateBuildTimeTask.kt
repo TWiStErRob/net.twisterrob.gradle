@@ -44,7 +44,7 @@ abstract class CalculateBuildTimeTask : DefaultTask() {
 
 	@TaskAction
 	fun writeBuildTime() {
-		buildTimeFile.writeText(buildTime.get().toString())
+		buildTimeFile.safeWriteText(buildTime.get().toString())
 	}
 
 	companion object {
