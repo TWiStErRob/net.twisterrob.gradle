@@ -219,13 +219,13 @@ class AndroidVersionPlugin : BasePlugin() {
 			variant.replacementApkNameProvider(versionCode, versionName)
 		)
 
-		val androidTestOutput = variant.androidTestCompat?.let { androidTest ->
+		variant.androidTestCompat?.let { androidTest ->
 			val androidTestImpl = androidTest.unwrapCast<AndroidTest, AndroidTestImpl>()
-			androidTestImpl.outputs.filterIsInstance<VariantOutputImpl>().single()
+			val androidTestOutput = androidTestImpl.outputs.filterIsInstance<VariantOutputImpl>().single()
+			androidTestOutput.outputFileName.set(
+				androidTest.replacementApkNameProvider(versionCode, versionName)
+			)
 		}
-		androidTestOutput?.outputFileName?.set(
-			variant.androidTestCompat!!.replacementApkNameProvider(versionCode, versionName)
-		)
 	}
 
 	private fun <T> T.replacementApkNameProvider(

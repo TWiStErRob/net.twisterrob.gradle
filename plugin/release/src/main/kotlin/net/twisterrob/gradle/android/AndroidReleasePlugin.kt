@@ -30,6 +30,7 @@ class AndroidReleasePlugin : BasePlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 		val android = project.extensions.getByName<BaseExtension>("android")
+		@Suppress("UnnecessaryApply") // Conventional Gradle pattern.
 		android.extensions.create<AndroidReleaseExtension>(AndroidReleaseExtension.NAME).apply {
 			directory.convention(project.releaseDirectory())
 		}
@@ -81,6 +82,7 @@ class AndroidReleasePlugin : BasePlugin() {
 
 			archiveFileName.convention(
 				variant.applicationId.zip(out.versionCode, out.versionName) { applicationId, versionCode, versionName ->
+					@Suppress("UnsafeCallOnNullableType") // Strange API, an output without code/name is unlikely here.
 					val versionCodeL = versionCode!!.toLong()
 					version.formatArtifactName(project, "archive", applicationId, versionCodeL, versionName) + ".zip"
 				}
