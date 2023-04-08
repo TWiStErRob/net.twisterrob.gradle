@@ -257,9 +257,9 @@ class PmdPluginTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.pmd")
 			}
-			pmd {
-				toolVersion = '5.6.1'
-				incrementalAnalysis.set(false)
+			dependencies {
+				pmd("net.sourceforge.pmd:pmd-java:${'$'}{pmd.toolVersion}")
+				pmd(files(tasks.register("pmdConfigJar", Jar) { archiveClassifier.set("pmd"); from(fileTree("config/pmd")) }))
 			}
 			tasks.withType(${Pmd::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
@@ -274,19 +274,31 @@ class PmdPluginTest : BaseIntgTest() {
 		result.assertFailed(":pmdDebug")
 		result.assertHasOutputLine(
 			"Inline rule violation",
-			Regex(""".*src.main.java.Pmd\.java:2:\s+Inline custom message""")
+			Regex(
+				""".*src.main.java.Pmd\.java:2:\s+""" +
+						"""InlineCustomViolation:\s+Inline custom message"""
+			)
 		)
 		result.assertHasOutputLine(
 			"Inline rule reference violation",
-			Regex(""".*src.main.java.Pmd\.java:3:\s+Avoid using short method names""")
+			Regex(
+				""".*src.main.java.Pmd\.java:3:\s+""" +
+						"""ShortMethodName:\s+Avoid using short method names"""
+			)
 		)
 		result.assertHasOutputLine(
 			"Included ruleset from the same folder violation",
-			Regex(""".*src.main.java.Pmd\.java:4:\s+Avoid variables with short names like i""")
+			Regex(
+				""".*src.main.java.Pmd\.java:4:\s+""" +
+						"""ShortVariable:\s+Avoid variables with short names like i"""
+			)
 		)
 		result.assertHasOutputLine(
 			"Included ruleset from a sub-folder violation",
-			Regex(""".*src.main.java.Pmd\.java:2:\s+All classes and interfaces must belong to a named package""")
+			Regex(
+				""".*src.main.java.Pmd\.java:2:\s+""" +
+						"""NoPackage:\s+All classes, interfaces, enums and annotations must belong to a named package"""
+			)
 		)
 		assertThat(
 			"Validate count to allow no more violations",

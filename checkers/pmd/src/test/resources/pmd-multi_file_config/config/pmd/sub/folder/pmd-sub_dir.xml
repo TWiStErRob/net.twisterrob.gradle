@@ -6,6 +6,6 @@
 	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 	<description>Simple ruleset to make PMD fail.</description>
 
-	<rule ref="rulesets/java/naming.xml/NoPackage" />
+	<rule ref="category/java/codestyle.xml/NoPackage" />
 
 </ruleset>
