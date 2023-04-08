@@ -1,10 +1,10 @@
-package net.twisterrob.gradle.android.tasks
+package net.twisterrob.gradle.internal
 
 import org.gradle.api.file.RegularFileProperty
 import java.io.File
 import java.nio.charset.Charset
 
-internal fun RegularFileProperty.safeWriteText(text: String, charset: Charset = Charsets.UTF_8) {
+fun RegularFileProperty.safeWriteText(text: String, charset: Charset = Charsets.UTF_8) {
 	this.get().asFile
 		.also { it.parentFile.ensureParentDirs() }
 		.writeText(text, charset)
