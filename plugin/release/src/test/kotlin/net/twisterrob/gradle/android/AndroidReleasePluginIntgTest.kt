@@ -7,6 +7,7 @@ import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertNoTask
 import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.root
 import net.twisterrob.test.withRootCause
 import net.twisterrob.test.zip.hasEntryCount
@@ -21,6 +22,7 @@ import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.junitpioneer.jupiter.ClearEnvironmentVariable
@@ -57,34 +59,45 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertNoTask(":releaseAll")
 	}
 
-	@Test fun `needs environment variable to release (debug)`() {
+	@Test fun `releases location can be overridden from DSL (debug)`(@TempDir externalReleaseDir: File) {
+		val externalReleaseDirPath = externalReleaseDir.absolutePath.replace("\\", "/")
 		@Language("gradle")
 		val script = """
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
+			android.release.directory.fileValue(file("${externalReleaseDirPath}"))
 		""".trimIndent()
 
-		val result = gradle.run(script, "releaseDebug").buildAndFail()
+		val result = gradle.run(script, "releaseDebug").build()
 
-		result.assertHasOutputLine(""".*Please set RELEASE_HOME environment variable to an existing directory\.""".toRegex())
+		result.assertDebugArchive(externalReleaseDir)
 	}
 
-	@Test fun `needs environment variable to release (release)`() {
+	@Test fun `releases location can be overridden from property (debug)`(@TempDir externalReleaseDir: File) {
 		@Language("gradle")
 		val script = """
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 
-		val result = gradle.run(script, "releaseRelease").buildAndFail()
+		val externalReleaseDirPath = externalReleaseDir.absolutePath.replace("\\", "/")
+		@Language("properties")
+		val properties = """
+			net.twisterrob.android.release.directory=${externalReleaseDirPath}
+		""".trimIndent()
+		gradle.file(properties, ContentMergeMode.APPEND, "gradle.properties")
 
-		result.assertHasOutputLine(""".*Please set RELEASE_HOME environment variable to an existing directory\.""".toRegex())
+		val result = gradle.run(script, "releaseDebug").build()
+
+		result.assertDebugArchive(externalReleaseDir)
 	}
 
 	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
-	@ParameterizedTest fun `test app (release)`(
+	@ParameterizedTest fun `releases the app to default location (release)`(
 		minification: Minification
 	) {
 		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
@@ -95,20 +108,19 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
-			afterEvaluate {
-				tasks.named("releaseRelease", Zip) { destinationDirectory.set(file('releases/release')) }
-			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "releaseRelease").build()
 
+		result.assertNoTask(":release")
+		result.assertNoTask(":packageDebug")
+		result.assertNoTask(":releaseDebug")
 		result.assertSuccess(":packageRelease")
 		result.assertSuccess(":releaseRelease")
-		assertReleaseArchive(result, minification)
+		result.assertReleaseArchive(gradle.root.resolve("build/release"), minification)
 	}
 
-	private fun assertReleaseArchive(result: BuildResult, minification: Minification) {
-		val releasesDir = gradle.root.resolve("releases/release")
+	private fun BuildResult.assertReleaseArchive(releasesDir: File, minification: Minification) {
 		assertArchive(releasesDir.resolve("${packageName}@10203004-v1.2.3#4+archive.zip")) { archive ->
 			assertThat(archive, hasZipEntry("${packageName}@10203004-v1.2.3#4+release.apk"))
 			assertThat(archive, hasZipEntry("proguard_configuration.txt"))
@@ -127,32 +139,31 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, not(hasZipEntry("metadata.json")))
 			assertThat(archive, not(hasZipEntry("output-metadata.json")))
 			assertThat(archive, hasEntryCount(equalTo(5)))
-			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
+			this.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
 		}
 	}
 
-	@Test fun `test app (debug)`() {
+	@Test fun `releases the app to default location (debug)`() {
 		@Language("gradle")
 		val script = """
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
-			afterEvaluate {
-				tasks.named("releaseDebug", Zip) { destinationDirectory.set(file('releases/debug')) }
-			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "releaseDebug").build()
 
+		result.assertNoTask(":release")
+		result.assertNoTask(":packageRelease")
+		result.assertNoTask(":releaseRelease")
 		result.assertSuccess(":packageDebug")
 		result.assertSuccess(":packageDebugAndroidTest")
 		result.assertSuccess(":releaseDebug")
-		assertDebugArchive(result)
+		result.assertDebugArchive(gradle.root.resolve("build/release"))
 	}
 
-	private fun assertDebugArchive(result: BuildResult) {
-		val releasesDir = gradle.root.resolve("releases/debug")
+	private fun BuildResult.assertDebugArchive(releasesDir: File) {
 		assertArchive(releasesDir.resolve("${packageName}.debug@10203004-v1.2.3#4d+archive.zip")) { archive ->
 			assertThat(archive, hasZipEntry("${packageName}.debug@10203004-v1.2.3#4d+debug.apk"))
 			assertThat(archive, hasZipEntry("${packageName}.debug.test@10203004-v1.2.3#4d+debug-androidTest.apk"))
@@ -165,12 +176,12 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			assertThat(archive, not(hasZipEntry("metadata.json")))
 			assertThat(archive, not(hasZipEntry("output-metadata.json")))
 			assertThat(archive, hasEntryCount(equalTo(2)))
-			result.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
+			this.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
 		}
 	}
 
 	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
-	@ParameterizedTest fun `test app (debug) and (release)`(
+	@ParameterizedTest fun `release location for each variant and release everything at once (debug) and (release)`(
 		minification: Minification
 	) {
 		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
@@ -194,8 +205,8 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":packageDebugAndroidTest")
 		result.assertSuccess(":releaseRelease")
 		result.assertSuccess(":releaseDebug")
-		assertReleaseArchive(result, minification)
-		assertDebugArchive(result)
+		result.assertReleaseArchive(gradle.root.resolve("releases/release"), minification)
+		result.assertDebugArchive(gradle.root.resolve("releases/debug"))
 	}
 
 	@Test fun `test app fails to release when already exists (debug) and (release)`() {
@@ -207,10 +218,6 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
-			afterEvaluate {
-				tasks.named("releaseRelease", Zip) { destinationDirectory.set(file('releases/release')) }
-				tasks.named("releaseDebug", Zip) { destinationDirectory.set(file('releases/debug')) }
-			}
 		""".trimIndent()
 
 		val setup = gradle.run(script, "release").build()

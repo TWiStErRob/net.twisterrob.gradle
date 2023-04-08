@@ -6,6 +6,7 @@ import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.impl.VariantOutputImpl
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.internal.android.unwrapCast
@@ -15,7 +16,6 @@ import net.twisterrob.gradle.vcs.VCSExtension
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
@@ -148,6 +148,12 @@ open class AndroidVersionExtension {
 
 		internal const val NAME: String = "version"
 		internal const val DEFAULT_FILE_NAME: String = "version.properties"
+
+		fun from(android: BaseExtension): AndroidVersionExtension =
+			from(android.defaultConfig)
+
+		fun from(defaultConfig: DefaultConfig): AndroidVersionExtension =
+			defaultConfig.extensions.getByName<AndroidVersionExtension>(NAME)
 	}
 }
 
@@ -244,7 +250,7 @@ class AndroidVersionPlugin : BasePlugin() {
 }
 
 val DefaultConfig.version: AndroidVersionExtension
-	get() = (this as ExtensionAware).extensions.getByName<AndroidVersionExtension>("version")
+	get() = AndroidVersionExtension.from(this)
 
 fun DefaultConfig.version(configuration: Action<AndroidVersionExtension>) {
 	configuration.execute(version)
