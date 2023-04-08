@@ -242,13 +242,15 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		try {
 			assertions(archive)
 		} catch (@Suppress("SwallowedException") ex: Throwable) { // Detekt doesn't see into withRootCause.
-			val contents = ZipFile(archive)
-				.entries()
-				.asSequence()
-				.sortedBy { it.name }
-				.joinToString(prefix = "'$archive' contents:\n", separator = "\n") {
-					"${it.name} (${it.compressedSize}/${it.size} bytes) @ ${Instant.ofEpochMilli(it.time)}"
-				}
+			val contents = ZipFile(archive).use { zip ->
+				zip
+					.entries()
+					.asSequence()
+					.sortedBy { it.name }
+					.joinToString(prefix = "'$archive' contents:\n", separator = "\n") {
+						"${it.name} (${it.compressedSize}/${it.size} bytes) @ ${Instant.ofEpochMilli(it.time)}"
+					}
+			}
 			throw ex.withRootCause(ZipException(contents))
 		}
 	}

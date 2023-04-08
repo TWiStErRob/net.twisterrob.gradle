@@ -132,10 +132,12 @@ private fun Zip.failIfAlreadyArchived() {
 }
 
 private fun Zip.printResultingArchive() {
-	logger.quiet("Published release artifacts to ${outputs.files.singleFile}:" + ZipFile(outputs.files.singleFile)
-		.entries()
-		.toList()
-		.sortedBy { it.name }
-		.joinToString(prefix = "\n", separator = "\n") { "\t * ${it}" }
-	)
+	val contents = ZipFile(outputs.files.singleFile).use { zip ->
+		zip
+			.entries()
+			.toList()
+			.sortedBy { it.name }
+			.joinToString(prefix = "\n", separator = "\n") { "\t * ${it}" }
+	}
+	logger.quiet("Published release artifacts to ${outputs.files.singleFile}:" + contents)
 }

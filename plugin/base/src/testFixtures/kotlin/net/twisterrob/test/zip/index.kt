@@ -28,18 +28,19 @@ fun hasZipEntry(
 				.appendDescriptionOf(entryMatcher)
 		}
 
-		@Suppress("FoldInitializerAndIfToElvis")
-		override fun matchesSafely(zip: File): Boolean {
-			val entry: ZipEntry? = ZipFile(zip).getEntry(entryPath)
-			if (entry == null) {
-				// entry not found
-				return false
+		override fun matchesSafely(zipPath: File): Boolean {
+			ZipFile(zipPath).use { zip ->
+				val entry: ZipEntry? = zip.getEntry(entryPath)
+				if (entry == null) {
+					// entry not found
+					return false
+				}
+				if (entryMatcher?.matches(entry) == false) {
+					// entry doesn't match
+					return false
+				}
+				return true
 			}
-			if (entryMatcher?.matches(entry) == false) {
-				// entry doesn't match
-				return false
-			}
-			return true
 		}
 	}
 
@@ -50,5 +51,5 @@ fun hasEntryCount(entryCountMatcher: Matcher<Int>): Matcher<File> =
 		}
 
 		override fun matchesSafely(zip: File): Boolean =
-			entryCountMatcher.matches(ZipFile(zip).size())
+			entryCountMatcher.matches(ZipFile(zip).use { it.size() })
 	}
