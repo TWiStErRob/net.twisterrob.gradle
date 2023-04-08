@@ -9,6 +9,7 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.ext.zip
 import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.extensions
 import net.twisterrob.gradle.kotlin.dsl.withId
@@ -17,6 +18,7 @@ import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
+import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.get
@@ -210,31 +212,41 @@ class AndroidVersionPlugin : BasePlugin() {
 			val androidTestImpl = androidTest.unwrapCast<AndroidTest, AndroidTestImpl>()
 			androidTestImpl.outputs.filterIsInstance<VariantOutputImpl>().single()
 		}
-		variantOutput.outputFileName.set(project.provider {
-			// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
-			@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "UnsafeCallOnNullableType", "MaxLineLength")
-			val artifactName = version.formatArtifactName(
-				project,
-				variant.name,
-				variant.applicationId.get(),
-				variantOutput.versionCode.getOrElse(-1)!!.toLong(),
-				variantOutput.versionName.getOrElse(null)
-			)
-			artifactName.apk
-		})
-		androidTestOutput?.let { androidTest ->
-			androidTest.outputFileName.set(project.provider {
-				// TODEL https://youtrack.jetbrains.com/issue/KTIJ-20208
-				@Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "UnsafeCallOnNullableType", "MaxLineLength")
+		@Suppress("UNCHECKED_CAST")
+		val versionCodeProvider = variantOutput.versionCode.orElse(-1) as Provider<Int>
+		@Suppress("UNCHECKED_CAST")
+		val versionNameProvider = variantOutput.versionName.orElse("null") as Provider<String>
+		variantOutput.outputFileName.set(
+			//@formatter:off
+			variant.applicationId.zip(versionCodeProvider, versionNameProvider) {
+				applicationId, versionCode, versionName ->
 				val artifactName = version.formatArtifactName(
 					project,
-					variant.androidTestCompat!!.name,
-					variant.androidTestCompat!!.applicationId.get(),
-					variantOutput.versionCode.getOrElse(-1)!!.toLong(),
-					variantOutput.versionName.getOrElse(null)
+					variant.name,
+					applicationId,
+					versionCode.toLong(),
+					versionName
 				)
 				artifactName.apk
-			})
+			}
+			//@formatter:on
+		)
+		androidTestOutput?.let { androidTest ->
+			androidTest.outputFileName.set(
+				//@formatter:off
+				variant.androidTestCompat!!.applicationId.zip(versionCodeProvider, versionNameProvider) {
+					applicationId, versionCode, versionName ->
+					val artifactName = version.formatArtifactName(
+						project,
+						variant.androidTestCompat!!.name,
+						applicationId,
+						versionCode.toLong(),
+						versionName
+					)
+					artifactName.apk
+				}
+				//@formatter:on
+			)
 		}
 	}
 
