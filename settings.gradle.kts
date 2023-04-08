@@ -39,6 +39,7 @@ include(":compat:kotlin-base")
 
 include(":browser:pmd")
 include(":browser:checkstyle")
+include(":browser:lint")
 
 include(":plugin")
 include(":plugin:base")
