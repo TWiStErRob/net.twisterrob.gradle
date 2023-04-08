@@ -5,7 +5,9 @@ import net.twisterrob.gradle.common.wasLaunchedOnly
 import net.twisterrob.gradle.quality.gather.TestReportGatherer
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
 import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.testing.Test
@@ -60,14 +62,14 @@ open class GlobalTestFinalizerTask : TestReport() {
 				}
 			// Detach the result directories to prevent creation on dependsOn relationships.
 			// When simply using reportOn(tests) or reportOn(tasks.map { it.binaryResultDirectory }) task dependencies would be created.
-			task.testResultsCompat = task.project.files(tests.map { it.binaryResultsDirectoryCompat })
+			task.testResultsCompat = task.project.files(tests.map(Test::detachBinaryResultsDirectory))
 			// Force executing tests (if they're in the task graph), before reporting on them.
 			task.mustRunAfter(tests)
 		}
 	}
 }
 
-private val Test.binaryResultsDirectoryCompat: Any?
+private val Test.detachBinaryResultsDirectory: Provider<Directory>
 	// Need to create an indirection with a provider to keep it lazy,
 	// but also detach from the DirectoryProperty, which references its owning task.
 	get() = project.provider { this.binaryResultsDirectory.get() }

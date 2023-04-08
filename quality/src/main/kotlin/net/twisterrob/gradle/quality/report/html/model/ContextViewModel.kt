@@ -138,7 +138,7 @@ sealed class ContextViewModel {
 	class ArchiveContext(private val v: Violation) : ContextViewModel() {
 
 		val listing: String by lazy {
-			val entries = ZipFile(v.location.file).entries().asSequence()
+			val entries = ZipFile(v.location.file).use { it.entries().toList() }
 			entries.map { it.name }.sorted().joinToString("\n")
 		}
 
