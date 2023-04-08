@@ -190,7 +190,11 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 		private fun registerRunTask(project: Project, variant: ApplicationVariant) {
 			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize()}") {
-				this.dependsOn(project.provider { variant.taskContainer.installTask })
+				// Delay task retrieval until task graph calculation so AGP has a chance to set up the tasks.
+				this.dependsOn(project.provider {
+					variant.taskContainer.installTask
+						?: error("Install task for variant ${variant.name} is missing.")
+				})
 				this.manifestFile.set(variant.artifacts.get(SingleArtifact.MERGED_MANIFEST))
 				this.applicationId.set(variant.applicationId)
 				this.updateDescription(variant.description)

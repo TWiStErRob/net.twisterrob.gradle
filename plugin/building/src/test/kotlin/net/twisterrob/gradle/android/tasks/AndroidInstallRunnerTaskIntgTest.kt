@@ -36,7 +36,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 		val androidManifest = """
 			<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 				<application>
-					<activity android:name=".MainActivity">
+					<activity android:name="${packageName}.MainActivity">
 						<intent-filter>
 							<action android:name="android.intent.action.MAIN" />
 							<category android:name="android.intent.category.LAUNCHER" />
@@ -77,11 +77,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 			result.assertSuccess(":runDebug")
 			// line is output to stderr, so no control over being on a new line
 			result.assertNoOutputLine(""".*no devices/emulators found.*""".toRegex())
-			result.assertNoOutputLine(
-				"""
-					Error: Activity class \{${packageName}\.debug/${packageName}\.MainActivity\} does not exist\.
-				""".trimIndent().toRegex()
-			)
+			result.assertNoOutputLine("""Error: Activity class .* does not exist\.""".toRegex())
 		} else {
 			val result = gradle.run(script, "runDebug").buildAndFail()
 
