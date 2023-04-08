@@ -3,6 +3,8 @@ package net.twisterrob.gradle.android
 import com.android.build.api.component.impl.AndroidTestImpl
 import com.android.build.api.variant.AndroidTest
 import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.variant.ComponentIdentity
+import com.android.build.api.variant.GeneratesApk
 import com.android.build.api.variant.impl.VariantOutputImpl
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
@@ -208,47 +210,38 @@ class AndroidVersionPlugin : BasePlugin() {
 	private fun renameAPK(variant: ApplicationVariant) {
 		// TODO replace with new Variant API transformation.
 		val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
+		@Suppress("UNCHECKED_CAST")
+		val versionCode = variantOutput.versionCode.orElse(-1) as Provider<Int>
+		@Suppress("UNCHECKED_CAST")
+		val versionName = variantOutput.versionName.orElse("null") as Provider<String>
+
+		variantOutput.outputFileName.set(
+			variant.replacementApkNameProvider(versionCode, versionName)
+		)
+
 		val androidTestOutput = variant.androidTestCompat?.let { androidTest ->
 			val androidTestImpl = androidTest.unwrapCast<AndroidTest, AndroidTestImpl>()
 			androidTestImpl.outputs.filterIsInstance<VariantOutputImpl>().single()
 		}
-		@Suppress("UNCHECKED_CAST")
-		val versionCodeProvider = variantOutput.versionCode.orElse(-1) as Provider<Int>
-		@Suppress("UNCHECKED_CAST")
-		val versionNameProvider = variantOutput.versionName.orElse("null") as Provider<String>
-		variantOutput.outputFileName.set(
-			//@formatter:off
-			variant.applicationId.zip(versionCodeProvider, versionNameProvider) {
-				applicationId, versionCode, versionName ->
-				val artifactName = version.formatArtifactName(
-					project,
-					variant.name,
-					applicationId,
-					versionCode.toLong(),
-					versionName
-				)
-				artifactName.apk
-			}
-			//@formatter:on
+		androidTestOutput?.outputFileName?.set(
+			variant.androidTestCompat!!.replacementApkNameProvider(versionCode, versionName)
 		)
-		androidTestOutput?.let { androidTest ->
-			androidTest.outputFileName.set(
-				//@formatter:off
-				variant.androidTestCompat!!.applicationId.zip(versionCodeProvider, versionNameProvider) {
-					applicationId, versionCode, versionName ->
-					val artifactName = version.formatArtifactName(
-						project,
-						variant.androidTestCompat!!.name,
-						applicationId,
-						versionCode.toLong(),
-						versionName
-					)
-					artifactName.apk
-				}
-				//@formatter:on
-			)
-		}
 	}
+
+	private fun <T> T.replacementApkNameProvider(
+		versionCodeProvider: Provider<Int>,
+		versionNameProvider: Provider<String>
+	): Provider<String> where T : ComponentIdentity, T : GeneratesApk =
+		this.applicationId.zip(versionCodeProvider, versionNameProvider) { applicationId, versionCode, versionName ->
+			val artifactName = version.formatArtifactName(
+				project,
+				this.name,
+				applicationId,
+				versionCode.toLong(),
+				versionName
+			)
+			artifactName.apk
+		}
 
 	private fun readVersion(file: File): Properties =
 		Properties().also { props ->
