@@ -69,6 +69,7 @@ open class GITPluginExtension(
 	override fun files(project: Project): FileCollection =
 		project.files(
 			".git/HEAD",
+			// Delay File operations to when the FileCollection is resolved.
 			project.provider {
 				val headRef = project.rootDir.resolve(".git/HEAD")
 				if (headRef.exists() && headRef.isFile && headRef.canRead()) {
