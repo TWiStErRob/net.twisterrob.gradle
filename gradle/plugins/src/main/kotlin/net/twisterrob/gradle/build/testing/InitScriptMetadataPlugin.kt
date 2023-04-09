@@ -78,7 +78,7 @@ private fun excludeGradleApi(componentId: ComponentIdentifier): Boolean =
 	when (componentId) {
 		// Gradle built-in internal DependencyFactoryInternal.ClassPathNotation
 		is OpaqueComponentIdentifier -> false
-		// My override of DependencyFactoryInternal.ClassPathNotation, needs to be ignored the same asb above.
+		// My override of DependencyFactoryInternal.ClassPathNotation, needs to be ignored the same as above.
 		is StaticComponentIdentifier -> false
 		// Ignore Kotlin stdlib and related libraries, Gradle will provide the right version for those.
 		is ModuleComponentIdentifier -> !componentId.group.startsWith("org.jetbrains")
