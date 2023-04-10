@@ -5,16 +5,13 @@
 	],
 	"ignorePaths": [
 		"graph/**",
-		"**/src/test/resources/**",
-		"**/src/testFixtures/resources/**"
+		"**/src/test/resources/**"
 	],
 	"packageRules": [
 		{
 			"description": "Disable updating AGP compatibility dependencies, they have a specific version, and will break the build. Allow patches.",
 			"matchPackageNames": [
-				"com.android.tools.build:gradle",
-				"com.android.tools.ddms:ddmlib",
-				"com.android.tools:common"
+				"com.android.tools.build:gradle"
 			],
 			"matchPaths": [
 				"gradle/agp.versions.toml"
@@ -23,9 +20,19 @@
 			"enabled": false
 		},
 		{
-			"description": "Disable updating CI matrix dependencies, they have a specific version. Allow patches.",
+			"description": "Disable updating AGP CI matrix, they use the latest patch of a specific minor.",
 			"matchPackageNames": [
-				"com.android.tools.build:gradle",
+				"com.android.tools.build:gradle"
+			],
+			"matchPaths": [
+				".github/workflows/CI.yml"
+			],
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		},
+		{
+			"description": "Disable updating Gradle CI matrix, they use the latest patch of a specific minor.",
+			"matchPackageNames": [
 				"gradle"
 			],
 			"matchPaths": [
@@ -33,6 +40,45 @@
 			],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
+		},
+		{
+			"description": "Re-enable updating Gradle CI matrix for latest version. It's not working, see https://github.com/renovatebot/renovate/issues/21407",
+			"matchPackageNames": [
+				"gradle"
+			],
+			"matchPaths": [
+				".github/workflows/CI.yml"
+			],
+			"matchCurrentVersion": ">=8.0",
+			"matchUpdateTypes": ["minor"],
+			"enabled": true
+		},
+		{
+			"description": "Disable updating Gradle, they use the latest patch of a specific minor.",
+			"matchPackageNames": [
+				"gradle"
+			],
+			"matchPaths": [
+				"test/src/main/resources/net/twisterrob/gradle/test/nagging.init.gradle.kts",
+				"plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/build.gradle",
+				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
+			],
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		},
+		{
+			"description": "Re-enable updating Gradle for latest version. It's not working, see https://github.com/renovatebot/renovate/issues/21407",
+			"matchPackageNames": [
+				"gradle"
+			],
+			"matchPaths": [
+				"test/src/main/resources/net/twisterrob/gradle/test/nagging.init.gradle.kts",
+				"plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/build.gradle",
+				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
+			],
+			"matchCurrentVersion": ">=8.0",
+			"matchUpdateTypes": ["minor"],
+			"enabled": true
 		},
 		{
 			"description": "Disable updating plugins in example projects, they're part of the release process.",
@@ -80,23 +126,13 @@
 	],
 	"regexManagers": [
 		{
-			"description": "Update AGP compatibility CI matrix values.",
+			"description": "Update AGP compatibility CI matrix values and artifact names.",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
 			"matchStrings": [
-				"  agp: '(?<currentValue>.*)'"
-			],
-			"versioningTemplate": "gradle"
-		},
-		{
-			"description": "Update AGP compatibility CI matrix artifact names. The names depend on `agp` matrix values.",
-			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
-			"datasourceTemplate": "maven",
-			"registryUrlTemplate": "https://maven.google.com",
-			"depNameTemplate": "com.android.tools.build:gradle",
-			"matchStrings": [
+				"  agp: '(?<currentValue>.*)'",
 				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?<currentValue>.*) on (?:.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
 			],
 			"versioningTemplate": "gradle"
@@ -124,21 +160,12 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"description": "Update Gradle compatibility CI matrix values.",
+			"description": "Update Gradle compatibility CI matrix values and artifact names.",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"  gradle: '(?<currentValue>.*)'"
-			],
-			"versioningTemplate": "gradle"
-		},
-		{
-			"description": "Update Gradle compatibility CI matrix artifact names. The names depend on `gradle` matrix values.",
-			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
-			"datasourceTemplate": "gradle-version",
-			"depNameTemplate": "gradle",
-			"matchStrings": [
+				"  gradle: '(?<currentValue>.*)'",
 				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?:.*) on (?<currentValue>.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
 			],
 			"versioningTemplate": "gradle"
@@ -159,7 +186,7 @@
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"\t\"(?<currentValue>\\d+(\\.\\d+)+(-rc-\\d+)?)\","
+				"\"(?<currentValue>\\d+(?:\\.\\d+)+(?:-rc-\\d+)?)\","
 			],
 			"versioningTemplate": "gradle"
 		},
@@ -169,7 +196,7 @@
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"\t\t\t\t\t\"(?<currentValue>\\d+(?:\\.\\d+)+(?:-rc-\\d+)?)\","
+				"\"(?<currentValue>\\d+(?:\\.\\d+)+(?:-rc-\\d+)?)\","
 			],
 			"versioningTemplate": "gradle"
 		},
@@ -179,8 +206,8 @@
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"\t\tgradle\\.gradleVersion = GradleVersion\\.version\\(\"(?<currentValue>.*)\"\\)",
-				"\t\tresult\\.assertHasOutputLine\\(\"\"\"Gradle version: (?<currentValue>.*)\"\"\"\\)"
+				"gradle\\.gradleVersion = GradleVersion\\.version\\(\"(?<currentValue>.*)\"\\)",
+				"result\\.assertHasOutputLine\\(\"\"\"Gradle version: (?<currentValue>.*)\"\"\"\\)"
 			],
 			"versioningTemplate": "gradle"
 		},
