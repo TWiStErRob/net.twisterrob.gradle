@@ -112,7 +112,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 			""".trimIndent()
 			gradle.file(buildScript, checkName, *BUILD_SCRIPT_PATH)
 			gradle.file(content, checkName, *SOURCE_PATH, name)
-			gradle.settingsFile.appendText("include ':${checkName}'${System.lineSeparator()}")
+			gradle.settingsFile.appendText("""include(":${checkName}")${System.lineSeparator()}""")
 		}
 
 		@Language("gradle")

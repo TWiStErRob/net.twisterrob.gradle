@@ -32,11 +32,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(GradleRunnerRuleExtension::class)
 class PmdPluginTest : BaseIntgTest() {
 
-	companion object {
-
-		private val endl = System.lineSeparator()
-	}
-
 	override lateinit var gradle: GradleRunnerRule
 
 	private val pmd = PmdTestResources()
@@ -143,7 +138,7 @@ class PmdPluginTest : BaseIntgTest() {
 			":module3:sub2"
 		)
 		modules.forEach { modulePath ->
-			gradle.settingsFile.appendText("include '${modulePath}'${endl}")
+			gradle.settingsFile.appendText("""include("${modulePath}")${System.lineSeparator()}""")
 
 			@Language("gradle")
 			val subProject = """
@@ -200,7 +195,7 @@ class PmdPluginTest : BaseIntgTest() {
 		)
 		val applyTo = arrayOf(":module2", ":module2:sub1", ":module3:sub2")
 		modules.forEach { modulePath ->
-			gradle.settingsFile.appendText("include '${modulePath}'${endl}")
+			gradle.settingsFile.appendText("""include("${modulePath}")${System.lineSeparator()}""")
 
 			@Suppress("MandatoryBracesIfStatements") // Language annotation doesn't work on implicit block return.
 			@Language("gradle")

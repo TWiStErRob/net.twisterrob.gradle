@@ -36,8 +36,6 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 	companion object {
 
-		private val endl = System.lineSeparator()
-
 		@Suppress("")
 		@Language("java")
 		private val testFile: String = """
@@ -200,7 +198,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 		)
 		val applyTo = arrayOf(":module1", ":module2", ":module2:sub1", ":module3:sub2")
 		modules.forEach { modulePath ->
-			gradle.settingsFile.appendText("include '${modulePath}'${endl}")
+			gradle.settingsFile.appendText("""include("${modulePath}")${System.lineSeparator()}""")
 
 			@Language("gradle")
 			val subProject = """

@@ -261,7 +261,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 			}
 		""".trimIndent()
 
-		gradle.settingsFile.appendText("include ':lib'")
+		gradle.settingsFile.appendText("""include(":lib")${System.lineSeparator()}""")
 
 		@Language("gradle")
 		val libGradle = """
@@ -294,7 +294,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 	@Issue("https://github.com/TWiStErRob/net.twisterrob.gradle/issues/214")
 	@Test fun `extract task wires with Android Lint correctly`() {
-		gradle.settingsFile.appendText("include ':lib'")
+		gradle.settingsFile.appendText("""include(":lib")${System.lineSeparator()}""")
 
 		@Language("gradle")
 		val libGradle = """
