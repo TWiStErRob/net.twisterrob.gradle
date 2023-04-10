@@ -8,5 +8,3 @@ inline fun GradleRunnerRule.runBuild(block: GradleRunnerRule.() -> GradleRunner)
 
 inline fun GradleRunnerRule.runFailingBuild(block: GradleRunnerRule.() -> GradleRunner): BuildResult =
 	this.block().buildAndFail()
-
-// STOPSHIP
