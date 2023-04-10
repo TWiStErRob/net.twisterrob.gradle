@@ -55,7 +55,7 @@ class LintPluginTest : BaseIntgTest() {
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")
-			gradle.settingsFile.appendText("include ':${module}'${endl}")
+			gradle.settingsFile.appendText("""include(":${module}")${System.lineSeparator()}""")
 		}
 
 		@Language("gradle")
@@ -323,13 +323,8 @@ class LintPluginTest : BaseIntgTest() {
 			""".trimIndent()
 
 			gradle.file(subProject, module, "build.gradle")
-			gradle.settingsFile.appendText("include ':${module}'${endl}")
+			gradle.settingsFile.appendText("""include(":${module}")${System.lineSeparator()}""")
 			gradle.file(lintViolation, module, "src", "main", "java", "fail1.java")
 		}
-	}
-
-	companion object {
-
-		private val endl = System.lineSeparator()
 	}
 }

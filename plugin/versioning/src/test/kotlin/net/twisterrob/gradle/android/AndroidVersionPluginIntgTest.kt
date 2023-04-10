@@ -254,7 +254,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			android.defaultConfig.version { renameAPK = false; major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 		val projectName = "gradle-test-project"
-		gradle.settingsFile.appendText("rootProject.name = '$projectName'")
+		gradle.settingsFile.appendText("""rootProject.name = "${projectName}"""")
 
 		val result = gradle.run(script, "assembleDebug").build()
 
@@ -275,7 +275,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			android.defaultConfig.version { renameAPK = false; major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 		val projectName = "gradle-test-project"
-		gradle.settingsFile.appendText("rootProject.name = '$projectName'")
+		gradle.settingsFile.appendText("""rootProject.name = "${projectName}"""")
 
 		val result = gradle.run(script, "assembleRelease").build()
 

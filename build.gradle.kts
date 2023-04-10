@@ -114,6 +114,7 @@ subprojects {
 			// Used in GradleTestKitDirRelocator.
 			properties["java.io.tmpdir"] = tmpdir
 		}
+		// TODEL https://github.com/gradle/gradle/issues/861
 		properties.forEach { (name, value) -> inputs.property(name, value) }
 		properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
 	}
@@ -125,6 +126,7 @@ subprojects {
 			"net.twisterrob.test.android.compileSdkVersion"
 		)
 		val properties = propertyNamesToReplace.keysToMap { project.property(it) }
+		// TODEL https://github.com/gradle/gradle/issues/861
 		properties.forEach { (name, value) -> inputs.property(name, value) }
 		val processedFiles = listOf(
 			"**/build.gradle",
@@ -132,7 +134,10 @@ subprojects {
 			"**/settings.gradle",
 			"**/settings.gradle.kts",
 			"**/gradle.properties",
+			"**/*.init.gradle.kts",
 		)
+		// TODEL https://github.com/gradle/gradle/issues/24698
+		inputs.property("processedFiles", processedFiles)
 		filesMatching(processedFiles) {
 			val replacements = properties + mapOf(
 				// custom replacements (`"name" to value`) would come here

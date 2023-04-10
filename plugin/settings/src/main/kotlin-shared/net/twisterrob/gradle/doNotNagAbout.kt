@@ -28,6 +28,8 @@ import java.util.regex.Pattern
  *    ```
  *    System.setProperty("net.twisterrob.gradle.nagging.diagnostics", "true")
  *    ```
+ *    or by setting `systemProp.net.twisterrob.gradle.nagging.diagnostics=true` in `gradle.properties`
+ *    or by setting [isDoNotNagAboutDiagnosticsEnabled] to `true`.
  *
  * ### Example 1 - suppressing generic deprecation.
  * Realistic usage example with Gradle 7.5.1 and Android Gradle Plugin 7.2.2:
@@ -218,7 +220,7 @@ private class IgnoringSet(
 	private val ignorePatterns: MutableSet<Regex> = mutableSetOf()
 
 	fun ignorePattern(regex: Regex) {
-		if (isDiagnosticsEnabled) {
+		if (isDoNotNagAboutDiagnosticsEnabled) {
 			@Suppress("ForbiddenMethodCall") // This will be shown in the console, as the user explicitly asked for it.
 			println("Ignoring pattern: ${regex}")
 		}
@@ -228,7 +230,7 @@ private class IgnoringSet(
 	override fun add(element: String): Boolean {
 		val isIgnored = ignorePatterns.any { it.matches(element) }
 		val isNew = backingSet.add(element)
-		if (isDiagnosticsEnabled) {
+		if (isDoNotNagAboutDiagnosticsEnabled) {
 			val state = if (isNew) "first seen" else "already added"
 			val ignores = ignorePatterns.joinToString(separator = "\n") { ignorePattern ->
 				val matching = if (ignorePattern.matches(element)) "matching" else "not matching"
@@ -241,10 +243,10 @@ private class IgnoringSet(
 	}
 
 	companion object {
-		private val isDiagnosticsEnabled: Boolean
-			get() = System.getProperty("net.twisterrob.gradle.nagging.diagnostics", "false").toBoolean()
-
 		fun wrap(backingSet: MutableSet<String>): IgnoringSet =
 			if (backingSet is IgnoringSet) backingSet else IgnoringSet(backingSet)
 	}
 }
+
+var isDoNotNagAboutDiagnosticsEnabled: Boolean =
+	System.getProperty("net.twisterrob.gradle.nagging.diagnostics", "false").toBoolean()

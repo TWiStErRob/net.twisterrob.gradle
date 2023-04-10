@@ -7,12 +7,12 @@ object GradleBuildTestResources {
 	val kotlin: KotlinProject = object : KotlinProject {}
 
 	interface KotlinProject {
-		val build: String
-			get() = read("kotlin-plugin_app/build.gradle")
+		val settings: String
+			get() = read("kotlin-plugin_app/settings.gradle.kts")
 	}
 
 	fun GradleRunnerRule.basedOn(project: KotlinProject) {
-		file(project.build, ContentMergeMode.MERGE_GRADLE, "build.gradle")
+		file(project.settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 	}
 
 	val android: AndroidProject = object : AndroidProject {}
