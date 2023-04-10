@@ -162,10 +162,12 @@ open class GradleRunnerRule : TestRule {
 		val javaHome: String? by systemProperty("java.home")
 		@Suppress("NullableToStringCall") // Debug info, null is OK.
 		val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
+		val kotlin = KotlinVersion.CURRENT
 		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println(
 			@Suppress("MultilineRawStringIndentation") """
 				Test Java: ${java} from ${javaHome}.
+				Test Kotlin stdlib: ${kotlin}.
 				Requesting ${gradleVersion} in worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
 				Gradle properties:
 				```properties

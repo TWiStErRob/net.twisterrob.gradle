@@ -11,7 +11,7 @@ dependencyResolutionManagement {
 			from(files("../../gradle/libs.versions.toml"))
 			// Note: it is necessary to load both libs and agp the same way as it's done
 			// in rootProject.settings.gradle.kts, because otherwise there are unresolved references.
-			TomlCatalogFileParser.parse(file("../../gradle/agp.versions.toml").inputStream(), this)
+			TomlCatalogFileParser.parse(file("../../gradle/agp.versions.toml").toPath(), this)
 		}
 	}
 }
