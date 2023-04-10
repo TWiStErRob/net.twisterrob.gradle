@@ -1,7 +1,8 @@
-def gradleVersion = project.gradle.gradleVersion
+def gradleVersion = gradle.gradleVersion
 // Note: .toString on GStrings are necessary because Groovy doesn't auto-convert it.
-def doNotNagAbout = rootProject.ext["doNotNagAbout"]
-def doNotNagAboutStack = rootProject.ext["doNotNagAboutStack"]
+def doNotNagAbout = settings.ext["doNotNagAbout"]
+def doNotNagAboutStack = settings.ext["doNotNagAboutStack"]
+
 if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.6.0") {
 	// https://youtrack.jetbrains.com/issue/KT-47867 was fixed in 1.6.0,
 	// so disable these warnings for anything that uses Kotlin < 1.6.
@@ -16,6 +17,7 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.6.0") {
 			"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'AbstractKotlinCompile.execute' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation".toString()
 	)
 }
+
 if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.0") {
 	// https://youtrack.jetbrains.com/issue/KT-32805#focus=Comments-27-5915479.0-0 was fixed in 1.7.0.
 	// > Task :kaptGenerateStubsDebugKotlin
