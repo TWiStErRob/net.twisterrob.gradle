@@ -20,45 +20,13 @@
 			"enabled": false
 		},
 		{
-			"description": "Disable updating AGP CI matrix, they use the latest patch of a specific minor.",
+			"description": "Disable updating CI matrix, they use the latest patch of a specific minor.",
 			"matchPackageNames": [
-				"com.android.tools.build:gradle"
-			],
-			"matchPaths": [
-				".github/workflows/CI.yml"
-			],
-			"matchUpdateTypes": ["major", "minor"],
-			"enabled": false
-		},
-		{
-			"description": "Disable updating Gradle CI matrix, they use the latest patch of a specific minor.",
-			"matchPackageNames": [
+				"com.android.tools.build:gradle",
 				"gradle"
 			],
 			"matchPaths": [
-				".github/workflows/CI.yml"
-			],
-			"matchUpdateTypes": ["major", "minor"],
-			"enabled": false
-		},
-		{
-			"description": "Re-enable updating Gradle CI matrix for latest version. It's not working, see https://github.com/renovatebot/renovate/issues/21407",
-			"matchPackageNames": [
-				"gradle"
-			],
-			"matchPaths": [
-				".github/workflows/CI.yml"
-			],
-			"matchCurrentVersion": ">=8.0",
-			"matchUpdateTypes": ["minor"],
-			"enabled": true
-		},
-		{
-			"description": "Disable updating Gradle, they use the latest patch of a specific minor.",
-			"matchPackageNames": [
-				"gradle"
-			],
-			"matchPaths": [
+				".github/workflows/CI.yml",
 				"test/src/main/resources/net/twisterrob/gradle/test/nagging.init.gradle.kts",
 				"plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/build.gradle",
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
@@ -67,11 +35,13 @@
 			"enabled": false
 		},
 		{
-			"description": "Re-enable updating Gradle for latest version. It's not working, see https://github.com/renovatebot/renovate/issues/21407",
+			"description": "Re-enable updating Gradle CI matrix for latest version. It's not working, see https://github.com/renovatebot/renovate/issues/21407",
 			"matchPackageNames": [
+				"com.android.tools.build:gradle",
 				"gradle"
 			],
 			"matchPaths": [
+				".github/workflows/CI.yml",
 				"test/src/main/resources/net/twisterrob/gradle/test/nagging.init.gradle.kts",
 				"plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/build.gradle",
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
@@ -182,17 +152,10 @@
 		},
 		{
 			"description": "Update Gradle nagging constants.",
-			"fileMatch": [ "^test/src/main/resources/net/twisterrob/gradle/test/nagging\\.init\\.gradle\\.kts$" ],
-			"datasourceTemplate": "gradle-version",
-			"depNameTemplate": "gradle",
-			"matchStrings": [
-				"\"(?<currentValue>\\d+(?:\\.\\d+)+(?:-rc-\\d+)?)\","
+			"fileMatch": [
+				"^test/src/main/resources/net/twisterrob/gradle/test/nagging\\.init\\.gradle\\.kts$",
+				"^plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/build\\.gradle$"
 			],
-			"versioningTemplate": "gradle"
-		},
-		{
-			"description": "Update Gradle nagging constants - Kotlin.",
-			"fileMatch": [ "^plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/build\\.gradle$" ],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
