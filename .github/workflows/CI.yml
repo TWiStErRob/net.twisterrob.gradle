@@ -65,7 +65,6 @@ jobs:
           --continue
           jar
           validatePlugins
-          detekt
           detektMain
           detektTest
           detektReportMergeSarif
