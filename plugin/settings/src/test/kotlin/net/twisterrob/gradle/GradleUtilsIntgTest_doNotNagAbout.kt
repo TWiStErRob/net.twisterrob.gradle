@@ -6,6 +6,7 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
 import org.gradle.testkit.runner.BuildResult
@@ -15,6 +16,7 @@ import org.hamcrest.Matchers.lessThan
 import org.hamcrest.assumeThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assumptions.assumeTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -24,6 +26,16 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(GradleRunnerRuleExtension::class)
 class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
+
+	@BeforeEach fun applySettingsPlugin() {
+		@Language("gradle")
+		val settings = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.settings")
+			}
+		""".trimIndent()
+		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
+	}
 
 	@Test fun `ensure that nagging works`() {
 		assumeTrue(canNagUser(gradle.gradleVersion))
@@ -35,7 +47,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 			run(script)
 		}
 
-		result.verifyNagging("Fake nagging for test", 37)
+		result.verifyNagging("Fake nagging for test", 7)
 	}
 
 	@Test fun `disable nagging for specific feature`() {
@@ -44,7 +56,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		val buildFileLine =
 			if (GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion) {
 				"""
-					"Build file '${'$'}{buildFile.absolutePath}': line 41${'$'}{System.lineSeparator()}" +
+					"Build file '${'$'}{buildFile.absolutePath}': line 11${'$'}{System.lineSeparator()}" +
 				""".trimIndent()
 			} else {
 				""
@@ -91,9 +103,9 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		@Suppress("UnnecessaryQualifiedReference")
 		val script = """
 			net.twisterrob.gradle.GradleUtils.doNotNagAbout(
-				"Build file '${'$'}{buildFile.absolutePath}': line 42${'$'}{System.lineSeparator()}" +
+				"Build file '${'$'}{buildFile.absolutePath}': line 12${'$'}{System.lineSeparator()}" +
 				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradleVersion}.",
-				"build.gradle:42" // specific line in generated build.gradle file
+				"build.gradle:12" // specific line in generated build.gradle file
 			)
 			${nag("""Fake nagging for test""")}
 		""".trimIndent()
@@ -102,7 +114,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		}
 
 		result.assertNoOutputLine(Regex(""".*Fake nagging for test.*"""))
-		result.assertNoOutputLine("Build file '${gradle.buildFile.absolutePath}': line 42")
+		result.assertNoOutputLine("Build file '${gradle.buildFile.absolutePath}': line 12")
 	}
 
 	@Test fun `deprecation can be suppressed with stack trace (specific instance)`() {
@@ -112,9 +124,9 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		@Suppress("UnnecessaryQualifiedReference")
 		val script = """
 			net.twisterrob.gradle.GradleUtils.doNotNagAbout(
-				"Build file '${'$'}{buildFile.absolutePath}': line 42${'$'}{System.lineSeparator()}" +
+				"Build file '${'$'}{buildFile.absolutePath}': line 12${'$'}{System.lineSeparator()}" +
 				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradleVersion}.",
-				"build.gradle:42" // specific line in generated build.gradle file
+				"build.gradle:12" // specific line in generated build.gradle file
 			)
 			${nag("""Fake nagging for test""")}
 			${nag("""Fake nagging for test""")}
@@ -123,9 +135,9 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 			run(script, "--stacktrace")
 		}
 
-		result.assertNoOutputLine("Build file '${gradle.buildFile.absolutePath}': line 42")
-		result.assertHasOutputLine("Build file '${gradle.buildFile.absolutePath}': line 50")
-		result.verifyNagging("Fake nagging for test", 50)
+		result.assertNoOutputLine("Build file '${gradle.buildFile.absolutePath}': line 12")
+		result.assertHasOutputLine("Build file '${gradle.buildFile.absolutePath}': line 20")
+		result.verifyNagging("Fake nagging for test", 20)
 	}
 
 	private fun BuildResult.verifyNagging(feature: String, line: Int) {

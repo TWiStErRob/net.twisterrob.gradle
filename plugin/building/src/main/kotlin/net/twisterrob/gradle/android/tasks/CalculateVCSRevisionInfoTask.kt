@@ -2,15 +2,18 @@ package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.addBuildConfigField
 import net.twisterrob.gradle.android.intermediateRegularFile
+import net.twisterrob.gradle.internal.safeWriteText
 import net.twisterrob.gradle.vcs.VCSPluginExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.getByType
 
+@CacheableTask
 abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 
 	@get:OutputFile
@@ -20,7 +23,9 @@ abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 	abstract val revisionNumberFile: RegularFileProperty
 
 	init {
+		// Delay input resolution to when the inputs are resolved for the task.
 		inputs.files(project.provider { vcs.current.files(project) })
+
 		@Suppress("LeakingThis")
 		revisionFile.convention(project.intermediateRegularFile("buildConfigDecorations/revision.txt"))
 		@Suppress("LeakingThis")
@@ -32,8 +37,8 @@ abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 
 	@TaskAction
 	fun writeVCS() {
-		revisionFile.writeText(vcs.current.revision)
-		revisionNumberFile.writeText(vcs.current.revisionNumber.toString())
+		revisionFile.safeWriteText(vcs.current.revision)
+		revisionNumberFile.safeWriteText(vcs.current.revisionNumber.toString())
 	}
 
 	companion object {

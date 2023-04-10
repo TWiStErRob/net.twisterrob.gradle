@@ -7,7 +7,7 @@ plugins {
 	@Suppress("DSL_SCOPE_VIOLATION") // TODEL https://github.com/gradle/gradle/issues/22797
 	alias(libs.plugins.nexus)
 	id("net.twisterrob.gradle.build.module.root")
-	id("idea")
+	id("org.gradle.idea")
 }
 
 val projectVersion: String by project
@@ -109,6 +109,11 @@ subprojects {
 			properties["net.twisterrob.gradle.runner.clearAfterSuccess"] = "false"
 			properties["net.twisterrob.gradle.runner.clearAfterFailure"] = "false"
 		}
+		val tmpdir = project.property("net.twisterrob.test.java.io.tmpdir").toString()
+		if (tmpdir.isNotEmpty()) {
+			// Used in GradleTestKitDirRelocator.
+			properties["java.io.tmpdir"] = tmpdir
+		}
 		properties.forEach { (name, value) -> inputs.property(name, value) }
 		properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
 	}
@@ -121,7 +126,14 @@ subprojects {
 		)
 		val properties = propertyNamesToReplace.keysToMap { project.property(it) }
 		properties.forEach { (name, value) -> inputs.property(name, value) }
-		filesMatching(listOf("**/build.gradle", "**/settings.gradle")) {
+		val processedFiles = listOf(
+			"**/build.gradle",
+			"**/build.gradle.kts",
+			"**/settings.gradle",
+			"**/settings.gradle.kts",
+			"**/gradle.properties",
+		)
+		filesMatching(processedFiles) {
 			val replacements = properties + mapOf(
 				// custom replacements (`"name" to value`) would come here
 			)
@@ -129,7 +141,7 @@ subprojects {
 		}
 	}
 
-	plugins.withId("kotlin") {
+	plugins.withId("org.jetbrains.kotlin.jvm") {
 		dependencies {
 			// Make sure we don't have many versions of Kotlin lying around.
 			add("compileOnly", enforcedPlatform(deps.kotlin.bom))
@@ -144,12 +156,10 @@ subprojects {
 			add("api", deps.kotlin.stdlib)
 			add("api", deps.kotlin.stdlib.jdk8)
 			add("api", deps.kotlin.reflect)
-
-			add("testImplementation", deps.kotlin.test)
 		}
 	}
 
-	plugins.withId("java") {
+	plugins.withId("org.gradle.java") {
 		val java = extensions.getByName<JavaPluginExtension>("java")
 		java.sourceCompatibility = JavaVersion.toVersion(deps.versions.java.get())
 		java.targetCompatibility = JavaVersion.toVersion(deps.versions.java.get())
@@ -297,15 +307,24 @@ nexusPublishing {
 
 idea {
 	module {
-		val excludes = listOf(
-			"docs/examples/local/.gradle",
-			"docs/examples/local/build",
-			"docs/examples/release/.gradle",
-			"docs/examples/release/build",
-			"docs/examples/snapshot/.gradle",
-			"docs/examples/snapshot/build",
-		) + allprojects.map { it.projectDir.relativeTo(rootDir).resolve("build/unPackagedTestResources").toString() } 
-		excludeDirs.addAll(excludes.map { rootDir.resolve(it) })
+		fun excludedInProject(dir: File): List<File> =
+			listOf(
+				dir.resolve(".gradle"),
+				dir.resolve("build"),
+				dir.resolve("buildSrc/.gradle"),
+				dir.resolve("buildSrc/build"),
+				dir.resolve(".idea"),
+			)
+
+		val examples = listOf("local", "release", "snapshot")
+			.map { rootDir.resolve("docs/examples").resolve(it) }
+			.flatMap(::excludedInProject)
+		val debuggers = rootDir
+			.resolve("docs/debug")
+			.listFiles { file: File -> file.isDirectory }
+			.flatMap(::excludedInProject)
+		val unpackagedResources = allprojects.map { it.projectDir.resolve("build/unPackagedTestResources") }
+		excludeDirs.addAll(examples + debuggers + unpackagedResources)
 	}
 }
 

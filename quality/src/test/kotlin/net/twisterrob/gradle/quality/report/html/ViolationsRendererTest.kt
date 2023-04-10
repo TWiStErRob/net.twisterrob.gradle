@@ -35,6 +35,7 @@ class ViolationsRendererTest {
 	}
 
 	@Test fun `renderXml writes preamble`() {
+		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
 		@Language("XML")
 		val expected = """<?xml version="1.0" encoding="utf-8"?>
 			<?xml-stylesheet type="text/xsl" href="some/path/to.xsl"?>
@@ -47,6 +48,7 @@ class ViolationsRendererTest {
 	}
 
 	@Test fun `renderXml writes project name on root`() {
+		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
 		@Language("XML")
 		val expected = """<?xml version="1.0" encoding="utf-8"?>
 			<violations project="test project"></violations>
@@ -71,6 +73,7 @@ class ViolationsRendererTest {
 		val violations: Map<Category, Map<Reporter, List<Violation>>> =
 			mapOf(fixtCategory to mapOf(fixtReporter to listOf(fixtViolation)))
 
+		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
 		@Language("XML")
 		val expected = """<?xml version="1.0" encoding="utf-8"?>
 			<violations project="test project">
@@ -151,6 +154,7 @@ class ViolationsRendererTest {
 		val violations: Map<Category, Map<Reporter, List<Violation>>> =
 			mapOf(fixtCategory to mapOf(fixtReporter to listOf(fixtViolation)))
 
+		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
 		@Language("XML")
 		val expected = """<?xml version="1.0" encoding="utf-8"?>
 			<violations project="test project">
@@ -222,7 +226,9 @@ class ViolationsRendererTest {
 			xslPath: String? = null
 		): String {
 			val out = StringWriter()
-			out.xmlWriter().use { renderXml(it, violations, projectName, xslPath) }
+			out.xmlWriter().use {
+				renderXml(to = it, from = violations, projectName = projectName, xslPath = xslPath)
+			}
 			return out.toString()
 		}
 	}

@@ -43,6 +43,9 @@ dependencies {
 
 	testImplementation(testFixtures(projects.pmd))
 	testImplementation(testFixtures(projects.checkstyle))
+	testInjectedPluginClasspath(libs.android.gradle) {
+		version { require(property("net.twisterrob.test.android.pluginVersion").toString()) }
+	}
 
 	testFixturesImplementation(projects.test.internal)
 }

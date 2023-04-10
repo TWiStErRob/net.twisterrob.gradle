@@ -29,7 +29,9 @@ class VCSPluginIntgTest : BaseIntgTest() {
 		}
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.vcs'
+			plugins {
+				id("net.twisterrob.gradle.plugin.vcs")
+			}
 			println("VCS.current: " + project.VCS.current)
 		""".trimIndent()
 
@@ -39,7 +41,15 @@ class VCSPluginIntgTest : BaseIntgTest() {
 	}
 
 	@Test fun `applying by the old name is deprecated`() {
-		val result = gradle.run("apply plugin: 'net.twisterrob.vcs'").buildAndFail()
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.vcs")
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script).buildAndFail()
+
 		result.assertHasOutputLine(
 			Regex(
 				"""org\.gradle\.api\.GradleException: """ +

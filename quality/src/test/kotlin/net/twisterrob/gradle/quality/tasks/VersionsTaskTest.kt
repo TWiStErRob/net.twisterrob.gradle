@@ -4,13 +4,12 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.runBuild
-import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see VersionsTask
@@ -23,6 +22,9 @@ class VersionsTaskTest : BaseIntgTest() {
 	@Test fun `print missing versions`() {
 		@Language("gradle")
 		val script = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
@@ -30,7 +32,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			run(script, "qualityVersions")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
+		result.assertSuccess(":qualityVersions")
 		result.assertHasOutputLine(Regex("""Gradle version: .+"""))
 		result.assertHasOutputLine("""Checkstyle version: 'checkstyle' plugin not applied""")
 		result.assertHasOutputLine("""PMD version: 'pmd' plugin not applied""")
@@ -41,7 +43,10 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'checkstyle'
+			plugins {
+				id("org.gradle.checkstyle")
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
@@ -49,7 +54,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			run(script, "qualityVersions")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
+		result.assertSuccess(":qualityVersions")
 		result.assertHasOutputLine("""Gradle version: 7.6.1""")
 		result.assertHasOutputLine("""Checkstyle version: 8.45.1""")
 	}
@@ -59,7 +64,10 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'pmd'
+			plugins {
+				id("org.gradle.pmd")
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
@@ -67,7 +75,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			run(script, "qualityVersions")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
+		result.assertSuccess(":qualityVersions")
 		result.assertHasOutputLine("""Gradle version: 7.6.1""")
 		result.assertHasOutputLine("""PMD version: 6.48.0""")
 	}
@@ -77,7 +85,10 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'checkstyle'
+			plugins {
+				id("org.gradle.checkstyle")
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
@@ -85,7 +96,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			run(script, "qualityVersions")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
+		result.assertSuccess(":qualityVersions")
 		result.assertHasOutputLine("""Gradle version: 8.1-rc-3""")
 		result.assertHasOutputLine("""Checkstyle version: 9.3""")
 	}
@@ -95,7 +106,10 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'pmd'
+			plugins {
+				id("org.gradle.pmd")
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
 			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
 		""".trimIndent()
 
@@ -103,7 +117,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			run(script, "qualityVersions")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
+		result.assertSuccess(":qualityVersions")
 		result.assertHasOutputLine("""Gradle version: 8.1-rc-3""")
 		result.assertHasOutputLine("""PMD version: 6.48.0""")
 	}
@@ -111,7 +125,10 @@ class VersionsTaskTest : BaseIntgTest() {
 	@Test fun `print checkstyle version (specific version)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'checkstyle'
+			plugins {
+				id("org.gradle.checkstyle")
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
 			checkstyle {
 				toolVersion = '6.0'
 			}
@@ -122,14 +139,17 @@ class VersionsTaskTest : BaseIntgTest() {
 			run(script, "qualityVersions")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
+		result.assertSuccess(":qualityVersions")
 		result.assertHasOutputLine("""Checkstyle version: 6.0""")
 	}
 
 	@Test fun `print pmd version (specific version)`() {
 		@Language("gradle")
 		val script = """
-			apply plugin: 'pmd'
+			plugins {
+				id("org.gradle.pmd")
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
 			pmd {
 				toolVersion = '5.0.0'
 			}
@@ -140,7 +160,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			run(script, "qualityVersions")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":qualityVersions")!!.outcome)
+		result.assertSuccess(":qualityVersions")
 		result.assertHasOutputLine("""PMD version: 5.0.0""")
 	}
 }

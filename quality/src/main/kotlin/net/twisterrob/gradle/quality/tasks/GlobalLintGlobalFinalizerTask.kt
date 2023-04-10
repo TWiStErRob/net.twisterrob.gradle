@@ -25,10 +25,12 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.UntrackedTask
 import org.gradle.kotlin.dsl.withType
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
 
+@UntrackedTask(because = "This task is only used to fail the build if there are any violations.")
 abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	/**
@@ -91,7 +93,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			androidComponents.finalizeDsl { android ->
 				// Make sure we have XML output, otherwise can't figure out if it failed.
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
-				// `android { lintOptions { ... } }` DSL configuration.
+				// `android { lint { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
 				android.lint.abortOnErrorCompat = false
 				android.lint.xmlReport = true

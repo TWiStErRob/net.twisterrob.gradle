@@ -3,7 +3,7 @@ plugins {
 	//alias(libs.plugins.kotlin) // Can't apply since there's a mismatch between embedded Kotlin and latest Kotlin.
 	`kotlin-dsl`
 	alias(libs.plugins.detekt)
-	id("idea")
+	id("org.gradle.idea")
 }
 
 gradlePlugin {
@@ -34,16 +34,15 @@ gradlePlugin {
 			id = "net.twisterrob.gradle.build.module.library"
 			implementationClass = "net.twisterrob.gradle.build.LibraryModulePlugin"
 		}
+		create("moduleBrowser") {
+			id = "net.twisterrob.gradle.build.module.browser"
+			implementationClass = "net.twisterrob.gradle.build.BrowserModulePlugin"
+		}
 		create("publishing") {
 			id = "net.twisterrob.gradle.build.publish"
 			implementationClass = "net.twisterrob.gradle.build.publishing.PublishingPlugin"
 		}
 	}
-}
-
-repositories {
-	mavenCentral()
-	gradlePluginPortal()
 }
 
 // Note on `plugins { }`: when the version is declared in the plugins block (`plugins { id(...) version "..." }`),
@@ -65,7 +64,7 @@ run {
 	val sharedCodeFolder: File = file("src/main/kotlin-shared")
 	kotlin.sourceSets.named("main").configure { kotlin.srcDir(sharedCodeFolder) }
 	// This is to make sure that IDEA doesn't mess things up with duplicated source roots.
-	val copyReusableSources = tasks.register<Copy>("copyReusableSources") {
+	val copyReusableSources = tasks.register<Sync>("copyReusableSources") {
 		// More robust: gradle.parent!!.rootProject.project(":plugin:settings").file("src/main/kotlin-shared")
 		// but at this point in the lifecycle the parent (including build) rootProject build is not available yet.
 		from(rootProject.file("../../plugin/settings/src/main/kotlin-shared"))

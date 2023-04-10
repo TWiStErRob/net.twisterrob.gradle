@@ -1,1 +1,8 @@
-apply plugin: 'com.android.dynamic-feature'
+plugins {
+	id("com.android.dynamic-feature")
+}
+
+android {
+	namespace = "test.project.dynamic_feature"
+	compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
+}

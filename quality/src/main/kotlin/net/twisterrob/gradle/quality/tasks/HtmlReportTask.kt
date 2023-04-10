@@ -8,6 +8,8 @@ import net.twisterrob.gradle.quality.report.bestXMLTransformerFactory
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
@@ -18,6 +20,7 @@ import java.io.File
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
+@CacheableTask
 abstract class HtmlReportTask : BaseViolationsTask() {
 
 	private val xmlFile: File
@@ -46,10 +49,6 @@ abstract class HtmlReportTask : BaseViolationsTask() {
 	private val xslOutputFile: File
 		get() = xsl.asFile.get()
 
-	/**
-	 * `val xsl: File = xml.parentFile.resolve(xslTemplate.name)` would be better,
-	 * but it's not possible to use `xml` in the constructor.
-	 */
 	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@get:OutputFile
 	abstract val xsl: RegularFileProperty
@@ -57,19 +56,16 @@ abstract class HtmlReportTask : BaseViolationsTask() {
 	init {
 		xml.convention(project.reporting.baseDirectory.file("violations.xml"))
 		html.convention(project.reporting.baseDirectory.file("violations.html"))
-		xsl.convention(
-			xml.flatMap { regular ->
-				project.layout.file(project.provider {
-					regular.asFile.parentFile.resolve(xslTemplateFile?.name ?: "violations.xsl")
-				})
-			}
-		)
+		val xslName: Provider<String> = xslTemplate.map { it.asFile.name }.orElse("violations.xsl")
+		xsl.convention(project.layout.file(xml.zip(xslName) { xml, xslFileName ->
+			xml.asFile.parentFile.resolve(xslFileName)
+		}))
 		// Setting up this convention would trigger a file not found when no override is set.
 		//xslTemplate.conventionCompat(project.layout.projectDirectory.file("config/violations.xsl"))
 		@Suppress("LeakingThis")
 		doFirst {
 			val xslTemplateFile = xslTemplateFile
-			if (xslTemplateFile?.exists() == true) {
+			if (xslTemplateFile != null) {
 				xslTemplateFile.copyTo(xslOutputFile, overwrite = true)
 			} else {
 				val violationsTransformationResource = "/violations.xsl"

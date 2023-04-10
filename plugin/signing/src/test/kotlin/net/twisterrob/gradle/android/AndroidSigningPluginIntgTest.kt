@@ -35,13 +35,19 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
 
 		result.assertSuccess(":assembleRelease")
-		result.assertHasOutputLine("""Keystore file \(from RELEASE_STORE_FILE\) '.*non-existent.file.*' is not valid\.""".toRegex())
+		result.assertHasOutputLine(
+			"""
+				Keystore file \(from RELEASE_STORE_FILE\) '.*non-existent.file.*' is not valid\.
+			""".trimIndent().toRegex()
+		)
 		verifyWithJarSigner(gradle.root.apk("release").absolutePath).also {
 			assertThat(it, containsString("jar is unsigned."))
 		}
@@ -68,16 +74,18 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("properties")
 		val props = """
 			# suppress inspection "UnusedProperty" for whole file
-			RELEASE_STORE_FILE=${temp.resolve(generationParams["-keystore"]!!).absolutePath.replace("\\", "\\\\")}
-			RELEASE_STORE_PASSWORD=${generationParams["-storepass"]}
-			RELEASE_KEY_ALIAS=${generationParams["-alias"]}
-			RELEASE_KEY_PASSWORD=${generationParams["-keypass"]}
+			RELEASE_STORE_FILE=${temp.resolve(generationParams.getValue("-keystore")).absolutePath.replace("\\", "\\\\")}
+			RELEASE_STORE_PASSWORD=${generationParams.getValue("-storepass")}
+			RELEASE_KEY_ALIAS=${generationParams.getValue("-alias")}
+			RELEASE_KEY_PASSWORD=${generationParams.getValue("-keypass")}
 		""".trimIndent()
 		gradle.root.resolve("gradle.properties").appendText(props)
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			// Increase minimum version to avoid ignoring the signature:
 			// > jarsigner WARNING: The jar will be treated as unsigned,
 			// > because it is signed with a weak algorithm that is now disabled by the security property

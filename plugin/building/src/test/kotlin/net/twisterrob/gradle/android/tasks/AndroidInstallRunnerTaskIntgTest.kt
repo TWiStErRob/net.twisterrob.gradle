@@ -17,7 +17,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 /**
- * [AndroidInstallRunnerTask] via [AndroidBuildPlugin]
+ * Test [AndroidInstallRunnerTask] via [AndroidBuildPlugin].
+ *
  * @see AndroidInstallRunnerTask
  * @see AndroidBuildPlugin
  */
@@ -33,9 +34,9 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 
 		@Language("xml")
 		val androidManifest = """
-			<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="$packageName">
+			<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 				<application>
-					<activity android:name=".MainActivity">
+					<activity android:name="${packageName}.MainActivity">
 						<intent-filter>
 							<action android:name="android.intent.action.MAIN" />
 							<category android:name="android.intent.category.LAUNCHER" />
@@ -57,11 +58,14 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
+			android.namespace = "${packageName}"
 			afterEvaluate {
 				// Don't always try to install the APK, as we may have no emulator,
 				// but still assemble the APK, as the run task needs AndroidManifest.xml.
-				tasks.installDebug.enabled = $hasDevices
+				tasks.installDebug.enabled = ${hasDevices}
 			}
 		""".trimIndent()
 
@@ -73,7 +77,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 			result.assertSuccess(":runDebug")
 			// line is output to stderr, so no control over being on a new line
 			result.assertNoOutputLine(""".*no devices/emulators found.*""".toRegex())
-			result.assertNoOutputLine("""Error: Activity class \{${packageName}\.debug/${packageName}\.MainActivity\} does not exist\.""".toRegex())
+			result.assertNoOutputLine("""Error: Activity class .* does not exist\.""".toRegex())
 		} else {
 			val result = gradle.run(script, "runDebug").buildAndFail()
 

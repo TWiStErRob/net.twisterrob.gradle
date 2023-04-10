@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.test
 
 import net.twisterrob.gradle.BaseIntgTest
-import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.intellij.lang.annotations.Language
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import kotlin.test.assertEquals
 
 /**
  * @see GradleRunnerRule
@@ -46,7 +44,7 @@ class GradleRunnerRuleTest_usage : BaseIntgTest() {
 			run(script, "test")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
+		result.assertSuccess(":test")
 		result.assertHasOutputLine("Hello World")
 	}
 
@@ -74,13 +72,13 @@ class GradleRunnerRuleTest_usage : BaseIntgTest() {
 			run(script, "printConfigFile")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":printConfigFile")!!.outcome)
+		result.assertSuccess(":printConfigFile")
 		assertThat(result.output, containsString(configFileContents))
 	}
 
 	@Test fun `buildFile from multiple basedOn merged into one including script`(@TempDir temp: File) {
 		fun generateFolder(name: String): File {
-			val folder = temp.resolve("base_$name").also { it.mkdirs() }
+			val folder = temp.resolve("base_$name").apply { mkdirs() }
 			folder
 				.resolve("build.gradle")
 				.writeText("""println("basedOn($name)")${System.lineSeparator()}""")
@@ -93,7 +91,7 @@ class GradleRunnerRuleTest_usage : BaseIntgTest() {
 			run("""println("script()")""", ":help")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":help")!!.outcome)
+		result.assertSuccess(":help")
 		result.assertHasOutputLine("""basedOn(1)""")
 		result.assertHasOutputLine("""basedOn(2)""")
 		result.assertHasOutputLine("""basedOn(3)""")

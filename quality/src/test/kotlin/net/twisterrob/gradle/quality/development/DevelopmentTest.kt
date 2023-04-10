@@ -4,8 +4,8 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.quality.tasks.HtmlReportTask
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
+import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.runBuild
-import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.io.FileMatchers.anExistingFile
 import org.intellij.lang.annotations.Language
@@ -15,7 +15,6 @@ import java.io.File
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
-import kotlin.test.assertEquals
 
 /**
  * Add [Test] to run any fun.
@@ -50,7 +49,6 @@ class DevelopmentTest : BaseIntgTest() {
 		gradle.file(lintResultsXml, "build", "reports", "lint-results.xml")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
@@ -58,7 +56,7 @@ class DevelopmentTest : BaseIntgTest() {
 			run(script, "htmlReport").withDebug(true)
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 		openHtml(gradle.runner.projectDir.resolve("build/reports/violations.html"))
 	}
 
@@ -69,8 +67,7 @@ class DevelopmentTest : BaseIntgTest() {
 		gradle.file(violationContents, "src", "main", "java", "LintFailure.java")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'org.gradle.reporting-base'
-			android.lintOptions.checkOnly("SecureRandom")
+			android.lint.checkOnly.add("SecureRandom")
 			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
@@ -78,7 +75,7 @@ class DevelopmentTest : BaseIntgTest() {
 			run(script, "lint", "htmlReport").withDebug(true)
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":htmlReport")!!.outcome)
+		result.assertSuccess(":htmlReport")
 		openHtml(gradle.runner.projectDir.resolve("build/reports/violations.html"))
 	}
 }

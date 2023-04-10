@@ -4,7 +4,7 @@ https://github.com/TWiStErRob/net.twisterrob.gradle/releases)
 [![Maven Central](https://img.shields.io/maven-central/v/net.twisterrob.gradle/twister-quality)](
 https://search.maven.org/search?q=g:net.twisterrob.gradle)
 [![Licence](https://img.shields.io/github/license/twisterrob/net.twisterrob.gradle)](
-https://github.com/TWiStErRob/net.twisterrob.gradle/blob/master/LICENCE)
+https://github.com/TWiStErRob/net.twisterrob.gradle/blob/main/LICENCE)
 [![Twitter](https://img.shields.io/twitter/follow/twisterrob?style=social)](
 https://twitter.com/twisterrob)
 

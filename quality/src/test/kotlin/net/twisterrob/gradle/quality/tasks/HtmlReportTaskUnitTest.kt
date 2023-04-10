@@ -3,11 +3,11 @@ package net.twisterrob.gradle.quality.tasks
 import net.twisterrob.gradle.test.Project
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.condition.DisabledOnJre
 import org.junit.jupiter.api.condition.JRE
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
 
 class HtmlReportTaskUnitTest {
 
@@ -17,7 +17,7 @@ class HtmlReportTaskUnitTest {
 		project.plugins.apply("reporting-base")
 		val sut = project.tasks.create("sut", HtmlReportTask::class.java)
 
-		val ex = assertFailsWith<Throwable> {
+		val ex = assertThrows<Throwable> {
 			sut.transform()
 		}
 

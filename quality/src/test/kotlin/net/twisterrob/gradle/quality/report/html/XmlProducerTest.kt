@@ -43,7 +43,7 @@ class XmlProducerTest {
 		private lateinit var list: List<Violations>
 		private lateinit var grouped: Map<Category, Map<Reporter, List<Violation>>>
 		private lateinit var projectName: String
-		private var project: Project = mockk()
+		private val project: Project = mockk()
 
 		fun stubResult(list: List<Violations>) {
 			this.list = list
@@ -59,11 +59,12 @@ class XmlProducerTest {
 
 		fun stubGroupIsRendered() {
 			mockkStatic(::renderXml.javaMethod!!.declaringClass.name)
-			every { renderXml(any(), grouped, any(), any()) } answers { callOriginal() }
+			every { renderXml(to = any(), from = grouped, projectName = any(), xslPath = any()) } answers { callOriginal() }
 		}
 
 		fun verifyXmlWritten() {
-			verify { renderXml(any(), grouped, projectName, "${xslFile.parentFile.name}/${xslFile.name}") }
+			val xslPath = "${xslFile.parentFile.name}/${xslFile.name}"
+			verify { renderXml(to = any(), from = grouped, projectName = projectName, xslPath = xslPath) }
 		}
 
 		fun stubRootProjectName(name: String) {

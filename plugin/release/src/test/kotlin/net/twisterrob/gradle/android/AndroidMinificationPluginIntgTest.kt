@@ -3,7 +3,6 @@ package net.twisterrob.gradle.android
 import com.jakewharton.dex.DexParser.Companion.toDexParser
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
-import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertNoTask
 import net.twisterrob.gradle.test.assertSuccess
@@ -57,7 +56,9 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			dependencies {
 				implementation("androidx.annotation:annotation:1.6.0")
 			}
@@ -103,7 +104,9 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			dependencies {
 				compileOnly("com.android.support:support-annotations:28.0.0")
 			}
@@ -132,7 +135,9 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -149,7 +154,9 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -166,7 +173,9 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -195,7 +204,9 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease", "--info").build()
@@ -219,7 +230,9 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		createFileToMakeSureProguardPasses()
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			android.buildTypes.debug.minifyEnabled = true
 		""".trimIndent()
 
@@ -240,7 +253,9 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			dependencies {
 				implementation project(':lib')
 			}
@@ -250,15 +265,13 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val libGradle = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-library")
+			}
+			android.namespace = "${packageName}.lib"
 			android.defaultConfig.consumerProguardFile 'proguard.pro'
 		""".trimIndent()
 		gradle.file(libGradle, "lib", "build.gradle")
-		@Language("xml")
-		val androidManifest = """
-			<manifest package="${packageName}.lib" />
-		""".trimIndent()
-		gradle.file(androidManifest, "lib", "src", "main", "AndroidManifest.xml")
 		val dummyProguardClass = "some.dummy.thing.SoItShowsUpInTheMergeConfiguration"
 
 		@Language("proguard")
@@ -285,21 +298,20 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 
 		@Language("gradle")
 		val libGradle = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-library'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-library")
+			}
+			android.namespace = "${packageName}.lib"
 		""".trimIndent()
 		gradle.file(libGradle, "lib", "build.gradle")
 
-		@Language("xml")
-		val libManifest = """
-			<manifest package="${packageName}.lib" />
-		""".trimIndent()
-		gradle.file(libManifest, "lib", "src", "main", "AndroidManifest.xml")
-
 		@Language("gradle")
 		val script = """
-			apply plugin: 'net.twisterrob.gradle.plugin.android-app'
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
 			dependencies { implementation project(':lib') }
-			android.lintOptions.checkDependencies = true
+			android.lint.checkDependencies = true
 			tasks.named("lint") { dependsOn("lintRelease") } // By default this is not the case in AGP 7.x.
 		""".trimIndent()
 		val result = gradle.run(script, "extractMinificationRules", "build").build()

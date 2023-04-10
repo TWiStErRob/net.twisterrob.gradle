@@ -1,20 +1,8 @@
-buildscript {
-	repositories {
-		google()
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:@net.twisterrob.test.android.pluginVersion@'
-	}
+plugins {
+	id("com.android.application") version "@net.twisterrob.test.android.pluginVersion@"
 }
-
-repositories {
-	google() // for aapt2 internal binary
-	mavenCentral()
-}
-
-apply plugin: 'com.android.application'
 
 android {
-	compileSdkVersion '@net.twisterrob.test.android.compileSdkVersion@'
+	namespace = "test.project"
+	compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
 }

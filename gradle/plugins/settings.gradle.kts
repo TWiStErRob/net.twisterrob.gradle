@@ -1,6 +1,11 @@
 import org.gradle.api.internal.catalog.parser.TomlCatalogFileParser
 
 dependencyResolutionManagement {
+	repositories {
+		repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+		mavenCentral()
+		gradlePluginPortal()
+	}
 	versionCatalogs {
 		create(defaultLibrariesExtensionName.get()) {
 			from(files("../../gradle/libs.versions.toml"))

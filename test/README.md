@@ -5,7 +5,9 @@ Helps integration testing of Gradle plugins and tasks.
 ## Usage
 
 ```groovy
-apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'
+plugins {
+	id("net.twisterrob.gradle.plugin.gradle.test")
+}
 
 dependencies {
 	// Test framework (`GradleRunnerRule` is written for JUnit)
@@ -18,7 +20,9 @@ dependencies {
 or more explicitly:
 
 ```groovy
-apply plugin: 'java-gradle-plugin'
+plugins {
+	id("java-gradle-plugin")
+}
 
 dependencies {
 	// assuming the plugin being tested is in this module
@@ -73,7 +77,9 @@ To run this test from **IntelliJ IDEA**, run it as usual, but first set: *Build,
    `export ANDROID_HOME=.../android/sdk`
  * `build/pluginUnderTestMetadata/plugin-under-test-metadata.properties` is missing  
    run `./gradlew test` from the command line once to generate the files
-
+ * `Could not get unknown property 'net' for root project 'junit1493727323926151858' of type org.gradle.api.Project.`  
+   This happens because the injected classpath is exposed, but not applied to the build script.
+   Apply a named plugin with its ID to get access to its classes.
 
 ### Debugging
 

@@ -2,11 +2,9 @@ package net.twisterrob.gradle.test
 
 import junit.runner.Version
 import net.twisterrob.gradle.BaseIntgTest
-import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.test.assertEquals
 
 /**
  * @see TestPlugin
@@ -17,16 +15,16 @@ class TestPluginTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	/**
-	 * Set up a full Gradle project in a test that has a test to test the plugin that helps testing Gradle.
+	 * Set up a full Gradle project in a test that has a test to test the plugin that helps to test Gradle.
 	 *
-	 * Let's break that down:<ul>
-	 * <li>This test sets up a Gradle project with:<ul>
-	 *     <li>{@code apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'}
-	 *     <li>{@code Testception.groovy}
-	 *     </ul>
-	 * <li>{@code Testception} sets up a simple Gradle build and checks its output.
-	 * <li>{@code Testception} is being run from {@code :test} task in the project that's set up in this test method.
+	 * Let's break that down:
+	 *  * This test sets up a Gradle project with:
+	 *    * `plugins { id("net.twisterrob.gradle.plugin.gradle.test") }`
+	 *    * `Testception.groovy`
+	 *  * `Testception` sets up a simple Gradle build and checks its output.
+	 *  * `Testception` is being run from `:test` task in the project that's set up in this test method.
 	 */
+	@Suppress("LongMethod") // Multiple files are listed in this one method.
 	@Test fun `gradle test plugin test`() {
 		val triplet = "\"\"\""
 		@Suppress("GrPackage") // It will be written to the right folder.
@@ -59,11 +57,14 @@ class TestPluginTest : BaseIntgTest() {
 		""".trimIndent()
 		gradle.file(testFileContents, "src/test/groovy/net/twisterrob/gradle/test/test/Testception.groovy")
 
-		val artifactPath = System.getProperties()["net.twisterrob.gradle.test.artifactPath"].toString()
+		val artifactPath = System.getProperty("net.twisterrob.gradle.test.artifactPath")
+			?: error("Missing property: net.twisterrob.gradle.test.artifactPath")
 		@Language("gradle")
 		val script = """
-			apply plugin: 'groovy'
-			apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'
+			plugins {
+				id("org.gradle.groovy")
+				id("net.twisterrob.gradle.plugin.gradle.test")
+			}
 			
 			repositories {
 				ivy {
@@ -94,7 +95,7 @@ class TestPluginTest : BaseIntgTest() {
 			run(script, "test")
 		}
 
-		assertEquals(TaskOutcome.SUCCESS, result.task(":test")!!.outcome)
+		result.assertSuccess(":test")
 		result.assertHasOutputLine("net.twisterrob.gradle.test.test.Testception > gradle script test: SUCCESS")
 	}
 }

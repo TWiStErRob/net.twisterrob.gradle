@@ -1,5 +1,12 @@
-apply plugin: 'com.android.library'
+plugins {
+	id("com.android.library")
+}
 
 dependencies {
 	implementation project('nested')
+}
+
+android {
+	namespace = "test.project.library"
+	compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
 }
