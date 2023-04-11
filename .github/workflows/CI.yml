@@ -67,6 +67,7 @@ jobs:
           validatePlugins
           detektMain
           detektTest
+          detektTestFixtures
           detektReportMergeSarif
           detektReportMergeXml
 
