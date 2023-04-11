@@ -1,26 +1,15 @@
-import base
-import gradlePlugin
 import net.twisterrob.gradle.build.publishing.GradlePluginValidationPlugin
 import net.twisterrob.gradle.build.publishing.getChild
 import net.twisterrob.gradle.build.publishing.withDokkaJar
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.configurationcache.extensions.capitalized
-import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.getByName
-import org.gradle.kotlin.dsl.named
-import org.gradle.kotlin.dsl.provideDelegate
-import org.gradle.kotlin.dsl.register
-import org.gradle.kotlin.dsl.the
-import org.gradle.kotlin.dsl.withType
-import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.DokkaTask
-import publishing
-import java
+
+plugins {
+	id("org.gradle.maven-publish")
+	id("org.gradle.signing")
+	id("org.jetbrains.dokka")
+}
+plugins.apply(GradlePluginValidationPlugin::class)
 
 /**
  * @see org.jetbrains.dokka.gradle.DokkaPlugin
@@ -29,10 +18,7 @@ val DOKKA_TASK_NAME: String = "dokkaJavadoc"
 
 // Note: org.gradle.api.publish.plugins.PublishingPlugin.apply calls publications.all,
 // so most code here is eagerly executed, even inside register { }!
-project.plugins.apply("org.gradle.maven-publish")
-project.plugins.apply("org.gradle.signing")
-project.plugins.apply("org.jetbrains.dokka")
-project.plugins.apply(GradlePluginValidationPlugin::class)
+
 project.java.withDokkaJar(project, project.tasks.named(DOKKA_TASK_NAME))
 project.java.withSourcesJar()
 setupDoc(project)
