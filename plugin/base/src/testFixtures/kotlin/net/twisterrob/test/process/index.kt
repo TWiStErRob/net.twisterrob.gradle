@@ -17,6 +17,7 @@ fun Iterable<String>.runCommand(
 	val commandString = this.joinToString(separator = " ") {
 		if (it.contains(" ")) """"$it"""" else it
 	}
+	@Suppress("ForbiddenMethodCall") // TODO revise println() and make them log somehow correctly!
 	println("Running in ${workingDir.absolutePath}:\n$commandString")
 	return ProcessBuilder(this.toList())
 		.directory(workingDir)
@@ -24,12 +25,12 @@ fun Iterable<String>.runCommand(
 		.redirectError(ProcessBuilder.Redirect.PIPE)
 		.start()
 		.apply { waitFor(timeout, MILLISECONDS) }
-		.also {
-			if (verifyError && it.exitValue() != 0) {
-				val out = it.inputStream.bufferedReader().readText()
-				val err = it.errorStream.bufferedReader().readText()
+		.also { process ->
+			if (verifyError && process.exitValue() != 0) {
+				val out = process.inputStream.bufferedReader().readText()
+				val err = process.errorStream.bufferedReader().readText()
 				assertEquals(
-					0, it.exitValue(),
+					0, process.exitValue(),
 					"Non-zero exit value:\nstdout:\n${out}\nstderr:\n${err}"
 				)
 			}
@@ -41,7 +42,7 @@ internal fun assertOutput(command: List<Any>, expected: String, message: String?
 	try {
 		val output = command.map(Any?::toString).runCommand()
 		assertEquals(expected.normalize(), output.normalize(), message)
-	} catch (ex: Throwable) {
+	} catch (@Suppress("SwallowedException") ex: Throwable) { // Detekt doesn't see into the extension fun.
 		throw ex.withRootCause(IllegalArgumentException("Command: $command"))
 	}
 }

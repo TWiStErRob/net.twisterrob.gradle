@@ -7,8 +7,8 @@ import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertSuccess
-import net.twisterrob.test.compile.generateKotlinCompilationCheck
-import net.twisterrob.test.compile.generateKotlinCompilationCheckTest
+import net.twisterrob.test.compile.generateKotlinCompileCheckMain
+import net.twisterrob.test.compile.generateKotlinCompileCheckTest
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -27,8 +27,8 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 		// Default build.gradle has the app plugin applied.
 		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
 		gradle.basedOn(GradleBuildTestResources.kotlin)
-		gradle.generateKotlinCompilationCheck()
-		gradle.generateKotlinCompilationCheckTest()
+		gradle.generateKotlinCompileCheckMain()
+		gradle.generateKotlinCompileCheckTest()
 
 		@Language("gradle")
 		val script = """
@@ -49,8 +49,8 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 
 	@Test fun `can test kotlin with JUnit in Android App`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
-		gradle.generateKotlinCompilationCheck()
-		gradle.generateKotlinCompilationCheckTest()
+		gradle.generateKotlinCompileCheckMain()
+		gradle.generateKotlinCompileCheckTest()
 
 		@Language("gradle")
 		val script = """
@@ -71,8 +71,8 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 
 	@Test fun `can test kotlin with JUnit in Android Test App`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
-		gradle.generateKotlinCompilationCheck("test")
-		gradle.generateKotlinCompilationCheckTest("test")
+		gradle.generateKotlinCompileCheckMain("test")
+		gradle.generateKotlinCompileCheckTest("test")
 
 		gradle.settingsFile.appendText("""include(":test")${System.lineSeparator()}""")
 		@Language("gradle")

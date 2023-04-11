@@ -54,14 +54,14 @@ fun <T> assumeThat(actual: T, matcher: Matcher<in T>) {
  * Call to assume that `actual` satisfies the condition specified by `matcher`.
  * If not, the test halts and is ignored.
  * Example:
- * <pre>:
+ * ```java
  * assumeThat(1, is(1)); // passes
  * foo(); // will execute
  * assumeThat(0, is(1)); // assumption failure! test halts
  * int x = 1 / 0; // will never execute
-</pre> *
+ * ```
  *
- * @param <T> the static type accepted by the matcher
+ * @param T the static type accepted by the matcher
  * (This can flag obvious compile-time problems such as `assumeThat(1, is("a"))`.)
  * @param message the message to be included in the Exception if the assumption is invalid
  * @param actual the computed value being compared

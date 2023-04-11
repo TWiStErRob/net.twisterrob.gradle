@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit
 /**
  * @see /android-plugin_app/build.gradle
  */
+@Suppress("TopLevelPropertyNaming") // Match style of AGP.
 const val packageName: String = "net.twisterrob.gradle.test_app"
 
 val packageFolder: String
@@ -55,6 +56,7 @@ fun resolveFromJDK(command: String): File {
 		jre.resolve("bin"),
 		jre.parentFile.resolve("bin")
 	)
+	@Suppress("SpreadOperator")
 	return resolveFromFolders(command, *dirs)
 }
 
@@ -112,7 +114,7 @@ fun assertDefaultReleaseBadging(
 	)
 }
 
-@Suppress("LongParameterList") // Simply these many things contribute to APK metadata.
+@Suppress("LongParameterList", "LongMethod") // Simply these many things contribute to APK metadata.
 fun assertDefaultBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
@@ -126,7 +128,8 @@ fun assertDefaultBadging(
 ) {
 	try {
 		assertThat(apk.absolutePath, apk, anExistingFile())
-	} catch (ex: Throwable) {
+	} catch (@Suppress("SwallowedException", "TooGenericExceptionCaught") ex: Throwable) {
+		// Detekt doesn't see into the extension fun.
 		val contents = apk
 			.parentFile
 			.listFiles()
@@ -135,7 +138,7 @@ fun assertDefaultBadging(
 		throw ex.withRootCause(IOException(contents))
 	}
 	val (expectation: String, expectedOutput: String) =
-		if (compileSdkVersion < 28) {
+		if (compileSdkVersion < @Suppress("MagicNumber") 28) {
 			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2
 			"compileSdkVersion < 28" to """
 				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName'
@@ -207,9 +210,10 @@ fun hasDevices(): Boolean {
 	val bridge = AndroidDebugBridge.createBridge(
 		resolveFromAndroidSDK("adb").absolutePath,
 		false,
-		10,
+		@Suppress("MagicNumber") 10,
 		TimeUnit.SECONDS
 	)
+	@Suppress("MagicNumber")
 	ensuredWait(5000L, 1000L, "Cannot get device list") {
 		bridge.hasInitialDeviceList()
 	}
