@@ -9,13 +9,7 @@ plugins {
 	id("org.gradle.idea")
 }
 
-val projectVersion: String by project
-
 description = "Plugins for Gradle that support Android flavors."
-allprojects {
-	group = "net.twisterrob.gradle"
-	version = projectVersion
-}
 
 buildscript { enableDependencyLocking(project) }
 allprojects { enableDependencyLocking() }

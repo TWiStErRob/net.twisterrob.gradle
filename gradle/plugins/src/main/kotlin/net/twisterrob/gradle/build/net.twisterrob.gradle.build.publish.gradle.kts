@@ -11,6 +11,9 @@ plugins {
 }
 plugins.apply(GradlePluginValidationPlugin::class)
 
+group = "net.twisterrob.gradle"
+version = project.property("projectVersion").toString()
+
 /**
  * @see org.jetbrains.dokka.gradle.DokkaPlugin
  */
