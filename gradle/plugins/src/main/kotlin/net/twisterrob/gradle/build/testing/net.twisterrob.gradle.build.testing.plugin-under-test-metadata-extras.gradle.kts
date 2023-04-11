@@ -1,5 +1,3 @@
-package net.twisterrob.gradle.build.testing
-
 configurations {
     /**
 	 * This plugin adds a `testInjectedPluginClasspath` configuration
