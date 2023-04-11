@@ -3,6 +3,8 @@ import net.twisterrob.gradle.build.publishing.getChild
 import net.twisterrob.gradle.build.publishing.withDokkaJar
 import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.dokka.gradle.DokkaTask
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 plugins {
 	id("org.gradle.maven-publish")
@@ -13,6 +15,33 @@ plugins.apply(GradlePluginValidationPlugin::class)
 
 group = "net.twisterrob.gradle"
 version = project.property("projectVersion").toString()
+
+plugins.withId("org.gradle.java") {
+	afterEvaluate {
+		// Delayed configuration, so that project.* is set up properly in corresponding modules' build.gradle.kts.
+		tasks.named<Jar>("jar") {
+			manifest {
+				attributes(
+					mapOf(
+						// Implementation-* used by TestPlugin
+						"Implementation-Vendor" to project.group,
+						"Implementation-Title" to project.base.archivesName.get(),
+						"Implementation-Version" to project.version,
+						"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+					)
+				)
+			}
+		}
+	}
+}
+
+normalization {
+	runtimeClasspath {
+		metaInf {
+			ignoreAttribute("Built-Date")
+		}
+	}
+}
 
 /**
  * @see org.jetbrains.dokka.gradle.DokkaPlugin

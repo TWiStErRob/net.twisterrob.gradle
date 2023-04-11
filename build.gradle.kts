@@ -1,6 +1,4 @@
 import net.twisterrob.gradle.doNotNagAbout
-import java.time.Instant
-import java.time.format.DateTimeFormatter
 
 plugins {
 	@Suppress("DSL_SCOPE_VIOLATION") // TODEL https://github.com/gradle/gradle/issues/22797
@@ -43,33 +41,6 @@ subprojects {
 			add("api", deps.kotlin.stdlib)
 			add("api", deps.kotlin.stdlib.jdk8)
 			add("api", deps.kotlin.reflect)
-		}
-	}
-
-	plugins.withId("org.gradle.java") {
-		afterEvaluate {
-			// Delayed configuration, so that project.* is set up properly in corresponding modules' build.gradle.kts.
-			tasks.named<Jar>("jar") {
-				manifest {
-					attributes(
-						mapOf(
-							// Implementation-* used by TestPlugin
-							"Implementation-Vendor" to project.group,
-							"Implementation-Title" to project.base.archivesName.get(),
-							"Implementation-Version" to project.version,
-							"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
-						)
-					)
-				}
-			}
-		}
-	}
-
-	normalization {
-		runtimeClasspath {
-			metaInf {
-				ignoreAttribute("Built-Date")
-			}
 		}
 	}
 }
