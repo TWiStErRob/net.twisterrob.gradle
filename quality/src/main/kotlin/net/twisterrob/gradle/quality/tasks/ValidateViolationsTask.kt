@@ -7,6 +7,7 @@ import net.twisterrob.gradle.quality.Violations
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.CacheableTask
 
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 @CacheableTask
 abstract class ValidateViolationsTask : BaseViolationsTask() {
 

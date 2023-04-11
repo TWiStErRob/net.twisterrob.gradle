@@ -120,11 +120,11 @@ class AndroidReleasePlugin : BasePlugin() {
 		}
 
 		private fun <T : Any> Provider<T>.deprecated(logger: Logger): Provider<T> =
-			this.map {
+			this.map { value ->
 				logger.warn(
 					"The environment variable ${RELEASE_ENV} is deprecated, use the Gradle property ${RELEASE_PROPERTY} instead."
 				)
-				return@map it
+				return@map value
 			}
 	}
 }
