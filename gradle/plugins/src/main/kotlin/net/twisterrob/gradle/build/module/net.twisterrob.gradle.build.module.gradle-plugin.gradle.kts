@@ -6,6 +6,7 @@ plugins {
 	id("org.gradle.java-gradle-plugin")
 	id("net.twisterrob.gradle.build.testing.plugin-under-test-metadata-extras")
 	id("org.jetbrains.kotlin.jvm")
+	id("net.twisterrob.gradle.build.compilation")
 	//id("org.gradle.java-test-fixtures")
 }
 plugins.apply(InitScriptMetadataPlugin::class)

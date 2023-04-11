@@ -35,53 +35,6 @@ subprojects {
 		replaceHamcrestDependencies(project)
 	}
 
-	tasks.withType<JavaCompile>().configureEach {
-		options.compilerArgs.addAll(
-			listOf(
-				"-Werror", // fail on warnings
-				"-Xlint:all", // enable all possible checks
-				"-Xlint:-processing" // except "No processor claimed any of these annotations"
-			)
-		)
-	}
-
-	tasks.withType<GroovyCompile>().configureEach {
-		options.compilerArgs.addAll(
-			listOf(
-				"-Werror", // fail on warnings
-				"-Xlint:all" // enable all possible checks
-			)
-		)
-		groovyOptions.configurationScript = rootProject.file("gradle/compileGroovy.groovy")
-		// enable Java 7 invokeDynamic, since Java target is > 7 (Android requires Java 8 at least)
-		// no need for groovy-all:ver-indy, because the classpath is provided from hosting Gradle project
-		groovyOptions.optimizationOptions!!["indy"] = true
-	}
-
-	tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-		kotlinOptions.verbose = true
-		kotlinOptions.languageVersion = deps.versions.kotlin.language.get()
-		kotlinOptions.apiVersion = deps.versions.kotlin.language.get()
-		kotlinOptions.jvmTarget = deps.versions.java.get()
-		kotlinOptions.suppressWarnings = false
-		kotlinOptions.allWarningsAsErrors = true
-		kotlinOptions.freeCompilerArgs += listOf(
-			// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
-			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
-			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
-			//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
-			// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
-			"-Xno-optimized-callable-references",
-			"-opt-in=kotlin.RequiresOptIn",
-		)
-		if (kotlinOptions.languageVersion == "1.4") {
-			// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".
-			kotlinOptions.freeCompilerArgs += "-Xsuppress-version-warnings"
-		} else {
-			TODO("Remove -Xsuppress-version-warnings")
-		}
-	}
-
 	tasks.withType<Test>().configureEach {
 		useJUnitPlatform()
 
@@ -163,9 +116,6 @@ subprojects {
 	}
 
 	plugins.withId("org.gradle.java") {
-		val java = extensions.getByName<JavaPluginExtension>("java")
-		java.sourceCompatibility = JavaVersion.toVersion(deps.versions.java.get())
-		java.targetCompatibility = JavaVersion.toVersion(deps.versions.java.get())
 		tasks.named<Test>("test") { testLogging.events("passed", "skipped", "failed") }
 		afterEvaluate {
 			// Delayed configuration, so that project.* is set up properly in corresponding modules' build.gradle.kts.
