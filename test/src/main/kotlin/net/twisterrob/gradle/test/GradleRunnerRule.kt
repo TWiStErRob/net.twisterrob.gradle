@@ -84,7 +84,7 @@ open class GradleRunnerRule : TestRule {
 		private set
 
 	val settingsFile: File
-		get() = File(runner.projectDir, "settings.gradle")
+		get() = File(runner.projectDir, "settings.gradle.kts")
 
 	val propertiesFile: File
 		get() = File(runner.projectDir, "gradle.properties")
@@ -162,14 +162,20 @@ open class GradleRunnerRule : TestRule {
 		val javaHome: String? by systemProperty("java.home")
 		@Suppress("NullableToStringCall") // Debug info, null is OK.
 		val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
+		val kotlin = KotlinVersion.CURRENT
 		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
 		println(
 			@Suppress("MultilineRawStringIndentation") """
 				Test Java: ${java} from ${javaHome}.
+				Test Kotlin stdlib: ${kotlin}.
 				Requesting ${gradleVersion} in worker #${gradleTestWorkerId} at ${testKitDir?.absolutePath}.
 				Gradle properties:
 				```properties
 ${propertiesContentForLogging().prependIndent("\t\t\t\t")}
+				```
+				Settings:
+				```gradle.kts
+${settingsContentForLogging().prependIndent("\t\t\t\t")}
 				```
 				Running `gradle ${args.joinToString(" ")}`
 				on ${buildFile.absolutePath}:
@@ -179,11 +185,21 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 				Execution output:
 			""".trimIndent()
 		)
+		if (settingsFile.exists() && settingsFile.parentFile.resolve("settings.gradle").exists()) {
+			error("settings.gradle.kts and settings.gradle are both present, make sure settings.gradle does not exist!")
+		}
 		return runner.withArguments(*args)
 	}
 
 	private fun buildContentForLogging(): String =
 		buildFile.readText()
+
+	private fun settingsContentForLogging(): String =
+		if (settingsFile.exists()) {
+			settingsFile.readText()
+		} else {
+			"${settingsFile.name} does not exist."
+		}
 
 	private fun propertiesContentForLogging(): String =
 		if (propertiesFile.exists()) {

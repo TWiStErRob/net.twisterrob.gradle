@@ -37,7 +37,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `adds automatic repositories`() {
-		gradle.file("", ContentMergeMode.OVERWRITE, "settings.gradle")
+		gradle.file("", ContentMergeMode.OVERWRITE, "settings.gradle.kts")
 
 		@Language("gradle")
 		val script = """

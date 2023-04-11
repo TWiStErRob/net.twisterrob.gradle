@@ -74,7 +74,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 		gradle.generateKotlinCompileCheckMain("test")
 		gradle.generateKotlinCompileCheckTest("test")
 
-		gradle.settingsFile.writeText("include ':test'")
+		gradle.settingsFile.appendText("""include(":test")${System.lineSeparator()}""")
 		@Language("gradle")
 		val appScript = """
 			plugins {

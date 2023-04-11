@@ -1,4 +1,14 @@
 import java.lang.management.ManagementFactory
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+
+initscript {
+	repositories {
+		gradlePluginPortal()
+	}
+	dependencies {
+		classpath("org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:@net.twisterrob.test.kotlin.pluginVersion@")
+	}
+}
 
 rootProject {
 	val gradleTasks = gradle.startParameter.taskNames
@@ -16,11 +26,14 @@ rootProject {
 	val javaHomeEnv = System.getenv("JAVA_HOME")
 	@Suppress("NullableToStringCall") // Debug info, null is OK.
 	val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
+	val kotlinRuntime = KotlinVersion.CURRENT
+	val kotlinPlugin = project.getKotlinPluginVersion()
 
 	println( // Using println rather than logger.lifecycle() to make sure it outputs even with --quiet.
 		"""
 		Gradle ${gradleVersion} worker #${gradleTestWorkerId} at ${gradleHome.absolutePath} with ${gradleDir?.absolutePath}.
 		Gradle Java: ${java} from ${javaHome}${if (javaHome != javaHomeEnv) " (JAVA_HOME = ${javaHomeEnv})" else ""}.
+		Gradle Kotlin stdlib: ${kotlinRuntime}, Kotlin Gradle Plugin: ${kotlinPlugin}.
 		${memoryDiagnostics()}
 		Running `gradle ${gradleTasks.joinToString(" ")}`
 		on ${gradleBuildFile.absolutePath}.

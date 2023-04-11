@@ -4,6 +4,7 @@
 package net.twisterrob.gradle.nagging
 
 import net.twisterrob.gradle.doNotNagAbout
+import net.twisterrob.gradle.isDoNotNagAboutDiagnosticsEnabled
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.logging.Logging
 import org.gradle.util.GradleVersion
@@ -45,15 +46,24 @@ fun doNotNagAboutPattern(gradle: String, agpRegex: String, messageRegex: String)
 }
 
 private fun unsupported(gradle: String, agpRegex: String, s: String): Boolean {
+	val logger = Logging.getLogger(Gradle::class.java)
+
 	if (GradleVersion.current().baseVersion != GradleVersion.version(gradle)) {
+		if (isDoNotNagAboutDiagnosticsEnabled) {
+			val actual = "${GradleVersion.current()}(${GradleVersion.current().baseVersion})"
+			logger.lifecycle("Gradle version mismatch: ${actual} != ${GradleVersion.version(gradle)}, shortcutting:\n\t${s}")
+		}
 		return true
 	}
 
 	if (!Regex(agpRegex).matches(agpVersion)) {
+		if (isDoNotNagAboutDiagnosticsEnabled) {
+			logger.lifecycle("AGP version mismatch: ${agpRegex} does not match ${agpVersion}, shortcutting:\n\t${s}")
+		}
 		return true
 	}
 
-	val logger = Logging.getLogger(Gradle::class.java)
+	// Not wrapped in isNaggingDiagnosticsEnabled, always want to see active ignores.
 	logger.lifecycle(s)
 	return false
 }
