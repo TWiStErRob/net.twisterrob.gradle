@@ -13,11 +13,11 @@ abstract class BaseAndroidIntgTest : BaseIntgTest() {
 		gradle.basedOn(GradleBuildTestResources.android)
 
 		if (testInfo.testMethod.get().name.endsWith(" (release)")) {
-			createFileToMakeSureProguardPasses()
+			createFileToMakeProguardPass()
 		}
 	}
 
-	protected fun createFileToMakeSureProguardPasses() {
+	protected fun createFileToMakeProguardPass() {
 		@Language("java")
 		val apkContentForProguard = """
 			package ${packageName};

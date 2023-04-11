@@ -1,3 +1,5 @@
+@file:Suppress("ForbiddenMethodCall")
+
 package net.twisterrob.gradle.vcs
 
 import org.eclipse.jgit.api.Git

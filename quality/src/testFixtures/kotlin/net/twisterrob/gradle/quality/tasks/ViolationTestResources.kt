@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.quality.tasks
 
 import java.io.File
-import java.lang.management.ManagementFactory
 
 @Suppress("UseDataClass") // https://github.com/detekt/detekt/issues/5339
 class ViolationTestResources(
@@ -23,7 +22,9 @@ class ViolationTestResources(
 	 *  1. Amend the commit to include changes in this file.
 	 *  1. Run the test with Java 11 set in `Settings | Build, Execution, Deployment | Build Tools | Gradle`.
 	 */
+	@Suppress("StringLiteralDuplication")
 	inner class Everything {
+
 		val checkstyleReport: String
 			get() = read("ViolationTestResources/everything/checkstyle-multiple.xml")
 				.replace("{{rootProject}}", rootProject.absolutePath)
@@ -51,12 +52,12 @@ class ViolationTestResources(
 				)
 				// <location file="..."
 				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit14110403642675258434((?:\\[^"]+)+)(?=")""".toRegex()) { match ->
-					val group1 = match.groups[1]!!.value
+					val group1 = match.groupValues[1]
 					rootProject.absolutePath + group1.replace("\\", File.separator)
 				}
 				// <location fileAbsoluteAsUrl="..."
 				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit14110403642675258434((?:/[^"]+)+)(?=")""".toRegex()) { match ->
-					val group1 = match.groups[1]!!.value
+					val group1 = match.groupValues[1]
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
 				// <violation[details/@rule="IconMissingDensityFolder"]/description
@@ -110,13 +111,13 @@ class ViolationTestResources(
 				}
 				// <a class="file" href="file:/...">src\main\<b>
 				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit14110403642675258434((?:/[^"]+)+)(?=")""".toRegex()) { match ->
-					val group1 = match.groups[1]!!.value
+					val group1 = match.groupValues[1]
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
 				// <a class="file" href="file:/...">...<b>
 				.replace("""(a class="file" href="file:/.+">)((?:[^"]+\\)+)(?=<b>)""".toRegex()) { match ->
-					val group1 = match.groups[1]!!.value
-					val group2 = match.groups[2]!!.value
+					val group1 = match.groupValues[1]
+					val group2 = match.groupValues[2]
 					group1 + group2.replace("\\", File.separator)
 				}
 				// The XSL transformation will produce system-specific separators
