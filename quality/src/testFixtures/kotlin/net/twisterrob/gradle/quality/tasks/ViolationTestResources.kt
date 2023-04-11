@@ -7,7 +7,7 @@ class ViolationTestResources(
 	private val rootProject: File
 ) {
 
-	val everything: Everything get() = Everything()
+	val everything: Everything = Everything()
 
 	/**
 	 * How to replace [violationsXml] and [violationsHtml]?

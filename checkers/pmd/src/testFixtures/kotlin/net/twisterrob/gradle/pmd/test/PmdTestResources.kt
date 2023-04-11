@@ -17,13 +17,12 @@ package net.twisterrob.gradle.pmd.test
 class PmdTestResources {
 
 	val empty: EmptyConfiguration = object : EmptyConfiguration {}
+	val simple: SimpleFailures = object : SimpleFailures {}
 
 	interface EmptyConfiguration {
 		val config: String
 			get() = read("empty/empty-pmd.xml")
 	}
-
-	val simple: SimpleFailures = object : SimpleFailures {}
 
 	interface SimpleFailures {
 		val config: String
