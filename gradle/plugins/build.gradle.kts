@@ -6,19 +6,6 @@ plugins {
 	id("org.gradle.idea")
 }
 
-gradlePlugin {
-	plugins {
-		// Re-exposure of plugin from dependency. Gradle doesn't expose the plugin itself, even with api().
-		create("enterprise") {
-			id = "com.gradle.enterprise"
-			implementationClass = "com.gradle.enterprise.gradleplugin.GradleEnterprisePlugin"
-			dependencies {
-				implementation(libs.gradle.enterprise)
-			}
-		}
-	}
-}
-
 // Note on `plugins { }`: when the version is declared in the plugins block (`plugins { id(...) version "..." }`),
 // the referenced dependencies are visible by IntelliJ Gradle Sync, but the breakpoints are not hit.
 // Declaring all the dependencies in this project resolves this issue.
@@ -26,6 +13,7 @@ dependencies {
 	implementation(libs.kotlin.gradle)
 	implementation(libs.kotlin.dokka)
 	implementation(libs.detekt)
+	implementation(libs.gradle.enterprise)
 	compileOnly(libs.nexus)
 
 	// TODEL https://github.com/gradle/gradle/issues/15383
