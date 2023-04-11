@@ -8,11 +8,6 @@ plugins {
 
 gradlePlugin {
 	plugins {
-		create("settings") {
-			id = "net.twisterrob.gradle.build.settings"
-			implementationClass = "net.twisterrob.gradle.plugins.settings.SettingsPlugin"
-		}
-
 		// Re-exposure of plugin from dependency. Gradle doesn't expose the plugin itself, even with api().
 		create("enterprise") {
 			id = "com.gradle.enterprise"
@@ -20,27 +15,6 @@ gradlePlugin {
 			dependencies {
 				implementation(libs.gradle.enterprise)
 			}
-		}
-
-		create("moduleRoot") {
-			id = "net.twisterrob.gradle.build.module.root"
-			implementationClass = "net.twisterrob.gradle.build.RootModulePlugin"
-		}
-		create("moduleGradlePlugin") {
-			id = "net.twisterrob.gradle.build.module.gradle-plugin"
-			implementationClass = "net.twisterrob.gradle.build.GradlePluginModulePlugin"
-		}
-		create("moduleLibrary") {
-			id = "net.twisterrob.gradle.build.module.library"
-			implementationClass = "net.twisterrob.gradle.build.LibraryModulePlugin"
-		}
-		create("moduleBrowser") {
-			id = "net.twisterrob.gradle.build.module.browser"
-			implementationClass = "net.twisterrob.gradle.build.BrowserModulePlugin"
-		}
-		create("publishing") {
-			id = "net.twisterrob.gradle.build.publish"
-			implementationClass = "net.twisterrob.gradle.build.publishing.PublishingPlugin"
 		}
 	}
 }
