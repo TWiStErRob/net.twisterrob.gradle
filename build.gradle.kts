@@ -18,8 +18,6 @@ allprojects {
 	version = projectVersion
 }
 
-resetGradleTestWorkerIdToDefault()
-
 buildscript { enableDependencyLocking(project) }
 allprojects { enableDependencyLocking() }
 

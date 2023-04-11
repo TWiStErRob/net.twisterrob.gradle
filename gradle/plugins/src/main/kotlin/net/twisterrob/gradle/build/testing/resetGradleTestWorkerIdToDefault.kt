@@ -1,5 +1,7 @@
-import org.gradle.api.Project
+package net.twisterrob.gradle.build.testing
+
 import org.gradle.api.internal.tasks.testing.worker.TestWorker
+import org.gradle.api.invocation.Gradle
 import org.gradle.internal.id.LongIdGenerator
 import org.gradle.kotlin.dsl.support.serviceOf
 import org.gradle.process.internal.worker.DefaultWorkerProcessBuilder
@@ -22,7 +24,7 @@ import java.util.concurrent.atomic.AtomicLong
  * It is recommended to call this once at the beginning of the configuration phase.
  * The best place for this is the rootProject's build.gradle file.
  */
-fun Project.resetGradleTestWorkerIdToDefault() {
+fun Gradle.resetGradleTestWorkerIdToDefault() {
 	// This factory is "static" and it holds the state we need to mutate in order to make the workers reuse IDs.
 	val factory: DefaultWorkerProcessFactory = serviceOf<WorkerProcessFactory>() as DefaultWorkerProcessFactory
 	val idGenerator: LongIdGenerator = factory.getPrivateField("idGenerator")
