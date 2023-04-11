@@ -28,10 +28,6 @@ subprojects {
 		replaceHamcrestDependencies(project)
 	}
 
-	tasks.withType<Test>().configureEach {
-		useJUnitPlatform()
-	}
-
 	plugins.withId("org.jetbrains.kotlin.jvm") {
 		dependencies {
 			// Make sure we don't have many versions of Kotlin lying around.
@@ -51,7 +47,6 @@ subprojects {
 	}
 
 	plugins.withId("org.gradle.java") {
-		tasks.named<Test>("test") { testLogging.events("passed", "skipped", "failed") }
 		afterEvaluate {
 			// Delayed configuration, so that project.* is set up properly in corresponding modules' build.gradle.kts.
 			tasks.named<Jar>("jar") {
@@ -75,12 +70,6 @@ subprojects {
 			metaInf {
 				ignoreAttribute("Built-Date")
 			}
-		}
-	}
-
-	if (project.property("net.twisterrob.gradle.build.verboseReports").toString().toBoolean()) {
-		tasks.withType<Test>().configureEach {
-			configureVerboseReportsForGithubActions()
 		}
 	}
 }

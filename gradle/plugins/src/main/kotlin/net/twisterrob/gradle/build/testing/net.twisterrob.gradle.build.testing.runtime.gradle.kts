@@ -1,3 +1,19 @@
+import net.twisterrob.gradle.build.testing.configureVerboseReportsForGithubActions
+
+tasks.withType<Test>().configureEach {
+	useJUnitPlatform()
+}
+
+if (project.property("net.twisterrob.gradle.build.verboseReports").toString().toBoolean()) {
+	tasks.withType<Test>().configureEach {
+		configureVerboseReportsForGithubActions()
+	}
+}
+
+tasks.named<Test>("test") {
+	testLogging.events("passed", "skipped", "failed")
+}
+
 tasks.withType<Test>().configureEach {
 	val propertyNamesToExposeToJUnitTests = listOf(
 		// for GradleRunnerRule to use a different Gradle version for tests
