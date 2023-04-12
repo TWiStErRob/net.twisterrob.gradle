@@ -9,8 +9,7 @@ plugins {
 
 description = "Plugins for Gradle that support Android flavors."
 
-buildscript { enableDependencyLocking(project) }
-allprojects { enableDependencyLocking() }
+// buildscript { enableDependencyLocking(project) } // STOPSHIP Cannot import for some reason.
 
 subprojects {
 	// Extension with name 'libs' does not exist. Currently registered extension names: [ext, kotlin, kotlinTestRegistry, base, defaultArtifacts, sourceSets, reporting, java, javaToolchains, testing]
@@ -20,11 +19,6 @@ subprojects {
 	// runs into an infinite loop on it.
 	// TODEL Affects anything with Android Plugin < 2020.3.1 (i.e. AS 4.x, and IJ <2021.3)
 	val deps = rootProject.libs
-	replaceGradlePluginAutoDependenciesWithoutKotlin()
-
-	configurations.all {
-		replaceHamcrestDependencies(project)
-	}
 
 	plugins.withId("org.jetbrains.kotlin.jvm") {
 		dependencies {
