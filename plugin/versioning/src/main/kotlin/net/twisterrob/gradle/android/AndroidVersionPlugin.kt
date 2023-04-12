@@ -10,6 +10,7 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.dsl.DefaultConfig
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.ext.zip
 import net.twisterrob.gradle.internal.android.unwrapCast
@@ -208,7 +209,7 @@ class AndroidVersionPlugin : BasePlugin() {
 	}
 
 	private fun renameAPK(variant: ApplicationVariant) {
-		// TODO replace with new Variant API transformation.
+		// TODO replace with new Variant API transformation. https://github.com/TWiStErRob/net.twisterrob.gradle/issues/456
 		val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
 		@Suppress("UNCHECKED_CAST")
 		val versionCode = variantOutput.versionCode.orElse(-1) as Provider<Int>
@@ -221,10 +222,33 @@ class AndroidVersionPlugin : BasePlugin() {
 
 		variant.androidTestCompat?.let { androidTest ->
 			val androidTestImpl = androidTest.unwrapCast<AndroidTest, AndroidTestImpl>()
-			val androidTestOutput = androidTestImpl.outputs.filterIsInstance<VariantOutputImpl>().single()
-			androidTestOutput.outputFileName.set(
-				androidTest.replacementApkNameProvider(versionCode, versionName)
-			)
+			when {
+				AGPVersions.v81x <= AGPVersions.CLASSPATH -> {
+					project.afterEvaluate {
+						val handler = androidTestImpl.taskContainer
+							.packageAndroidTask!!
+							.get()
+							.outputsHandler
+							.get()
+						handler::class.java
+							.getDeclaredField("singleOutputFileName")
+							.apply { isAccessible = true }
+							.set(handler, androidTest.replacementApkNameProvider(versionCode, versionName))
+					}
+				}
+				AGPVersions.v70x <= AGPVersions.CLASSPATH -> {
+					val androidTestOutput = com.android.build.api.component.impl.ComponentImpl::class.java
+						.getDeclaredMethod("getOutputs")
+						.invoke(androidTestImpl)
+						.let { @Suppress("UNCHECKED_CAST") (it as List<VariantOutputImpl>) }
+						.single()
+					androidTestOutput.outputFileName.set(
+						androidTest.replacementApkNameProvider(versionCode, versionName)
+					)
+				}
+				else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
+
+			}
 		}
 	}
 
