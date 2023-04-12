@@ -6,6 +6,8 @@ plugins {
 }
 
 dependencies {
+	api(enforcedPlatform(libs.kotlin.bom))
+
 	api(projects.test)
 
 	api(gradleApiWithoutKotlin())

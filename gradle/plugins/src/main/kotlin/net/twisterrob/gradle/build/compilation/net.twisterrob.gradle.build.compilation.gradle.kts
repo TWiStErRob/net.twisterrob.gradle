@@ -3,10 +3,29 @@ import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins.withId("org.gradle.java") {
-	val java = extensions.getByName<JavaPluginExtension>("java")
-	java.sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-	java.targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+plugins {
+	id("org.jetbrains.kotlin.jvm")
+}
+
+dependencies {
+	api(libs.kotlin.stdlib)
+	api(libs.kotlin.stdlib.jdk8)
+	api(libs.kotlin.reflect)
+	compileOnly(libs.kotlin.dsl) {
+		isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
+	}
+}
+
+java {
+	sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+	targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+	// Make sure we don't have many versions of Kotlin lying around.
+	consistentResolution {
+		dependencies {
+			compileOnly(enforcedPlatform(libs.kotlin.bom))
+		}
+		useCompileClasspathVersions()
+	}
 }
 
 tasks.withType<JavaCompile>().configureEach {
