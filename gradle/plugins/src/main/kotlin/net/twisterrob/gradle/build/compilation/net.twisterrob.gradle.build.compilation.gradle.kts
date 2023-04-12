@@ -14,18 +14,19 @@ dependencies {
 	compileOnly(libs.kotlin.dsl) {
 		isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
 	}
+	// Make sure we don't have many versions of Kotlin lying around.
+	compileOnly(enforcedPlatform(libs.kotlin.bom))
+	// Allow tests to use latest.
+	testImplementation(enforcedPlatform(libs.kotlin.bom)) {
+		version { require(libs.versions.kotlin.build.get()) }
+	}
 }
 
 java {
 	sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
 	targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-	// Make sure we don't have many versions of Kotlin lying around.
-	consistentResolution {
-		dependencies {
-			compileOnly(enforcedPlatform(libs.kotlin.bom))
-		}
-		useCompileClasspathVersions()
-	}
+	// Cannot use this, because test Kotlin needs to be different.
+	//consistentResolution { useCompileClasspathVersions() }
 }
 
 tasks.withType<JavaCompile>().configureEach {

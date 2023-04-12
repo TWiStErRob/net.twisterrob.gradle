@@ -6,7 +6,9 @@ plugins {
 }
 
 dependencies {
-	api(enforcedPlatform(libs.kotlin.bom))
+	api(enforcedPlatform(libs.kotlin.bom)) {
+		version { require(libs.versions.kotlin.build.get()) }
+	}
 
 	api(projects.test)
 
