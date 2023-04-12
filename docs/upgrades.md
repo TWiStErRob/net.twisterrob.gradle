@@ -9,6 +9,7 @@
     * If there's a new alpha/beta/rc/stable release, create a new module: `:compat:agp-__x`.  
       This will be empty, but will allow immediate browsing of source code.
     * Add dependency from `:compat:agp` to the new `:compat:agp-__x`.
+    * Add dependency in the new `:compat:agp-__x` to `:compat:agp-base`.
  3. Add compatibility checks via `AGPVersions` if necessary.
     * Review `AGPVersionsTest` to bump latest classpath version.
     * Review `AGPVersionsTest` if there's a new constant.
