@@ -512,14 +512,14 @@ jobs:
             build-tools: '32.0.0'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 7.4.x on Gradle 8.x"
-            gradle: '8.1-rc-4'
+            gradle: '8.1'
             gradle-java: '11'
             agp: '7.4.2'
             kotlin: '1.6.21'
             build-tools: '30.0.3'
             test-task: 'testReport :quality:tests'
           - name: "AGP 7.4.x on Gradle 8.x - plugin"
-            gradle: '8.1-rc-4'
+            gradle: '8.1'
             gradle-java: '11'
             agp: '7.4.2'
             kotlin: '1.6.21'
@@ -715,19 +715,19 @@ jobs:
           name: 'AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6.1) Test Results XMLs'
           path: 'artifacts/AGP 7.4.x on Gradle 7.x - plugin (7.4.2 on 7.6.1) Test Results XMLs'
 
-      - name: "Download 'AGP 7.4.x on Gradle 8.x (7.4.2 on 8.1-rc-4) Test Results XMLs' artifact."
+      - name: "Download 'AGP 7.4.x on Gradle 8.x (7.4.2 on 8.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: 'AGP 7.4.x on Gradle 8.x (7.4.2 on 8.1-rc-4) Test Results XMLs'
-          path: 'artifacts/AGP 7.4.x on Gradle 8.x (7.4.2 on 8.1-rc-4) Test Results XMLs'
+          name: 'AGP 7.4.x on Gradle 8.x (7.4.2 on 8.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.4.x on Gradle 8.x (7.4.2 on 8.1) Test Results XMLs'
 
-      - name: "Download 'AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.1-rc-4) Test Results XMLs' artifact."
+      - name: "Download 'AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: 'AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.1-rc-4) Test Results XMLs'
-          path: 'artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.1-rc-4) Test Results XMLs'
+          name: 'AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.1) Test Results XMLs'
+          path: 'artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.1) Test Results XMLs'
 
       - name: "Download 'AGP 8.0.x on Gradle 8.x (8.0.0-rc01 on 8.1) Test Results XMLs' artifact."
         if: success() || failure()
