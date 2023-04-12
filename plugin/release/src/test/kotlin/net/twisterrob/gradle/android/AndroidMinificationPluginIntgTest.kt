@@ -227,7 +227,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 	) {
 		gradle.root.resolve("gradle.properties").appendText(minification.gradleProperties)
 
-		createFileToMakeSureProguardPasses()
+		createFileToMakeProguardPass()
 		@Language("gradle")
 		val script = """
 			plugins {

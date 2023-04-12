@@ -9,8 +9,8 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
-import net.twisterrob.test.compile.generateKotlinCompilationCheck
-import net.twisterrob.test.compile.generateKotlinCompilationCheckTest
+import net.twisterrob.test.compile.generateKotlinCompileCheckMain
+import net.twisterrob.test.compile.generateKotlinCompileCheckTest
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -25,7 +25,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 	@Test fun `can compile Kotlin`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
-		gradle.generateKotlinCompilationCheck()
+		gradle.generateKotlinCompileCheckMain()
 
 		@Language("gradle")
 		val script = """
@@ -41,8 +41,8 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 	@Test fun `can test Kotlin with TestNG`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
-		gradle.generateKotlinCompilationCheck()
-		gradle.generateKotlinCompilationCheckTest()
+		gradle.generateKotlinCompileCheckMain()
+		gradle.generateKotlinCompileCheckTest()
 
 		@Language("gradle")
 		val script = """
@@ -62,8 +62,8 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 	@Test fun `can test Kotlin with JUnit`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
-		gradle.generateKotlinCompilationCheck()
-		gradle.generateKotlinCompilationCheckTest()
+		gradle.generateKotlinCompileCheckMain()
+		gradle.generateKotlinCompileCheckTest()
 
 		@Language("gradle")
 		val script = """

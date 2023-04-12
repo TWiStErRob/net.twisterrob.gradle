@@ -65,9 +65,9 @@ jobs:
           --continue
           jar
           validatePlugins
-          detekt
           detektMain
           detektTest
+          detektTestFixtures
           detektReportMergeSarif
           detektReportMergeXml
 
@@ -77,7 +77,7 @@ jobs:
         with:
           name: 'Detekt Results'
           path: |
-            ${{ github.workspace }}/**/build/reports/detekt/detekt.*
+            ${{ github.workspace }}/**/build/reports/detekt/
             ${{ github.workspace }}/build/reports/detekt/merge.*
 
       - name: "Publish 'Code scanning results / detekt' GitHub Code Scanning analysis."

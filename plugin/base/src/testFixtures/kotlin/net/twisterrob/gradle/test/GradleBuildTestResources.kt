@@ -5,17 +5,22 @@ import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 object GradleBuildTestResources {
 
 	val kotlin: KotlinProject = object : KotlinProject {}
-
-	interface KotlinProject {
-		val settings: String
-			get() = read("kotlin-plugin_app/settings.gradle.kts")
-	}
+	val android: AndroidProject = object : AndroidProject {}
 
 	fun GradleRunnerRule.basedOn(project: KotlinProject) {
 		file(project.settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 	}
 
-	val android: AndroidProject = object : AndroidProject {}
+	fun GradleRunnerRule.basedOn(project: AndroidProject) {
+		file(project.build, ContentMergeMode.MERGE_GRADLE, "build.gradle")
+		file(project.settings, "settings.gradle.kts")
+		file(project.manifest, "src", "main", "AndroidManifest.xml")
+	}
+
+	interface KotlinProject {
+		val settings: String
+			get() = read("kotlin-plugin_app/settings.gradle.kts")
+	}
 
 	interface AndroidProject {
 		val build: String
@@ -26,12 +31,6 @@ object GradleBuildTestResources {
 
 		val manifest: String
 			get() = read("android-plugin_app/src/main/AndroidManifest.xml")
-	}
-
-	fun GradleRunnerRule.basedOn(project: AndroidProject) {
-		file(project.build, ContentMergeMode.MERGE_GRADLE, "build.gradle")
-		file(project.settings, "settings.gradle.kts")
-		file(project.manifest, "src", "main", "AndroidManifest.xml")
 	}
 
 	private fun read(path: String): String =

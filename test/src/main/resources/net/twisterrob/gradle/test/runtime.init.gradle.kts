@@ -31,13 +31,13 @@ rootProject {
 
 	println( // Using println rather than logger.lifecycle() to make sure it outputs even with --quiet.
 		"""
-		Gradle ${gradleVersion} worker #${gradleTestWorkerId} at ${gradleHome.absolutePath} with ${gradleDir?.absolutePath}.
-		Gradle Java: ${java} from ${javaHome}${if (javaHome != javaHomeEnv) " (JAVA_HOME = ${javaHomeEnv})" else ""}.
-		Gradle Kotlin stdlib: ${kotlinRuntime}, Kotlin Gradle Plugin: ${kotlinPlugin}.
-		${memoryDiagnostics()}
-		Running `gradle ${gradleTasks.joinToString(" ")}`
-		on ${gradleBuildFile.absolutePath}.
-	""".trimIndent()
+			Gradle ${gradleVersion} worker #${gradleTestWorkerId} at ${gradleHome.absolutePath} with ${gradleDir?.absolutePath}.
+			Gradle Java: ${java} from ${javaHome}${if (javaHome != javaHomeEnv) " (JAVA_HOME = ${javaHomeEnv})" else ""}.
+			Gradle Kotlin stdlib: ${kotlinRuntime}, Kotlin Gradle Plugin: ${kotlinPlugin}.
+			${memoryDiagnostics()}
+			Running `gradle ${gradleTasks.joinToString(" ")}`
+			on ${gradleBuildFile.absolutePath}.
+		""".trimIndent()
 	)
 }
 

@@ -16,16 +16,15 @@ package net.twisterrob.gradle.pmd.test
 @Suppress("UseDataClass") // https://github.com/detekt/detekt/issues/5339
 class PmdTestResources {
 
-	val empty: EmptyConfiguration get() = object : EmptyConfiguration {}
+	val empty: EmptyConfiguration = object : EmptyConfiguration {}
+	val simple: SimpleFailures = object : SimpleFailures {}
 
 	interface EmptyConfiguration {
 		val config: String
 			get() = read("empty/empty-pmd.xml")
 	}
 
-	val simple: SimpleFailures get() = SimpleFailures()
-
-	inner class SimpleFailures {
+	interface SimpleFailures {
 		val config: String
 			// Gradle 5+ has PMD 6.x embedded, so they emit a deprecation warning if the old config is used (#81).
 			get() = read("simple_failures/simple-pmd.xml")
@@ -34,13 +33,19 @@ class PmdTestResources {
 			get() = read("simple_failures/WithoutPackage.java")
 
 		val message1: Regex
-			get() = Regex(""".*src.main.java.WithoutPackage\.java:1:\tNoPackage:\tAll classes, interfaces, enums and annotations must belong to a named package""")
+			get() = Regex(
+				""".*src.main.java.WithoutPackage\.java:1:\t"""
+						+ """NoPackage:\tAll classes, interfaces, enums and annotations must belong to a named package"""
+			)
 
 		val content2: String
 			get() = read("simple_failures/PrintStack.java")
 
 		val message2: Regex
-			get() = Regex(""".*src.main.java.pmd.PrintStack\.java:8:\tAvoidPrintStackTrace:\tAvoid printStackTrace\(\); use a logger call instead\.""")
+			get() = Regex(
+				""".*src.main.java.pmd.PrintStack\.java:8:\t"""
+						+ """AvoidPrintStackTrace:\tAvoid printStackTrace\(\); use a logger call instead\."""
+			)
 	}
 
 	companion object {
