@@ -225,11 +225,15 @@ class AndroidVersionPlugin : BasePlugin() {
 			when {
 				AGPVersions.v81x <= AGPVersions.CLASSPATH -> {
 					project.afterEvaluate {
-						val handler = androidTestImpl.taskContainer
-							.packageAndroidTask!!
+						val packageAndroidTaskProvider =
+							checkNotNull(androidTestImpl.taskContainer.packageAndroidTask) {
+								"Missing package task for ${variant}'s androidTest."
+							}
+						val handler = packageAndroidTaskProvider
 							.get()
 							.outputsHandler
 							.get()
+						@Suppress("NestedScopeFunctions")
 						handler::class.java
 							.getDeclaredField("singleOutputFileName")
 							.apply { isAccessible = true }
@@ -237,6 +241,7 @@ class AndroidVersionPlugin : BasePlugin() {
 					}
 				}
 				AGPVersions.v70x <= AGPVersions.CLASSPATH -> {
+					@Suppress("NestedScopeFunctions")
 					val androidTestOutput = com.android.build.api.component.impl.ComponentImpl::class.java
 						.getDeclaredMethod("getOutputs")
 						.invoke(androidTestImpl)
