@@ -126,18 +126,15 @@ fun MavenPublication.fixMarkers(project: Project) {
 	}
 }
 
+@Suppress("UnusedReceiverParameter")
 fun MavenPublication.handleTestFixtures() {
-	// > Maven publication 'pluginMaven' pom metadata warnings
-	// > (silence with 'suppressPomMetadataWarningsFor(variant)'):
-	// > - Variant testFixturesApiElements:
-	// >     - Declares capability net.twisterrob.gradle:checkstyle-test-fixtures:0.15-SNAPSHOT which cannot be mapped to Maven
-	// > - Variant testFixturesRuntimeElements:
-	// >     - Declares capability net.twisterrob.gradle:checkstyle-test-fixtures:0.15-SNAPSHOT which cannot be mapped to Maven
-	// > These issues indicate information that is lost in the published 'pom' metadata file,
-	// > which may be an issue if the published library is consumed by an old Gradle version or Apache Maven.
-	// > The 'module' metadata file, which is used by Gradle 6+ is not affected.
-	suppressPomMetadataWarningsFor("testFixturesApiElements")
-	suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
+	// Disable publication of test fixtures as it could leak internal dependencies.
+	val java = components["java"] as AdhocComponentWithVariants
+	java.withVariantsFromConfiguration(configurations.getByName("testFixturesApiElements")) { skip() }
+	java.withVariantsFromConfiguration(configurations.getByName("testFixturesRuntimeElements")) { skip() }
+	// Not suppressing warnings, because they should be skipped, if they show up, that's a problem.
+	//suppressPomMetadataWarningsFor("testFixturesApiElements")
+	//suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
 }
 
 fun setupDoc(project: Project) {

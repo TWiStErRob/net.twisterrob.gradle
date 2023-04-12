@@ -4,7 +4,6 @@ import net.twisterrob.gradle.build.dependencies.addJarToClasspathOfPlugin
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
-	id("org.gradle.java-test-fixtures")
 }
 
 base.archivesName.set("twister-convention-release")
