@@ -245,7 +245,7 @@ fun registerPublicationsTasks(project: Project) {
 			it is MavenPublication && it.name.endsWith("PluginMarkerMaven")
 		}
 	project.tasks.register("publish${markersName.capitalized()}ToMavenLocal") task@{
-		group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
+		group = PublishingPlugin.PUBLISH_TASK_GROUP
 		description = "Publishes ${markersDescription} produced by this project to the local Maven cache."
 		markerPublications.all publication@{
 			val publication = this@publication.name
@@ -255,7 +255,7 @@ fun registerPublicationsTasks(project: Project) {
 	project.the<PublishingExtension>().repositories.all repository@{
 		val repository = this@repository.name
 		project.tasks.register("publish${markersName.capitalized()}To${repository.capitalized()}Repository") task@{
-			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
+			group = PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Publishes ${markersDescription} produced by this project to the ${repository} repository."
 			markerPublications.all publication@{
 				val publication = this@publication.name
