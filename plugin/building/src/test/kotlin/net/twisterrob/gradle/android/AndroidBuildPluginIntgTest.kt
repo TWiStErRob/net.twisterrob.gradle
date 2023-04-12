@@ -291,6 +291,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				id("net.twisterrob.gradle.plugin.android-library")
 				id("net.twisterrob.gradle.plugin.kotlin")
 			}
+			android.buildFeatures.buildConfig = true
 			android.twisterrob.decorateBuildConfig = false
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
@@ -358,6 +359,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				id("net.twisterrob.gradle.plugin.android-app")
 				id("net.twisterrob.gradle.plugin.kotlin")
 			}
+			android.buildFeatures.buildConfig = true
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
 				testImplementation 'org.robolectric:robolectric:4.9.2'
@@ -428,6 +430,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				id("net.twisterrob.gradle.plugin.android-app")
 				id("net.twisterrob.gradle.plugin.kotlin")
 			}
+			android.buildFeatures.buildConfig = true
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
 				testImplementation 'org.robolectric:robolectric:4.9.2'
