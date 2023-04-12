@@ -1,3 +1,5 @@
+import net.twisterrob.gradle.build.testing.exposeTestResources
+
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
@@ -26,7 +28,7 @@ gradlePlugin {
 }
 
 dependencies {
-	compileOnly(gradleTestKitWithoutKotlin())
+	compileOnly(gradleTestKit())
 
 	compileOnly(libs.junit.legacy)
 	compileOnly(libs.mockito.kotlin)
@@ -35,8 +37,8 @@ dependencies {
 
 	api(projects.common)
 
-	testImplementation(gradleApiWithoutKotlin())
-	testImplementation(gradleTestKitWithoutKotlin())
+	testImplementation(gradleApi())
+	testImplementation(gradleTestKit())
 	testImplementation(projects.test.internal)
 }
 

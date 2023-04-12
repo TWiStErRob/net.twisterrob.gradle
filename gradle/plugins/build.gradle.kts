@@ -6,45 +6,6 @@ plugins {
 	id("org.gradle.idea")
 }
 
-gradlePlugin {
-	plugins {
-		create("settings") {
-			id = "net.twisterrob.gradle.build.settings"
-			implementationClass = "net.twisterrob.gradle.plugins.settings.SettingsPlugin"
-		}
-
-		// Re-exposure of plugin from dependency. Gradle doesn't expose the plugin itself, even with api().
-		create("enterprise") {
-			id = "com.gradle.enterprise"
-			implementationClass = "com.gradle.enterprise.gradleplugin.GradleEnterprisePlugin"
-			dependencies {
-				implementation(libs.gradle.enterprise)
-			}
-		}
-
-		create("moduleRoot") {
-			id = "net.twisterrob.gradle.build.module.root"
-			implementationClass = "net.twisterrob.gradle.build.RootModulePlugin"
-		}
-		create("moduleGradlePlugin") {
-			id = "net.twisterrob.gradle.build.module.gradle-plugin"
-			implementationClass = "net.twisterrob.gradle.build.GradlePluginModulePlugin"
-		}
-		create("moduleLibrary") {
-			id = "net.twisterrob.gradle.build.module.library"
-			implementationClass = "net.twisterrob.gradle.build.LibraryModulePlugin"
-		}
-		create("moduleBrowser") {
-			id = "net.twisterrob.gradle.build.module.browser"
-			implementationClass = "net.twisterrob.gradle.build.BrowserModulePlugin"
-		}
-		create("publishing") {
-			id = "net.twisterrob.gradle.build.publish"
-			implementationClass = "net.twisterrob.gradle.build.publishing.PublishingPlugin"
-		}
-	}
-}
-
 // Note on `plugins { }`: when the version is declared in the plugins block (`plugins { id(...) version "..." }`),
 // the referenced dependencies are visible by IntelliJ Gradle Sync, but the breakpoints are not hit.
 // Declaring all the dependencies in this project resolves this issue.
@@ -52,7 +13,8 @@ dependencies {
 	implementation(libs.kotlin.gradle)
 	implementation(libs.kotlin.dokka)
 	implementation(libs.detekt)
-	compileOnly(libs.nexus)
+	implementation(libs.gradle.enterprise)
+	implementation(libs.nexus)
 
 	// TODEL https://github.com/gradle/gradle/issues/15383
 	implementation(files(libs::class.java.superclass.protectionDomain.codeSource.location))
@@ -72,15 +34,15 @@ run {
 	}
 	// The copied code is marked as generated for IDEA, so it warns when it's accidentally edited.
 	idea.module.generatedSourceDirs.add(sharedCodeFolder)
-	// Some tasks will rely on this copied code, so make sure their inputs are appropriately marked. 
+	// Some tasks will rely on this copied code, so make sure their inputs are appropriately marked.
 	tasks.named("compileKotlin").configure { dependsOn(copyReusableSources) }
 	tasks.named("detektMain").configure { dependsOn(copyReusableSources) }
 	tasks.named("detekt").configure { dependsOn(copyReusableSources) }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	kotlinOptions.verbose = true
-	kotlinOptions.allWarningsAsErrors = true
+	compilerOptions.verbose.set(true)
+	compilerOptions.allWarningsAsErrors.set(true)
 }
 
 // Note: duplicated from DetektPlugin because can't apply project this build.gradle.kts is defining.

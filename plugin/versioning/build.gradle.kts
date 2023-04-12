@@ -1,7 +1,6 @@
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
-	id("org.gradle.java-test-fixtures")
 }
 
 base.archivesName.set("twister-convention-versioning")
@@ -31,7 +30,7 @@ gradlePlugin {
 }
 
 dependencies {
-	implementation(gradleApiWithoutKotlin())
+	implementation(gradleApi())
 	implementation(projects.plugin.base)
 	implementation(projects.compat.gradle)
 	implementation(projects.compat.agpBase)

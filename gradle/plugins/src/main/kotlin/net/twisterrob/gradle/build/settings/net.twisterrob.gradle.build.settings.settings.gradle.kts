@@ -1,0 +1,3 @@
+import net.twisterrob.gradle.build.testing.resetGradleTestWorkerIdToDefault
+
+gradle.resetGradleTestWorkerIdToDefault()

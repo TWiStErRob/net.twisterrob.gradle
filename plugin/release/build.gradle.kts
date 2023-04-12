@@ -1,21 +1,22 @@
+import net.twisterrob.gradle.build.dependencies.addJarToClasspathOfPlugin
+
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
-	id("org.gradle.java-test-fixtures")
 }
 
 base.archivesName.set("twister-convention-release")
 description = "Release Convention Plugin: Gradle Plugin to handle conventional releasing."
 
 gradlePlugin {
-	disableGradlePluginValidation()
+	disableGradlePluginValidation(project)
 	plugins {
 		// Not created, internal plugins only used by class reference.
 	}
 }
 
 dependencies {
-	implementation(gradleApiWithoutKotlin())
+	implementation(gradleApi())
 	api(projects.plugin.base)
 	implementation(projects.plugin.versioning) // TODO decouple
 	compileOnly(libs.android.gradle)

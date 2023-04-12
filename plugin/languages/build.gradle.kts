@@ -44,7 +44,7 @@ gradlePlugin {
 }
 
 dependencies {
-	implementation(gradleApiWithoutKotlin())
+	implementation(gradleApi())
 	api(projects.plugin.base)
 	compileOnly(libs.android.gradle)
 

@@ -3,10 +3,14 @@ plugins {
 }
 
 dependencies {
+	api(enforcedPlatform(libs.kotlin.bom)) {
+		version { require(libs.versions.kotlin.build.get()) }
+	}
+
 	api(projects.test)
 
-	api(gradleApiWithoutKotlin())
-	api(gradleTestKitWithoutKotlin())
+	api(gradleApi())
+	api(gradleTestKit())
 
 	api(libs.annotations.jetbrains)
 

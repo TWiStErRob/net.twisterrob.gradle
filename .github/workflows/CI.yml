@@ -178,8 +178,7 @@ jobs:
       # Capture which Gradle version is running the build to use in some steps.
       # Value will be written in a later step using `>> $GITHUB_ENV`.
       GRADLE_VERSION: '0.0.0'
-    # Average observed execution time is 6-7 minutes, double it for timeout constraint.
-    timeout-minutes: 30
+    timeout-minutes: 45
     needs: validate
     steps:
       - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
@@ -289,10 +288,10 @@ jobs:
             #~/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/
 
             # Prevent "Download https://repo1.maven.org/maven2/" during test runs.
-            /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/
+            /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/modules-2/
 
             # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar'" during test runs.
-            /tmp/.gradle-test-kit-${{ env.USER }}/caches/${{ matrix.gradle }}/generated-gradle-jars/
+            /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/${{ matrix.gradle }}/generated-gradle-jars/
           key: ${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}
 
       - name: "Check ${{ env.JOB_NAME }}."
@@ -343,9 +342,9 @@ jobs:
       - name: "Cleanup Gradle Test Kit files before caching."
         run: |
           # Don't cache lock files to prevent breaking future builds
-          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/modules-2.lock
-          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}/caches/modules-2/gc.properties
-          rm -fr /tmp/.gradle-test-kit-${{ env.USER }}/caches/*/plugin-resolution/
+          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/modules-2/modules-2.lock
+          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/modules-2/gc.properties
+          rm -fr /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/*/plugin-resolution/
 
     strategy:
       fail-fast: false

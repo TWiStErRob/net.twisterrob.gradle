@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-	compileOnly(gradleApiWithoutKotlin())
+	compileOnly(gradleApi())
 	implementation(projects.plugin.settings)
 }

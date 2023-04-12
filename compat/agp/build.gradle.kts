@@ -7,7 +7,7 @@ base.archivesName.set("twister-compat-agp")
 description = "AGP Compatibility: Support classes for users of Android Gradle Plugin."
 
 dependencies {
-	implementation(gradleApiWithoutKotlin())
+	implementation(gradleApi())
 	compileOnly(libs.android.gradle)
 	implementation(projects.compat.agpBase)
 	implementation(projects.compat.agp70x)

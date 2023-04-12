@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.build.publishing
 
-import gradlePlugin
+import net.twisterrob.gradle.build.dsl.gradlePlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.named

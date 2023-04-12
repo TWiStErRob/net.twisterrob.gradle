@@ -2,6 +2,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.initialization.dsl.VersionCatalogBuilder
 import java.io.File
 
+// TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/432
 /**
  * Hack to be able to load multiple files into a [org.gradle.api.artifacts.VersionCatalog].
  * The built-in method is [VersionCatalogBuilder.from] which only allows one file.

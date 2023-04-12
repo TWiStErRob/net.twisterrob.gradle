@@ -1,7 +1,6 @@
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
-	id("org.gradle.java-test-fixtures")
 }
 
 base.archivesName.set("twister-convention-base")
@@ -27,7 +26,7 @@ gradlePlugin {
 }
 
 dependencies {
-	implementation(gradleApiWithoutKotlin())
+	implementation(gradleApi())
 	api(projects.common)
 	compileOnly(libs.android.gradle)
 	// SdkConstants.FD_INTERMEDIATES

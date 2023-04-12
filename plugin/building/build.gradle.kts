@@ -1,21 +1,20 @@
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
-	id("org.gradle.java-test-fixtures")
 }
 
 base.archivesName.set("twister-convention-building")
 description = "Build Convention Plugin: Gradle Plugin to handle conventional builds."
 
 gradlePlugin {
-	disableGradlePluginValidation()
+	disableGradlePluginValidation(project)
 	plugins {
 		// Not created, internal plugins only used by class reference.
 	}
 }
 
 dependencies {
-	implementation(gradleApiWithoutKotlin())
+	implementation(gradleApi())
 	api(projects.plugin.base)
 	implementation(projects.compat.agp)
 	implementation(projects.plugin.versioning) // TODO decouple
