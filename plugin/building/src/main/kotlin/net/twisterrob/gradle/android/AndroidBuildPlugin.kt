@@ -99,7 +99,6 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 	companion object {
 
 		private fun BaseExtension.configureLint() {
-			@Suppress("UnstableApiUsage")
 			(this as CommonExtension<*, *, *, *>).lint {
 				xmlReport = false
 				checkAllWarningsCompat = true
