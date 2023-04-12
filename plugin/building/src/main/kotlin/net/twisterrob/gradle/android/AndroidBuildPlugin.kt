@@ -68,7 +68,7 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				configureBuildResValues()
 			}
 			with(packagingOptions) {
-				resources.excludes.addAll(knownUnneededFiles())
+				resourcesCompat.excludes.addAll(knownUnneededFiles())
 			}
 			decorateBuildConfig(project, twisterrob)
 		}
