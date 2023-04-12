@@ -9,7 +9,7 @@ description = "AGP Compatibility: Support classes for users of Android Gradle Pl
 dependencies {
 	implementation(gradleApi())
 	compileOnly(libs.android.gradle)
-	implementation(projects.compat.agpBase)
+	api(projects.compat.agpBase)
 	implementation(projects.compat.agp70x)
 	implementation(projects.compat.agp71x)
 	implementation(projects.compat.agp72x)

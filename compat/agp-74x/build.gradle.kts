@@ -9,4 +9,5 @@ description = "AGP Compatibility 7.4.x: Compatibility layer for Android Gradle P
 dependencies {
 	implementation(gradleApi())
 	compileOnly(libs.android.gradle.v74x)
+	implementation(projects.compat.agpBase)
 }
