@@ -1,6 +1,6 @@
 import net.twisterrob.gradle.build.dsl.libs
-import org.gradle.api.tasks.compile.GroovyCompile
-import org.gradle.api.tasks.compile.JavaCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -23,8 +23,8 @@ dependencies {
 }
 
 java {
-	sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-	targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+	sourceCompatibility = libs.versions.java.map(JavaVersion::toVersion).get()
+	targetCompatibility = libs.versions.java.map(JavaVersion::toVersion).get()
 	// Cannot use this, because test Kotlin needs to be different.
 	//consistentResolution { useCompileClasspathVersions() }
 }
@@ -53,13 +53,13 @@ tasks.withType<GroovyCompile>().configureEach {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-	kotlinOptions.verbose = true
-	kotlinOptions.languageVersion = libs.versions.kotlin.language.get()
-	kotlinOptions.apiVersion = libs.versions.kotlin.language.get()
-	kotlinOptions.jvmTarget = libs.versions.java.get()
-	kotlinOptions.suppressWarnings = false
-	kotlinOptions.allWarningsAsErrors = true
-	kotlinOptions.freeCompilerArgs += listOf(
+	compilerOptions.verbose.set(true)
+	compilerOptions.languageVersion.set(libs.versions.kotlin.language.map(KotlinVersion::fromVersion))
+	compilerOptions.apiVersion.set(libs.versions.kotlin.language.map(KotlinVersion::fromVersion))
+	compilerOptions.jvmTarget.set(libs.versions.java.map(JvmTarget::fromTarget))
+	compilerOptions.suppressWarnings.set(false)
+	compilerOptions.allWarningsAsErrors.set(true)
+	compilerOptions.freeCompilerArgs.addAll(
 		// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
 		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
 		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
@@ -68,9 +68,9 @@ tasks.withType<KotlinCompile>().configureEach {
 		"-Xno-optimized-callable-references",
 		"-opt-in=kotlin.RequiresOptIn",
 	)
-	if (kotlinOptions.languageVersion == "1.4") {
+	if (compilerOptions.languageVersion.get() == @Suppress("DEPRECATION") KotlinVersion.KOTLIN_1_4) {
 		// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".
-		kotlinOptions.freeCompilerArgs += "-Xsuppress-version-warnings"
+		compilerOptions.freeCompilerArgs.add("-Xsuppress-version-warnings")
 	} else {
 		TODO("Remove -Xsuppress-version-warnings")
 	}

@@ -34,15 +34,15 @@ run {
 	}
 	// The copied code is marked as generated for IDEA, so it warns when it's accidentally edited.
 	idea.module.generatedSourceDirs.add(sharedCodeFolder)
-	// Some tasks will rely on this copied code, so make sure their inputs are appropriately marked. 
+	// Some tasks will rely on this copied code, so make sure their inputs are appropriately marked.
 	tasks.named("compileKotlin").configure { dependsOn(copyReusableSources) }
 	tasks.named("detektMain").configure { dependsOn(copyReusableSources) }
 	tasks.named("detekt").configure { dependsOn(copyReusableSources) }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	kotlinOptions.verbose = true
-	kotlinOptions.allWarningsAsErrors = true
+	compilerOptions.verbose.set(true)
+	compilerOptions.allWarningsAsErrors.set(true)
 }
 
 // Note: duplicated from DetektPlugin because can't apply project this build.gradle.kts is defining.
