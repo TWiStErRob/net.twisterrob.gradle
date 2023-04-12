@@ -168,7 +168,7 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			val vcsTaskProvider =
 				project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
 			project.androidComponents.finalizeDsl {
-				if (twisterrob.isDecorateBuildConfig && buildFeatures.buildConfig != false) {
+				if (twisterrob.isDecorateBuildConfig && buildFeatures.isBuildConfigEnabled) {
 					project.decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
 				}
 			}
