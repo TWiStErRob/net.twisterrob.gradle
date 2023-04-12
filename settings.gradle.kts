@@ -37,6 +37,8 @@ include(":compat:agp-71x")
 include(":compat:agp-72x")
 include(":compat:agp-73x")
 include(":compat:agp-74x")
+include(":compat:agp-80x")
+include(":compat:agp-81x")
 include(":compat:gradle")
 include(":compat:kotlin-base")
 
