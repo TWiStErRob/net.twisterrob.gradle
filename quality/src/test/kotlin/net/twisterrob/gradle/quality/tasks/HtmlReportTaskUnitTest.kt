@@ -6,12 +6,9 @@ import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.condition.DisabledOnJre
-import org.junit.jupiter.api.condition.JRE
 
 class HtmlReportTaskUnitTest {
 
-	@DisabledOnJre(JRE.JAVA_8)
 	@Test fun `transformation error displays affected file names`() {
 		val project = Project()
 		project.plugins.apply("reporting-base")
