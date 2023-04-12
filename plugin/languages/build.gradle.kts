@@ -1,5 +1,3 @@
-import net.twisterrob.gradle.build.dependencies.gradleApiWithoutKotlin
-
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
@@ -46,7 +44,7 @@ gradlePlugin {
 }
 
 dependencies {
-	implementation(gradleApiWithoutKotlin())
+	implementation(gradleApi())
 	api(projects.plugin.base)
 	compileOnly(libs.android.gradle)
 

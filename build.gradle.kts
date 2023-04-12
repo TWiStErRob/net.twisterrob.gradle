@@ -4,8 +4,6 @@ plugins {
 
 description = "Plugins for Gradle that support Android flavors."
 
-// buildscript { enableDependencyLocking(project) } // STOPSHIP Cannot import for some reason.
-
 project.tasks.register<TestReport>("testReport") {
 	group = LifecycleBasePlugin.VERIFICATION_GROUP
 	description = "Run and report on all tests in the project. Add `-x test` to just generate report."

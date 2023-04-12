@@ -1,4 +1,3 @@
-import net.twisterrob.gradle.build.dependencies.gradleApiWithoutKotlin
 import net.twisterrob.gradle.build.dependencies.addJarToClasspathOfPlugin
 
 plugins {
@@ -17,7 +16,7 @@ gradlePlugin {
 }
 
 dependencies {
-	implementation(gradleApiWithoutKotlin())
+	implementation(gradleApi())
 	api(projects.plugin.base)
 	implementation(projects.plugin.versioning) // TODO decouple
 	compileOnly(libs.android.gradle)

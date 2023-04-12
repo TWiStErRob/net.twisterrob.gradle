@@ -7,14 +7,13 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDepend
 import org.gradle.api.internal.artifacts.dsl.dependencies.DependencyFactoryInternal
 import org.gradle.api.internal.file.FileCollectionInternal
 
-// STOPSHIP why is this used so many times if there's a replaceGPADWK?
-fun DependencyHandler.gradleApiWithoutKotlin(): Dependency =
+internal fun DependencyHandler.gradleApiWithoutKotlin(): Dependency =
 	withoutKotlin(DependencyFactoryInternal.ClassPathNotation.GRADLE_API)
 
-fun DependencyHandler.gradleKotlinDslWithoutKotlin(): Dependency =
+internal fun DependencyHandler.gradleKotlinDslWithoutKotlin(): Dependency =
 	withoutKotlin(DependencyFactoryInternal.ClassPathNotation.GRADLE_KOTLIN_DSL)
 
-fun DependencyHandler.gradleTestKitWithoutKotlin(): Dependency =
+internal fun DependencyHandler.gradleTestKitWithoutKotlin(): Dependency =
 	withoutKotlin(DependencyFactoryInternal.ClassPathNotation.GRADLE_TEST_KIT)
 
 private fun DependencyHandler.withoutKotlin(notation: DependencyFactoryInternal.ClassPathNotation): Dependency {
