@@ -1,13 +1,10 @@
-import io.github.gradlenexus.publishplugin.NexusRepositoryContainer
-
 plugins {
 	id("io.github.gradle-nexus.publish-plugin")
 }
 
 nexusPublishing {
+	packageGroup.set("net.twisterrob.gradle")
 	repositories {
-		@Suppress("USELESS_CAST") // For IDEA to know the type, this is a no-op for Gradle.
-		this as NexusRepositoryContainer
 		sonatype {
 			// For :publish...PublicationToSonatypeRepository, projectVersion suffix chooses repo.
 			nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
