@@ -1,3 +1,5 @@
+package net.twisterrob.gradle.build.dependencies
+
 import net.twisterrob.gradle.slug
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ConfigurationContainer

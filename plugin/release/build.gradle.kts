@@ -1,3 +1,6 @@
+import net.twisterrob.gradle.build.dependencies.gradleApiWithoutKotlin
+import net.twisterrob.gradle.build.dependencies.addJarToClasspathOfPlugin
+
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")

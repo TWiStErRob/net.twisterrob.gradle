@@ -1,3 +1,7 @@
+import net.twisterrob.gradle.build.dsl.base
+import net.twisterrob.gradle.build.dsl.gradlePlugin
+import net.twisterrob.gradle.build.dsl.java
+import net.twisterrob.gradle.build.dsl.publishing
 import net.twisterrob.gradle.build.publishing.GradlePluginValidationPlugin
 import net.twisterrob.gradle.build.publishing.getChild
 import net.twisterrob.gradle.build.publishing.withDokkaJar

@@ -1,3 +1,5 @@
+import net.twisterrob.gradle.build.testing.pullTestResourcesFrom
+
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")

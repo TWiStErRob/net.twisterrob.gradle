@@ -1,3 +1,4 @@
+import net.twisterrob.gradle.build.dsl.java
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty

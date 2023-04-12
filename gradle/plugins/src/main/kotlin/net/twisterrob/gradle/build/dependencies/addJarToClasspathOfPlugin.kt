@@ -1,3 +1,5 @@
+package net.twisterrob.gradle.build.dependencies
+
 import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.named

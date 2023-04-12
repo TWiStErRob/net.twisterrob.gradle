@@ -1,3 +1,6 @@
+import net.twisterrob.gradle.build.dependencies.gradleApiWithoutKotlin
+import net.twisterrob.gradle.build.dependencies.gradleTestKitWithoutKotlin
+
 plugins {
 	id("net.twisterrob.gradle.build.module.library")
 }

@@ -1,3 +1,5 @@
+package net.twisterrob.gradle.build.dependencies
+
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencyResolveDetails
 

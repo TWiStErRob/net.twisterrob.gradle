@@ -1,3 +1,6 @@
+package net.twisterrob.gradle.build.testing
+
+import net.twisterrob.gradle.build.dsl.java
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.tasks.Sync

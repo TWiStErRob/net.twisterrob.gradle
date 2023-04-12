@@ -1,3 +1,4 @@
+import net.twisterrob.gradle.build.dsl.gradlePlugin
 import org.gradle.api.GradleScriptException
 import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Jar
@@ -11,7 +12,7 @@ import org.gradle.kotlin.dsl.named
  * ```
  */
 fun Project.disableGradlePluginValidation() {
-	check(gradlePlugin.plugins.isEmpty()) { "There are plugins declared in ${this}, don't disable plugin validation." }
+	check(this.gradlePlugin.plugins.isEmpty()) { "There are plugins declared in ${this}, don't disable plugin validation." }
 
 	@Suppress("LocalVariableName")
 	tasks.named<Jar>("jar") {
