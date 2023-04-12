@@ -28,14 +28,14 @@
 			"matchPaths": [
 				".github/workflows/CI.yml",
 				"test/src/main/resources/net/twisterrob/gradle/test/nagging.init.gradle.kts",
-				"plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/build.gradle",
+				"plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/settings.gradle.kts",
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
 			],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
 		},
 		{
-			"description": "Re-enable updating Gradle CI matrix for latest version. It's not working, see https://github.com/renovatebot/renovate/issues/21407",
+			"description": "Re-enable updating Gradle CI matrix for latest version.",
 			"matchPackageNames": [
 				"com.android.tools.build:gradle",
 				"gradle"
@@ -43,10 +43,10 @@
 			"matchPaths": [
 				".github/workflows/CI.yml",
 				"test/src/main/resources/net/twisterrob/gradle/test/nagging.init.gradle.kts",
-				"plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/build.gradle",
+				"plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/settings.gradle.kts",
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
 			],
-			"matchCurrentVersion": ">=8.0",
+			"matchCurrentVersion": "[8.0,)",
 			"matchUpdateTypes": ["minor"],
 			"enabled": true
 		},
@@ -154,7 +154,7 @@
 			"description": "Update Gradle nagging constants.",
 			"fileMatch": [
 				"^test/src/main/resources/net/twisterrob/gradle/test/nagging\\.init\\.gradle\\.kts$",
-				"^plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/build\\.gradle$"
+				"^plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/settings\\.gradle\\.kts$"
 			],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
