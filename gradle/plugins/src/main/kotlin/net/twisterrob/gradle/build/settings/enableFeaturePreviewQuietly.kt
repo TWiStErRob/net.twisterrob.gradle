@@ -1,3 +1,5 @@
+package net.twisterrob.gradle.build.settings
+
 import org.gradle.api.initialization.Settings
 
 /**

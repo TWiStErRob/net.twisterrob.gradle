@@ -1,8 +1,8 @@
-import net.twisterrob.gradle.build.dsl.gradlePlugin
 import org.gradle.api.GradleScriptException
 import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.named
+import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 
 /**
  * Disables this warning when `java-gradle-plugin` is applied, but there are no `gradlePlugin.plugins` created.
@@ -11,11 +11,16 @@ import org.gradle.kotlin.dsl.named
  * :foo:bar:jar: No valid plugin descriptors were found in META-INF/gradle-plugins
  * ```
  */
-fun Project.disableGradlePluginValidation() {
-	check(this.gradlePlugin.plugins.isEmpty()) { "There are plugins declared in ${this}, don't disable plugin validation." }
+fun GradlePluginDevelopmentExtension.disableGradlePluginValidation(project: Project) {
+	project.afterEvaluate {
+		val gradlePluginPlugins = this@disableGradlePluginValidation.plugins
+		check(gradlePluginPlugins.isEmpty()) {
+			"There are plugins declared in ${this}, don't disable plugin validation: ${gradlePluginPlugins.map { it.id }}"
+		}
+	}
 
 	@Suppress("LocalVariableName")
-	tasks.named<Jar>("jar") {
+	project.tasks.named<Jar>("jar") {
 		val PluginValidationAction =
 			Class.forName("org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin\$PluginValidationAction")
 		val TaskActionWrapper =

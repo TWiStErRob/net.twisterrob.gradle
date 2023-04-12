@@ -10,7 +10,7 @@ base.archivesName.set("twister-convention-reporting")
 description = "Reporting Convention Plugin: Gradle tasks to support reporting."
 
 gradlePlugin {
-	disableGradlePluginValidation()
+	disableGradlePluginValidation(project)
 	plugins {
 		// Not created, internal plugins only used by class reference.
 	}

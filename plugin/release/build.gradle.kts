@@ -11,7 +11,7 @@ base.archivesName.set("twister-convention-release")
 description = "Release Convention Plugin: Gradle Plugin to handle conventional releasing."
 
 gradlePlugin {
-	disableGradlePluginValidation()
+	disableGradlePluginValidation(project)
 	plugins {
 		// Not created, internal plugins only used by class reference.
 	}
