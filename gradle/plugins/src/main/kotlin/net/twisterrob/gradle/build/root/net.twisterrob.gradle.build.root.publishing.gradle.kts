@@ -3,7 +3,8 @@ plugins {
 }
 
 nexusPublishing {
-	packageGroup.set("net.twisterrob.gradle")
+	packageGroup.set(project.providers.gradleProperty("projectGroup"))
+	useStaging.set(project.providers.gradleProperty("projectVersion").map { !it.endsWith("-SNAPSHOT") })
 	repositories {
 		sonatype {
 			// For :publish...PublicationToSonatypeRepository, projectVersion suffix chooses repo.

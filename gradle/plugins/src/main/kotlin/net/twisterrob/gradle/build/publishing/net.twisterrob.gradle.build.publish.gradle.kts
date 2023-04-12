@@ -17,7 +17,7 @@ plugins {
 }
 plugins.apply(GradlePluginValidationPlugin::class)
 
-group = "net.twisterrob.gradle"
+group = project.property("projectGroup").toString()
 version = project.property("projectVersion").toString()
 
 plugins.withId("org.gradle.java") {
