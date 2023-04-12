@@ -89,7 +89,7 @@ diffuse = "4.1.1"
 annotations-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 annotations-jetbrains = { module = "org.jetbrains:annotations", version.ref = "jetbrains" }
 
-nexus = { module = "io.github.gradle-nexus:publish-plugin", version.ref = "nexus" }
+nexus = { module = "io.github.gradle-nexus.publish-plugin:io.github.gradle-nexus.publish-plugin.gradle.plugin", version.ref = "nexus" }
 gradle-enterprise = { module = "com.gradle.enterprise:com.gradle.enterprise.gradle.plugin", version.ref = "gradle-enterprise" }
 gradle-publish = { module = "com.gradle.plugin-publish:com.gradle.plugin-publish.gradle.plugin", version.ref = "gradle-publish" }
 
@@ -147,6 +147,5 @@ dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = 
 [bundles]
 
 [plugins]
-nexus = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 # Note: internal plugins cannot be used with `alias(libs.plugins....)`, because they don't have version.

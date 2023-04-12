@@ -14,7 +14,7 @@ dependencies {
 	implementation(libs.kotlin.dokka)
 	implementation(libs.detekt)
 	implementation(libs.gradle.enterprise)
-	compileOnly(libs.nexus)
+	implementation(libs.nexus)
 
 	// TODEL https://github.com/gradle/gradle/issues/15383
 	implementation(files(libs::class.java.superclass.protectionDomain.codeSource.location))
