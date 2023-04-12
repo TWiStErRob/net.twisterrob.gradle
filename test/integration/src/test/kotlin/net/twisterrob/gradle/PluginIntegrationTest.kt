@@ -368,17 +368,6 @@ class PluginIntegrationTest : BaseIntgTest() {
 					created.put(task, Exception(message))
 				}
 			}
-			
-			/**
-			 * Polyfill for Gradle <6.8 which doesn't have Kotlin 1.4+.
-			 * [Throwable.stackTraceToString] is `@SinceKotlin("1.4")`.
-			 * See https://docs.gradle.org/current/userguide/compatibility.html#kotlin
-			 */
-			fun Throwable.stackTraceToString(): String {
-				val sw = StringWriter()
-				this.printStackTrace(PrintWriter(sw, true))
-				return sw.toString()
-			}
 		""".trimIndent()
 	}
 
