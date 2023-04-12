@@ -213,14 +213,15 @@ jobs:
 
       - name: "Set up JDK(s)."
         run: |
-          echo "JAVA8_HOME=$JAVA_HOME_8_X64" | tee --append $GITHUB_ENV
-          echo "JAVA11_HOME=$JAVA_HOME_11_X64" | tee --append $GITHUB_ENV
           case ${{ matrix.gradle-java }} in
             8)
               echo "JAVA_HOME=$JAVA_HOME_8_X64" | tee --append $GITHUB_ENV
             ;;
             11)
               echo "JAVA_HOME=$JAVA_HOME_11_X64" | tee --append $GITHUB_ENV
+            ;;
+            17)
+              echo "JAVA_HOME=$JAVA_HOME_17_X64" | tee --append $GITHUB_ENV
             ;;
             *)
               echo "Unrecognized matrix.gradle-java=${{ matrix.gradle-java }}."
@@ -524,6 +525,34 @@ jobs:
             kotlin: '1.6.21'
             build-tools: '32.0.0'
             test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.0.x on Gradle 8.x"
+            gradle: '8.1-rc-4'
+            gradle-java: '17'
+            agp: '8.0.0-rc01'
+            kotlin: '1.6.21'
+            build-tools: '30.0.3'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.0.x on Gradle 8.x - plugin"
+            gradle: '8.1-rc-4'
+            gradle-java: '17'
+            agp: '8.0.0-rc01'
+            kotlin: '1.6.21'
+            build-tools: '32.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.1.x on Gradle 8.x"
+            gradle: '8.1-rc-4'
+            gradle-java: '17'
+            agp: '8.1.0-alpha11'
+            kotlin: '1.6.21'
+            build-tools: '30.0.3'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.1.x on Gradle 8.x - plugin"
+            gradle: '8.1-rc-4'
+            gradle-java: '17'
+            agp: '8.1.0-alpha11'
+            kotlin: '1.6.21'
+            build-tools: '32.0.0'
+            test-task: 'testReport :plugin:tests'
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
@@ -699,6 +728,34 @@ jobs:
         with:
           name: 'AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.1-rc-4) Test Results XMLs'
           path: 'artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.1-rc-4) Test Results XMLs'
+
+      - name: "Download 'AGP 8.0.x on Gradle 8.x (8.0.0-rc01 on 8.1-rc-4) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP 8.0.x on Gradle 8.x (8.0.0-rc01 on 8.1-rc-4) Test Results XMLs'
+          path: 'artifacts/AGP 8.0.x on Gradle 8.x (8.0.0-rc01 on 8.1-rc-4) Test Results XMLs'
+
+      - name: "Download 'AGP 8.0.x on Gradle 8.x - plugin (8.0.0-rc01 on 8.1-rc-4) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP 8.0.x on Gradle 8.x - plugin (8.0.0-rc01 on 8.1-rc-4) Test Results XMLs'
+          path: 'artifacts/AGP 8.0.x on Gradle 8.x - plugin (8.0.0-rc01 on 8.1-rc-4) Test Results XMLs'
+
+      - name: "Download 'AGP 8.1.x on Gradle 8.x (8.1.0-alpha11 on 8.1-rc-4) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP 8.1.x on Gradle 8.x (8.1.0-alpha11 on 8.1-rc-4) Test Results XMLs'
+          path: 'artifacts/AGP 8.1.x on Gradle 8.x (8.1.0-alpha11 on 8.1-rc-4) Test Results XMLs'
+
+      - name: "Download 'AGP 8.1.x on Gradle 8.x - plugin (8.1.0-alpha11 on 8.1-rc-4) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP 8.1.x on Gradle 8.x - plugin (8.1.0-alpha11 on 8.1-rc-4) Test Results XMLs'
+          path: 'artifacts/AGP 8.1.x on Gradle 8.x - plugin (8.1.0-alpha11 on 8.1-rc-4) Test Results XMLs'
 
       #- name: Display structure of downloaded files
       #  run: ls -R
