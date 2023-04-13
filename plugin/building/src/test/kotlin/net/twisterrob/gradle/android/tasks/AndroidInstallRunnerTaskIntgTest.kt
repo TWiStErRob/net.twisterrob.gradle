@@ -36,7 +36,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 		val androidManifest = """
 			<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 				<application>
-					<activity android:name="${packageName}.MainActivity">
+					<activity android:name="${packageName}.MainActivity" android:exported="true">
 						<intent-filter>
 							<action android:name="android.intent.action.MAIN" />
 							<category android:name="android.intent.category.LAUNCHER" />
