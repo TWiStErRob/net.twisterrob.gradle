@@ -156,7 +156,7 @@ fun assertDefaultBadging(
 		} else {
 			if (!isAndroidTestApk) {
 				"compileSdkVersion >= 28 && !isAndroidTestApk" to """
-					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
+					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' platformBuildVersionName='$compileSdkVersionName' platformBuildVersionCode='$compileSdkVersion' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
 					targetSdkVersion:'$targetSdkVersion'
 					application: label='' icon=''
@@ -171,7 +171,7 @@ fun assertDefaultBadging(
 			} else {
 				// TODO versionCode and versionName is not verified!
 				"compileSdkVersion >= 28 && isAndroidTestApk" to """
-					package: name='$applicationId' versionCode='' versionName='' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
+					package: name='$applicationId' versionCode='' versionName='' platformBuildVersionName='$compileSdkVersionName' platformBuildVersionCode='$compileSdkVersion' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
 					targetSdkVersion:'$targetSdkVersion'
 					application: label='' icon=''
