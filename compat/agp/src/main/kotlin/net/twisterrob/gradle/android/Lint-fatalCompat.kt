@@ -4,7 +4,6 @@ import com.android.build.api.dsl.Lint
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.internal.android.fatalCompat70x
 import net.twisterrob.gradle.internal.android.fatalCompat71x
-import org.gradle.api.Incubating
 
 /**
  * Compatibility version for [Lint.fatal] DSL:
@@ -13,7 +12,6 @@ import org.gradle.api.Incubating
  * * AGP 7.0.x introduced [Lint.fatal] as a function.
  * * AGP 7.1.x changed [Lint.fatal] to be a property with a [MutableSet] type.
  */
-@Incubating
 fun Lint.fatalCompat(id: String) {
 	when {
 		AGPVersions.v71x <= AGPVersions.CLASSPATH -> this.fatalCompat71x(id)

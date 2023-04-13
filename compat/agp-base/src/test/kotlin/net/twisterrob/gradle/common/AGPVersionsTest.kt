@@ -5,8 +5,6 @@ import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.condition.DisabledOnJre
-import org.junit.jupiter.api.condition.JRE
 import org.junit.jupiter.api.fail
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.ParameterizedTest.INDEX_PLACEHOLDER
@@ -28,10 +26,9 @@ class AGPVersionsTest {
 		assertEquals("AGP 1.2.Stable.4 is not supported, because it's older than 7.*.*.*", ex.message)
 	}
 
-	@DisabledOnJre(JRE.JAVA_8)
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
 		// This is not using AGPVersion() because Renovate needs to update this one. See "Update AGP version test.".
-		val expected = AGPVersion.parse("7.4.2")
+		val expected = AGPVersion.parse("8.1.0-alpha11")
 
 		val actual = AGPVersions.CLASSPATH
 
@@ -73,6 +70,8 @@ class AGPVersionsTest {
 		"7, 2",
 		"7, 3",
 		"7, 4",
+		"8, 0",
+		"8, 1",
 	)
 	@ParameterizedTest(name = "[$INDEX_PLACEHOLDER] v{0}.{1}.x")
 	fun `vXXX constants have the right version`(major: Int, minor: Int?) {

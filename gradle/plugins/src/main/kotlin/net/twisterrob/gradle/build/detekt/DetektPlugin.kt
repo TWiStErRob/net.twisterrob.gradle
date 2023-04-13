@@ -3,6 +3,7 @@ package net.twisterrob.gradle.build.detekt
 import io.gitlab.arturbosch.detekt.Detekt
 import net.twisterrob.gradle.build.dsl.detekt
 import net.twisterrob.gradle.build.dsl.isCI
+import net.twisterrob.gradle.build.dsl.libs
 import net.twisterrob.gradle.slug
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -25,6 +26,8 @@ internal class DetektPlugin : Plugin<Project> {
 			parallel = true
 
 			project.tasks.withType<Detekt>().configureEach {
+				languageVersion = project.libs.versions.kotlin.language.get()
+				jvmTarget = project.libs.versions.java.get()
 				reports {
 					html.required.set(true) // human
 					txt.required.set(true) // console

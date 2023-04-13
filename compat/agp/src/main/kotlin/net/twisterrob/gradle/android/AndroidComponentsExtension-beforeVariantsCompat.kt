@@ -11,7 +11,7 @@ import com.android.build.api.variant.VariantBuilder
  *
  * @see onVariantsCompat for explanation.
  */
-fun <DslExtensionT : CommonExtension<*, *, *, *>, VariantBuilderT : VariantBuilder, VariantT : Variant>
+fun <DslExtensionT : CommonExtension<*, *, *, *, *>, VariantBuilderT : VariantBuilder, VariantT : Variant>
 		AndroidComponentsExtension<DslExtensionT, VariantBuilderT, VariantT>.beforeVariantsCompat(
 	callback: (VariantBuilderT) -> Unit
 ) {

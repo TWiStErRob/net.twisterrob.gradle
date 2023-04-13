@@ -4,7 +4,6 @@ import com.android.build.api.dsl.Lint
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.internal.android.checkAllWarningsCompat70x
 import net.twisterrob.gradle.internal.android.checkAllWarningsCompat71x
-import org.gradle.api.Incubating
 
 /**
  * Compatibility version for [Lint.checkAllWarnings] DSL:
@@ -13,8 +12,6 @@ import org.gradle.api.Incubating
  * * AGP 7.0.x introduced [Lint.isCheckAllWarnings].
  * * AGP 7.1.x renamed [Lint.isCheckAllWarnings] to [Lint.checkAllWarnings].
  */
-@get:Incubating
-@set:Incubating
 @Suppress("BooleanPropertyNaming") // Following AGP's naming.
 var Lint.checkAllWarningsCompat: Boolean
 	get() =

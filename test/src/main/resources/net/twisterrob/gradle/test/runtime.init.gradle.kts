@@ -43,6 +43,7 @@ rootProject {
 
 // TODO deprecated without replacement https://github.com/gradle/gradle/issues/20151
 // Best effort for now as it won't work with configuration cache.
+@Suppress("DEPRECATION")
 gradle.buildFinished { println(memoryDiagnostics()) }
 
 fun memoryDiagnostics(): String {

@@ -68,7 +68,7 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				configureBuildResValues()
 			}
 			with(packagingOptions) {
-				resources.excludes.addAll(knownUnneededFiles())
+				resourcesCompat.excludes.addAll(knownUnneededFiles())
 			}
 			decorateBuildConfig(project, twisterrob)
 		}
@@ -99,8 +99,7 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 	companion object {
 
 		private fun BaseExtension.configureLint() {
-			@Suppress("UnstableApiUsage")
-			(this as CommonExtension<*, *, *, *>).lint {
+			(this as CommonExtension<*, *, *, *, *>).lint {
 				xmlReport = false
 				checkAllWarningsCompat = true
 				abortOnErrorCompat = true
@@ -169,7 +168,7 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			val vcsTaskProvider =
 				project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
 			project.androidComponents.finalizeDsl {
-				if (twisterrob.isDecorateBuildConfig && buildFeatures.buildConfig != false) {
+				if (twisterrob.isDecorateBuildConfig && buildFeatures.isBuildConfigEnabled) {
 					project.decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
 				}
 			}
