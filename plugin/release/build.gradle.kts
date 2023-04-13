@@ -40,3 +40,20 @@ dependencies {
 // net.twisterrob.gradle.android.BuildDateKt.getBuiltDate needs the manifest.
 // The manifest is generated centrally by root build.gradle.kts
 addJarToClasspathOfPlugin()
+
+tasks.named<Test>("test") {
+	if (javaVersion.isJava9Compatible) {
+		// Java 17 vs JUnit Pioneer https://junit-pioneer.org/docs/environment-variables/#warnings-for-reflective-access
+		// NOTE: This didn't reproduce locally only on GHA CI.
+		// Example test: net.twisterrob.gradle.android.AndroidReleasePluginIntgTest
+		// org.junit.jupiter.api.extension.ExtensionConfigurationException:
+		// Cannot access Java runtime internals to modify environment variables.
+		// Have a look at the documentation for possible solutions:
+		// https://junit-pioneer.org/docs/environment-variables/#warnings-for-reflective-access
+		// Caused by: java.lang.reflect.InaccessibleObjectException:
+		// Unable to make field private final java.util.Map java.util.Collections$UnmodifiableMap.m accessible:
+		// module java.base does not "opens java.util" to unnamed module @f381794
+		jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+		jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
+	}
+}
