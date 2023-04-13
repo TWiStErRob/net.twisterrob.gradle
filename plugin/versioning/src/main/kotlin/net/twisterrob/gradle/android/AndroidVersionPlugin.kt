@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.component.impl.AndroidTestImpl
+import com.android.build.api.component.impl.ComponentImpl
 import com.android.build.api.variant.AndroidTest
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ComponentIdentity
@@ -222,38 +223,41 @@ class AndroidVersionPlugin : BasePlugin() {
 
 		variant.androidTestCompat?.let { androidTest ->
 			val androidTestImpl = androidTest.unwrapCast<AndroidTest, AndroidTestImpl>()
-			when {
-				AGPVersions.v81x <= AGPVersions.CLASSPATH -> {
-					project.afterEvaluate {
-						val packageAndroidTaskProvider =
-							checkNotNull(androidTestImpl.taskContainer.packageAndroidTask) {
-								"Missing package task for ${variant}'s androidTest."
-							}
-						val handler = packageAndroidTaskProvider
-							.get()
-							.outputsHandler
-							.get()
-						@Suppress("NestedScopeFunctions")
-						handler::class.java
-							.getDeclaredField("singleOutputFileName")
-							.apply { isAccessible = true }
-							.set(handler, androidTest.replacementApkNameProvider(versionCode, versionName))
-					}
-				}
-				AGPVersions.v70x <= AGPVersions.CLASSPATH -> {
-					@Suppress("NestedScopeFunctions")
-					val androidTestOutput = com.android.build.api.component.impl.ComponentImpl::class.java
-						.getDeclaredMethod("getOutputs")
-						.invoke(androidTestImpl)
-						.let { @Suppress("UNCHECKED_CAST") (it as List<VariantOutputImpl>) }
-						.single()
-					androidTestOutput.outputFileName.set(
-						androidTest.replacementApkNameProvider(versionCode, versionName)
-					)
-				}
-				else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
+			androidTestImpl.setOutputFileName(
+				apkName = androidTest.replacementApkNameProvider(versionCode, versionName),
+				variant = variant.name
+			)
+		}
+	}
 
+	private fun AndroidTestImpl.setOutputFileName(apkName: Provider<String>, variant: String) {
+		@Suppress("UnnecessaryLet") // It looks fine there, completing the chain.
+		when {
+			AGPVersions.v81x <= AGPVersions.CLASSPATH -> {
+				project.afterEvaluate { _ ->
+					this
+						.taskContainer
+						.packageAndroidTask
+						.let { checkNotNull(it) { "Missing package task for ${variant}'s androidTest." } }
+						.configure { packageTask ->
+							val handler = packageTask.outputsHandler.get()
+							handler::class.java
+								.getDeclaredField("singleOutputFileName")
+								.apply { isAccessible = true }
+								.set(handler, apkName)
+						}
+				}
 			}
+			AGPVersions.v70x <= AGPVersions.CLASSPATH -> {
+				ComponentImpl::class.java
+					.getDeclaredMethod("getOutputs")
+					.invoke(this)
+					.let { @Suppress("UNCHECKED_CAST") (it as List<VariantOutputImpl>) }
+					.single()
+					.outputFileName
+					.set(apkName)
+			}
+			else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
 		}
 	}
 
