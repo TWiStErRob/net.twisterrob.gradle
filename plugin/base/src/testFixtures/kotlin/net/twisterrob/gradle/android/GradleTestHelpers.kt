@@ -154,8 +154,8 @@ fun assertDefaultBadging(
 				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName'
 				sdkVersion:'$minSdkVersion'
 				targetSdkVersion:'$targetSdkVersion'
-				application: label='' icon=''
-				${applicationDebuggable?.plus("\n\t\t\t\t") ?: ""}feature-group: label=''
+				application: label='' icon=''${applicationDebuggable?.prependIndent("\n\t\t\t\t") ?: ""}
+				feature-group: label=''
 				  uses-feature: name='android.hardware.faketouch'
 				  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 				supports-screens: 'small' 'normal' 'large' 'xlarge'
@@ -169,8 +169,8 @@ fun assertDefaultBadging(
 					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' platformBuildVersionName='$compileSdkVersionName' platformBuildVersionCode='$compileSdkVersion' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
 					targetSdkVersion:'$targetSdkVersion'
-					application: label='' icon=''
-					${applicationDebuggable?.plus("\n\t\t\t\t\t") ?: ""}feature-group: label=''
+					application: label='' icon=''${applicationDebuggable?.prependIndent("\n\t\t\t\t\t") ?: ""}
+					feature-group: label=''
 					  uses-feature: name='android.hardware.faketouch'
 					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 					supports-screens: 'small' 'normal' 'large' 'xlarge'
