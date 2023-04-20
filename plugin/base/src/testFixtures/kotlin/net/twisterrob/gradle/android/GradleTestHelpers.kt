@@ -2,6 +2,7 @@ package net.twisterrob.gradle.android
 
 import com.android.ddmlib.AndroidDebugBridge
 import com.jakewharton.dex.DexMethod
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.test.process.assertOutput
 import net.twisterrob.test.withRootCause
 import org.hamcrest.Description
@@ -154,12 +155,18 @@ fun assertDefaultBadging(
 				densities: '160'
 			""".trimIndent()
 		} else {
+			val applicationDebuggable =
+				if (AGPVersions.v81x <= AGPVersions.UNDER_TEST) {
+					"\n\t\t\t\t\tapplication-debuggable"
+				} else {
+					""
+				}
 			if (!isAndroidTestApk) {
 				"compileSdkVersion >= 28 && !isAndroidTestApk" to """
 					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' platformBuildVersionName='$compileSdkVersionName' platformBuildVersionCode='$compileSdkVersion' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
 					targetSdkVersion:'$targetSdkVersion'
-					application: label='' icon=''
+					application: label='' icon=''$applicationDebuggable
 					feature-group: label=''
 					  uses-feature: name='android.hardware.faketouch'
 					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
