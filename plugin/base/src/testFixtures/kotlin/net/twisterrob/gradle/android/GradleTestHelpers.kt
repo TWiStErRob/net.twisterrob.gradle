@@ -88,7 +88,8 @@ fun assertDefaultDebugBadging(
 		compileSdkVersion = compileSdkVersion,
 		compileSdkVersionName = compileSdkVersionName,
 		minSdkVersion = minSdkVersion,
-		targetSdkVersion = targetSdkVersion
+		targetSdkVersion = targetSdkVersion,
+		isDebuggable = true,
 	)
 }
 
@@ -111,7 +112,8 @@ fun assertDefaultReleaseBadging(
 		compileSdkVersion = compileSdkVersion,
 		compileSdkVersionName = compileSdkVersionName,
 		minSdkVersion = minSdkVersion,
-		targetSdkVersion = targetSdkVersion
+		targetSdkVersion = targetSdkVersion,
+		isDebuggable = false,
 	)
 }
 
@@ -125,7 +127,8 @@ fun assertDefaultBadging(
 	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET,
-	isAndroidTestApk: Boolean = false
+	isAndroidTestApk: Boolean = false,
+	isDebuggable: Boolean = true,
 ) {
 	try {
 		assertThat(apk.absolutePath, apk, anExistingFile())
@@ -138,6 +141,12 @@ fun assertDefaultBadging(
 			.joinToString(prefix = "'${apk.parentFile}' contents:\n", separator = "\n")
 		throw ex.withRootCause(IOException(contents))
 	}
+	val applicationDebuggable =
+		if (AGPVersions.v81x <= AGPVersions.UNDER_TEST && isDebuggable) {
+			"application-debuggable"
+		} else {
+			null
+		}
 	val (expectation: String, expectedOutput: String) =
 		if (compileSdkVersion < @Suppress("MagicNumber") 28) {
 			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2
@@ -146,7 +155,7 @@ fun assertDefaultBadging(
 				sdkVersion:'$minSdkVersion'
 				targetSdkVersion:'$targetSdkVersion'
 				application: label='' icon=''
-				feature-group: label=''
+				${applicationDebuggable?.plus("\n\t\t\t\t") ?: ""}feature-group: label=''
 				  uses-feature: name='android.hardware.faketouch'
 				  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 				supports-screens: 'small' 'normal' 'large' 'xlarge'
@@ -155,19 +164,13 @@ fun assertDefaultBadging(
 				densities: '160'
 			""".trimIndent()
 		} else {
-			val applicationDebuggable =
-				if (AGPVersions.v81x <= AGPVersions.UNDER_TEST) {
-					"\n\t\t\t\t\tapplication-debuggable"
-				} else {
-					""
-				}
 			if (!isAndroidTestApk) {
 				"compileSdkVersion >= 28 && !isAndroidTestApk" to """
 					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' platformBuildVersionName='$compileSdkVersionName' platformBuildVersionCode='$compileSdkVersion' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
 					targetSdkVersion:'$targetSdkVersion'
-					application: label='' icon=''$applicationDebuggable
-					feature-group: label=''
+					application: label='' icon=''
+					${applicationDebuggable?.plus("\n\t\t\t\t\t") ?: ""}feature-group: label=''
 					  uses-feature: name='android.hardware.faketouch'
 					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
 					supports-screens: 'small' 'normal' 'large' 'xlarge'
