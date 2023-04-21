@@ -154,7 +154,7 @@ fun assertDefaultBadging(
 				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName'
 				sdkVersion:'$minSdkVersion'
 				targetSdkVersion:'$targetSdkVersion'
-				application: label='' icon=''${applicationDebuggable?.prependIndent("\n\t\t\t\t") ?: ""}
+				application: label='' icon=''${applicationDebuggable?.prependIndent("\n\t\t\t\t").orEmpty()}
 				feature-group: label=''
 				  uses-feature: name='android.hardware.faketouch'
 				  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
@@ -169,7 +169,7 @@ fun assertDefaultBadging(
 					package: name='$applicationId' versionCode='$versionCode' versionName='$versionName' platformBuildVersionName='$compileSdkVersionName' platformBuildVersionCode='$compileSdkVersion' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
 					sdkVersion:'$minSdkVersion'
 					targetSdkVersion:'$targetSdkVersion'
-					application: label='' icon=''${applicationDebuggable?.prependIndent("\n\t\t\t\t\t") ?: ""}
+					application: label='' icon=''${applicationDebuggable?.prependIndent("\n\t\t\t\t\t").orEmpty()}
 					feature-group: label=''
 					  uses-feature: name='android.hardware.faketouch'
 					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
