@@ -743,19 +743,19 @@ jobs:
           name: 'AGP 8.0.x on Gradle 8.x - plugin (8.0.0 on 8.1.1) Test Results XMLs'
           path: 'artifacts/AGP 8.0.x on Gradle 8.x - plugin (8.0.0 on 8.1.1) Test Results XMLs'
 
-      - name: "Download 'AGP 8.1.x on Gradle 8.x (8.1.1.0-beta01 on 8.1.1) Test Results XMLs' artifact."
+      - name: "Download 'AGP 8.1.x on Gradle 8.x (8.1.0-beta01 on 8.1.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: 'AGP 8.1.x on Gradle 8.x (8.1.1.0-beta01 on 8.1.1) Test Results XMLs'
-          path: 'artifacts/AGP 8.1.x on Gradle 8.x (8.1.1.0-beta01 on 8.1.1) Test Results XMLs'
+          name: 'AGP 8.1.x on Gradle 8.x (8.1.0-beta01 on 8.1.1) Test Results XMLs'
+          path: 'artifacts/AGP 8.1.x on Gradle 8.x (8.1.0-beta01 on 8.1.1) Test Results XMLs'
 
-      - name: "Download 'AGP 8.1.x on Gradle 8.x - plugin (8.1.1.0-beta01 on 8.1.1) Test Results XMLs' artifact."
+      - name: "Download 'AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta01 on 8.1.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: 'AGP 8.1.x on Gradle 8.x - plugin (8.1.1.0-beta01 on 8.1.1) Test Results XMLs'
-          path: 'artifacts/AGP 8.1.x on Gradle 8.x - plugin (8.1.1.0-beta01 on 8.1.1) Test Results XMLs'
+          name: 'AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta01 on 8.1.1) Test Results XMLs'
+          path: 'artifacts/AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta01 on 8.1.1) Test Results XMLs'
 
       #- name: Display structure of downloaded files
       #  run: ls -R
