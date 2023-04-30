@@ -92,6 +92,18 @@
 			],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
+		},
+		{
+			"description": "Disable updating target Kotlin version to stay specific to old Gradle.",
+			"matchPackagePatterns": [
+				"^org\\.jetbrains\\.kotlin:kotlin-.*$"
+			],
+			"matchPaths": [
+				"gradle/libs.versions.toml"
+			],
+			"matchCurrentVersion": "1.4.32",
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
 		}
 	],
 	"regexManagers": [
