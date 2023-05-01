@@ -7,5 +7,5 @@ android-gradle-v71x = { module = "com.android.tools.build:gradle", version = "7.
 android-gradle-v72x = { module = "com.android.tools.build:gradle", version = "7.2.2" }
 android-gradle-v73x = { module = "com.android.tools.build:gradle", version = "7.3.1" }
 android-gradle-v74x = { module = "com.android.tools.build:gradle", version = "7.4.2" }
-android-gradle-v80x = { module = "com.android.tools.build:gradle", version = "8.0.0" }
+android-gradle-v80x = { module = "com.android.tools.build:gradle", version = "8.0.1" }
 android-gradle-v81x = { module = "com.android.tools.build:gradle", version = "8.1.0-beta01" }
