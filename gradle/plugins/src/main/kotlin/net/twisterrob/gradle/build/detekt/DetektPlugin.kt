@@ -19,7 +19,7 @@ internal class DetektPlugin : Plugin<Project> {
 			allRules = true
 			ignoreFailures = isCI
 			//debug = true
-			config = project.rootProject.files("config/detekt/detekt.yml")
+			config.setFrom(project.rootProject.file("config/detekt/detekt.yml"))
 			baseline = project.rootProject.file("config/detekt/detekt-baseline-${project.slug}.xml")
 			basePath = project.rootProject.projectDir.absolutePath
 
