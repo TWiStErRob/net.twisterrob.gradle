@@ -14,31 +14,28 @@ class BuildResultExtensionsTest {
 
 	companion object {
 
-		val NL: String = System.lineSeparator()!!
-		val SAMPLE_OUTPUT: String = (NL
-				+ "FAILURE: Build failed with an exception." + NL
-				+ "" + NL
-				+ "* What went wrong:" + NL
-				+ "Task 'checkstyle' is ambiguous in root project 'temp'."
-				+ " Candidates are: 'checkstyleMain', 'checkstyleTest'." + NL
-				+ "" + NL
-				+ "* Try:" + NL
-				+ "Run gradle tasks to get a list of available tasks."
-				+ " Run with --info or --debug option to get more log output." + NL
-				+ "" + NL
-				+ "* Exception is:" + NL
-				+ "org.gradle.execution.TaskSelectionException:"
-				+ " Task 'checkstyle' is ambiguous in root project 'temp'."
-				+ " Candidates are: 'checkstyleMain', 'checkstyleTest'." + NL
-				+ "\tat org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:116)" + NL
-				+ "\tat org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:81)" + NL
-				+ "\tat org.gradle.execution.commandline.CommandLineTaskParser.parseTasks(CommandLineTaskParser.java:42)" + NL
-				+ "" + NL
-				+ "" + NL
-				+ "* Get more help at https://help.gradle.org" + NL
-				+ "" + NL
-				+ "BUILD FAILED in 1s" + NL
-				)
+		val SAMPLE_OUTPUT: String = """
+			
+			FAILURE: Build failed with an exception.
+			
+			* What went wrong:
+			Task 'checkstyle' is ambiguous in root project 'temp'. Candidates are: 'checkstyleMain', 'checkstyleTest'.
+			
+			* Try:
+			Run gradle tasks to get a list of available tasks. Run with --info or --debug option to get more log output.
+			
+			* Exception is:
+			org.gradle.execution.TaskSelectionException: Task 'checkstyle' is ambiguous in root project 'temp'. Candidates are: 'checkstyleMain', 'checkstyleTest'.
+				at org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:116)
+				at org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:81)
+				at org.gradle.execution.commandline.CommandLineTaskParser.parseTasks(CommandLineTaskParser.java:42)
+			
+			
+			* Get more help at https://help.gradle.org
+			
+			BUILD FAILED in 1s
+			
+		""".trimIndent().replace("\n", System.lineSeparator())
 	}
 
 	@Mock lateinit var mockResult: BuildResult
@@ -66,12 +63,12 @@ class BuildResultExtensionsTest {
 	@Test fun fullException() {
 		assertEquals(
 			mockResult.fullException,
-			"org.gradle.execution.TaskSelectionException:"
-					+ " Task 'checkstyle' is ambiguous in root project 'temp'."
-					+ " Candidates are: 'checkstyleMain', 'checkstyleTest'." + NL
-					+ "\tat org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:116)" + NL
-					+ "\tat org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:81)" + NL
-					+ "\tat org.gradle.execution.commandline.CommandLineTaskParser.parseTasks(CommandLineTaskParser.java:42)"
+			"""
+				org.gradle.execution.TaskSelectionException: Task 'checkstyle' is ambiguous in root project 'temp'. Candidates are: 'checkstyleMain', 'checkstyleTest'.
+					at org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:116)
+					at org.gradle.execution.TaskSelector.getSelection(TaskSelector.java:81)
+					at org.gradle.execution.commandline.CommandLineTaskParser.parseTasks(CommandLineTaskParser.java:42)
+			""".trimIndent().replace("\n", System.lineSeparator())
 		)
 	}
 }

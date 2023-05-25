@@ -73,9 +73,13 @@ class LintMessageDetailsSplitter {
 					}
 				return split.copy(
 					message = replaced,
-					description = "This is a bug in lint or one of the libraries it depends on." +
-							"\n\nYou can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout." +
-							"\n\n" + split.description
+					description = """
+						This is a bug in lint or one of the libraries it depends on.
+						
+						You can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout.
+						
+						
+					""".trimIndent() + split.description
 				)
 			}
 		)

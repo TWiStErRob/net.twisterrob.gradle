@@ -257,7 +257,9 @@ class AndroidVersionPlugin : BasePlugin() {
 					.outputFileName
 					.set(apkName)
 			}
-			else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
+			else -> {
+				AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
+			}
 		}
 	}
 

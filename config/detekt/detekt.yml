@@ -99,6 +99,10 @@ style:
     # Default 2 is not enough, usually a single guard and a condition simply violates this.
     max: 3
 
+  StringShouldBeRawString:
+    ignoredCharacters:
+      - '\t'
+
   UnnecessaryInnerClass:
     ignoreAnnotated:
       - 'org.junit.jupiter.api.Nested'
