@@ -74,7 +74,7 @@ style:
       - '**/src/test/kotlin/**'
 
   ForbiddenComment:
-    values:
+    comments:
       - 'FIXME'
       - 'STOPSHIP'
       #- 'TODO'
