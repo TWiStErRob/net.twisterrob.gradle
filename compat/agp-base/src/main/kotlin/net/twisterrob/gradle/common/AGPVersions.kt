@@ -59,36 +59,36 @@ object AGPVersions {
 				false
 			}
 
-	/**
-	 * Determines the version of Android Gradle Plugin on the classpath.
-	 * AGP Version keeps moving around between versions.
-	 *
-	 * @throws IllegalStateException if there's no AGP on the classpath.
-	 */
-	private val ANDROID_GRADLE_PLUGIN_VERSION: String
-		@Throws(IllegalStateException::class)
-		get() {
-			val versionClass: Class<*> =
-				// Cannot use compatibility AGPVersions.CLASSPATH to create a `when` in this one, as this is defining it.
-				kotlin
-					.runCatching {
-						// Introduced in AGP 3.6.x and live in 7.3.1; 7.4.0 changed bytecode version to 55 (Java 11).
-						Class.forName("com.android.Version")
-					}
-					.recoverCatching { ex ->
-						if (ex !is ClassNotFoundException) throw ex
-						// Deprecated in AGP 3.6.x and removed in AGP 4.x.
-						Class.forName("com.android.builder.model.Version")
-					}
-					.recoverCatching { ex ->
-						throw IllegalStateException("Cannot find AGP Version class on the classpath", ex)
-					}
-					.getOrThrow()
-			return versionClass.getDeclaredField("ANDROID_GRADLE_PLUGIN_VERSION").get(null) as String
-		}
-
 	@Throws(IllegalStateException::class)
 	fun olderThan7NotSupported(version: AGPVersion): Nothing {
 		error("AGP ${version} is not supported, because it's older than ${v7xx}")
 	}
 }
+
+/**
+ * Determines the version of Android Gradle Plugin on the classpath.
+ * AGP Version keeps moving around between versions.
+ *
+ * @throws IllegalStateException if there's no AGP on the classpath.
+ */
+private val ANDROID_GRADLE_PLUGIN_VERSION: String
+	@Throws(IllegalStateException::class)
+	get() {
+		val versionClass: Class<*> =
+			// Cannot use compatibility AGPVersions.CLASSPATH to create a `when` in this one, as this is defining it.
+			kotlin
+				.runCatching {
+					// Introduced in AGP 3.6.x and live in 7.3.1; 7.4.0 changed bytecode version to 55 (Java 11).
+					Class.forName("com.android.Version")
+				}
+				.recoverCatching { ex ->
+					if (ex !is ClassNotFoundException) throw ex
+					// Deprecated in AGP 3.6.x and removed in AGP 4.x.
+					Class.forName("com.android.builder.model.Version")
+				}
+				.recoverCatching { ex ->
+					throw IllegalStateException("Cannot find AGP Version class on the classpath", ex)
+				}
+				.getOrThrow()
+		return versionClass.getDeclaredField("ANDROID_GRADLE_PLUGIN_VERSION").get(null) as String
+	}

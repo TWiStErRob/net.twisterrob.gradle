@@ -29,7 +29,7 @@ class DevelopmentTest : BaseIntgTest() {
 	//	@Test
 	fun `manual test for running XSL on XML output`() {
 		val originalViolationsXml =
-			File("P:\\projects\\workspace\\net.twisterrob.gradle\\temp\\examples\\ColorFilters\\build\\reports\\violations.xml")
+			File("""P:\projects\workspace\net.twisterrob.gradle\temp\examples\ColorFilters\build\reports\violations.xml""")
 
 		val violationsHtml = gradle.runner.projectDir.resolve("violations.html")
 

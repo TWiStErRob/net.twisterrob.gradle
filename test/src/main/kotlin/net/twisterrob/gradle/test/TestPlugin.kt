@@ -27,11 +27,13 @@ class TestPlugin : BaseExposedPlugin() {
 	}
 
 	private fun getManifest(): Attributes {
-		val res = javaClass.getResource("${javaClass.simpleName}.class")
+		val resourceUrl = javaClass.getResource("${javaClass.simpleName}.class")
 			?: error("Cannot find ${javaClass}'s class file in its own ClassLoader.")
-		val conn = res.openConnection() as JarURLConnection
-		val mf = conn.manifest
-			?: error("No manifest entry found in ${conn.jarFileURL}.")
+		val urlConnection = resourceUrl.openConnection()
+			?: error("Couldn't open connection to ${resourceUrl}.")
+		val jarConnection = urlConnection as JarURLConnection
+		val mf = jarConnection.manifest
+			?: error("No manifest entry found in ${jarConnection.jarFileURL}.")
 		return mf.mainAttributes
 	}
 }

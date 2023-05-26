@@ -208,7 +208,9 @@ class LintPluginTest : BaseIntgTest() {
 							}
 						""".trimIndent()
 					}
-					else -> AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
+					else -> {
+						AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
+					}
 				}
 			)
 			buildScript
@@ -224,7 +226,9 @@ class LintPluginTest : BaseIntgTest() {
 				result.assertSkipped(":module2:lintDebug")
 				result.assertSkipped(":module2:lintRelease")
 			}
-			else -> AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
+			else -> {
+				AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
+			}
 		}
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}

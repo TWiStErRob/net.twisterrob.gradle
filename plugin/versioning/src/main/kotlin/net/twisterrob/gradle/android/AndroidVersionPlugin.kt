@@ -64,16 +64,6 @@ open class AndroidVersionExtension {
 			isAutoVersionSet = true
 		}
 
-	var versionNameFormat: (version: AndroidVersionExtension) -> String =
-		{ version ->
-			with(version) { "${major}.${minor}.${patch}#${build}" }
-		}
-
-	var versionCodeFormat: (version: AndroidVersionExtension) -> Int =
-		{ version ->
-			with(version) { ((major * minorMagnitude + minor) * patchMagnitude + patch) * buildMagnitude + build }
-		}
-
 	var major: Int = 0 // M 0..213
 		set(value) {
 			field = value
@@ -100,6 +90,18 @@ open class AndroidVersionExtension {
 			autoVersion()
 		}
 
+	var buildMagnitude: Int = @Suppress("MagicNumber") 1000
+
+	var versionNameFormat: (version: AndroidVersionExtension) -> String =
+		{ version ->
+			with(version) { "${major}.${minor}.${patch}#${build}" }
+		}
+
+	var versionCodeFormat: (version: AndroidVersionExtension) -> Int =
+		{ version ->
+			with(version) { ((major * minorMagnitude + minor) * patchMagnitude + patch) * buildMagnitude + build }
+		}
+
 	var isRenameAPK: Boolean = true
 
 	var formatArtifactName: (Project, String, String, Long, String?) -> String =
@@ -112,8 +114,6 @@ open class AndroidVersionExtension {
 				}
 			"${applicationId}@${versionCode}-v${versionName ?: "null"}+${variant}"
 		}
-
-	var buildMagnitude: Int = @Suppress("MagicNumber") 1000
 
 	/** VCS versionCode pattern is MMMNPBBBBB (which fits into 2147483648). */
 	fun versionByVCS(vcs: VCSExtension) {
@@ -257,7 +257,9 @@ class AndroidVersionPlugin : BasePlugin() {
 					.outputFileName
 					.set(apkName)
 			}
-			else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
+			else -> {
+				AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
+			}
 		}
 	}
 

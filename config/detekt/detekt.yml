@@ -67,6 +67,14 @@ naming:
     excludes:
       - '**/src/test/kotlin/**'
 
+
+potential-bugs:
+
+  CastNullableToNonNullableType:
+    # Too many false positives https://github.com/detekt/detekt/issues/6146
+    active: false
+
+
 style:
 
   ClassOrdering:
@@ -74,7 +82,7 @@ style:
       - '**/src/test/kotlin/**'
 
   ForbiddenComment:
-    values:
+    comments:
       - 'FIXME'
       - 'STOPSHIP'
       #- 'TODO'
@@ -98,6 +106,10 @@ style:
   ReturnCount:
     # Default 2 is not enough, usually a single guard and a condition simply violates this.
     max: 3
+
+  StringShouldBeRawString:
+    ignoredCharacters:
+      - '\t'
 
   UnnecessaryInnerClass:
     ignoreAnnotated:

@@ -29,12 +29,12 @@ open class SVNPluginExtension(
 	private val project: Project
 ) : VCSExtension {
 
-	override val revision: String
-		get() = revisionNumber.toString()
-
 	// Same as: new XmlSlurper().parseText(SVN.cli('info', '--xml')).entry.commit.@revision
 	override val revisionNumber: Int
 		get() = open().revision.number.toInt()
+
+	override val revision: String
+		get() = revisionNumber.toString()
 
 	override val isAvailableQuick: Boolean
 		get() = project.rootDir.resolve(SVNFileUtil.getAdminDirectoryName()).exists()

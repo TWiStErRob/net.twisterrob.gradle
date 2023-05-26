@@ -528,28 +528,28 @@ jobs:
           - name: "AGP 8.0.x on Gradle 8.x"
             gradle: '8.1.1'
             gradle-java: '17'
-            agp: '8.0.1'
+            agp: '8.0.2'
             kotlin: '1.6.21'
             build-tools: '30.0.3'
             test-task: 'testReport :quality:tests'
           - name: "AGP 8.0.x on Gradle 8.x - plugin"
             gradle: '8.1.1'
             gradle-java: '17'
-            agp: '8.0.1'
+            agp: '8.0.2'
             kotlin: '1.6.21'
             build-tools: '33.0.2'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 8.1.x on Gradle 8.x"
             gradle: '8.1.1'
             gradle-java: '17'
-            agp: '8.1.0-beta02'
+            agp: '8.1.0-beta03'
             kotlin: '1.6.21'
             build-tools: '33.0.1'
             test-task: 'testReport :quality:tests'
           - name: "AGP 8.1.x on Gradle 8.x - plugin"
             gradle: '8.1.1'
             gradle-java: '17'
-            agp: '8.1.0-beta02'
+            agp: '8.1.0-beta03'
             kotlin: '1.6.21'
             build-tools: '33.0.2'
             test-task: 'testReport :plugin:tests'
@@ -729,33 +729,33 @@ jobs:
           name: 'AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.1.1) Test Results XMLs'
           path: 'artifacts/AGP 7.4.x on Gradle 8.x - plugin (7.4.2 on 8.1.1) Test Results XMLs'
 
-      - name: "Download 'AGP 8.0.x on Gradle 8.x (8.0.1 on 8.1.1) Test Results XMLs' artifact."
+      - name: "Download 'AGP 8.0.x on Gradle 8.x (8.0.2 on 8.1.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: 'AGP 8.0.x on Gradle 8.x (8.0.1 on 8.1.1) Test Results XMLs'
-          path: 'artifacts/AGP 8.0.x on Gradle 8.x (8.0.1 on 8.1.1) Test Results XMLs'
+          name: 'AGP 8.0.x on Gradle 8.x (8.0.2 on 8.1.1) Test Results XMLs'
+          path: 'artifacts/AGP 8.0.x on Gradle 8.x (8.0.2 on 8.1.1) Test Results XMLs'
 
-      - name: "Download 'AGP 8.0.x on Gradle 8.x - plugin (8.0.1 on 8.1.1) Test Results XMLs' artifact."
+      - name: "Download 'AGP 8.0.x on Gradle 8.x - plugin (8.0.2 on 8.1.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: 'AGP 8.0.x on Gradle 8.x - plugin (8.0.1 on 8.1.1) Test Results XMLs'
-          path: 'artifacts/AGP 8.0.x on Gradle 8.x - plugin (8.0.1 on 8.1.1) Test Results XMLs'
+          name: 'AGP 8.0.x on Gradle 8.x - plugin (8.0.2 on 8.1.1) Test Results XMLs'
+          path: 'artifacts/AGP 8.0.x on Gradle 8.x - plugin (8.0.2 on 8.1.1) Test Results XMLs'
 
-      - name: "Download 'AGP 8.1.x on Gradle 8.x (8.1.0-beta02 on 8.1.1) Test Results XMLs' artifact."
+      - name: "Download 'AGP 8.1.x on Gradle 8.x (8.1.0-beta03 on 8.1.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: 'AGP 8.1.x on Gradle 8.x (8.1.0-beta02 on 8.1.1) Test Results XMLs'
-          path: 'artifacts/AGP 8.1.x on Gradle 8.x (8.1.0-beta02 on 8.1.1) Test Results XMLs'
+          name: 'AGP 8.1.x on Gradle 8.x (8.1.0-beta03 on 8.1.1) Test Results XMLs'
+          path: 'artifacts/AGP 8.1.x on Gradle 8.x (8.1.0-beta03 on 8.1.1) Test Results XMLs'
 
-      - name: "Download 'AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta02 on 8.1.1) Test Results XMLs' artifact."
+      - name: "Download 'AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta03 on 8.1.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: 'AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta02 on 8.1.1) Test Results XMLs'
-          path: 'artifacts/AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta02 on 8.1.1) Test Results XMLs'
+          name: 'AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta03 on 8.1.1) Test Results XMLs'
+          path: 'artifacts/AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta03 on 8.1.1) Test Results XMLs'
 
       #- name: Display structure of downloaded files
       #  run: ls -R

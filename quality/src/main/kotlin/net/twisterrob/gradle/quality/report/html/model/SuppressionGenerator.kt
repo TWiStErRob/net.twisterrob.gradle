@@ -6,7 +6,7 @@ class SuppressionGenerator {
 	@Suppress("CyclomaticComplexMethod") // Nicely structured, so it's ok.
 	fun getSuppression(v: Violation): String? =
 		when (v.source.reporter) {
-			"ANDROIDLINT" -> {
+			"ANDROIDLINT" ->
 				when (v.location.file.extension) {
 					"java" -> """@SuppressLint("${v.rule}") // TODO Explanation."""
 					"kt" -> """@SuppressLint("${v.rule}") // TODO Explanation."""
@@ -20,7 +20,6 @@ class SuppressionGenerator {
 						</issue>
 					""".trimIndent()
 				}
-			}
 
 			"CHECKSTYLE" ->
 				when (v.location.file.extension) {
