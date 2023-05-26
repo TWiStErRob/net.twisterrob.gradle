@@ -23,20 +23,17 @@ import javax.xml.transform.stream.StreamSource
 @CacheableTask
 abstract class HtmlReportTask : BaseViolationsTask() {
 
+	@get:OutputFile
+	abstract val xml: RegularFileProperty
+
 	private val xmlFile: File
 		get() = xml.asFile.get()
 
 	@get:OutputFile
-	abstract val xml: RegularFileProperty
+	abstract val html: RegularFileProperty
 
 	private val htmlFile: File
 		get() = html.asFile.get()
-
-	@get:OutputFile
-	abstract val html: RegularFileProperty
-
-	private val xslTemplateFile: File?
-		get() = xslTemplate.asFile.orNull
 
 	/**
 	 * Note: if this is set up in a way that it uses external files, add those to the task inputs.
@@ -46,12 +43,15 @@ abstract class HtmlReportTask : BaseViolationsTask() {
 	@get:PathSensitive(PathSensitivity.NONE)
 	abstract val xslTemplate: RegularFileProperty
 
-	private val xslOutputFile: File
-		get() = xsl.asFile.get()
+	private val xslTemplateFile: File?
+		get() = xslTemplate.asFile.orNull
 
 	// TODO @InputFile as well? maybe separate task? or task steps API?
 	@get:OutputFile
 	abstract val xsl: RegularFileProperty
+
+	private val xslOutputFile: File
+		get() = xsl.asFile.get()
 
 	init {
 		xml.convention(project.reporting.baseDirectory.file("violations.xml"))

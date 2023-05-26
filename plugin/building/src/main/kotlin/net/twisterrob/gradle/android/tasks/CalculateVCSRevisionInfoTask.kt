@@ -22,6 +22,9 @@ abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 	@get:OutputFile
 	abstract val revisionNumberFile: RegularFileProperty
 
+	private val vcs: VCSPluginExtension
+		get() = project.extensions.getByType()
+
 	init {
 		// Delay input resolution to when the inputs are resolved for the task.
 		inputs.files(project.provider { vcs.current.files(project) })
@@ -31,9 +34,6 @@ abstract class CalculateVCSRevisionInfoTask : DefaultTask() {
 		@Suppress("LeakingThis")
 		revisionNumberFile.convention(project.intermediateRegularFile("buildConfigDecorations/revisionNumber.txt"))
 	}
-
-	private val vcs: VCSPluginExtension
-		get() = project.extensions.getByType()
 
 	@TaskAction
 	fun writeVCS() {
