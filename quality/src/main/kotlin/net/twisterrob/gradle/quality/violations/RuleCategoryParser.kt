@@ -22,8 +22,9 @@ class RuleCategoryParser {
 						.removeSuffix("Check")
 				}
 			}
-			else ->
+			else -> {
 				it.rule
+			}
 		}
 
 	fun category(it: Violation): String? =
@@ -36,14 +37,16 @@ class RuleCategoryParser {
 					"Custom"
 				}
 			}
-			Parser.PMD.name ->
+			Parser.PMD.name -> {
 				@Suppress("UseIfInsteadOfWhen") // Preparing for future category exceptions.
 				when (it.category) {
 					"Import Statements" -> "Imports"
 					else -> it.category
 				}
-			else ->
+			}
+			else -> {
 				it.category
+			}
 		}
 
 	companion object {

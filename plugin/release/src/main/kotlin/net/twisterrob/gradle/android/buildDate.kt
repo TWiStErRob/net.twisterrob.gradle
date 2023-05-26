@@ -18,10 +18,12 @@ internal val builtDate: Instant by lazy {
 		}
 
 		// symbol is declared in module 'java.base' which does not export package 'sun.net.www.protocol.file'
-		url::class.java == Class.forName("sun.net.www.protocol.file.FileURLConnection") ->
+		url::class.java == Class.forName("sun.net.www.protocol.file.FileURLConnection") -> {
 			// e.g. when running tests and .class is in .../classes/
 			Instant.now()
-		else ->
+		}
+		else -> {
 			error("Unknown URL type ${url::class.java}")
+		}
 	}
 }

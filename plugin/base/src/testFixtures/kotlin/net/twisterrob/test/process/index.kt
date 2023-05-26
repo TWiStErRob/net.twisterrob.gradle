@@ -31,6 +31,7 @@ fun Iterable<String>.runCommand(
 				val err = process.errorStream.bufferedReader().readText()
 				assertEquals(
 					0, process.exitValue(),
+					@Suppress("StringShouldBeRawString") // It would be more complex that way.
 					"Non-zero exit value:\nstdout:\n${out}\nstderr:\n${err}"
 				)
 			}

@@ -62,6 +62,31 @@ class LocationViewModel(violation: Violation) {
 		get() = loc.file.absoluteFile.toURI()
 
 	/**
+	 * Whether this location is outside the project root.
+	 * Files are internal if they're located within the project / root module.
+	 * This could be just one level up, or even a different drive on Windows.
+	 * This would imply that it's better to use absolute paths in some places
+	 * rather than [locationRelativeToProject] or [locationRelativeToModule].
+	 * [locationRelativeToProject] or [locationRelativeToModule] will be absolute when this is true.
+	 *
+	 * Assumption: the root project physically contains all the other modules.
+	 */
+	val isLocationExternal: Boolean
+		get() {
+			val relativePath = loc.file.relativeToOrNull(module.rootDir)
+			return when {
+				// Different drives on Windows.
+				relativePath == null -> true
+				// Absolute path.
+				relativePath.isRooted -> true
+				// Relative path, but outside the project.
+				relativePath.startsWith("..") -> true
+				// Relative path inside the project.
+				else -> false
+			}
+		}
+
+	/**
 	 * The directory of the file, relative to the project root.
 	 * Sso the absolute path is:
 	 * `rootProject.projectDir` + [locationRelativeToProject] + [fileName]
@@ -88,31 +113,6 @@ class LocationViewModel(violation: Violation) {
 				val relativeOrAbsoluteFile = loc.file.parentFile.relativeToOrSelf(module.projectDir).toString()
 				(if (relativeOrAbsoluteFile == "") "." else relativeOrAbsoluteFile) + File.separator
 			}
-
-	/**
-	 * Whether this location is outside the project root.
-	 * Files are internal if they're located within the project / root module.
-	 * This could be just one level up, or even a different drive on Windows.
-	 * This would imply that it's better to use absolute paths in some places
-	 * rather than [locationRelativeToProject] or [locationRelativeToModule].
-	 * [locationRelativeToProject] or [locationRelativeToModule] will be absolute when this is true.
-	 *
-	 * Assumption: the root project physically contains all the other modules.
-	 */
-	val isLocationExternal: Boolean
-		get() {
-			val relativePath = loc.file.relativeToOrNull(module.rootDir)
-			return when {
-				// Different drives on Windows.
-				relativePath == null -> true
-				// Absolute path.
-				relativePath.isRooted -> true
-				// Relative path, but outside the project.
-				relativePath.startsWith("..") -> true
-				// Relative path inside the project.
-				else -> false
-			}
-		}
 
 	val startLine: Int
 		get() = loc.startLine

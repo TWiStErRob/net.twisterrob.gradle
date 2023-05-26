@@ -237,7 +237,9 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 				result.assertHasOutputLine(Regex("""Missing report for task ':lintDebug'.*: .*\blint-results-debug.xml"""))
 				result.assertHasOutputLine(Regex("""Missing report for task ':lintRelease'.*: .*\blint-results-release.xml"""))
 			}
-			else -> AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
+			else -> {
+				AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
+			}
 		}
 	}
 }

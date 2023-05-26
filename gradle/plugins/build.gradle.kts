@@ -52,7 +52,7 @@ detekt {
 	allRules = true
 	ignoreFailures = true
 	//debug = true
-	config = project.rootProject.files("../../config/detekt/detekt.yml")
+	config.setFrom(project.rootProject.file("../../config/detekt/detekt.yml"))
 	baseline = project.rootProject.file("../../config/detekt/detekt-baseline-gradle-plugins.xml")
 	basePath = project.rootProject.projectDir.resolve("../..").absolutePath
 

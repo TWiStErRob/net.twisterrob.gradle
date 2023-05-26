@@ -34,16 +34,15 @@ class XmlProducerTest {
 		private val xmlFile: File,
 		private val xslFile: File
 	) {
-
-		fun callProduceXml() {
-			project.produceXml(results, xmlFile.absoluteFile, xslFile.absoluteFile)
-		}
-
 		private lateinit var results: Start<Violations>
 		private lateinit var list: List<Violations>
 		private lateinit var grouped: Map<Category, Map<Reporter, List<Violation>>>
 		private lateinit var projectName: String
 		private val project: Project = mockk()
+
+		fun callProduceXml() {
+			project.produceXml(results, xmlFile.absoluteFile, xslFile.absoluteFile)
+		}
 
 		fun stubResult(list: List<Violations>) {
 			this.list = list
