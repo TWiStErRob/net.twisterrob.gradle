@@ -234,9 +234,13 @@ private class IgnoringSet(
 			val state = if (isNew) "first seen" else "already added"
 			val ignores = ignorePatterns.joinToString(separator = "\n") { ignorePattern ->
 				val matching = if (ignorePattern.matches(element)) "matching" else "not matching"
+				@Suppress("StringShouldBeRawString") // It would be more complex because of interpolations.
 				"Deprecation is ${matching} ignore pattern:\n```regex\n${ignorePattern}\n```"
 			}
-			@Suppress("ForbiddenMethodCall") // This will be shown in the console, as the user explicitly asked for it.
+			@Suppress(
+				"ForbiddenMethodCall", // This will be shown in the console, as the user explicitly asked for it.
+				"StringShouldBeRawString", // It would be more complex because of interpolations.
+			)
 			println("Nagging about ${state} deprecation:\n```\n${element}\n```\n${ignores}")
 		}
 		return !isIgnored && isNew

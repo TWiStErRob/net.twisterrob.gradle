@@ -67,6 +67,14 @@ naming:
     excludes:
       - '**/src/test/kotlin/**'
 
+
+potential-bugs:
+
+  CastNullableToNonNullableType:
+    # Too many false positives https://github.com/detekt/detekt/issues/6146
+    active: false
+
+
 style:
 
   ClassOrdering:
