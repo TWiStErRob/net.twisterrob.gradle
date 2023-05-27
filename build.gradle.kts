@@ -1,3 +1,6 @@
+import net.twisterrob.gradle.build.dsl.isCI
+import net.twisterrob.gradle.doNotNagAbout
+
 plugins {
 	id("net.twisterrob.gradle.build.module.root")
 }
@@ -32,4 +35,20 @@ project.tasks.register<TestReport>("testReport") {
 			}
 		}
 	}
+}
+
+val gradleVersion: String = GradleVersion.current().version
+
+// TODEL https://github.com/gradle/gradle/issues/25206
+if (libs.nexus.get().version == "1.3.0") {
+	doNotNagAbout(
+		"The Project.getConvention() method has been deprecated. " +
+				"This is scheduled to be removed in Gradle 9.0. " +
+				"Consult the upgrading guide for further information: " +
+				"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
+		"at io.github.gradlenexus.publishplugin.NexusPublishPlugin.",
+	)
+} else {
+	val error: (String) -> Unit = if (isCI) ::error else logger::warn
+	error("Gradle Nexus Plugin Version changed, please review suppression.")
 }
