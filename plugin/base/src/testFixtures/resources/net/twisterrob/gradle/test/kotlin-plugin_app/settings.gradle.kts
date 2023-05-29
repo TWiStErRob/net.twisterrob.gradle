@@ -109,10 +109,12 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.9.0") {
 	//"at org.jetbrains.kotlin.gradle.plugin.GradleUtilsKt.addConvention(gradleUtils.kt:37)
 }
 
-if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.9.0") {
+if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.20") {
+	// https://youtrack.jetbrains.com/issue/KT-47047
+	// https://github.com/JetBrains/kotlin/commit/c495c07b1ae8df3ebc683ba925cecf26daaf9c1e
 	doNotNagAboutPatternForTest(
 		"8.2",
-		"""^8\.1\.\d$""",
+		"""^.*$""",
 		""
 				+ "("
 				+ Regex.escape("The Project.getConvention() method has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions")
