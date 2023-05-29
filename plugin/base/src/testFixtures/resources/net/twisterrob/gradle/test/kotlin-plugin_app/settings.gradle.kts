@@ -3,6 +3,8 @@ val gradleVersion = gradle.gradleVersion
 val doNotNagAboutForTest = settings.extra["doNotNagAboutForTest"] as (String, String, String) -> Unit
 @Suppress("UNCHECKED_CAST")
 val doNotNagAboutStackForTest = settings.extra["doNotNagAboutStackForTest"] as (String, String, String, String) -> Unit
+@Suppress("UNCHECKED_CAST")
+val doNotNagAboutPatternForTest = settings.extra["doNotNagAboutPatternForTest"] as (String, String, String) -> Unit
 
 if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.6.0") {
 	// https://youtrack.jetbrains.com/issue/KT-47867 was fixed in 1.6.0,
@@ -99,5 +101,28 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.0") {
 		"""^.*$""",
 		"The org.gradle.api.plugins.BasePluginConvention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#base_convention_deprecation",
 		"at org.jetbrains.kotlin.gradle.plugin.mpp.KotlinCompilationsKt.ownModuleName(kotlinCompilations.kt:373)"
+	)
+}
+
+if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.9.0") {
+	// REPORT KGP
+	doNotNagAboutPatternForTest(
+		"8.2",
+		"""^8\.1\.\d$""",
+		""
+				+ "("
+				+ Regex.escape("The Project.getConvention() method has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions")
+				+ "|"
+				+ Regex.escape("The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions")
+				+ "|"
+				+ Regex.escape("The org.gradle.api.plugins.JavaPluginConvention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#java_convention_deprecation")
+				+ ")"
+				+ ".*?"
+				+ "("
+				+ Regex.escape("at org.jetbrains.kotlin.gradle.plugin.AbstractKotlinPlugin\$Companion.setUpJavaSourceSets\$kotlin_gradle_plugin(KotlinPlugin.kt:")
+				+ "|"
+				+ Regex.escape("at org.jetbrains.kotlin.gradle.scripting.internal.ScriptingGradleSubplugin\$apply\$1.execute(ScriptingGradleSubplugin.kt:")
+				+ ")"
+				+ ".*"
 	)
 }
