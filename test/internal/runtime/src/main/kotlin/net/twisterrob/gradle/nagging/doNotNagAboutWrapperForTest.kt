@@ -12,10 +12,10 @@ import org.gradle.util.GradleVersion
 /**
  * Overload for exact message matching.
  *
- * @see doNotNagAbout for more details
- * @see net.twisterrob.gradle.nagging.doNotNagAboutPattern
+ * @see net.twisterrob.gradle.doNotNagAbout for more details
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutPatternForTest
  */
-fun doNotNagAbout(gradle: String, agpRegex: String, message: String) {
+fun doNotNagAboutForTest(gradle: String, agpRegex: String, message: String) {
 	if (unsupported(gradle, agpRegex, "Ignoring deprecation: ${message}")) return
 	doNotNagAbout(message)
 }
@@ -23,10 +23,10 @@ fun doNotNagAbout(gradle: String, agpRegex: String, message: String) {
 /**
  * Overload for exact message matching with stack trace.
  *
- * @see doNotNagAbout for more details
- * @see net.twisterrob.gradle.nagging.doNotNagAbout
+ * @see net.twisterrob.gradle.doNotNagAbout for more details
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutForTest
  */
-fun doNotNagAbout(gradle: String, agpRegex: String, message: String, stack: String) {
+fun doNotNagAboutForTest(gradle: String, agpRegex: String, message: String, stack: String) {
 	if (unsupported(gradle, agpRegex, "Ignoring deprecation: ${message} at ${stack}")) return
 	doNotNagAbout(message, stack)
 }
@@ -37,10 +37,10 @@ fun doNotNagAbout(gradle: String, agpRegex: String, message: String, stack: Stri
  * This method is named with a suffix of `Pattern` to make it easily available,
  * because method references cannot pick up overloaded methods.
  *
- * @see doNotNagAbout for more details
- * @see net.twisterrob.gradle.nagging.doNotNagAbout
+ * @see net.twisterrob.gradle.doNotNagAbout for more details
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutForTest
  */
-fun doNotNagAboutPattern(gradle: String, agpRegex: String, messageRegex: String) {
+fun doNotNagAboutPatternForTest(gradle: String, agpRegex: String, messageRegex: String) {
 	if (unsupported(gradle, agpRegex, "Ignoring deprecation regex: ${messageRegex}")) return
 	doNotNagAbout(Regex(messageRegex))
 }

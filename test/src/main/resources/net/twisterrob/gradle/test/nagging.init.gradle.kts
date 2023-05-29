@@ -1,5 +1,5 @@
-import net.twisterrob.gradle.nagging.doNotNagAbout
-import net.twisterrob.gradle.nagging.doNotNagAboutPattern
+import net.twisterrob.gradle.nagging.doNotNagAboutForTest
+import net.twisterrob.gradle.nagging.doNotNagAboutPatternForTest
 import java.io.File
 
 initscript {
@@ -18,38 +18,38 @@ initscript {
 apply<net.twisterrob.gradle.nagging.NaggingPlugin>()
 
 // Below nagging suppressions are sorted by (Gradle version, AGP version) lexicographically.
-doNotNagAbout(
+doNotNagAboutForTest(
 	"7.6.1",
 	"""^7\.0\.\d$""",
 	// > Task :compileDebugRenderscript NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceDirs with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
-doNotNagAbout(
+doNotNagAboutForTest(
 	"7.6.1",
 	"""^7\.0\.\d$""",
 	// > Task :compileDebugAidl NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
-doNotNagAbout(
+doNotNagAboutForTest(
 	"7.6.1",
 	"""^7\.0\.\d$""",
 	// > Task :stripDebugDebugSymbols NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property inputFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
-doNotNagAbout(
+doNotNagAboutForTest(
 	"7.6.1",
 	"""^7\.0\.\d$""",
 	// > Task :bundleLibResDebug NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property resources with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
-doNotNagAbout(
+doNotNagAboutForTest(
 	"7.6.1",
 	"""^(7\.0\.\d|7\.1\.\d|7\.2\.\d)$""",
 	// Ignore warning for https://issuetracker.google.com/issues/218478028 since Gradle 7.5, it's going to be fixed in AGP 7.3.
 	// Example test: AndroidBuildPluginIntgTest.`adds custom resources and BuildConfig values`
 	"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'IncrementalTask.taskAction\$gradle_core' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
 )
-doNotNagAbout(
+doNotNagAboutForTest(
 	"8.2",
 	"""^(7\.0\.\d|7\.1\.\d|7\.2\.\d|7\.3\.\d|7\.4\.0)$""",
 	// Ignore warning for https://issuetracker.google.com/issues/264177800 since Gradle 8.0, it's going to be fixed in AGP 7.4.1.
@@ -58,7 +58,7 @@ doNotNagAbout(
 	"The Report.destination property has been deprecated. This is scheduled to be removed in Gradle 9.0. Please use the outputLocation property instead. See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details.",
 	"at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure"
 )
-doNotNagAbout(
+doNotNagAboutForTest(
 	"8.2",
 	"""^8\.1\.\d$""",
 	// > Task :checkDebugUnitTestAarMetadata, :mergeDebugUnitTestResources, :processDebugUnitTestManifest, :mergeDebugUnitTestAssets
@@ -66,7 +66,7 @@ doNotNagAbout(
 	"The BuildIdentifier.getName() method has been deprecated. This is scheduled to be removed in Gradle 9.0. Use getBuildPath() to get a unique identifier for the build. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#build_identifier_name_and_current_deprecation",
 	"at com.android.build.gradle.internal.ide.dependencies.BuildMappingUtils.getIdString(BuildMapping.kt:48)"
 )
-doNotNagAbout(
+doNotNagAboutForTest(
 	"8.2",
 	"""^8\.1\.\d$""",
 	// > Task :generateDebugLintModel. :lintAnalyzeDebug, :lintReportDebug

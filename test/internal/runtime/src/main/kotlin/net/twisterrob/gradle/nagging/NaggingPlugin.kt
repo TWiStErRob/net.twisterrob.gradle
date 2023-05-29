@@ -14,7 +14,7 @@ class NaggingPlugin : Plugin<Gradle> {
 	}
 
 	/**
-	 * Expose [doNotNagAbout] to build scripts.
+	 * Expose [doNotNagAboutForTest] and [doNotNagAboutPatternForTest] to build scripts.
 	 *
 	 * Groovy `.ext` === Kotlin `.extensions.extraProperties` === Kotlin DSL `.extra`.
 	 * Based on [Function from init.gradle in build script](https://stackoverflow.com/a/19269037/253468).
@@ -24,24 +24,24 @@ class NaggingPlugin : Plugin<Gradle> {
 	 *
 	 * Access from `build.gradle`:
 	 * ```groovy
-	 * def doNotNagAbout = rootProject.ext["doNotNagAbout"]
-	 * doNotNagAbout("7.4.2", "^7\\.2\\.\\d+\$", "message")
+	 * def doNotNagAboutForTest = rootProject.ext["doNotNagAboutForTest"]
+	 * doNotNagAboutForTest("7.4.2", "^7\\.2\\.\\d+\$", "message")
 	 * ```
 	 *
 	 * Access from `build.gradle.kts`:
 	 * ```kotlin
-	 * val doNotNagAbout = rootProject.extra["doNotNagAbout"] as (String, String, String) -> Unit
-	 * val doNotNagAbout = rootProject.extensions.extraProperties["doNotNagAbout"] as (String, String, String) -> Unit
-	 * doNotNagAbout("7.4.2", """^7\.2\.\d$""", "message")
+	 * val doNotNagAboutForTest = rootProject.extra["doNotNagAboutForTest"] as (String, String, String) -> Unit
+	 * val doNotNagAboutForTest = rootProject.extensions.extraProperties["doNotNagAboutForTest"] as (String, String, String) -> Unit
+	 * doNotNagAboutForTest("7.4.2", """^7\.2\.\d$""", "message")
 	 * ```
 	 *
 	 * Similar functions need different signatures!
 	 */
 	private fun exposeDoNotNagAboutExtras(extensionAware: ExtensionAware) {
-		val doNotNagAboutRef: (String, String, String) -> Unit = ::doNotNagAbout
-		extensionAware.extensions.extraProperties.set("doNotNagAbout", doNotNagAboutRef)
-		val doNotNagAboutStackRef: (String, String, String, String) -> Unit = ::doNotNagAbout
-		extensionAware.extensions.extraProperties.set("doNotNagAboutStack", doNotNagAboutStackRef)
-		extensionAware.extensions.extraProperties.set("doNotNagAboutPattern", ::doNotNagAboutPattern)
+		val doNotNagAboutRef: (String, String, String) -> Unit = ::doNotNagAboutForTest
+		extensionAware.extensions.extraProperties.set("doNotNagAboutForTest", doNotNagAboutRef)
+		val doNotNagAboutStackRef: (String, String, String, String) -> Unit = ::doNotNagAboutForTest
+		extensionAware.extensions.extraProperties.set("doNotNagAboutStackForTest", doNotNagAboutStackRef)
+		extensionAware.extensions.extraProperties.set("doNotNagAboutPatternForTest", ::doNotNagAboutPatternForTest)
 	}
 }
