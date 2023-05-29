@@ -14,6 +14,7 @@ import org.gradle.util.GradleVersion
  *
  * @see net.twisterrob.gradle.doNotNagAbout for more details
  * @see net.twisterrob.gradle.nagging.doNotNagAboutPatternForTest
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutStackForTest
  */
 fun doNotNagAboutForTest(gradle: String, agpRegex: String, message: String) {
 	if (unsupported(gradle, agpRegex, "Ignoring deprecation: ${message}")) return
@@ -25,8 +26,9 @@ fun doNotNagAboutForTest(gradle: String, agpRegex: String, message: String) {
  *
  * @see net.twisterrob.gradle.doNotNagAbout for more details
  * @see net.twisterrob.gradle.nagging.doNotNagAboutForTest
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutPatternForTest
  */
-fun doNotNagAboutForTest(gradle: String, agpRegex: String, message: String, stack: String) {
+fun doNotNagAboutStackForTest(gradle: String, agpRegex: String, message: String, stack: String) {
 	if (unsupported(gradle, agpRegex, "Ignoring deprecation: ${message} at ${stack}")) return
 	doNotNagAbout(message, stack)
 }
@@ -39,6 +41,7 @@ fun doNotNagAboutForTest(gradle: String, agpRegex: String, message: String, stac
  *
  * @see net.twisterrob.gradle.doNotNagAbout for more details
  * @see net.twisterrob.gradle.nagging.doNotNagAboutForTest
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutStackForTest
  */
 fun doNotNagAboutPatternForTest(gradle: String, agpRegex: String, messageRegex: String) {
 	if (unsupported(gradle, agpRegex, "Ignoring deprecation regex: ${messageRegex}")) return

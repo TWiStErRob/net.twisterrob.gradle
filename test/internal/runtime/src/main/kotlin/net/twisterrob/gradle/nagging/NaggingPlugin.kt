@@ -14,7 +14,7 @@ class NaggingPlugin : Plugin<Gradle> {
 	}
 
 	/**
-	 * Expose [doNotNagAboutForTest] and [doNotNagAboutPatternForTest] to build scripts.
+	 * Expose [doNotNagAboutStackForTest] and [doNotNagAboutPatternForTest] to build scripts.
 	 *
 	 * Groovy `.ext` === Kotlin `.extensions.extraProperties` === Kotlin DSL `.extra`.
 	 * Based on [Function from init.gradle in build script](https://stackoverflow.com/a/19269037/253468).
@@ -38,10 +38,8 @@ class NaggingPlugin : Plugin<Gradle> {
 	 * Similar functions need different signatures!
 	 */
 	private fun exposeDoNotNagAboutExtras(extensionAware: ExtensionAware) {
-		val doNotNagAboutRef: (String, String, String) -> Unit = ::doNotNagAboutForTest
-		extensionAware.extensions.extraProperties.set("doNotNagAboutForTest", doNotNagAboutRef)
-		val doNotNagAboutStackRef: (String, String, String, String) -> Unit = ::doNotNagAboutForTest
-		extensionAware.extensions.extraProperties.set("doNotNagAboutStackForTest", doNotNagAboutStackRef)
+		extensionAware.extensions.extraProperties.set("doNotNagAboutForTest", ::doNotNagAboutForTest)
+		extensionAware.extensions.extraProperties.set("doNotNagAboutStackForTest", ::doNotNagAboutStackForTest)
 		extensionAware.extensions.extraProperties.set("doNotNagAboutPatternForTest", ::doNotNagAboutPatternForTest)
 	}
 }
