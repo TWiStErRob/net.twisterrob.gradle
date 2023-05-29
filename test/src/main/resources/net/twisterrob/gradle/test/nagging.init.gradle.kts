@@ -58,3 +58,19 @@ doNotNagAbout(
 	"The Report.destination property has been deprecated. This is scheduled to be removed in Gradle 9.0. Please use the outputLocation property instead. See https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.reporting.Report.html#org.gradle.api.reporting.Report:destination for more details.",
 	"at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure"
 )
+doNotNagAbout(
+	"8.2",
+	"""^8\.1\.\d$""",
+	// > Task :checkDebugUnitTestAarMetadata, :mergeDebugUnitTestResources, :processDebugUnitTestManifest, :mergeDebugUnitTestAssets
+	// Ignore warning for https://issuetracker.google.com/issues/279306626, it'll be fixed when AGP's minimum is Gradle 8.2.
+	"The BuildIdentifier.getName() method has been deprecated. This is scheduled to be removed in Gradle 9.0. Use getBuildPath() to get a unique identifier for the build. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#build_identifier_name_and_current_deprecation",
+	"at com.android.build.gradle.internal.ide.dependencies.BuildMappingUtils.getIdString(BuildMapping.kt:48)"
+)
+doNotNagAbout(
+	"8.2",
+	"""^8\.1\.\d$""",
+	// > Task :generateDebugLintModel. :lintAnalyzeDebug, :lintReportDebug
+	// Ignore warning for https://issuetracker.google.com/issues/279306626, it'll be fixed when AGP's minimum is Gradle 8.2.
+	"The BuildIdentifier.isCurrentBuild() method has been deprecated. This is scheduled to be removed in Gradle 9.0. Use getBuildPath() to get a unique identifier for the build. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#build_identifier_name_and_current_deprecation",
+	"at com.android.build.gradle.internal.ide.dependencies.BuildMappingUtils.getBuildId(BuildMapping.kt:40)"
+)
