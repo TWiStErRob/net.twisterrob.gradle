@@ -105,7 +105,11 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.0") {
 }
 
 if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.9.0") {
-	// REPORT KGP
+	// https://youtrack.jetbrains.com/issue/KT-52976
+	//"at org.jetbrains.kotlin.gradle.plugin.GradleUtilsKt.addConvention(gradleUtils.kt:37)
+}
+
+if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.9.0") {
 	doNotNagAboutPatternForTest(
 		"8.2",
 		"""^8\.1\.\d$""",
