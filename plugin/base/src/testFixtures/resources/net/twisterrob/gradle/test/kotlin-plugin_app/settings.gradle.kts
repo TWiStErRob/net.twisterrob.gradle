@@ -57,6 +57,47 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.20") {
 		"8.2",
 		"""^.*$""",
 		"The org.gradle.util.WrapUtil type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#org_gradle_util_reports_deprecations",
-		"at org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinTarget.<init>(kotlinTargets.kt:266)"
+		// "at org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinTarget.<init>(kotlinTargets.kt:266)" // 1.6.21
+		// "at org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinTarget.<init>(kotlinTargets.kt:269)" // 1.7.0, 1.7.10
+		"at org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinTarget.<init>(kotlinTargets.kt:"
+	)
+}
+
+if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.20") {
+	// https://youtrack.jetbrains.com/issue/KT-47047
+	// > Configure project :
+	doNotNagAboutStack(
+		"8.2",
+		"""^.*$""",
+		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
+		"at org.jetbrains.kotlin.gradle.plugin.GradleUtilsKt.getConvention(gradleUtils.kt:30)"
+	)
+	doNotNagAboutStack(
+		"8.2",
+		"""^.*$""",
+		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
+		"at org.jetbrains.kotlin.gradle.plugin.GradleUtilsKt.getConvention(gradleUtils.kt:30)"
+	)
+}
+
+if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.0") {
+	// https://github.com/JetBrains/kotlin/commit/bc8f795f71ed6cbc05fc542c6a32f26da003d718
+	doNotNagAboutStack(
+		"8.2",
+		"""^.*$""",
+		"The Project.getConvention() method has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
+		"at org.jetbrains.kotlin.gradle.plugin.mpp.KotlinCompilationsKt.ownModuleName(kotlinCompilations.kt:373)"
+	)
+	doNotNagAboutStack(
+		"8.2",
+		"""^.*$""",
+		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
+		"at org.jetbrains.kotlin.gradle.plugin.mpp.KotlinCompilationsKt.ownModuleName(kotlinCompilations.kt:373)"
+	)
+	doNotNagAboutStack(
+		"8.2",
+		"""^.*$""",
+		"The org.gradle.api.plugins.BasePluginConvention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#base_convention_deprecation",
+		"at org.jetbrains.kotlin.gradle.plugin.mpp.KotlinCompilationsKt.ownModuleName(kotlinCompilations.kt:373)"
 	)
 }
