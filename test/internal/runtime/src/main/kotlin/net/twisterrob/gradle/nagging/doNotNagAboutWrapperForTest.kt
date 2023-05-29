@@ -56,9 +56,10 @@ private fun unsupported(gradle: String, agpRegex: String, s: String): Boolean {
 		return true
 	}
 
-	if (!Regex(agpRegex).matches(agpVersion)) {
+	val baseAgpVersion = agpVersion.substringBefore("-")
+	if (!Regex(agpRegex).matches(baseAgpVersion)) {
 		if (isDoNotNagAboutDiagnosticsEnabled) {
-			logger.lifecycle("AGP version mismatch: ${agpRegex} does not match ${agpVersion}, shortcutting:\n\t${s}")
+			logger.lifecycle("AGP version mismatch: ${agpRegex} does not match ${baseAgpVersion}, shortcutting:\n\t${s}")
 		}
 		return true
 	}
