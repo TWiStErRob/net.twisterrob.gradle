@@ -544,6 +544,7 @@ jobs:
             agp: '8.0.2'
             kotlin: '1.6.21'
             build-tools: '33.0.2'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 8.0.x on Gradle 8.x"
             gradle: '8.2-milestone-1'
             gradle-java: '17'
