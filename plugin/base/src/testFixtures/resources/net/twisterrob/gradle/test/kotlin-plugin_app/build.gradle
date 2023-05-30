@@ -4,21 +4,17 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" >= "1.8.20") {
 	// https://docs.gradle.org/6.7/release-notes.html#toolchain-support-for-jvm-projects
 	// https://kotlinlang.org/docs/whatsnew1530.html#support-for-java-toolchains
 
-	java {
-		toolchain {
-			languageVersion.set(JavaLanguageVersion.of(11))
+	allprojects {
+		project.plugins.withId("org.gradle.java-base") {
+			java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 		}
-	}
 
-	def agp = "@net.twisterrob.test.android.pluginVersion@"
-	if (agp < "8.1.0" || ("8.1.0" < agp && agp < "8.1.0-alpha09")) {
-		// Lexicographic version of equivalent semantic comparison: agp < 8.1.0-alpha09.
-		project.plugins.withType(com.android.build.gradle.internal.plugins.BasePlugin).configureEach {
-			android {
-				compileOptions {
-					sourceCompatibility = 11
-					targetCompatibility = 11
-				}
+		def agp = "@net.twisterrob.test.android.pluginVersion@"
+		if (agp < "8.1.0" || ("8.1.0" < agp && agp < "8.1.0-alpha09")) {
+			// if above: Lexicographic version of equivalent semantic comparison: agp < 8.1.0-alpha09.
+			project.plugins.withType(com.android.build.gradle.internal.plugins.BasePlugin).configureEach {
+				android.compileOptions.sourceCompatibility = 11
+				android.compileOptions.targetCompatibility = 11
 			}
 		}
 	}
