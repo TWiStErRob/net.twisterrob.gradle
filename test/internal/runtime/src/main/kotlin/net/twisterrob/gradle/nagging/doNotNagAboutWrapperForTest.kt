@@ -48,6 +48,7 @@ fun doNotNagAboutPatternForTest(gradle: Pair<String, String>, agp: Pair<String, 
 	doNotNagAbout(Regex(messageRegex))
 }
 
+@Suppress("NamedArguments") // Variable names are clear enough.
 private fun unsupported(gradle: Pair<String, String>, agp: Pair<String, String>, s: String): Boolean {
 	val logger = Logging.getLogger(Gradle::class.java)
 
