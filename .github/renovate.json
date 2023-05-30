@@ -27,8 +27,6 @@
 			],
 			"matchPaths": [
 				".github/workflows/CI.yml",
-				"test/src/main/resources/net/twisterrob/gradle/test/nagging.init.gradle.kts",
-				"plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/settings.gradle.kts",
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
 			],
 			"matchUpdateTypes": ["major", "minor"],
@@ -41,9 +39,6 @@
 				"gradle"
 			],
 			"matchPaths": [
-				".github/workflows/CI.yml",
-				"test/src/main/resources/net/twisterrob/gradle/test/nagging.init.gradle.kts",
-				"plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/settings.gradle.kts",
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
 			],
 			"matchCurrentVersion": "[8.0,)",
@@ -159,19 +154,6 @@
 			"depNameTemplate": "gradle",
 			"matchStrings": [
 				"net.twisterrob.gradle.runner.gradleVersion=(?<currentValue>.*)"
-			],
-			"versioningTemplate": "gradle"
-		},
-		{
-			"description": "Update Gradle nagging constants.",
-			"fileMatch": [
-				"^test/src/main/resources/net/twisterrob/gradle/test/nagging\\.init\\.gradle\\.kts$",
-				"^plugin/base/src/testFixtures/resources/net/twisterrob/gradle/test/kotlin-plugin_app/settings\\.gradle\\.kts$"
-			],
-			"datasourceTemplate": "gradle-version",
-			"depNameTemplate": "gradle",
-			"matchStrings": [
-				"\"(?<currentValue>\\d+(?:\\.\\d+)+(?:-rc-\\d+)?)\","
 			],
 			"versioningTemplate": "gradle"
 		},

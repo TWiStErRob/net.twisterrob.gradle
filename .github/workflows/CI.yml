@@ -396,7 +396,7 @@ jobs:
             gradle: '7.2'
             gradle-java: '11'
             agp: '7.1.3'
-            build-tools: '30.0.2'
+            build-tools: '30.0.3'
             kotlin: '1.4.32'
             test-task: 'testReport :quality:tests'
           - name: "AGP 7.1.x on Gradle 7.2+ - plugin"
@@ -410,7 +410,7 @@ jobs:
             gradle: '7.6.1'
             gradle-java: '11'
             agp: '7.1.3'
-            build-tools: '30.0.2'
+            build-tools: '30.0.3'
             kotlin: '1.4.32'
             test-task: 'testReport :quality:tests'
           - name: "AGP 7.1.x on Gradle 7.x - plugin"
@@ -425,7 +425,7 @@ jobs:
             gradle: '7.3.3'
             gradle-java: '11'
             agp: '7.2.2'
-            build-tools: '30.0.2'
+            build-tools: '30.0.3'
             kotlin: '1.4.32'
             test-task: 'testReport :quality:tests'
           - name: "AGP 7.2.x on Gradle 7.3+ - plugin"
@@ -439,7 +439,7 @@ jobs:
             gradle: '7.6.1'
             gradle-java: '11'
             agp: '7.2.2'
-            build-tools: '30.0.2'
+            build-tools: '30.0.3'
             kotlin: '1.4.32'
             test-task: 'testReport :quality:tests'
           - name: "AGP 7.2.x on Gradle 7.x - plugin"
@@ -587,6 +587,34 @@ jobs:
             agp: '8.1.0-beta04'
             kotlin: '1.6.21'
             build-tools: '33.0.2'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP stable on Gradle stable"
+            gradle: '8.1.1' # https://gradle.org/releases/
+            gradle-java: '17'
+            agp: '8.0.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '1.8.21' # https://kotlinlang.org/docs/releases.html#release-details
+            build-tools: '33.0.1'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP stable on Gradle stable - plugin"
+            gradle: '8.1.1' # https://gradle.org/releases/
+            gradle-java: '17'
+            agp: '8.0.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '1.8.21' # https://kotlinlang.org/docs/releases.html#release-details
+            build-tools: '33.0.2'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP preview on Gradle preview"
+            gradle: '8.2-milestone-1' # https://services.gradle.org/distributions/
+            gradle-java: '17'
+            agp: '8.2.0-alpha05' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '1.9.0-Beta' # https://kotlinlang.org/docs/eap.html#build-details
+            build-tools: '34.0.0-rc4' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
+            test-task: 'testReport :quality:tests'
+          - name: "AGP preview on Gradle preview - plugin"
+            gradle: '8.2-milestone-1' # https://services.gradle.org/distributions/
+            gradle-java: '17'
+            agp: '8.2.0-alpha05' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '1.9.0-Beta' # https://kotlinlang.org/docs/eap.html#build-details
+            build-tools: '34.0.0-rc4' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
             test-task: 'testReport :plugin:tests'
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
@@ -819,6 +847,34 @@ jobs:
         with:
           name: 'AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta04 on 8.2-milestone-1) Test Results XMLs'
           path: 'artifacts/AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta04 on 8.2-milestone-1) Test Results XMLs'
+
+      - name: "Download 'AGP stable on Gradle stable (8.0.2 on 8.1.1) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP stable on Gradle stable (8.0.2 on 8.1.1) Test Results XMLs'
+          path: 'artifacts/AGP stable on Gradle stable (8.0.2 on 8.1.1) Test Results XMLs'
+
+      - name: "Download 'AGP stable on Gradle stable - plugin (8.0.2 on 8.1.1) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP stable on Gradle stable - plugin (8.0.2 on 8.1.1) Test Results XMLs'
+          path: 'artifacts/AGP stable on Gradle stable - plugin (8.0.2 on 8.1.1) Test Results XMLs'
+
+      - name: "Download 'AGP preview on Gradle preview (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP preview on Gradle preview (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs'
+          path: 'artifacts/AGP preview on Gradle preview (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs'
+
+      - name: "Download 'AGP preview on Gradle preview - plugin (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP preview on Gradle preview - plugin (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs'
+          path: 'artifacts/AGP preview on Gradle preview - plugin (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs'
 
       #- name: Display structure of downloaded files
       #  run: ls -R

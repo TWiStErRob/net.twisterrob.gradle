@@ -31,7 +31,7 @@ object KotlinVersions {
 }
 
 private val KOTLIN_VERSION_REGEX: Regex =
-	"""^(?<major>\d+)\.(?<minor>\d+)(?:\.(?<patch>\d+))?$""".toRegex()
+	"""^(?<major>\d+)\.(?<minor>\d+)(?:\.(?<patch>\d+))?(?<qualifier>-(?:M|Beta|RC)\d*)?$""".toRegex()
 
 fun KotlinVersion.Companion.parse(version: String): KotlinVersion {
 	val match = KOTLIN_VERSION_REGEX.matchEntire(version)
