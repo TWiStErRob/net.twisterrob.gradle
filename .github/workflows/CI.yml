@@ -588,6 +588,34 @@ jobs:
             kotlin: '1.6.21'
             build-tools: '33.0.3'
             test-task: 'testReport :plugin:tests'
+          - name: "AGP latest stable on Gradle latest stable"
+            gradle: '8.1.1' # https://gradle.org/releases/
+            gradle-java: '17'
+            agp: '8.0.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '1.8.21' # https://kotlinlang.org/docs/releases.html#release-details
+            build-tools: '33.0.1'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP latest stable on Gradle latest stable - plugin"
+            gradle: '8.1.1' # https://gradle.org/releases/
+            gradle-java: '17'
+            agp: '8.0.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '1.8.21' # https://kotlinlang.org/docs/releases.html#release-details
+            build-tools: '33.0.3'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP preview on Gradle preview"
+            gradle: '8.2-milestone-1' # https://services.gradle.org/distributions/
+            gradle-java: '17'
+            agp: '8.2.0-alpha05' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '1.9.0-Beta' # https://kotlinlang.org/docs/eap.html#build-details
+            build-tools: '34.0.0-rc4' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
+            test-task: 'testReport :quality:tests'
+          - name: "AGP preview on Gradle preview - plugin"
+            gradle: '8.2-milestone-1' # https://services.gradle.org/distributions/
+            gradle-java: '17'
+            agp: '8.2.0-alpha05' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '1.9.0-Beta' # https://kotlinlang.org/docs/eap.html#build-details
+            build-tools: '34.0.0-rc4' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
+            test-task: 'testReport :plugin:tests'
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
@@ -819,6 +847,34 @@ jobs:
         with:
           name: 'AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta03 on 8.2-milestone-1) Test Results XMLs'
           path: 'artifacts/AGP 8.1.x on Gradle 8.x - plugin (8.1.0-beta03 on 8.2-milestone-1) Test Results XMLs'
+
+      - name: "Download 'AGP latest stable on Gradle latest stable (8.0.2 on 8.1.1) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP latest stable on Gradle latest stable (8.0.2 on 8.1.1) Test Results XMLs'
+          path: 'artifacts/AGP latest stable on Gradle latest stable (8.0.2 on 8.1.1) Test Results XMLs'
+
+      - name: "Download 'AGP latest stable on Gradle latest stable - plugin (8.0.2 on 8.1.1) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP latest stable on Gradle latest stable - plugin (8.0.2 on 8.1.1) Test Results XMLs'
+          path: 'artifacts/AGP latest stable on Gradle latest stable - plugin (8.0.2 on 8.1.1) Test Results XMLs'
+
+      - name: "Download 'AGP preview on Gradle preview (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP preview on Gradle preview (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs'
+          path: 'artifacts/AGP preview on Gradle preview (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs'
+
+      - name: "Download 'AGP preview on Gradle preview - plugin (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs' artifact."
+        if: success() || failure()
+        uses: actions/download-artifact@v3
+        with:
+          name: 'AGP preview on Gradle preview - plugin (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs'
+          path: 'artifacts/AGP preview on Gradle preview - plugin (8.2.0-alpha05 on 8.2-milestone-1) Test Results XMLs'
 
       #- name: Display structure of downloaded files
       #  run: ls -R
