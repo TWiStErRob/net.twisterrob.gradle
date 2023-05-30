@@ -147,7 +147,7 @@ fun doNotNagAbout(message: String) {
 		GradleVersion.version("8.0") <= GradleVersion.current().baseVersion -> {
 			// Ignoring with "startsWith" to disregard the stack trace. It's not ideal, but it's
 			// the best we can do to counteract https://github.com/gradle/gradle/pull/22489 introduced in Gradle 8.0.
-			doNotNagAbout(Regex("(?s)${Regex.escape(message)}.*"))
+			doNotNagAbout(Regex("${Regex.escape(message)}.*"))
 		}
 		else -> {
 			// In old versions, go for exact match.
@@ -196,7 +196,7 @@ fun doNotNagAbout(message: String) {
  */
 fun doNotNagAbout(message: String, stack: String) {
 	if (GradleVersion.version("8.0") <= GradleVersion.current().baseVersion) {
-		doNotNagAbout(Regex("(?s)${Regex.escape(message)}.*${Regex.escape(stack)}.*"))
+		doNotNagAbout(Regex("${Regex.escape(message)}.*${Regex.escape(stack)}.*"))
 	} else {
 		error("Stack traces for deprecations are not available in ${GradleVersion.current()}.")
 	}
