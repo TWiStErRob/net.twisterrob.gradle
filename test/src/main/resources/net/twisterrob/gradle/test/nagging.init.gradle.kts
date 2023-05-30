@@ -45,7 +45,7 @@ doNotNagAboutForTest(
 )
 doNotNagAboutForTest(
 	"7.6" to "8.0",
-	"7.0" to "7.3",
+	"7.0" to "7.3.3",
 	// Ignore warning for https://issuetracker.google.com/issues/218478028 since Gradle 7.5, it's going to be fixed in AGP 7.3.
 	// Example test: AndroidBuildPluginIntgTest.`adds custom resources and BuildConfig values`
 	"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'IncrementalTask.taskAction\$gradle_core' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
