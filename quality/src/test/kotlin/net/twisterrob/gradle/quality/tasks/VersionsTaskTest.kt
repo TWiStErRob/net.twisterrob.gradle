@@ -81,7 +81,7 @@ class VersionsTaskTest : BaseIntgTest() {
 	}
 
 	@Test fun `print checkstyle version (Gradle 8 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("8.1.1")
+		gradle.gradleVersion = GradleVersion.version("8.2-milestone-1")
 
 		@Language("gradle")
 		val script = """
@@ -97,12 +97,12 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 8.1.1""")
+		result.assertHasOutputLine("""Gradle version: 8.2-milestone-1""")
 		result.assertHasOutputLine("""Checkstyle version: 9.3""")
 	}
 
 	@Test fun `print pmd version (Gradle 8 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("8.1.1")
+		gradle.gradleVersion = GradleVersion.version("8.2-milestone-1")
 
 		@Language("gradle")
 		val script = """
@@ -118,8 +118,8 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 8.1.1""")
-		result.assertHasOutputLine("""PMD version: 6.48.0""")
+		result.assertHasOutputLine("""Gradle version: 8.2-milestone-1""")
+		result.assertHasOutputLine("""PMD version: 6.55.0""")
 	}
 
 	@Test fun `print checkstyle version (specific version)`() {

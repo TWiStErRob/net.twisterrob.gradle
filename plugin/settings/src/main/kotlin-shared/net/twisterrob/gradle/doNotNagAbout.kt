@@ -147,7 +147,7 @@ fun doNotNagAbout(message: String) {
 		GradleVersion.version("8.0") <= GradleVersion.current().baseVersion -> {
 			// Ignoring with "startsWith" to disregard the stack trace. It's not ideal, but it's
 			// the best we can do to counteract https://github.com/gradle/gradle/pull/22489 introduced in Gradle 8.0.
-			doNotNagAbout(Regex("(?s)${Regex.escape(message)}.*"))
+			doNotNagAbout(Regex("${Regex.escape(message)}.*"))
 		}
 		else -> {
 			// In old versions, go for exact match.
@@ -196,7 +196,7 @@ fun doNotNagAbout(message: String) {
  */
 fun doNotNagAbout(message: String, stack: String) {
 	if (GradleVersion.version("8.0") <= GradleVersion.current().baseVersion) {
-		doNotNagAbout(Regex("(?s)${Regex.escape(message)}.*${Regex.escape(stack)}.*"))
+		doNotNagAbout(Regex("${Regex.escape(message)}.*${Regex.escape(stack)}.*"))
 	} else {
 		error("Stack traces for deprecations are not available in ${GradleVersion.current()}.")
 	}
@@ -233,9 +233,10 @@ private class IgnoringSet(
 		if (isDoNotNagAboutDiagnosticsEnabled) {
 			val state = if (isNew) "first seen" else "already added"
 			val ignores = ignorePatterns.joinToString(separator = "\n") { ignorePattern ->
-				val matching = if (ignorePattern.matches(element)) "matching" else "not matching"
+				val matching = if (ignorePattern.matches(element)) "**matching**" else "not matching"
+				val ignoreRegex = ignorePattern.toString().prependIndent("   ")
 				@Suppress("StringShouldBeRawString") // It would be more complex because of interpolations.
-				"Deprecation is ${matching} ignore pattern:\n```regex\n${ignorePattern}\n```"
+				" - Deprecation is ${matching} ignore pattern:\n   ```regex\n${ignoreRegex}\n   ```"
 			}
 			@Suppress(
 				"ForbiddenMethodCall", // This will be shown in the console, as the user explicitly asked for it.

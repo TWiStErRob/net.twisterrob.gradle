@@ -14,7 +14,7 @@ class NaggingPlugin : Plugin<Gradle> {
 	}
 
 	/**
-	 * Expose [doNotNagAbout] to build scripts.
+	 * Expose [net.twisterrob.gradle.doNotNagAbout] wrappers to build scripts.
 	 *
 	 * Groovy `.ext` === Kotlin `.extensions.extraProperties` === Kotlin DSL `.extra`.
 	 * Based on [Function from init.gradle in build script](https://stackoverflow.com/a/19269037/253468).
@@ -24,24 +24,24 @@ class NaggingPlugin : Plugin<Gradle> {
 	 *
 	 * Access from `build.gradle`:
 	 * ```groovy
-	 * def doNotNagAbout = rootProject.ext["doNotNagAbout"]
-	 * doNotNagAbout("7.4.2", "^7\\.2\\.\\d+\$", "message")
+	 * def doNotNagAboutForTest = rootProject.ext["doNotNagAboutForTest"]
+	 * doNotNagAboutForTest("7.4" to "8.0", "7.2" to "7.4.1", "message")
 	 * ```
 	 *
 	 * Access from `build.gradle.kts`:
 	 * ```kotlin
-	 * val doNotNagAbout = rootProject.extra["doNotNagAbout"] as (String, String, String) -> Unit
-	 * val doNotNagAbout = rootProject.extensions.extraProperties["doNotNagAbout"] as (String, String, String) -> Unit
-	 * doNotNagAbout("7.4.2", """^7\.2\.\d$""", "message")
+	 * val doNotNagAboutForTest = rootProject.extra["doNotNagAboutForTest"] as (String, String, String) -> Unit
+	 * val doNotNagAboutForTest = rootProject.extensions.extraProperties["doNotNagAboutForTest"] as (String, String, String) -> Unit
+	 * doNotNagAboutForTest("7.4" to "8.0", "7.2" to "7.4.1", "message")
 	 * ```
 	 *
-	 * Similar functions need different signatures!
+	 * @see doNotNagAboutForTest
+	 * @see doNotNagAboutPatternForTest
+	 * @see doNotNagAboutStackForTest
 	 */
 	private fun exposeDoNotNagAboutExtras(extensionAware: ExtensionAware) {
-		val doNotNagAboutRef: (String, String, String) -> Unit = ::doNotNagAbout
-		extensionAware.extensions.extraProperties.set("doNotNagAbout", doNotNagAboutRef)
-		val doNotNagAboutStackRef: (String, String, String, String) -> Unit = ::doNotNagAbout
-		extensionAware.extensions.extraProperties.set("doNotNagAboutStack", doNotNagAboutStackRef)
-		extensionAware.extensions.extraProperties.set("doNotNagAboutPattern", ::doNotNagAboutPattern)
+		extensionAware.extensions.extraProperties["doNotNagAboutForTest"] = ::doNotNagAboutForTest
+		extensionAware.extensions.extraProperties["doNotNagAboutStackForTest"] = ::doNotNagAboutStackForTest
+		extensionAware.extensions.extraProperties["doNotNagAboutPatternForTest"] = ::doNotNagAboutPatternForTest
 	}
 }

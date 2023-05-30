@@ -49,6 +49,9 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.kotlin")
 			}
+			test {
+				useTestNG()
+			}
 			dependencies {
 				testImplementation("org.testng:testng:7.7.1")
 			}

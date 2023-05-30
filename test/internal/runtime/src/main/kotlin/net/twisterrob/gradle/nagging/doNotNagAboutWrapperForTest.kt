@@ -12,22 +12,24 @@ import org.gradle.util.GradleVersion
 /**
  * Overload for exact message matching.
  *
- * @see doNotNagAbout for more details
- * @see net.twisterrob.gradle.nagging.doNotNagAboutPattern
+ * @see net.twisterrob.gradle.doNotNagAbout for more details
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutPatternForTest
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutStackForTest
  */
-fun doNotNagAbout(gradle: String, agpRegex: String, message: String) {
-	if (unsupported(gradle, agpRegex, "Ignoring deprecation: ${message}")) return
+fun doNotNagAboutForTest(gradle: Pair<String, String>, agp: Pair<String, String>, message: String) {
+	if (unsupported(gradle, agp, "Ignoring deprecation: ${message}")) return
 	doNotNagAbout(message)
 }
 
 /**
  * Overload for exact message matching with stack trace.
  *
- * @see doNotNagAbout for more details
- * @see net.twisterrob.gradle.nagging.doNotNagAbout
+ * @see net.twisterrob.gradle.doNotNagAbout for more details
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutForTest
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutPatternForTest
  */
-fun doNotNagAbout(gradle: String, agpRegex: String, message: String, stack: String) {
-	if (unsupported(gradle, agpRegex, "Ignoring deprecation: ${message} at ${stack}")) return
+fun doNotNagAboutStackForTest(gradle: Pair<String, String>, agp: Pair<String, String>, message: String, stack: String) {
+	if (unsupported(gradle, agp, "Ignoring deprecation: ${message} at ${stack}")) return
 	doNotNagAbout(message, stack)
 }
 
@@ -37,29 +39,43 @@ fun doNotNagAbout(gradle: String, agpRegex: String, message: String, stack: Stri
  * This method is named with a suffix of `Pattern` to make it easily available,
  * because method references cannot pick up overloaded methods.
  *
- * @see doNotNagAbout for more details
- * @see net.twisterrob.gradle.nagging.doNotNagAbout
+ * @see net.twisterrob.gradle.doNotNagAbout for more details
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutForTest
+ * @see net.twisterrob.gradle.nagging.doNotNagAboutStackForTest
  */
-fun doNotNagAboutPattern(gradle: String, agpRegex: String, messageRegex: String) {
-	if (unsupported(gradle, agpRegex, "Ignoring deprecation regex: ${messageRegex}")) return
+fun doNotNagAboutPatternForTest(gradle: Pair<String, String>, agp: Pair<String, String>, messageRegex: String) {
+	if (unsupported(gradle, agp, "Ignoring deprecation regex: ${messageRegex}")) return
 	doNotNagAbout(Regex(messageRegex))
 }
 
-private fun unsupported(gradle: String, agpRegex: String, s: String): Boolean {
+@Suppress("NamedArguments") // Variable names are clear enough.
+private fun unsupported(gradle: Pair<String, String>, agp: Pair<String, String>, s: String): Boolean {
 	val logger = Logging.getLogger(Gradle::class.java)
 
-	if (GradleVersion.current().baseVersion != GradleVersion.version(gradle)) {
-		if (isDoNotNagAboutDiagnosticsEnabled) {
-			val actual = "${GradleVersion.current()}(${GradleVersion.current().baseVersion})"
-			logger.lifecycle("Gradle version mismatch: ${actual} != ${GradleVersion.version(gradle)}, shortcutting:\n\t${s}")
+	/**
+	 * Uses [GradleVersion] to compare versions, even for AGP, in the end it's all just semantic versions.
+	 */
+	fun matchesVersion(type: String, fullVersion: String, baseVersion: String, minIncl: String, maxExcl: String): Boolean {
+		val comparedVersion = GradleVersion.version(baseVersion)
+		if (GradleVersion.version(minIncl) <= comparedVersion && comparedVersion < GradleVersion.version(maxExcl)) {
+			return true
 		}
+		if (isDoNotNagAboutDiagnosticsEnabled) {
+			val actual = "${baseVersion}(${fullVersion})"
+			logger.lifecycle("${type} version mismatch: ${minIncl} <= ${actual} < ${maxExcl}, not applying:\n\t${s}")
+		}
+		return false
+	}
+
+	val fullGradleVersion = GradleVersion.current().version
+	val baseGradleVersion = GradleVersion.current().baseVersion.version
+	if (!matchesVersion("Gradle", fullGradleVersion, baseGradleVersion, gradle.first, gradle.second)) {
 		return true
 	}
 
-	if (!Regex(agpRegex).matches(agpVersion)) {
-		if (isDoNotNagAboutDiagnosticsEnabled) {
-			logger.lifecycle("AGP version mismatch: ${agpRegex} does not match ${agpVersion}, shortcutting:\n\t${s}")
-		}
+	val fullAgpVersion = agpVersion
+	val baseAgpVersion = agpVersion.substringBefore("-")
+	if (!matchesVersion("AGP", fullAgpVersion, baseAgpVersion, agp.first, agp.second)) {
 		return true
 	}
 
