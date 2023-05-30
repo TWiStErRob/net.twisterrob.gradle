@@ -39,7 +39,6 @@
 				"gradle"
 			],
 			"matchPaths": [
-				".github/workflows/CI.yml",
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
 			],
 			"matchCurrentVersion": "[8.0,)",
