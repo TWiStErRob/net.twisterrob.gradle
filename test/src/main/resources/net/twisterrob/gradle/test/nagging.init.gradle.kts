@@ -20,31 +20,31 @@ apply<net.twisterrob.gradle.nagging.NaggingPlugin>()
 
 // Below nagging suppressions are sorted by (Gradle version, AGP version) lexicographically.
 doNotNagAboutForTest(
-	"7.6" to "8.0",
+	"7.6" to "8.1.1",
 	"7.0" to "7.1",
 	// > Task :compileDebugRenderscript NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceDirs with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
 doNotNagAboutForTest(
-	"7.6" to "8.0",
+	"7.6" to "8.1.1",
 	"7.0" to "7.1",
 	// > Task :compileDebugAidl NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
 doNotNagAboutForTest(
-	"7.6" to "8.0",
+	"7.6" to "8.1.1",
 	"7.0" to "7.1",
 	// > Task :stripDebugDebugSymbols NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property inputFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
 doNotNagAboutForTest(
-	"7.6" to "8.0",
+	"7.6" to "8.1.1",
 	"7.0" to "7.1",
 	// > Task :bundleLibResDebug NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property resources with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
 doNotNagAboutForTest(
-	"7.6" to "8.0",
+	"7.6" to "8.1.1",
 	"7.0" to "7.3",
 	// Ignore warning for https://issuetracker.google.com/issues/218478028 since Gradle 7.5, it's going to be fixed in AGP 7.3.
 	// Example test: AndroidBuildPluginIntgTest.`adds custom resources and BuildConfig values`
@@ -77,7 +77,7 @@ doNotNagAboutStackForTest(
 )
 doNotNagAboutStackForTest(
 	"8.0" to "8.3",
-	"7.4" to "8.0",
+	"7.4" to "8.1.1",
 	// > Task :lintAnalyzeDebug
 	"The BuildIdentifier.isCurrentBuild() method has been deprecated. This is scheduled to be removed in Gradle 9.0. Use getBuildPath() to get a unique identifier for the build. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#build_identifier_name_and_current_deprecation",
 	"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:68)"
@@ -87,12 +87,12 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.6.0") {
 	// https://youtrack.jetbrains.com/issue/KT-47867 was fixed in 1.6.0,
 	// so disable these warnings for anything that uses Kotlin < 1.6.
 	doNotNagAboutForTest(
-		"7.6" to "8.0",
+		"7.6" to "8.1.1",
 		"0.0" to "100.0",
 		"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'KaptWithoutKotlincTask.compile' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
 	)
 	doNotNagAboutForTest(
-		"7.6" to "8.0",
+		"7.6" to "8.1.1",
 		"0.0" to "100.0",
 		"IncrementalTaskInputs has been deprecated. This is scheduled to be removed in Gradle 8.0. On method 'AbstractKotlinCompile.execute' use 'org.gradle.work.InputChanges' instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#incremental_task_inputs_deprecation"
 	)
