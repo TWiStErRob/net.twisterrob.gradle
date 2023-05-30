@@ -14,7 +14,7 @@ class NaggingPlugin : Plugin<Gradle> {
 	}
 
 	/**
-	 * Expose [doNotNagAboutStackForTest] and [doNotNagAboutPatternForTest] to build scripts.
+	 * Expose [net.twisterrob.gradle.doNotNagAbout] wrappers to build scripts.
 	 *
 	 * Groovy `.ext` === Kotlin `.extensions.extraProperties` === Kotlin DSL `.extra`.
 	 * Based on [Function from init.gradle in build script](https://stackoverflow.com/a/19269037/253468).
@@ -25,21 +25,23 @@ class NaggingPlugin : Plugin<Gradle> {
 	 * Access from `build.gradle`:
 	 * ```groovy
 	 * def doNotNagAboutForTest = rootProject.ext["doNotNagAboutForTest"]
-	 * doNotNagAboutForTest("7.4.2", "^7\\.2\\.\\d+\$", "message")
+	 * doNotNagAboutForTest("7.4" to "8.0", "7.2" to "7.4.1", "message")
 	 * ```
 	 *
 	 * Access from `build.gradle.kts`:
 	 * ```kotlin
 	 * val doNotNagAboutForTest = rootProject.extra["doNotNagAboutForTest"] as (String, String, String) -> Unit
 	 * val doNotNagAboutForTest = rootProject.extensions.extraProperties["doNotNagAboutForTest"] as (String, String, String) -> Unit
-	 * doNotNagAboutForTest("7.4.2", """^7\.2\.\d$""", "message")
+	 * doNotNagAboutForTest("7.4" to "8.0", "7.2" to "7.4.1", "message")
 	 * ```
 	 *
-	 * Similar functions need different signatures!
+	 * @see doNotNagAboutForTest
+	 * @see doNotNagAboutPatternForTest
+	 * @see doNotNagAboutStackForTest
 	 */
 	private fun exposeDoNotNagAboutExtras(extensionAware: ExtensionAware) {
-		extensionAware.extensions.extraProperties.set("doNotNagAboutForTest", ::doNotNagAboutForTest)
-		extensionAware.extensions.extraProperties.set("doNotNagAboutStackForTest", ::doNotNagAboutStackForTest)
-		extensionAware.extensions.extraProperties.set("doNotNagAboutPatternForTest", ::doNotNagAboutPatternForTest)
+		extensionAware.extensions.extraProperties["doNotNagAboutForTest"] = ::doNotNagAboutForTest
+		extensionAware.extensions.extraProperties["doNotNagAboutStackForTest"] = ::doNotNagAboutStackForTest
+		extensionAware.extensions.extraProperties["doNotNagAboutPatternForTest"] = ::doNotNagAboutPatternForTest
 	}
 }
