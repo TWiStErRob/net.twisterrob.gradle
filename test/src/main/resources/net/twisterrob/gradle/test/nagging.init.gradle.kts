@@ -61,7 +61,7 @@ doNotNagAboutStackForTest(
 )
 doNotNagAboutStackForTest(
 	"8.0" to "8.3",
-	"8.1" to "8.2",
+	"7.4" to "8.2",
 	// > Task :checkDebugUnitTestAarMetadata, :mergeDebugUnitTestResources, :processDebugUnitTestManifest, :mergeDebugUnitTestAssets
 	// Ignore warning for https://issuetracker.google.com/issues/279306626, it'll be fixed when AGP's minimum is Gradle 8.2.
 	"The BuildIdentifier.getName() method has been deprecated. This is scheduled to be removed in Gradle 9.0. Use getBuildPath() to get a unique identifier for the build. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#build_identifier_name_and_current_deprecation",
@@ -69,11 +69,18 @@ doNotNagAboutStackForTest(
 )
 doNotNagAboutStackForTest(
 	"8.0" to "8.3",
-	"8.1" to "8.2",
+	"7.4" to "8.2",
 	// > Task :generateDebugLintModel. :lintAnalyzeDebug, :lintReportDebug
 	// Ignore warning for https://issuetracker.google.com/issues/279306626, it'll be fixed when AGP's minimum is Gradle 8.2.
 	"The BuildIdentifier.isCurrentBuild() method has been deprecated. This is scheduled to be removed in Gradle 9.0. Use getBuildPath() to get a unique identifier for the build. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#build_identifier_name_and_current_deprecation",
 	"at com.android.build.gradle.internal.ide.dependencies.BuildMappingUtils.getBuildId(BuildMapping.kt:40)"
+)
+doNotNagAboutStackForTest(
+	"8.0" to "8.3",
+	"7.4" to "8.0",
+	// > Task :lintAnalyzeDebug
+	"The BuildIdentifier.isCurrentBuild() method has been deprecated. This is scheduled to be removed in Gradle 9.0. Use getBuildPath() to get a unique identifier for the build. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#build_identifier_name_and_current_deprecation",
+	"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:68)"
 )
 
 if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.6.0") {
