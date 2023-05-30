@@ -233,9 +233,10 @@ private class IgnoringSet(
 		if (isDoNotNagAboutDiagnosticsEnabled) {
 			val state = if (isNew) "first seen" else "already added"
 			val ignores = ignorePatterns.joinToString(separator = "\n") { ignorePattern ->
-				val matching = if (ignorePattern.matches(element)) "matching" else "not matching"
+				val matching = if (ignorePattern.matches(element)) "**matching**" else "not matching"
+				val ignoreRegex = ignorePattern.toString().prependIndent("   ")
 				@Suppress("StringShouldBeRawString") // It would be more complex because of interpolations.
-				"Deprecation is ${matching} ignore pattern:\n```regex\n${ignorePattern}\n```"
+				" - Deprecation is ${matching} ignore pattern:\n   ```regex\n${ignoreRegex}\n   ```"
 			}
 			@Suppress(
 				"ForbiddenMethodCall", // This will be shown in the console, as the user explicitly asked for it.
