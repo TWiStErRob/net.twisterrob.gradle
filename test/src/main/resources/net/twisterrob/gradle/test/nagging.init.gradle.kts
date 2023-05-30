@@ -52,7 +52,7 @@ doNotNagAboutForTest(
 )
 doNotNagAboutStackForTest(
 	"8.0" to "8.3",
-	"7.0" to "7.4.1",
+	"7.0" to "7.4.2",
 	// Ignore warning for https://issuetracker.google.com/issues/264177800 since Gradle 8.0, it's going to be fixed in AGP 7.4.1.
 	// This only shows up during CONFIGURATION phase, and only if a test task is needed (about 4 tests at the moment).
 	// This means any build could trigger it, so putting it here into a global place to prevent false failures.
