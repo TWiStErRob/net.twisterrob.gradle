@@ -341,7 +341,26 @@ class PluginIntegrationTest : BaseIntgTest() {
 						AGPVersions.UNDER_TEST compatible AGPVersions.v72x -> {
 							// Known bad tasks on AGP 7.2: old version, situation unlikely to change.
 							"""
-								created.keys.filter { it.path == ":compileDebugRenderscript" || it.path == ":compileReleaseRenderscript" }.forEach(created::remove)
+								val realizedTasks = listOf(
+									":compileDebugRenderscript",
+									":compileReleaseRenderscript",
+								)
+								created.keys.filter { it.path in realizedTasks }.forEach(created::remove)
+							""".trimIndent()
+						}
+						KotlinVersions.UNDER_TEST.inRange(KotlinVersions.v1720, KotlinVersions.v190) -> {
+							// https://youtrack.jetbrains.com/issue/KT-54468
+							// Known bad tasks on Kotlin 1.7.20-1.8.21 (fixed in 1.9.0):
+							// with K2 ongoing, situation unlikely to change.
+							"""
+								val realizedTasks = listOf(
+									":compileDebugKotlin",
+									":compileReleaseKotlin",
+									":compileDebugUnitTestKotlin",
+									":compileReleaseUnitTestKotlin",
+									":compileDebugAndroidTestKotlin",
+								)
+								created.keys.filter { it.path in realizedTasks }.forEach(created::remove)
 							""".trimIndent()
 						}
 						else -> {
@@ -349,7 +368,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 								// No exceptions other than :help above.
 							""".trimIndent()
 						}
-					}
+					}.prependIndent("\t\t\t\t")
 				}
 				/*@formatter:on*/
 				if (created.isNotEmpty()) {
@@ -397,3 +416,11 @@ class PluginIntegrationTest : BaseIntgTest() {
 			""".trimIndent() // Newline at end is important so that it can be prepended to other scripts.
 		}
 }
+
+@Suppress("UnusedReceiverParameter") // To make it only available through the object.
+private val KotlinVersions.v1720: KotlinVersion get() = KotlinVersion(1, 7, 20)
+@Suppress("UnusedReceiverParameter") // To make it only available through the object.
+private val KotlinVersions.v190: KotlinVersion get() = KotlinVersion(1, 9, 0)
+
+private fun KotlinVersion.inRange(fromInclusive: KotlinVersion, toExcl: KotlinVersion): Boolean =
+	fromInclusive <= this && this < toExcl
