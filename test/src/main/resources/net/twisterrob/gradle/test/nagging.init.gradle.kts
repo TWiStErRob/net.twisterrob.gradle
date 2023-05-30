@@ -21,25 +21,25 @@ apply<net.twisterrob.gradle.nagging.NaggingPlugin>()
 // Below nagging suppressions are sorted by (Gradle version, AGP version) lexicographically.
 doNotNagAboutForTest(
 	"7.6" to "8.0",
-	"7.0" to "7.1",
+	"7.0" to "7.1.1",
 	// > Task :compileDebugRenderscript NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceDirs with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
 doNotNagAboutForTest(
 	"7.6" to "8.0",
-	"7.0" to "7.1",
+	"7.0" to "7.1.1",
 	// > Task :compileDebugAidl NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property sourceFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
 doNotNagAboutForTest(
 	"7.6" to "8.0",
-	"7.0" to "7.1",
+	"7.0" to "7.1.1",
 	// > Task :stripDebugDebugSymbols NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property inputFiles with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
 doNotNagAboutForTest(
 	"7.6" to "8.0",
-	"7.0" to "7.1",
+	"7.0" to "7.1.1",
 	// > Task :bundleLibResDebug NO-SOURCE
 	"Relying on FileTrees for ignoring empty directories when using @SkipWhenEmpty has been deprecated. This is scheduled to be removed in Gradle 8.0. Annotate the property resources with @IgnoreEmptyDirectories or remove @SkipWhenEmpty. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#empty_directories_file_tree"
 )
