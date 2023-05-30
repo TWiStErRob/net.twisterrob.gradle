@@ -333,44 +333,16 @@ class PluginIntegrationTest : BaseIntgTest() {
 			
 			val created: MutableMap<Task, Throwable> = mutableMapOf()
 			gradle.taskGraph.whenReady {
-				created.remove(created.keys.single { it.path == ":help" })
+				created.remove(created.keys.single { it.path == ":help" }) // Must be always there.
 				/*@formatter:off*/
-				${
-					@Suppress("UseIfInsteadOfWhen")
-					when {
-						AGPVersions.UNDER_TEST compatible AGPVersions.v72x -> {
-							// Known bad tasks on AGP 7.2: old version, situation unlikely to change.
-							"""
-								val realizedTasks = listOf(
-									":compileDebugRenderscript",
-									":compileReleaseRenderscript",
-								)
-								created.keys.filter { it.path in realizedTasks }.forEach(created::remove)
-							""".trimIndent()
-						}
-						KotlinVersions.UNDER_TEST.inRange(KotlinVersions.v1720, KotlinVersions.v190) -> {
-							// https://youtrack.jetbrains.com/issue/KT-54468
-							// Known bad tasks on Kotlin 1.7.20-1.8.21 (fixed in 1.9.0):
-							// with K2 ongoing, situation unlikely to change.
-							"""
-								val realizedTasks = listOf(
-									":compileDebugKotlin",
-									":compileReleaseKotlin",
-									":compileDebugUnitTestKotlin",
-									":compileReleaseUnitTestKotlin",
-									":compileDebugAndroidTestKotlin",
-								)
-								created.keys.filter { it.path in realizedTasks }.forEach(created::remove)
-							""".trimIndent()
-						}
-						else -> {
-							"""
-								// No exceptions other than :help above.
-							""".trimIndent()
-						}
-					}.prependIndent("\t\t\t\t")
+				val realizedTasks = listOf(${'\n'}${
+					calculateExceptionallyRealizedTasks()
+						.joinToString(separator = "\n") { """"${it}",""" }
+						.prependIndent("\t\t\t\t\t")
 				}
+				)
 				/*@formatter:on*/
+				created.keys.filter { it.path in realizedTasks }.forEach(created::remove)
 				if (created.isNotEmpty()) {
 					val traces = created.entries.joinToString("\n") { (task, error) ->
 						"${'$'}{task.path}: ${'$'}{error.stackTraceToString()}"
@@ -388,6 +360,38 @@ class PluginIntegrationTest : BaseIntgTest() {
 				}
 			}
 		""".trimIndent()
+
+		private fun calculateExceptionallyRealizedTasks(): List<String> {
+			val generalTasks: List<String> = listOf(
+				":help",
+			)
+			val agpTasks: List<String> =
+				if (AGPVersions.UNDER_TEST compatible AGPVersions.v72x) {
+					// Known bad tasks on AGP 7.2: old version, situation unlikely to change.
+					listOf(
+						":compileDebugRenderscript",
+						":compileReleaseRenderscript",
+					)
+				} else {
+					emptyList()
+				}
+			val kgpTasks: List<String> =
+				if (KotlinVersions.UNDER_TEST.inRange(KotlinVersions.v1720, KotlinVersions.v190)) {
+					// https://youtrack.jetbrains.com/issue/KT-54468
+					// Known bad tasks on Kotlin 1.7.20-1.8.21 (fixed in 1.9.0):
+					// with K2 ongoing, situation unlikely to change.
+					listOf(
+						":compileDebugKotlin",
+						":compileReleaseKotlin",
+						":compileDebugUnitTestKotlin",
+						":compileReleaseUnitTestKotlin",
+						":compileDebugAndroidTestKotlin",
+					)
+				} else {
+					emptyList()
+				}
+			return generalTasks + agpTasks + kgpTasks
+		}
 	}
 
 	/**
