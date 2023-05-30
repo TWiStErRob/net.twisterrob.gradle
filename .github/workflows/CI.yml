@@ -362,6 +362,7 @@ jobs:
         # Potential to run specific test tasks, e.g. :plugin can be run separately.
         #test-task: []
         include:
+
           - name: "AGP 7.0.x on Gradle 7.0+"
             gradle: '7.0.2'
             gradle-java: '11'
@@ -390,6 +391,7 @@ jobs:
             build-tools: '33.0.2'
             kotlin: '1.4.32'
             test-task: 'testReport :plugin:tests'
+
           - name: "AGP 7.1.x on Gradle 7.2+"
             gradle: '7.2'
             gradle-java: '11'
@@ -418,6 +420,7 @@ jobs:
             build-tools: '33.0.2'
             kotlin: '1.4.32'
             test-task: 'testReport :plugin:tests'
+
           - name: "AGP 7.2.x on Gradle 7.3+"
             gradle: '7.3.3'
             gradle-java: '11'
@@ -446,6 +449,7 @@ jobs:
             build-tools: '33.0.2'
             kotlin: '1.4.32'
             test-task: 'testReport :plugin:tests'
+
             # See GradlePluginUtils.kt > pluginList: AGP 7.3 requires Kotlin 1.5.20+.
             # 1.5.32 would be enough, but have to jump further forward because:
             # org.jetbrains.kotlin.gradle.internal.kapt.KaptWithoutKotlincTask.kotlinStdlibClasspath is eagerly initialized.
@@ -483,6 +487,7 @@ jobs:
             kotlin: '1.6.21'
             build-tools: '33.0.2'
             test-task: 'testReport :plugin:tests'
+
           - name: "AGP 7.4.x on Gradle 7.5+"
             gradle: '7.5.1'
             gradle-java: '11'
@@ -525,6 +530,7 @@ jobs:
             kotlin: '1.6.21'
             build-tools: '33.0.2'
             test-task: 'testReport :plugin:tests'
+
           - name: "AGP 8.0.x on Gradle 8.0+"
             gradle: '8.0.2'
             gradle-java: '17'
@@ -552,6 +558,7 @@ jobs:
             kotlin: '1.6.21'
             build-tools: '33.0.2'
             test-task: 'testReport :plugin:tests'
+
           - name: "AGP 8.1.x on Gradle 8.0+"
             gradle: '8.0.2'
             gradle-java: '17'
