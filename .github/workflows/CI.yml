@@ -637,14 +637,14 @@ jobs:
             gradle-java: '17'
             agp: '8.2.0-alpha06' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '1.9.0-Beta' # https://kotlinlang.org/docs/eap.html#build-details
-            build-tools: '34.0.0-rc4' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
+            build-tools: '34.0.0-rc3' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
             test-task: 'testReport :quality:tests'
           - name: "AGP preview on Gradle preview - plugin"
             gradle: '8.2-rc-1' # https://services.gradle.org/distributions/
             gradle-java: '17'
             agp: '8.2.0-alpha06' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '1.9.0-Beta' # https://kotlinlang.org/docs/eap.html#build-details
-            build-tools: '34.0.0-rc4' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
+            build-tools: '34.0.0-rc3' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
             test-task: 'testReport :plugin:tests'
 
 
