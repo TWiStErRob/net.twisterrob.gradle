@@ -310,7 +310,7 @@ jobs:
           -Pnet.twisterrob.test.android.pluginVersion=${{ matrix.agp }}
           -Pnet.twisterrob.test.kotlin.pluginVersion=${{ matrix.kotlin }}
           -Pnet.twisterrob.gradle.runner.gradleVersion=${{ matrix.gradle }}
-          -Pnet.twisterrob.test.gradle.javaHomeEnv=JAVA_HOME_${{ matrix.gradle-java }}_X64
+        #  -Pnet.twisterrob.test.gradle.javaHomeEnv=JAVA_HOME_${{ matrix.gradle-java }}_X64
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results XMLs' artifact."
         if: success() || failure()
