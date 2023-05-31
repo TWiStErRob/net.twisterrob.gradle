@@ -41,21 +41,23 @@ class JavaCompatibilityPlugin : Plugin<Project> {
 			val javaVersion = target.libs.versions.java.get()
 				.let { JavaVersion.toVersion(it).majorVersion.toInt() }
 
-			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-api") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:gradle-settings-api") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:builder") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:builder-model") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:builder-test-api") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:manifest-merger") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:aapt2-proto") { params(javaVersion) }
-			withModule<TargetJvmVersionRule>("com.android.tools.build:aaptcompiler") { params(javaVersion) }
+			//@formatter:off
+			withModule<LatestAgpTargetJvmLoweringRule>("com.android.tools.build:gradle") { params(javaVersion) }
+			withModule<LatestAgpTargetJvmLoweringRule>("com.android.tools.build:gradle-api") { params(javaVersion) }
+			withModule<LatestAgpTargetJvmLoweringRule>("com.android.tools.build:gradle-settings-api") { params(javaVersion) }
+			withModule<LatestAgpTargetJvmLoweringRule>("com.android.tools.build:builder") { params(javaVersion) }
+			withModule<LatestAgpTargetJvmLoweringRule>("com.android.tools.build:builder-model") { params(javaVersion) }
+			withModule<LatestAgpTargetJvmLoweringRule>("com.android.tools.build:builder-test-api") { params(javaVersion) }
+			withModule<LatestAgpTargetJvmLoweringRule>("com.android.tools.build:manifest-merger") { params(javaVersion) }
+			withModule<LatestAgpTargetJvmLoweringRule>("com.android.tools.build:aapt2-proto") { params(javaVersion) }
+			withModule<LatestAgpTargetJvmLoweringRule>("com.android.tools.build:aaptcompiler") { params(javaVersion) }
+			//@formatter:on
 		}
 	}
 }
 
 @CacheableRule
-abstract class TargetJvmVersionRule @Inject constructor(
+abstract class LatestAgpTargetJvmLoweringRule @Inject constructor(
 	private val jvmVersionOverride: Int
 ) : ComponentMetadataRule {
 
