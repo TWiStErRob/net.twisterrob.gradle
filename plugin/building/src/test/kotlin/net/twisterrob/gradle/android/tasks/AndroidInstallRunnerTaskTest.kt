@@ -4,9 +4,12 @@ import net.twisterrob.gradle.android.packageName
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledOnJre
+import org.junit.jupiter.api.condition.JRE
 
 class AndroidInstallRunnerTaskTest {
 
+	@DisabledOnJre(JRE.JAVA_11, disabledReason = "https://github.com/TWiStErRob/net.twisterrob.gradle/issues/380")
 	@Test fun `one match in the middle`() {
 		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
 		@Language("xml")
