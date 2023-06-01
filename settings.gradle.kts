@@ -94,30 +94,7 @@ dependencyResolutionManagement {
 
 val gradleVersion: String = GradleVersion.current().version
 
-// TODEL Gradle 8.2 milestone 1 vs Kotlin 1.8.20 https://github.com/gradle/gradle/pull/24271#issuecomment-1546706115.
-if (gradleVersion == "8.2-milestone-1") {
-	@Suppress("MaxLineLength", "StringLiteralDuplication")
-	doNotNagAbout(
-		Regex(
-			Regex.escape("The resolvable usage is already allowed on configuration ") +
-					"':.*?:testFixturesRuntimeClasspath'. " +
-					Regex.escape("This behavior has been deprecated. ") +
-					Regex.escape("This behavior is scheduled to be removed in Gradle 9.0. ") +
-					Regex.escape("Remove the call to setCanBeResolved(true), it has no effect. ") +
-					Regex.escape("Consult the upgrading guide for further information: ") +
-					Regex.escape("https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#redundant_configuration_usage_activation") +
-					".*" +
-					// Task :generatePrecompiledScriptPluginAccessors
-					Regex.escape("at org.jetbrains.kotlin.gradle.plugin.mpp.compilationImpl.factory.KotlinCompilationDependencyConfigurationsFactoriesKt.KotlinCompilationDependencyConfigurationsContainer") +
-					".*"
-		)
-	)
-} else {
-	val error: (String) -> Unit = if (isCI) ::error else logger::warn
-	error("Gradle version changed, please remove hack.")
-}
-
-// TODEL Gradle 8.2 milestone 1 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320266.
+// TODEL Gradle 8.2 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320266.
 @Suppress("MaxLineLength", "StringLiteralDuplication")
 if ((System.getProperty("idea.version") ?: "") < "2023.2") {
 	// There are ton of warnings, ignoring them all by their class names in one suppression.
@@ -152,7 +129,7 @@ if ((System.getProperty("idea.version") ?: "") < "2023.2") {
 	error("IDEA version changed, please review hack.")
 }
 
-// TODEL Gradle 8.2 milestone 1 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320307.
+// TODEL Gradle 8.2 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320307.
 @Suppress("MaxLineLength", "StringLiteralDuplication")
 if ((System.getProperty("idea.version") ?: "") < "2023.2") {
 	@Suppress("MaxLineLength", "StringLiteralDuplication")
