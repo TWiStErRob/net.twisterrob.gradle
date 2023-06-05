@@ -24,7 +24,6 @@ abstract class VersionsTask : DefaultTask() {
 	internal abstract val pmdVersion: Property<String>
 
 	init {
-		outputs.upToDateWhen { false }
 		gradleVersion.convention(project.provider { project.gradle.gradleVersion })
 		checkstyleVersion.convention(project.provider { project.getVersion<CheckstyleExtension>("checkstyle") })
 		pmdVersion.convention(project.provider { project.getVersion<PmdExtension>("pmd") })
