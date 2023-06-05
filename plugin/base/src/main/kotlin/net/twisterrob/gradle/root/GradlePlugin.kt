@@ -12,12 +12,11 @@ class GradlePlugin : BasePlugin() {
 
 		project.tasks.register<Task>("debugWrapper") {
 			val debugFile = project.file("gradled.bat")
+			val wrapperFile = project.file("gradlew.bat")
 			description = "Generates a ${debugFile.name} script to start a Gradle task in debug mode."
 			group = "Build Setup"
+			inputs.file(wrapperFile).skipWhenEmpty()
 			outputs.file(debugFile)
-			onlyIf {
-				project.file("gradlew.bat").exists()
-			}
 			doLast {
 				debugFile.outputStream().use { out ->
 					val resourceName = "/gradled.bat"
