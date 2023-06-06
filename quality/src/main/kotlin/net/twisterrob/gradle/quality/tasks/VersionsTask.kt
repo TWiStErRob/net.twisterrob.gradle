@@ -24,8 +24,11 @@ abstract class VersionsTask : DefaultTask() {
 	internal abstract val pmdVersion: Property<String>
 
 	init {
+		@Suppress("LeakingThis")
 		gradleVersion.convention(project.provider { project.gradle.gradleVersion })
+		@Suppress("LeakingThis")
 		checkstyleVersion.convention(project.provider { project.getVersion<CheckstyleExtension>("checkstyle") })
+		@Suppress("LeakingThis")
 		pmdVersion.convention(project.provider { project.getVersion<PmdExtension>("pmd") })
 	}
 

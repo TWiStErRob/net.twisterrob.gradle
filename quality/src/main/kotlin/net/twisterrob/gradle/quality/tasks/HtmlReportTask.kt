@@ -54,9 +54,13 @@ abstract class HtmlReportTask : BaseViolationsTask() {
 		get() = xsl.asFile.get()
 
 	init {
+		@Suppress("LeakingThis")
 		xml.convention(project.reporting.baseDirectory.file("violations.xml"))
+		@Suppress("LeakingThis")
 		html.convention(project.reporting.baseDirectory.file("violations.html"))
+		@Suppress("LeakingThis")
 		val xslName: Provider<String> = xslTemplate.map { it.asFile.name }.orElse("violations.xsl")
+		@Suppress("LeakingThis")
 		xsl.convention(project.layout.file(xml.zip(xslName) { xml, xslFileName ->
 			xml.asFile.parentFile.resolve(xslFileName)
 		}))

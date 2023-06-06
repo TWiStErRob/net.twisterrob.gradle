@@ -28,6 +28,7 @@ abstract class TestReportGenerator : DefaultTask() {
 	abstract val type: Property<ReportType>
 
 	init {
+		@Suppress("LeakingThis")
 		type.convention(ReportType.SINGLE_FLAVOR)
 	}
 
