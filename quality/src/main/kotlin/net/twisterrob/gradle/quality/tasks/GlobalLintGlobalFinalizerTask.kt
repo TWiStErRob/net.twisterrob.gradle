@@ -56,9 +56,9 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 	init {
 		@Suppress("LeakingThis")
-		hasConsole.convention(project.provider { project.gradle.taskGraph.hasTask(":$REPORT_CONSOLE_TASK_NAME") })
+		hasConsole.convention(project.provider { project.gradle.taskGraph.hasTask(":${REPORT_CONSOLE_TASK_NAME}") })
 		@Suppress("LeakingThis")
-		hasHtml.convention(project.provider { project.gradle.taskGraph.hasTask(":$$REPORT_HTML_TASK_NAME") })
+		hasHtml.convention(project.provider { project.gradle.taskGraph.hasTask(":${REPORT_HTML_TASK_NAME}") })
 		@Suppress("LeakingThis")
 		wasExplicitLaunch.convention(project.provider { this.wasLaunchedExplicitly })
 	}
