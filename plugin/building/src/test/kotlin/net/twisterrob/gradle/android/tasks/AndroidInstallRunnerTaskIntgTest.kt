@@ -2,7 +2,7 @@ package net.twisterrob.gradle.android.tasks
 
 import net.twisterrob.gradle.android.AndroidBuildPlugin
 import net.twisterrob.gradle.android.BaseAndroidIntgTest
-import net.twisterrob.gradle.android.hasDevices
+import net.twisterrob.gradle.android.devices
 import net.twisterrob.gradle.android.packageName
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -28,9 +28,9 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `adds run task, or installs and runs activity (debug)`() {
-		// Having two paths in tests in not nice, but flaky tests are even worse.
-		// Two @Test methods with assumeTrue|False would work, but then there's always an ignored test.
-		val hasDevices = hasDevices()
+		// Having multiple paths in tests in not nice, but flaky tests are even worse.
+		// Multiple @Test methods with assumeTrue|False would work, but then there's always ignored tests.
+		val devices = devices()
 
 		@Language("xml")
 		val androidManifest = """
@@ -65,27 +65,39 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 			afterEvaluate {
 				// Don't always try to install the APK, as we may have no emulator,
 				// but still assemble the APK, as the run task needs AndroidManifest.xml.
-				tasks.installDebug.enabled = ${hasDevices}
+				tasks.installDebug.enabled = ${devices.isNotEmpty()}
 			}
 		""".trimIndent()
 
-		if (hasDevices) {
-			val result = gradle.run(script, "runDebug").build()
+		when (devices.size) {
+			0 -> {
+				val result = gradle.run(script, "runDebug").buildAndFail()
 
-			result.assertSuccess(":packageDebug")
-			result.assertSuccess(":installDebug")
-			result.assertSuccess(":runDebug")
-			// line is output to stderr, so no control over being on a new line
-			result.assertNoOutputLine(""".*no devices/emulators found.*""".toRegex())
-			result.assertNoOutputLine("""Error: Activity class .* does not exist\.""".toRegex())
-		} else {
-			val result = gradle.run(script, "runDebug").buildAndFail()
+				result.assertSuccess(":packageDebug")
+				result.assertSkipped(":installDebug")
+				result.assertFailed(":runDebug")
+				// The line is output to stderr, so no control over being on a new line after capturing Gradle output.
+				result.assertHasOutputLine(""".*adb(\.exe)?: no devices/emulators found.*""".toRegex())
+			}
+			1 -> {
+				val result = gradle.run(script, "runDebug").build()
 
-			result.assertSuccess(":packageDebug")
-			result.assertSkipped(":installDebug")
-			result.assertFailed(":runDebug")
-			// The line is output to stderr, so no control over being on a new line after capturing Gradle output.
-			result.assertHasOutputLine(""".*adb(\.exe)?: no devices/emulators found.*""".toRegex())
+				result.assertSuccess(":packageDebug")
+				result.assertSuccess(":installDebug")
+				result.assertSuccess(":runDebug")
+				// line is output to stderr, so no control over being on a new line
+				result.assertNoOutputLine(""".*no devices/emulators found.*""".toRegex())
+				result.assertNoOutputLine("""Error: Activity class .* does not exist\.""".toRegex())
+			}
+			else -> {
+				val result = gradle.run(script, "runDebug").buildAndFail()
+
+				result.assertSuccess(":packageDebug")
+				result.assertSuccess(":installDebug")
+				result.assertFailed(":runDebug")
+				// The line is output to stderr, so no control over being on a new line after capturing Gradle output.
+				result.assertHasOutputLine(""".*adb(\.exe)?: more than one device/emulator.*""".toRegex())
+			}
 		}
 	}
 }
