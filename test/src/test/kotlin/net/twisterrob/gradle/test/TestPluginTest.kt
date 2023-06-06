@@ -86,9 +86,10 @@ class TestPluginTest : BaseIntgTest() {
 			dependencies {
 				testImplementation 'junit:junit:${Version.id()}'
 			}
-			// output test execution result so we can verify it actually ran
+			// Output test execution result, so we can verify it actually ran.
+			// This doesn't work with configuration cache: https://github.com/gradle/gradle/issues/25311
 			test.afterTest { desc, result ->
-				logger.quiet "${'$'}{desc.className} > ${'$'}{desc.name}: ${'$'}{result.resultType}"
+				logger.quiet("${'$'}{desc.className} > ${'$'}{desc.name}: ${'$'}{result.resultType}")
 			}
 		""".trimIndent()
 
