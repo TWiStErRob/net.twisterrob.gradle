@@ -38,6 +38,44 @@ class VersionsTaskTest : BaseIntgTest() {
 		result.assertHasOutputLine("""PMD version: 'pmd' plugin not applied""")
 	}
 
+	@Test fun `task is never up to date`() {
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
+			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+		""".trimIndent()
+		gradle.file(script, gradle.buildFile.name)
+
+		gradle.run(null, "qualityVersions").build().assertSuccess(":qualityVersions")
+		gradle.run(null, "qualityVersions").build().assertSuccess(":qualityVersions")
+		gradle.run(null, "qualityVersions").build().assertSuccess(":qualityVersions")
+	}
+
+	@Test fun `print versions when plugins applied late`() {
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
+			tasks.create('qualityVersions', ${VersionsTask::class.java.name}) // Intentionally eagerly creating.
+			afterEvaluate {
+				apply plugin: "org.gradle.checkstyle"
+				apply plugin: "org.gradle.pmd"
+			}
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "qualityVersions")
+		}
+
+		result.assertSuccess(":qualityVersions")
+		result.assertHasOutputLine(Regex("""Gradle version: .+"""))
+		result.assertHasOutputLine(Regex("""Checkstyle version: \d+(\.\d+)+"""))
+		result.assertHasOutputLine(Regex("""PMD version: \d+(\.\d+)+"""))
+	}
+
 	@Test fun `print checkstyle version (Gradle 7 latest)`() {
 		gradle.gradleVersion = GradleVersion.version("7.6.1")
 

@@ -20,7 +20,9 @@ import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
@@ -43,6 +45,24 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	@get:PathSensitive(PathSensitivity.NONE)
 	abstract val xmlReports: ListProperty<RegularFile>
 
+	@get:Internal
+	internal abstract val hasConsole: Property<Boolean>
+
+	@get:Internal
+	internal abstract val hasHtml: Property<Boolean>
+
+	@get:Internal
+	internal abstract val wasExplicitLaunch: Property<Boolean>
+
+	init {
+		@Suppress("LeakingThis")
+		hasConsole.convention(project.provider { project.gradle.taskGraph.hasTask(":${REPORT_CONSOLE_TASK_NAME}") })
+		@Suppress("LeakingThis")
+		hasHtml.convention(project.provider { project.gradle.taskGraph.hasTask(":${REPORT_HTML_TASK_NAME}") })
+		@Suppress("LeakingThis")
+		wasExplicitLaunch.convention(project.provider { this.wasLaunchedExplicitly })
+	}
+
 	@TaskAction
 	fun failOnFailures() {
 		val gatherer = LintReportGatherer()
@@ -53,8 +73,6 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			.associateBy({ it }) { gatherer.findViolations(it) }
 		val totalCount = violationsByFile.values.sumBy { violations: List<Violation> -> violations.size }
 		if (totalCount > 0) {
-			val hasConsole = project.gradle.taskGraph.hasTask(":$REPORT_CONSOLE_TASK_NAME")
-			val hasHtml = project.gradle.taskGraph.hasTask(":$REPORT_HTML_TASK_NAME")
 			val projectReports = violationsByFile.entries
 				.map { (report, violations) ->
 					"${report} (${violations.size})"
@@ -64,14 +82,14 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				"Ran lint on subprojects: ${totalCount} issues found.",
 				"See reports in subprojects:",
 				*projectReports.toTypedArray(),
-				if (hasConsole || hasHtml) {
+				if (hasConsole.get() || hasHtml.get()) {
 					null // No message, it's already going to execute.
 				} else {
 					"To get a full breakdown and listing, execute $REPORT_CONSOLE_TASK_NAME or $REPORT_HTML_TASK_NAME."
 				}
 			)
 			val message = lines.joinToString(separator = System.lineSeparator())
-			if (this.wasLaunchedExplicitly) {
+			if (wasExplicitLaunch.get()) {
 				throw GradleException(message)
 			} else {
 				logger.warn(message)

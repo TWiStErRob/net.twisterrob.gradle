@@ -15,6 +15,7 @@ abstract class FileCountReportTask : BaseViolationsTask() {
 	abstract val output: RegularFileProperty
 
 	init {
+		@Suppress("LeakingThis")
 		output.convention(project.reporting.baseDirectory.file("violations.count"))
 	}
 

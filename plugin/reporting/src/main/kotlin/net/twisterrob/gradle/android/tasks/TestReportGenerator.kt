@@ -5,6 +5,7 @@ import com.android.build.gradle.internal.test.report.ResilientTestReport
 import com.android.utils.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
@@ -23,16 +24,22 @@ abstract class TestReportGenerator : DefaultTask() {
 	@get:OutputDirectory
 	abstract val output: DirectoryProperty
 
-	@Input
-	var type: ReportType = ReportType.SINGLE_FLAVOR
+	@get:Input
+	abstract val type: Property<ReportType>
+
+	init {
+		@Suppress("LeakingThis")
+		type.convention(ReportType.SINGLE_FLAVOR)
+	}
 
 	@TaskAction
 	fun generate() {
-		val inp = input.get().asFile
-		val out = output.get().asFile
+		val input = this.input.get().asFile
+		val output = this.output.get().asFile
+		val type = this.type.get()
 
-		FileUtils.cleanOutputDir(out)
-		val report = ResilientTestReport(type, inp, out)
+		FileUtils.cleanOutputDir(output)
+		val report = ResilientTestReport(type, input, output)
 
 		report.generateReport()
 	}

@@ -114,11 +114,13 @@ class AndroidMinificationPlugin : BasePlugin() {
 		project.tasks.withType<LintModelWriterTask>().configureEach { it.mustRunAfter(task) }
 	}
 
-	private fun copy(internalName: String, targetFile: File) {
-		targetFile.parentFile.mkdirs()
-		val resource = this::class.java.getResourceAsStream(internalName)
-			?: error("Cannot find ${internalName} to copy to ${targetFile}.")
-		resource.use { inp -> targetFile.outputStream().use { out -> inp.copyTo(out) } }
-		targetFile.setLastModified(builtDate.toEpochMilli())
+	companion object {
+		private fun copy(internalName: String, targetFile: File) {
+			targetFile.parentFile.mkdirs()
+			val resource = AndroidMinificationPlugin::class.java.getResourceAsStream(internalName)
+				?: error("Cannot find ${internalName} to copy to ${targetFile}.")
+			resource.use { inp -> targetFile.outputStream().use { out -> inp.copyTo(out) } }
+			targetFile.setLastModified(builtDate.toEpochMilli())
+		}
 	}
 }

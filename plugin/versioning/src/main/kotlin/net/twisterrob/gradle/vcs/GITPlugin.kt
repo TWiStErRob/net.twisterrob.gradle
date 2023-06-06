@@ -21,23 +21,23 @@ class GITPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-		project.vcs.extensions.create<GITPluginExtension>(GITPluginExtension.NAME, project)
+		project.vcs.extensions.create<GITPluginExtension>(GITPluginExtension.NAME, project.rootDir)
 	}
 }
 
 open class GITPluginExtension(
-	private val project: Project
+	private val rootDir: File
 ) : VCSExtension {
 
 	override val isAvailableQuick: Boolean
-		get() = project.rootDir.resolve(".git").exists()
+		get() = rootDir.resolve(".git").exists()
 
 	// 'git describe --always'.execute([], project.rootDir).waitFor() == 0
 	override val isAvailable: Boolean
 		get() {
 			// Check more than just the presence of .git to lessen the possibility of detecting "git",
 			// but not actually having a git repository.
-			RepositoryCache.FileKey.resolve(project.rootDir, FS.DETECTED) ?: return false
+			RepositoryCache.FileKey.resolve(rootDir, FS.DETECTED) ?: return false
 			return try {
 				// Actually try to open the repository now.
 				inRepo { /* Just open, then close. */ }
@@ -88,7 +88,7 @@ open class GITPluginExtension(
 		)
 
 	private inline fun <T> inRepo(block: Git.() -> T): T =
-		inRepo(project.rootDir, block)
+		inRepo(rootDir, block)
 
 	companion object {
 

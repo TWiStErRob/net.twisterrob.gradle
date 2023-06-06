@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.ddmlib.AndroidDebugBridge
+import com.android.ddmlib.IDevice
 import com.jakewharton.dex.DexMethod
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.test.process.assertOutput
@@ -214,7 +215,7 @@ fun dexMethod(className: String, methodName: String): Matcher<DexMethod> =
 			className == GradleTestHelpers.sourceName(item) && methodName == item.name
 	}
 
-fun hasDevices(): Boolean {
+fun devices(): List<IDevice> {
 	@Suppress("DEPRECATION") // REPORT Don't know why, cannot fix it.
 	AndroidDebugBridge.initIfNeeded(false)
 	val bridge = AndroidDebugBridge.createBridge(
@@ -227,7 +228,7 @@ fun hasDevices(): Boolean {
 	ensuredWait(5000L, 1000L, "Cannot get device list") {
 		bridge.hasInitialDeviceList()
 	}
-	return bridge.devices.isNotEmpty()
+	return bridge.devices.toList()
 }
 
 fun ensuredWait(initialWait: Long, reduceAmount: Long, message: String, block: () -> Boolean) {

@@ -115,8 +115,8 @@ class AndroidReleasePlugin : BasePlugin() {
 			val defaultReleaseDir = layout.buildDirectory.dir("release")
 			val externalReleaseDir = providers.gradleProperty(RELEASE_PROPERTY)
 				.orElse(providers.environmentVariable(RELEASE_ENV).deprecated(logger))
-				.map(::file)
-			return layout.dir(externalReleaseDir).orElse(defaultReleaseDir)
+				.let { layout.projectDirectory.dir(it) }
+			return externalReleaseDir.orElse(defaultReleaseDir)
 		}
 
 		private fun <T : Any> Provider<T>.deprecated(logger: Logger): Provider<T> =

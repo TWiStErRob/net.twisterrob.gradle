@@ -10,7 +10,7 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" >= "1.8.20") {
 		}
 
 		def agp = "@net.twisterrob.test.android.pluginVersion@"
-		if (agp < "8.1.0" || ("8.1.0" < agp && agp < "8.1.0-alpha09")) {
+		if (agp < "8.1.0" || ("8.1.0" <= agp && agp < "8.1.0-alpha09")) {
 			// if above: Lexicographic version of equivalent semantic comparison: agp < 8.1.0-alpha09.
 			project.plugins.withType(com.android.build.gradle.internal.plugins.BasePlugin).configureEach {
 				android.compileOptions.sourceCompatibility = 11

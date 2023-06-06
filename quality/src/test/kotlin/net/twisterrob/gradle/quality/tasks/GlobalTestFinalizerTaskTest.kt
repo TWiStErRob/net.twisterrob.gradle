@@ -180,8 +180,10 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 		}
 
 		assertThat(
-			result.taskPaths(TaskOutcome.FAILED),
-			either(contains(":testDebugUnitTest")).or(contains(":testReleaseUnitTest"))
+			result.taskPaths(TaskOutcome.FAILED), // Parallel execution can cause any combination of failures.
+			either(contains(":testDebugUnitTest", ":testReleaseUnitTest"))
+				.or(contains(":testDebugUnitTest"))
+				.or(contains(":testReleaseUnitTest"))
 		)
 		result.assertNoTask(":testReport")
 		result.assertHasOutputLine(Regex("""> There were failing tests. See the report at: .*"""))

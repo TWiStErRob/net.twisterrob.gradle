@@ -14,6 +14,7 @@ import org.tmatesoft.svn.core.wc.SVNClientManager
 import org.tmatesoft.svn.core.wc.SVNStatus
 import org.tmatesoft.svn.core.wc.SVNWCUtil
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.PrintStream
 import java.security.Permission
 
@@ -21,12 +22,12 @@ class SVNPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-		project.vcs.extensions.create<SVNPluginExtension>(SVNPluginExtension.NAME, project)
+		project.vcs.extensions.create<SVNPluginExtension>(SVNPluginExtension.NAME, project.rootDir)
 	}
 }
 
 open class SVNPluginExtension(
-	private val project: Project
+	private val rootDir: File
 ) : VCSExtension {
 
 	// Same as: new XmlSlurper().parseText(SVN.cli('info', '--xml')).entry.commit.@revision
@@ -37,7 +38,7 @@ open class SVNPluginExtension(
 		get() = revisionNumber.toString()
 
 	override val isAvailableQuick: Boolean
-		get() = project.rootDir.resolve(SVNFileUtil.getAdminDirectoryName()).exists()
+		get() = rootDir.resolve(SVNFileUtil.getAdminDirectoryName()).exists()
 
 	// Same as 'svn info'.execute([], project.rootDir).waitFor() == 0
 	override val isAvailable: Boolean
@@ -50,14 +51,14 @@ open class SVNPluginExtension(
 
 	override fun files(project: Project): FileCollection =
 		project.files(
-			project.rootDir.resolve(".svn/wc.db")
+			rootDir.resolve(".svn/wc.db"),
 		)
 
 	private fun open(): SVNStatus {
 		val options: ISVNOptions = SVNWCUtil.createDefaultOptions(true)
 		val clientManager = SVNClientManager.newInstance(options)
 		val statusClient = clientManager.statusClient
-		return statusClient.doStatus(project.rootDir, false)
+		return statusClient.doStatus(rootDir, false)
 	}
 
 	// key method/closure - used as: def out = doSvnMain( 'your', 'svn', 'args', 'go', 'here' );

@@ -1,5 +1,6 @@
 import java.lang.management.ManagementFactory
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+import org.gradle.api.internal.StartParameterInternal
 
 initscript {
 	repositories {
@@ -41,10 +42,24 @@ rootProject {
 	)
 }
 
-// TODO deprecated without replacement https://github.com/gradle/gradle/issues/20151
-// Best effort for now as it won't work with configuration cache.
+// gradle.startParameter.isConfigurationCacheRequested is the replacement, but it's only available in Gradle 7.6+.
 @Suppress("DEPRECATION")
-gradle.buildFinished { println(memoryDiagnostics()) }
+val isConfigurationCache = (gradle.startParameter as StartParameterInternal).isConfigurationCache()
+if (!isConfigurationCache) {
+	// TODO deprecated without replacement https://github.com/gradle/gradle/issues/20151
+	// Best effort for now as it won't work with configuration cache.
+	@Suppress("DEPRECATION")
+	gradle.buildFinished { println(memoryDiagnostics()) }
+} else {
+	// This might be a future solution, but for now this init script is used with Gradle 7.x too,
+	// which doesn't have this flow API, only Gradle 8.1+ does.
+	// class PrintDiagnostics : FlowAction<FlowParameters.None> {
+	// 	override fun execute(ignore: FlowParameters.None) {
+	// 		println(memoryDiagnostics())
+	// 	}
+	// }
+	// serviceOf<FlowScope>().always(PrintDiagnostics::class.java) { }
+}
 
 fun memoryDiagnostics(): String {
 	fun format(max: Long?, used:Long): String {

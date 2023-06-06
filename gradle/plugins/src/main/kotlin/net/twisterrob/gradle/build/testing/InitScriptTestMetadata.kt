@@ -22,6 +22,7 @@ abstract class InitScriptTestMetadata : DefaultTask() {
 	init {
 		group = "Plugin development" // JavaGradlePluginPlugin.PLUGIN_DEVELOPMENT_GROUP
 		description = "Generates the metadata for init script used in plugin integration tests."
+		@Suppress("LeakingThis")
 		output.convention(project.layout.buildDirectory.file("initscript-test-metadata.properties"))
 	}
 
