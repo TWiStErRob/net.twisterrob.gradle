@@ -12,6 +12,7 @@ import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSkipped
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.delete
+import org.gradle.api.JavaVersion
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -30,7 +31,10 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 	@Test fun `adds run task, or installs and runs activity (debug)`() {
 		// Having two paths in tests in not nice, but flaky tests are even worse.
 		// Two @Test methods with assumeTrue|False would work, but then there's always an ignored test.
-		val hasDevices = hasDevices()
+
+		// Note: only detect devices on Java 17 because https://github.com/TWiStErRob/net.twisterrob.gradle/issues/380.
+		// This will cause a false negative when test is run Java 11 with an emulator running, but that's acceptable.
+		val hasDevices = JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17) && hasDevices()
 
 		@Language("xml")
 		val androidManifest = """
