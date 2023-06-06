@@ -96,6 +96,26 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertDebugArchive(externalReleaseDir)
 	}
 
+	@Test fun `releases location can be set to a relative path (debug)`() {
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
+			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
+		""".trimIndent()
+
+		@Language("properties")
+		val properties = """
+			net.twisterrob.android.release.directory=my/releases
+		""".trimIndent()
+		gradle.file(properties, ContentMergeMode.APPEND, "gradle.properties")
+
+		val result = gradle.run(script, "releaseDebug").build()
+
+		result.assertDebugArchive(File(gradle.root, "my/releases"))
+	}
+
 	@MethodSource("net.twisterrob.gradle.android.Minification#agpBasedParams")
 	@ParameterizedTest fun `releases the app to default location (release)`(
 		minification: Minification
