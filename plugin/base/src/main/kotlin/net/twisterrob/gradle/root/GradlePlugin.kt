@@ -4,6 +4,7 @@ import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.register
+import org.gradle.util.GradleVersion
 
 class GradlePlugin : BasePlugin() {
 
@@ -15,7 +16,11 @@ class GradlePlugin : BasePlugin() {
 			val wrapperFile = project.file("gradlew.bat")
 			description = "Generates a ${debugFile.name} script to start a Gradle task in debug mode."
 			group = "Build Setup"
-			inputs.file(wrapperFile).skipWhenEmpty()
+			if (GradleVersion.version("8.0") <= GradleVersion.current().baseVersion) {
+				inputs.file(wrapperFile).skipWhenEmpty()
+			} else {
+				onlyIf { wrapperFile.exists() }
+			}
 			outputs.file(debugFile)
 			doLast {
 				debugFile.outputStream().use { out ->
