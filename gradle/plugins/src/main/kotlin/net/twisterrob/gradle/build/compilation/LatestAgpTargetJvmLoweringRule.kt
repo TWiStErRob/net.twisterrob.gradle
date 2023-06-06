@@ -7,14 +7,14 @@ import org.gradle.api.attributes.java.TargetJvmVersion
 import javax.inject.Inject
 
 @CacheableRule
-abstract class TargetJvmVersionRule @Inject constructor(
+abstract class LatestAgpTargetJvmLoweringRule @Inject constructor(
 	private val jvmVersionOverride: Int
 ) : ComponentMetadataRule {
 
 	override fun execute(context: ComponentMetadataContext) {
 		context.details.withVariant("runtimeElements") {
 			val version = context.details.id.version
-			if (version.startsWith("7.4.") || version.startsWith("30.4.")) {
+			if (version.startsWith("8.2.") || version.startsWith("31.2.")) {
 				attributes {
 					val original = getAttribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE)!!
 					if (jvmVersionOverride < original) {
