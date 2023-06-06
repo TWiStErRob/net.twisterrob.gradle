@@ -105,13 +105,8 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 		""".trimIndent()
 
-		@Language("properties")
-		val properties = """
-			net.twisterrob.android.release.directory=my/releases
-		""".trimIndent()
-		gradle.file(properties, ContentMergeMode.APPEND, "gradle.properties")
-
-		val result = gradle.run(script, "releaseDebug").build()
+		val prop = "-Pnet.twisterrob.android.release.directory=my/releases"
+		val result = gradle.run(script, "releaseDebug", prop).build()
 
 		result.assertDebugArchive(File(gradle.root, "my/releases"))
 	}
