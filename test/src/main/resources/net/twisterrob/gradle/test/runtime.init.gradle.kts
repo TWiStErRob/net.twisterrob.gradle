@@ -1,5 +1,6 @@
 import java.lang.management.ManagementFactory
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+import org.gradle.api.internal.StartParameterInternal
 
 initscript {
 	repositories {
@@ -41,7 +42,10 @@ rootProject {
 	)
 }
 
-if (!gradle.startParameter.isConfigurationCacheRequested) {
+// gradle.startParameter.isConfigurationCacheRequested is the replacement, but it's only available in Gradle 7.6+.
+@Suppress("DEPRECATION")
+val isConfigurationCache = (gradle.startParameter as StartParameterInternal).isConfigurationCache()
+if (!isConfigurationCache) {
 	// TODO deprecated without replacement https://github.com/gradle/gradle/issues/20151
 	// Best effort for now as it won't work with configuration cache.
 	@Suppress("DEPRECATION")
