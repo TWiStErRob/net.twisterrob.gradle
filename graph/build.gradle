@@ -2,7 +2,7 @@ group = rootProject.name
 
 subprojects {
 	repositories {
-		jcenter()
+		mavenCentral()
 	}
 
 	group = rootProject.group

@@ -7,8 +7,6 @@ import java.util.Properties;
 import org.gradle.cache.PersistentCache;
 import org.gradle.internal.Factory;
 
-import com.sun.javafx.beans.annotations.NonNull;
-
 public abstract class VisualizerSettings<Settings> implements Closeable {
 	private final PersistentCache cache;
 
@@ -41,7 +39,7 @@ public abstract class VisualizerSettings<Settings> implements Closeable {
 		}
 	}
 
-	protected abstract Settings readSettings(@NonNull Properties props);
+	protected abstract Settings readSettings(Properties props);
 
 	public void setSettings(Settings settings) {
 		try {

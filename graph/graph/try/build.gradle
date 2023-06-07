@@ -4,7 +4,7 @@ graphSettings {
 }
 buildscript {
 	repositories {
-		jcenter()
+		mavenCentral()
 	}
 	dependencies {
 		classpath 'com.android.tools.build:gradle:1.2.0'
@@ -20,7 +20,7 @@ buildscript {
 apply plugin: 'com.android.application'
 
 dependencies {
-	compile project(':lib')
+	implementation(project(":lib"))
 }
 
 android {

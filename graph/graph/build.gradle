@@ -1,16 +1,15 @@
-apply plugin: 'groovy'
+plugins {
+	id("org.gradle.groovy")
+}
 
 version = '0.1'
 
 dependencies {
-	compile gradleApi()
-	compile 'org.graphstream:gs-core:1.3'
-	def jvm = org.gradle.internal.jvm.Jvm.current()
-	if (jvm.javaVersion.isJava7Compatible()) {
-		//println "${jvm.jre.homeDir}/lib/jfxrt.jar"
-		compile files("${jvm.jre.homeDir}/lib/jfxrt.jar")
-	}
-	testCompile group: 'junit', name: 'junit', version: '4.11'
+	implementation(gradleApi())
+	implementation("org.graphstream:gs-core:1.3")
+	implementation("com.google.code.gson:gson:2.10.1")
+	implementation(files("p:\\tools\\lang\\java-1.8.0_66-x86-jdk\\jre\\lib\\ext\\jfxrt.jar"))
+	testImplementation("junit:junit:4.11")
 }
 
 project.with {
@@ -19,7 +18,7 @@ project.with {
 }
 
 compileGroovy {
-	//groovyOptions.configurationScript = file("gradle/compileGroovy.groovy")
+	groovyOptions.configurationScript = file("gradle/compileGroovy.groovy")
 }
 
 jar {
