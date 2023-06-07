@@ -3,11 +3,12 @@ package net.twisterrob.gradle.graph.tasks
 import org.gradle.TaskExecutionRequest
 import org.gradle.api.*
 import org.gradle.api.execution.*
+import org.gradle.api.initialization.Settings
 import org.gradle.api.internal.GradleInternal
 import org.gradle.api.internal.tasks.TaskDependencyResolveException
 import org.gradle.execution.TaskSelector
 
-class TaskGatherer implements TaskExecutionGraphListener {
+class TaskGatherer implements TaskExecutionGraphListener, ProjectEvaluationListener {
 	TaskGraphListener taskGraphListener
 	boolean simplify;
 
@@ -16,26 +17,21 @@ class TaskGatherer implements TaskExecutionGraphListener {
 	}
 
 	private final Map<Task, TaskData> all = new TreeMap<>();
-	private final Project project
+	private final Settings project
 
-	TaskGatherer(Project project) {
+	TaskGatherer(Settings project) {
 		this.project = project
-		wire()
+		project.gradle.addProjectEvaluationListener(this)
+		project.gradle.taskGraph.addTaskExecutionGraphListener(this)
 	}
 
-	private void wire() {
-		// existing tasks (in case plugin is applied late)
-		for (Task task in project.tasks) {
-			data(task)
-		}
-
-		// future tasks
+	@Override void beforeEvaluate(Project project) {
 		project.tasks.whenTaskAdded { Task task ->
 			data(task)
 		}
+	}
 
-		// final tasks
-		project.gradle.taskGraph.addTaskExecutionGraphListener(this)
+	@Override void afterEvaluate(Project project, ProjectState state) {
 	}
 
 	@Override void graphPopulated(TaskExecutionGraph teg) {

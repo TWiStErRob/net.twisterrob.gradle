@@ -7,6 +7,7 @@ import java.util.*;
 
 import org.codehaus.groovy.runtime.IOGroovyMethods;
 import org.gradle.api.*;
+import org.gradle.api.initialization.Settings;
 
 import com.google.gson.*;
 
@@ -113,7 +114,7 @@ public abstract class GraphWindow implements TaskVisualizer {
 		bridge.update(TaskSerializer.getKey(task), TaskResultSerializer.getState(result));
 	}
 
-	@Override public void showUI(Project project) {
+	@Override public void showUI(Settings project) {
 		if (isBrowserReady()) {
 			initModel(new HashMap<Task, TaskData>()); // reset graph before displaying it again
 		}

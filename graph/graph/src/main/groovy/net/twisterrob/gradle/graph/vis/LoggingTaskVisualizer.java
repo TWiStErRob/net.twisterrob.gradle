@@ -3,6 +3,7 @@ package net.twisterrob.gradle.graph.vis;
 import java.util.Map;
 
 import org.gradle.api.*;
+import org.gradle.api.initialization.Settings;
 
 import net.twisterrob.gradle.graph.tasks.*;
 
@@ -13,7 +14,7 @@ public class LoggingTaskVisualizer implements TaskVisualizer {
 		this.wrapped = wrapped;
 	}
 
-	@Override public void showUI(Project project) {
+	@Override public void showUI(Settings project) {
 		System.out.printf("showUI(%s)\n", project);
 		wrapped.showUI(project);
 	}

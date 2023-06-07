@@ -2,8 +2,6 @@ package net.twisterrob.gradle.graph.vis.d3.javafx;
 
 import java.util.concurrent.*;
 
-import org.gradle.api.Project;
-
 import javafx.application.*;
 import javafx.stage.Stage;
 
@@ -75,7 +73,7 @@ public class JavaFXApplication extends Application {
 		}
 	}
 
-	public static GraphWindow show(final Project project) {
+	public static GraphWindow show(final org.gradle.api.initialization.Settings project) {
 		try {
 			log("show, waiting");
 			initialized.await();

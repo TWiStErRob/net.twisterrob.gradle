@@ -32,8 +32,8 @@ public class GraphStreamTaskVisualizer implements TaskVisualizer {
 		settings = new Settings(cache);
 	}
 
-	@Override public void showUI(Project project) {
-		graph = new SingleGraph(project.getName());
+	@Override public void showUI(org.gradle.api.initialization.Settings project) {
+		graph = new SingleGraph(project.getRootProject().getName());
 		try {
 			String css = IOGroovyMethods.getText(getClass().getResourceAsStream("/graphstream.css"));
 			graph.addAttribute("ui.stylesheet", css);
