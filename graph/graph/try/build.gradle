@@ -24,7 +24,7 @@ dependencies {
 }
 
 android {
-	buildToolsVersion "21.1.1"
+	buildToolsVersion "21.1.2"
 	compileSdkVersion 21
 	defaultConfig {
 		minSdkVersion 21
@@ -35,7 +35,7 @@ android {
 project.afterEvaluate {
 	def newTask = { String name, Closure action ->
 		def t = project.task(name)
-		t.doNotTrackState("Only has side effects on build execution.")
+		// t.doNotTrackState("Only has side effects on build execution.") // TODO Gradle 7
 		t.outputs.upToDateWhen { false }
 		t.doLast action
 		tasks.preBuild.dependsOn t

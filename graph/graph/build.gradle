@@ -19,7 +19,7 @@ project.with {
 }
 
 compileGroovy {
-	groovyOptions.configurationScript = file("gradle/compileGroovy.groovy")
+	//groovyOptions.configurationScript = file("gradle/compileGroovy.groovy")
 }
 
 jar {
