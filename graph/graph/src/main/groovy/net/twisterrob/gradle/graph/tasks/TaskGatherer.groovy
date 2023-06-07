@@ -4,6 +4,7 @@ import org.gradle.TaskExecutionRequest
 import org.gradle.api.*
 import org.gradle.api.execution.*
 import org.gradle.api.internal.GradleInternal
+import org.gradle.api.internal.tasks.TaskDependencyResolveException
 import org.gradle.execution.TaskSelector
 
 class TaskGatherer implements TaskExecutionGraphListener {
@@ -113,7 +114,14 @@ class TaskGatherer implements TaskExecutionGraphListener {
 			if (taskData.visited) {
 				return // shortcut, because taskDependencies.getDependencies is really expensive
 			}
-			Set<Task> deps = taskData.task.taskDependencies.getDependencies(taskData.task) as Set<Task>
+			Set<Task> deps
+			try {
+				deps = taskData.task.taskDependencies.getDependencies(taskData.task) as Set<Task>
+			} catch (TaskDependencyResolveException ignore) {
+				// STOPSHIP why is this erroring?
+				println(ignore)
+				deps = []
+			}
 			for (Task dep in deps) {
 				def data = dataForTask(dep)
 				taskData.deps.add data
