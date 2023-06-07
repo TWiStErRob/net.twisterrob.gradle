@@ -1,17 +1,7 @@
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath fileTree(dir: '../build/libs/', include: '*.jar')
-		classpath 'org.graphstream:gs-core:1.3' // automatic when published
-	}
-}
-
 plugins {
 	id("com.android.application") version "8.0.2"
+	id("net.twisterrob.graph")
 }
-apply plugin: 'net.twisterrob.graph'
 
 graphSettings {
 	dontClose = true

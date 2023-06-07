@@ -3,7 +3,16 @@ pluginManagement {
 		google()
 		mavenCentral()
 	}
+	resolutionStrategy {
+		eachPlugin {
+			if (requested.id.id == "net.twisterrob.graph") {
+				useModule("net.twisterrob.gradle:graph:0")
+			}
+		}
+	}
 }
+// Outside, because the plugin is a Plugin<Project> for now.
+includeBuild("../..")
 
 dependencyResolutionManagement {
 	repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
