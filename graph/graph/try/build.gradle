@@ -18,7 +18,7 @@ android {
 project.afterEvaluate {
 	def newTask = { String name, Closure action ->
 		def t = project.task(name)
-		// t.doNotTrackState("Only has side effects on build execution.") // TODO Gradle 7
+		t.doNotTrackState("Only has side effects on build execution.")
 		t.outputs.upToDateWhen { false }
 		t.doLast action
 		tasks.preBuild.dependsOn t
@@ -39,6 +39,7 @@ project.afterEvaluate {
 }
 
 if (!project.hasProperty('fast')) {
+	println("Adding an artificial random delay to every task!, use -Pfast to disable.")
 	allprojects { p ->
 		p.afterEvaluate {
 			p.tasks.all { Task task ->

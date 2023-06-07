@@ -34,7 +34,7 @@ class GraphPlugin implements Plugin<Settings> {
 		extension = project.extensions.create("graphSettings", GraphSettingsExtension.class) as GraphSettingsExtension
 		def gatherer = new TaskGatherer(project)
 		project.gradle.addBuildListener(new BuildListener() {
-			@Override void settingsEvaluated(Settings settings) { // TODO rename to settings when Kotlin
+			@Override void settingsEvaluated(Settings settings) {
 				vis = createGraph()
 				vis.showUI(settings)
 				gatherer.setSimplify(extension.simplifyGraph)
@@ -84,26 +84,15 @@ class GraphPlugin implements Plugin<Settings> {
 			javafx.application.Platform
 			return true;
 		} catch (NoClassDefFoundError ignore) {
-			def jvm = org.gradle.internal.jvm.Jvm.current()
-			if (jvm.javaVersion.java7Compatible && new File("${jvm.jre}/lib/jfxrt.jar").exists()) {
-				def dependency = """
-No JavaFX Runtime found on buildscript classpath, falling back to primitive GraphStream visualization
-You can add JavaFX like this:
-buildscript {
-	dependencies {
-		def jvm = ${org.gradle.internal.jvm.Jvm.name}.current()
-		if (jvm.javaVersion.java7Compatible) {
-			classpath files("\${jvm.jre.homeDir}/lib/jfxrt.jar")
-		}
-	}
-}
-or ask for GraphStream explicitly:
-graphSettings {
-	visualizer = ${GraphStreamTaskVisualizer.name}
-}
-				"""
-				System.err.println(dependency.trim());
-			}
+			def dependency = """
+				No JavaFX Runtime found on buildscript classpath,
+				falling back to primitive GraphStream visualization.
+				You can ensure JavaFX or ask for GraphStream explicitly:
+				graphSettings {
+					visualizer = ${GraphStreamTaskVisualizer.name}
+				}
+			""".stripIndent()
+			System.err.println(dependency);
 			return false;
 		}
 	}

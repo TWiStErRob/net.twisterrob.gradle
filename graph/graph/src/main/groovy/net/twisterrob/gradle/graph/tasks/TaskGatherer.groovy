@@ -69,9 +69,10 @@ class TaskGatherer implements TaskExecutionGraphListener, ProjectEvaluationListe
 
 		Set<Task> tasks = new HashSet<>()
 		for (String path in project.gradle.startParameter.excludedTaskNames) {
+			// TODO figure out how to reinstate this
 			//TaskSelector.TaskSelection selection = selector.getSelection(path)
 			//println "-${path} -> ${selection.getTasks()*.getName()}"
-			//tasks.addAll(selection.filter)
+			//tasks.addAll(selection.tasks)
 		}
 		return tasks;
 	}
@@ -84,9 +85,10 @@ class TaskGatherer implements TaskExecutionGraphListener, ProjectEvaluationListe
 		Set<Task> tasks = new HashSet<>()
 		for (TaskExecutionRequest request in project.gradle.startParameter.taskRequests) {
 			for (String path in request.args) {
+				// TODO figure out how to reinstate this
 				//TaskSelector.TaskSelection selection = selector.getSelection(request.projectPath, path)
 				//println "${request.projectPath}:${path} -> ${selection.getTasks()*.getName()}"
-				//tasks.addAll selection.tasks
+				//tasks.addAll(selection.tasks)
 			}
 		}
 		return tasks;
@@ -114,7 +116,7 @@ class TaskGatherer implements TaskExecutionGraphListener, ProjectEvaluationListe
 			try {
 				deps = taskData.task.taskDependencies.getDependencies(taskData.task) as Set<Task>
 			} catch (TaskDependencyResolveException ignore) {
-				// STOPSHIP why is this erroring?
+				// TODO why is this erroring?
 				println(ignore)
 				deps = []
 			}
