@@ -36,20 +36,8 @@ project.with {
 	targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-// Temporary relocation to minimize the PR size.
-sourceSets {
-	main {
-		groovy.srcDirs = ["graph/src/main/groovy"]
-		resources.srcDirs = ["graph/src/main/resources"]
-	}
-	test {
-		groovy.srcDirs = ["graph/src/test/groovy"]
-		resources.srcDirs = ["graph/src/test/resources"]
-	}
-}
-
 compileGroovy {
-	groovyOptions.configurationScript = rootProject.file("gradle/compileGroovy.groovy")
+	groovyOptions.configurationScript = file("gradle/compileGroovy.groovy")
 }
 tasks.withType(JavaCompile).configureEach {
 	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
