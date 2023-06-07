@@ -7,6 +7,7 @@ import java.util.*;
 
 import org.codehaus.groovy.runtime.IOGroovyMethods;
 import org.gradle.api.*;
+import org.gradle.api.initialization.Settings;
 
 import com.google.gson.*;
 
@@ -80,9 +81,9 @@ public abstract class GraphWindow implements TaskVisualizer {
 	}
 
 	private static void setBackgroundColor(Object page) {
-		if (page instanceof com.sun.webpane.platform.WebPage) {
+		if (page instanceof com.sun.webkit.WebPage) {
 			System.out.println("webpane.platform");
-			((com.sun.webpane.platform.WebPage)page).setBackgroundColor(0x00000000);
+			((com.sun.webkit.WebPage)page).setBackgroundColor(0x00000000);
 		} else {
 			System.out.println("Unknown page: " + (page != null? page.getClass() : null));
 		}
@@ -113,7 +114,7 @@ public abstract class GraphWindow implements TaskVisualizer {
 		bridge.update(TaskSerializer.getKey(task), TaskResultSerializer.getState(result));
 	}
 
-	@Override public void showUI(Project project) {
+	@Override public void showUI(Settings project) {
 		if (isBrowserReady()) {
 			initModel(new HashMap<Task, TaskData>()); // reset graph before displaying it again
 		}

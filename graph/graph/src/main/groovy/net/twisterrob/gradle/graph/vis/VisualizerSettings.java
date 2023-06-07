@@ -7,8 +7,6 @@ import java.util.Properties;
 import org.gradle.cache.PersistentCache;
 import org.gradle.internal.Factory;
 
-import com.sun.javafx.beans.annotations.NonNull;
-
 public abstract class VisualizerSettings<Settings> implements Closeable {
 	private final PersistentCache cache;
 
@@ -21,7 +19,7 @@ public abstract class VisualizerSettings<Settings> implements Closeable {
 
 	public Settings getSettings() {
 		try {
-			return cache.useCache("load properties", new Factory<Settings>() {
+			return cache.useCache(new Factory<Settings>() {
 				@Override public Settings create() {
 					File propsFile = new File(cache.getBaseDir(), getSettingsFileName());
 					Properties props = new Properties();
@@ -41,12 +39,12 @@ public abstract class VisualizerSettings<Settings> implements Closeable {
 		}
 	}
 
-	protected abstract Settings readSettings(@NonNull Properties props);
+	protected abstract Settings readSettings(Properties props);
 
 	public void setSettings(Settings settings) {
 		try {
 			final Properties props = writeSettings(settings);
-			cache.useCache("save properties", new Runnable() {
+			cache.useCache(new Runnable() {
 				@Override public void run() {
 					File propsFile = new File(cache.getBaseDir(), getSettingsFileName());
 					try {

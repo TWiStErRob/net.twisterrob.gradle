@@ -3,10 +3,12 @@ package net.twisterrob.gradle.graph.tasks
 import org.gradle.TaskExecutionRequest
 import org.gradle.api.*
 import org.gradle.api.execution.*
+import org.gradle.api.initialization.Settings
 import org.gradle.api.internal.GradleInternal
+import org.gradle.api.internal.tasks.TaskDependencyResolveException
 import org.gradle.execution.TaskSelector
 
-class TaskGatherer implements TaskExecutionGraphListener {
+class TaskGatherer implements TaskExecutionGraphListener, ProjectEvaluationListener {
 	TaskGraphListener taskGraphListener
 	boolean simplify;
 
@@ -15,26 +17,21 @@ class TaskGatherer implements TaskExecutionGraphListener {
 	}
 
 	private final Map<Task, TaskData> all = new TreeMap<>();
-	private final Project project
+	private final Settings project
 
-	TaskGatherer(Project project) {
+	TaskGatherer(Settings project) {
 		this.project = project
-		wire()
+		project.gradle.addProjectEvaluationListener(this)
+		project.gradle.taskGraph.addTaskExecutionGraphListener(this)
 	}
 
-	private void wire() {
-		// existing tasks (in case plugin is applied late)
-		for (Task task in project.tasks) {
-			data(task)
-		}
-
-		// future tasks
+	@Override void beforeEvaluate(Project project) {
 		project.tasks.whenTaskAdded { Task task ->
 			data(task)
 		}
+	}
 
-		// final tasks
-		project.gradle.taskGraph.addTaskExecutionGraphListener(this)
+	@Override void afterEvaluate(Project project, ProjectState state) {
 	}
 
 	@Override void graphPopulated(TaskExecutionGraph teg) {
@@ -65,19 +62,22 @@ class TaskGatherer implements TaskExecutionGraphListener {
 		return data;
 	}
 
+	// Last existed in https://github.com/gradle/gradle/blob/v7.1.0/subprojects/core/src/main/java/org/gradle/execution/ExcludedTaskFilteringBuildConfigurationAction.java
 	/** @see org.gradle.execution.ExcludedTaskFilteringBuildConfigurationAction */
 	private Collection<Task> getExcludedTasks() {
 		TaskSelector selector = ((GradleInternal)project.gradle).getServices().get(TaskSelector.class)
 
 		Set<Task> tasks = new HashSet<>()
 		for (String path in project.gradle.startParameter.excludedTaskNames) {
-			TaskSelector.TaskSelection selection = selector.getSelection(path)
+			// TODO figure out how to reinstate this
+			//TaskSelector.TaskSelection selection = selector.getSelection(path)
 			//println "-${path} -> ${selection.getTasks()*.getName()}"
-			tasks.addAll selection.tasks
+			//tasks.addAll(selection.tasks)
 		}
 		return tasks;
 	}
 
+	// Last existed in https://github.com/gradle/gradle/blob/v7.5.0/subprojects/core/src/main/java/org/gradle/execution/TaskNameResolvingBuildConfigurationAction.java
 	/** @see org.gradle.execution.TaskNameResolvingBuildConfigurationAction */
 	private Collection<Task> getRequestedTasks() {
 		TaskSelector selector = ((GradleInternal)project.gradle).getServices().get(TaskSelector.class)
@@ -85,9 +85,10 @@ class TaskGatherer implements TaskExecutionGraphListener {
 		Set<Task> tasks = new HashSet<>()
 		for (TaskExecutionRequest request in project.gradle.startParameter.taskRequests) {
 			for (String path in request.args) {
-				TaskSelector.TaskSelection selection = selector.getSelection(request.projectPath, path)
+				// TODO figure out how to reinstate this
+				//TaskSelector.TaskSelection selection = selector.getSelection(request.projectPath, path)
 				//println "${request.projectPath}:${path} -> ${selection.getTasks()*.getName()}"
-				tasks.addAll selection.tasks
+				//tasks.addAll(selection.tasks)
 			}
 		}
 		return tasks;
@@ -111,7 +112,14 @@ class TaskGatherer implements TaskExecutionGraphListener {
 			if (taskData.visited) {
 				return // shortcut, because taskDependencies.getDependencies is really expensive
 			}
-			Set<Task> deps = taskData.task.taskDependencies.getDependencies(taskData.task) as Set<Task>
+			Set<Task> deps
+			try {
+				deps = taskData.task.taskDependencies.getDependencies(taskData.task) as Set<Task>
+			} catch (TaskDependencyResolveException ignore) {
+				// TODO why is this erroring?
+				println(ignore)
+				deps = []
+			}
 			for (Task dep in deps) {
 				def data = dataForTask(dep)
 				taskData.deps.add data

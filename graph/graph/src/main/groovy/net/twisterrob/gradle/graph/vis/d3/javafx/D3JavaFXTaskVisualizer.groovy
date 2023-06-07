@@ -19,7 +19,7 @@ public class D3JavaFXTaskVisualizer implements TaskVisualizer {
 		settings = new Settings(cache);
 	}
 
-	@Override public void showUI(Project project) {
+	@Override public void showUI(org.gradle.api.initialization.Settings project) {
 		JavaFXApplication.startLaunch(settings.getSettings());
 		window = JavaFXApplication.show(project);
 		if (window != null) {

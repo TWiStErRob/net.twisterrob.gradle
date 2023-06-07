@@ -1,21 +1,70 @@
-group = rootProject.name
-
-subprojects {
-	repositories {
-		jcenter()
-	}
-
-	group = rootProject.group
-	apply from: 'http://localhost/maven/configure.gradle'
+plugins {
+	id("org.gradle.groovy")
+	id("java-gradle-plugin")
+	id("org.openjfx.javafxplugin") version '0.0.14'
 }
 
-allprojects {
-	gradle.projectsEvaluated {
-		tasks.withType(JavaCompile) {
-			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+group = "net.twisterrob.gradle"
+version = '0.1'
+
+gradlePlugin {
+	plugins {
+		graph {
+			id = "net.twisterrob.graph"
+			implementationClass = "net.twisterrob.gradle.graph.GraphPlugin"
 		}
-		tasks.withType(GroovyCompile) {
-			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-		}
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation(gradleApi())
+	implementation("org.graphstream:gs-core:1.3")
+	implementation("com.google.code.gson:gson:2.10.1")
+	testImplementation("junit:junit:4.13.2")
+}
+
+javafx {
+	modules = [ "javafx.controls", "javafx.web", "javafx.swing" ]
+}
+
+project.with {
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+// Temporary relocation to minimize the PR size.
+sourceSets {
+	main {
+		groovy.srcDirs = ["graph/src/main/groovy"]
+		resources.srcDirs = ["graph/src/main/resources"]
+	}
+	test {
+		groovy.srcDirs = ["graph/src/test/groovy"]
+		resources.srcDirs = ["graph/src/test/resources"]
+	}
+}
+
+compileGroovy {
+	groovyOptions.configurationScript = rootProject.file("gradle/compileGroovy.groovy")
+}
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+tasks.withType(GroovyCompile).configureEach {
+	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+jar {
+	manifest {
+		attributes(
+				"Implementation-Vendor": project.group,
+				"Implementation-Title": project.name,
+				"Implementation-Version": project.version,
+				"Built-Date": new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(new Date())
+		)
 	}
 }

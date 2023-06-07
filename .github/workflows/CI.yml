@@ -26,6 +26,43 @@ jobs:
       - name: "Validate Gradle Wrapper JARs."
         uses: gradle/wrapper-validation-action@v1
 
+  graph:
+    name: "1 🔨 Graph"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    needs: validate
+    steps:
+      - name: "Set up JDK 17."
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: zulu
+
+      - name: "Set up Android SDK."
+        uses: android-actions/setup-android@v2
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v3
+
+      - name: "Build the Graph plugin."
+        working-directory: graph
+        run: >
+          ./gradlew
+          build
+
+      - name: "Integration test for the Graph plugin."
+        working-directory: graph/graph/try
+        run: >
+          ../../gradlew
+          -p .
+          --continue
+          --no-daemon
+          -x lint
+          :app:testR
+          :a:aR
+          --exclude-task compileRShaders
+          -Pfast
+
   build:
     name: "1 🔨 Build"
     runs-on: ubuntu-22.04
@@ -44,9 +81,6 @@ jobs:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v3
-
-      - name: "Validate Gradle Wrapper JARs."
-        uses: gradle/wrapper-validation-action@v1
 
       # Check publicly available release version first, this should be independent of repository state.
       - name: "Verify docs/examples/release."

@@ -1,18 +1,8 @@
-buildscript {
-	repositories {
-		jcenter()
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:1.2.0'
-	}
+plugins {
+	id("com.android.library")
 }
 
-apply plugin: 'com.android.library'
 android {
-	buildToolsVersion "21.1.1"
-	compileSdkVersion 21
-	defaultConfig {
-		minSdkVersion 21
-		targetSdkVersion 21
-	}
+	namespace = "com.example.lib"
+	compileSdk = 33
 }

@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.graph.vis.d3.javafx;
 
-import org.gradle.api.Project;
+import org.gradle.api.initialization.Settings;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -19,9 +19,9 @@ public class GraphWindow extends net.twisterrob.gradle.graph.vis.d3.GraphWindow 
 		return window;
 	}
 
-	@Override public void showUI(Project project) {
+	@Override public void showUI(Settings project) {
 		super.showUI(project);
-		window.setTitle(String.format("%s - Gradle Build Graph", project.getName()));
+		window.setTitle(String.format("%s - Gradle Build Graph", project.getRootProject().getName()));
 		Platform.runLater(new Runnable() {
 			@Override public void run() {
 				window.show(); // delay display so that bridge's runLater runs first

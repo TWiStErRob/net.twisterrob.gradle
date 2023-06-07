@@ -3,11 +3,12 @@ package net.twisterrob.gradle.graph.vis;
 import java.util.Map;
 
 import org.gradle.api.*;
+import org.gradle.api.initialization.Settings;
 
 import net.twisterrob.gradle.graph.tasks.*;
 
 public interface TaskVisualizer {
-	void showUI(Project project);
+	void showUI(Settings project);
 	void initModel(Map<Task, TaskData> graph);
 	void update(Task task, TaskResult result);
 	/**

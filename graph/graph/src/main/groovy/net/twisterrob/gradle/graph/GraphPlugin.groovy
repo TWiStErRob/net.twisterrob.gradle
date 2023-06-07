@@ -5,40 +5,53 @@ import net.twisterrob.gradle.graph.tasks.*
 import net.twisterrob.gradle.graph.vis.TaskVisualizer
 import net.twisterrob.gradle.graph.vis.d3.javafx.D3JavaFXTaskVisualizer
 import net.twisterrob.gradle.graph.vis.graphstream.GraphStreamTaskVisualizer
+import org.gradle.BuildListener
+import org.gradle.BuildResult
 import org.gradle.api.*
 import org.gradle.api.execution.TaskExecutionListener
+import org.gradle.api.initialization.Settings
+import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.TaskState
 import org.gradle.cache.*
-import org.gradle.cache.internal.FileLockManager
+import org.gradle.cache.scopes.ScopedCacheBuilderFactory
 
 import javax.inject.Inject
 
 import static org.gradle.cache.internal.filelock.LockOptionsBuilder.*
 
 // TODO @groovy.util.logging.Slf4j
-class GraphPlugin implements Plugin<Project> {
-	private final CacheRepository cacheRepository
-	private Project project
+class GraphPlugin implements Plugin<Settings> {
+	private final ScopedCacheBuilderFactory cacheRepository
 	private TaskVisualizer vis
-	private GraphSettingsExtension settings
+	private GraphSettingsExtension extension
 
-	@Inject GraphPlugin(CacheRepository cacheRepository) {
+	@Inject GraphPlugin(ScopedCacheBuilderFactory cacheRepository) {
 		this.cacheRepository = cacheRepository
 	}
 
 	/** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a>                 */
-	@Override void apply(Project project) {
-		this.project = project;
-
-		settings = project.extensions.create("graphSettings", GraphSettingsExtension.class) as GraphSettingsExtension
-
+	@Override void apply(Settings project) {
+		extension = project.extensions.create("graphSettings", GraphSettingsExtension.class) as GraphSettingsExtension
 		def gatherer = new TaskGatherer(project)
+		project.gradle.addBuildListener(new BuildListener() {
+			@Override void settingsEvaluated(Settings settings) {
+				vis = createGraph()
+				vis.showUI(settings)
+				gatherer.setSimplify(extension.simplifyGraph)
+			}
 
-		project.afterEvaluate {
-			vis = createGraph()
-			vis.showUI(project)
-			gatherer.setSimplify(settings.simplifyGraph)
-		}
+			@Override void projectsLoaded(Gradle gradle) {
+			}
+
+			@Override void projectsEvaluated(Gradle gradle) {
+			}
+
+			@Override void buildFinished(BuildResult result) {
+				if (!extension.dontClose) {
+					vis.closeUI()
+				}
+			}
+		})
 
 		gatherer.setTaskGraphListener(new TaskGatherer.TaskGraphListener() {
 			@Override void graphPopulated(Map<Task, TaskData> tasks) {
@@ -54,22 +67,16 @@ class GraphPlugin implements Plugin<Project> {
 				vis.update(task, getResult(task, state))
 			}
 		})
-
-		project.gradle.buildFinished {
-			if (!settings.dontClose) {
-				vis.closeUI()
-			}
-		}
 	}
 
 	private TaskVisualizer createGraph() {
 		PersistentCache cache = cacheRepository
-				.cache(project.gradle, "graphSettings")
+				.createCacheBuilder("graphSettings")
 				.withDisplayName("graph visualization settings")
 				.withLockOptions(mode(FileLockManager.LockMode.None)) // Lock on demand
 				.open()
 
-		return settings.newVisualizer(cache)
+		return extension.newVisualizer(cache)
 	}
 
 	@PackageScope static boolean hasJavaFX() {
@@ -77,26 +84,15 @@ class GraphPlugin implements Plugin<Project> {
 			javafx.application.Platform
 			return true;
 		} catch (NoClassDefFoundError ignore) {
-			def jvm = org.gradle.internal.jvm.Jvm.current()
-			if (jvm.javaVersion.java7Compatible && new File("${jvm.jre.homeDir}/lib/jfxrt.jar").exists()) {
-				def dependency = """
-No JavaFX Runtime found on buildscript classpath, falling back to primitive GraphStream visualization
-You can add JavaFX like this:
-buildscript {
-	dependencies {
-		def jvm = ${org.gradle.internal.jvm.Jvm.name}.current()
-		if (jvm.javaVersion.java7Compatible) {
-			classpath files("\${jvm.jre.homeDir}/lib/jfxrt.jar")
-		}
-	}
-}
-or ask for GraphStream explicitly:
-graphSettings {
-	visualizer = ${GraphStreamTaskVisualizer.name}
-}
-				"""
-				System.err.println(dependency.trim());
-			}
+			def dependency = """
+				No JavaFX Runtime found on buildscript classpath,
+				falling back to primitive GraphStream visualization.
+				You can ensure JavaFX or ask for GraphStream explicitly:
+				graphSettings {
+					visualizer = ${GraphStreamTaskVisualizer.name}
+				}
+			""".stripIndent()
+			System.err.println(dependency);
 			return false;
 		}
 	}

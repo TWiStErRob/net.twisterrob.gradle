@@ -90,7 +90,7 @@ public class D3SwingTaskVisualizer extends net.twisterrob.gradle.graph.vis.d3.Gr
 		return window == null;
 	}
 
-	@Override public void showUI(final Project project) {
+	@Override public void showUI(final org.gradle.api.initialization.Settings project) {
 		super.showUI(project);
 		//fixer.start();
 		SwingUtilities.invokeLater(new Runnable() {
@@ -99,7 +99,7 @@ public class D3SwingTaskVisualizer extends net.twisterrob.gradle.graph.vis.d3.Gr
 				if (windowInitFailed()) {
 					return;
 				}
-				window.setTitle(String.format("%s - Gradle Build Graph", project.getName()));
+				window.setTitle(String.format("%s - Gradle Build Graph", project.getRootProject().getName()));
 				window.setVisible(true);
 			}
 		});

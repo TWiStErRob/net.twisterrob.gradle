@@ -6,7 +6,7 @@ package net.twisterrob.gradle.graph.vis.d3;
  */
 public class GradleJULFixer extends Thread {
 	private static final boolean DEBUG = false;
-	private static final String MISCHIEF_LOGGER = com.sun.webpane.sg.prism.WCGraphicsPrismContext.class.getName();
+	private static final String MISCHIEF_LOGGER = "com.sun.webpane.sg.prism.WCGraphicsPrismContext";
 	public GradleJULFixer() {
 		super(GradleJULFixer.class.getSimpleName());
 		log("creating");
