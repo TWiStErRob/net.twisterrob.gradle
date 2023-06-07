@@ -80,12 +80,12 @@ public abstract class GraphWindow implements TaskVisualizer {
 	}
 
 	private static void setBackgroundColor(Object page) {
-		if (page instanceof com.sun.webpane.platform.WebPage) {
-			System.out.println("webpane.platform");
-			((com.sun.webpane.platform.WebPage)page).setBackgroundColor(0x00000000);
-		} else {
+//		if (page instanceof com.sun.webpane.platform.WebPage) {
+//			System.out.println("webpane.platform");
+//			((com.sun.webpane.platform.WebPage)page).setBackgroundColor(0x00000000);
+//		} else {
 			System.out.println("Unknown page: " + (page != null? page.getClass() : null));
-		}
+//		}
 	}
 	private static Object getPage(WebEngine webEngine) {
 		try {

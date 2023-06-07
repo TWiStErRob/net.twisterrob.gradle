@@ -19,7 +19,7 @@ public abstract class VisualizerSettings<Settings> implements Closeable {
 
 	public Settings getSettings() {
 		try {
-			return cache.useCache("load properties", new Factory<Settings>() {
+			return cache.useCache(new Factory<Settings>() {
 				@Override public Settings create() {
 					File propsFile = new File(cache.getBaseDir(), getSettingsFileName());
 					Properties props = new Properties();
@@ -44,7 +44,7 @@ public abstract class VisualizerSettings<Settings> implements Closeable {
 	public void setSettings(Settings settings) {
 		try {
 			final Properties props = writeSettings(settings);
-			cache.useCache("save properties", new Runnable() {
+			cache.useCache(new Runnable() {
 				@Override public void run() {
 					File propsFile = new File(cache.getBaseDir(), getSettingsFileName());
 					try {

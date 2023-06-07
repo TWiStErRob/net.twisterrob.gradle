@@ -65,19 +65,21 @@ class TaskGatherer implements TaskExecutionGraphListener {
 		return data;
 	}
 
+	// Last existed in https://github.com/gradle/gradle/blob/v7.1.0/subprojects/core/src/main/java/org/gradle/execution/ExcludedTaskFilteringBuildConfigurationAction.java
 	/** @see org.gradle.execution.ExcludedTaskFilteringBuildConfigurationAction */
 	private Collection<Task> getExcludedTasks() {
 		TaskSelector selector = ((GradleInternal)project.gradle).getServices().get(TaskSelector.class)
 
 		Set<Task> tasks = new HashSet<>()
 		for (String path in project.gradle.startParameter.excludedTaskNames) {
-			TaskSelector.TaskSelection selection = selector.getSelection(path)
+			//TaskSelector.TaskSelection selection = selector.getSelection(path)
 			//println "-${path} -> ${selection.getTasks()*.getName()}"
-			tasks.addAll selection.tasks
+			//tasks.addAll(selection.filter)
 		}
 		return tasks;
 	}
 
+	// Last existed in https://github.com/gradle/gradle/blob/v7.5.0/subprojects/core/src/main/java/org/gradle/execution/TaskNameResolvingBuildConfigurationAction.java
 	/** @see org.gradle.execution.TaskNameResolvingBuildConfigurationAction */
 	private Collection<Task> getRequestedTasks() {
 		TaskSelector selector = ((GradleInternal)project.gradle).getServices().get(TaskSelector.class)
@@ -85,9 +87,9 @@ class TaskGatherer implements TaskExecutionGraphListener {
 		Set<Task> tasks = new HashSet<>()
 		for (TaskExecutionRequest request in project.gradle.startParameter.taskRequests) {
 			for (String path in request.args) {
-				TaskSelector.TaskSelection selection = selector.getSelection(request.projectPath, path)
+				//TaskSelector.TaskSelection selection = selector.getSelection(request.projectPath, path)
 				//println "${request.projectPath}:${path} -> ${selection.getTasks()*.getName()}"
-				tasks.addAll selection.tasks
+				//tasks.addAll selection.tasks
 			}
 		}
 		return tasks;

@@ -9,7 +9,7 @@ import org.gradle.api.*
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
 import org.gradle.cache.*
-import org.gradle.cache.internal.FileLockManager
+import org.gradle.cache.scopes.ScopedCacheBuilderFactory
 
 import javax.inject.Inject
 
@@ -17,12 +17,12 @@ import static org.gradle.cache.internal.filelock.LockOptionsBuilder.*
 
 // TODO @groovy.util.logging.Slf4j
 class GraphPlugin implements Plugin<Project> {
-	private final CacheRepository cacheRepository
+	private final ScopedCacheBuilderFactory cacheRepository
 	private Project project
 	private TaskVisualizer vis
 	private GraphSettingsExtension settings
 
-	@Inject GraphPlugin(CacheRepository cacheRepository) {
+	@Inject GraphPlugin(ScopedCacheBuilderFactory cacheRepository) {
 		this.cacheRepository = cacheRepository
 	}
 
@@ -64,7 +64,7 @@ class GraphPlugin implements Plugin<Project> {
 
 	private TaskVisualizer createGraph() {
 		PersistentCache cache = cacheRepository
-				.cache(project.gradle, "graphSettings")
+				.createCacheBuilder("graphSettings")
 				.withDisplayName("graph visualization settings")
 				.withLockOptions(mode(FileLockManager.LockMode.None)) // Lock on demand
 				.open()
@@ -78,7 +78,7 @@ class GraphPlugin implements Plugin<Project> {
 			return true;
 		} catch (NoClassDefFoundError ignore) {
 			def jvm = org.gradle.internal.jvm.Jvm.current()
-			if (jvm.javaVersion.java7Compatible && new File("${jvm.jre.homeDir}/lib/jfxrt.jar").exists()) {
+			if (jvm.javaVersion.java7Compatible && new File("${jvm.jre}/lib/jfxrt.jar").exists()) {
 				def dependency = """
 No JavaFX Runtime found on buildscript classpath, falling back to primitive GraphStream visualization
 You can add JavaFX like this:
