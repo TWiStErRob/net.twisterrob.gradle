@@ -1,43 +1,3 @@
-plugins {
-	id("com.android.application") version "8.0.2"
-}
-
-dependencies {
-	implementation(project(":lib"))
-}
-
-android {
-	namespace = "com.example"
-	compileSdk = 33
-	defaultConfig {
-		minSdk = 21
-		targetSdk = 33
-	}
-}
-
-project.afterEvaluate {
-	def newTask = { String name, Closure action ->
-		def t = project.task(name)
-		t.doNotTrackState("Only has side effects on build execution.")
-		t.outputs.upToDateWhen { false }
-		t.doLast action
-		tasks.preBuild.dependsOn t
-		return t;
-	}
-	newTask("stopExecTask", {
-		throw new StopExecutionException("stop task")
-	})
-	newTask("stopActionTask", {
-		throw new StopActionException("stop action")
-	})
-
-	newTask("throwTask", {
-		//throw new RuntimeException("fail task")
-	})
-
-	newTask("onlyIf", {}).onlyIf { false }
-}
-
 if (!project.hasProperty('fast')) {
 	println("Adding an artificial random delay to every task!, use -Pfast to disable.")
 	allprojects { p ->
@@ -49,4 +9,31 @@ if (!project.hasProperty('fast')) {
 			}
 		}
 	}
+}
+
+tasks.register("check")
+tasks.register("build").configure { dependsOn(":check") }
+
+def newTask = { String name, Closure action ->
+	def t = project.tasks.register(name) {
+		doNotTrackState("Only has side effects on build execution.")
+		outputs.upToDateWhen { false }
+		doLast(action)
+	}
+	tasks.named("check").configure { dependsOn(t) }
+	return t
+}
+newTask("stopExecTask", {
+	throw new StopExecutionException("stop task")
+})
+newTask("stopActionTask", {
+	throw new StopActionException("stop action")
+})
+
+newTask("throwTask", {
+	//throw new RuntimeException("fail task")
+})
+
+newTask("onlyIf", {}).configure {
+	onlyIf { false }
 }

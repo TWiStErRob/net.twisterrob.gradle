@@ -58,8 +58,8 @@ jobs:
           --continue
           --no-daemon
           -x lint
-          :testR
-          :aR
+          :app:testR
+          :a:aR
           --exclude-task compileRShaders
           -Pfast
 

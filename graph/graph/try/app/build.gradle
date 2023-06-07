@@ -1,0 +1,16 @@
+plugins {
+	id("com.android.application")
+}
+
+dependencies {
+	implementation(project(":lib"))
+}
+
+android {
+	namespace = "com.example"
+	compileSdk = 33
+	defaultConfig {
+		minSdk = 21
+		targetSdk = 33
+	}
+}
