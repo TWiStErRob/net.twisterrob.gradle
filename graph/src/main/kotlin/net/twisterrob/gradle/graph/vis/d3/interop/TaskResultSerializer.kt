@@ -17,12 +17,12 @@ class TaskResultSerializer : JsonSerializer<TaskResult> {
 
 		private val MAPPING: Map<TaskResult, String> =
 			EnumMap<TaskResult, String>(TaskResult::class.java).apply {
-				this[TaskResult.executing] = "executing"
-				this[TaskResult.nowork] = "nowork"
-				this[TaskResult.skipped] = "skipped"
-				this[TaskResult.uptodate] = "uptodate"
-				this[TaskResult.failure] = "failure"
-				this[TaskResult.completed] = "success"
+				this[TaskResult.Executing] = "executing"
+				this[TaskResult.NoWork] = "nowork"
+				this[TaskResult.Skipped] = "skipped"
+				this[TaskResult.UpToDate] = "uptodate"
+				this[TaskResult.Failure] = "failure"
+				this[TaskResult.Completed] = "success"
 				check(this.keys.size == TaskResult.values().size)
 			}
 

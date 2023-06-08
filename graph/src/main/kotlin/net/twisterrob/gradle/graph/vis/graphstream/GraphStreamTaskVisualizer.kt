@@ -94,21 +94,21 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
 		private val classMappingResult: Map<TaskResult, String> =
 			EnumMap<TaskResult, String>(TaskResult::class.java).apply {
-				this[TaskResult.executing] = "executing"
-				this[TaskResult.completed] = "executed"
-				this[TaskResult.nowork] = "nowork"
-				this[TaskResult.skipped] = "skipped"
-				this[TaskResult.uptodate] = "uptodate"
-				this[TaskResult.failure] = "failure"
+				this[TaskResult.Executing] = "executing"
+				this[TaskResult.Completed] = "executed"
+				this[TaskResult.NoWork] = "nowork"
+				this[TaskResult.Skipped] = "skipped"
+				this[TaskResult.UpToDate] = "uptodate"
+				this[TaskResult.Failure] = "failure"
 				check(this.keys.size == TaskResult.values().size)
 			}
 
 		private val classMappingType: Map<TaskType, String> =
 			EnumMap<TaskType, String>(TaskType::class.java).apply {
-				this[TaskType.unknown] = "unknown"
-				this[TaskType.normal] = "norma" // TODO this seems wrong.
-				this[TaskType.requested] = "requested"
-				this[TaskType.excluded] = "excluded"
+				this[TaskType.Unknown] = "unknown"
+				this[TaskType.Normal] = "norma" // TODO this seems wrong.
+				this[TaskType.Requested] = "requested"
+				this[TaskType.Excluded] = "excluded"
 				check(this.keys.size == TaskType.values().size)
 			}
 

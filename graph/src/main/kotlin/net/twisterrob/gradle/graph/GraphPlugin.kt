@@ -54,7 +54,7 @@ class GraphPlugin @Inject constructor(
 		@Suppress("DEPRECATION") // Configuration cache.
 		project.gradle.taskGraph.addTaskExecutionListener(object : org.gradle.api.execution.TaskExecutionListener {
 			override fun beforeExecute(task: Task) {
-				vis.update(task, TaskResult.executing)
+				vis.update(task, TaskResult.Executing)
 			}
 
 			override fun afterExecute(task: Task, state: TaskState) {
@@ -78,19 +78,19 @@ class GraphPlugin @Inject constructor(
 		private fun getResult(task: Task, state: TaskState): TaskResult =
 			when {
 				state.failure != null ->
-					TaskResult.failure
+					TaskResult.Failure
 
 				state.skipped && state.skipMessage == "SKIPPED" ->
-					TaskResult.skipped
+					TaskResult.Skipped
 
 				state.skipped && state.skipMessage == "UP-TO-DATE" ->
-					TaskResult.uptodate
+					TaskResult.UpToDate
 
 				!state.didWork ->
-					TaskResult.nowork
+					TaskResult.NoWork
 
 				state.executed && state.didWork ->
-					TaskResult.completed
+					TaskResult.Completed
 
 				else ->
 					throw IllegalStateException(

@@ -34,13 +34,13 @@ class TaskGatherer(
 
 	override fun graphPopulated(teg: TaskExecutionGraph) {
 		for (task in teg.allTasks) {
-			data(task).type = TaskType.normal
+			data(task).type = TaskType.Normal
 		}
 		for (task in getRequestedTasks()) {
-			data(task).type = TaskType.requested
+			data(task).type = TaskType.Requested
 		}
 		for (task in getExcludedTasks()) {
-			data(task).type = TaskType.excluded // wins over requested
+			data(task).type = TaskType.Excluded // wins over requested
 		}
 		ResolveDependencies(::data).run(all.values.toList())
 		if (simplify) {

@@ -16,10 +16,10 @@ class TaskTypeSerializer : JsonSerializer<TaskType> {
 	companion object {
 
 		private val MAPPING: Map<TaskType, String?> = EnumMap<TaskType, String>(TaskType::class.java).apply {
-			this[TaskType.unknown] = "unknown"
-			this[TaskType.normal] = null
-			this[TaskType.requested] = "requested"
-			this[TaskType.excluded] = "excluded"
+			this[TaskType.Unknown] = "unknown"
+			this[TaskType.Normal] = null
+			this[TaskType.Requested] = "requested"
+			this[TaskType.Excluded] = "excluded"
 			check(this.keys.size == TaskType.values().size)
 		}
 

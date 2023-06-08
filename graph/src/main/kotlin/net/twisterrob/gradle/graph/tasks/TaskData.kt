@@ -8,7 +8,7 @@ class TaskData(
 	val task: Task,
 ) : Comparable<TaskData> {
 
-	var type: TaskType = TaskType.unknown
+	var type: TaskType = TaskType.Unknown
 	var state: TaskResult? = null
 	val deps: MutableSet<TaskData> = TreeSet()
 	val depsDirect: MutableSet<TaskData> = TreeSet()
