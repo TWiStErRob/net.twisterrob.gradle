@@ -19,7 +19,7 @@ class TaskDataSerializer : JsonSerializer<TaskData> {
 		}
 }
 
-inline fun <T> Iterable<T>.mapTo(target: JsonArray = JsonArray(), transform: (T) -> JsonElement): JsonArray {
+private inline fun <T> Iterable<T>.mapTo(target: JsonArray = JsonArray(), transform: (T) -> JsonElement): JsonArray {
 	for (item in this) {
 		target.add(transform(item))
 	}

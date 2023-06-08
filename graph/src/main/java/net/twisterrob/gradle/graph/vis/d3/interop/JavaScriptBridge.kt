@@ -6,6 +6,7 @@ import netscape.javascript.JSObject
 
 class JavaScriptBridge(engine: WebEngine) {
 
+	@Suppress("PrivatePropertyName") // Mimic real JS code.
 	private val JSON: JSObject
 	private val model: JSObject
 
@@ -17,8 +18,7 @@ class JavaScriptBridge(engine: WebEngine) {
 
 	private fun modelCall(methodName: String, vararg args: Any?) {
 		val argsStr = args.contentToString()
-		val argsShort = argsStr.replace("\\s+".toRegex(), " ").abbreviate(50)
-		//message("${methodName}(${argsShort})")
+		//message("${methodName}(${argsStr.replace("\\s+".toRegex(), " ").abbreviate(50)})")
 		Platform.runLater {
 			/** @thread JavaFX Application Thread */
 			try {

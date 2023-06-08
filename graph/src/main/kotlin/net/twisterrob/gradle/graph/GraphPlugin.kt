@@ -105,7 +105,7 @@ class GraphPlugin @Inject constructor(
 	}
 }
 
-class GraphSettingsExtension {
+abstract class GraphSettingsExtension {
 
 	var dontClose: Boolean = false
 
@@ -128,7 +128,7 @@ private fun hasJavaFX(): Boolean =
 					visualizer = ${GraphStreamTaskVisualizer::class.java.name}
 				}
 			""".trimIndent()
-		System.err.println(dependency);
+		System.err.println(dependency)
 		false
 	}
 

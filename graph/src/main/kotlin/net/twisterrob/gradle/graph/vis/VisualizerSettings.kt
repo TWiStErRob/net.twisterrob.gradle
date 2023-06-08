@@ -14,7 +14,7 @@ abstract class VisualizerSettings<Settings : Any> protected constructor(
 	private val cache: PersistentCache
 ) : Closeable {
 
-	protected val settingsFileName: String
+	private val settingsFileName: String
 		get() = this::class.java.name + ".properties"
 
 	var settings: Settings

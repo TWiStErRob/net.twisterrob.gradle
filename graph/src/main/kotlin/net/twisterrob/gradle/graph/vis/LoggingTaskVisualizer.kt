@@ -5,7 +5,7 @@ import net.twisterrob.gradle.graph.tasks.TaskResult
 import org.gradle.api.Task
 import org.gradle.api.initialization.Settings
 
-class LoggingTaskVisualizer constructor(
+class LoggingTaskVisualizer(
 	private val wrapped: TaskVisualizer
 ) : TaskVisualizer {
 

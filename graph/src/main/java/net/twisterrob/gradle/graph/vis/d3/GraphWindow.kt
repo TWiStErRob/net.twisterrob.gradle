@@ -73,6 +73,7 @@ abstract class GraphWindow : TaskVisualizer {
 			val base: String = javaClass.getResource("/d3-graph.html")
 				.toExternalForm()
 				.replaceFirst("""[^/]*$""".toRegex(), """""")
+			@Suppress("UNUSED_VALUE") // TODO why is this unused?
 			text = text.replaceFirst("""<head>""".toRegex(), """<head><base href="${base}" />""")
 			// TODO is load and loadContent faster?
 			webEngine.load(javaClass.getResource("/d3-graph.html").toExternalForm())
@@ -111,9 +112,9 @@ abstract class GraphWindow : TaskVisualizer {
 	}
 
 	private fun buildCSSDataURI(): String {
-		val bgColor = "rgba(0, 0, 0, 0.0)" // "#" + Color.WHITE.toString().substring(2, 8)
 		@Language("css")
-		val css = """body { background: ${bgColor}; }"""
+		val css = """body { background: rgba(0, 0, 0, 0.0); }"""
+		//val css = """body { background: #${Color.WHITE.toString().substring(2, 8)}; }"""
 		try {
 			return "data:text/css;charset=utf-8," + URLEncoder.encode(css, "utf-8").replace("\\+".toRegex(), "%20")
 		} catch (ex: UnsupportedEncodingException) {

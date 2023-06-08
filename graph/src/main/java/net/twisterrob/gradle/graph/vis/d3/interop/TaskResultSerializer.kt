@@ -23,7 +23,7 @@ class TaskResultSerializer : JsonSerializer<TaskResult> {
 				this[TaskResult.uptodate] = "uptodate"
 				this[TaskResult.failure] = "failure"
 				this[TaskResult.completed] = "success"
-				assert(this.keys.size == TaskResult.values().size)
+				check(this.keys.size == TaskResult.values().size)
 			}
 
 		fun getState(result: TaskResult): String =

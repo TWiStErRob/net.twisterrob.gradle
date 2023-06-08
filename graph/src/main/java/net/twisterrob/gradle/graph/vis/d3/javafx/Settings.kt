@@ -19,7 +19,7 @@ internal class Settings(
 		)
 	}
 
-	protected override fun writeSettings(settings: WindowLocation): Properties =
+	override fun writeSettings(settings: WindowLocation): Properties =
 		Properties().apply {
 			this["x"] = settings.x.toString()
 			this["y"] = settings.y.toString()

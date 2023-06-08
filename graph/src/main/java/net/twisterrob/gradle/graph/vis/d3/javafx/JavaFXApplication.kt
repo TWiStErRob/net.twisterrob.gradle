@@ -45,7 +45,8 @@ class JavaFXApplication : Application() {
 
 	internal class AbortableCountDownLatch(count: Int) : CountDownLatch(count) {
 
-		protected var aborted: Boolean = false
+		@Volatile
+		private var aborted: Boolean = false
 
 		/**
 		 * Unblocks all threads waiting on this latch and cause them to receive an [AbortedException].

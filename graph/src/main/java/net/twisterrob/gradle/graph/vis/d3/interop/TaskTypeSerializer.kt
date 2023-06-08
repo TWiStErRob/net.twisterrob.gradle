@@ -20,7 +20,7 @@ class TaskTypeSerializer : JsonSerializer<TaskType> {
 			this[TaskType.normal] = null
 			this[TaskType.requested] = "requested"
 			this[TaskType.excluded] = "excluded"
-			assert(this.keys.size == TaskType.values().size)
+			check(this.keys.size == TaskType.values().size)
 		}
 
 		fun getType(type: TaskType): String? =

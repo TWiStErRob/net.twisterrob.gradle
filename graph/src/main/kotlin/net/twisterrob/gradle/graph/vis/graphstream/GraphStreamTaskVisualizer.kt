@@ -100,14 +100,16 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 				this[TaskResult.skipped] = "skipped"
 				this[TaskResult.uptodate] = "uptodate"
 				this[TaskResult.failure] = "failure"
+				check(this.keys.size == TaskResult.values().size)
 			}
 
 		private val classMappingType: Map<TaskType, String> =
 			EnumMap<TaskType, String>(TaskType::class.java).apply {
 				this[TaskType.unknown] = "unknown"
-				this[TaskType.normal] = "norma"
+				this[TaskType.normal] = "norma" // TODO this seems wrong.
 				this[TaskType.requested] = "requested"
 				this[TaskType.excluded] = "excluded"
+				check(this.keys.size == TaskType.values().size)
 			}
 
 		private fun id(task: Task): String =

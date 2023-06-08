@@ -5,8 +5,9 @@ import java.util.Date
 
 plugins {
 	id("java-gradle-plugin")
-	id("org.jetbrains.kotlin.jvm") version "1.8.20"
+	id("org.jetbrains.kotlin.jvm") version "1.8.22"
 	id("org.openjfx.javafxplugin") version "0.0.14"
+	id("org.gradle.idea")
 }
 
 group = "net.twisterrob.gradle"
@@ -54,15 +55,33 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions.jvmTarget.set(JvmTarget.fromTarget("1.8"))
+	compilerOptions.allWarningsAsErrors.set(true)
 }
 
 tasks.named<Jar>("jar") {
 	manifest {
 		attributes(
-				"Implementation-Vendor" to project.group,
-				"Implementation-Title" to project.name,
-				"Implementation-Version" to project.version,
-				"Built-Date" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(Date()),
+			"Implementation-Vendor" to project.group,
+			"Implementation-Title" to project.name,
+			"Implementation-Version" to project.version,
+			"Built-Date" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(Date()),
 		)
+	}
+}
+
+idea {
+	module {
+		fun excludedInProject(dir: File): List<File> =
+			listOf(
+				dir.resolve(".gradle"),
+				dir.resolve("build"),
+				dir.resolve(".idea"),
+			)
+
+		val examples = listOf("sample", "sample/app", "sample/lib")
+			.map { rootDir.resolve(it) }
+			.flatMap(::excludedInProject)
+
+		excludeDirs.addAll(examples)
 	}
 }
