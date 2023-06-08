@@ -49,11 +49,14 @@ jobs:
         run: >
           ./gradlew
           build
+          detekt
+          detektMain
+          detektTest
 
       - name: "Integration test for the Graph plugin."
-        working-directory: graph/graph/try
+        working-directory: graph/sample
         run: >
-          ../../gradlew
+          ../gradlew
           -p .
           --continue
           --no-daemon
