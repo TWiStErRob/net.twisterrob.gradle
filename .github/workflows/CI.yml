@@ -49,6 +49,9 @@ jobs:
         run: >
           ./gradlew
           build
+          detekt
+          detektMain
+          detektTest
 
       - name: "Integration test for the Graph plugin."
         working-directory: graph/sample
