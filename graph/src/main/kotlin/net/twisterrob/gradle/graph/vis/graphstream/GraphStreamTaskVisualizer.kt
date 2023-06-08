@@ -19,8 +19,12 @@ import javax.swing.SwingUtilities
 
 class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
+	@Suppress("LateinitUsage") // TODO use some kind of factory to make invalid state non-representable.
 	private lateinit var graph: Graph
+
+	@Suppress("LateinitUsage") // TODO use some kind of factory to make invalid state non-representable.
 	private lateinit var viewer: Viewer
+
 	private val settings: Settings = Settings(cache)
 
 	override fun showUI(project: org.gradle.api.initialization.Settings) {
@@ -28,8 +32,8 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 		try {
 			val css = this::class.java.getResourceAsStream("/graphstream.css").bufferedReader().readText()
 			graph.addAttribute("ui.stylesheet", css)
-		} catch (e: IOException) {
-			throw IllegalStateException("Cannot read style sheet")
+		} catch (ex: IOException) {
+			throw IllegalStateException("Cannot read style sheet.", ex)
 		}
 		graph.isStrict = true
 		graph.setAutoCreate(false)
@@ -51,7 +55,7 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
 	private fun createNode(data: TaskData) {
 		val node = graph.addNode<Node>(id(data.task))
-		node.setLabel(data.task.path)
+		node.label = data.task.path
 		node.addClass(classMappingType.getValue(data.type))
 	}
 
@@ -112,9 +116,11 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 				check(this.keys.size == TaskType.values().size)
 			}
 
+		@Suppress("FunctionMinLength")
 		private fun id(task: Task): String =
 			task.path
 
+		@Suppress("FunctionMinLength")
 		private fun id(from: Task, to: Task): String =
 			id(from) + "->" + id(to)
 	}

@@ -43,19 +43,19 @@ internal class Settings(
 		val height: Double,
 	) {
 
-		fun applyTo(window: Window) {
-			window.width = width
-			window.height = height
-			window.x = x
-			window.y = y
-		}
-
 		constructor(window: Window) : this(
 			x = window.x,
 			y = window.y,
 			width = window.width,
 			height = window.height,
 		)
+
+		fun applyTo(window: Window) {
+			window.width = width
+			window.height = height
+			window.x = x
+			window.y = y
+		}
 	}
 
 	companion object {

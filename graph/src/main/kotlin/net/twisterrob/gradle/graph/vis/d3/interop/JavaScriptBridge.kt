@@ -2,11 +2,12 @@ package net.twisterrob.gradle.graph.vis.d3.interop
 
 import javafx.application.Platform
 import javafx.scene.web.WebEngine
+import netscape.javascript.JSException
 import netscape.javascript.JSObject
 
 class JavaScriptBridge(engine: WebEngine) {
 
-	@Suppress("PrivatePropertyName") // Mimic real JS code.
+	@Suppress("PrivatePropertyName", "VariableNaming") // Mimic real JS code.
 	private val JSON: JSObject
 	private val model: JSObject
 
@@ -18,13 +19,15 @@ class JavaScriptBridge(engine: WebEngine) {
 
 	private fun modelCall(methodName: String, vararg args: Any?) {
 		val argsStr = args.contentToString()
-		//message("${methodName}(${argsStr.replace("\\s+".toRegex(), " ").abbreviate(50)})")
+		if (@Suppress("ConstantConditionIf", "RedundantSuppression") false) {
+			message("${methodName}(${argsStr.replace("\\s+".toRegex(), " ").abbreviate(@Suppress("MagicNumber") 50)})")
+		}
 		Platform.runLater {
 			/** @thread JavaFX Application Thread */
 			try {
 				model.call(methodName, *args)
-			} catch (ex: RuntimeException) {
-				throw RuntimeException("Failure ${methodName}(${argsStr})", ex)
+			} catch (ex: JSException) {
+				throw JSException("Failure ${methodName}(${argsStr})").initCause(ex)
 			}
 		}
 	}

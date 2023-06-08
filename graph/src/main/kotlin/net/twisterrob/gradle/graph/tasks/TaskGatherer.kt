@@ -134,8 +134,8 @@ private class ResolveDependencies(
 /** @see <a href="http://stackoverflow.com/a/11237184/253468">SO</a> */
 private class TransitiveReduction {
 
-	/** list of nodes to get from vertex0 to child0 */
-	private val path: MutableList<TaskData> = ArrayList(10)
+	/** list of nodes to get from `vertex0` to `child0`. */
+	private val path: MutableList<TaskData> = ArrayList(@Suppress("MagicNumber") 10)
 
 	fun run(graph: Collection<TaskData>) {
 		for (vertex0 in graph) {
@@ -149,7 +149,8 @@ private class TransitiveReduction {
 	}
 
 	/**
-	 * Runs a DFS on graph starting from vertex0
+	 * Runs a DFS on graph starting from vertex0.
+	 *
 	 * @param vertex0 root of DFS search
 	 * @param child0 current node during search
 	 */

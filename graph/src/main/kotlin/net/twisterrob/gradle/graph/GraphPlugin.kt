@@ -22,17 +22,17 @@ class GraphPlugin @Inject constructor(
 	private val cacheRepository: ScopedCacheBuilderFactory,
 ) : Plugin<Settings> {
 
+	@Suppress("LateinitUsage") // TODO refactor to object.
 	private lateinit var vis: TaskVisualizer
-	private lateinit var extension: GraphSettingsExtension
 
-	/** See [SO](http://stackoverflow.com/a/11237184/253468) */
+	/** See [SO](http://stackoverflow.com/a/11237184/253468). */
 	override fun apply(project: Settings) {
-		extension = project.extensions.create("graphSettings", GraphSettingsExtension::class.java)
+		val extension = project.extensions.create("graphSettings", GraphSettingsExtension::class.java)
 
 		val gatherer = TaskGatherer(project)
 		project.gradle.addBuildListener(object : BuildAdapter() {
 			override fun settingsEvaluated(settings: Settings) {
-				vis = createGraph()
+				vis = createGraph(extension.visualizer)
 				vis.showUI(settings)
 				gatherer.simplify = extension.simplifyGraph
 			}
@@ -63,14 +63,14 @@ class GraphPlugin @Inject constructor(
 		})
 	}
 
-	private fun createGraph(): TaskVisualizer {
+	private fun createGraph(visualizer: Class<out TaskVisualizer>?): TaskVisualizer {
 		val cache = cacheRepository
 			.createCacheBuilder("graphSettings")
 			.withDisplayName("graph visualization settings")
 			.withLockOptions(mode(FileLockManager.LockMode.None)) // Lock on demand
 			.open()
 
-		return newVisualizer(extension.visualizer, cache)
+		return newVisualizer(visualizer, cache)
 	}
 
 	companion object {
@@ -94,12 +94,14 @@ class GraphPlugin @Inject constructor(
 
 				else ->
 					throw IllegalStateException(
-						"What happened with ${task.name}? The task state is unrecognized:\n"
-								+ "\tExecuted: ${state.executed}\n"
-								+ "\tDid work: ${state.didWork}\n"
-								+ "\tSkipped: ${state.skipped}\n"
-								+ "\tSkip message: ${state.skipMessage}\n"
-								+ "\tFailure: ${state.failure}"
+						"""
+							What happened with ${task.name}? The task state is unrecognized:
+								Executed: ${state.executed}
+								Did work: ${state.didWork}
+								Skipped: ${state.skipped}
+								Skip message: ${state.skipMessage}
+								Failure: ${state.failure}
+						""".trimIndent()
 					)
 			}
 	}
@@ -109,7 +111,7 @@ abstract class GraphSettingsExtension {
 
 	var dontClose: Boolean = false
 
-	/** a TaskVisualizer implementation class, null means automatic */
+	/** A [TaskVisualizer] implementation class, null means automatic. */
 	var visualizer: Class<out TaskVisualizer>? = null
 
 	var simplifyGraph: Boolean = true
@@ -121,14 +123,14 @@ private fun hasJavaFX(): Boolean =
 		true
 	} catch (ignore: NoClassDefFoundError) {
 		val dependency = """
-				No JavaFX Runtime found on buildscript classpath,
-				falling back to primitive GraphStream visualization.
-				You can ensure JavaFX or ask for GraphStream explicitly:
-				graphSettings {
-					visualizer = ${GraphStreamTaskVisualizer::class.java.name}
-				}
-			""".trimIndent()
-		System.err.println(dependency)
+			No JavaFX Runtime found on buildscript classpath,
+			falling back to primitive GraphStream visualization.
+			You can ensure JavaFX or ask for GraphStream explicitly:
+			graphSettings {
+				visualizer = ${GraphStreamTaskVisualizer::class.java.name}
+			}
+		""".trimIndent()
+		System.err.println(dependency) // TODO logging
 		false
 	}
 
@@ -147,20 +149,21 @@ private fun newVisualizer(visualizerClass: Class<out TaskVisualizer>?, cache: Pe
 	var graph: TaskVisualizer? = null
 	try {
 		graph = visualizer.getConstructor(PersistentCache::class.java).newInstance(cache)
-	} catch (ex: Exception) {
+	} catch (ex: ReflectiveOperationException) {
 		err = ex
 	}
 	if (graph == null) {
 		try {
 			graph = visualizer.getConstructor().newInstance()
-		} catch (ex: Exception) {
+		} catch (ex: ReflectiveOperationException) {
 			err = ex
 		}
 	}
 	if (graph == null) {
 		throw IllegalArgumentException(
 			"Invalid value for visualizer: ${visualizer}," +
-					"make sure the class has a default or a ${PersistentCache::class.java} constructor", err
+					"make sure the class has a default or a ${PersistentCache::class.java} constructor",
+			err
 		)
 	}
 	return graph

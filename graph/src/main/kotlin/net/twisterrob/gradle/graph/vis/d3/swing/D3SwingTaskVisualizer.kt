@@ -34,8 +34,8 @@ class D3SwingTaskVisualizer(
 	private fun createUI() {
 		window = JFrame("Gradle Build Graph").apply {
 			//isUndecorated = true
-			//background = Color(0, 0, 0, 0)
-			contentPane.background = Color(255, 255, 255, 255)
+			//background = Color(0, 0, 0, 0) // Transparent black.
+			contentPane.background = @Suppress("MagicNumber") Color(255, 255, 255, 255) // Opaque white.
 			defaultCloseOperation = WindowConstants.HIDE_ON_CLOSE
 			createBufferStrategy(1)
 			addWindowListener(object : WindowAdapter() {
@@ -67,14 +67,16 @@ class D3SwingTaskVisualizer(
 				fxPanel.scene = createScene(settings.width.toDouble(), settings.height.toDouble())
 			}
 			return fxPanel
-		} catch (ex: RuntimeException) {
+		} catch (@Suppress("TooGenericExceptionCaught") ex: RuntimeException) {
+			// TooGenericExceptionCaught: want to catch everything, because JavaFX problems should not crash Gradle.
 			if (ex.cause is UnsatisfiedLinkError) {
-				System.err.println(
+				System.err.println( // TODO logging
 					"Sorry, JavaFX is clashing in Gradle daemon, "
 							+ "try again after a `gradle --stop` or add `--no-daemon`\n"
 							+ ex.cause.toString()
 				)
 			} else {
+				@Suppress("PrintStackTrace") // TODO logging
 				ex.printStackTrace()
 			}
 			return null

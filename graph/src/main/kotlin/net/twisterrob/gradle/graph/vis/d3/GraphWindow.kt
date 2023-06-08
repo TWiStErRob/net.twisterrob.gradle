@@ -30,6 +30,9 @@ abstract class GraphWindow : TaskVisualizer {
 
 	private var bridge: JavaScriptBridge? = null
 
+	protected open val isBrowserReady: Boolean
+		get() = bridge != null
+
 	/** @thread JavaFX Application Thread
 	 */
 	protected fun createScene(width: Double, height: Double): Scene {
@@ -47,8 +50,10 @@ abstract class GraphWindow : TaskVisualizer {
 	protected open fun setupBrowser(): WebView {
 		val webView = WebView()
 		val webEngine: WebEngine = webView.engine
-		//setBackgroundColor(getPage(webEngine))
-		//webEngine.userStyleSheetLocation = buildCSSDataURI()
+		if (@Suppress("ConstantConditionIf", "RedundantSuppression") false) {
+			setBackgroundColor(getPage(webEngine))
+			webEngine.userStyleSheetLocation = buildCSSDataURI()
+		}
 		@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 		webEngine.loadWorker.stateProperty().addListener { value, oldState, newState ->
 			//System.err.println(String.format("State changed: %s -> %s: %s\n", oldState, newState, value));
@@ -67,24 +72,19 @@ abstract class GraphWindow : TaskVisualizer {
 			}
 		}
 		try {
-			var text: String = javaClass.getResourceAsStream("/d3-graph.html")
-				.bufferedReader()
-				.readText()
-			val base: String = javaClass.getResource("/d3-graph.html")
-				.toExternalForm()
-				.replaceFirst("""[^/]*$""".toRegex(), """""")
+			val d3Resource = javaClass.getResource("/d3-graph.html") ?: error("Cannot find d3-graph.html.")
+			var text: String = d3Resource.openStream().bufferedReader().readText()
+			val base: String = d3Resource.toExternalForm().replaceFirst("""[^/]*$""".toRegex(), """""")
 			@Suppress("UNUSED_VALUE") // TODO why is this unused?
 			text = text.replaceFirst("""<head>""".toRegex(), """<head><base href="${base}" />""")
 			// TODO is load and loadContent faster?
-			webEngine.load(javaClass.getResource("/d3-graph.html").toExternalForm())
-		} catch (e: IOException) {
-			e.printStackTrace()
+			webEngine.load(d3Resource.toExternalForm())
+		} catch (ex: IOException) {
+			@Suppress("PrintStackTrace") // TODO logging
+			ex.printStackTrace()
 		}
 		return webView
 	}
-
-	protected open val isBrowserReady: Boolean
-		get() = bridge != null
 
 	override fun initModel(graph: Map<Task, TaskData>) {
 		val gson = GsonBuilder()
@@ -109,6 +109,7 @@ abstract class GraphWindow : TaskVisualizer {
 	}
 
 	override fun closeUI() {
+		// Optional implementation, default: do nothing.
 	}
 
 	private fun buildCSSDataURI(): String {
@@ -139,11 +140,13 @@ abstract class GraphWindow : TaskVisualizer {
 					.getDeclaredField("page")
 					.apply { isAccessible = true }
 					.get(webEngine)
-			} catch (e: NoSuchFieldException) {
-				e.printStackTrace()
+			} catch (ex: NoSuchFieldException) {
+				@Suppress("PrintStackTrace") // TODO logging
+				ex.printStackTrace()
 				null
-			} catch (e: IllegalAccessException) {
-				e.printStackTrace()
+			} catch (ex: IllegalAccessException) {
+				@Suppress("PrintStackTrace") // TODO logging
+				ex.printStackTrace()
 				null
 			}
 	}

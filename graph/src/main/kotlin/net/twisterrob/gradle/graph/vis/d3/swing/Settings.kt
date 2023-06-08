@@ -42,17 +42,17 @@ internal class Settings(
 		val height: Int,
 	) {
 
-		fun applyTo(window: Component) {
-			window.setLocation(x, y)
-			window.setSize(width, height)
-		}
-
 		constructor(window: Component) : this(
 			x = window.location.x,
 			y = window.location.y,
 			width = window.size.width,
 			height = window.size.height,
 		)
+
+		fun applyTo(window: Component) {
+			window.setLocation(x, y)
+			window.setSize(width, height)
+		}
 	}
 
 	companion object {

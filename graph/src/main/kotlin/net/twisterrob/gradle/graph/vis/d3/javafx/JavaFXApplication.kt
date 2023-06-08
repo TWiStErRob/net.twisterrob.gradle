@@ -82,11 +82,15 @@ class JavaFXApplication : Application() {
 	companion object {
 
 		private const val DEBUG: Boolean = false
-		private var initialized: AbortableCountDownLatch? = null
 
+		@Suppress("LateinitUsage") // TODO convert to a proper object/singleton/etc.
 		@Volatile
 		private lateinit var app: JavaFXApplication
+
+		private var initialized: AbortableCountDownLatch? = null
+
 		private var settings: Settings.WindowLocation? = null
+
 		internal fun startLaunch(settings: Settings.WindowLocation) {
 			log("startLaunch")
 			if (initialized == null) {
@@ -98,12 +102,13 @@ class JavaFXApplication : Application() {
 					try {
 						Platform.setImplicitExit(false) // Keep JavaFX alive.
 						launch(JavaFXApplication::class.java)
-					} catch (ex: RuntimeException) {
+					} catch (@Suppress("TooGenericExceptionCaught") ex: RuntimeException) {
+						// TooGenericExceptionCaught: that's what JavaFX declares.
 						if (ex.cause is UnsatisfiedLinkError) {
-							System.err.println(
-								("Sorry, JavaFX is clashing in Gradle daemon, "
+							System.err.println( // TODO logging
+								"Sorry, JavaFX is clashing in Gradle daemon, "
 										+ "try again after a `gradle --stop` or add `--no-daemon`\n"
-										+ ex.cause.toString())
+										+ ex.cause.toString()
 							)
 						} else {
 							ex.printStackTrace()
@@ -126,9 +131,11 @@ class JavaFXApplication : Application() {
 					app.ui!!.showUI(project)
 				}
 				return app.ui
-			} catch (ex: AbortableCountDownLatch.AbortedException) {
+			} catch (ignore: AbortableCountDownLatch.AbortedException) {
+				// TODO logging
 				//System.err.println("No JavaFX Application UI will be shown")
 			} catch (ex: InterruptedException) {
+				@Suppress("PrintStackTrace") // TODO logging
 				ex.printStackTrace()
 				Thread.currentThread().interrupt()
 			}
@@ -144,9 +151,11 @@ class JavaFXApplication : Application() {
 					log("hide, closeUI")
 					app.ui!!.closeUI()
 				}
-			} catch (ex: AbortableCountDownLatch.AbortedException) {
+			} catch (ignore: AbortableCountDownLatch.AbortedException) {
+				// TODO logging
 				//System.err.println("JavaFX Application UI cannot be hidden")
 			} catch (ex: InterruptedException) {
+				@Suppress("PrintStackTrace") // TODO logging
 				ex.printStackTrace()
 				Thread.currentThread().interrupt()
 			}

@@ -25,14 +25,14 @@ abstract class VisualizerSettings<Settings : Any> protected constructor(
 				try {
 					props.load(FileReader(propsFile))
 					readSettings(props)
-				} catch (ex: FileNotFoundException) {
-					readSettings(Properties()) // first startup
+				} catch (ignore: FileNotFoundException) {
+					readSettings(Properties()) // First startup.
 				} catch (ex: IOException) {
-					throw IllegalStateException("Cannot read settings from $propsFile", ex)
+					throw IllegalStateException("Cannot read settings from ${propsFile}", ex)
 				}
 			}
 		} catch (ex: OverlappingFileLockException) {
-			System.err.println("Cannot read settings, using defaults: $ex")
+			System.err.println("Cannot read settings, using defaults: $ex") // TODO logging
 			createDefault()
 		}
 		set(settings) {
@@ -42,12 +42,12 @@ abstract class VisualizerSettings<Settings : Any> protected constructor(
 					val propsFile = File(cache.baseDir, settingsFileName)
 					try {
 						props.store(FileWriter(propsFile), null)
-					} catch (e: IOException) {
-						throw IllegalStateException("Cannot save settings to $propsFile", e)
+					} catch (ex: IOException) {
+						throw IllegalStateException("Cannot save settings to ${propsFile}", ex)
 					}
 				}
 			} catch (ex: OverlappingFileLockException) {
-				System.err.println("Cannot save settings: $ex")
+				System.err.println("Cannot save settings: $ex") // TODO logging
 			}
 		}
 

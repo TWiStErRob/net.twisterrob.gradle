@@ -16,6 +16,7 @@ plugins {
 
 graphSettings {
 	dontClose = true
+	//visualizer = net.twisterrob.gradle.graph.vis.graphstream.GraphStreamTaskVisualizer
 }
 
 dependencyResolutionManagement {
