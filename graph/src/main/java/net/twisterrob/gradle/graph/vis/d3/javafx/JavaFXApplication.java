@@ -155,7 +155,6 @@ public class JavaFXApplication extends Application {
 			}
 		}
 
-		@groovy.transform.InheritConstructors
 		public static class AbortedException extends InterruptedException {
 		}
 	}

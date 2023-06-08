@@ -4,7 +4,6 @@ import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskResult
 import net.twisterrob.gradle.graph.tasks.TaskType
 import net.twisterrob.gradle.graph.vis.TaskVisualizer
-import org.codehaus.groovy.runtime.IOGroovyMethods
 import org.gradle.api.Task
 import org.gradle.cache.PersistentCache
 import org.graphstream.graph.Edge
@@ -27,12 +26,12 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 	override fun showUI(project: org.gradle.api.initialization.Settings) {
 		graph = SingleGraph(project.rootProject.name)
 		try {
-			val css = IOGroovyMethods.getText(this::class.java.getResourceAsStream("/graphstream.css"))
+			val css = this::class.java.getResourceAsStream("/graphstream.css").bufferedReader().readText()
 			graph.addAttribute("ui.stylesheet", css)
 		} catch (e: IOException) {
 			throw IllegalStateException("Cannot read style sheet")
 		}
-		graph.setStrict(true)
+		graph.isStrict = true
 		graph.setAutoCreate(false)
 
 		viewer = graph.display()

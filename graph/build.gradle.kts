@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 plugins {
-	id("org.gradle.groovy")
 	id("java-gradle-plugin")
 	id("org.jetbrains.kotlin.jvm") version "1.8.20"
 	id("org.openjfx.javafxplugin") version "0.0.14"
@@ -46,24 +45,13 @@ java {
 	targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks.named<GroovyCompile>("compileGroovy").configure {
-	groovyOptions.configurationScript = file("gradle/compileGroovy.groovy")
-	val kotlinTask = tasks.named<KotlinCompile>("compileKotlin")
-	classpath += files(kotlinTask.map { it.destinationDirectory })
-}
-
 tasks.withType<JavaCompile>().configureEach {
 	options.compilerArgs = options.compilerArgs + listOf(
 		"-Xlint:unchecked",
 		"-Xlint:deprecation",
 	)
 }
-tasks.withType<GroovyCompile>().configureEach {
-	options.compilerArgs = options.compilerArgs + listOf(
-		"-Xlint:unchecked",
-		"-Xlint:deprecation",
-	)
-}
+
 tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions.jvmTarget.set(JvmTarget.fromTarget("1.8"))
 }

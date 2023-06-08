@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.util.*;
 
-import org.codehaus.groovy.runtime.IOGroovyMethods;
 import org.gradle.api.*;
 import org.gradle.api.initialization.Settings;
 
@@ -17,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.web.*;
+import kotlin.io.ByteStreamsKt;
+import kotlin.io.TextStreamsKt;
 import netscape.javascript.JSObject;
 
 import net.twisterrob.gradle.graph.tasks.*;
@@ -65,7 +66,7 @@ public abstract class GraphWindow implements TaskVisualizer {
 			}
 		});
 		try {
-			String text = IOGroovyMethods.getText(getClass().getResourceAsStream("/d3-graph.html"));
+			String text = TextStreamsKt.readText(ByteStreamsKt.bufferedReader(getClass().getResourceAsStream("/d3-graph.html")));
 			String base = getClass().getResource("/d3-graph.html").toExternalForm().replaceFirst("[^/]*$", "");
 			text = text.replaceFirst("<head>", "<head><base href=\"" + base + "\" />");
 			// TODO is load and loadContent faster?
