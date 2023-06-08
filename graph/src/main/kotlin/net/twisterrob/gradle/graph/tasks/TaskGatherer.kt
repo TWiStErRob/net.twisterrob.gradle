@@ -4,8 +4,6 @@ import org.gradle.api.Project
 import org.gradle.api.ProjectEvaluationListener
 import org.gradle.api.ProjectState
 import org.gradle.api.Task
-import org.gradle.api.execution.TaskExecutionGraph
-import org.gradle.api.execution.TaskExecutionGraphListener
 import org.gradle.api.initialization.Settings
 import org.gradle.api.internal.GradleInternal
 import org.gradle.api.internal.tasks.TaskDependencyResolveException
@@ -15,7 +13,7 @@ import java.util.TreeMap
 
 class TaskGatherer(
 	val project: Settings
-) : TaskExecutionGraphListener, ProjectEvaluationListener {
+) {
 
 	var taskGraphListener: TaskGraphListener? = null
 	var isSimplify: Boolean = false
@@ -28,35 +26,34 @@ class TaskGatherer(
 	private val all: MutableMap<Task, TaskData> = TreeMap()
 
 	init {
-		project.gradle.addProjectEvaluationListener(this)
-		project.gradle.taskGraph.addTaskExecutionGraphListener(this)
-	}
+		// https://github.com/gradle/gradle/issues/25340
+		project.gradle.taskGraph.addTaskExecutionGraphListener { teg ->
+			for (task in teg.allTasks) {
+				data(task).type = TaskType.Normal
+			}
+			for (task in getRequestedTasks()) {
+				data(task).type = TaskType.Requested
+			}
+			for (task in getExcludedTasks()) {
+				data(task).type = TaskType.Excluded // wins over requested
+			}
+			ResolveDependencies(::data).run(all.values.toList())
+			if (isSimplify) {
+				TransitiveReduction().run(all.values)
+			}
+			taskGraphListener?.run { graphPopulated(all) }
+		}
+		project.gradle.addProjectEvaluationListener(object : ProjectEvaluationListener {
+			override fun beforeEvaluate(project: Project) {
+				project.tasks.whenTaskAdded { task ->
+					data(task)
+				}
+			}
 
-	override fun graphPopulated(teg: TaskExecutionGraph) {
-		for (task in teg.allTasks) {
-			data(task).type = TaskType.Normal
-		}
-		for (task in getRequestedTasks()) {
-			data(task).type = TaskType.Requested
-		}
-		for (task in getExcludedTasks()) {
-			data(task).type = TaskType.Excluded // wins over requested
-		}
-		ResolveDependencies(::data).run(all.values.toList())
-		if (isSimplify) {
-			TransitiveReduction().run(all.values)
-		}
-		taskGraphListener?.run { graphPopulated(all) }
-	}
-
-	override fun beforeEvaluate(project: Project) {
-		project.tasks.whenTaskAdded { task ->
-			data(task)
-		}
-	}
-
-	override fun afterEvaluate(project: Project, state: ProjectState) {
-		// Nothing to do, but mandatory override.
+			override fun afterEvaluate(project: Project, state: ProjectState) {
+				// Nothing to do, but mandatory override.
+			}
+		})
 	}
 
 	private fun data(task: Task): TaskData {
