@@ -5,8 +5,9 @@ import java.util.Date
 
 plugins {
 	id("java-gradle-plugin")
-	id("org.jetbrains.kotlin.jvm") version "1.8.22"
 	id("org.openjfx.javafxplugin") version "0.0.14"
+	id("org.jetbrains.kotlin.jvm") version "1.8.22"
+	id("io.gitlab.arturbosch.detekt") version "1.23.0"
 	id("org.gradle.idea")
 }
 
@@ -84,4 +85,13 @@ idea {
 
 		excludeDirs.addAll(examples)
 	}
+}
+
+detekt {
+	buildUponDefaultConfig = false
+	allRules = true
+	config.setFrom(rootProject.file("../config/detekt/detekt.yml"))
+	baseline = rootProject.file("../config/detekt/detekt-baseline-graph.xml")
+	basePath = rootProject.projectDir.absolutePath
+	parallel = true
 }
