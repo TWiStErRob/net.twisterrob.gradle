@@ -1,161 +1,160 @@
-package net.twisterrob.gradle.graph.vis.d3.javafx;
+package net.twisterrob.gradle.graph.vis.d3.javafx
 
-import java.util.concurrent.*;
+import javafx.application.Application
+import javafx.application.Platform
+import javafx.stage.Stage
+import net.twisterrob.gradle.graph.vis.d3.GradleJULFixer
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
-import javafx.application.*;
-import javafx.stage.Stage;
+class JavaFXApplication : Application() {
 
-import net.twisterrob.gradle.graph.vis.d3.GradleJULFixer;
-import net.twisterrob.gradle.graph.vis.d3.javafx.JavaFXApplication.AbortableCountDownLatch.AbortedException;
-import net.twisterrob.gradle.graph.vis.d3.javafx.Settings.WindowLocation;
+	private val fixer: GradleJULFixer = GradleJULFixer()
 
-public class JavaFXApplication extends Application {
-	private static final boolean DEBUG = false;
-	private static AbortableCountDownLatch initialized;
-	private static volatile JavaFXApplication app;
-	private static WindowLocation settings;
+	@Volatile
+	private var ui: GraphWindow? = null
 
-	private final GradleJULFixer fixer = new GradleJULFixer();
-	private volatile GraphWindow ui;
-
-	public JavaFXApplication() {
-		super();
-		app = this;
-		log("ctor");
+	init {
+		app = this
+		log("ctor")
 	}
 
-	@Override public void init() throws Exception {
-		log("init");
-		fixer.start();
-		super.init();
+	@Throws(Exception::class) 
+	override fun init() {
+		log("init")
+		fixer.start()
+		super.init()
 	}
 
-	@Override public void start(Stage stage) throws Exception {
-		log("start");
-		settings.applyTo(stage);
-		ui = new GraphWindow(stage);
-		initialized.countDown();
+	@Throws(Exception::class)
+	override fun start(stage: Stage) {
+		log("start")
+		settings!!.applyTo(stage)
+		ui = GraphWindow(stage)
+		initialized!!.countDown()
 		//fixer.interrupt(); // from here on it doesn't really matter, because most of JavaFX is already up and running
 	}
 
-	@Override public void stop() throws Exception {
-		log("stop");
-		super.stop();
-		fixer.interrupt();
+	@Throws(Exception::class)
+	override fun stop() {
+		log("stop")
+		super.stop()
+		fixer.interrupt()
 	}
 
-	public static void startLaunch(WindowLocation settings) {
-		log("startLaunch");
-		if (initialized == null) {
-			initialized = new AbortableCountDownLatch(1);
-			JavaFXApplication.settings = settings;
-			log("launching in background");
-			new Thread() {
-				@Override public void run() {
-					log("launching");
-					try {
-						Platform.setImplicitExit(false); // keep JavaFX alive
-						Application.launch(JavaFXApplication.class);
-					} catch (RuntimeException ex) {
-						if (ex.getCause() instanceof UnsatisfiedLinkError) {
-							System.err.println("Sorry, JavaFX is clashing in Gradle daemon, "
-									+ "try again after a `gradle --stop` or add `--no-daemon`\n"
-									+ ex.getCause().toString());
-						} else {
-							ex.printStackTrace();
-						}
-						initialized.abort();
-					}
-				}
-			}.start();
-		} else {
-			log("already initialized, wait for show()");
-		}
-	}
+	internal class AbortableCountDownLatch(count: Int) : CountDownLatch(count) {
 
-	public static GraphWindow show(final org.gradle.api.initialization.Settings project) {
-		try {
-			log("show, waiting");
-			initialized.await();
-			log("show, initialized");
-			Platform.runLater(new Runnable() {
-				@Override public void run() {
-					log("show, showUI");
-					app.ui.showUI(project);
-				}
-			});
-			return app.ui;
-		} catch (AbortedException ex) {
-			//System.err.println("No JavaFX Application UI will be shown");
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-			Thread.currentThread().interrupt();
-		}
-		return null;
-	}
-
-	public static void hide() {
-		try {
-			log("hide, waiting");
-			initialized.await();
-			log("hide, initialized");
-			Platform.runLater(new Runnable() {
-				@Override public void run() {
-					log("hide, closeUI");
-					app.ui.closeUI();
-				}
-			});
-		} catch (AbortedException ex) {
-			//System.err.println("JavaFX Application UI cannot be hidden");
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-			Thread.currentThread().interrupt();
-		}
-	}
-
-	public static void log(String message) {
-		if (DEBUG) {
-			System.out.println(message);
-		}
-	}
-
-	static class AbortableCountDownLatch extends CountDownLatch {
-		protected boolean aborted = false;
-
-		public AbortableCountDownLatch(int count) {
-			super(count);
-		}
+		protected var aborted: Boolean = false
 
 		/**
-		 * Unblocks all threads waiting on this latch and cause them to receive an {@link AbortedException}.
+		 * Unblocks all threads waiting on this latch and cause them to receive an [AbortedException].
 		 * If the latch has already counted all the way down, this method does nothing.
 		 */
-		public void abort() {
-			aborted = true;
-			while (getCount() > 0) {
-				countDown();
+		fun abort() {
+			aborted = true
+			while (count > 0) {
+				countDown()
 			}
 		}
 
-		@SuppressWarnings("NullableProblems")
-		@Override public boolean await(long timeout, TimeUnit unit) throws InterruptedException {
-			final boolean result = super.await(timeout, unit);
-			checkAborted();
-			return result;
+		@Throws(InterruptedException::class)
+		override fun await(timeout: Long, unit: TimeUnit): Boolean =
+			super.await(timeout, unit).also { checkAborted() }
+
+		@Throws(InterruptedException::class) 
+		override fun await() {
+			super.await()
+			checkAborted()
 		}
 
-		@Override public void await() throws InterruptedException {
-			super.await();
-			checkAborted();
-		}
-
-		private void checkAborted() throws AbortedException {
+		@Throws(AbortedException::class)
+		private fun checkAborted() {
 			if (aborted) {
-				throw new AbortedException();
+				throw AbortedException()
 			}
 		}
 
-		public static class AbortedException extends InterruptedException {
+		class AbortedException : InterruptedException()
+	}
+
+	companion object {
+
+		private const val DEBUG: Boolean = false
+		private var initialized: AbortableCountDownLatch? = null
+
+		@Volatile
+		private lateinit var app: JavaFXApplication
+		private var settings: Settings.WindowLocation? = null
+		internal fun startLaunch(settings: Settings.WindowLocation) {
+			log("startLaunch")
+			if (initialized == null) {
+				initialized = AbortableCountDownLatch(1)
+				JavaFXApplication.settings = settings
+				log("launching in background")
+				thread {
+					log("launching")
+					try {
+						Platform.setImplicitExit(false) // Keep JavaFX alive.
+						launch(JavaFXApplication::class.java)
+					} catch (ex: RuntimeException) {
+						if (ex.cause is UnsatisfiedLinkError) {
+							System.err.println(
+								("Sorry, JavaFX is clashing in Gradle daemon, "
+										+ "try again after a `gradle --stop` or add `--no-daemon`\n"
+										+ ex.cause.toString())
+							)
+						} else {
+							ex.printStackTrace()
+						}
+						initialized!!.abort()
+					}
+				}
+			} else {
+				log("already initialized, wait for show()")
+			}
+		}
+
+		fun show(project: org.gradle.api.initialization.Settings): GraphWindow? {
+			try {
+				log("show, waiting")
+				initialized!!.await()
+				log("show, initialized")
+				Platform.runLater {
+					log("show, showUI")
+					app.ui!!.showUI(project)
+				}
+				return app.ui
+			} catch (ex: AbortableCountDownLatch.AbortedException) {
+				//System.err.println("No JavaFX Application UI will be shown")
+			} catch (ex: InterruptedException) {
+				ex.printStackTrace()
+				Thread.currentThread().interrupt()
+			}
+			return null
+		}
+
+		fun hide() {
+			try {
+				log("hide, waiting")
+				initialized!!.await()
+				log("hide, initialized")
+				Platform.runLater {
+					log("hide, closeUI")
+					app.ui!!.closeUI()
+				}
+			} catch (ex: AbortableCountDownLatch.AbortedException) {
+				//System.err.println("JavaFX Application UI cannot be hidden")
+			} catch (ex: InterruptedException) {
+				ex.printStackTrace()
+				Thread.currentThread().interrupt()
+			}
+		}
+
+		fun log(message: String?) {
+			if (DEBUG) {
+				println(message)
+			}
 		}
 	}
 }

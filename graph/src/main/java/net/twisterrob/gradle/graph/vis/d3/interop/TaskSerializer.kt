@@ -1,17 +1,20 @@
-package net.twisterrob.gradle.graph.vis.d3.interop;
+package net.twisterrob.gradle.graph.vis.d3.interop
 
-import java.lang.reflect.Type;
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import org.gradle.api.Task
+import java.lang.reflect.Type
 
-import org.gradle.api.Task;
+class TaskSerializer : JsonSerializer<Task> {
 
-import com.google.gson.*;
+	override fun serialize(task: Task, type: Type, context: JsonSerializationContext): JsonElement =
+		JsonPrimitive(getKey(task))
 
-public class TaskSerializer implements JsonSerializer<Task> {
-	@Override public JsonElement serialize(Task task, Type type, JsonSerializationContext context) {
-		return new JsonPrimitive(getKey(task));
-	}
+	companion object {
 
-	public static String getKey(Task task) {
-		return task.getPath();
+		fun getKey(task: Task): String =
+			task.path
 	}
 }

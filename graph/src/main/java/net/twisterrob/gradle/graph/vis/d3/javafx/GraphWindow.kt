@@ -1,40 +1,28 @@
-package net.twisterrob.gradle.graph.vis.d3.javafx;
+package net.twisterrob.gradle.graph.vis.d3.javafx
 
-import org.gradle.api.initialization.Settings;
+import javafx.application.Platform
+import javafx.stage.Stage
+import net.twisterrob.gradle.graph.vis.d3.GraphWindow
+import org.gradle.api.initialization.Settings
 
-import javafx.application.Platform;
-import javafx.stage.Stage;
+class GraphWindow(
+	val stage: Stage
+) : GraphWindow() {
 
-public class GraphWindow extends net.twisterrob.gradle.graph.vis.d3.GraphWindow {
-	private final Stage window;
-
-	public GraphWindow(Stage stage) {
-		stage.setScene(createScene(stage.getWidth(), stage.getHeight()));
-		this.window = stage;
-
-		window.setTitle("Gradle Build Graph");
+	init {
+		stage.scene = createScene(stage.width, stage.height)
+		stage.title = "Gradle Build Graph"
 	}
 
-	public Stage getStage() {
-		return window;
+	override fun showUI(project: Settings) {
+		super.showUI(project)
+		stage.title = "${project.rootProject.name} - Gradle Build Graph"
+		// Delay display so that bridge's runLater runs first.
+		Platform.runLater(stage::show)
 	}
 
-	@Override public void showUI(Settings project) {
-		super.showUI(project);
-		window.setTitle(String.format("%s - Gradle Build Graph", project.getRootProject().getName()));
-		Platform.runLater(new Runnable() {
-			@Override public void run() {
-				window.show(); // delay display so that bridge's runLater runs first
-			}
-		});
-	}
-
-	@Override public void closeUI() {
-		super.closeUI();
-		Platform.runLater(new Runnable() {
-			@Override public void run() {
-				window.close();
-			}
-		});
+	override fun closeUI() {
+		super.closeUI()
+		Platform.runLater(stage::close)
 	}
 }

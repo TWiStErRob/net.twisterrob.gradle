@@ -1,71 +1,63 @@
-package net.twisterrob.gradle.graph.vis.d3.swing;
+package net.twisterrob.gradle.graph.vis.d3.swing
 
-import java.awt.Component;
-import java.util.Properties;
+import net.twisterrob.gradle.graph.vis.VisualizerSettings
+import org.gradle.cache.PersistentCache
+import java.awt.Component
+import java.util.Properties
 
-import org.gradle.cache.PersistentCache;
+internal class Settings(
+	cache: PersistentCache
+) : VisualizerSettings<Settings.WindowLocation>(cache) {
 
-import net.twisterrob.gradle.graph.vis.VisualizerSettings;
-
-class Settings extends VisualizerSettings<Settings.WindowLocation> {
-	Settings(PersistentCache cache) {
-		super(cache);
+	override fun readSettings(props: Properties): WindowLocation {
+		val default = createDefault()
+		return WindowLocation(
+			x = props.getProperty("x").toIntOr(default.x),
+			y = props.getProperty("y").toIntOr(default.y),
+			width = props.getProperty("width").toIntOr(default.width),
+			height = props.getProperty("height").toIntOr(default.height),
+		)
 	}
 
-	@Override protected WindowLocation readSettings(Properties props) {
-		WindowLocation location = new WindowLocation();
-		location.x = parse(props.getProperty("x"), location.x);
-		location.y = parse(props.getProperty("y"), location.y);
-		location.width = parse(props.getProperty("width"), location.width);
-		location.height = parse(props.getProperty("height"), location.height);
-		return location;
-	}
-
-	@Override protected Properties writeSettings(WindowLocation location) {
-		Properties props = new Properties();
-		props.put("x", String.valueOf(location.x));
-		props.put("y", String.valueOf(location.y));
-		props.put("width", String.valueOf(location.width));
-		props.put("height", String.valueOf(location.height));
-		return props;
-	}
-
-	@Override protected WindowLocation createDefault() {
-		return new WindowLocation();
-	}
-
-	private static int parse(String value, int defaultValue) {
-		try {
-			return Integer.parseInt(value);
-		} catch (NullPointerException | NumberFormatException ex) {
-			// ignore
-		}
-		return defaultValue;
-	}
-
-	static class WindowLocation {
-		int x;
-		int y;
-		int width;
-		int height;
-
-		void applyTo(Component window) {
-			window.setLocation(x, y);
-			window.setSize(width, height);
+	override fun writeSettings(settings: WindowLocation): Properties =
+		Properties().apply {
+			this["x"] = settings.x.toString()
+			this["y"] = settings.y.toString()
+			this["width"] = settings.width.toString()
+			this["height"] = settings.height.toString()
 		}
 
-		WindowLocation() {
-			this.x = 0;
-			this.y = 0;
-			this.width = 800;
-			this.height = 600;
+	override fun createDefault(): WindowLocation =
+		WindowLocation(
+			x = 0,
+			y = 0,
+			width = 800,
+			height = 600,
+		)
+
+	internal class WindowLocation(
+		val x: Int,
+		val y: Int,
+		val width: Int,
+		val height: Int,
+	) {
+
+		fun applyTo(window: Component) {
+			window.setLocation(x, y)
+			window.setSize(width, height)
 		}
 
-		WindowLocation(Component window) {
-			this.x = window.getLocation().x;
-			this.y = window.getLocation().y;
-			this.width = window.getSize().width;
-			this.height = window.getSize().height;
-		}
+		constructor(window: Component) : this(
+			x = window.location.x,
+			y = window.location.y,
+			width = window.size.width,
+			height = window.size.height,
+		)
+	}
+
+	companion object {
+
+		private fun String?.toIntOr(defaultValue: Int): Int =
+			this?.toIntOrNull() ?: defaultValue
 	}
 }

@@ -1,29 +1,29 @@
-package net.twisterrob.gradle.graph.vis.d3.interop;
+package net.twisterrob.gradle.graph.vis.d3.interop
 
-import java.lang.reflect.Type;
-import java.util.EnumMap;
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import net.twisterrob.gradle.graph.tasks.TaskType
+import java.lang.reflect.Type
+import java.util.EnumMap
 
-import com.google.gson.*;
+class TaskTypeSerializer : JsonSerializer<TaskType> {
 
-import net.twisterrob.gradle.graph.tasks.TaskType;
+	override fun serialize(taskType: TaskType, type: Type, context: JsonSerializationContext): JsonElement? =
+		getType(taskType)?.let { JsonPrimitive(it) }
 
-public class TaskTypeSerializer implements JsonSerializer<TaskType> {
-	@Override public JsonElement serialize(TaskType taskType, Type type, JsonSerializationContext context) {
-		String typeString = getType(taskType);
-		return typeString != null? new JsonPrimitive(typeString) : null;
-	}
+	companion object {
 
-	private static final EnumMap<TaskType, String> MAPPING = new EnumMap<>(TaskType.class);
+		private val MAPPING: Map<TaskType, String?> = EnumMap<TaskType, String>(TaskType::class.java).apply {
+			this[TaskType.unknown] = "unknown"
+			this[TaskType.normal] = null
+			this[TaskType.requested] = "requested"
+			this[TaskType.excluded] = "excluded"
+			assert(this.keys.size == TaskType.values().size)
+		}
 
-	static {
-		MAPPING.put(TaskType.unknown, "unknown");
-		MAPPING.put(TaskType.normal, null);
-		MAPPING.put(TaskType.requested, "requested");
-		MAPPING.put(TaskType.excluded, "excluded");
-		assert MAPPING.keySet().size() == TaskType.values().length;
-	}
-
-	public static String getType(TaskType type) {
-		return MAPPING.get(type);
+		fun getType(type: TaskType): String? =
+			MAPPING.getValue(type)
 	}
 }

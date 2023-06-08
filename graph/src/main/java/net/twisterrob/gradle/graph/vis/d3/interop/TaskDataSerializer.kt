@@ -1,24 +1,27 @@
-package net.twisterrob.gradle.graph.vis.d3.interop;
+package net.twisterrob.gradle.graph.vis.d3.interop
 
-import java.lang.reflect.Type;
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import net.twisterrob.gradle.graph.tasks.TaskData
+import java.lang.reflect.Type
 
-import com.google.gson.*;
+class TaskDataSerializer : JsonSerializer<TaskData> {
 
-import net.twisterrob.gradle.graph.tasks.TaskData;
-
-public class TaskDataSerializer implements JsonSerializer<TaskData> {
-	@Override public JsonElement serialize(TaskData data, Type type, JsonSerializationContext context) {
-		JsonObject obj = new JsonObject();
-		obj.add("label", new JsonPrimitive(data.getTask().getPath()));
-		obj.add("type", context.serialize(data.getType()));
-		obj.add("state", context.serialize(data.getState()));
-
-		JsonArray deps = new JsonArray();
-		for (TaskData dep : data.getDepsDirect()) {
-			deps.add(context.serialize(dep.getTask()));
+	override fun serialize(data: TaskData, type: Type, context: JsonSerializationContext): JsonElement =
+		JsonObject().apply {
+			add("label", context.serialize(data.task))
+			add("type", context.serialize(data.type))
+			add("state", context.serialize(data.state))
+			add("deps", data.depsDirect.mapTo { context.serialize(it.task) })
 		}
-		obj.add("deps", deps);
+}
 
-		return obj;
+inline fun <T> Iterable<T>.mapTo(target: JsonArray = JsonArray(), transform: (T) -> JsonElement): JsonArray {
+	for (item in this) {
+		target.add(transform(item))
 	}
+	return target
 }

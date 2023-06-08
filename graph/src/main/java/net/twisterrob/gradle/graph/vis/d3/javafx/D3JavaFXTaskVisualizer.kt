@@ -1,57 +1,49 @@
-package net.twisterrob.gradle.graph.vis.d3.javafx;
+package net.twisterrob.gradle.graph.vis.d3.javafx
 
-import java.util.Map;
-
-import javafx.event.EventHandler;
-import javafx.stage.*;
-import net.twisterrob.gradle.graph.tasks.*;
-import net.twisterrob.gradle.graph.vis.TaskVisualizer;
-import net.twisterrob.gradle.graph.vis.d3.javafx.Settings.WindowLocation;
-import org.gradle.api.*;
-import org.gradle.cache.PersistentCache;
+import javafx.stage.Window
+import net.twisterrob.gradle.graph.tasks.TaskData
+import net.twisterrob.gradle.graph.tasks.TaskResult
+import net.twisterrob.gradle.graph.vis.TaskVisualizer
+import org.gradle.api.Task
+import org.gradle.cache.PersistentCache
 
 /**
- * @see <a href="http://stackoverflow.com/a/20125944/253468">Idea from SO</a>
+ * See [Idea from SO](http://stackoverflow.com/a/20125944/253468).
  */
-public class D3JavaFXTaskVisualizer implements TaskVisualizer {
-	private GraphWindow window;
-	private final Settings settings;
+class D3JavaFXTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
-	public D3JavaFXTaskVisualizer(PersistentCache cache) {
-		settings = new Settings(cache);
+	private var window: GraphWindow? = null
+	private val settings: Settings
+
+	init {
+		settings = Settings(cache)
 	}
 
-	@Override public void showUI(org.gradle.api.initialization.Settings project) {
-		JavaFXApplication.startLaunch(settings.getSettings());
-		window = JavaFXApplication.show(project);
+	override fun showUI(project: org.gradle.api.initialization.Settings) {
+		JavaFXApplication.startLaunch(settings.settings)
+		window = JavaFXApplication.show(project)
 		if (window != null) {
-			settings.getSettings().applyTo(window.getStage());
-			window.getStage().setOnHiding(new EventHandler<WindowEvent>() {
-				@Override public void handle(WindowEvent event) {
-					settings.setSettings(new WindowLocation((Window)event.getSource()));
-					settings.close();
-				}
-			});
+			settings.settings.applyTo(window!!.stage)
+			window!!.stage.setOnHiding { event ->
+				settings.settings = Settings.WindowLocation(event.source as Window)
+				settings.close()
+			}
 		}
 	}
 
-	@Override public void initModel(Map<Task, TaskData> graph) {
-		if (window != null) {
-			window.initModel(graph);
-		}
+	override fun initModel(graph: Map<Task, TaskData>) {
+		window?.initModel(graph)
 	}
 
-	@Override public void update(Task task, TaskResult result) {
-		if (window != null) {
-			window.update(task, result);
-		}
+	override fun update(task: Task, result: TaskResult) {
+		window?.update(task, result)
 	}
 
-	@Override public void closeUI() {
+	override fun closeUI() {
 		if (window == null) {
-			settings.close();
+			settings.close()
 		}
-		window = null;
-		JavaFXApplication.hide();
+		window = null
+		JavaFXApplication.hide()
 	}
 }

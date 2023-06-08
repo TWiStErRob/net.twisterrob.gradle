@@ -1,31 +1,32 @@
-package net.twisterrob.gradle.graph.vis.d3.interop;
+package net.twisterrob.gradle.graph.vis.d3.interop
 
-import java.lang.reflect.Type;
-import java.util.EnumMap;
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import net.twisterrob.gradle.graph.tasks.TaskResult
+import java.lang.reflect.Type
+import java.util.EnumMap
 
-import com.google.gson.*;
+class TaskResultSerializer : JsonSerializer<TaskResult> {
 
-import net.twisterrob.gradle.graph.tasks.TaskResult;
+	override fun serialize(taskResult: TaskResult, type: Type, context: JsonSerializationContext): JsonElement =
+		JsonPrimitive(getState(taskResult))
 
-public class TaskResultSerializer implements JsonSerializer<TaskResult> {
-	@Override public JsonElement serialize(TaskResult taskResult, Type type, JsonSerializationContext context) {
-		String stateString = getState(taskResult);
-		return stateString != null? new JsonPrimitive(stateString) : null;
-	}
+	companion object {
 
-	private static final EnumMap<TaskResult, String> MAPPING = new EnumMap<>(TaskResult.class);
+		private val MAPPING: Map<TaskResult, String> =
+			EnumMap<TaskResult, String>(TaskResult::class.java).apply {
+				this[TaskResult.executing] = "executing"
+				this[TaskResult.nowork] = "nowork"
+				this[TaskResult.skipped] = "skipped"
+				this[TaskResult.uptodate] = "uptodate"
+				this[TaskResult.failure] = "failure"
+				this[TaskResult.completed] = "success"
+				assert(this.keys.size == TaskResult.values().size)
+			}
 
-	static {
-		MAPPING.put(TaskResult.executing, "executing");
-		MAPPING.put(TaskResult.nowork, "nowork");
-		MAPPING.put(TaskResult.skipped, "skipped");
-		MAPPING.put(TaskResult.uptodate, "uptodate");
-		MAPPING.put(TaskResult.failure, "failure");
-		MAPPING.put(TaskResult.completed, "success");
-		assert MAPPING.keySet().size() == TaskResult.values().length;
-	}
-
-	public static String getState(TaskResult result) {
-		return MAPPING.get(result);
+		fun getState(result: TaskResult): String =
+			MAPPING.getValue(result)
 	}
 }

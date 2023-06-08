@@ -15,10 +15,10 @@ internal class Settings(
 	override fun readSettings(props: Properties): WindowLocation {
 		val default = createDefault()
 		return WindowLocation(
-			x = parse(props.getProperty("x"), default.x),
-			y = parse(props.getProperty("y"), default.y),
-			width = parse(props.getProperty("width"), default.width),
-			height = parse(props.getProperty("height"), default.height),
+			x = props.getProperty("x").toIntOr(default.x),
+			y = props.getProperty("y").toIntOr(default.y),
+			width = props.getProperty("width").toIntOr(default.width),
+			height = props.getProperty("height").toIntOr(default.height),
 		)
 	}
 
@@ -61,11 +61,7 @@ internal class Settings(
 
 	companion object {
 
-		private fun parse(value: String?, defaultValue: Int): Int =
-			try {
-				value?.toInt() ?: defaultValue
-			} catch (ex: NumberFormatException) {
-				defaultValue
-			}
+		private fun String?.toIntOr(defaultValue: Int): Int =
+			this?.toIntOrNull() ?: defaultValue
 	}
 }

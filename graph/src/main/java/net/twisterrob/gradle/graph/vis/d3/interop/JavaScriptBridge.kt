@@ -1,57 +1,65 @@
-package net.twisterrob.gradle.graph.vis.d3.interop;
+package net.twisterrob.gradle.graph.vis.d3.interop
 
-import java.util.Arrays;
+import javafx.application.Platform
+import javafx.scene.web.WebEngine
+import netscape.javascript.JSObject
 
-import javafx.application.Platform;
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+class JavaScriptBridge(engine: WebEngine) {
 
-public class JavaScriptBridge {
-	private final JSObject JSON;
-	private final JSObject model;
+	private val JSON: JSObject
+	private val model: JSObject
 
 	/** @thread JavaFX Application Thread */
-	public JavaScriptBridge(WebEngine engine) {
-		this.JSON = (JSObject)engine.executeScript("JSON");
-		this.model = (JSObject)engine.executeScript("model");
+	init {
+		JSON = engine.executeScript("JSON") as JSObject
+		model = engine.executeScript("model") as JSObject
 	}
-	private void modelCall(final String methodName, final Object... args) {
-		final String argsStr = Arrays.toString(args);
-		final String argsShort = argsStr.length() < 50? argsStr
-				: argsStr.substring(0, 50).replaceAll("\\s+", " ") + "...";
-		//message(methodName + "(" + argsShort + ")");
-		Platform.runLater(new Runnable() {
+
+	private fun modelCall(methodName: String, vararg args: Any?) {
+		val argsStr = args.contentToString()
+		val argsShort = argsStr.replace("\\s+".toRegex(), " ").abbreviate(50)
+		//message("${methodName}(${argsShort})")
+		Platform.runLater {
 			/** @thread JavaFX Application Thread */
-			@Override public void run() {
-				try {
-					model.call(methodName, args);
-				} catch (RuntimeException ex) {
-					throw new RuntimeException("Failure " + methodName + "(" + argsStr + ")", ex);
-				}
-			}
-		});
-	}
-	public void message(String message) {
-		System.err.println(message);
-	}
-
-	/** @thread JavaFX Application Thread */
-	@SuppressWarnings("unused")
-	public void log(JSObject args) {
-		for (int i = 0, len = (Integer)args.getMember("length"); i < len; i++) {
-			Object arg = args.getSlot(i);
-			System.err.print(JSON.call("stringify", new Object[] {arg}));
-			if (i < len - 1) {
-				System.err.print(", ");
+			try {
+				model.call(methodName, *args)
+			} catch (ex: RuntimeException) {
+				throw RuntimeException("Failure ${methodName}(${argsStr})", ex)
 			}
 		}
-		System.err.println();
 	}
 
-	public void init(String graph) {
-		modelCall("init", graph);
+	fun message(message: String?) {
+		System.err.println(message)
 	}
-	public void update(String name, String result) {
-		modelCall("update", name, result);
+
+	/** @thread JavaFX Application Thread */
+	fun log(args: JSObject) {
+		var i = 0
+		val len = args.getMember("length") as Int
+		while (i < len) {
+			val arg = args.getSlot(i)
+			System.err.print(JSON.call("stringify", arg))
+			if (i < len - 1) {
+				System.err.print(", ")
+			}
+			i++
+		}
+		System.err.println()
+	}
+
+	fun init(graph: String) {
+		modelCall("init", graph)
+	}
+
+	fun update(name: String, result: String) {
+		modelCall("update", name, result)
 	}
 }
+
+private fun String.abbreviate(maxLength: Int, suffix: String = Typography.ellipsis.toString()): String =
+	if (maxLength < this.length) {
+		this.substring(0, maxLength) + suffix
+	} else {
+		this
+	}
