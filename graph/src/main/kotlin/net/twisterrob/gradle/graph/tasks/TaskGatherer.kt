@@ -21,6 +21,7 @@ class TaskGatherer(
 	var simplify = false
 
 	interface TaskGraphListener {
+
 		fun graphPopulated(graph: Map<Task, TaskData>)
 	}
 

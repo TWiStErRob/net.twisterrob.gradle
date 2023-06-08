@@ -20,7 +20,7 @@ class JavaFXApplication : Application() {
 		log("ctor")
 	}
 
-	@Throws(Exception::class) 
+	@Throws(Exception::class)
 	override fun init() {
 		log("init")
 		fixer.start()
@@ -63,7 +63,7 @@ class JavaFXApplication : Application() {
 		override fun await(timeout: Long, unit: TimeUnit): Boolean =
 			super.await(timeout, unit).also { checkAborted() }
 
-		@Throws(InterruptedException::class) 
+		@Throws(InterruptedException::class)
 		override fun await() {
 			super.await()
 			checkAborted()

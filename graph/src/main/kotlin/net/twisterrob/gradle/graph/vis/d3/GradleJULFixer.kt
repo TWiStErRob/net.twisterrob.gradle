@@ -33,7 +33,6 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.simpleName) {
 		}
 	}
 
-
 	companion object {
 
 		private const val DEBUG = false
