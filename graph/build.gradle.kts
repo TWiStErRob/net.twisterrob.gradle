@@ -28,17 +28,21 @@ repositories {
 }
 
 dependencies {
-	implementation(gradleApi())
+	api(gradleApi()) // java-gradle-plugin
+	implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+	implementation("org.jetbrains.kotlin:kotlin-stdlib")
 	implementation("org.graphstream:gs-core:1.3")
 	implementation("com.google.code.gson:gson:2.10.1")
+	implementation("org.jetbrains:annotations:24.0.1")
+
 	testImplementation("junit:junit:4.13.2")
 }
 
 javafx {
 	modules = listOf(
-		"javafx.controls",
-		"javafx.web",
-		"javafx.swing",
+		"javafx.controls", // implementation("org.openjfx:javafx-controls:17")
+		"javafx.web", // implementation("org.openjfx:javafx-web:17")
+		"javafx.swing", // implementation("org.openjfx:javafx-swing:17")
 	)
 }
 
