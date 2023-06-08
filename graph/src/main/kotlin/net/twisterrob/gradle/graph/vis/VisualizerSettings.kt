@@ -10,7 +10,7 @@ import java.io.IOException
 import java.nio.channels.OverlappingFileLockException
 import java.util.Properties
 
-abstract class VisualizerSettings<Settings> protected constructor(
+abstract class VisualizerSettings<Settings : Any> protected constructor(
 	private val cache: PersistentCache
 ) : Closeable {
 
@@ -51,7 +51,7 @@ abstract class VisualizerSettings<Settings> protected constructor(
 			}
 		}
 
-	protected abstract fun readSettings(props: Properties?): Settings
+	protected abstract fun readSettings(props: Properties): Settings
 	protected abstract fun writeSettings(settings: Settings): Properties
 	protected abstract fun createDefault(): Settings
 
