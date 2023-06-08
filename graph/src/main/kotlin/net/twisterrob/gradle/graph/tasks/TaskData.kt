@@ -20,7 +20,7 @@ class TaskData(
 	 *
 	 * @see #resetVisited
 	 */
-	var visited: Boolean = false
+	var isVisited: Boolean = false
 
 	override fun compareTo(other: TaskData): Int =
 		this.task.compareTo(other.task)
@@ -35,7 +35,7 @@ class TaskData(
 		 */
 		fun resetVisited(all: Iterable<TaskData>, value: Boolean = false) {
 			for (data in all) {
-				data.visited = value
+				data.isVisited = value
 			}
 		}
 	}

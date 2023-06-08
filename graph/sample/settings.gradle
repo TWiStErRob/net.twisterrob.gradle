@@ -15,7 +15,7 @@ plugins {
 }
 
 graphSettings {
-	dontClose = true
+	keepOpen = true
 	//visualizer = net.twisterrob.gradle.graph.vis.graphstream.GraphStreamTaskVisualizer
 }
 

@@ -26,13 +26,13 @@ class D3SwingTaskVisualizer(
 		settings = Settings(cache)
 		SwingUtilities.invokeLater {
 			/** @thread Swing Event Dispatch Thread */
-			createUI()
+			window = createUI()
 		}
 	}
 
 	/** @thread Swing Event Dispatch Thread */
-	private fun createUI() {
-		window = JFrame("Gradle Build Graph").apply {
+	private fun createUI(): JFrame? {
+		val window = JFrame("Gradle Build Graph").apply {
 			//isUndecorated = true
 			//background = Color(0, 0, 0, 0) // Transparent black.
 			contentPane.background = @Suppress("MagicNumber") Color(255, 255, 255, 255) // Opaque white.
@@ -47,15 +47,15 @@ class D3SwingTaskVisualizer(
 			})
 		}
 		val settings = settings.settings
-		settings.applyTo(window!!)
+		settings.applyTo(window)
 		GradleJULFixer.fix()
 		val fxPanel = initFX(settings)
 		if (fxPanel == null) {
-			window!!.dispose()
-			window = null
-		} else {
-			window!!.add(fxPanel)
+			window.dispose()
+			return null
 		}
+		window.add(fxPanel)
+		return window
 	}
 
 	private fun initFX(settings: Settings.WindowLocation): JFXPanel? {
@@ -87,48 +87,42 @@ class D3SwingTaskVisualizer(
 	 * JavaFX initialization may fail due to multiple classloaders trying to load glass.dll into one process.
 	 * In that case just skip every operation, because there's no UI.
 	 */
-	private fun windowInitFailed(): Boolean =
-		window == null
+	private inline fun withValidWindow(block: (JFrame) -> Unit) {
+		val window = this.window ?: return
+		block(window)
+	}
 
 	override fun showUI(project: org.gradle.api.initialization.Settings) {
 		super.showUI(project)
 		//fixer.start()
 		SwingUtilities.invokeLater {
 			/** @thread Swing Event Dispatch Thread */
-			if (windowInitFailed()) {
-				return@invokeLater
+			withValidWindow { window ->
+				window.title = "${project.rootProject.name} - Gradle Build Graph"
+				window.isVisible = true
 			}
-			window!!.title = "${project.rootProject.name} - Gradle Build Graph"
-			window!!.isVisible = true
 		}
 	}
 
 	override fun initModel(graph: Map<Task, TaskData>) {
-		if (windowInitFailed()) {
-			return
+		withValidWindow {
+			super.initModel(graph)
 		}
-		super.initModel(graph)
 	}
 
 	override fun update(task: Task, result: TaskResult) {
-		if (windowInitFailed()) {
-			return
+		withValidWindow {
+			super.update(task, result)
 		}
-		super.update(task, result)
 	}
 
 	override fun closeUI() {
 		super.closeUI()
 		//fixer.interrupt()
-		if (windowInitFailed()) {
-			settings.close()
-		}
+		settings.close()
 		SwingUtilities.invokeLater {
 			/** @thread Swing Event Dispatch Thread */
-			if (windowInitFailed()) {
-				return@invokeLater
-			}
-			window!!.dispose()
+			withValidWindow(JFrame::dispose)
 			window = null
 		}
 	}

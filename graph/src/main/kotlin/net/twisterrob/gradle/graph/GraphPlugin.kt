@@ -34,12 +34,12 @@ class GraphPlugin @Inject constructor(
 			override fun settingsEvaluated(settings: Settings) {
 				vis = createGraph(extension.visualizer)
 				vis.showUI(settings)
-				gatherer.simplify = extension.simplifyGraph
+				gatherer.isSimplify = extension.isSimplifyGraph
 			}
 
 			@Deprecated("Not compatible with configuration cache.")
 			override fun buildFinished(result: BuildResult) {
-				if (!extension.dontClose) {
+				if (extension.isKeepOpen) {
 					vis.closeUI()
 				}
 			}
@@ -93,7 +93,7 @@ class GraphPlugin @Inject constructor(
 					TaskResult.Completed
 
 				else ->
-					throw IllegalStateException(
+					error(
 						"""
 							What happened with ${task.name}? The task state is unrecognized:
 								Executed: ${state.executed}
@@ -107,14 +107,15 @@ class GraphPlugin @Inject constructor(
 	}
 }
 
+@Suppress("UnnecessaryAbstractClass") // Gradle extensions must be abstract.
 abstract class GraphSettingsExtension {
 
-	var dontClose: Boolean = false
+	var isKeepOpen: Boolean = false
 
 	/** A [TaskVisualizer] implementation class, null means automatic. */
 	var visualizer: Class<out TaskVisualizer>? = null
 
-	var simplifyGraph: Boolean = true
+	var isSimplifyGraph: Boolean = true
 }
 
 private fun hasJavaFX(): Boolean =

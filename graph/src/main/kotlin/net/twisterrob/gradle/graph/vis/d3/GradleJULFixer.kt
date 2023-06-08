@@ -65,6 +65,7 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.simpleName) {
 
 		private fun log(x: String) {
 			if (DEBUG) {
+				@Suppress("ForbiddenMethodCall") // TODO logging
 				println("--------------------------> $x")
 			}
 		}

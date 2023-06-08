@@ -8,6 +8,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
+@Suppress("UnsafeCallOnNullableType") // TODO rewrite this class without static/nullable/lateinit state.
 class JavaFXApplication : Application() {
 
 	private val fixer: GradleJULFixer = GradleJULFixer()
@@ -46,14 +47,14 @@ class JavaFXApplication : Application() {
 	internal class AbortableCountDownLatch(count: Int) : CountDownLatch(count) {
 
 		@Volatile
-		private var aborted: Boolean = false
+		private var isAborted: Boolean = false
 
 		/**
 		 * Unblocks all threads waiting on this latch and cause them to receive an [AbortedException].
 		 * If the latch has already counted all the way down, this method does nothing.
 		 */
 		fun abort() {
-			aborted = true
+			isAborted = true
 			while (count > 0) {
 				countDown()
 			}
@@ -71,7 +72,7 @@ class JavaFXApplication : Application() {
 
 		@Throws(AbortedException::class)
 		private fun checkAborted() {
-			if (aborted) {
+			if (isAborted) {
 				throw AbortedException()
 			}
 		}
@@ -163,6 +164,7 @@ class JavaFXApplication : Application() {
 
 		fun log(message: String?) {
 			if (DEBUG) {
+				@Suppress("ForbiddenMethodCall") // TODO logging
 				println(message)
 			}
 		}

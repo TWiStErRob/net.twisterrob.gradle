@@ -18,7 +18,7 @@ class TaskGatherer(
 ) : TaskExecutionGraphListener, ProjectEvaluationListener {
 
 	var taskGraphListener: TaskGraphListener? = null
-	var simplify = false
+	var isSimplify: Boolean = false
 
 	interface TaskGraphListener {
 
@@ -43,7 +43,7 @@ class TaskGatherer(
 			data(task).type = TaskType.Excluded // wins over requested
 		}
 		ResolveDependencies(::data).run(all.values.toList())
-		if (simplify) {
+		if (isSimplify) {
 			TransitiveReduction().run(all.values)
 		}
 		taskGraphListener?.run { graphPopulated(all) }
@@ -111,14 +111,15 @@ private class ResolveDependencies(
 	}
 
 	private fun addResolvedDependencies(taskData: TaskData) {
-		if (taskData.visited) {
+		if (taskData.isVisited) {
 			return // shortcut, because taskDependencies.getDependencies is really expensive
 		}
 		val deps: Set<Task> =
 			try {
+				// TODO why is this erroring?
 				taskData.task.taskDependencies.getDependencies(taskData.task) as Set<Task>
 			} catch (ignore: TaskDependencyResolveException) {
-				// TODO why is this erroring?
+				@Suppress("ForbiddenMethodCall") // TODO logging
 				println(ignore)
 				emptySet()
 			}
@@ -127,7 +128,7 @@ private class ResolveDependencies(
 			taskData.deps.add(data)
 			addResolvedDependencies(data)
 		}
-		taskData.visited = true
+		taskData.isVisited = true
 	}
 }
 
@@ -155,7 +156,7 @@ private class TransitiveReduction {
 	 * @param child0 current node during search
 	 */
 	private fun depthFirstSearch(vertex0: TaskData, child0: TaskData) {
-		if (child0.visited) {
+		if (child0.isVisited) {
 			return
 		}
 
@@ -171,7 +172,7 @@ private class TransitiveReduction {
 		}
 		path.removeAt(path.size - 1)
 
-		child0.visited = true
+		child0.isVisited = true
 	}
 
 	private fun tryReduce(vertex0: TaskData, child: TaskData) {

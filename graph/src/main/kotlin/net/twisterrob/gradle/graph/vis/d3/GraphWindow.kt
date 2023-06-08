@@ -23,9 +23,11 @@ import org.intellij.lang.annotations.Language
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
+import javax.annotation.OverridingMethodsMustInvokeSuper
 
 // https://blogs.oracle.com/javafx/entry/communicating_between_javascript_and_javafx
 // http://docs.oracle.com/javafx/2/webview/jfxpub-webview.htm
+@Suppress("UnnecessaryAbstractClass") // Subclasses must override some methods.
 abstract class GraphWindow : TaskVisualizer {
 
 	private var bridge: JavaScriptBridge? = null
@@ -86,6 +88,7 @@ abstract class GraphWindow : TaskVisualizer {
 		return webView
 	}
 
+	@OverridingMethodsMustInvokeSuper
 	override fun initModel(graph: Map<Task, TaskData>) {
 		val gson = GsonBuilder()
 			.setPrettyPrinting()
@@ -95,19 +98,22 @@ abstract class GraphWindow : TaskVisualizer {
 			.registerTypeAdapter(TaskType::class.java, TaskTypeSerializer())
 			.registerTypeAdapter(TaskResult::class.java, TaskResultSerializer())
 			.create()
-		bridge!!.init(gson.toJson(graph))
+		bridge?.init(gson.toJson(graph))
 	}
 
+	@OverridingMethodsMustInvokeSuper
 	override fun update(task: Task, result: TaskResult) {
-		bridge!!.update(TaskSerializer.getKey(task), TaskResultSerializer.getState(result))
+		bridge?.update(TaskSerializer.getKey(task), TaskResultSerializer.getState(result))
 	}
 
+	@OverridingMethodsMustInvokeSuper
 	override fun showUI(project: Settings) {
 		if (isBrowserReady) {
 			initModel(emptyMap()) // Reset graph before displaying it again.
 		}
 	}
 
+	@OverridingMethodsMustInvokeSuper
 	override fun closeUI() {
 		// Optional implementation, default: do nothing.
 	}
@@ -127,9 +133,11 @@ abstract class GraphWindow : TaskVisualizer {
 
 		private fun setBackgroundColor(page: Any?) {
 			if (page is com.sun.webkit.WebPage) {
+				@Suppress("ForbiddenMethodCall") // TODO logging
 				println("webpane.platform")
 				page.setBackgroundColor(0x00000000)
 			} else {
+				@Suppress("ForbiddenMethodCall") // TODO logging
 				println("Unknown page: " + page?.javaClass)
 			}
 		}

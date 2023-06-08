@@ -21,10 +21,9 @@ class D3JavaFXTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
 	override fun showUI(project: org.gradle.api.initialization.Settings) {
 		JavaFXApplication.startLaunch(settings.settings)
-		window = JavaFXApplication.show(project)
-		if (window != null) {
-			settings.settings.applyTo(window!!.stage)
-			window!!.stage.setOnHiding { event ->
+		window = JavaFXApplication.show(project)?.also { window ->
+			settings.settings.applyTo(window.stage)
+			window.stage.setOnHiding { event ->
 				settings.settings = Settings.WindowLocation(event.source as Window)
 				settings.close()
 			}
