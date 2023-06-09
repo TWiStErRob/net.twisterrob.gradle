@@ -101,6 +101,7 @@ svg {
 	margin: 0;
 }
 
+/*noinspection CssReplaceWithShorthandSafely*/
 #detail-name {
 	display: block;
 	text-align: center;

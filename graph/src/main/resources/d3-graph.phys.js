@@ -14,7 +14,7 @@ const phys = function() {
 		const topRight = a.x < b.x2() && b.x2() < a.x2() && a.y < b.y && b.y < a.y2();
 		const bottomLeft = a.x < b.x && b.x < a.x2() && a.y < b.y2() && b.y2() < a.y2();
 		return topLeft || bottomRight || topRight || bottomLeft;
-	};
+	}
 
 	function collide(n) {
 		const padding = 10,
@@ -35,7 +35,7 @@ const phys = function() {
 			}
 			return res;
 		};
-	};
+	}
 
 	function correct(n, q) {
 		// q < n (q's right overlaps n's left, move q left, -)
@@ -54,7 +54,7 @@ const phys = function() {
 		const dy = Math.min(n.y2() - q.y, q.y2() - n.y) / 8;
 		n.y -= dy;
 		q.y += dy;
-	};
+	}
 
 	function angle(start, end) {
 		const dy = end.y - start.y;
@@ -63,7 +63,7 @@ const phys = function() {
 		theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
 		//if (theta < 0) theta = 360 + theta; // range [0, 360)
 		return theta;
-	};
+	}
 
 	/**
 	 * Finds the intersection point between
@@ -76,7 +76,8 @@ const phys = function() {
 	 *       even though minY may not be the "top" of the rectangle
 	 *       because the coordinate system is flipped.
 	 *
-	 * @param (x,y) point to build the line segment from
+	 * @param x horizontal coordinate of point to build the line segment from
+	 * @param y vertical coordinate of point to build the line segment from
 	 * @param minX the "left" side of the rectangle
 	 * @param minY the "top" side of the rectangle
 	 * @param maxX the "right" side of the rectangle
@@ -125,5 +126,5 @@ const phys = function() {
 		// Should never happen :) If it does, please tell me!
 		throw "Cannot find intersection for " + [ x, y ]
 		      + " inside rectangle " + [ minY, minY ] + " - " + [ maxX, maxY ] + ".";
-	};
+	}
 }();
