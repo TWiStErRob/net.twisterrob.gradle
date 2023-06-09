@@ -11,6 +11,7 @@ import org.graphstream.graph.Graph
 import org.graphstream.graph.Node
 import org.graphstream.graph.implementations.SingleGraph
 import org.graphstream.ui.view.Viewer
+import java.awt.Component
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.IOException
@@ -28,6 +29,7 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 	private val settings: Settings = Settings(cache)
 
 	override fun showUI(project: org.gradle.api.initialization.Settings) {
+		System.setProperty("org.graphstream.ui", "swing") // 2.0
 		graph = SingleGraph(project.rootProject.name)
 		try {
 			val css = this::class.java.getResourceAsStream("/graphstream.css").bufferedReader().readText()
@@ -39,7 +41,7 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 		graph.setAutoCreate(false)
 
 		viewer = graph.display()
-		val window = SwingUtilities.getWindowAncestor(viewer.defaultView)
+		val window = SwingUtilities.getWindowAncestor(viewer.defaultView as Component)
 		window.createBufferStrategy(1)
 		viewer.closeFramePolicy = Viewer.CloseFramePolicy.CLOSE_VIEWER
 		window.addWindowListener(object : WindowAdapter() {
@@ -78,7 +80,7 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 		val view = viewer.defaultView
 		if (view != null) {
 			SwingUtilities.invokeLater {
-				settings.settings = Settings.WindowLocation(SwingUtilities.getWindowAncestor(view))
+				settings.settings = Settings.WindowLocation(SwingUtilities.getWindowAncestor(view as Component))
 				settings.close()
 				viewer.removeView(view.id)
 				viewer.close()

@@ -11,23 +11,11 @@ graph {
 	fill-color: white;
 }
 node {
-	//text-background-mode: rounded-box;
-	//text-padding: 2px, 2px;
-	//text-background-color: red;
-/*
-	text-color: white;
-	fill-color: gray;
-	text-size: 15;
-	text-style: bold;
-	text-alignment: under;
-	text-padding: 5px, 4px;
-	shape: rounded-box;
-	fill-color: black;
-	stroke-mode: plain;
-	stroke-width: 4px;
-	stroke-color: black;
-	shadow-mode: gradient-radial;
-*/
+	/* These are unused in Graphstream 1.3
+	text-background-mode: rounded-box;
+	text-padding: 2px, 2px;
+	text-background-color: red;
+	*/
 }
 node:clicked {
 	fill-color: gray;
