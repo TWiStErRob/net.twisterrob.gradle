@@ -54,7 +54,7 @@
 	</div>
 	<div id="menu">
 		<button onclick="force.stop()">Freeze</button>
-		<button onclick="force.resume()">Thaw</button>
+		<button onclick="force.restart()">Thaw</button>
 		<button onclick="force.stop(); zoomFit(0.95, 500)">Fit</button>
 	</div>
 	<script>//<![CDATA[
@@ -63,7 +63,7 @@ function main() {
 	// needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
 	setTimeout(function() {
 		console.debug("Startup " + navigator.userAgent);
-		//resize();
+		resize();
 		details.init();
 		if (window['java'] !== undefined) {
 			console.debug("We're in JavaFX");
@@ -74,14 +74,15 @@ function main() {
 	}, 0);
 }
 
-const zoom = d3.behavior
+const zoom = d3
 	.zoom()
 	.scaleExtent([ 1 / 4, 4 ])
-	.on('zoom.zoom', function() {
-		console.trace("zoom", d3.event.translate, d3.event.scale);
+	.on('zoom', function() {
+		const transform = d3.event.transform;
+		console.debug("zoom", transform);
 		root.attr('transform',
-			'translate(' + d3.event.translate + ')'
-			+   'scale(' + d3.event.scale     + ')');
+			'translate(' + transform.x + ',' + transform.y + ')'
+			+   'scale(' + transform.k + ')');
 	})
 ;
 
@@ -127,22 +128,22 @@ const root = svg.select('#root');
 const node_group = svg.select('#nodes');
 const link_group = svg.select('#links');
 
-const force = d3.layout
-	.force()
-	.gravity(0.03)
-	.linkStrength(0.3)
-	.charge(-400)
+const force = d3
+	.forceSimulation()
+	.force("size", d3.forceCenter()/* TODO v6 .strength(0.03)*/) 
+	.force("link", d3.forceLink().strength(0.3))
+	.force("charge", d3.forceManyBody().strength(-400))
 	.on('tick', function tick() {
 		//const q = d3.geom.quadtree(nodes);
 		//node.each(function(n) { q.visit(phys.collide(n)) });
-		link
+		uiLinks
 			.attr('x1', function(d) { return phys.pointOnRect(d.source, d.target).x; })
 			.attr('y1', function(d) { return phys.pointOnRect(d.source, d.target).y; })
 			.attr('x2', function(d) { return phys.pointOnRect(d.target, d.source).x; })
 			.attr('y2', function(d) { return phys.pointOnRect(d.target, d.source).y; })
 		;
 
-		node
+		uiNodes
 			.attr('transform', function translate(d) {
 				return 'translate(' + d.x + ',' + d.y + ')';
 			})
@@ -257,22 +258,23 @@ const details = function() {
 // noinspection ES6ConvertVarToLetConst
 var graph = {}; // window.graph is referenced as such.
 const nodes = force.nodes();
-const links = force.links();
+const links = force.force("link").links();
 let node = node_group.selectAll('.node');
 let link = link_group.selectAll('.link');
-let uiNodes, uiLinks;
+let uiNodes = link, uiLinks = node;
 
 d3.select(window).on('resize', resize);
 
 function resize() {
-	const width = window.innerWidth, height = window.innerHeight;
-	console.trace("Resize", force.size(), [ width, height ]);
-	//zoom.center([width/2, height/2]);
-	force.size([ width, height ]).resume();
-	lapsedZoomFit(5, 0);
+	const centerX = window.innerWidth / 2, centerY = window.innerHeight / 2;
+	const size = force.force('size');
+	console.debug("Resize center", [ size.x(), size.y() ], [ centerX, centerY ]);
+	//zoom.center([ centerX, centerY ]);
+	size.x(centerX).y(centerY);
+	force.restart();
 }
 
-function restart(first) {
+function restart() {
 	link = link.data(links);
 	link.exit().remove();
 	uiLinks = link
@@ -307,17 +309,32 @@ function restart(first) {
 		.on('mouseout', function(d) {
 			details.hideNode(d);
 		})
-		.call(force
+		.call(d3
 			.drag()
-			.on('dragstart', function() {
-				d3.event.sourceEvent.stopPropagation();
-			}),
-		);
-
-	force.start();
-	if (first) {
-		lapsedZoomFit(200, 0);
-	}
+			.on("start", function dragStart(d) {
+				if (!d3.event.active) {
+					force.alphaTarget(0.3).restart();
+				}
+				d.fx = d.x;
+				d.fy = d.y;
+			})
+			.on("drag", function dragMove(d) {
+				d.fx = d3.event.x;
+				d.fy = d3.event.y;
+			})
+			.on("end", function dragEnd(d) {
+				if (!d3.event.active) {
+					force.alphaTarget(0);
+				}
+				d.fx = null;
+				d.fy = null;
+			})
+		)
+	;
+	force.stop();
+	force.nodes(nodes);
+	force.force("link").links(links);
+	force.restart();
 }
 
 function selectNode(d) { // TODO use #task-id for back navigation support
@@ -326,14 +343,6 @@ function selectNode(d) { // TODO use #task-id for back navigation support
 		d3.select(d.ui.node).classed('selected', true);
 	}
 	details.lockNode(d);
-}
-
-function lapsedZoomFit(ticks, transitionDuration) {
-	for (let i = ticks; i > 0; --i) {
-		force.tick();
-	}
-	force.stop();
-	zoomFit(0.75, transitionDuration);
 }
 
 /**
@@ -355,11 +364,11 @@ function zoomFit(paddingPercent, transitionDuration) {
 	const scale = paddingPercent / Math.max(width / fullWidth, height / fullHeight);
 	const translate = [ fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY ];
 
-	console.trace("zoomFit", translate, scale);
-	root
+	console.debug("zoomFit", translate, scale);
+	svg
 		.transition()
 		.duration(transitionDuration)
-		.call(zoom.translate(translate).scale(scale).event);
+		.call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
 }
 
 const legendData = [
@@ -381,7 +390,7 @@ const legendData = [
 		// TODO use nodify?
 		legendDatum.ui = {
 			data: legendDatum,
-			project: function() { return ""; },
+			project: function() { return ":sub:module"; },
 			label: function() { return this.data.title; },
 			nodeId: function() { return 'legend_' + this.data.id; },
 		};
@@ -450,7 +459,7 @@ function createNodes(nodeData) {
 		.each(function(d) { d.ui.node = this; })
 		.attr('id', function(d) { return d.ui.nodeId(); })
 	;
-	nodeData
+	uiNodes
 		.attr("class", nodeClasses)
 	;
 	const rect = uiNodes.append('rect')
@@ -484,7 +493,7 @@ function createNodes(nodeData) {
 		d.width = box.width;
 		d.height = box.height;
 	});
-	return nodeData;
+	return uiNodes;
 }
 
 let model = function() {
@@ -523,7 +532,13 @@ let model = function() {
 					fromNode.links.push(link);
 				}
 			}
-			restart(true);
+			restart();
+			// for (let i = 10; i > 0; --i) {
+			// 	force.tick();
+			// }
+			// setTimeout is required to allow the browser to render the nodes.
+			setTimeout(function () { zoomFit(0.95, 100); }, 1000);
+			setTimeout(function () { zoomFit(0.95, 100); }, 2000);
 		},
 		update: function(task, result) {
 			const node = d3.select('#' + constructNodeId(task));
@@ -533,6 +548,7 @@ let model = function() {
 			details.refreshDisplay();
 		},
 		add: function(data) {
+			// STOPSHIP middle click weird, probably due to selection changes in v4, restart() needs to be rewritten.
 			nodes.push(nodify(data.id, data));
 			restart();
 		},
