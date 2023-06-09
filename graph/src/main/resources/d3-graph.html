@@ -72,7 +72,7 @@ function main() {
 	}, 0);
 }
 
-var zoom = d3.behavior
+const zoom = d3.behavior
 	.zoom()
 	.scaleExtent([1/4, 4])
 	.on('zoom.zoom', function () {
@@ -83,7 +83,7 @@ var zoom = d3.behavior
 	})
 ;
 
-var svg = d3
+const svg = d3
 	.select('svg')
 	.call(zoom)
 	//.on('mousemove', function () {
@@ -91,7 +91,7 @@ var svg = d3
 	//})
 ;
 
-var demoIdCounter = 0;
+let demoIdCounter = 0;
 svg.select('#background')
 	.on('click', function() {
 		selectNode(null);
@@ -99,7 +99,7 @@ svg.select('#background')
 	.on('mousedown', function () {
 		if(d3.event.which != 2) return;
 		d3.event.preventDefault();
-		var point = d3.mouse(node_group.node());
+		const point = d3.mouse(node_group.node());
 		model.add({
 			id: '____' + demoIdCounter++ + '____',
 			type: 'unknown',
@@ -109,8 +109,8 @@ svg.select('#background')
 		/*
 		// add links to any nearby nodes
 		nodes.forEach(function(target) {
-			var x = target.x - node.x,
-			    y = target.y - node.y;
+			const x = target.x - node.x,
+			      y = target.y - node.y;
 			if (Math.sqrt(x * x + y * y) < 30) {
 				links.push({source: node, target: target});
 			}
@@ -118,18 +118,18 @@ svg.select('#background')
 		*/
 	})
 ;
-//var cursor = svg.select('#cursor');
-var root = svg.select('#root');
-var node_group = svg.select('#nodes');
-var link_group = svg.select('#links');
+//const cursor = svg.select('#cursor');
+const root = svg.select('#root');
+const node_group = svg.select('#nodes');
+const link_group = svg.select('#links');
 
-var force = d3.layout
+const force = d3.layout
 		.force()
 		.gravity(0.03)
 		.linkStrength(0.3)
 		.charge(-400)
 		.on('tick', function tick() {
-			//var q = d3.geom.quadtree(nodes);
+			//const q = d3.geom.quadtree(nodes);
 			//node.each(function(n) { q.visit(phys.collide(n)) });
 			link
 				.attr('x1', function(d) { return phys.pointOnRect(d.source, d.target).x; })
@@ -149,31 +149,31 @@ var force = d3.layout
 		})
 ;
 
-var details = function() {
-	var det = d3.select('#details');
-	var progressUI = det.select('#detail-running');
-	var nameUI = det.select('#detail-name').insert('span');
-	var projectUI = det.select('#detail-project');
-	var typeUI = det.select('#detail-type');
-	var stateUI = det.select('#detail-state');
-	var posUI = det.select('#detail-pos');
-	var dependsUI = det.select('#detail-depends');
-	var dependentsUI = det.select('#detail-dependents');
+const details = function() {
+	const det = d3.select('#details');
+	const progressUI = det.select('#detail-running');
+	const nameUI = det.select('#detail-name').insert('span');
+	const projectUI = det.select('#detail-project');
+	const typeUI = det.select('#detail-type');
+	const stateUI = det.select('#detail-state');
+	const posUI = det.select('#detail-pos');
+	const dependsUI = det.select('#detail-depends');
+	const dependentsUI = det.select('#detail-dependents');
 	// Workaround for: https://github.com/mbostock/d3/issues/94,
 	// keep reference to #text and update it later, dependsUI.text("") would clear <li>s too
-	var dependsUILabel = d3.select(document.createTextNode("")); dependsUI.node().appendChild(dependsUILabel.node());
-	var dependentsUILabel = d3.select(document.createTextNode("")); dependentsUI.node().appendChild(dependentsUILabel.node());
+	const dependsUILabel = d3.select(document.createTextNode("")); dependsUI.node().appendChild(dependsUILabel.node());
+	const dependentsUILabel = d3.select(document.createTextNode("")); dependentsUI.node().appendChild(dependentsUILabel.node());
 
 	nameUI.on('click', function() {
 		det.classed('collapsed', !det.classed('collapsed'));
 	});
-	var currentNode = null;
-	var currentNodeIsLocked = false;
-	var currentNodeIsActive = false;
+	let currentNode = null;
+	let currentNodeIsLocked = false;
+	let currentNodeIsActive = false;
 
 
 	function bindDeps(/* d3.selection<ul> */ ui, label, /* Array<String> */ deps) {
-		var dependsData = ui.selectAll('li').data(deps, function(d) { return d; });
+		const dependsData = ui.selectAll('li').data(deps, function(d) { return d; });
 		dependsData.exit().remove();
 
 		dependsData.enter()
@@ -211,7 +211,7 @@ var details = function() {
 	}
 
 	function autoPick() {
-		var executing = node.filter('.executing');
+		const executing = node.filter('.executing');
 		return executing.size() === 0? null : executing.datum();
 	}
 
@@ -248,16 +248,16 @@ var details = function() {
 	};
 }();
 
-var graph = {};
-var nodes = force.nodes();
-var links = force.links();
-var node = node_group.selectAll('.node');
-var link = link_group.selectAll('.link');
-var uiNodes, uiLinks;
+const graph = {};
+const nodes = force.nodes();
+const links = force.links();
+let node = node_group.selectAll('.node');
+let link = link_group.selectAll('.link');
+let uiNodes, uiLinks;
 
 d3.select(window).on('resize', resize);
 function resize() {
-	var width = window.innerWidth, height = window.innerHeight;
+	const width = window.innerWidth, height = window.innerHeight;
 	console.trace("Resize", force.size(), [width, height]);
 	//zoom.center([width/2, height/2]);
 	force.size([width, height]).resume();
@@ -319,23 +319,23 @@ function selectNode(d) { // TODO use #task-id for backnav support
 }
 
 function lapsedZoomFit(ticks, transitionDuration) {
-	for (var i = ticks || 200; i > 0; --i) force.tick();
+	for (let i = ticks || 200; i > 0; --i) force.tick();
 	force.stop();
 	zoomFit(undefined, transitionDuration);
 }
 
 function zoomFit(paddingPercent, transitionDuration) {
-	var bounds = root.node().getBBox();
-	var parent = root.node().parentElement;
-	var fullWidth = parent.clientWidth,
+	const bounds = root.node().getBBox();
+	const parent = root.node().parentElement;
+	const fullWidth = parent.clientWidth,
 	    fullHeight = parent.clientHeight;
-	var width = bounds.width,
+	const width = bounds.width,
 	    height = bounds.height;
-	var midX = bounds.x + width / 2,
+	const midX = bounds.x + width / 2,
 	    midY = bounds.y + height / 2;
 	if (width == 0 || height == 0) return; // nothing to fit
-	var scale = (paddingPercent || 0.75) / Math.max(width / fullWidth, height / fullHeight);
-	var translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+	const scale = (paddingPercent || 0.75) / Math.max(width / fullWidth, height / fullHeight);
+	const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
 
 	console.trace("zoomFit", translate, scale);
 	root
@@ -344,7 +344,7 @@ function zoomFit(paddingPercent, transitionDuration) {
 		.call(zoom.translate(translate).scale(scale).event);
 }
 
-var legendData = [
+const legendData = [
 	{ classes: '', title: 'task' },
 	{ classes: 'success' },
 	{ classes: 'uptodate', title: 'UP-TO-DATE' },
@@ -358,7 +358,7 @@ var legendData = [
 	{ classes: 'selected' }
 ];
 !function buildLegend() {
-	for(var i in legendData) { var legendDatum = legendData[i];
+	for(const i in legendData) { const legendDatum = legendData[i];
 		// TODO use nodify?
 		legendDatum.ui = {
 			data: legendDatum,
@@ -374,26 +374,26 @@ var legendData = [
 		legendDatum.depsInverse = [];
 		legendDatum.id = legendData[i].classes.replace(/ /, '-');
 	}
-	var legend = svg
+	const legend = svg
 		.select('#legend');
-	var legendNodes = legend
+	let legendNodes = legend
 		.selectAll('.node')
 		.data(legendData)
 	;
-	var legendHeader = legend
+	const legendHeader = legend
 		.select('#legend-header')
 		.on('click', function() {
 			legend.classed('collapsed', !legend.classed('collapsed'));
 			autoSizeLegend();
 		})
 	;
-	var headerHeight = legendHeader.node().getBBox().height;
+	const headerHeight = legendHeader.node().getBBox().height;
 	legendNodes = createNodes(legendNodes)
 		.attr('class', function(d) { return 'node ' + d.classes; })
 		.attr('transform', function(d, i) { return 'translate(0,' + (headerHeight + 10 + i * d.height * 1.3) + ')'; })
 	;
 
-	var legendBG = legend
+	const legendBG = legend
 		.select('#legend-bg')
 		.on('click', function() {
 			legend.classed('collapsed', !legend.classed('collapsed'));
@@ -403,8 +403,8 @@ var legendData = [
 
 	function autoSizeLegend() {
 		legendBG.style('display', 'none');
-		var legendBox = legend.node().getBBox();
-		var legendPadding = 16;
+		const legendBox = legend.node().getBBox();
+		const legendPadding = 16;
 		legendBG
 			.attr("x", legendBox.x - legendPadding)
 			.attr("y", legendBox.y - legendPadding)
@@ -426,7 +426,7 @@ function nodeClasses(d) {
 	;
 }
 function createNodes(nodeData) {
-	var uiNodes = nodeData
+	const uiNodes = nodeData
 		.enter()
 		.append('g')
 		.each(function(d) { d.ui.node = this; })
@@ -435,20 +435,20 @@ function createNodes(nodeData) {
 	nodeData
 		.attr("class", nodeClasses);
 	;
-	var rect = uiNodes.append('rect')
+	const rect = uiNodes.append('rect')
 		.each(function(d) { d.ui.bg = this; })
 	;
-	var text = uiNodes.append('text')
+	const text = uiNodes.append('text')
 		.each(function(d) { d.ui.text = this; })
 		.classed('label', true)
 		.text(function(d) { return d.ui.label(); })
 	;
 	//uiNodes.append('circle').attr("cx", 0).attr("cy", 0).attr("r", 3).attr("fill", "red");
-	var padding = {x: 5, y: 4};
+	const padding = {x: 5, y: 4};
 
 	rect
-		.attr('width', function(d) { return d.ui.text.clientWidth + 2.0 * padding.x; })
-		.attr('height', function(d) { return d.ui.text.clientHeight + 2.0 * padding.y; })
+		.attr('width', function(d) { return d.ui.text.getBBox().width + 2.0 * padding.x; })
+		.attr('height', function(d) { return d.ui.text.getBBox().height + 2.0 * padding.y; })
 		.attr('x', function(d) { return +d3.select(this).attr('width') / -2.0; })
 		.attr('y', function(d) { return +d3.select(this).attr('height') / -2.0; })
 	;
@@ -461,14 +461,14 @@ function createNodes(nodeData) {
 	;
 
 	uiNodes.each(function(d) {
-		var box = d.ui.node.getBBox();
+		const box = d.ui.node.getBBox();
 		d.width = box.width;
 		d.height = box.height;
 	});
 	return nodeData;
 }
 
-var model = function() {
+let model = function() {
 	return {
 		init: function(graph) {
 			function filter(d) { return d.type == 'unknown'; }
@@ -476,20 +476,20 @@ var model = function() {
 			window.graph = graph;
 
 			nodes.length = 0;
-			for (var dataIndex in graph) { var data = graph[dataIndex];
+			for (const dataIndex in graph) { const data = graph[dataIndex];
 				if(filter(data)) continue;
-				var node = nodify(dataIndex, data);
+				const node = nodify(dataIndex, data);
 				nodes.push(node);
 			}
 			links.length = 0;
-			for (var nodeIndex in graph) {
-				var fromNode = graph[nodeIndex];
+			for (const nodeIndex in graph) {
+				const fromNode = graph[nodeIndex];
 				if (filter(fromNode)) continue;
-				for(var depIndex in fromNode.deps) {
-					var toNode = graph[fromNode.deps[depIndex]];
+				for(const depIndex in fromNode.deps) {
+					const toNode = graph[fromNode.deps[depIndex]];
 					if (filter(toNode)) continue;
 					toNode.depsInverse.push(fromNode.id);
-					var link = createLink(fromNode, toNode);
+					const link = createLink(fromNode, toNode);
 					links.push(link);
 					fromNode.links.push(link);
 				}
@@ -497,8 +497,8 @@ var model = function() {
 			restart(true);
 		},
 		update: function(task, result) {
-			var node = d3.select('#' + constructNodeId(task));
-			var data = node.datum();
+			const node = d3.select('#' + constructNodeId(task));
+			const data = node.datum();
 			data.state = result;
 			node.attr("class", nodeClasses(data));
 			details.refreshDisplay();
@@ -518,12 +518,12 @@ var model = function() {
 		return 'link_' + cleanName(from) + '_' + cleanName(to);
 	}
 	function nodify(id, node) {
-		var defaults = {
+		const defaults = {
 			id: id,
 			deps: [],
 			depsInverse: []
 		};
-		var viewModel = {
+		const viewModel = {
 			links: [],
 			ui: {
 				data: node,
@@ -531,11 +531,11 @@ var model = function() {
 				text: null,
 				bg: null,
 				project: function() {
-					var label = this.data.label || this.data.id;
+					const label = this.data.label || this.data.id;
 					return label.replace(/^:?(.+):.+$|.*/, "$1");
 				},
 				label: function() {
-					var label = this.data.label || this.data.id;
+					const label = this.data.label || this.data.id;
 					return label.replace(/^:?(.*):/, "");
 				},
 				nodeId: function() {
@@ -554,12 +554,12 @@ var model = function() {
 			return this.id + " @ " + this.x + "," + this.y + " " + this.width + "x" + this.height;
 		};
 
-		for (var i in defaults) {
+		for (const i in defaults) {
 			if (node[i] === undefined) {
 				node[i] = defaults[i];
 			}
 		}
-		for (var i in viewModel) {
+		for (const i in viewModel) {
 			if (node[i] === undefined) {
 				node[i] = viewModel[i];
 			} else {
@@ -597,7 +597,7 @@ if (window.java) {
 				}
 			}
 		}
-		for(var item in model) {
+		for(const item in model) {
 			if(typeof model[item] === 'function') {
 				model[item] = javaEntry(item, model[item]);
 			}
@@ -617,20 +617,20 @@ function autoSizeText(elem, min, max, step, lastChange) {
 		return +pixelStyle.slice(0, -2);
 	}
 
-	var elemBounds = elem.getBoundingClientRect(),
+	const elemBounds = elem.getBoundingClientRect(),
 	    style = window.getComputedStyle(elem),
 	    parentStyle = window.getComputedStyle(elem.parentNode)
 	;
-	var elemSize = { width: elemBounds.width, height: elemBounds.height };
-	var parentSize = { width: px(parentStyle.width), height: px(parentStyle.height) };
-	var fontSize = px(style.fontSize);
+	const elemSize = { width: elemBounds.width, height: elemBounds.height };
+	const parentSize = { width: px(parentStyle.width), height: px(parentStyle.height) };
+	let fontSize = px(style.fontSize);
 
 	//console.debug("autoSizeText(" + elem.textContent + ", " + min + ", " + max + ")", fontSize, elemSize, parentSize);
-	var change = 0, stop = false;
-	var needsSmaller = elemSize.width > parentSize.width || elemSize.height > parentSize.height;
-	var needsBigger = elemSize.width < parentSize.width && elemSize.height < parentSize.height;
-	var lastSmaller = lastChange <= 0;
-	var lastBigger = lastChange >= 0;
+	let change = 0, stop = false;
+	const needsSmaller = elemSize.width > parentSize.width || elemSize.height > parentSize.height;
+	const needsBigger = elemSize.width < parentSize.width && elemSize.height < parentSize.height;
+	const lastSmaller = lastChange <= 0;
+	const lastBigger = lastChange >= 0;
 	if (lastSmaller && needsSmaller) { //console.debug('lastSmaller needsSmaller')
 		change = -step; // continue shrinking
 	} else if (lastBigger && needsBigger) { //console.debug('lastBigger needsBigger')
@@ -663,7 +663,7 @@ function autoSizeText(elem, min, max, step, lastChange) {
 }
 
 function demo() {
-	var allDeps = {
+	const allDeps = {
 		':onlyIf': { deps: []},
 		':sub:proj:throwTask': { state: "failure", deps: []},
 		preBuild: { state: "skipped", deps: [':onlyIf', ':sub:proj:throwTask']},
