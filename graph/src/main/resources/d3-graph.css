@@ -29,8 +29,7 @@ svg {
 	letter-spacing: -1px;
 }
 .node > text.project {
-	/*fill: black;*/
-	/*font-style: italic;*/
+	fill: white;
 	font-size: 7px;
 	text-anchor: end;
 	alignment-baseline: text-before-edge;
