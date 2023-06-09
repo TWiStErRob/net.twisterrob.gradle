@@ -31,7 +31,7 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 		graph = SingleGraph(project.rootProject.name)
 		try {
 			val css = this::class.java.getResourceAsStream("/graphstream.css").bufferedReader().readText()
-			graph.addAttribute("ui.stylesheet", css)
+			graph.setAttribute("ui.stylesheet", css)
 		} catch (ex: IOException) {
 			throw IllegalStateException("Cannot read style sheet.", ex)
 		}
@@ -61,7 +61,9 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
 	override fun initModel(graph: Map<Task, TaskData>) {
 		for (data in graph.values) {
-			createNode(data)
+			val node = this.graph.addNode<Node>(id(data.task))
+			node.label = data.task.path
+			node.addClass(classMappingType.getValue(data.type))
 		}
 		for (data in graph.values) {
 			val from: Node = this.graph.getNode(id(data.task))
@@ -89,9 +91,8 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 		for (value in classMappingResult.values) {
 			node.removeClass(value)
 		}
-		@Suppress("UNUSED_VARIABLE")
-		val classes = node.addClass(classMappingResult.getValue(result))
-		//println(task.name + ": " + classes.contentToString())
+		node.addClass(classMappingResult.getValue(result))
+		//println(task.name + ": " + node.classes)
 	}
 
 	companion object {
