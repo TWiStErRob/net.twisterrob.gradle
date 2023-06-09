@@ -9,7 +9,7 @@ import org.gradle.cache.PersistentCache
 import org.graphstream.graph.Edge
 import org.graphstream.graph.Graph
 import org.graphstream.graph.Node
-import org.graphstream.graph.implementations.SingleGraph
+import org.graphstream.graph.implementations.MultiGraph
 import org.graphstream.ui.view.Viewer
 import java.awt.Component
 import java.awt.event.WindowAdapter
@@ -30,7 +30,7 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
 	override fun showUI(project: org.gradle.api.initialization.Settings) {
 		System.setProperty("org.graphstream.ui", "swing") // 2.0
-		graph = SingleGraph(project.rootProject.name)
+		graph = MultiGraph(project.rootProject.name)
 		try {
 			val css = this::class.java.getResourceAsStream("/graphstream.css").bufferedReader().readText()
 			graph.setAttribute("ui.stylesheet", css)
