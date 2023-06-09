@@ -315,7 +315,7 @@ function restart(first) {
 
 	force.start();
 	if (first) {
-		lapsedZoomFit(undefined, 0);
+		lapsedZoomFit(200, 0);
 	}
 }
 
@@ -328,13 +328,17 @@ function selectNode(d) { // TODO use #task-id for back navigation support
 }
 
 function lapsedZoomFit(ticks, transitionDuration) {
-	for (let i = ticks || 200; i > 0; --i) {
+	for (let i = ticks; i > 0; --i) {
 		force.tick();
 	}
 	force.stop();
-	zoomFit(undefined, transitionDuration);
+	zoomFit(0.75, transitionDuration);
 }
 
+/**
+ * @param paddingPercent 0.0 to 1.0, recommended close to 1.0
+ * @param transitionDuration milliseconds, positive, can be 0
+ */
 function zoomFit(paddingPercent, transitionDuration) {
 	const bounds = root.node().getBBox();
 	const parent = root.node().parentElement;
@@ -347,13 +351,13 @@ function zoomFit(paddingPercent, transitionDuration) {
 	if (width === 0 || height === 0) {
 		return; // Nothing to fit.
 	}
-	const scale = (paddingPercent || 0.75) / Math.max(width / fullWidth, height / fullHeight);
+	const scale = paddingPercent / Math.max(width / fullWidth, height / fullHeight);
 	const translate = [ fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY ];
 
 	console.trace("zoomFit", translate, scale);
 	root
 		.transition()
-		.duration(transitionDuration || 0) // milliseconds
+		.duration(transitionDuration)
 		.call(zoom.translate(translate).scale(scale).event);
 }
 
