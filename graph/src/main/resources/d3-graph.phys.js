@@ -91,9 +91,10 @@ const phys = function() {
 	function pointOnRect(x, y, minX, minY, maxX, maxY, check) {
 		//assert minX <= maxX;
 		//assert minY <= maxY;
-		if (check && (minX <= x && x <= maxX) && (minY <= y && y <= maxY))
+		if (check && (minX <= x && x <= maxX) && (minY <= y && y <= maxY)) {
 			throw "Point " + [ x, y ] + "cannot be inside "
 			      + "the rectangle: " + [ minY, minY ] + " - " + [ maxX, maxY ] + ".";
+		}
 		const midX = (minX + maxX) / 2;
 		const midY = (minY + maxY) / 2;
 		// if (midX - x == 0) -> m == ±Inf -> minYx/maxYx == x (because value / ±Inf = ±0)
@@ -101,26 +102,30 @@ const phys = function() {
 
 		if (x <= midX) { // check "left" side
 			const minXy = m * (minX - x) + y;
-			if (minY < minXy && minXy < maxY)
+			if (minY < minXy && minXy < maxY) {
 				return { x: minX, y: minXy };
+			}
 		}
 
 		if (x >= midX) { // check "right" side
 			const maxXy = m * (maxX - x) + y;
-			if (minY < maxXy && maxXy < maxY)
+			if (minY < maxXy && maxXy < maxY) {
 				return { x: maxX, y: maxXy };
+			}
 		}
 
 		if (y <= midY) { // check "top" side
 			const minYx = (minY - y) / m + x;
-			if (minX < minYx && minYx < maxX)
+			if (minX < minYx && minYx < maxX) {
 				return { x: minYx, y: minY };
+			}
 		}
 
 		if (y >= midY) { // check "bottom" side
 			const maxYx = (maxY - y) / m + x;
-			if (minX < maxYx && maxYx < maxX)
+			if (minX < maxYx && maxYx < maxX) {
 				return { x: maxYx, y: maxY };
+			}
 		}
 
 		// Should never happen :) If it does, please tell me!

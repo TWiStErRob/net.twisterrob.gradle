@@ -98,7 +98,9 @@ svg.select('#background')
 		selectNode(null);
 	})
 	.on('mousedown', function() {
-		if (d3.event.button !== 1) return;
+		if (d3.event.button !== 1) {
+			return;
+		}
 		d3.event.preventDefault();
 		const point = d3.mouse(node_group.node());
 		model.add({
@@ -318,12 +320,16 @@ function restart(first) {
 
 function selectNode(d) { // TODO use #task-id for back navigation support
 	uiNodes.filter('.selected').classed('selected', false);
-	if (d) d3.select(d.ui.node).classed('selected', true);
+	if (d) {
+		d3.select(d.ui.node).classed('selected', true);
+	}
 	details.lockNode(d);
 }
 
 function lapsedZoomFit(ticks, transitionDuration) {
-	for (let i = ticks || 200; i > 0; --i) force.tick();
+	for (let i = ticks || 200; i > 0; --i) {
+		force.tick();
+	}
 	force.stop();
 	zoomFit(undefined, transitionDuration);
 }
@@ -337,7 +343,9 @@ function zoomFit(paddingPercent, transitionDuration) {
 	      height = bounds.height;
 	const midX = bounds.x + width / 2,
 	      midY = bounds.y + height / 2;
-	if (width === 0 || height === 0) return; // Nothing to fit.
+	if (width === 0 || height === 0) {
+		return; // Nothing to fit.
+	}
 	const scale = (paddingPercent || 0.75) / Math.max(width / fullWidth, height / fullHeight);
 	const translate = [ fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY ];
 
@@ -478,23 +486,31 @@ let model = function() {
 		init: function(graph) {
 			function filter(d) { return d.type === 'unknown'; }
 
-			if (typeof graph === 'string') graph = JSON.parse(graph);
+			if (typeof graph === 'string') {
+				graph = JSON.parse(graph);
+			}
 			window.graph = graph;
 
 			nodes.length = 0;
 			for (const dataIndex in graph) {
 				const data = graph[dataIndex];
-				if (filter(data)) continue;
+				if (filter(data)) {
+					continue;
+				}
 				const node = nodify(dataIndex, data);
 				nodes.push(node);
 			}
 			links.length = 0;
 			for (const nodeIndex in graph) {
 				const fromNode = graph[nodeIndex];
-				if (filter(fromNode)) continue;
+				if (filter(fromNode)) {
+					continue;
+				}
 				for (const depIndex in fromNode.deps) {
 					const toNode = graph[fromNode.deps[depIndex]];
-					if (filter(toNode)) continue;
+					if (filter(toNode)) {
+						continue;
+					}
 					toNode.depsInverse.push(fromNode.id);
 					const link = createLink(fromNode, toNode);
 					links.push(link);
@@ -673,7 +689,9 @@ function autoSizeText(elem, min, max, step, lastChange) {
 	} else {
 		stop = true;
 	}
-	if (!stop) autoSizeText(elem, min, max, step, change);
+	if (!stop) {
+		autoSizeText(elem, min, max, step, change);
+	}
 }
 
 function demo() {
