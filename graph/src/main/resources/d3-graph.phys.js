@@ -1,3 +1,4 @@
+'use strict';
 const phys = function() {
 	return {
 		pointOnRect: function(rect, point) {
