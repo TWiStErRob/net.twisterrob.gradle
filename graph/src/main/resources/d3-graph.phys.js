@@ -1,40 +1,43 @@
 const phys = function() {
 	return {
-		pointOnRect: function (rect, point) {
+		pointOnRect: function(rect, point) {
 			const w = rect.width / 2;
 			const h = rect.height / 2;
 			return pointOnRect(point.x, point.y, rect.x - w, rect.y - h, rect.x + w, rect.y + h);
 		},
-		collide: collide
+		collide: collide,
 	};
-	function overlap (a, b) {
+
+	function overlap(a, b) {
 		const topLeft = a.x < b.x && b.x < a.x2() && a.y < b.y && b.y < a.y2();
 		const bottomRight = a.x < b.x2() && b.x2() < a.x2() && a.y < b.y2() && b.y2() < a.y2();
 		const topRight = a.x < b.x2() && b.x2() < a.x2() && a.y < b.y && b.y < a.y2();
 		const bottomLeft = a.x < b.x && b.x < a.x2() && a.y < b.y2() && b.y2() < a.y2();
 		return topLeft || bottomRight || topRight || bottomLeft;
 	};
-	function collide (n) {
+
+	function collide(n) {
 		const padding = 10,
-			nx1 = n.x - padding,
-			nx2 = n.x2() + padding,
-			ny1 = n.y - padding,
-			ny2 = n.y2() + padding;
+		      nx1     = n.x - padding,
+		      nx2     = n.x2() + padding,
+		      ny1     = n.y - padding,
+		      ny2     = n.y2() + padding;
 		return function(quad, x1, y1, x2, y2) {
 			const res = (nx2 < x1 || x2 < nx1) || (ny2 < y1 || y2 < ny1);
 			/*console.log("collide " + quad.point + " " + Math.round(x1) + "," + Math.round(y1) + " - " + Math.round(x2) + "," + Math.round(y2)
 				+ " to " + n.id + " " + Math.round(nx1) + "," + Math.round(ny1) + " - " + Math.round(nx2) + "," + Math.round(ny2)
 				+ ": " + res);*/
 			const q = quad.point;
-		    if (q && (q !== n)) {
+			if (q && (q !== n)) {
 				if (overlap(n, q)) {
 					correct(n, q);
 				}
-		    }
-		    return res;
+			}
+			return res;
 		};
 	};
-	function correct (n, q) {
+
+	function correct(n, q) {
 		// q < n (q's right overlaps n's left, move q left, -)
 		const diffLeft = q.x2() - n.x; // n.x is bigger
 		// n < q (q's left overlaps n's right, move q right, +)
@@ -52,7 +55,8 @@ const phys = function() {
 		n.y -= dy;
 		q.y += dy;
 	};
-	function angle (start, end) {
+
+	function angle(start, end) {
 		const dy = end.y - start.y;
 		const dx = end.x - start.x;
 		let theta = Math.atan2(dy, dx); // range (-PI, PI]
@@ -60,6 +64,7 @@ const phys = function() {
 		//if (theta < 0) theta = 360 + theta; // range [0, 360)
 		return theta;
 	};
+
 	/**
 	 * Finds the intersection point between
 	 *     * the rectangle
@@ -82,12 +87,12 @@ const phys = function() {
 	 * @author TWiStErRob
 	 * @see <a href="http://stackoverflow.com/a/18292964/253468">based on</a>
 	 */
-	function pointOnRect (x, y, minX, minY, maxX, maxY, check) {
+	function pointOnRect(x, y, minX, minY, maxX, maxY, check) {
 		//assert minX <= maxX;
 		//assert minY <= maxY;
 		if (check && (minX <= x && x <= maxX) && (minY <= y && y <= maxY))
-			throw "Point " + [x,y] + "cannot be inside "
-			    + "the rectangle: " + [minY, minY] + " - " + [maxX, maxY] + ".";
+			throw "Point " + [ x, y ] + "cannot be inside "
+			      + "the rectangle: " + [ minY, minY ] + " - " + [ maxX, maxY ] + ".";
 		const midX = (minX + maxX) / 2;
 		const midY = (minY + maxY) / 2;
 		// if (midX - x == 0) -> m == ±Inf -> minYx/maxYx == x (because value / ±Inf = ±0)
@@ -96,29 +101,29 @@ const phys = function() {
 		if (x <= midX) { // check "left" side
 			const minXy = m * (minX - x) + y;
 			if (minY < minXy && minXy < maxY)
-				return {x: minX, y: minXy};
+				return { x: minX, y: minXy };
 		}
 
 		if (x >= midX) { // check "right" side
 			const maxXy = m * (maxX - x) + y;
 			if (minY < maxXy && maxXy < maxY)
-				return {x: maxX, y: maxXy};
+				return { x: maxX, y: maxXy };
 		}
 
 		if (y <= midY) { // check "top" side
 			const minYx = (minY - y) / m + x;
 			if (minX < minYx && minYx < maxX)
-				return {x: minYx, y: minY};
+				return { x: minYx, y: minY };
 		}
 
 		if (y >= midY) { // check "bottom" side
 			const maxYx = (maxY - y) / m + x;
 			if (minX < maxYx && maxYx < maxX)
-				return {x: maxYx, y: maxY};
+				return { x: maxYx, y: maxY };
 		}
 
 		// Should never happen :) If it does, please tell me!
-		throw "Cannot find intersection for " + [x,y]
-		    + " inside rectangle " + [minY, minY] + " - " + [maxX, maxY] + ".";
+		throw "Cannot find intersection for " + [ x, y ]
+		      + " inside rectangle " + [ minY, minY ] + " - " + [ maxX, maxY ] + ".";
 	};
 }();

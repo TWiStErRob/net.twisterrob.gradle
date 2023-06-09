@@ -4,8 +4,8 @@ body, html, svg {
 	width: 100%;
 	height: 100%;
 }
-svg {
 
+svg {
 }
 
 #menu {
@@ -15,11 +15,12 @@ svg {
 }
 
 .node > rect {
-	fill: rgba(0,0,0,.8);
+	fill: rgba(0, 0, 0, .8);
 	rx: 4px;
 	ry: 4px;
 	shape-rendering: crispEdges;
 }
+
 .node > text.label {
 	fill: white;
 	text-anchor: middle;
@@ -28,12 +29,14 @@ svg {
 	font-family: sans-serif;
 	letter-spacing: -1px;
 }
+
 .node > text.project {
 	fill: white;
 	font-size: 7px;
 	text-anchor: end;
 	alignment-baseline: text-before-edge;
 }
+
 .link {
 	stroke: black;
 	stroke-width: 2px;
@@ -44,6 +47,7 @@ svg {
 svg {
 	/*cursor: none;*/
 }
+
 #cursor {
 	fill: none;
 	stroke: brown;
@@ -56,12 +60,14 @@ svg {
 	text-anchor: middle;
 	font-weight: bold;
 }
+
 #legend-bg {
 	cursor: pointer;
-	fill: rgba(255,255,255,.7);
+	fill: rgba(255, 255, 255, .7);
 	rx: 10px;
 	ry: 10px;
 }
+
 #legend.collapsed .node {
 	display: none;
 }
@@ -69,29 +75,32 @@ svg {
 /* Details */
 #details {
 	position: absolute;
-	/*overflow: auto;*/	/* overflow blurs text: http://stackoverflow.com/q/31501526/253468 */
+	/*overflow: auto;*/ /* overflow blurs text: http://stackoverflow.com/q/31501526/253468 */
 	/* workaround is to break excessively */
 	word-break: break-all;
 	right: 1em;
 	top: 1em;
 	width: 300px;
 	padding: 0.5em;
-	background-color: rgba(255,255,255,.7);
+	background-color: rgba(255, 255, 255, .7);
 	border-radius: 10px;
 }
 
 #details.collapsed > *:not(#detail-name) {
 	display: none;
 }
+
 #details.collapsed > #detail-running {
 	left: -10em;
 	top: 3em;
 }
+
 #details.collapsed #detail-name {
 	border-bottom: 0;
 	padding: 0;
 	margin: 0;
 }
+
 #detail-name {
 	display: block;
 	text-align: center;
@@ -106,35 +115,45 @@ svg {
 	margin-bottom: 0.5em;
 	cursor: pointer;
 }
-[id^='detail-']:before {
+
+[id^="detail-"]:before {
 	font-weight: bold;
 }
+
 #detail-project:before {
-	content: 'Project: ';
+	content: "Project: ";
 }
+
 #detail-pos:before {
-	content: 'Position: ';
+	content: "Position: ";
 }
+
 #detail-type:before {
-	content: 'Type: ';
+	content: "Type: ";
 }
+
 #detail-state:before {
-	content: 'State: ';
+	content: "State: ";
 }
+
 #detail-depends {
 	margin: 0;
 }
+
 #detail-depends:before {
 	margin-left: -40px;
-	content: 'Depends on: ';
+	content: "Depends on: ";
 }
+
 #detail-dependents {
 	margin: 0;
 }
+
 #detail-dependents:before {
 	margin-left: -40px;
-	content: 'Successors: ';
+	content: "Successors: ";
 }
+
 #detail-depends > li, #detail-dependents > li {
 	cursor: pointer;
 	text-decoration: underline;
@@ -142,46 +161,49 @@ svg {
 
 /* http://projects.lukehaas.me/css-loaders/ */
 #detail-running {
-  font-size: 3px;
-  position: relative;
-  text-indent: -9999em;
-  border: 1.1em solid rgba(0, 0, 0, 0.2);
-  border-left: 1.1em solid #000000;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-animation: load8 1.1s infinite linear;
-  animation: load8 1.1s infinite linear;
+	font-size: 3px;
+	position: relative;
+	text-indent: -9999em;
+	border: 1.1em solid rgba(0, 0, 0, 0.2);
+	border-left: 1.1em solid #000000;
+	-webkit-transform: translateZ(0);
+	-ms-transform: translateZ(0);
+	transform: translateZ(0);
+	-webkit-animation: load8 1.1s infinite linear;
+	animation: load8 1.1s infinite linear;
 }
+
 #detail-running,
 #detail-running:after {
-  position: absolute;
-  /*left: -10em;*/
-  right: 2em;
-  top: 16em;
-  border-radius: 50%;
-  width: 5em;
-  height: 5em;
+	position: absolute;
+	/*left: -10em;*/
+	right: 2em;
+	top: 16em;
+	border-radius: 50%;
+	width: 5em;
+	height: 5em;
 }
+
 @-webkit-keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
+
 @keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
 
 
@@ -189,13 +211,16 @@ svg {
 .node {
 	cursor: pointer;
 }
+
 .node > rect {
 	stroke-width: 3px;
 	stroke: #000;
 }
+
 .node.leaf > text {
 	/*font-size: 10px;*/
 }
+
 .node.straight > text {
 	/*font-size: 10px;*/
 }
@@ -205,94 +230,120 @@ svg {
 	fill: #CCC;
 	stroke: #CCC;
 }
+
 .node.unknown > text {
 	fill: #999;
 }
+
 .node.unknown:hover > text {
 	fill: #CCC;
 }
+
 /* The user asked to run this task, all others are running because this depends on them. */
 .node.requested > rect {
 	fill: #EB0;
 	stroke: #EB0;
 }
+
 .node.requested > text {
 	fill: #000;
 }
+
 .node.requested:hover > text {
 	fill: #EB0;
 }
+
 /* The user explicitly wanted to no run this task. */
 .node.excluded > rect {
 	fill: #F8C;
 	stroke: #F8C;
 }
+
 .node.excluded > text {
 	fill: #000;
 }
+
 .node.excluded:hover > text {
 	fill: #F8C;
 }
+
 /* Currently running task. */
 .node.executing > rect {
 	fill: #FF0;
 	stroke: #FF0;
 }
+
 .node.executing > text {
 	fill: #000;
 }
+
 .node.executing:hover > text {
 	fill: #FF0;
 	stroke: #000;
 	stroke-width: 0.25;
 }
+
 /* Already finished with some kind of result. */
 .node.success > rect {
 	stroke: #6A0;
 }
+
 .node.success > text {
 	fill: #8F8;
 }
+
 .node.success:hover > text {
 	fill: #6A0;
 }
+
 /* ---- Execution results ---- */
 .node.skipped > rect {
 	fill: #A4D;
 	stroke: #A4D;
 }
+
 .node.skipped > text {
 	fill: #FFF;
 }
+
 .node.skipped:hover > text {
 	fill: #A4D;
 }
+
 .node.uptodate > rect {
 	stroke: #4AD;
 }
+
 .node.uptodate > text {
 	fill: #AFF;
 }
+
 .node.uptodate:hover > text {
 	fill: #4AD;
 }
+
 .node.failure > rect {
 	fill: #F23;
 	stroke: #F23;
 }
+
 .node.failure > text {
 	fill: #FFF;
 }
+
 .node.failure:hover > text {
 	fill: #F23;
 }
+
 .node.nowork > rect {
 	fill: #00F;
 	stroke: #00F;
 }
+
 .node.nowork > text {
 	fill: #FFF;
 }
+
 .node.nowork:hover > text {
 	fill: #00F;
 }
@@ -302,11 +353,13 @@ svg {
 	fill: #FFF;
 	stroke-width: 6px;
 }
+
 .node.selected > text {
 	fill: #000;
 	text-decoration: underline;
 	underline-thickness: 4;
 }
+
 /*
 .node:hover > rect {
 	filter: url(#negative);
@@ -316,6 +369,7 @@ svg {
 	fill: #FFF;
 	stroke: #FFF;
 }
+
 .node:hover > text {
 	fill: #000;
 }

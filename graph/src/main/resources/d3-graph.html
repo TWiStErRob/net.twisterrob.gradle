@@ -74,8 +74,8 @@ function main() {
 
 const zoom = d3.behavior
 	.zoom()
-	.scaleExtent([1/4, 4])
-	.on('zoom.zoom', function () {
+	.scaleExtent([ 1 / 4, 4 ])
+	.on('zoom.zoom', function() {
 		console.trace("zoom", d3.event.translate, d3.event.scale);
 		root.attr('transform',
 			'translate(' + d3.event.translate + ')'
@@ -86,7 +86,7 @@ const zoom = d3.behavior
 const svg = d3
 	.select('svg')
 	.call(zoom)
-	//.on('mousemove', function () {
+	//.on('mousemove', function() {
 	//	cursor.attr('transform', 'translate(' + d3.mouse(this) + ')');
 	//})
 ;
@@ -96,15 +96,15 @@ svg.select('#background')
 	.on('click', function() {
 		selectNode(null);
 	})
-	.on('mousedown', function () {
-		if(d3.event.which != 2) return;
+	.on('mousedown', function() {
+		if (d3.event.which != 2) return;
 		d3.event.preventDefault();
 		const point = d3.mouse(node_group.node());
 		model.add({
 			id: '____' + demoIdCounter++ + '____',
 			type: 'unknown',
 			x: point[0],
-			y: point[1]
+			y: point[1],
 		});
 		/*
 		// add links to any nearby nodes
@@ -112,7 +112,7 @@ svg.select('#background')
 			const x = target.x - node.x,
 			      y = target.y - node.y;
 			if (Math.sqrt(x * x + y * y) < 30) {
-				links.push({source: node, target: target});
+				links.push({ source: node, target: target });
 			}
 		});
 		*/
@@ -124,29 +124,29 @@ const node_group = svg.select('#nodes');
 const link_group = svg.select('#links');
 
 const force = d3.layout
-		.force()
-		.gravity(0.03)
-		.linkStrength(0.3)
-		.charge(-400)
-		.on('tick', function tick() {
-			//const q = d3.geom.quadtree(nodes);
-			//node.each(function(n) { q.visit(phys.collide(n)) });
-			link
-				.attr('x1', function(d) { return phys.pointOnRect(d.source, d.target).x; })
-				.attr('y1', function(d) { return phys.pointOnRect(d.source, d.target).y; })
-				.attr('x2', function(d) { return phys.pointOnRect(d.target, d.source).x; })
-				.attr('y2', function(d) { return phys.pointOnRect(d.target, d.source).y; })
-			;
+	.force()
+	.gravity(0.03)
+	.linkStrength(0.3)
+	.charge(-400)
+	.on('tick', function tick() {
+		//const q = d3.geom.quadtree(nodes);
+		//node.each(function(n) { q.visit(phys.collide(n)) });
+		link
+			.attr('x1', function(d) { return phys.pointOnRect(d.source, d.target).x; })
+			.attr('y1', function(d) { return phys.pointOnRect(d.source, d.target).y; })
+			.attr('x2', function(d) { return phys.pointOnRect(d.target, d.source).x; })
+			.attr('y2', function(d) { return phys.pointOnRect(d.target, d.source).y; })
+		;
 
-			node
-				.attr('transform', 	function translate(d) {
-					return 'translate(' + d.x + ',' + d.y + ')';
-				})
-			;
+		node
+			.attr('transform', function translate(d) {
+				return 'translate(' + d.x + ',' + d.y + ')';
+			})
+		;
 
-			details.refreshDisplay();
-			//zoomFit();
-		})
+		details.refreshDisplay();
+		//zoomFit();
+	})
 ;
 
 const details = function() {
@@ -161,8 +161,10 @@ const details = function() {
 	const dependentsUI = det.select('#detail-dependents');
 	// Workaround for: https://github.com/mbostock/d3/issues/94,
 	// keep reference to #text and update it later, dependsUI.text("") would clear <li>s too
-	const dependsUILabel = d3.select(document.createTextNode("")); dependsUI.node().appendChild(dependsUILabel.node());
-	const dependentsUILabel = d3.select(document.createTextNode("")); dependentsUI.node().appendChild(dependentsUILabel.node());
+	const dependsUILabel = d3.select(document.createTextNode(""));
+	dependsUI.node().appendChild(dependsUILabel.node());
+	const dependentsUILabel = d3.select(document.createTextNode(""));
+	dependentsUI.node().appendChild(dependentsUILabel.node());
 
 	nameUI.on('click', function() {
 		det.classed('collapsed', !det.classed('collapsed'));
@@ -183,7 +185,7 @@ const details = function() {
 				selectNode(graph[d]);
 			})
 		;
-		label.text(deps.length === 0? "nothing" : "")
+		label.text(deps.length === 0? "nothing" : "");
 	}
 
 	function display(d) {
@@ -197,7 +199,7 @@ const details = function() {
 		if (d) {
 			nameUI.text(d.ui.label());
 			autoSizeText(nameUI.node());
-			projectUI.text(d.ui.project() || 'root project');
+			projectUI.text(d.ui.project() || "root project");
 			typeUI.text(d.type || 'normal');
 			stateUI.text(d.state || 'scheduled');
 			progressUI.style('display', d.state === 'executing'? 'block' : 'none');
@@ -244,7 +246,7 @@ const details = function() {
 			} else {
 				display(currentNode);
 			}
-		}
+		},
 	};
 }();
 
@@ -256,11 +258,12 @@ let link = link_group.selectAll('.link');
 let uiNodes, uiLinks;
 
 d3.select(window).on('resize', resize);
+
 function resize() {
 	const width = window.innerWidth, height = window.innerHeight;
-	console.trace("Resize", force.size(), [width, height]);
+	console.trace("Resize", force.size(), [ width, height ]);
 	//zoom.center([width/2, height/2]);
-	force.size([width, height]).resume();
+	force.size([ width, height ]).resume();
 	lapsedZoomFit(5, 0);
 }
 
@@ -303,7 +306,7 @@ function restart(first) {
 			.drag()
 			.on('dragstart', function() {
 				d3.event.sourceEvent.stopPropagation();
-			})
+			}),
 		)
 
 	force.start();
@@ -327,15 +330,15 @@ function lapsedZoomFit(ticks, transitionDuration) {
 function zoomFit(paddingPercent, transitionDuration) {
 	const bounds = root.node().getBBox();
 	const parent = root.node().parentElement;
-	const fullWidth = parent.clientWidth,
-	    fullHeight = parent.clientHeight;
-	const width = bounds.width,
-	    height = bounds.height;
+	const fullWidth  = parent.clientWidth,
+	      fullHeight = parent.clientHeight;
+	const width  = bounds.width,
+	      height = bounds.height;
 	const midX = bounds.x + width / 2,
-	    midY = bounds.y + height / 2;
+	      midY = bounds.y + height / 2;
 	if (width == 0 || height == 0) return; // nothing to fit
 	const scale = (paddingPercent || 0.75) / Math.max(width / fullWidth, height / fullHeight);
-	const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+	const translate = [ fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY ];
 
 	console.trace("zoomFit", translate, scale);
 	root
@@ -345,30 +348,27 @@ function zoomFit(paddingPercent, transitionDuration) {
 }
 
 const legendData = [
-	{ classes: '', title: 'task' },
-	{ classes: 'success' },
-	{ classes: 'uptodate', title: 'UP-TO-DATE' },
-	{ classes: 'failure', title: 'FAILED' },
-	{ classes: 'skipped', title: 'SKIPPED' },
-	{ classes: 'executing' },
-	{ classes: 'requested' },
-	{ classes: 'excluded', title: '--exclude-task' },
-	{ classes: 'nowork' },
-	{ classes: 'unknown' },
-	{ classes: 'selected' }
+	{ classes: '', title: "task" },
+	{ classes: 'success', title: "Success" },
+	{ classes: 'uptodate', title: "UP-TO-DATE" },
+	{ classes: 'failure', title: "FAILED" },
+	{ classes: 'skipped', title: "SKIPPED" },
+	{ classes: 'executing', title: "Executing..." },
+	{ classes: 'requested', title: "Requested" },
+	{ classes: 'excluded', title: "--exclude-task" },
+	{ classes: 'nowork', title: "No Work" },
+	{ classes: 'unknown', title: "Unknown" },
+	{ classes: 'selected', title: "Selected" },
 ];
 !function buildLegend() {
-	for(const i in legendData) { const legendDatum = legendData[i];
+	for (const i in legendData) {
+		const legendDatum = legendData[i];
 		// TODO use nodify?
 		legendDatum.ui = {
 			data: legendDatum,
 			project: function() { return ""; },
-			label: function() {
-				return this.data.title || this.data.classes;
-			},
-			nodeId: function() {
-				return 'legend_' + this.data.id;
-			}
+			label: function() { return this.data.title; },
+			nodeId: function() { return 'legend_' + this.data.id; },
 		};
 		legendDatum.deps = [];
 		legendDatum.depsInverse = [];
@@ -408,11 +408,12 @@ const legendData = [
 		legendBG
 			.attr("x", legendBox.x - legendPadding)
 			.attr("y", legendBox.y - legendPadding)
-			.attr("width", legendBox.width + 2*legendPadding)
-			.attr("height", legendBox.height + 2*legendPadding)
+			.attr("width", legendBox.width + 2 * legendPadding)
+			.attr("height", legendBox.height + 2 * legendPadding)
 		;
 		legendBG.style('display', 'block');
 	}
+
 	autoSizeLegend();
 	legend.style('visibility', 'visible');
 }(legendData);
@@ -425,6 +426,7 @@ function nodeClasses(d) {
 		 + (d.deps.length === 1 && d.depsInverse.length === 1? ' straight' : '')
 	;
 }
+
 function createNodes(nodeData) {
 	const uiNodes = nodeData
 		.enter()
@@ -444,7 +446,7 @@ function createNodes(nodeData) {
 		.text(function(d) { return d.ui.label(); })
 	;
 	//uiNodes.append('circle').attr("cx", 0).attr("cy", 0).attr("r", 3).attr("fill", "red");
-	const padding = {x: 5, y: 4};
+	const padding = { x: 5, y: 4 };
 
 	rect
 		.attr('width', function(d) { return d.ui.text.getBBox().width + 2.0 * padding.x; })
@@ -472,12 +474,14 @@ let model = function() {
 	return {
 		init: function(graph) {
 			function filter(d) { return d.type == 'unknown'; }
+
 			if (typeof graph === 'string') graph = JSON.parse(graph);
 			window.graph = graph;
 
 			nodes.length = 0;
-			for (const dataIndex in graph) { const data = graph[dataIndex];
-				if(filter(data)) continue;
+			for (const dataIndex in graph) {
+				const data = graph[dataIndex];
+				if (filter(data)) continue;
 				const node = nodify(dataIndex, data);
 				nodes.push(node);
 			}
@@ -485,7 +489,7 @@ let model = function() {
 			for (const nodeIndex in graph) {
 				const fromNode = graph[nodeIndex];
 				if (filter(fromNode)) continue;
-				for(const depIndex in fromNode.deps) {
+				for (const depIndex in fromNode.deps) {
 					const toNode = graph[fromNode.deps[depIndex]];
 					if (filter(toNode)) continue;
 					toNode.depsInverse.push(fromNode.id);
@@ -500,28 +504,32 @@ let model = function() {
 			const node = d3.select('#' + constructNodeId(task));
 			const data = node.datum();
 			data.state = result;
-			node.attr("class", nodeClasses(data));
+			node.attr('class', nodeClasses(data));
 			details.refreshDisplay();
 		},
 		add: function(data) {
 			nodes.push(nodify(data.id, data));
 			restart();
-		}
+		},
 	};
+
 	function cleanName(name) {
 		return name.replace(/:/g, '-');
 	}
+
 	function constructNodeId(name) {
 		return 'node_' + cleanName(name);
 	}
+
 	function constructLinkId(from, to) {
 		return 'link_' + cleanName(from) + '_' + cleanName(to);
 	}
+
 	function nodify(id, node) {
 		const defaults = {
 			id: id,
 			deps: [],
-			depsInverse: []
+			depsInverse: [],
 		};
 		const viewModel = {
 			links: [],
@@ -532,22 +540,22 @@ let model = function() {
 				bg: null,
 				project: function() {
 					const label = this.data.label || this.data.id;
-					return label.replace(/^:?(.+):.+$|.*/, "$1");
+					return label.replace(/^:?(.+):.+$|.*/, '$1');
 				},
 				label: function() {
 					const label = this.data.label || this.data.id;
-					return label.replace(/^:?(.*):/, "");
+					return label.replace(/^:?(.*):/, '');
 				},
 				nodeId: function() {
 					return constructNodeId(this.data.id);
-				}
+				},
 			},
 			x2: function() {
 				return this.x + this.width;
 			},
 			y2: function() {
 				return this.y + this.height;
-			}
+			},
 		};
 
 		node.toString = function() {
@@ -568,20 +576,21 @@ let model = function() {
 		}
 		return node; // == $.merge(node, defaults, viewModel);
 	}
+
 	function createLink(fromNode, toNode) {
 		return {
 			source: fromNode,
 			target: toNode,
 			weight: 1,
 			ui: {
-				edge: null
+				edge: null,
 			},
 			linkId: function() {
 				return constructLinkId(this.source.id, this.target.id);
 			},
 			toString: function() {
 				return this.source + " -> " + this.target;
-			}
+			},
 		};
 	}
 }();
@@ -592,13 +601,14 @@ if (window.java) {
 				console.trace(name + "(" + JSON.stringify(arguments) + ")");
 				try {
 					return fun.apply(this, arguments);
-				} catch(e) {
+				} catch (e) {
 					console.warn(e.name + ": " + e.message + " " + e.stack);
 				}
-			}
+			};
 		}
-		for(const item in model) {
-			if(typeof model[item] === 'function') {
+
+		for (const item in model) {
+			if (typeof model[item] === 'function') {
 				model[item] = javaEntry(item, model[item]);
 			}
 		}
@@ -617,9 +627,9 @@ function autoSizeText(elem, min, max, step, lastChange) {
 		return +pixelStyle.slice(0, -2);
 	}
 
-	const elemBounds = elem.getBoundingClientRect(),
-	    style = window.getComputedStyle(elem),
-	    parentStyle = window.getComputedStyle(elem.parentNode)
+	const elemBounds  = elem.getBoundingClientRect(),
+	      style       = window.getComputedStyle(elem),
+	      parentStyle = window.getComputedStyle(elem.parentNode)
 	;
 	const elemSize = { width: elemBounds.width, height: elemBounds.height };
 	const parentSize = { width: px(parentStyle.width), height: px(parentStyle.height) };
@@ -644,10 +654,10 @@ function autoSizeText(elem, min, max, step, lastChange) {
 		change = 0; // doesn't need to be any different
 	} else {
 		throw "Invalid state"
-		    + ": lastSmaller="  + lastSmaller
-		    + ", lastBigger="   + lastBigger
-		    + ", needsSmaller=" + needsSmaller
-		    + ", needsBigger="  + needsBigger
+			+ ": lastSmaller=" + lastSmaller
+			+ ", lastBigger=" + lastBigger
+			+ ", needsSmaller=" + needsSmaller
+			+ ", needsBigger=" + needsBigger
 		;
 	}
 
@@ -664,43 +674,43 @@ function autoSizeText(elem, min, max, step, lastChange) {
 
 function demo() {
 	const allDeps = {
-		':onlyIf': { deps: []},
-		':sub:proj:throwTask': { state: "failure", deps: []},
-		preBuild: { state: "skipped", deps: [':onlyIf', ':sub:proj:throwTask']},
-		preDebugBuild: { state: "success", deps: ['preBuild']},
-		checkDebugManifest: { state: "uptodate", deps: ['preDebugBuild']},
-		prepareDebugDependencies: { state: "success", deps: [/*'preDebugBuild',*/ 'checkDebugManifest']},
-		compileDebugAidl: { deps: ['prepareDebugDependencies']},
-		compileDebugRenderscript: { deps: ['prepareDebugDependencies'/*, 'checkDebugManifest'*/]},
-		generateDebugBuildConfig: { deps: ['checkDebugManifest']},
-		generateDebugAssets: { deps: []},
-		mergeDebugAssets: { deps: ['prepareDebugDependencies', 'generateDebugAssets']},
-		generateDebugResValues: { deps: []},
-		generateDebugResources: { deps: ['generateDebugResValues', 'compileDebugRenderscript']},
-		mergeDebugResources: { deps: ['generateDebugResources']},
-		processDebugManifest: { deps: ['prepareDebugDependencies']},
-		processDebugResources: { deps: [ 'mergeDebugAssets', 'mergeDebugResources', 'processDebugManifest']},
-		generateDebugSources: { deps: [/*'compileDebugRenderscript',*/ 'compileDebugAidl', 'processDebugResources', 'generateDebugBuildConfig']},
-		processDebugJavaRes: { deps: []},
-		compileDebugJava: { state: "nowork", deps: [/*'prepareDebugDependencies',*/ 'processDebugJavaRes', 'generateDebugSources', '_debugCompile' ]},
-		compileDebugNdk: { type: "excluded", deps: ['preDebugBuild']},
-		compileDebugSources: { deps: ['compileDebugJava', 'compileDebugNdk']},
-		preDexDebug: { deps: ['_debugApk']},
-		dexDebug: { deps: ['compileDebugJava', 'preDexDebug']},
-		validateDebugSigning: { deps: []},
-		packageDebug: { deps: [/*'compileDebugJava',*/ 'validateDebugSigning', /*'processDebugJavaRes',*/ 'dexDebug', /*'processDebugResources',*/ 'compileDebugNdk']},
-		zipalignDebug: { deps: ['packageDebug']},
-		assembleDebug: { type: "requested", deps: ['zipalignDebug', 'compileDebugSources']},
-		assembleRelease: { type: "requested", deps: []},
-		':lib:assemble': { type: "requested", deps: ['assembleRelease', 'assembleDebug']},
-		_debugApk: { type: "unknown", deps: []},
-		_debugCompile: { type: "unknown", deps: []}
-	}
+		":onlyIf": { deps: [] },
+		":sub:proj:throwTask": { state: 'failure', deps: [] },
+		preBuild: { state: 'skipped', deps: [ ":onlyIf", ":sub:proj:throwTask" ] },
+		preDebugBuild: { state: 'success', deps: [ "preBuild" ] },
+		checkDebugManifest: { state: 'uptodate', deps: [ "preDebugBuild" ] },
+		prepareDebugDependencies: { state: 'success', deps: [ /*"preDebugBuild",*/ "checkDebugManifest" ] },
+		compileDebugAidl: { deps: [ "prepareDebugDependencies" ] },
+		compileDebugRenderscript: { deps: [ "prepareDebugDependencies"/*, "checkDebugManifest"*/ ] },
+		generateDebugBuildConfig: { deps: [ "checkDebugManifest" ] },
+		generateDebugAssets: { deps: [] },
+		mergeDebugAssets: { deps: [ "prepareDebugDependencies", "generateDebugAssets" ] },
+		generateDebugResValues: { deps: [] },
+		generateDebugResources: { deps: [ "generateDebugResValues", "compileDebugRenderscript" ] },
+		mergeDebugResources: { deps: [ "generateDebugResources" ] },
+		processDebugManifest: { deps: [ "prepareDebugDependencies" ] },
+		processDebugResources: { deps: [ "mergeDebugAssets", "mergeDebugResources", "processDebugManifest" ] },
+		generateDebugSources: { deps: [ /*"compileDebugRenderscript",*/ "compileDebugAidl", "processDebugResources", "generateDebugBuildConfig" ] },
+		processDebugJavaRes: { deps: [] },
+		compileDebugJava: { state: 'nowork', deps: [ /*"prepareDebugDependencies",*/ "processDebugJavaRes", "generateDebugSources", "_debugCompile" ] },
+		compileDebugNdk: { type: 'excluded', deps: [ "preDebugBuild" ] },
+		compileDebugSources: { deps: [ "compileDebugJava", "compileDebugNdk" ] },
+		preDexDebug: { deps: [ "_debugApk" ] },
+		dexDebug: { deps: [ "compileDebugJava", "preDexDebug" ] },
+		validateDebugSigning: { deps: [] },
+		packageDebug: { deps: [ /*"compileDebugJava",*/ "validateDebugSigning", /*"processDebugJavaRes",*/ "dexDebug", /*"processDebugResources",*/ "compileDebugNdk" ] },
+		zipalignDebug: { deps: [ "packageDebug" ] },
+		assembleDebug: { type: 'requested', deps: [ "zipalignDebug", "compileDebugSources" ] },
+		assembleRelease: { type: 'requested', deps: [] },
+		":lib:assemble": { type: 'requested', deps: [ "assembleRelease", "assembleDebug" ] },
+		_debugApk: { type: 'unknown', deps: [] },
+		_debugCompile: { type: 'unknown', deps: [] },
+	};
 
 	model.init(allDeps);
 	setTimeout(function() {
-		model.update('generateDebugResValues', 'success');
-		model.update('generateDebugBuildConfig', 'executing');
+		model.update("generateDebugResValues", 'success');
+		model.update("generateDebugBuildConfig", 'executing');
 	}, 1000);
 }
 
