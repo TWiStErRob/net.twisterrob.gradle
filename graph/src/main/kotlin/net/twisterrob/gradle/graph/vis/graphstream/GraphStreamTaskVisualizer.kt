@@ -97,6 +97,7 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
 	companion object {
 
+		/** @see graphstream.css */
 		private val classMappingResult: Map<TaskResult, String> =
 			EnumMap<TaskResult, String>(TaskResult::class.java).apply {
 				this[TaskResult.Executing] = "executing"
@@ -108,10 +109,11 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 				check(this.keys.size == TaskResult.values().size)
 			}
 
+		/** @see graphstream.css */
 		private val classMappingType: Map<TaskType, String> =
 			EnumMap<TaskType, String>(TaskType::class.java).apply {
 				this[TaskType.Unknown] = "unknown"
-				this[TaskType.Normal] = "norma" // TODO this seems wrong.
+				this[TaskType.Normal] = "normal"
 				this[TaskType.Requested] = "requested"
 				this[TaskType.Excluded] = "excluded"
 				check(this.keys.size == TaskType.values().size)
