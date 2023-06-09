@@ -51,29 +51,27 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 			}
 		})
 		settings.settings.applyTo(viewer)
-		//val layout: Layout = LinLog(false)
-		//viewer.enableAutoLayout(layout)
-	}
-
-	private fun createNode(data: TaskData) {
-		val node = graph.addNode<Node>(id(data.task))
-		node.label = data.task.path
-		node.addClass(classMappingType.getValue(data.type))
 	}
 
 	override fun initModel(graph: Map<Task, TaskData>) {
+		viewer.disableAutoLayout()
+		this.graph.setAttribute("layout.force", 1.0)
 		for (data in graph.values) {
 			val node = this.graph.addNode<Node>(id(data.task))
 			node.label = data.task.path
 			node.addClass(classMappingType.getValue(data.type))
+			//node.setAttribute("layout.weight", @Suppress("MagicNumber") 100)
 		}
 		for (data in graph.values) {
-			val from: Node = this.graph.getNode(id(data.task))
+			val from = this.graph.getNode<Node>(id(data.task))
 			for (dep in data.depsDirect) {
-				val to: Node = this.graph.getNode(id(dep.task))
-				this.graph.addEdge<Edge>(id(data.task, dep.task), from, to, true)
+				val to = this.graph.getNode<Node>(id(dep.task))
+				val edge = this.graph.addEdge<Edge>(id(data.task, dep.task), from, to, true)
+				edge.setAttribute("layout.weight", @Suppress("MagicNumber") 10)
 			}
 		}
+		// See org.graphstream.ui.layout.springbox.BarnesHutLayout for what attributes it uses.
+		viewer.enableAutoLayout()
 	}
 
 	override fun closeUI() {
