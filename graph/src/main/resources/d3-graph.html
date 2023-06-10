@@ -254,7 +254,8 @@ const details = function() {
 	};
 }();
 
-const graph = {};
+// noinspection ES6ConvertVarToLetConst
+var graph = {}; // window.graph is referenced as such.
 const nodes = force.nodes();
 const links = force.links();
 let node = node_group.selectAll('.node');
