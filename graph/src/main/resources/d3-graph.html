@@ -223,20 +223,20 @@ const details = function Details() {
 	}
 
 	return {
-		init: function() {
+		init() {
 			display(null);
 		},
-		showNode: function(d) {
+		showNode(d) {
 			if (!currentNodeIsLocked) {
 				currentNodeIsActive = true;
 				display(d);
 			}
 		},
-		hideNode: function(/*d*/) {
+		hideNode(/*d*/) {
 			currentNodeIsActive = false;
 			this.refreshDisplay();
 		},
-		lockNode: function(d) {
+		lockNode(d) {
 			if (d) {
 				currentNodeIsLocked = true;
 				display(d);
@@ -245,7 +245,7 @@ const details = function Details() {
 				display(autoPick());
 			}
 		},
-		refreshDisplay: function() {
+		refreshDisplay() {
 			if (!currentNodeIsLocked && !currentNodeIsActive) {
 				display(autoPick());
 			} else {
@@ -390,9 +390,9 @@ const legendData = [
 		// TODO use nodify?
 		legendDatum.ui = {
 			data: legendDatum,
-			project: function() { return ":sub:module"; },
-			label: function() { return this.data.title; },
-			nodeId: function() { return 'legend_' + this.data.id; },
+			project() { return ":sub:module"; },
+			label() { return this.data.title; },
+			nodeId() { return 'legend_' + this.data.id; },
 		};
 		legendDatum.deps = [];
 		legendDatum.depsInverse = [];
@@ -498,7 +498,7 @@ function createNodes(nodeData) {
 
 let model = function Model() {
 	return {
-		init: function(graph) {
+		init(graph) {
 			function filter(d) { return d.type === 'unknown'; }
 
 			if (typeof graph === 'string') {
@@ -538,14 +538,14 @@ let model = function Model() {
 			setTimeout(function initFirstZoomFit() { zoomFit(0.95, 100); }, 1000);
 			setTimeout(function initSecondZoomFit() { zoomFit(0.95, 100); }, 2000);
 		},
-		update: function(task, result) {
+		update(task, result) {
 			const node = d3.select('#' + constructNodeId(task));
 			const data = node.datum();
 			data.state = result;
 			node.attr('class', nodeClasses(data));
 			details.refreshDisplay();
 		},
-		add: function(data) {
+		add(data) {
 			// STOPSHIP middle click weird, probably due to selection changes in v4, restart() needs to be rewritten.
 			nodes.push(nodify(data.id, data));
 			restart();
@@ -577,22 +577,22 @@ let model = function Model() {
 				node: null,
 				text: null,
 				bg: null,
-				project: function() {
+				project() {
 					const label = this.data.label || this.data.id;
 					return label.replace(/^:?(.+):.+$|.*/, '$1');
 				},
-				label: function() {
+				label() {
 					const label = this.data.label || this.data.id;
 					return label.replace(/^:?(.*):/, '');
 				},
-				nodeId: function() {
+				nodeId() {
 					return constructNodeId(this.data.id);
 				},
 			},
-			x2: function() {
+			x2() {
 				return this.x + this.width;
 			},
-			y2: function() {
+			y2() {
 				return this.y + this.height;
 			},
 		};
@@ -624,10 +624,10 @@ let model = function Model() {
 			ui: {
 				edge: null,
 			},
-			linkId: function() {
+			linkId() {
 				return constructLinkId(this.source.id, this.target.id);
 			},
-			toString: function() {
+			toString() {
 				return this.source + " -> " + this.target;
 			},
 		};

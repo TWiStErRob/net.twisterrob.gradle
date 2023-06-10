@@ -1,12 +1,12 @@
 'use strict';
 const phys = function() {
 	return {
-		pointOnRect: function(rect, point) {
+		pointOnRect(rect, point) {
 			const w = rect.width / 2;
 			const h = rect.height / 2;
 			return pointOnRect(point.x, point.y, rect.x - w, rect.y - h, rect.x + w, rect.y + h);
 		},
-		collide: collide,
+		collide,
 	};
 
 	function overlap(a, b) {
