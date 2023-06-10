@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.utils.extendsFrom
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -27,6 +28,17 @@ repositories {
 	mavenCentral()
 }
 
+val webjars by configurations.registering {
+	attributes {
+		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+	}
+	isVisible = false
+	isCanBeConsumed = false
+	isCanBeResolved = true
+}
+// Expose it to the compiler, so it's visible as a dependency too.
+configurations.compileOnly.extendsFrom(webjars)
+
 dependencies {
 	api(gradleApi()) // java-gradle-plugin
 	implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -36,6 +48,8 @@ dependencies {
 //	implementation("org.graphstream:gs-ui-swing:2.0")
 	implementation("com.google.code.gson:gson:2.10.1")
 	implementation("org.jetbrains:annotations:24.0.1")
+
+	webjars.name("org.webjars:d3js:3.5.5")
 
 	testImplementation("junit:junit:4.13.2")
 }
@@ -100,4 +114,62 @@ detekt {
 	baseline = rootProject.file("../config/detekt/detekt-baseline-graph.xml")
 	basePath = rootProject.projectDir.absolutePath
 	parallel = true
+}
+
+val extractWebJars by tasks.registering(ExtractWebJarsTask::class) {
+	configuration.setFrom(project.configurations["webjars"])
+	artifacts.set(project.configurations["webjars"].incoming.artifactView { }.artifacts.resolvedArtifacts)
+	outputDirectory.set(project.layout.dir(sourceSets.main.map { it.resources.srcDirs.first() }))
+}
+tasks.processResources.configure { dependsOn(extractWebJars) }
+
+// Note: alternative config creating another resource folder. It works, but doesn't allow local testing. 
+//ExtractWebJarsTask.this.cleanFirst.set(true)
+//ExtractWebJarsTask.this.outputDirectory.set(project.layout.buildDirectory.dir("webjars-as-resources"))
+//sourceSets.main.configure { resources.srcDir(extractWebJars) }
+
+@UntrackedTask(because = "The output directory might overlap with existing source folder.")
+abstract class ExtractWebJarsTask @Inject constructor(
+	private val files: FileSystemOperations,
+	private val archives: ArchiveOperations,
+) : DefaultTask() {
+
+	@get:CompileClasspath
+	@get:SkipWhenEmpty
+	abstract val configuration: ConfigurableFileCollection
+
+	@get:Internal
+	abstract val artifacts: SetProperty<ResolvedArtifactResult>
+
+	@get:Input
+	@get:Optional
+	abstract val cleanFirst: Property<Boolean>
+
+	@get:OutputDirectory
+	abstract val outputDirectory: DirectoryProperty
+
+	@TaskAction
+	fun extract() {
+		if (cleanFirst.getOrElse(false)) {
+			files.delete { delete(outputDirectory) }
+		}
+		artifacts.get().forEach { artifact ->
+			val id = artifact.id.componentIdentifier as? ModuleComponentIdentifier ?: return
+			val localWebJar = artifact.file
+			val name = id.module
+			val version = id.version
+			files.copy {
+				duplicatesStrategy = DuplicatesStrategy.FAIL
+				into(outputDirectory)
+				from(archives.zipTree(localWebJar))
+				include("META-INF/resources/webjars/${name}/${version}/*.js")
+				exclude("META-INF/resources/webjars/${name}/${version}/webjars-requirejs.js")
+				eachFile {
+					// https://docs.gradle.org/current/userguide/working_with_files.html#ex-unpacking-a-subset-of-a-zip-file
+					relativePath = RelativePath(true, relativePath.segments.last())
+				}
+				includeEmptyDirs = false
+			}
+		}
+	}
 }
