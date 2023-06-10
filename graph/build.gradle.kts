@@ -38,7 +38,7 @@ dependencies {
 	implementation("com.google.code.gson:gson:2.10.1")
 	implementation("org.jetbrains:annotations:24.0.1")
 
-	"webjars"("org.webjars:d3js:5.16.0")
+	"webjars"("org.webjars:d3js:6.7.0")
 
 	testImplementation("junit:junit:4.13.2")
 }

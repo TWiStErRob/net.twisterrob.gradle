@@ -40,7 +40,7 @@
 			<rect id="legend-bg" />
 			<text id="legend-header">Legend</text>
 		</g>
-		<!--<circle r="20" transform="translate(-100, -100)" />-->
+		<!--<circle id="cursor" r="20" transform="translate(-100, -100)" />-->
 	</svg>
 	<div id="details" style="visibility: hidden;">
 		<div id="detail-running" class="loader"></div>
@@ -77,8 +77,8 @@ function main() {
 const zoom = d3
 	.zoom()
 	.scaleExtent([ 1 / 4, 4 ])
-	.on('zoom', function() {
-		const transform = d3.event.transform;
+	.on('zoom', function(event) {
+		const transform = event.transform;
 		console.debug("zoom", transform);
 		root.attr('transform',
 			'translate(' + transform.x + ',' + transform.y + ')'
@@ -89,8 +89,8 @@ const zoom = d3
 const svg = d3
 	.select('svg')
 	.call(zoom)
-	//.on('mousemove', function() {
-	//	cursor.attr('transform', 'translate(' + d3.mouse(this) + ')');
+	//.on('mousemove', function(event) {
+	//	cursor.attr('transform', 'translate(' + d3.pointer(event) + ')');
 	//})
 ;
 
@@ -99,12 +99,12 @@ svg.select('#background')
 	.on('click', function() {
 		selectNode(null);
 	})
-	.on('mousedown', function() {
-		if (d3.event.button !== 1) {
+	.on('mousedown', function(event) {
+		if (event.button !== 1) {
 			return;
 		}
-		d3.event.preventDefault();
-		const point = d3.mouse(node_group.node());
+		event.preventDefault();
+		const point = d3.pointer(node_group.node());
 		model.add({
 			id: '____' + demoIdCounter++ + '____',
 			type: 'unknown',
@@ -130,7 +130,7 @@ const link_group = svg.select('#links');
 
 const force = d3
 	.forceSimulation()
-	.force("size", d3.forceCenter()/* TODO v6 .strength(0.03)*/) 
+	.force("size", d3.forceCenter().strength(0.03)) 
 	.force("link", d3.forceLink().strength(0.3))
 	.force("charge", d3.forceManyBody().strength(-400))
 	.on('tick', function tick() {
@@ -232,7 +232,7 @@ const details = function() {
 				display(d);
 			}
 		},
-		hideNode: function(_ /*d*/) {
+		hideNode: function(/*d*/) {
 			currentNodeIsActive = false;
 			this.refreshDisplay();
 		},
@@ -294,36 +294,36 @@ function restart() {
 
 	uiNodes = createNodes(node);
 	uiNodes
-		.on('click', function(d) {
+		.on('click', function(event, d) {
 			selectNode(d);
 		})
-		.on('mousedown', function(d) {
+		.on('mousedown', function(event, d) {
 			details.lockNode(d);
 		})
-		.on('mouseup', function(_ /*d*/) {
+		.on('mouseup', function(/*event, d*/) {
 			details.lockNode(null);
 		})
-		.on('mouseover', function(d) {
+		.on('mouseover', function(event, d) {
 			details.showNode(d);
 		})
-		.on('mouseout', function(d) {
+		.on('mouseout', function(event, d) {
 			details.hideNode(d);
 		})
 		.call(d3
 			.drag()
-			.on("start", function dragStart(d) {
-				if (!d3.event.active) {
+			.on("start", function dragStart(event, d) {
+				if (!event.active) {
 					force.alphaTarget(0.3).restart();
 				}
 				d.fx = d.x;
 				d.fy = d.y;
 			})
-			.on("drag", function dragMove(d) {
-				d.fx = d3.event.x;
-				d.fy = d3.event.y;
+			.on("drag", function dragMove(event, d) {
+				d.fx = event.x;
+				d.fy = event.y;
 			})
-			.on("end", function dragEnd(d) {
-				if (!d3.event.active) {
+			.on("end", function dragEnd(event, d) {
+				if (!event.active) {
 					force.alphaTarget(0);
 				}
 				d.fx = null;
@@ -477,8 +477,8 @@ function createNodes(nodeData) {
 	rect
 		.attr('width', function(d) { return d.ui.text.getBBox().width + 2.0 * padding.x; })
 		.attr('height', function(d) { return d.ui.text.getBBox().height + 2.0 * padding.y; })
-		.attr('x', function(_ /*d*/) { return +d3.select(this).attr('width') / -2.0; })
-		.attr('y', function(_ /*d*/) { return +d3.select(this).attr('height') / -2.0; })
+		.attr('x', function(/*d*/) { return +d3.select(this).attr('width') / -2.0; })
+		.attr('y', function(/*d*/) { return +d3.select(this).attr('height') / -2.0; })
 	;
 
 	uiNodes.append('text')
@@ -533,9 +533,7 @@ let model = function() {
 				}
 			}
 			restart();
-			// for (let i = 10; i > 0; --i) {
-			// 	force.tick();
-			// }
+			// force.tick(10);
 			// setTimeout is required to allow the browser to render the nodes.
 			setTimeout(function () { zoomFit(0.95, 100); }, 1000);
 			setTimeout(function () { zoomFit(0.95, 100); }, 2000);
