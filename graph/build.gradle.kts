@@ -131,7 +131,7 @@ tasks.processResources.configure { dependsOn(extractWebJars) }
 @UntrackedTask(because = "The output directory might overlap with existing source folder.")
 abstract class ExtractWebJarsTask @Inject constructor(
 	private val files: FileSystemOperations,
-	private val archives: ArchiveOperations,
+	private val workers: WorkerExecutor,
 ) : DefaultTask() {
 
 	@get:CompileClasspath
@@ -147,23 +147,50 @@ abstract class ExtractWebJarsTask @Inject constructor(
 
 	@get:OutputDirectory
 	abstract val outputDirectory: DirectoryProperty
+	
+	init {
+		// See https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:requirements
+		@Suppress("LeakingThis")
+		notCompatibleWithConfigurationCache(
+			"Doc says 'Provider<Set<ResolvedArtifactResult>> that can be mapped as an input to your task'."
+		)
+	}
 
 	@TaskAction
 	fun extract() {
 		if (cleanFirst.getOrElse(false)) {
 			files.delete { delete(outputDirectory) }
 		}
+		val work = workers.noIsolation()
 		artifacts.get().forEach { artifact ->
-			val id = artifact.id.componentIdentifier as? ModuleComponentIdentifier ?: return
-			val localWebJar = artifact.file
-			val name = id.module
-			val version = id.version
+			val id = artifact.id.componentIdentifier as? ModuleComponentIdentifier ?: return@forEach
+			work.submit(ExtractWebJarAction::class) {
+				this.localWebJar.set(artifact.file)
+				this.pathInJar.set(RelativePath(false, "META-INF/resources/webjars/${id.module}/${id.version}"))
+				this.outputDirectory.set(this@ExtractWebJarsTask.outputDirectory)
+			}
+		}
+		work.await()
+	}
+
+	abstract class ExtractWebJarAction @Inject constructor(
+		private val files: FileSystemOperations,
+		private val archives: ArchiveOperations,
+	) : WorkAction<ExtractWebJarAction.Parameters> {
+
+		interface Parameters : WorkParameters {
+			val localWebJar: RegularFileProperty
+			val pathInJar: Property<RelativePath>
+			val outputDirectory: DirectoryProperty
+		}
+
+		override fun execute() {
 			files.copy {
 				duplicatesStrategy = DuplicatesStrategy.FAIL
-				into(outputDirectory)
-				from(archives.zipTree(localWebJar))
-				include("META-INF/resources/webjars/${name}/${version}/*.js")
-				exclude("META-INF/resources/webjars/${name}/${version}/webjars-requirejs.js")
+				into(parameters.outputDirectory)
+				from(archives.zipTree(parameters.localWebJar))
+				include("${parameters.pathInJar.get().pathString}/*.js")
+				exclude("${parameters.pathInJar.get().pathString}/webjars-requirejs.js")
 				eachFile {
 					// https://docs.gradle.org/current/userguide/working_with_files.html#ex-unpacking-a-subset-of-a-zip-file
 					relativePath = RelativePath(true, relativePath.segments.last())
