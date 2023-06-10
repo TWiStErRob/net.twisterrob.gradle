@@ -147,7 +147,7 @@ abstract class ExtractWebJarsTask @Inject constructor(
 
 	@get:OutputDirectory
 	abstract val outputDirectory: DirectoryProperty
-	
+
 	init {
 		// See https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:requirements
 		@Suppress("LeakingThis")
@@ -166,7 +166,7 @@ abstract class ExtractWebJarsTask @Inject constructor(
 			val id = artifact.id.componentIdentifier as? ModuleComponentIdentifier ?: return@forEach
 			work.submit(ExtractWebJarAction::class) {
 				this.localWebJar.set(artifact.file)
-				this.pathInJar.set(RelativePath(false, "META-INF/resources/webjars/${id.module}/${id.version}"))
+				this.artifactId.set("${id.group}:${id.module}:${id.version}")
 				this.outputDirectory.set(this@ExtractWebJarsTask.outputDirectory)
 			}
 		}
@@ -180,7 +180,7 @@ abstract class ExtractWebJarsTask @Inject constructor(
 
 		interface Parameters : WorkParameters {
 			val localWebJar: RegularFileProperty
-			val pathInJar: Property<RelativePath>
+			val artifactId: Property<String>
 			val outputDirectory: DirectoryProperty
 		}
 
@@ -189,13 +189,34 @@ abstract class ExtractWebJarsTask @Inject constructor(
 				duplicatesStrategy = DuplicatesStrategy.FAIL
 				into(parameters.outputDirectory)
 				from(archives.zipTree(parameters.localWebJar))
-				include("${parameters.pathInJar.get().pathString}/*.js")
-				exclude("${parameters.pathInJar.get().pathString}/webjars-requirejs.js")
+				configureFiles(parameters.artifactId.get())
 				eachFile {
 					// https://docs.gradle.org/current/userguide/working_with_files.html#ex-unpacking-a-subset-of-a-zip-file
 					relativePath = RelativePath(true, relativePath.segments.last())
 				}
 				includeEmptyDirs = false
+			}
+		}
+
+		// Can't use CopySpec.with, because .copySpec() is not available in any injected API.
+		private fun CopySpec.configureFiles(artifactCoordinate: String) {
+			val (group, module, version) = artifactCoordinate.split(":")
+			when (group) {
+				"org.webjars" -> {
+					val folder = "META-INF/resources/webjars/${module}/${version}"
+					include("${folder}/*.js")
+					include("${folder}/*.min.js")
+					exclude("${folder}/webjars-requirejs.js")
+				}
+				"org.webjars.npm" -> {
+					val folder = "META-INF/resources/webjars/${module}/${version}/dist"
+					include("${folder}/${module}.js")
+					include("${folder}/${module}.min.js")
+					exclude("${folder}/package.js")
+				}
+				else -> {
+					error("Unknown webjar group: ${group}")
+				}
 			}
 		}
 	}
