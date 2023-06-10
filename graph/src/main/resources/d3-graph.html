@@ -61,7 +61,7 @@
 'use strict';
 function main() {
 	// needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
-	setTimeout(function() {
+	setTimeout(function startUp() {
 		console.debug("Startup " + navigator.userAgent);
 		resize();
 		details.init();
@@ -77,7 +77,7 @@ function main() {
 const zoom = d3
 	.zoom()
 	.scaleExtent([ 1 / 4, 4 ])
-	.on('zoom', function(event) {
+	.on('zoom', function svgZoom(event) {
 		const transform = event.transform;
 		console.debug("zoom", transform);
 		root.attr('transform',
@@ -89,17 +89,17 @@ const zoom = d3
 const svg = d3
 	.select('svg')
 	.call(zoom)
-	//.on('mousemove', function(event) {
+	//.on('mousemove', function svgMouseMove(event) {
 	//	cursor.attr('transform', 'translate(' + d3.pointer(event) + ')');
 	//})
 ;
 
 let demoIdCounter = 0;
 svg.select('#background')
-	.on('click', function() {
+	.on('click', function backgroundClick() {
 		selectNode(null);
 	})
-	.on('mousedown', function(event) {
+	.on('mousedown', function backgroundMouseDown(event) {
 		if (event.button !== 1) {
 			return;
 		}
@@ -133,7 +133,7 @@ const force = d3
 	.force("size", d3.forceCenter().strength(0.03)) 
 	.force("link", d3.forceLink().strength(0.3))
 	.force("charge", d3.forceManyBody().strength(-400))
-	.on('tick', function tick() {
+	.on('tick', function forceTick() {
 		//const q = d3.geom.quadtree(nodes);
 		//node.each(function(n) { q.visit(phys.collide(n)) });
 		uiLinks
@@ -154,7 +154,7 @@ const force = d3
 	})
 ;
 
-const details = function() {
+const details = function Details() {
 	const det = d3.select('#details');
 	const progressUI = det.select('#detail-running');
 	const nameUI = det.select('#detail-name').insert('span');
@@ -171,7 +171,7 @@ const details = function() {
 	const dependentsUILabel = d3.select(document.createTextNode(""));
 	dependentsUI.node().appendChild(dependentsUILabel.node());
 
-	nameUI.on('click', function() {
+	nameUI.on('click', function nameUIClick() {
 		det.classed('collapsed', !det.classed('collapsed'));
 	});
 	let currentNode = null;
@@ -186,7 +186,7 @@ const details = function() {
 		dependsData.enter()
 			.append('li')
 			.text(function(d) { return d; })
-			.on('click', function(d) {
+			.on('click', function detailsDependencyClick(event, d) {
 				selectNode(graph[d]);
 			})
 		;
@@ -280,7 +280,7 @@ function restart() {
 	uiLinks = link
 		.enter()
 		.append('line')
-		.each(function(d) { d.ui.edge = this; })
+		.each(function storeUiLink(d) { d.ui.edge = this; })
 		.attr('id', function(d) {
 			return d.linkId();
 		})
@@ -294,19 +294,19 @@ function restart() {
 
 	uiNodes = createNodes(node);
 	uiNodes
-		.on('click', function(event, d) {
+		.on('click', function nodeClick(event, d) {
 			selectNode(d);
 		})
-		.on('mousedown', function(event, d) {
+		.on('mousedown', function nodeMouseDown(event, d) {
 			details.lockNode(d);
 		})
-		.on('mouseup', function(/*event, d*/) {
+		.on('mouseup', function nodeMouseUp(/*event, d*/) {
 			details.lockNode(null);
 		})
-		.on('mouseover', function(event, d) {
+		.on('mouseover', function nodeMouseOver(event, d) {
 			details.showNode(d);
 		})
-		.on('mouseout', function(event, d) {
+		.on('mouseout', function nodeMouseOut(event, d) {
 			details.hideNode(d);
 		})
 		.call(d3
@@ -406,7 +406,7 @@ const legendData = [
 	;
 	const legendHeader = legend
 		.select('#legend-header')
-		.on('click', function() {
+		.on('click', function legendHeaderClick() {
 			legend.classed('collapsed', !legend.classed('collapsed'));
 			autoSizeLegend();
 		})
@@ -420,7 +420,7 @@ const legendData = [
 
 	const legendBackground = legend
 		.select('#legend-bg')
-		.on('click', function() {
+		.on('click', function legendBackgroundClick() {
 			legend.classed('collapsed', !legend.classed('collapsed'));
 			autoSizeLegend();
 		})
@@ -456,18 +456,18 @@ function createNodes(nodeData) {
 	const uiNodes = nodeData
 		.enter()
 		.append('g')
-		.each(function(d) { d.ui.node = this; })
+		.each(function storeUiNode(d) { d.ui.node = this; })
 		.attr('id', function(d) { return d.ui.nodeId(); })
 	;
 	uiNodes
 		.attr("class", nodeClasses)
 	;
 	const rect = uiNodes.append('rect')
-		.each(function(d) { d.ui.bg = this; })
+		.each(function storeUiNodeBackground(d) { d.ui.bg = this; })
 	;
 	//noinspection JSUnusedLocalSymbols
 	const text = uiNodes.append('text')
-		.each(function(d) { d.ui.text = this; })
+		.each(function storeUiNodeText(d) { d.ui.text = this; })
 		.classed('label', true)
 		.text(function(d) { return d.ui.label(); })
 	;
@@ -488,7 +488,7 @@ function createNodes(nodeData) {
 		.attr('y', function(d) { return +d3.select(d.ui.bg).attr('y') - 1; })
 	;
 
-	uiNodes.each(function(d) {
+	uiNodes.each(function resizeUiNode(d) {
 		const box = d.ui.node.getBBox();
 		d.width = box.width;
 		d.height = box.height;
@@ -496,7 +496,7 @@ function createNodes(nodeData) {
 	return uiNodes;
 }
 
-let model = function() {
+let model = function Model() {
 	return {
 		init: function(graph) {
 			function filter(d) { return d.type === 'unknown'; }
@@ -535,8 +535,8 @@ let model = function() {
 			restart();
 			// force.tick(10);
 			// setTimeout is required to allow the browser to render the nodes.
-			setTimeout(function () { zoomFit(0.95, 100); }, 1000);
-			setTimeout(function () { zoomFit(0.95, 100); }, 2000);
+			setTimeout(function initFirstZoomFit() { zoomFit(0.95, 100); }, 1000);
+			setTimeout(function initSecondZoomFit() { zoomFit(0.95, 100); }, 2000);
 		},
 		update: function(task, result) {
 			const node = d3.select('#' + constructNodeId(task));
@@ -750,7 +750,7 @@ function demo() {
 	};
 
 	model.init(allDeps);
-	setTimeout(function() {
+	setTimeout(function demoDelayedEffects() {
 		model.update("generateDebugResValues", 'success');
 		model.update("generateDebugBuildConfig", 'executing');
 	}, 1000);
