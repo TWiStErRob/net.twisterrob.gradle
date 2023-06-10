@@ -113,7 +113,7 @@ svg.select('#background')
 		});
 		/*
 		// Add links to any nearby nodes.
-		nodes.forEach(function(target) {
+		nodes.forEach(target => {
 			const x = target.x - node.x,
 			      y = target.y - node.y;
 			if (Math.sqrt(x * x + y * y) < 30) {
@@ -137,16 +137,14 @@ const force = d3
 		//const q = d3.geom.quadtree(nodes);
 		//node.each(function(n) { q.visit(phys.collide(n)) });
 		uiLinks
-			.attr('x1', function(d) { return phys.pointOnRect(d.source, d.target).x; })
-			.attr('y1', function(d) { return phys.pointOnRect(d.source, d.target).y; })
-			.attr('x2', function(d) { return phys.pointOnRect(d.target, d.source).x; })
-			.attr('y2', function(d) { return phys.pointOnRect(d.target, d.source).y; })
+			.attr('x1', d => phys.pointOnRect(d.source, d.target).x)
+			.attr('y1', d => phys.pointOnRect(d.source, d.target).y)
+			.attr('x2', d => phys.pointOnRect(d.target, d.source).x)
+			.attr('y2', d => phys.pointOnRect(d.target, d.source).y)
 		;
 
 		uiNodes
-			.attr('transform', function translate(d) {
-				return 'translate(' + d.x + ',' + d.y + ')';
-			})
+			.attr('transform', d => 'translate(' + d.x + ',' + d.y + ')')
 		;
 
 		details.refreshDisplay();
@@ -180,12 +178,12 @@ const details = function Details() {
 
 
 	function bindDeps(/* d3.selection<ul> */ ui, label, /* Array<String> */ deps) {
-		const dependsData = ui.selectAll('li').data(deps, function(d) { return d; });
+		const dependsData = ui.selectAll('li').data(deps, d => d);
 		dependsData.exit().remove();
 
 		dependsData.enter()
 			.append('li')
-			.text(function(d) { return d; })
+			.text(d => d)
 			.on('click', function detailsDependencyClick(event, d) {
 				selectNode(graph[d]);
 			})
@@ -281,9 +279,7 @@ function restart() {
 		.enter()
 		.append('line')
 		.each(function storeUiLink(d) { d.ui.edge = this; })
-		.attr('id', function(d) {
-			return d.linkId();
-		})
+		.attr('id', d => d.linkId())
 		.attr('class', 'link')
 		.style('marker-start', 'url(#arrow-in)')
 		//.style('marker-end', 'url(#arrow-out)')
@@ -414,8 +410,8 @@ const legendData = [
 	const headerHeight = legendHeader.node().getBBox().height;
 	// noinspection JSUnusedAssignment
 	legendNodes = createNodes(legendNodes)
-		.attr('class', function(d) { return 'node ' + d.classes; })
-		.attr('transform', function(d, i) { return 'translate(0,' + (headerHeight + 10 + i * d.height * 1.3) + ')'; })
+		.attr('class', d => 'node ' + d.classes)
+		.attr('transform', (d, i) => 'translate(0,' + (headerHeight + 10 + i * d.height * 1.3) + ')')
 	;
 
 	const legendBackground = legend
@@ -457,7 +453,7 @@ function createNodes(nodeData) {
 		.enter()
 		.append('g')
 		.each(function storeUiNode(d) { d.ui.node = this; })
-		.attr('id', function(d) { return d.ui.nodeId(); })
+		.attr('id', d => d.ui.nodeId())
 	;
 	uiNodes
 		.attr("class", nodeClasses)
@@ -469,23 +465,23 @@ function createNodes(nodeData) {
 	const text = uiNodes.append('text')
 		.each(function storeUiNodeText(d) { d.ui.text = this; })
 		.classed('label', true)
-		.text(function(d) { return d.ui.label(); })
+		.text(d => d.ui.label())
 	;
 	//uiNodes.append('circle').attr("cx", 0).attr("cy", 0).attr("r", 3).attr("fill", "red");
 	const padding = { x: 5, y: 4 };
 
 	rect
-		.attr('width', function(d) { return d.ui.text.getBBox().width + 2.0 * padding.x; })
-		.attr('height', function(d) { return d.ui.text.getBBox().height + 2.0 * padding.y; })
-		.attr('x', function(/*d*/) { return +d3.select(this).attr('width') / -2.0; })
-		.attr('y', function(/*d*/) { return +d3.select(this).attr('height') / -2.0; })
+		.attr('width', d => d.ui.text.getBBox().width + 2.0 * padding.x)
+		.attr('height', d => d.ui.text.getBBox().height + 2.0 * padding.y)
+		.attr('x', d => +d3.select(d.ui.bg).attr('width') / -2.0)
+		.attr('y', d => +d3.select(d.ui.bg).attr('height') / -2.0)
 	;
 
 	uiNodes.append('text')
 		.classed('project', true)
-		.text(function(d) { return d.ui.project(); })
-		.attr('x', function(d) { return +d3.select(d.ui.bg).attr('x') + +d3.select(d.ui.bg).attr('width') - padding.x; })
-		.attr('y', function(d) { return +d3.select(d.ui.bg).attr('y') - 1; })
+		.text(d => d.ui.project())
+		.attr('x', d => +d3.select(d.ui.bg).attr('x') + +d3.select(d.ui.bg).attr('width') - padding.x)
+		.attr('y', d => +d3.select(d.ui.bg).attr('y') - 1)
 	;
 
 	uiNodes.each(function resizeUiNode(d) {
