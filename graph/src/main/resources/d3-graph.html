@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8" />
 	<title>Gradle Task Graph</title>
@@ -9,7 +9,7 @@
 	<script src="d3-graph.phys.js"></script>
 </head>
 <body onload="main()">
-	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" pointer-events="all">
+	<svg xmlns="http://www.w3.org/2000/svg" pointer-events="all">
 		<defs>
 			<radialGradient id="background-gradient" cx="70%" cy="100%" r="90%" fy="60%">
 				<stop offset="5%" stop-color="#EEFFFF" />
@@ -36,6 +36,7 @@
 			<g id="links"></g>
 		</g>
 		<g id="legend" transform="translate(80, 50)" style="visibility: hidden;">
+			<!--suppress RequiredAttributes width/height will be set in autoSizeLegend() -->
 			<rect id="legend-bg" />
 			<text id="legend-header">Legend</text>
 		</g>
@@ -57,6 +58,7 @@
 		<button onclick="force.stop(); zoomFit(0.95, 500)">Fit</button>
 	</div>
 	<script>//<![CDATA[
+'use strict';
 function main() {
 	// needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
 	setTimeout(function() {
@@ -72,10 +74,10 @@ function main() {
 	}, 0);
 }
 
-var zoom = d3.behavior
+const zoom = d3.behavior
 	.zoom()
-	.scaleExtent([1/4, 4])
-	.on('zoom.zoom', function () {
+	.scaleExtent([ 1 / 4, 4 ])
+	.on('zoom.zoom', function() {
 		console.trace("zoom", d3.event.translate, d3.event.scale);
 		root.attr('transform',
 			'translate(' + d3.event.translate + ')'
@@ -83,97 +85,101 @@ var zoom = d3.behavior
 	})
 ;
 
-var svg = d3
+const svg = d3
 	.select('svg')
 	.call(zoom)
-	//.on('mousemove', function () {
+	//.on('mousemove', function() {
 	//	cursor.attr('transform', 'translate(' + d3.mouse(this) + ')');
 	//})
 ;
 
-var demoIdCounter = 0;
+let demoIdCounter = 0;
 svg.select('#background')
 	.on('click', function() {
 		selectNode(null);
 	})
-	.on('mousedown', function () {
-		if(d3.event.which != 2) return;
+	.on('mousedown', function() {
+		if (d3.event.button !== 1) {
+			return;
+		}
 		d3.event.preventDefault();
-		var point = d3.mouse(node_group.node());
+		const point = d3.mouse(node_group.node());
 		model.add({
 			id: '____' + demoIdCounter++ + '____',
 			type: 'unknown',
 			x: point[0],
-			y: point[1]
+			y: point[1],
 		});
 		/*
-		// add links to any nearby nodes
+		// Add links to any nearby nodes.
 		nodes.forEach(function(target) {
-			var x = target.x - node.x,
-			    y = target.y - node.y;
+			const x = target.x - node.x,
+			      y = target.y - node.y;
 			if (Math.sqrt(x * x + y * y) < 30) {
-				links.push({source: node, target: target});
+				links.push({ source: node, target: target });
 			}
 		});
 		*/
 	})
 ;
-//var cursor = svg.select('#cursor');
-var root = svg.select('#root');
-var node_group = svg.select('#nodes');
-var link_group = svg.select('#links');
+//const cursor = svg.select('#cursor');
+const root = svg.select('#root');
+const node_group = svg.select('#nodes');
+const link_group = svg.select('#links');
 
-var force = d3.layout
-		.force()
-		.gravity(0.03)
-		.linkStrength(0.3)
-		.charge(-400)
-		.on('tick', function tick() {
-			//var q = d3.geom.quadtree(nodes);
-			//node.each(function(n) { q.visit(phys.collide(n)) });
-			link
-				.attr('x1', function(d) { return phys.pointOnRect(d.source, d.target).x; })
-				.attr('y1', function(d) { return phys.pointOnRect(d.source, d.target).y; })
-				.attr('x2', function(d) { return phys.pointOnRect(d.target, d.source).x; })
-				.attr('y2', function(d) { return phys.pointOnRect(d.target, d.source).y; })
-			;
+const force = d3.layout
+	.force()
+	.gravity(0.03)
+	.linkStrength(0.3)
+	.charge(-400)
+	.on('tick', function tick() {
+		//const q = d3.geom.quadtree(nodes);
+		//node.each(function(n) { q.visit(phys.collide(n)) });
+		link
+			.attr('x1', function(d) { return phys.pointOnRect(d.source, d.target).x; })
+			.attr('y1', function(d) { return phys.pointOnRect(d.source, d.target).y; })
+			.attr('x2', function(d) { return phys.pointOnRect(d.target, d.source).x; })
+			.attr('y2', function(d) { return phys.pointOnRect(d.target, d.source).y; })
+		;
 
-			node
-				.attr('transform', 	function translate(d) {
-					return 'translate(' + d.x + ',' + d.y + ')';
-				})
-			;
+		node
+			.attr('transform', function translate(d) {
+				return 'translate(' + d.x + ',' + d.y + ')';
+			})
+		;
 
-			details.refreshDisplay();
-			//zoomFit();
-		})
+		details.refreshDisplay();
+		//zoomFit();
+	})
 ;
 
-var details = function() {
-	var det = d3.select('#details');
-	var progressUI = det.select('#detail-running');
-	var nameUI = det.select('#detail-name').insert('span');
-	var projectUI = det.select('#detail-project');
-	var typeUI = det.select('#detail-type');
-	var stateUI = det.select('#detail-state');
-	var posUI = det.select('#detail-pos');
-	var dependsUI = det.select('#detail-depends');
-	var dependentsUI = det.select('#detail-dependents');
+const details = function() {
+	const det = d3.select('#details');
+	const progressUI = det.select('#detail-running');
+	const nameUI = det.select('#detail-name').insert('span');
+	const projectUI = det.select('#detail-project');
+	const typeUI = det.select('#detail-type');
+	const stateUI = det.select('#detail-state');
+	const posUI = det.select('#detail-pos');
+	const dependsUI = det.select('#detail-depends');
+	const dependentsUI = det.select('#detail-dependents');
 	// Workaround for: https://github.com/mbostock/d3/issues/94,
 	// keep reference to #text and update it later, dependsUI.text("") would clear <li>s too
-	var dependsUILabel = d3.select(document.createTextNode("")); dependsUI.node().appendChild(dependsUILabel.node());
-	var dependentsUILabel = d3.select(document.createTextNode("")); dependentsUI.node().appendChild(dependentsUILabel.node());
+	const dependsUILabel = d3.select(document.createTextNode(""));
+	dependsUI.node().appendChild(dependsUILabel.node());
+	const dependentsUILabel = d3.select(document.createTextNode(""));
+	dependentsUI.node().appendChild(dependentsUILabel.node());
 
 	nameUI.on('click', function() {
 		det.classed('collapsed', !det.classed('collapsed'));
 	});
-	var currentNode = null;
-	var currentNodeIsLocked = false;
-	var currentNodeIsActive = false;
+	let currentNode = null;
+	let currentNodeIsLocked = false;
+	let currentNodeIsActive = false;
 
 
 	function bindDeps(/* d3.selection<ul> */ ui, label, /* Array<String> */ deps) {
-		var dependsData = ui.selectAll('li').data(deps, function(d) { return d; });
+		const dependsData = ui.selectAll('li').data(deps, function(d) { return d; });
 		dependsData.exit().remove();
 
 		dependsData.enter()
@@ -183,7 +189,7 @@ var details = function() {
 				selectNode(graph[d]);
 			})
 		;
-		label.text(deps.length === 0? "nothing" : "")
+		label.text(deps.length === 0? "nothing" : "");
 	}
 
 	function display(d) {
@@ -197,7 +203,7 @@ var details = function() {
 		if (d) {
 			nameUI.text(d.ui.label());
 			autoSizeText(nameUI.node());
-			projectUI.text(d.ui.project() || 'root project');
+			projectUI.text(d.ui.project() || "root project");
 			typeUI.text(d.type || 'normal');
 			stateUI.text(d.state || 'scheduled');
 			progressUI.style('display', d.state === 'executing'? 'block' : 'none');
@@ -211,7 +217,7 @@ var details = function() {
 	}
 
 	function autoPick() {
-		var executing = node.filter('.executing');
+		const executing = node.filter('.executing');
 		return executing.size() === 0? null : executing.datum();
 	}
 
@@ -225,7 +231,7 @@ var details = function() {
 				display(d);
 			}
 		},
-		hideNode: function(d) {
+		hideNode: function(_ /*d*/) {
 			currentNodeIsActive = false;
 			this.refreshDisplay();
 		},
@@ -244,23 +250,24 @@ var details = function() {
 			} else {
 				display(currentNode);
 			}
-		}
+		},
 	};
 }();
 
-var graph = {};
-var nodes = force.nodes();
-var links = force.links();
-var node = node_group.selectAll('.node');
-var link = link_group.selectAll('.link');
-var uiNodes, uiLinks;
+const graph = {};
+const nodes = force.nodes();
+const links = force.links();
+let node = node_group.selectAll('.node');
+let link = link_group.selectAll('.link');
+let uiNodes, uiLinks;
 
 d3.select(window).on('resize', resize);
+
 function resize() {
-	var width = window.innerWidth, height = window.innerHeight;
-	console.trace("Resize", force.size(), [width, height]);
+	const width = window.innerWidth, height = window.innerHeight;
+	console.trace("Resize", force.size(), [ width, height ]);
 	//zoom.center([width/2, height/2]);
-	force.size([width, height]).resume();
+	force.size([ width, height ]).resume();
 	lapsedZoomFit(5, 0);
 }
 
@@ -290,7 +297,7 @@ function restart(first) {
 		.on('mousedown', function(d) {
 			details.lockNode(d);
 		})
-		.on('mouseup', function(d) {
+		.on('mouseup', function(_ /*d*/) {
 			details.lockNode(null);
 		})
 		.on('mouseover', function(d) {
@@ -303,97 +310,105 @@ function restart(first) {
 			.drag()
 			.on('dragstart', function() {
 				d3.event.sourceEvent.stopPropagation();
-			})
-		)
+			}),
+		);
 
 	force.start();
 	if (first) {
-		lapsedZoomFit(undefined, 0);
+		lapsedZoomFit(200, 0);
 	}
 }
 
-function selectNode(d) { // TODO use #task-id for backnav support
+function selectNode(d) { // TODO use #task-id for back navigation support
 	uiNodes.filter('.selected').classed('selected', false);
-	if (d) d3.select(d.ui.node).classed('selected', true);
+	if (d) {
+		d3.select(d.ui.node).classed('selected', true);
+	}
 	details.lockNode(d);
 }
 
 function lapsedZoomFit(ticks, transitionDuration) {
-	for (var i = ticks || 200; i > 0; --i) force.tick();
+	for (let i = ticks; i > 0; --i) {
+		force.tick();
+	}
 	force.stop();
-	zoomFit(undefined, transitionDuration);
+	zoomFit(0.75, transitionDuration);
 }
 
+/**
+ * @param paddingPercent 0.0 to 1.0, recommended close to 1.0
+ * @param transitionDuration milliseconds, positive, can be 0
+ */
 function zoomFit(paddingPercent, transitionDuration) {
-	var bounds = root.node().getBBox();
-	var parent = root.node().parentElement;
-	var fullWidth = parent.clientWidth,
-	    fullHeight = parent.clientHeight;
-	var width = bounds.width,
-	    height = bounds.height;
-	var midX = bounds.x + width / 2,
-	    midY = bounds.y + height / 2;
-	if (width == 0 || height == 0) return; // nothing to fit
-	var scale = (paddingPercent || 0.75) / Math.max(width / fullWidth, height / fullHeight);
-	var translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+	const bounds = root.node().getBBox();
+	const parent = root.node().parentElement;
+	const fullWidth  = parent.clientWidth,
+	      fullHeight = parent.clientHeight;
+	const width  = bounds.width,
+	      height = bounds.height;
+	const midX = bounds.x + width / 2,
+	      midY = bounds.y + height / 2;
+	if (width === 0 || height === 0) {
+		return; // Nothing to fit.
+	}
+	const scale = paddingPercent / Math.max(width / fullWidth, height / fullHeight);
+	const translate = [ fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY ];
 
 	console.trace("zoomFit", translate, scale);
 	root
 		.transition()
-		.duration(transitionDuration || 0) // milliseconds
+		.duration(transitionDuration)
 		.call(zoom.translate(translate).scale(scale).event);
 }
 
-var legendData = [
-	{ classes: '', title: 'task' },
-	{ classes: 'success' },
-	{ classes: 'uptodate', title: 'UP-TO-DATE' },
-	{ classes: 'failure', title: 'FAILED' },
-	{ classes: 'skipped', title: 'SKIPPED' },
-	{ classes: 'executing' },
-	{ classes: 'requested' },
-	{ classes: 'excluded', title: '--exclude-task' },
-	{ classes: 'nowork' },
-	{ classes: 'unknown' },
-	{ classes: 'selected' }
+const legendData = [
+	{ classes: '', title: "task" },
+	{ classes: 'success', title: "Success" },
+	{ classes: 'uptodate', title: "UP-TO-DATE" },
+	{ classes: 'failure', title: "FAILED" },
+	{ classes: 'skipped', title: "SKIPPED" },
+	{ classes: 'executing', title: "Executing..." },
+	{ classes: 'requested', title: "Requested" },
+	{ classes: 'excluded', title: "--exclude-task" },
+	{ classes: 'nowork', title: "No Work" },
+	{ classes: 'unknown', title: "Unknown" },
+	{ classes: 'selected', title: "Selected" },
 ];
 !function buildLegend() {
-	for(var i in legendData) { var legendDatum = legendData[i];
+	for (const i in legendData) {
+		const legendDatum = legendData[i];
 		// TODO use nodify?
 		legendDatum.ui = {
 			data: legendDatum,
 			project: function() { return ""; },
-			label: function() {
-				return this.data.title || this.data.classes;
-			},
-			nodeId: function() {
-				return 'legend_' + this.data.id;
-			}
+			label: function() { return this.data.title; },
+			nodeId: function() { return 'legend_' + this.data.id; },
 		};
 		legendDatum.deps = [];
 		legendDatum.depsInverse = [];
 		legendDatum.id = legendData[i].classes.replace(/ /, '-');
 	}
-	var legend = svg
+	const legend = svg
 		.select('#legend');
-	var legendNodes = legend
+	let legendNodes = legend
 		.selectAll('.node')
 		.data(legendData)
 	;
-	var legendHeader = legend
+	const legendHeader = legend
 		.select('#legend-header')
 		.on('click', function() {
 			legend.classed('collapsed', !legend.classed('collapsed'));
 			autoSizeLegend();
 		})
 	;
-	var headerHeight = legendHeader.node().getBBox().height;
+	const headerHeight = legendHeader.node().getBBox().height;
+	// noinspection JSUnusedAssignment
 	legendNodes = createNodes(legendNodes)
 		.attr('class', function(d) { return 'node ' + d.classes; })
 		.attr('transform', function(d, i) { return 'translate(0,' + (headerHeight + 10 + i * d.height * 1.3) + ')'; })
 	;
 
-	var legendBG = legend
+	const legendBG = legend
 		.select('#legend-bg')
 		.on('click', function() {
 			legend.classed('collapsed', !legend.classed('collapsed'));
@@ -403,16 +418,17 @@ var legendData = [
 
 	function autoSizeLegend() {
 		legendBG.style('display', 'none');
-		var legendBox = legend.node().getBBox();
-		var legendPadding = 16;
+		const legendBox = legend.node().getBBox();
+		const legendPadding = 16;
 		legendBG
 			.attr("x", legendBox.x - legendPadding)
 			.attr("y", legendBox.y - legendPadding)
-			.attr("width", legendBox.width + 2*legendPadding)
-			.attr("height", legendBox.height + 2*legendPadding)
+			.attr("width", legendBox.width + 2 * legendPadding)
+			.attr("height", legendBox.height + 2 * legendPadding)
 		;
 		legendBG.style('display', 'block');
 	}
+
 	autoSizeLegend();
 	legend.style('visibility', 'visible');
 }(legendData);
@@ -425,32 +441,34 @@ function nodeClasses(d) {
 		 + (d.deps.length === 1 && d.depsInverse.length === 1? ' straight' : '')
 	;
 }
+
 function createNodes(nodeData) {
-	var uiNodes = nodeData
+	const uiNodes = nodeData
 		.enter()
 		.append('g')
 		.each(function(d) { d.ui.node = this; })
 		.attr('id', function(d) { return d.ui.nodeId(); })
 	;
 	nodeData
-		.attr("class", nodeClasses);
+		.attr("class", nodeClasses)
 	;
-	var rect = uiNodes.append('rect')
+	const rect = uiNodes.append('rect')
 		.each(function(d) { d.ui.bg = this; })
 	;
-	var text = uiNodes.append('text')
+	//noinspection JSUnusedLocalSymbols
+	const text = uiNodes.append('text')
 		.each(function(d) { d.ui.text = this; })
 		.classed('label', true)
 		.text(function(d) { return d.ui.label(); })
 	;
 	//uiNodes.append('circle').attr("cx", 0).attr("cy", 0).attr("r", 3).attr("fill", "red");
-	var padding = {x: 5, y: 4};
+	const padding = { x: 5, y: 4 };
 
 	rect
-		.attr('width', function(d) { return d.ui.text.clientWidth + 2.0 * padding.x; })
-		.attr('height', function(d) { return d.ui.text.clientHeight + 2.0 * padding.y; })
-		.attr('x', function(d) { return +d3.select(this).attr('width') / -2.0; })
-		.attr('y', function(d) { return +d3.select(this).attr('height') / -2.0; })
+		.attr('width', function(d) { return d.ui.text.getBBox().width + 2.0 * padding.x; })
+		.attr('height', function(d) { return d.ui.text.getBBox().height + 2.0 * padding.y; })
+		.attr('x', function(_ /*d*/) { return +d3.select(this).attr('width') / -2.0; })
+		.attr('y', function(_ /*d*/) { return +d3.select(this).attr('height') / -2.0; })
 	;
 
 	uiNodes.append('text')
@@ -461,35 +479,45 @@ function createNodes(nodeData) {
 	;
 
 	uiNodes.each(function(d) {
-		var box = d.ui.node.getBBox();
+		const box = d.ui.node.getBBox();
 		d.width = box.width;
 		d.height = box.height;
 	});
 	return nodeData;
 }
 
-var model = function() {
+let model = function() {
 	return {
 		init: function(graph) {
-			function filter(d) { return d.type == 'unknown'; }
-			if (typeof graph === 'string') graph = JSON.parse(graph);
+			function filter(d) { return d.type === 'unknown'; }
+
+			if (typeof graph === 'string') {
+				graph = JSON.parse(graph);
+			}
 			window.graph = graph;
 
 			nodes.length = 0;
-			for (var dataIndex in graph) { var data = graph[dataIndex];
-				if(filter(data)) continue;
-				var node = nodify(dataIndex, data);
+			for (const dataIndex in graph) {
+				const data = graph[dataIndex];
+				if (filter(data)) {
+					continue;
+				}
+				const node = nodify(dataIndex, data);
 				nodes.push(node);
 			}
 			links.length = 0;
-			for (var nodeIndex in graph) {
-				var fromNode = graph[nodeIndex];
-				if (filter(fromNode)) continue;
-				for(var depIndex in fromNode.deps) {
-					var toNode = graph[fromNode.deps[depIndex]];
-					if (filter(toNode)) continue;
+			for (const nodeIndex in graph) {
+				const fromNode = graph[nodeIndex];
+				if (filter(fromNode)) {
+					continue;
+				}
+				for (const depIndex in fromNode.deps) {
+					const toNode = graph[fromNode.deps[depIndex]];
+					if (filter(toNode)) {
+						continue;
+					}
 					toNode.depsInverse.push(fromNode.id);
-					var link = createLink(fromNode, toNode);
+					const link = createLink(fromNode, toNode);
 					links.push(link);
 					fromNode.links.push(link);
 				}
@@ -497,33 +525,37 @@ var model = function() {
 			restart(true);
 		},
 		update: function(task, result) {
-			var node = d3.select('#' + constructNodeId(task));
-			var data = node.datum();
+			const node = d3.select('#' + constructNodeId(task));
+			const data = node.datum();
 			data.state = result;
-			node.attr("class", nodeClasses(data));
+			node.attr('class', nodeClasses(data));
 			details.refreshDisplay();
 		},
 		add: function(data) {
 			nodes.push(nodify(data.id, data));
 			restart();
-		}
+		},
 	};
+
 	function cleanName(name) {
 		return name.replace(/:/g, '-');
 	}
+
 	function constructNodeId(name) {
 		return 'node_' + cleanName(name);
 	}
+
 	function constructLinkId(from, to) {
 		return 'link_' + cleanName(from) + '_' + cleanName(to);
 	}
+
 	function nodify(id, node) {
-		var defaults = {
+		const defaults = {
 			id: id,
 			deps: [],
-			depsInverse: []
+			depsInverse: [],
 		};
-		var viewModel = {
+		const viewModel = {
 			links: [],
 			ui: {
 				data: node,
@@ -531,35 +563,35 @@ var model = function() {
 				text: null,
 				bg: null,
 				project: function() {
-					var label = this.data.label || this.data.id;
-					return label.replace(/^:?(.+):.+$|.*/, "$1");
+					const label = this.data.label || this.data.id;
+					return label.replace(/^:?(.+):.+$|.*/, '$1');
 				},
 				label: function() {
-					var label = this.data.label || this.data.id;
-					return label.replace(/^:?(.*):/, "");
+					const label = this.data.label || this.data.id;
+					return label.replace(/^:?(.*):/, '');
 				},
 				nodeId: function() {
 					return constructNodeId(this.data.id);
-				}
+				},
 			},
 			x2: function() {
 				return this.x + this.width;
 			},
 			y2: function() {
 				return this.y + this.height;
-			}
+			},
 		};
 
 		node.toString = function() {
 			return this.id + " @ " + this.x + "," + this.y + " " + this.width + "x" + this.height;
 		};
 
-		for (var i in defaults) {
+		for (const i in defaults) {
 			if (node[i] === undefined) {
 				node[i] = defaults[i];
 			}
 		}
-		for (var i in viewModel) {
+		for (const i in viewModel) {
 			if (node[i] === undefined) {
 				node[i] = viewModel[i];
 			} else {
@@ -568,23 +600,25 @@ var model = function() {
 		}
 		return node; // == $.merge(node, defaults, viewModel);
 	}
+
 	function createLink(fromNode, toNode) {
 		return {
 			source: fromNode,
 			target: toNode,
 			weight: 1,
 			ui: {
-				edge: null
+				edge: null,
 			},
 			linkId: function() {
 				return constructLinkId(this.source.id, this.target.id);
 			},
 			toString: function() {
 				return this.source + " -> " + this.target;
-			}
+			},
 		};
 	}
 }();
+//noinspection JSUnresolvedReference
 if (window.java) {
 	model = function javafy(model) {
 		function javaEntry(name, fun) {
@@ -592,13 +626,14 @@ if (window.java) {
 				console.trace(name + "(" + JSON.stringify(arguments) + ")");
 				try {
 					return fun.apply(this, arguments);
-				} catch(e) {
+				} catch (e) {
 					console.warn(e.name + ": " + e.message + " " + e.stack);
 				}
-			}
+			};
 		}
-		for(var item in model) {
-			if(typeof model[item] === 'function') {
+
+		for (const item in model) {
+			if (typeof model[item] === 'function') {
 				model[item] = javaEntry(item, model[item]);
 			}
 		}
@@ -617,20 +652,20 @@ function autoSizeText(elem, min, max, step, lastChange) {
 		return +pixelStyle.slice(0, -2);
 	}
 
-	var elemBounds = elem.getBoundingClientRect(),
-	    style = window.getComputedStyle(elem),
-	    parentStyle = window.getComputedStyle(elem.parentNode)
+	const elemBounds  = elem.getBoundingClientRect(),
+	      style       = window.getComputedStyle(elem),
+	      parentStyle = window.getComputedStyle(elem.parentNode)
 	;
-	var elemSize = { width: elemBounds.width, height: elemBounds.height };
-	var parentSize = { width: px(parentStyle.width), height: px(parentStyle.height) };
-	var fontSize = px(style.fontSize);
+	const elemSize = { width: elemBounds.width, height: elemBounds.height };
+	const parentSize = { width: px(parentStyle.width), height: px(parentStyle.height) };
+	let fontSize = px(style.fontSize);
 
 	//console.debug("autoSizeText(" + elem.textContent + ", " + min + ", " + max + ")", fontSize, elemSize, parentSize);
-	var change = 0, stop = false;
-	var needsSmaller = elemSize.width > parentSize.width || elemSize.height > parentSize.height;
-	var needsBigger = elemSize.width < parentSize.width && elemSize.height < parentSize.height;
-	var lastSmaller = lastChange <= 0;
-	var lastBigger = lastChange >= 0;
+	let change = 0, stop = false;
+	const needsSmaller = elemSize.width > parentSize.width || elemSize.height > parentSize.height;
+	const needsBigger = elemSize.width < parentSize.width && elemSize.height < parentSize.height;
+	const lastSmaller = lastChange <= 0;
+	const lastBigger = lastChange >= 0;
 	if (lastSmaller && needsSmaller) { //console.debug('lastSmaller needsSmaller')
 		change = -step; // continue shrinking
 	} else if (lastBigger && needsBigger) { //console.debug('lastBigger needsBigger')
@@ -644,10 +679,10 @@ function autoSizeText(elem, min, max, step, lastChange) {
 		change = 0; // doesn't need to be any different
 	} else {
 		throw "Invalid state"
-		    + ": lastSmaller="  + lastSmaller
-		    + ", lastBigger="   + lastBigger
-		    + ", needsSmaller=" + needsSmaller
-		    + ", needsBigger="  + needsBigger
+			+ ": lastSmaller=" + lastSmaller
+			+ ", lastBigger=" + lastBigger
+			+ ", needsSmaller=" + needsSmaller
+			+ ", needsBigger=" + needsBigger
 		;
 	}
 
@@ -659,48 +694,50 @@ function autoSizeText(elem, min, max, step, lastChange) {
 	} else {
 		stop = true;
 	}
-	if (!stop) autoSizeText(elem, min, max, step, change);
+	if (!stop) {
+		autoSizeText(elem, min, max, step, change);
+	}
 }
 
 function demo() {
-	var allDeps = {
-		':onlyIf': { deps: []},
-		':sub:proj:throwTask': { state: "failure", deps: []},
-		preBuild: { state: "skipped", deps: [':onlyIf', ':sub:proj:throwTask']},
-		preDebugBuild: { state: "success", deps: ['preBuild']},
-		checkDebugManifest: { state: "uptodate", deps: ['preDebugBuild']},
-		prepareDebugDependencies: { state: "success", deps: [/*'preDebugBuild',*/ 'checkDebugManifest']},
-		compileDebugAidl: { deps: ['prepareDebugDependencies']},
-		compileDebugRenderscript: { deps: ['prepareDebugDependencies'/*, 'checkDebugManifest'*/]},
-		generateDebugBuildConfig: { deps: ['checkDebugManifest']},
-		generateDebugAssets: { deps: []},
-		mergeDebugAssets: { deps: ['prepareDebugDependencies', 'generateDebugAssets']},
-		generateDebugResValues: { deps: []},
-		generateDebugResources: { deps: ['generateDebugResValues', 'compileDebugRenderscript']},
-		mergeDebugResources: { deps: ['generateDebugResources']},
-		processDebugManifest: { deps: ['prepareDebugDependencies']},
-		processDebugResources: { deps: [ 'mergeDebugAssets', 'mergeDebugResources', 'processDebugManifest']},
-		generateDebugSources: { deps: [/*'compileDebugRenderscript',*/ 'compileDebugAidl', 'processDebugResources', 'generateDebugBuildConfig']},
-		processDebugJavaRes: { deps: []},
-		compileDebugJava: { state: "nowork", deps: [/*'prepareDebugDependencies',*/ 'processDebugJavaRes', 'generateDebugSources', '_debugCompile' ]},
-		compileDebugNdk: { type: "excluded", deps: ['preDebugBuild']},
-		compileDebugSources: { deps: ['compileDebugJava', 'compileDebugNdk']},
-		preDexDebug: { deps: ['_debugApk']},
-		dexDebug: { deps: ['compileDebugJava', 'preDexDebug']},
-		validateDebugSigning: { deps: []},
-		packageDebug: { deps: [/*'compileDebugJava',*/ 'validateDebugSigning', /*'processDebugJavaRes',*/ 'dexDebug', /*'processDebugResources',*/ 'compileDebugNdk']},
-		zipalignDebug: { deps: ['packageDebug']},
-		assembleDebug: { type: "requested", deps: ['zipalignDebug', 'compileDebugSources']},
-		assembleRelease: { type: "requested", deps: []},
-		':lib:assemble': { type: "requested", deps: ['assembleRelease', 'assembleDebug']},
-		_debugApk: { type: "unknown", deps: []},
-		_debugCompile: { type: "unknown", deps: []}
-	}
+	const allDeps = {
+		":onlyIf": { deps: [] },
+		":sub:proj:throwTask": { state: 'failure', deps: [] },
+		preBuild: { state: 'skipped', deps: [ ":onlyIf", ":sub:proj:throwTask" ] },
+		preDebugBuild: { state: 'success', deps: [ "preBuild" ] },
+		checkDebugManifest: { state: 'uptodate', deps: [ "preDebugBuild" ] },
+		prepareDebugDependencies: { state: 'success', deps: [ /*"preDebugBuild",*/ "checkDebugManifest" ] },
+		compileDebugAidl: { deps: [ "prepareDebugDependencies" ] },
+		compileDebugRenderscript: { deps: [ "prepareDebugDependencies"/*, "checkDebugManifest"*/ ] },
+		generateDebugBuildConfig: { deps: [ "checkDebugManifest" ] },
+		generateDebugAssets: { deps: [] },
+		mergeDebugAssets: { deps: [ "prepareDebugDependencies", "generateDebugAssets" ] },
+		generateDebugResValues: { deps: [] },
+		generateDebugResources: { deps: [ "generateDebugResValues", "compileDebugRenderscript" ] },
+		mergeDebugResources: { deps: [ "generateDebugResources" ] },
+		processDebugManifest: { deps: [ "prepareDebugDependencies" ] },
+		processDebugResources: { deps: [ "mergeDebugAssets", "mergeDebugResources", "processDebugManifest" ] },
+		generateDebugSources: { deps: [ /*"compileDebugRenderscript",*/ "compileDebugAidl", "processDebugResources", "generateDebugBuildConfig" ] },
+		processDebugJavaRes: { deps: [] },
+		compileDebugJava: { state: 'nowork', deps: [ /*"prepareDebugDependencies",*/ "processDebugJavaRes", "generateDebugSources", "_debugCompile" ] },
+		compileDebugNdk: { type: 'excluded', deps: [ "preDebugBuild" ] },
+		compileDebugSources: { deps: [ "compileDebugJava", "compileDebugNdk" ] },
+		preDexDebug: { deps: [ "_debugApk" ] },
+		dexDebug: { deps: [ "compileDebugJava", "preDexDebug" ] },
+		validateDebugSigning: { deps: [] },
+		packageDebug: { deps: [ /*"compileDebugJava",*/ "validateDebugSigning", /*"processDebugJavaRes",*/ "dexDebug", /*"processDebugResources",*/ "compileDebugNdk" ] },
+		zipalignDebug: { deps: [ "packageDebug" ] },
+		assembleDebug: { type: 'requested', deps: [ "zipalignDebug", "compileDebugSources" ] },
+		assembleRelease: { type: 'requested', deps: [] },
+		":lib:assemble": { type: 'requested', deps: [ "assembleRelease", "assembleDebug" ] },
+		_debugApk: { type: 'unknown', deps: [] },
+		_debugCompile: { type: 'unknown', deps: [] },
+	};
 
 	model.init(allDeps);
 	setTimeout(function() {
-		model.update('generateDebugResValues', 'success');
-		model.update('generateDebugBuildConfig', 'executing');
+		model.update("generateDebugResValues", 'success');
+		model.update("generateDebugBuildConfig", 'executing');
 	}, 1000);
 }
 

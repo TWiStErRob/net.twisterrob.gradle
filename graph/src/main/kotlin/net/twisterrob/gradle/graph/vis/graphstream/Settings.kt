@@ -53,7 +53,7 @@ internal class Settings(
 		)
 
 		fun applyTo(viewer: Viewer) {
-			val window = SwingUtilities.getWindowAncestor(viewer.defaultView) as JFrame
+			val window = SwingUtilities.getWindowAncestor(viewer.defaultView as Component) as JFrame
 			window.setLocation(x, y)
 			window.setSize(width, height)
 		}

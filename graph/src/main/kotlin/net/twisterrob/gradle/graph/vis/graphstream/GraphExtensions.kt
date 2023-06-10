@@ -6,51 +6,39 @@ package net.twisterrob.gradle.graph.vis.graphstream
 import org.graphstream.graph.Element
 import org.graphstream.graph.Node
 
-val Element.classes: MutableList<String>
+var Element.label: String?
+	get() = this.getAttribute("ui.label", String::class.java)
+	set(value) = this.setAttribute("ui.label", value)
+
+var Element.classes: List<String>
 	get() {
-		val classesString: String? = this.getAttribute("ui.class")
+		val classesString: String? = this.getAttribute("ui.class", String::class.java)
 		if (classesString.isNullOrEmpty()) {
 			return mutableListOf()
 		}
 		return classesString.split(",").toMutableList()
 	}
+	set(value) {
+		if (value.isEmpty()) {
+			this.removeAttribute("ui.class")
+		} else {
+			@Suppress("SpreadOperator")
+			this.setAttribute("ui.class", *value.toTypedArray())
+		}
+	}
 
-fun Node.addClass(clazz: String): Array<String> =
+fun Node.addClass(clazz: String) {
 	(this as Element).addClass(clazz)
-
-fun Element.addClass(clazz: String): Array<String> {
-	val classes = this.classes
-	classes.add(clazz)
-	this.setAttribute("ui.class", classes.joinToString(","))
-	return classes.toTypedArray()
 }
 
-fun Iterable<Element>.addClass(clazz: String) {
-	for (e in this) {
-		e.addClass(clazz)
-	}
+fun Element.addClass(clazz: String) {
+	this.classes += clazz
 }
 
-fun Node.removeClass(clazz: String): Array<String> =
+fun Node.removeClass(clazz: String) {
 	(this as Element).removeClass(clazz)
-
-fun Element.removeClass(clazz: String): Array<String> {
-	val classes = this.classes
-	classes.remove(clazz)
-	if (classes.isEmpty()) {
-		this.removeAttribute("ui.class")
-	} else {
-		this.setAttribute("ui.class", classes.joinToString(","))
-	}
-	return classes.toTypedArray()
 }
 
-fun Iterable<Element>.removeClass(clazz: String) {
-	for (e in this) {
-		e.removeClass(clazz)
-	}
+fun Element.removeClass(clazz: String) {
+	this.classes -= clazz
 }
-
-var Element.label: String?
-	get() = this.getAttribute("ui.label")
-	set(value) = this.setAttribute("ui.label", value)

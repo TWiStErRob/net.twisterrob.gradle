@@ -4,9 +4,6 @@
 /*/build/
 /*/*/build/
 /*/*/*/build/
-/graph/sample/build/
-/graph/sample/app/build/
-/graph/sample/lib/build/
 out/
 gradle/dependency-locks/*.lockfile
 /*.lockfile

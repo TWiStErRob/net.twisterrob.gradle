@@ -1,24 +1,21 @@
-/* http://graphstream-project.org/doc/Tutorials/GraphStream-CSS-Reference_1.2/ */
+/*
+Note: multiline comments cannot contain star characters:
+https://github.com/graphstream/gs-core/blob/2.0/src/org/graphstream/ui/graphicGraph/stylesheet/parser/StyleSheetParser.jj#L283
+
+Based on http://graphstream-project.org/doc/Tutorials/GraphStream-CSS-Reference_1.2/
+@see net.twisterrob.gradle.graph.vis.graphstream.GraphStreamTaskVisualizer.Companion
+@see org.graphstream.ui.graphicGraph.stylesheet.Style.setDefaults
+*/
+
 graph {
 	fill-color: white;
 }
 node {
+	/* These are unused in Graphstream 1.3
 	text-background-mode: rounded-box;
+	text-padding: 2px, 2px;
 	text-background-color: red;
-/*
-	text-color: white;
-	fill-color: gray;
-	text-size: 15;
-	text-style: bold;
-	text-alignment: under;
-	text-padding: 5px, 4px;
-	shape: rounded-box;
-	fill-color: black;
-	stroke-mode: plain;
-	stroke-width: 4px;
-	stroke-color: black;
-	shadow-mode: gradient-radial;
-*/
+	*/
 }
 node:clicked {
 	fill-color: gray;

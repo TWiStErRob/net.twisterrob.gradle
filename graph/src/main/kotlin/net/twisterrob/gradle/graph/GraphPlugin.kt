@@ -39,7 +39,7 @@ class GraphPlugin @Inject constructor(
 
 			@Deprecated("Not compatible with configuration cache.")
 			override fun buildFinished(result: BuildResult) {
-				if (extension.isKeepOpen) {
+				if (!extension.isKeepOpen) {
 					vis.closeUI()
 				}
 			}

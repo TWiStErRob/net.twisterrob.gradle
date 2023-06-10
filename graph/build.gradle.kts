@@ -10,6 +10,7 @@ plugins {
 	id("io.gitlab.arturbosch.detekt") version "1.23.0"
 	id("org.gradle.idea")
 }
+apply(from = "gradle/webjars.gradle.kts")
 
 group = "net.twisterrob.gradle"
 version = "0.1"
@@ -28,17 +29,25 @@ repositories {
 }
 
 dependencies {
-	implementation(gradleApi())
+	api(gradleApi()) // java-gradle-plugin
+	implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+	implementation("org.jetbrains.kotlin:kotlin-stdlib")
 	implementation("org.graphstream:gs-core:1.3")
+//	implementation("org.graphstream:gs-core:2.0")
+//	implementation("org.graphstream:gs-ui-swing:2.0")
 	implementation("com.google.code.gson:gson:2.10.1")
+	implementation("org.jetbrains:annotations:24.0.1")
+
+	"webjars"("org.webjars:d3js:3.5.5")
+
 	testImplementation("junit:junit:4.13.2")
 }
 
 javafx {
 	modules = listOf(
-		"javafx.controls",
-		"javafx.web",
-		"javafx.swing",
+		"javafx.controls", // implementation("org.openjfx:javafx-controls:17")
+		"javafx.web", // implementation("org.openjfx:javafx-web:17")
+		"javafx.swing", // implementation("org.openjfx:javafx-swing:17")
 	)
 }
 
