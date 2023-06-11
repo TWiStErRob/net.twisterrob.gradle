@@ -131,9 +131,9 @@ const link_group = svg.select('#links');
 
 const force = d3
 	.forceSimulation()
-	.force("size", d3.forceCenter().strength(0.03)) 
-	.force("link", d3.forceLink().strength(0.3))
-	.force("charge", d3.forceManyBody().strength(-400))
+	.force('forceCenter', d3.forceCenter().strength(0.03)) 
+	.force('forceLink', d3.forceLink().strength(0.3))
+	.force('forceCharge', d3.forceManyBody().strength(-400))
 	.on('tick', function forceTick() {
 		//const q = d3.geom.quadtree(nodes);
 		//node.each(function(n) { q.visit(phys.collide(n)) });
@@ -252,7 +252,7 @@ const details = function Details() {
 // noinspection ES6ConvertVarToLetConst
 var graph = {}; // window.graph is referenced as such.
 const nodes = force.nodes();
-const links = force.force("link").links();
+const links = force.force('forceLink').links();
 // Initialize to empty selection because force will be automatically started.
 let uiNodes = node_group.selectAll('.node');
 let uiLinks = link_group.selectAll('.link');
@@ -261,10 +261,10 @@ d3.select(window).on('resize', resize);
 
 function resize() {
 	const centerX = window.innerWidth / 2, centerY = window.innerHeight / 2;
-	const size = force.force('size');
-	console.debug("Resize center", [ size.x(), size.y() ], [ centerX, centerY ]);
+	const forceCenter = force.force('forceCenter');
+	console.debug("Resize center", [ forceCenter.x(), forceCenter.y() ], [ centerX, centerY ]);
 	//zoom.center([ centerX, centerY ]);
-	size.x(centerX).y(centerY);
+	forceCenter.x(centerX).y(centerY);
 	force.restart();
 }
 
@@ -301,18 +301,18 @@ function rebuild() {
 		})
 		.call(d3
 			.drag()
-			.on("start", function dragStart(event, d) {
+			.on('start', function dragStart(event, d) {
 				if (!event.active) {
 					force.alphaTarget(0.3).restart();
 				}
 				d.fx = d.x;
 				d.fy = d.y;
 			})
-			.on("drag", function dragMove(event, d) {
+			.on('drag', function dragMove(event, d) {
 				d.fx = event.x;
 				d.fy = event.y;
 			})
-			.on("end", function dragEnd(event, d) {
+			.on('end', function dragEnd(event, d) {
 				if (!event.active) {
 					force.alphaTarget(0);
 				}
@@ -326,7 +326,7 @@ function rebuild() {
 
 	force.stop();
 	force.nodes(nodes);
-	force.force("link").links(links);
+	force.force('forceLink').links(links);
 	force.restart();
 }
 
@@ -435,10 +435,10 @@ function buildLegend(legendData) {
 		const legendBox = legend.node().getBBox();
 		const legendPadding = 16;
 		legendBackground
-			.attr("x", legendBox.x - legendPadding)
-			.attr("y", legendBox.y - legendPadding)
-			.attr("width", legendBox.width + 2 * legendPadding)
-			.attr("height", legendBox.height + 2 * legendPadding)
+			.attr('x', legendBox.x - legendPadding)
+			.attr('y', legendBox.y - legendPadding)
+			.attr('width', legendBox.width + 2 * legendPadding)
+			.attr('height', legendBox.height + 2 * legendPadding)
 		;
 		legendBackground.style('display', 'block');
 	}
@@ -475,7 +475,7 @@ d3.selection.prototype.createNodes = function createNodes() {
 		.classed('label', true)
 		.text(d => d.ui.label())
 	;
-	//uiNodes.append('circle').attr("cx", 0).attr("cy", 0).attr("r", 3).attr("fill", "red");
+	//uiNodes.append('circle').attr('cx', 0).attr('cy', 0).attr('r', 3).attr('fill', 'red');
 	const padding = { x: 5, y: 4 };
 
 	rect
