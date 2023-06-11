@@ -162,12 +162,6 @@ const details = function Details() {
 	const posUI = det.select('#detail-pos');
 	const dependsUI = det.select('#detail-depends');
 	const dependentsUI = det.select('#detail-dependents');
-	// Workaround for: https://github.com/mbostock/d3/issues/94,
-	// keep reference to #text and update it later, dependsUI.text("") would clear <li>s too
-	const dependsUILabel = d3.select(document.createTextNode(""));
-	dependsUI.node().appendChild(dependsUILabel.node());
-	const dependentsUILabel = d3.select(document.createTextNode(""));
-	dependentsUI.node().appendChild(dependentsUILabel.node());
 
 	nameUI.on('click', function nameUIClick() {
 		det.classed('collapsed', !det.classed('collapsed'));
@@ -177,18 +171,22 @@ const details = function Details() {
 	let currentNodeIsActive = false;
 
 
-	function bindDeps(/* d3.selection<ul> */ ui, label, /* Array<String> */ deps) {
-		const dependsData = ui.selectAll('li').data(deps, d => d);
-		dependsData.exit().remove();
-
-		dependsData.enter()
-			.append('li')
+	function bindDeps(/* d3.selection<ul> */ ui, /* Array<String> */ deps) {
+		ui
+			.selectAll('li')
+			.data(deps, d => d)
+			.join('li')
 			.text(d => d)
 			.on('click', function detailsDependencyClick(event, d) {
 				selectNode(graph[d]);
 			})
 		;
-		label.text(deps.length === 0? "nothing" : "");
+		ui
+			.selectAll('span')
+			.data(deps.length === 0 ? [ "nothing" ] : [ ])
+			.join('span')
+			.text(d => d)
+		;
 	}
 
 	function display(d) {
@@ -208,8 +206,8 @@ const details = function Details() {
 			progressUI.style('display', d.state === 'executing'? 'block' : 'none');
 			posUI.text(d.x.toFixed(2) + ", " + d.y.toFixed(2));
 
-			bindDeps(dependsUI, dependsUILabel, d.deps);
-			bindDeps(dependentsUI, dependentsUILabel, d.depsInverse);
+			bindDeps(dependsUI, d.deps);
+			bindDeps(dependentsUI, d.depsInverse);
 		}
 
 		currentNode = d;
