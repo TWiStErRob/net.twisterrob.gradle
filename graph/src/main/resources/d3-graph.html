@@ -408,10 +408,7 @@ function buildLegend(legendData) {
 
 	const legendHeader = legend
 		.select('#legend-header')
-		.on('click', function legendHeaderClick() {
-			legend.classed('collapsed', !legend.classed('collapsed'));
-			autoSizeLegend();
-		})
+		.on('click', toggleLegend)
 	;
 	const headerHeight = legendHeader.node().getBBox().height;
 
@@ -425,11 +422,13 @@ function buildLegend(legendData) {
 
 	const legendBackground = legend
 		.select('#legend-bg')
-		.on('click', function legendBackgroundClick() {
-			legend.classed('collapsed', !legend.classed('collapsed'));
-			autoSizeLegend();
-		})
+		.on('click', toggleLegend)
 	;
+
+	function toggleLegend() {
+		legend.classed('collapsed', !legend.classed('collapsed'));
+		autoSizeLegend();
+	}
 
 	function autoSizeLegend() {
 		legendBackground.style('display', 'none');
