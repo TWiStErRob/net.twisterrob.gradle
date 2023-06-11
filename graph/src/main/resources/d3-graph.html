@@ -273,7 +273,7 @@ function resize() {
 }
 
 function restart() {
-	link = link.data(links);
+	link = link.data(links, d => d.linkId());
 	link.exit().remove();
 	uiLinks = link
 		.enter()
@@ -285,7 +285,7 @@ function restart() {
 		//.style('marker-end', 'url(#arrow-out)')
 	;
 
-	node = node.data(nodes);
+	node = node.data(nodes, d => d.ui.nodeId());
 	node.exit().remove();
 
 	uiNodes = createNodes(node);
@@ -398,7 +398,7 @@ const legendData = [
 		.select('#legend');
 	let legendNodes = legend
 		.selectAll('.node')
-		.data(legendData)
+		.data(legendData, d => d.ui.nodeId())
 	;
 	const legendHeader = legend
 		.select('#legend-header')
