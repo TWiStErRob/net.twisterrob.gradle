@@ -147,9 +147,6 @@ const force = d3
 		uiNodes
 			.attr('transform', d => 'translate(' + d.x + ',' + d.y + ')')
 		;
-
-		details.refreshDisplay();
-		//zoomFit();
 	})
 ;
 
@@ -256,6 +253,7 @@ const details = function Details() {
 var graph = {}; // window.graph is referenced as such.
 const nodes = force.nodes();
 const links = force.force("link").links();
+// Initialize to empty selection because force will be automatically started.
 let uiNodes = node_group.selectAll('.node');
 let uiLinks = link_group.selectAll('.link');
 
@@ -270,7 +268,7 @@ function resize() {
 	force.restart();
 }
 
-function restart() {
+function rebuild() {
 	uiLinks = link_group
 		.selectAll('.link')
 		.data(links, d => d.linkId())
@@ -323,6 +321,9 @@ function restart() {
 			})
 		)
 	;
+
+	details.refreshDisplay();
+
 	force.stop();
 	force.nodes(nodes);
 	force.force("link").links(links);
@@ -338,6 +339,8 @@ function selectNode(d) { // TODO use #task-id for back navigation support
 		} else {
 			console.warn("Cannot select node, probably not displayed.", d);
 		}
+	} else {
+		details.lockNode(null);
 	}
 }
 
@@ -533,22 +536,19 @@ let model = function Model() {
 					fromNode.links.push(link);
 				}
 			}
-			restart();
+			rebuild();
 			// force.tick(10);
 			// setTimeout is required to allow the browser to render the nodes.
 			setTimeout(function initFirstZoomFit() { zoomFit(0.95, 100); }, 1000);
 			setTimeout(function initSecondZoomFit() { zoomFit(0.95, 100); }, 2000);
 		},
 		update(task, result) {
-			const node = d3.select('#' + constructNodeId(task));
-			const data = node.datum();
-			data.state = result;
-			node.attr('class', nodeClasses(data));
-			details.refreshDisplay();
+			graph[task].state = result;
+			rebuild();
 		},
 		add(data) {
 			nodes.push(nodify(data.id, data));
-			restart();
+			rebuild();
 		},
 	};
 
