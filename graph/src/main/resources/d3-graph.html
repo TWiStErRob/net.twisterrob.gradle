@@ -462,13 +462,12 @@ d3.selection.prototype.createNodes = function createNodes() {
 		.join('g')
 		.each(function storeUiNode(d) { d.ui.node = this; })
 		.attr('id', d => d.ui.nodeId())
-	;
-	uiNodes
 		.attr('class', nodeClasses)
 	;
 	const rect = uiNodes.append('rect')
 		.each(function storeUiNodeBackground(d) { d.ui.bg = this; })
 	;
+	// This needs to be appended after the rectangle so that the DOM-order is correct for z-ordering.
 	//noinspection JSUnusedLocalSymbols
 	const text = uiNodes.append('text')
 		.each(function storeUiNodeText(d) { d.ui.text = this; })
@@ -478,6 +477,7 @@ d3.selection.prototype.createNodes = function createNodes() {
 	//uiNodes.append('circle').attr('cx', 0).attr('cy', 0).attr('r', 3).attr('fill', 'red');
 	const padding = { x: 5, y: 4 };
 
+	// This needs to be after inserting text, because the background rectangle size depends on the rendered text.
 	rect
 		.attr('width', d => d.ui.text.getBBox().width + 2.0 * padding.x)
 		.attr('height', d => d.ui.text.getBBox().height + 2.0 * padding.y)
@@ -485,19 +485,21 @@ d3.selection.prototype.createNodes = function createNodes() {
 		.attr('y', d => +d3.select(d.ui.bg).attr('height') / -2.0)
 	;
 
-	uiNodes.append('text')
+	//noinspection JSUnusedLocalSymbols
+	const module = uiNodes.append('text')
 		.classed('project', true)
 		.text(d => d.ui.project())
 		.attr('x', d => +d3.select(d.ui.bg).attr('x') + +d3.select(d.ui.bg).attr('width') - padding.x)
 		.attr('y', d => +d3.select(d.ui.bg).attr('y') - 1)
 	;
 
-	uiNodes.each(function resizeUiNode(d) {
-		const box = d.ui.node.getBBox();
-		d.width = box.width;
-		d.height = box.height;
-	});
-	return uiNodes;
+	// This needs to be after everything is built, because it depends on the rendered size.
+	return uiNodes
+		.each(function resizeUiNode(d) {
+			const box = d.ui.node.getBBox();
+			d.width = box.width;
+			d.height = box.height;
+		});
 }
 
 let model = function Model() {
