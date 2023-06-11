@@ -539,7 +539,11 @@ let model = function Model() {
 				}
 			}
 			rebuild();
-			force.tick(300);
+			force
+				.alphaTarget(1)
+				.tick(3000)
+				.alphaTarget(0)
+			;
 			// setTimeout is required to allow the browser to render the nodes.
 			setTimeout(() => zoomFit(0.95, 0), 0);
 		},
