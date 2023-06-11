@@ -544,8 +544,15 @@ let model = function Model() {
 			setTimeout(() => zoomFit(0.95, 0), 0);
 		},
 		update(task, result) {
-			graph[task].state = result;
-			rebuild();
+			// This method should be just the commented lines, except it's too slow for an ever-changing execution.
+			// Gradle changes task states multiple times per second, so it's better to focus on updating what's really changed.
+			//graph[task].state = result;
+			const node = d3.select('#' + constructNodeId(task));
+			const data = node.datum();
+			data.state = result;
+			//rebuild();
+			node.attr("class", nodeClasses(data));
+			details.refreshDisplay();
 		},
 		add(data) {
 			nodes.push(nodify(data.id, data));
