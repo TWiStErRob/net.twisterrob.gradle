@@ -539,10 +539,9 @@ let model = function Model() {
 				}
 			}
 			rebuild();
-			// force.tick(10);
+			force.tick(300);
 			// setTimeout is required to allow the browser to render the nodes.
-			setTimeout(function initFirstZoomFit() { zoomFit(0.95, 100); }, 1000);
-			setTimeout(function initSecondZoomFit() { zoomFit(0.95, 100); }, 2000);
+			setTimeout(() => zoomFit(0.95, 0), 0);
 		},
 		update(task, result) {
 			graph[task].state = result;
