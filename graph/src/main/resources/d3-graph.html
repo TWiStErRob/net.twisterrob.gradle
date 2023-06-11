@@ -335,9 +335,13 @@ function restart() {
 function selectNode(d) { // TODO use #task-id for back navigation support
 	uiNodes.filter('.selected').classed('selected', false);
 	if (d) {
-		d3.select(d.ui.node).classed('selected', true);
+		if (d.ui) {
+			d3.select(d.ui.node).classed('selected', true);
+			details.lockNode(d);
+		} else {
+			console.warn("Cannot select node, probably not displayed.", d);
+		}
 	}
-	details.lockNode(d);
 }
 
 /**
