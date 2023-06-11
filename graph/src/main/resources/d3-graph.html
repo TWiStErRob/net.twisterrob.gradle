@@ -215,7 +215,7 @@ const details = function Details() {
 	}
 
 	function autoPick() {
-		const executing = node.filter('.executing');
+		const executing = uiNodes.filter('.executing');
 		return executing.size() === 0? null : executing.datum();
 	}
 
@@ -256,9 +256,8 @@ const details = function Details() {
 var graph = {}; // window.graph is referenced as such.
 const nodes = force.nodes();
 const links = force.force("link").links();
-let node = node_group.selectAll('.node');
-let link = link_group.selectAll('.link');
-let uiNodes = link, uiLinks = node;
+let uiNodes = node_group.selectAll('.node');
+let uiLinks = link_group.selectAll('.link');
 
 d3.select(window).on('resize', resize);
 
@@ -272,11 +271,10 @@ function resize() {
 }
 
 function restart() {
-	link = link.data(links, d => d.linkId());
-	link.exit().remove();
-	uiLinks = link
-		.enter()
-		.append('line')
+	uiLinks = link_group
+		.selectAll('.link')
+		.data(links, d => d.linkId())
+		.join('line')
 		.each(function storeUiLink(d) { d.ui.edge = this; })
 		.attr('id', d => d.linkId())
 		.attr('class', 'link')
@@ -284,11 +282,10 @@ function restart() {
 		//.style('marker-end', 'url(#arrow-out)')
 	;
 
-	node = node.data(nodes, d => d.ui.nodeId());
-	node.exit().remove();
-
-	uiNodes = node.createNodes();
-	uiNodes
+	uiNodes = node_group
+		.selectAll('.node')
+		.data(nodes, d => d.ui.nodeId())
+		.createNodes()
 		.on('click', function nodeClick(event, d) {
 			selectNode(d);
 		})
@@ -459,8 +456,7 @@ function nodeClasses(d) {
 // noinspection JSPotentiallyInvalidConstructorUsage
 d3.selection.prototype.createNodes = function createNodes() {
 	const uiNodes = this
-		.enter()
-		.append('g')
+		.join('g')
 		.each(function storeUiNode(d) { d.ui.node = this; })
 		.attr('id', d => d.ui.nodeId())
 	;
@@ -551,7 +547,6 @@ let model = function Model() {
 			details.refreshDisplay();
 		},
 		add(data) {
-			// STOPSHIP middle click weird, probably due to selection changes in v4, restart() needs to be rewritten.
 			nodes.push(nodify(data.id, data));
 			restart();
 		},
