@@ -380,7 +380,7 @@ const legendData = [
 	{ classes: 'unknown', title: "Unknown" },
 	{ classes: 'selected', title: "Selected" },
 ];
-!function buildLegend() {
+!function buildLegend(legendData) {
 	for (const i in legendData) {
 		const legendDatum = legendData[i];
 		// TODO use nodify?
