@@ -283,7 +283,7 @@ function rebuild() {
 	uiNodes = node_group
 		.selectAll('.node')
 		.data(nodes, d => d.ui.nodeId())
-		.createNodes()
+		.joinNodes()
 		.on('click', function nodeClick(event, d) {
 			selectNode(d);
 		})
@@ -416,7 +416,7 @@ function buildLegend(legendData) {
 	const legendNodes = legend
 		.selectAll('.node')
 		.data(legendData, d => d.ui.nodeId())
-		.createNodes()
+		.joinNodes()
 		.attr('transform', (d, i) => 'translate(0,' + (headerHeight + 10 + i * d.height * 1.3) + ')')
 	;
 
@@ -456,8 +456,10 @@ function nodeClasses(d) {
 	;
 }
 
+// Note: this could almost be replaced with ….call(joinNodes).…,
+// but call() doesn't return the function's return value, so it doesn't chain properly.
 // noinspection JSPotentiallyInvalidConstructorUsage
-d3.selection.prototype.createNodes = function createNodes() {
+d3.selection.prototype.joinNodes = function joinNodes() {
 	const uiNodes = this
 		.join('g')
 		.each(function storeUiNode(d) { d.ui.node = this; })
