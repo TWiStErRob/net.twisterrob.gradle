@@ -625,10 +625,14 @@ let model = function Model() {
 				},
 				label() {
 					const label = this.taskName();
-					if (label.length > 25) {
-						return label.substring(0, 25) + '…';
+					if (label.length <= 25) {
+						return label;
 					}
-					return label;
+					const parts = label.split(/(.[a-z]+)/).filter(g => g)
+					if (parts.length <= 2) {
+						return label.substring(0, 12) + '…' + label.substring(label.length - 12);
+					}
+					return parts[0] + '…' + parts[parts.length - 1];
 				},
 				nodeId() {
 					return constructNodeId(this.data.id);
