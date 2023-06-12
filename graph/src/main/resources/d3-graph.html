@@ -59,6 +59,10 @@
 	</div>
 	<script>//<![CDATA[
 'use strict';
+
+// See net.twisterrob.gradle.graph.vis.d3.GraphWindow.setupBrowser
+const isJavaHosted = window.isJavaHosted === true;
+
 function main() {
 	// needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
 	setTimeout(function startUp() {
@@ -66,7 +70,7 @@ function main() {
 		resize();
 		buildLegend(legendData);
 		details.init();
-		if (window['java'] !== undefined) {
+		if (isJavaHosted) {
 			console.debug("We're in JavaFX");
 		} else {
 			demo();
@@ -657,8 +661,8 @@ let model = function Model() {
 		};
 	}
 }();
-//noinspection JSUnresolvedReference
-if (window.java) {
+
+if (isJavaHosted) {
 	model = function javafy(model) {
 		function javaEntry(name, fun) {
 			return function() {

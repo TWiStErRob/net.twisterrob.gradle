@@ -17,6 +17,7 @@ import net.twisterrob.gradle.graph.vis.d3.interop.TaskDataSerializer
 import net.twisterrob.gradle.graph.vis.d3.interop.TaskResultSerializer
 import net.twisterrob.gradle.graph.vis.d3.interop.TaskSerializer
 import net.twisterrob.gradle.graph.vis.d3.interop.TaskTypeSerializer
+import netscape.javascript.JSObject
 import org.gradle.api.Task
 import org.gradle.api.initialization.Settings
 import org.intellij.lang.annotations.Language
@@ -66,6 +67,8 @@ abstract class GraphWindow : TaskVisualizer {
 					println("console: ${message} (${location}:${lineNumber})")
 				}
 		}
+		// Used in d3-graph.html.
+		(webEngine.executeScript("window") as JSObject).setMember("isJavaHosted", true)
 		webEngine.loadWorker.stateProperty().addListener { value, oldState, newState ->
 			if (Debug.WebView) {
 				System.err.printf("State changed: %s -> %s: %s%n", oldState, newState, value)

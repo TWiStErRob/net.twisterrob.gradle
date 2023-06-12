@@ -38,7 +38,7 @@ class JavaScriptToJavaConsoleBridge private constructor(
 			val window = executeScript("window") as JSObject
 			val java = JavaScriptToJavaConsoleBridge(executeScript("JSON") as JSObject)
 			@Suppress("JSUnresolvedReference") // Global variable is created by setMember.
-			val javaBridgeName = "java"
+			val javaBridgeName = "javaConsole"
 			window.setMember(javaBridgeName, java)
 			val log = java::log.name
 			@Language("javascript")
