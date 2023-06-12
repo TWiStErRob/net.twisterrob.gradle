@@ -55,9 +55,10 @@ abstract class GraphWindow : TaskVisualizer {
 			setBackgroundColor(getPage(webEngine))
 			webEngine.userStyleSheetLocation = buildCSSDataURI()
 		}
-		@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 		webEngine.loadWorker.stateProperty().addListener { value, oldState, newState ->
-			//System.err.printf("State changed: %s -> %s: %s%n", oldState, newState, value)
+			if (Debug.WebView) {
+				System.err.printf("State changed: %s -> %s: %s%n", oldState, newState, value)
+			}
 			when (newState) {
 				null -> error("newState cannot be null")
 				Worker.State.READY -> error("It never becomes ready, it starts there.")

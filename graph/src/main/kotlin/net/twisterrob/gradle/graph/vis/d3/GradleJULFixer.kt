@@ -35,8 +35,6 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.name) {
 
 	companion object {
 
-		private const val DEBUG = false
-
 		@Suppress("SimplifyBooleanWithConstants")
 		val isFixed: Boolean
 			get() = true
@@ -64,7 +62,7 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.name) {
 		}
 
 		private fun log(x: String) {
-			if (DEBUG) {
+			if (Debug.JavaFx) {
 				@Suppress("ForbiddenMethodCall") // TODO logging
 				println("--------------------------> $x")
 			}

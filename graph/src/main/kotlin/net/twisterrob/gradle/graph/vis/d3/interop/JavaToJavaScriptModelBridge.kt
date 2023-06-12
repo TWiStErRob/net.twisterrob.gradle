@@ -2,6 +2,7 @@ package net.twisterrob.gradle.graph.vis.d3.interop
 
 import javafx.application.Platform
 import javafx.scene.web.WebEngine
+import net.twisterrob.gradle.graph.vis.d3.Debug
 import netscape.javascript.JSException
 import netscape.javascript.JSObject
 
@@ -16,7 +17,7 @@ class JavaToJavaScriptModelBridge(engine: WebEngine) {
 
 	private fun modelCall(methodName: String, vararg args: Any?) {
 		val argsStr = args.contentToString()
-		if (DEBUG) {
+		if (Debug.WebView) {
 			message("model.${methodName}(${argsStr.replace("\\s+".toRegex(), " ").abbreviate(@Suppress("MagicNumber") 150)})")
 		}
 		Platform.runLater {
@@ -39,10 +40,6 @@ class JavaToJavaScriptModelBridge(engine: WebEngine) {
 
 	fun update(name: String, result: String) {
 		modelCall("update", name, result)
-	}
-
-	companion object {
-		const val DEBUG: Boolean = true
 	}
 }
 
