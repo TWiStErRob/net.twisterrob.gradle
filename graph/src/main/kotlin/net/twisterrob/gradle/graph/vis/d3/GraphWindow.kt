@@ -60,11 +60,12 @@ abstract class GraphWindow : TaskVisualizer {
 		if (Debug.WebView) {
 			com.sun.javafx.webkit.WebConsoleListener
 				.setDefaultListener { _, message, lineNumber, sourceId ->
-					val location = sourceId.replaceFirst(
-						"""^jar:file:/.*?/graph-.*?\.jar!/""".toRegex(),
-						Regex.escapeReplacement(Debug.ResourcesFolder)
-					)
-					println("console: ${message} (${location}:${lineNumber})")
+					fun String.relocate(): String =
+						this.replace(
+							"""jar:file:/.*?/graph-.*?\.jar!/""".toRegex(),
+							Regex.escapeReplacement(Debug.ResourcesFolder)
+						)
+					println("console: ${message.relocate()} (${sourceId.relocate()}:${lineNumber})")
 				}
 		}
 		// Used in d3-graph.html.
