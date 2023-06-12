@@ -46,6 +46,7 @@
 		<div id="detail-running" class="loader"></div>
 		<div id="detail-name"></div>
 		<div id="detail-project"></div>
+		<div id="detail-task"></div>
 		<div id="detail-type"></div>
 		<div id="detail-state"></div>
 		<div id="detail-pos"></div>
@@ -159,6 +160,7 @@ const details = function Details() {
 	const progressUI = det.select('#detail-running');
 	const nameUI = det.select('#detail-name').insert('span');
 	const projectUI = det.select('#detail-project');
+	const taskUI = det.select('#detail-task');
 	const typeUI = det.select('#detail-type');
 	const stateUI = det.select('#detail-state');
 	const posUI = det.select('#detail-pos');
@@ -203,6 +205,7 @@ const details = function Details() {
 			nameUI.text(d.ui.label());
 			autoSizeText(nameUI.node());
 			projectUI.text(d.ui.project() || "root project");
+			taskUI.text(d.ui.taskName());
 			typeUI.text(d.type || 'normal');
 			stateUI.text(d.state || 'scheduled');
 			progressUI.style('display', d.state === 'executing'? 'block' : 'none');
@@ -397,7 +400,8 @@ function buildLegend(legendData) {
 		// TODO use nodify?
 		legendDatum.ui = {
 			data: legendDatum,
-			project() { return ":sub:module"; },
+			project() { return ":legend"; },
+			taskName() { return "legendTask"; },
 			label() { return this.data.title; },
 			nodeId() { return `legend_${this.data.id}`; },
 		};
@@ -615,9 +619,16 @@ let model = function Model() {
 					const label = this.data.label || this.data.id;
 					return label.replace(/^:?(.+):.+$|.*/, '$1');
 				},
-				label() {
+				taskName() {
 					const label = this.data.label || this.data.id;
 					return label.replace(/^:?(.*):/, '');
+				},
+				label() {
+					const label = this.taskName();
+					if (label.length > 25) {
+						return label.substring(0, 25) + '…';
+					}
+					return label;
 				},
 				nodeId() {
 					return constructNodeId(this.data.id);

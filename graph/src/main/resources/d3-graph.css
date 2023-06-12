@@ -125,6 +125,10 @@ svg {
 	content: "Project: ";
 }
 
+#detail-task:before {
+	content: "Task: ";
+}
+
 #detail-pos:before {
 	content: "Position: ";
 }
