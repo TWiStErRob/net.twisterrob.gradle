@@ -3,7 +3,7 @@ package net.twisterrob.gradle.graph.vis.d3.javafx
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.stage.Stage
-import net.twisterrob.gradle.graph.vis.d3.Debug
+import net.twisterrob.gradle.graph.Debug
 import net.twisterrob.gradle.graph.vis.d3.GradleJULFixer
 import org.gradle.api.initialization.Settings
 import java.util.concurrent.CountDownLatch

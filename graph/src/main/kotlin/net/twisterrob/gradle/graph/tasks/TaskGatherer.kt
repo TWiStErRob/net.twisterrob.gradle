@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.graph.tasks
 
+import net.twisterrob.gradle.graph.Debug
 import org.gradle.api.Project
 import org.gradle.api.ProjectEvaluationListener
 import org.gradle.api.ProjectState
@@ -41,11 +42,17 @@ class TaskGatherer(
 			if (isSimplify) {
 				TransitiveReduction().run(all.values)
 			}
+			if (Debug.Gradle) {
+				println("graphPopulated")
+			}
 			taskGraphListener?.run { graphPopulated(all) }
 		}
 		settings.gradle.addProjectEvaluationListener(object : ProjectEvaluationListener {
 			override fun beforeEvaluate(project: Project) {
 				project.tasks.configureEach { task ->
+					if (Debug.Gradle) {
+						println("configureEach: $task")
+					}
 					data(task)
 				}
 			}

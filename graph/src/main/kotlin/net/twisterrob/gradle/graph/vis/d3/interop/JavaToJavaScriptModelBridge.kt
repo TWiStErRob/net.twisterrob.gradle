@@ -2,7 +2,7 @@ package net.twisterrob.gradle.graph.vis.d3.interop
 
 import javafx.application.Platform
 import javafx.scene.web.WebEngine
-import net.twisterrob.gradle.graph.vis.d3.Debug
+import net.twisterrob.gradle.graph.Debug
 import netscape.javascript.JSException
 import netscape.javascript.JSObject
 

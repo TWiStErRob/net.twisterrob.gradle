@@ -1,5 +1,7 @@
 package net.twisterrob.gradle.graph.vis.d3
 
+import net.twisterrob.gradle.graph.Debug
+
 /**
  * See [Background](http://stackoverflow.com/a/31100941/253468).
  * @see com.sun.webpane.sg.prism.FXGraphicsManager com.sun.webpane.platform.graphics.WCGPerfMeter
