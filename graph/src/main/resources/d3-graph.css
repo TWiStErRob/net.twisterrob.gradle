@@ -336,6 +336,30 @@ svg {
 	fill: #F23;
 }
 
+.node.nosource > rect {
+	stroke: #BBB;
+}
+
+.node.nosource > text {
+	fill: #CCC;
+}
+
+.node.nosource:hover > text {
+	fill: #BBB;
+}
+
+.node.fromcache > rect {
+	stroke: #950;
+}
+
+.node.fromcache > text {
+	fill: #f80;
+}
+
+.node.fromcache:hover > text {
+	fill: #950;
+}
+
 .node.nowork > rect {
 	fill: #00F;
 	stroke: #00F;

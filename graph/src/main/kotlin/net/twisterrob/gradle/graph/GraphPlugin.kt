@@ -80,11 +80,18 @@ class GraphPlugin @Inject constructor(
 				state.failure != null ->
 					TaskResult.Failure
 
+				state.noSource ->
+					TaskResult.NoSource
+
+				// TaskExecutionOutcome.FROM_CACHE is also up-to-date, so this needs to be first.
+				state.skipped && state.skipMessage == "FROM-CACHE" ->
+					TaskResult.FromCache
+
+				state.upToDate ->
+					TaskResult.UpToDate
+
 				state.skipped && state.skipMessage == "SKIPPED" ->
 					TaskResult.Skipped
-
-				state.skipped && state.skipMessage == "UP-TO-DATE" ->
-					TaskResult.UpToDate
 
 				!state.didWork ->
 					TaskResult.NoWork

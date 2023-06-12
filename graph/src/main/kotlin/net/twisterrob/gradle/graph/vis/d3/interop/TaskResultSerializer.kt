@@ -21,6 +21,8 @@ class TaskResultSerializer : JsonSerializer<TaskResult> {
 				this[TaskResult.NoWork] = "nowork"
 				this[TaskResult.Skipped] = "skipped"
 				this[TaskResult.UpToDate] = "uptodate"
+				this[TaskResult.NoSource] = "nosource"
+				this[TaskResult.FromCache] = "fromcache"
 				this[TaskResult.Failure] = "failure"
 				this[TaskResult.Completed] = "success"
 				check(this.keys.size == TaskResult.values().size)
