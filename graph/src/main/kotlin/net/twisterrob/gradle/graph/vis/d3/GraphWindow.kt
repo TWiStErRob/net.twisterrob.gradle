@@ -55,6 +55,16 @@ abstract class GraphWindow : TaskVisualizer {
 			setBackgroundColor(getPage(webEngine))
 			webEngine.userStyleSheetLocation = buildCSSDataURI()
 		}
+		if (Debug.WebView) {
+			com.sun.javafx.webkit.WebConsoleListener
+				.setDefaultListener { _, message, lineNumber, sourceId ->
+					val location = sourceId.replaceFirst(
+						"""^jar:file:/.*?/graph-.*?\.jar!/""".toRegex(),
+						Regex.escapeReplacement(Debug.ResourcesFolder)
+					)
+					println("console: ${message} (${location}:${lineNumber})")
+				}
+		}
 		webEngine.loadWorker.stateProperty().addListener { value, oldState, newState ->
 			if (Debug.WebView) {
 				System.err.printf("State changed: %s -> %s: %s%n", oldState, newState, value)
