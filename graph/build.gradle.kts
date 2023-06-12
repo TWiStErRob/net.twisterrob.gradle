@@ -1,7 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.text.SimpleDateFormat
-import java.util.Date
 
 plugins {
 	id("java-gradle-plugin")
@@ -39,7 +37,7 @@ dependencies {
 	implementation("org.jetbrains:annotations:24.0.1")
 
 	"webjars"("org.webjars.npm:d3:7.8.4") {
-		// Avoid pulling in all small modules, using the merged .js file instead. 
+		// Avoid pulling in all small modules, using the merged .js file instead.
 		isTransitive = false
 	}
 
