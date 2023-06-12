@@ -66,8 +66,6 @@ abstract class GraphWindow : TaskVisualizer {
 			if (newState == Worker.State.SUCCEEDED) {
 				val jsWindow = webEngine.executeScript("window") as JSObject
 				val bridge = JavaScriptBridge(webEngine)
-				webEngine.executeScript("console.log = function() { java.log(arguments) };")
-				//webEngine.executeScript("console.debug = function() { java.log(arguments) };");
 				jsWindow.setMember("java", bridge)
 
 				this@GraphWindow.bridge = bridge

@@ -15,11 +15,15 @@ class JavaScriptBridge(engine: WebEngine) {
 	init {
 		JSON = engine.executeScript("JSON") as JSObject
 		model = engine.executeScript("model") as JSObject
+		engine.executeScript("console.log = function() { java.log(arguments) };")
+		if (DEBUG) {
+			engine.executeScript("console.debug = function() { java.log(arguments) };");
+		}
 	}
 
 	private fun modelCall(methodName: String, vararg args: Any?) {
 		val argsStr = args.contentToString()
-		if (@Suppress("ConstantConditionIf", "RedundantSuppression") false) {
+		if (DEBUG) {
 			message("${methodName}(${argsStr.replace("\\s+".toRegex(), " ").abbreviate(@Suppress("MagicNumber") 50)})")
 		}
 		Platform.runLater {
@@ -57,6 +61,10 @@ class JavaScriptBridge(engine: WebEngine) {
 
 	fun update(name: String, result: String) {
 		modelCall("update", name, result)
+	}
+
+	companion object {
+		const val DEBUG: Boolean = true
 	}
 }
 
