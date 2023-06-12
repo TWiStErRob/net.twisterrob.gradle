@@ -277,12 +277,6 @@ function rebuild() {
 		.on('mouseup', function nodeMouseUp(/*event, d*/) {
 			details.lockNode(null);
 		})
-		.on('mouseover', function nodeMouseOver(event, d) {
-			details.showNode(d);
-		})
-		.on('mouseout', function nodeMouseOut(event, d) {
-			details.hideNode(d);
-		})
 		.call(d3
 			.drag()
 			.on('start', function dragStart(event, d) {
@@ -415,8 +409,11 @@ function buildLegend(legendData) {
 		.selectAll('.node')
 		.data(legendData, d => d.ui.nodeId())
 		.joinNodes()
-		.attr('transform', (d, i) => `translate(0,${headerHeight + 10 + i * d.height * 1.3})`)
-	;
+		.each((d, i) => {
+			d.x = 0;
+			d.y = headerHeight + 10 + i * d.height * 1.3;
+		})
+		.attr('transform', d => `translate(${d.x},${d.y})`)	;
 
 	const legendBackground = legend
 		.select('#legend-bg')
@@ -465,6 +462,12 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 					.append('g')
 					.each(function storeUiNode(d) { d.ui.node = this; })
 					.attr('id', d => d.ui.nodeId())
+					.on('mouseover', function nodeMouseOver(event, d) {
+						details.showNode(d);
+					})
+					.on('mouseout', function nodeMouseOut(event, d) {
+						details.hideNode(d);
+					})
 
 				const rect = uiNodes.append('rect')
 					.each(function storeUiNodeBackground(d) { d.ui.bg = this; })
