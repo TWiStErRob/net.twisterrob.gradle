@@ -15,33 +15,42 @@ class JavaScriptBridge(engine: WebEngine) {
 	init {
 		JSON = engine.executeScript("JSON") as JSObject
 		model = engine.executeScript("model") as JSObject
-		engine.executeScript("console.log = function() { java.log(arguments) };")
+		engine.executeScript("console.log = function() { java.log(arguments, 'log') };")
+		engine.executeScript("console.info = function() { java.log(arguments, 'info') };")
+		engine.executeScript("console.warn = function() { java.log(arguments, 'warn') };")
+		engine.executeScript("console.error = function() { java.log(arguments, 'error') };")
+		engine.executeScript("console.trace = function() { java.log(arguments, 'trace') };")
 		if (DEBUG) {
-			engine.executeScript("console.debug = function() { java.log(arguments) };");
+			engine.executeScript("console.debug = function() { java.log(arguments, 'debug') };");
 		}
 	}
 
 	private fun modelCall(methodName: String, vararg args: Any?) {
 		val argsStr = args.contentToString()
 		if (DEBUG) {
-			message("${methodName}(${argsStr.replace("\\s+".toRegex(), " ").abbreviate(@Suppress("MagicNumber") 150)})")
+			message("model.${methodName}(${argsStr.replace("\\s+".toRegex(), " ").abbreviate(@Suppress("MagicNumber") 150)})")
 		}
 		Platform.runLater {
 			/** @thread JavaFX Application Thread */
 			try {
 				model.call(methodName, *args)
 			} catch (ex: JSException) {
-				throw JSException("Failure ${methodName}(${argsStr})").initCause(ex)
+				throw JSException("Failure model.${methodName}(${argsStr})").initCause(ex)
 			}
 		}
 	}
 
-	fun message(message: String?) {
+	private fun message(message: String?) {
 		System.err.println(message)
 	}
 
-	/** @thread JavaFX Application Thread */
-	fun log(args: JSObject) {
+	/**
+	 * Called from d3-graph.html because [init] overrode console.* calls.
+	 *
+	 * @thread JavaFX Application Thread
+	 */
+	fun log(args: JSObject, level: String) {
+		System.err.printf("console.%s(", level)
 		var i = 0
 		val len = args.getMember("length") as Int
 		while (i < len) {
@@ -52,7 +61,7 @@ class JavaScriptBridge(engine: WebEngine) {
 			}
 			i++
 		}
-		System.err.println()
+		System.err.printf(")%n")
 	}
 
 	fun init(graph: String) {
