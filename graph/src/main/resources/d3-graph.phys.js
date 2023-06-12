@@ -150,5 +150,6 @@ const phys = function() {
 
 		// Should never happen :) If it does, please tell me!
 		throw `Cannot find intersection for ${x}, ${y} inside rectangle ${minY}, ${minY} - ${maxX}, ${maxY}.`;
+		// TODO test and fix: Cannot find intersection for 1.6132698912796644e+258, 4.87568661162857e+258 inside rectangle 4.87568661162857e+258, 4.87568661162857e+258 - 1.6132698912796644e+258, 4.87568661162857e+258.
 	}
 }();

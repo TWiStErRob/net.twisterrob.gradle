@@ -64,7 +64,6 @@ function main() {
 	// needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
 	setTimeout(function startUp() {
 		console.debug(`Startup ${navigator.userAgent}`);
-		resize();
 		buildLegend(legendData);
 		details.init();
 		// See net.twisterrob.gradle.graph.vis.d3.GraphWindow.setupBrowser
@@ -132,9 +131,25 @@ const link_group = svg.select('#links');
 
 const force = d3
 	.forceSimulation()
-	.force('forceCenter', d3.forceCenter().strength(0.03))
-	.force('forceLink', d3.forceLink().strength(0.3))
-	.force('forceCharge', d3.forceManyBody().strength(-400))
+	.force('forceLink', d3.forceLink()
+			.id(node => node.id)
+			.distance(100) // "Average" width of nodes.
+			.strength(0.4) // Don't pull too hard to allow layout forming.
+	)
+	.force('forceCharge', d3.forceManyBody()
+			.strength(-400)
+			.distanceMax(2000) // Reduce range of repel to constrain fly-away unconnected nodes.
+	)
+	// forceCenter() does nothing, so using x + y to pull things in.
+	// .force('forceCenter', d3.forceCenter().strength(1))
+	// Assuming a normal screen, so the nodes are laid out in a laying rectangle.
+	.force("forceX", d3.forceX()
+			.strength(0.05)
+	)
+	.force("forceY", d3.forceY()
+			.strength(0.1)
+	)
+	// TODO when collision is enabled, the strenght can be increased a bit.
 	//.force('forceCollision', d3.forceCollide(100))
 	//.force('forceCollision', phys.forceCollideRect())
 ;
@@ -242,17 +257,6 @@ const details = function Details() {
 var graph = {}; // window.graph is referenced as such.
 const nodes = force.nodes();
 const links = force.force('forceLink').links();
-
-d3.select(window).on('resize', resize);
-
-function resize() {
-	const centerX = window.innerWidth / 2, centerY = window.innerHeight / 2;
-	const forceCenter = force.force('forceCenter');
-	console.debug("Resize center", [ forceCenter.x(), forceCenter.y() ], [ centerX, centerY ]);
-	//zoom.center([ centerX, centerY ]);
-	forceCenter.x(centerX).y(centerY);
-	force.restart();
-}
 
 function rebuild() {
 	const uiLinks = link_group
@@ -558,7 +562,7 @@ let model = function Model() {
 			rebuild();
 			force
 				.alphaTarget(1)
-				.tick(3000)
+				.tick(300)
 				.alphaTarget(0)
 			;
 			// setTimeout is required to allow the browser to render the nodes.
@@ -722,7 +726,8 @@ function autoSizeText(elem, min, max, step, lastChange) {
 }
 
 async function demo() {
-	const graph = await d3.json("demos/net.twisterrob.gradle - gradlew clean jar.json");
+	const graph = await d3.json("demos/com.android.application v1.2.0 - gradlew build.json");
+	//const graph = await d3.json("demos/net.twisterrob.gradle - gradlew clean jar.json");
 	model.init(graph);
 	setTimeout(function demoDelayedEffects() {
 		model.update(Object.keys(graph)[0], 'success');
