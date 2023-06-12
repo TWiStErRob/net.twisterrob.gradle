@@ -134,20 +134,6 @@ const force = d3
 	.force('forceCenter', d3.forceCenter().strength(0.03)) 
 	.force('forceLink', d3.forceLink().strength(0.3))
 	.force('forceCharge', d3.forceManyBody().strength(-400))
-	.on('tick', function forceTick() {
-		//const q = d3.geom.quadtree(nodes);
-		//node.each(function(n) { q.visit(phys.collide(n)) });
-		uiLinks
-			.attr('x1', d => phys.pointOnRect(d.source, d.target).x)
-			.attr('y1', d => phys.pointOnRect(d.source, d.target).y)
-			.attr('x2', d => phys.pointOnRect(d.target, d.source).x)
-			.attr('y2', d => phys.pointOnRect(d.target, d.source).y)
-		;
-
-		uiNodes
-			.attr('transform', d => 'translate(' + d.x + ',' + d.y + ')')
-		;
-	})
 ;
 
 const details = function Details() {
@@ -212,8 +198,8 @@ const details = function Details() {
 	}
 
 	function autoPick() {
-		const executing = uiNodes.filter('.executing');
-		return executing.size() === 0? null : executing.datum();
+		const executing = nodes.filter(d => d.state === 'executing');
+		return executing.length === 0? null : executing[0];
 	}
 
 	return {
@@ -253,9 +239,6 @@ const details = function Details() {
 var graph = {}; // window.graph is referenced as such.
 const nodes = force.nodes();
 const links = force.force('forceLink').links();
-// Initialize to empty selection because force will be automatically started.
-let uiNodes = node_group.selectAll('.node');
-let uiLinks = link_group.selectAll('.link');
 
 d3.select(window).on('resize', resize);
 
@@ -269,7 +252,7 @@ function resize() {
 }
 
 function rebuild() {
-	uiLinks = link_group
+	const uiLinks = link_group
 		.selectAll('.link')
 		.data(links, d => d.linkId())
 		.join('line')
@@ -280,7 +263,7 @@ function rebuild() {
 		//.style('marker-end', 'url(#arrow-out)')
 	;
 
-	uiNodes = node_group
+	const uiNodes = node_group
 		.selectAll('.node')
 		.data(nodes, d => d.ui.nodeId())
 		.joinNodes()
@@ -324,14 +307,28 @@ function rebuild() {
 
 	details.refreshDisplay();
 
-	force.stop();
+	force.stop()
 	force.nodes(nodes);
 	force.force('forceLink').links(links);
+	force.on('tick', function forceTick() {
+		//const q = d3.geom.quadtree(nodes);
+		//node.each(function(n) { q.visit(phys.collide(n)) });
+		uiLinks
+			.attr('x1', d => phys.pointOnRect(d.source, d.target).x)
+			.attr('y1', d => phys.pointOnRect(d.source, d.target).y)
+			.attr('x2', d => phys.pointOnRect(d.target, d.source).x)
+			.attr('y2', d => phys.pointOnRect(d.target, d.source).y)
+		;
+
+		uiNodes
+			.attr('transform', d => 'translate(' + d.x + ',' + d.y + ')')
+		;
+	});
 	force.restart();
 }
 
 function selectNode(d) { // TODO use #task-id for back navigation support
-	uiNodes.filter('.selected').classed('selected', false);
+	node_group.selectAll('.node.selected').classed('selected', false);
 	if (d) {
 		if (d.ui) {
 			d3.select(d.ui.node).classed('selected', true);
