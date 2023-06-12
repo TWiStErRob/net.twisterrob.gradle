@@ -80,7 +80,7 @@ function main() {
 
 const zoom = d3
 	.zoom()
-	.scaleExtent([ 1 / 4, 4 ])
+	//.scaleExtent([ 1 / 4, 4 ])
 	.on('zoom', function svgZoom(event) {
 		const transform = event.transform;
 		console.debug("zoom", transform);
