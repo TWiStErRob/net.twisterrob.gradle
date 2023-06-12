@@ -5,24 +5,13 @@ import javafx.scene.web.WebEngine
 import netscape.javascript.JSException
 import netscape.javascript.JSObject
 
-class JavaScriptBridge(engine: WebEngine) {
+class JavaToJavaScriptModelBridge(engine: WebEngine) {
 
-	@Suppress("PrivatePropertyName", "VariableNaming") // Mimic real JS code.
-	private val JSON: JSObject
 	private val model: JSObject
 
 	/** @thread JavaFX Application Thread */
 	init {
-		JSON = engine.executeScript("JSON") as JSObject
 		model = engine.executeScript("model") as JSObject
-		engine.executeScript("console.log = function() { java.log(arguments, 'log') };")
-		engine.executeScript("console.info = function() { java.log(arguments, 'info') };")
-		engine.executeScript("console.warn = function() { java.log(arguments, 'warn') };")
-		engine.executeScript("console.error = function() { java.log(arguments, 'error') };")
-		engine.executeScript("console.trace = function() { java.log(arguments, 'trace') };")
-		if (DEBUG) {
-			engine.executeScript("console.debug = function() { java.log(arguments, 'debug') };");
-		}
 	}
 
 	private fun modelCall(methodName: String, vararg args: Any?) {
@@ -42,26 +31,6 @@ class JavaScriptBridge(engine: WebEngine) {
 
 	private fun message(message: String?) {
 		System.err.println(message)
-	}
-
-	/**
-	 * Called from d3-graph.html because [init] overrode console.* calls.
-	 *
-	 * @thread JavaFX Application Thread
-	 */
-	fun log(args: JSObject, level: String) {
-		System.err.printf("console.%s(", level)
-		var i = 0
-		val len = args.getMember("length") as Int
-		while (i < len) {
-			val arg = args.getSlot(i)
-			System.err.print(JSON.call("stringify", arg))
-			if (i < len - 1) {
-				System.err.print(", ")
-			}
-			i++
-		}
-		System.err.printf(")%n")
 	}
 
 	fun init(graph: String) {

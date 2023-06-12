@@ -11,12 +11,11 @@ import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskResult
 import net.twisterrob.gradle.graph.tasks.TaskType
 import net.twisterrob.gradle.graph.vis.TaskVisualizer
-import net.twisterrob.gradle.graph.vis.d3.interop.JavaScriptBridge
+import net.twisterrob.gradle.graph.vis.d3.interop.JavaToJavaScriptModelBridge
 import net.twisterrob.gradle.graph.vis.d3.interop.TaskDataSerializer
 import net.twisterrob.gradle.graph.vis.d3.interop.TaskResultSerializer
 import net.twisterrob.gradle.graph.vis.d3.interop.TaskSerializer
 import net.twisterrob.gradle.graph.vis.d3.interop.TaskTypeSerializer
-import netscape.javascript.JSObject
 import org.gradle.api.Task
 import org.gradle.api.initialization.Settings
 import org.intellij.lang.annotations.Language
@@ -30,7 +29,7 @@ import javax.annotation.OverridingMethodsMustInvokeSuper
 @Suppress("UnnecessaryAbstractClass") // Subclasses must override some methods.
 abstract class GraphWindow : TaskVisualizer {
 
-	private var bridge: JavaScriptBridge? = null
+	private var bridge: JavaToJavaScriptModelBridge? = null
 
 	protected open val isBrowserReady: Boolean
 		get() = bridge != null
@@ -58,17 +57,15 @@ abstract class GraphWindow : TaskVisualizer {
 		}
 		@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 		webEngine.loadWorker.stateProperty().addListener { value, oldState, newState ->
-			//System.err.println(String.format("State changed: %s -> %s: %s\n", oldState, newState, value));
-			val ex = webEngine.loadWorker.exception
-			if (ex != null && newState == Worker.State.FAILED) {
-				ex.printStackTrace()
-			}
-			if (newState == Worker.State.SUCCEEDED) {
-				val jsWindow = webEngine.executeScript("window") as JSObject
-				val bridge = JavaScriptBridge(webEngine)
-				jsWindow.setMember("java", bridge)
-
-				this@GraphWindow.bridge = bridge
+			//System.err.printf("State changed: %s -> %s: %s%n", oldState, newState, value)
+			when (newState) {
+				null -> error("newState cannot be null")
+				Worker.State.READY -> error("It never becomes ready, it starts there.")
+				Worker.State.SCHEDULED -> { } // Normal operation
+				Worker.State.RUNNING -> { } // Normal operation
+				Worker.State.SUCCEEDED -> bridge = JavaToJavaScriptModelBridge(webEngine)
+				Worker.State.CANCELLED -> error("Web loading cancelled")
+				Worker.State.FAILED -> webEngine.loadWorker.exception?.printStackTrace()
 			}
 		}
 		try {
