@@ -25,9 +25,9 @@ const phys = function() {
 		      ny2     = n.y2() + padding;
 		return function(quad, x1, y1, x2, y2) {
 			const res = (nx2 < x1 || x2 < nx1) || (ny2 < y1 || y2 < ny1);
-			/*console.log("collide " + quad.point + " " + Math.round(x1) + "," + Math.round(y1) + " - " + Math.round(x2) + "," + Math.round(y2)
-				+ " to " + n.id + " " + Math.round(nx1) + "," + Math.round(ny1) + " - " + Math.round(nx2) + "," + Math.round(ny2)
-				+ ": " + res);*/
+			// const rect = `${Math.round(x1)},${Math.round(y1)} - ${Math.round(x2)},${Math.round(y2)}`;
+			// const rectN = `${Math.round(nx1)},${Math.round(ny1)} - ${Math.round(nx2)},${Math.round(ny2)}`;
+			// console.log(`collide ${quad.point} ${rect} to ${n.id} ${rectN}: ${res}`);
 			const q = quad.point;
 			if (q && (q !== n)) {
 				if (overlap(n, q)) {
@@ -93,8 +93,7 @@ const phys = function() {
 		//assert minX <= maxX;
 		//assert minY <= maxY;
 		if (check && (minX <= x && x <= maxX) && (minY <= y && y <= maxY)) {
-			throw "Point " + [ x, y ] + "cannot be inside "
-			      + "the rectangle: " + [ minY, minY ] + " - " + [ maxX, maxY ] + ".";
+			throw `Point ${x}, ${y} cannot be inside the rectangle: ${minY}, ${minY} - ${maxX}, ${maxY}.`;
 		}
 		const midX = (minX + maxX) / 2;
 		const midY = (minY + maxY) / 2;
@@ -130,7 +129,6 @@ const phys = function() {
 		}
 
 		// Should never happen :) If it does, please tell me!
-		throw "Cannot find intersection for " + [ x, y ]
-		      + " inside rectangle " + [ minY, minY ] + " - " + [ maxX, maxY ] + ".";
+		throw `Cannot find intersection for ${x}, ${y} inside rectangle ${minY}, ${minY} - ${maxX}, ${maxY}.`;
 	}
 }();

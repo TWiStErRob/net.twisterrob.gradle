@@ -62,7 +62,7 @@
 function main() {
 	// needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
 	setTimeout(function startUp() {
-		console.debug("Startup " + navigator.userAgent);
+		console.debug(`Startup ${navigator.userAgent}`);
 		resize();
 		buildLegend(legendData);
 		details.init();
@@ -81,9 +81,7 @@ const zoom = d3
 	.on('zoom', function svgZoom(event) {
 		const transform = event.transform;
 		console.debug("zoom", transform);
-		root.attr('transform',
-			'translate(' + transform.x + ',' + transform.y + ')'
-			+   'scale(' + transform.k + ')');
+		root.attr('transform', `translate(${transform.x},${transform.y}) scale(${transform.k})`);
 	})
 ;
 
@@ -91,7 +89,7 @@ const svg = d3
 	.select('svg')
 	.call(zoom)
 	//.on('mousemove', function svgMouseMove(event) {
-	//	cursor.attr('transform', 'translate(' + d3.pointer(event, this) + ')');
+	//	cursor.attr('transform', `translate(${d3.pointer(event, this)})`);
 	//})
 ;
 
@@ -107,7 +105,7 @@ svg.select('#background')
 		event.preventDefault();
 		const point = d3.pointer(event, node_group.node());
 		model.add({
-			id: '____' + demoIdCounter++ + '____',
+			id: `____${demoIdCounter++}____`,
 			type: 'unknown',
 			x: point[0],
 			y: point[1],
@@ -188,7 +186,7 @@ const details = function Details() {
 			typeUI.text(d.type || 'normal');
 			stateUI.text(d.state || 'scheduled');
 			progressUI.style('display', d.state === 'executing'? 'block' : 'none');
-			posUI.text(d.x.toFixed(2) + ", " + d.y.toFixed(2));
+			posUI.text(`${d.x.toFixed(2)}, ${d.y.toFixed(2)}`);
 
 			bindDeps(dependsUI, d.deps);
 			bindDeps(dependentsUI, d.depsInverse);
@@ -324,7 +322,7 @@ function rebuild() {
 		;
 
 		uiNodes
-			.attr('transform', d => 'translate(' + d.x + ',' + d.y + ')')
+			.attr('transform', d => `translate(${d.x},${d.y})`)
 		;
 	});
 	force.restart();
@@ -396,7 +394,7 @@ function buildLegend(legendData) {
 			data: legendDatum,
 			project() { return ":sub:module"; },
 			label() { return this.data.title; },
-			nodeId() { return 'legend_' + this.data.id; },
+			nodeId() { return `legend_${this.data.id}`; },
 		};
 		legendDatum.deps = [];
 		legendDatum.depsInverse = [];
@@ -417,7 +415,7 @@ function buildLegend(legendData) {
 		.selectAll('.node')
 		.data(legendData, d => d.ui.nodeId())
 		.joinNodes()
-		.attr('transform', (d, i) => 'translate(0,' + (headerHeight + 10 + i * d.height * 1.3) + ')')
+		.attr('transform', (d, i) => `translate(0,${headerHeight + 10 + i * d.height * 1.3})`)
 	;
 
 	const legendBackground = legend
@@ -560,7 +558,7 @@ let model = function Model() {
 			// This method should be just the commented lines, except it's too slow for an ever-changing execution.
 			// Gradle changes task states multiple times per second, so it's better to focus on updating what's really changed.
 			//graph[task].state = result;
-			const node = d3.select('#' + constructNodeId(task));
+			const node = d3.select(`#${constructNodeId(task)}`);
 			const data = node.datum();
 			data.state = result;
 			//rebuild();
@@ -578,11 +576,11 @@ let model = function Model() {
 	}
 
 	function constructNodeId(name) {
-		return 'node_' + cleanName(name);
+		return `node_${cleanName(name)}`;
 	}
 
 	function constructLinkId(from, to) {
-		return 'link_' + cleanName(from) + '_' + cleanName(to);
+		return `link_${cleanName(from)}_${cleanName(to)}`;
 	}
 
 	function nodify(id, node) {
@@ -619,7 +617,7 @@ let model = function Model() {
 		};
 
 		node.toString = function() {
-			return this.id + " @ " + this.x + "," + this.y + " " + this.width + "x" + this.height;
+			return `${this.id} @ ${this.x},${this.y} ${this.width}x${this.height}`;
 		};
 
 		for (const i in defaults) {
@@ -631,7 +629,7 @@ let model = function Model() {
 			if (node[i] === undefined) {
 				node[i] = viewModel[i];
 			} else {
-				console.error("Property " + i + " already exists", node, viewModel);
+				console.error(`Property ${i} already exists`, node, viewModel);
 			}
 		}
 		return node; // == $.merge(node, defaults, viewModel);
@@ -649,7 +647,7 @@ let model = function Model() {
 				return constructLinkId(this.source.id, this.target.id);
 			},
 			toString() {
-				return this.source + " -> " + this.target;
+				return `${this.source} -> ${this.target}`;
 			},
 		};
 	}
@@ -659,11 +657,11 @@ if (window.java) {
 	model = function javafy(model) {
 		function javaEntry(name, fun) {
 			return function() {
-				console.trace(name + "(" + JSON.stringify(arguments) + ")");
+				console.trace(`${name}(${JSON.stringify(arguments)})`);
 				try {
 					return fun.apply(this, arguments);
 				} catch (e) {
-					console.warn(e.name + ": " + e.message + " " + e.stack);
+					console.warn(`${e.name}: ${e.message} ${e.stack}`);
 				}
 			};
 		}
@@ -696,7 +694,7 @@ function autoSizeText(elem, min, max, step, lastChange) {
 	const parentSize = { width: px(parentStyle.width), height: px(parentStyle.height) };
 	let fontSize = px(style.fontSize);
 
-	//console.debug("autoSizeText(" + elem.textContent + ", " + min + ", " + max + ")", fontSize, elemSize, parentSize);
+	//console.debug(`autoSizeText(${elem.textContent}, ${min}, ${max})`, fontSize, elemSize, parentSize);
 	let change = 0, stop = false;
 	const needsSmaller = elemSize.width > parentSize.width || elemSize.height > parentSize.height;
 	const needsBigger = elemSize.width < parentSize.width && elemSize.height < parentSize.height;
@@ -725,7 +723,7 @@ function autoSizeText(elem, min, max, step, lastChange) {
 	if (change !== 0) {
 		fontSize += change;
 		if (min <= fontSize && fontSize <= max) {
-			elem.style.setProperty('font-size', fontSize + 'px');
+			elem.style.setProperty('font-size', `${fontSize}px`);
 		}
 	} else {
 		stop = true;
