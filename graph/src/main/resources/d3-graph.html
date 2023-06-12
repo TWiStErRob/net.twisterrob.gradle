@@ -91,7 +91,7 @@ const svg = d3
 	.select('svg')
 	.call(zoom)
 	//.on('mousemove', function svgMouseMove(event) {
-	//	cursor.attr('transform', 'translate(' + d3.pointer(event) + ')');
+	//	cursor.attr('transform', 'translate(' + d3.pointer(event, this) + ')');
 	//})
 ;
 
@@ -100,12 +100,12 @@ svg.select('#background')
 	.on('click', function backgroundClick() {
 		selectNode(null);
 	})
-	.on('mousedown', function backgroundMouseDown(event) {
+	.on('mousedown', function backgroundMiddleMouseDown(event) {
 		if (event.button !== 1) {
 			return;
 		}
 		event.preventDefault();
-		const point = d3.pointer(node_group.node());
+		const point = d3.pointer(event, node_group.node());
 		model.add({
 			id: '____' + demoIdCounter++ + '____',
 			type: 'unknown',
