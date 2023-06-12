@@ -132,9 +132,11 @@ const link_group = svg.select('#links');
 
 const force = d3
 	.forceSimulation()
-	.force('forceCenter', d3.forceCenter().strength(0.03)) 
+	.force('forceCenter', d3.forceCenter().strength(0.03))
 	.force('forceLink', d3.forceLink().strength(0.3))
 	.force('forceCharge', d3.forceManyBody().strength(-400))
+	//.force('forceCollision', d3.forceCollide(100))
+	//.force('forceCollision', phys.forceCollideRect())
 ;
 
 const details = function Details() {

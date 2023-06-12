@@ -6,7 +6,27 @@ const phys = function() {
 			const h = rect.height / 2;
 			return pointOnRect(point.x, point.y, rect.x - w, rect.y - h, rect.x + w, rect.y + h);
 		},
-		collide,
+		forceCollideRect() {
+			let nodes;
+
+			function force(alpha) {
+				const quad = d3.quadtree(nodes, d => d.x, d => d.y);
+				for (const d of nodes) {
+					quad.visit((q, x1, y1, x2, y2) => {
+						if (q.data !== d) {
+							return collide(d)(q, x1, y1, x2, y2);
+						} else {
+							return false;
+						}
+					});
+				}
+			}
+
+			force.initialize = function forceCollideRect_initialize(value) {
+				nodes = value;
+			}
+			return force;
+		},
 	};
 
 	function overlap(a, b) {
@@ -28,7 +48,7 @@ const phys = function() {
 			// const rect = `${Math.round(x1)},${Math.round(y1)} - ${Math.round(x2)},${Math.round(y2)}`;
 			// const rectN = `${Math.round(nx1)},${Math.round(ny1)} - ${Math.round(nx2)},${Math.round(ny2)}`;
 			// console.log(`collide ${quad.point} ${rect} to ${n.id} ${rectN}: ${res}`);
-			const q = quad.point;
+			const q = quad.data;
 			if (q && (q !== n)) {
 				if (overlap(n, q)) {
 					correct(n, q);
