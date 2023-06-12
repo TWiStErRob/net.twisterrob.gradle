@@ -580,7 +580,8 @@ let model = function Model() {
 	};
 
 	function cleanName(name) {
-		return name.replace(/:/g, '-');
+		// Normally this would clean `:foo:bar` to `-foo-bar`, but generalized to be safe.
+		return name.replace(/[^a-zA-Z0-9_]/g, '-');
 	}
 
 	function constructNodeId(name) {
