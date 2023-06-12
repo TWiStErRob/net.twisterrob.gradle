@@ -9,9 +9,9 @@ class LoggingTaskVisualizer(
 	private val wrapped: TaskVisualizer
 ) : TaskVisualizer {
 
-	override fun showUI(project: Settings) {
-		System.out.printf("showUI(%s)\n", project)
-		wrapped.showUI(project)
+	override fun showUI(settings: Settings) {
+		System.out.printf("showUI(%s)\n", settings)
+		wrapped.showUI(settings)
 	}
 
 	override fun initModel(graph: Map<Task, TaskData>) {

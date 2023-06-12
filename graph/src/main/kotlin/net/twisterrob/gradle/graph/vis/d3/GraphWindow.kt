@@ -107,7 +107,7 @@ abstract class GraphWindow : TaskVisualizer {
 	}
 
 	@OverridingMethodsMustInvokeSuper
-	override fun showUI(project: Settings) {
+	override fun showUI(settings: Settings) {
 		if (isBrowserReady) {
 			initModel(emptyMap()) // Reset graph before displaying it again.
 		}

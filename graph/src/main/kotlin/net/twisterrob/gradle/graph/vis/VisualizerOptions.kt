@@ -10,50 +10,50 @@ import java.io.IOException
 import java.nio.channels.OverlappingFileLockException
 import java.util.Properties
 
-abstract class VisualizerSettings<Settings : Any> protected constructor(
+abstract class VisualizerOptions<Options : Any> protected constructor(
 	private val cache: PersistentCache
 ) : Closeable {
 
-	private val settingsFileName: String
+	private val storageFileName: String
 		get() = this::class.java.name + ".properties"
 
-	var settings: Settings
+	var options: Options
 		get() = try {
-			cache.useCache<Settings> {
-				val propsFile = File(cache.baseDir, settingsFileName)
+			cache.useCache<Options> {
+				val propsFile = File(cache.baseDir, storageFileName)
 				val props = Properties()
 				try {
 					props.load(FileReader(propsFile))
-					readSettings(props)
+					readOptions(props)
 				} catch (ignore: FileNotFoundException) {
-					readSettings(Properties()) // First startup.
+					readOptions(Properties()) // First startup.
 				} catch (ex: IOException) {
-					throw IllegalStateException("Cannot read settings from ${propsFile}", ex)
+					throw IllegalStateException("Cannot read options from ${propsFile}", ex)
 				}
 			}
 		} catch (ex: OverlappingFileLockException) {
-			System.err.println("Cannot read settings, using defaults: $ex") // TODO logging
+			System.err.println("Cannot read options, using defaults: $ex") // TODO logging
 			createDefault()
 		}
-		set(settings) {
+		set(value) {
 			try {
-				val props = writeSettings(settings)
+				val props = writeOptions(value)
 				cache.useCache {
-					val propsFile = File(cache.baseDir, settingsFileName)
+					val propsFile = File(cache.baseDir, storageFileName)
 					try {
 						props.store(FileWriter(propsFile), null)
 					} catch (ex: IOException) {
-						throw IllegalStateException("Cannot save settings to ${propsFile}", ex)
+						throw IllegalStateException("Cannot save options to ${propsFile}", ex)
 					}
 				}
 			} catch (ex: OverlappingFileLockException) {
-				System.err.println("Cannot save settings: $ex") // TODO logging
+				System.err.println("Cannot save options: $ex") // TODO logging
 			}
 		}
 
-	protected abstract fun readSettings(props: Properties): Settings
-	protected abstract fun writeSettings(settings: Settings): Properties
-	protected abstract fun createDefault(): Settings
+	protected abstract fun readOptions(props: Properties): Options
+	protected abstract fun writeOptions(options: Options): Properties
+	protected abstract fun createDefault(): Options
 
 	override fun close() {
 		cache.close()

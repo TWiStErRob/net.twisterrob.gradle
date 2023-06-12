@@ -4,6 +4,7 @@ import javafx.application.Application
 import javafx.application.Platform
 import javafx.stage.Stage
 import net.twisterrob.gradle.graph.vis.d3.GradleJULFixer
+import org.gradle.api.initialization.Settings
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
@@ -31,7 +32,7 @@ class JavaFXApplication : Application() {
 	@Throws(Exception::class)
 	override fun start(stage: Stage) {
 		log("start")
-		settings!!.applyTo(stage)
+		options!!.applyTo(stage)
 		ui = GraphWindow(stage)
 		initialized!!.countDown()
 		//fixer.interrupt(); // from here on it doesn't really matter, because most of JavaFX is already up and running
@@ -90,13 +91,13 @@ class JavaFXApplication : Application() {
 
 		private var initialized: AbortableCountDownLatch? = null
 
-		private var settings: Settings.WindowLocation? = null
+		private var options: Options.WindowLocation? = null
 
-		internal fun startLaunch(settings: Settings.WindowLocation) {
+		internal fun startLaunch(options: Options.WindowLocation) {
 			log("startLaunch")
 			if (initialized == null) {
 				initialized = AbortableCountDownLatch(1)
-				JavaFXApplication.settings = settings
+				JavaFXApplication.options = options
 				log("launching in background")
 				thread {
 					log("launching")
@@ -122,14 +123,14 @@ class JavaFXApplication : Application() {
 			}
 		}
 
-		fun show(project: org.gradle.api.initialization.Settings): GraphWindow? {
+		fun show(settings: Settings): GraphWindow? {
 			try {
 				log("show, waiting")
 				initialized!!.await()
 				log("show, initialized")
 				Platform.runLater {
 					log("show, showUI")
-					app.ui!!.showUI(project)
+					app.ui!!.showUI(settings)
 				}
 				return app.ui
 			} catch (ignore: AbortableCountDownLatch.AbortedException) {

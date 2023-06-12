@@ -26,11 +26,11 @@ class GraphPlugin @Inject constructor(
 	private lateinit var vis: TaskVisualizer
 
 	/** See [SO](http://stackoverflow.com/a/11237184/253468). */
-	override fun apply(project: Settings) {
-		val extension = project.extensions.create("graphSettings", GraphSettingsExtension::class.java)
+	override fun apply(settings: Settings) {
+		val extension = settings.extensions.create("graphSettings", GraphSettingsExtension::class.java)
 
-		val gatherer = TaskGatherer(project)
-		project.gradle.addBuildListener(object : BuildAdapter() {
+		val gatherer = TaskGatherer(settings)
+		settings.gradle.addBuildListener(object : BuildAdapter() {
 			override fun settingsEvaluated(settings: Settings) {
 				vis = createGraph(extension.visualizer)
 				vis.showUI(settings)
@@ -52,7 +52,7 @@ class GraphPlugin @Inject constructor(
 		}
 
 		@Suppress("DEPRECATION") // Configuration cache.
-		project.gradle.taskGraph.addTaskExecutionListener(object : org.gradle.api.execution.TaskExecutionListener {
+		settings.gradle.taskGraph.addTaskExecutionListener(object : org.gradle.api.execution.TaskExecutionListener {
 			override fun beforeExecute(task: Task) {
 				vis.update(task, TaskResult.Executing)
 			}

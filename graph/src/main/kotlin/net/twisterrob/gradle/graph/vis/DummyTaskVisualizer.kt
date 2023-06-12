@@ -7,7 +7,7 @@ import org.gradle.api.initialization.Settings
 
 class DummyTaskVisualizer : TaskVisualizer {
 
-	override fun showUI(project: Settings) {
+	override fun showUI(settings: Settings) {
 		// do nothing
 	}
 

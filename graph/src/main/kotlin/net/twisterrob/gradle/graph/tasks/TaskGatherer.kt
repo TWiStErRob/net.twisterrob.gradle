@@ -12,7 +12,7 @@ import org.gradle.execution.TaskSelector
 import java.util.TreeMap
 
 class TaskGatherer(
-	val project: Settings
+	private val settings: Settings
 ) {
 
 	var taskGraphListener: TaskGraphListener? = null
@@ -27,7 +27,7 @@ class TaskGatherer(
 
 	init {
 		// https://github.com/gradle/gradle/issues/25340
-		project.gradle.taskGraph.addTaskExecutionGraphListener { teg ->
+		settings.gradle.taskGraph.addTaskExecutionGraphListener { teg ->
 			for (task in teg.allTasks) {
 				data(task).type = TaskType.Normal
 			}
@@ -43,7 +43,7 @@ class TaskGatherer(
 			}
 			taskGraphListener?.run { graphPopulated(all) }
 		}
-		project.gradle.addProjectEvaluationListener(object : ProjectEvaluationListener {
+		settings.gradle.addProjectEvaluationListener(object : ProjectEvaluationListener {
 			override fun beforeEvaluate(project: Project) {
 				project.tasks.whenTaskAdded { task ->
 					data(task)
@@ -69,9 +69,9 @@ class TaskGatherer(
 	/** @see org.gradle.execution.ExcludedTaskFilteringBuildConfigurationAction */
 	private fun getExcludedTasks(): Iterable<Task> {
 		@Suppress("UNUSED_VARIABLE") // TODO figure out how to reinstate this
-		val selector = (project.gradle as GradleInternal).serviceOf<TaskSelector>()
+		val selector = (settings.gradle as GradleInternal).serviceOf<TaskSelector>()
 		val tasks: MutableSet<Task> = HashSet()
-		for (path in project.gradle.startParameter.excludedTaskNames) {
+		for (path in settings.gradle.startParameter.excludedTaskNames) {
 //			val selection = selector.getSelection(path)
 //			println("-${path} -> ${selection.tasks.map { it.name }}")
 //			tasks.addAll(selection.tasks)
@@ -83,9 +83,9 @@ class TaskGatherer(
 	/** @see org.gradle.execution.TaskNameResolvingBuildConfigurationAction */
 	private fun getRequestedTasks(): Iterable<Task> {
 		@Suppress("UNUSED_VARIABLE") // TODO figure out how to reinstate this
-		val selector = (project.gradle as GradleInternal).serviceOf<TaskSelector>()
+		val selector = (settings.gradle as GradleInternal).serviceOf<TaskSelector>()
 		val tasks: MutableSet<Task> = HashSet()
-		for (request in project.gradle.startParameter.taskRequests) {
+		for (request in settings.gradle.startParameter.taskRequests) {
 			for (path in request.args) {
 //				val selection = selector.getSelection(request.projectPath, path)
 //				println("${request.projectPath}:${path} -> ${selection.tasks.map { it.name }}")
