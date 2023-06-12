@@ -99,7 +99,7 @@ class JavaFXApplication : Application() {
 				initialized = AbortableCountDownLatch(1)
 				JavaFXApplication.options = options
 				log("launching in background")
-				thread {
+				thread(name = "Launcher for ${JavaFXApplication::class.java.name}") {
 					log("launching")
 					try {
 						Platform.setImplicitExit(false) // Keep JavaFX alive.

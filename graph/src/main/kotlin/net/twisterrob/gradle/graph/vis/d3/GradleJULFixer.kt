@@ -4,7 +4,7 @@ package net.twisterrob.gradle.graph.vis.d3
  * See [Background](http://stackoverflow.com/a/31100941/253468).
  * @see com.sun.webpane.sg.prism.FXGraphicsManager com.sun.webpane.platform.graphics.WCGPerfMeter
  */
-class GradleJULFixer : Thread(GradleJULFixer::class.java.simpleName) {
+class GradleJULFixer : Thread(GradleJULFixer::class.java.name) {
 
 	init {
 		log("creating")
