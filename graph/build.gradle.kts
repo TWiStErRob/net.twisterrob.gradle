@@ -77,7 +77,7 @@ tasks.named<Jar>("jar") {
 			"Implementation-Vendor" to project.group,
 			"Implementation-Title" to project.name,
 			"Implementation-Version" to project.version,
-			"Built-Date" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(Date()),
+			//"Built-Date" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(Date()),
 		)
 	}
 }
