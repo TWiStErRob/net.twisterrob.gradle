@@ -24,7 +24,7 @@ class JavaScriptBridge(engine: WebEngine) {
 	private fun modelCall(methodName: String, vararg args: Any?) {
 		val argsStr = args.contentToString()
 		if (DEBUG) {
-			message("${methodName}(${argsStr.replace("\\s+".toRegex(), " ").abbreviate(@Suppress("MagicNumber") 50)})")
+			message("${methodName}(${argsStr.replace("\\s+".toRegex(), " ").abbreviate(@Suppress("MagicNumber") 150)})")
 		}
 		Platform.runLater {
 			/** @thread JavaFX Application Thread */
