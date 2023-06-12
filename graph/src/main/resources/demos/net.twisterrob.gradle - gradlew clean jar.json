@@ -1,0 +1,3513 @@
+{
+  ":checkstyle:classes": {
+    "label": ":checkstyle:classes",
+    "deps": [
+      ":checkstyle:compileJava",
+      ":checkstyle:processResources"
+    ]
+  },
+  ":checkstyle:clean": {
+    "label": ":checkstyle:clean",
+    "deps": []
+  },
+  ":checkstyle:compileJava": {
+    "label": ":checkstyle:compileJava",
+    "deps": [
+      ":checkstyle:compileKotlin"
+    ]
+  },
+  ":checkstyle:compileKotlin": {
+    "label": ":checkstyle:compileKotlin",
+    "deps": [
+      ":checkstyle:generateNet.twisterrob.checkstyleToNet.twisterrob.gradle.plugin.checkstyleDeprecationPluginSources",
+      ":common:compileGroovy"
+    ]
+  },
+  ":checkstyle:compileTestFixturesJava": {
+    "label": ":checkstyle:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:compileTestFixturesKotlin"
+    ]
+  },
+  ":checkstyle:compileTestFixturesKotlin": {
+    "label": ":checkstyle:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:compileJava",
+      ":test:internal:compileJava"
+    ]
+  },
+  ":checkstyle:compileTestJava": {
+    "label": ":checkstyle:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:compileTestKotlin"
+    ]
+  },
+  ":checkstyle:compileTestKotlin": {
+    "label": ":checkstyle:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:compileTestFixturesJava"
+    ]
+  },
+  ":checkstyle:dokkaJavadoc": {
+    "label": ":checkstyle:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:generateNet.twisterrob.checkstyleToNet.twisterrob.gradle.plugin.checkstyleDeprecationPluginSources",
+      ":common:compileGroovy"
+    ]
+  },
+  ":checkstyle:generateMetadataFileForPluginMavenPublication": {
+    "label": ":checkstyle:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:jar",
+      ":checkstyle:javadocJar",
+      ":checkstyle:sourcesJar"
+    ]
+  },
+  ":checkstyle:generateNet.twisterrob.checkstyleToNet.twisterrob.gradle.plugin.checkstyleDeprecationPluginResources": {
+    "label": ":checkstyle:generateNet.twisterrob.checkstyleToNet.twisterrob.gradle.plugin.checkstyleDeprecationPluginResources",
+    "deps": []
+  },
+  ":checkstyle:generateNet.twisterrob.checkstyleToNet.twisterrob.gradle.plugin.checkstyleDeprecationPluginSources": {
+    "label": ":checkstyle:generateNet.twisterrob.checkstyleToNet.twisterrob.gradle.plugin.checkstyleDeprecationPluginSources",
+    "deps": []
+  },
+  ":checkstyle:generatePomFileForCheckstylePluginMarkerMavenPublication": {
+    "label": ":checkstyle:generatePomFileForCheckstylePluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":checkstyle:generatePomFileForPluginMavenPublication": {
+    "label": ":checkstyle:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":checkstyle:jar": {
+    "label": ":checkstyle:jar",
+    "deps": [
+      ":checkstyle:classes"
+    ]
+  },
+  ":checkstyle:javadocJar": {
+    "label": ":checkstyle:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:dokkaJavadoc"
+    ]
+  },
+  ":checkstyle:pluginDescriptors": {
+    "label": ":checkstyle:pluginDescriptors",
+    "deps": []
+  },
+  ":checkstyle:processResources": {
+    "label": ":checkstyle:processResources",
+    "deps": [
+      ":checkstyle:generateNet.twisterrob.checkstyleToNet.twisterrob.gradle.plugin.checkstyleDeprecationPluginResources",
+      ":checkstyle:pluginDescriptors"
+    ]
+  },
+  ":checkstyle:signCheckstylePluginMarkerMavenPublication": {
+    "label": ":checkstyle:signCheckstylePluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:generatePomFileForCheckstylePluginMarkerMavenPublication"
+    ]
+  },
+  ":checkstyle:signPluginMavenPublication": {
+    "label": ":checkstyle:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:generateMetadataFileForPluginMavenPublication",
+      ":checkstyle:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":checkstyle:sourcesJar": {
+    "label": ":checkstyle:sourcesJar",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:generateNet.twisterrob.checkstyleToNet.twisterrob.gradle.plugin.checkstyleDeprecationPluginResources",
+      ":checkstyle:generateNet.twisterrob.checkstyleToNet.twisterrob.gradle.plugin.checkstyleDeprecationPluginSources"
+    ]
+  },
+  ":checkstyle:testFixturesJar": {
+    "label": ":checkstyle:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":common:classes": {
+    "label": ":common:classes",
+    "deps": [
+      ":common:compileGroovy",
+      ":common:processResources"
+    ]
+  },
+  ":common:clean": {
+    "label": ":common:clean",
+    "deps": []
+  },
+  ":common:compileGroovy": {
+    "label": ":common:compileGroovy",
+    "deps": [
+      ":common:compileJava"
+    ]
+  },
+  ":common:compileJava": {
+    "label": ":common:compileJava",
+    "deps": [
+      ":common:compileKotlin"
+    ]
+  },
+  ":common:compileKotlin": {
+    "label": ":common:compileKotlin",
+    "deps": [
+      ":compat:agp-base:jar",
+      ":compat:gradle:jar"
+    ]
+  },
+  ":common:compileTestGroovy": {
+    "label": ":common:compileTestGroovy",
+    "type": "unknown",
+    "deps": [
+      ":common:compileTestJava"
+    ]
+  },
+  ":common:compileTestJava": {
+    "label": ":common:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":common:compileTestKotlin"
+    ]
+  },
+  ":common:compileTestKotlin": {
+    "label": ":common:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":common:jar",
+      ":test:jar",
+      ":test:internal:jar"
+    ]
+  },
+  ":common:dokkaJavadoc": {
+    "label": ":common:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:jar",
+      ":compat:gradle:jar"
+    ]
+  },
+  ":common:generateMetadataFileForLibraryPublication": {
+    "label": ":common:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":common:jar",
+      ":common:javadocJar",
+      ":common:sourcesJar"
+    ]
+  },
+  ":common:generatePomFileForLibraryPublication": {
+    "label": ":common:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":common:jar": {
+    "label": ":common:jar",
+    "deps": [
+      ":common:classes"
+    ]
+  },
+  ":common:javadocJar": {
+    "label": ":common:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":common:dokkaJavadoc"
+    ]
+  },
+  ":common:processResources": {
+    "label": ":common:processResources",
+    "deps": []
+  },
+  ":common:signLibraryPublication": {
+    "label": ":common:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":common:generateMetadataFileForLibraryPublication",
+      ":common:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":common:sourcesJar": {
+    "label": ":common:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:classes": {
+    "label": ":plugin:classes",
+    "deps": [
+      ":plugin:compileJava",
+      ":plugin:processResources"
+    ]
+  },
+  ":plugin:clean": {
+    "label": ":plugin:clean",
+    "deps": []
+  },
+  ":plugin:compileJava": {
+    "label": ":plugin:compileJava",
+    "deps": [
+      ":plugin:compileKotlin"
+    ]
+  },
+  ":plugin:compileKotlin": {
+    "label": ":plugin:compileKotlin",
+    "deps": [
+      ":plugin:generateNet.twisterrob.android-appToNet.twisterrob.gradle.plugin.android-appDeprecationPluginSources",
+      ":plugin:generateNet.twisterrob.android-libraryToNet.twisterrob.gradle.plugin.android-libraryDeprecationPluginSources",
+      ":plugin:generateNet.twisterrob.android-testToNet.twisterrob.gradle.plugin.android-testDeprecationPluginSources",
+      ":plugin:building:compileJava",
+      ":plugin:languages:compileJava",
+      ":plugin:release:compileJava",
+      ":plugin:reporting:compileJava",
+      ":plugin:settings:compileJava",
+      ":plugin:signing:compileJava"
+    ]
+  },
+  ":plugin:compileTestFixturesJava": {
+    "label": ":plugin:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:compileTestFixturesKotlin"
+    ]
+  },
+  ":plugin:compileTestFixturesKotlin": {
+    "label": ":plugin:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:compileJava"
+    ]
+  },
+  ":plugin:compileTestJava": {
+    "label": ":plugin:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:compileTestKotlin"
+    ]
+  },
+  ":plugin:compileTestKotlin": {
+    "label": ":plugin:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:compileTestFixturesJava",
+      ":plugin:base:compileTestFixturesJava"
+    ]
+  },
+  ":plugin:dokkaJavadoc": {
+    "label": ":plugin:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":plugin:generateNet.twisterrob.android-appToNet.twisterrob.gradle.plugin.android-appDeprecationPluginSources",
+      ":plugin:generateNet.twisterrob.android-libraryToNet.twisterrob.gradle.plugin.android-libraryDeprecationPluginSources",
+      ":plugin:generateNet.twisterrob.android-testToNet.twisterrob.gradle.plugin.android-testDeprecationPluginSources",
+      ":plugin:building:compileJava",
+      ":plugin:languages:compileJava",
+      ":plugin:release:compileJava",
+      ":plugin:reporting:compileJava",
+      ":plugin:settings:compileJava",
+      ":plugin:signing:compileJava"
+    ]
+  },
+  ":plugin:generateMetadataFileForPluginMavenPublication": {
+    "label": ":plugin:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:jar",
+      ":plugin:javadocJar",
+      ":plugin:sourcesJar"
+    ]
+  },
+  ":plugin:generateNet.twisterrob.android-appToNet.twisterrob.gradle.plugin.android-appDeprecationPluginResources": {
+    "label": ":plugin:generateNet.twisterrob.android-appToNet.twisterrob.gradle.plugin.android-appDeprecationPluginResources",
+    "deps": []
+  },
+  ":plugin:generateNet.twisterrob.android-appToNet.twisterrob.gradle.plugin.android-appDeprecationPluginSources": {
+    "label": ":plugin:generateNet.twisterrob.android-appToNet.twisterrob.gradle.plugin.android-appDeprecationPluginSources",
+    "deps": []
+  },
+  ":plugin:generateNet.twisterrob.android-libraryToNet.twisterrob.gradle.plugin.android-libraryDeprecationPluginResources": {
+    "label": ":plugin:generateNet.twisterrob.android-libraryToNet.twisterrob.gradle.plugin.android-libraryDeprecationPluginResources",
+    "deps": []
+  },
+  ":plugin:generateNet.twisterrob.android-libraryToNet.twisterrob.gradle.plugin.android-libraryDeprecationPluginSources": {
+    "label": ":plugin:generateNet.twisterrob.android-libraryToNet.twisterrob.gradle.plugin.android-libraryDeprecationPluginSources",
+    "deps": []
+  },
+  ":plugin:generateNet.twisterrob.android-testToNet.twisterrob.gradle.plugin.android-testDeprecationPluginResources": {
+    "label": ":plugin:generateNet.twisterrob.android-testToNet.twisterrob.gradle.plugin.android-testDeprecationPluginResources",
+    "deps": []
+  },
+  ":plugin:generateNet.twisterrob.android-testToNet.twisterrob.gradle.plugin.android-testDeprecationPluginSources": {
+    "label": ":plugin:generateNet.twisterrob.android-testToNet.twisterrob.gradle.plugin.android-testDeprecationPluginSources",
+    "deps": []
+  },
+  ":plugin:generatePomFileForAndroidAppPluginMarkerMavenPublication": {
+    "label": ":plugin:generatePomFileForAndroidAppPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:generatePomFileForAndroidLibraryPluginMarkerMavenPublication": {
+    "label": ":plugin:generatePomFileForAndroidLibraryPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:generatePomFileForAndroidTestPluginMarkerMavenPublication": {
+    "label": ":plugin:generatePomFileForAndroidTestPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:generatePomFileForPluginMavenPublication": {
+    "label": ":plugin:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:jar": {
+    "label": ":plugin:jar",
+    "deps": [
+      ":plugin:classes"
+    ]
+  },
+  ":plugin:javadocJar": {
+    "label": ":plugin:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:dokkaJavadoc"
+    ]
+  },
+  ":plugin:pluginDescriptors": {
+    "label": ":plugin:pluginDescriptors",
+    "deps": []
+  },
+  ":plugin:processResources": {
+    "label": ":plugin:processResources",
+    "deps": [
+      ":plugin:generateNet.twisterrob.android-appToNet.twisterrob.gradle.plugin.android-appDeprecationPluginResources",
+      ":plugin:generateNet.twisterrob.android-libraryToNet.twisterrob.gradle.plugin.android-libraryDeprecationPluginResources",
+      ":plugin:generateNet.twisterrob.android-testToNet.twisterrob.gradle.plugin.android-testDeprecationPluginResources",
+      ":plugin:pluginDescriptors"
+    ]
+  },
+  ":plugin:signAndroidAppPluginMarkerMavenPublication": {
+    "label": ":plugin:signAndroidAppPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:generatePomFileForAndroidAppPluginMarkerMavenPublication"
+    ]
+  },
+  ":plugin:signAndroidLibraryPluginMarkerMavenPublication": {
+    "label": ":plugin:signAndroidLibraryPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:generatePomFileForAndroidLibraryPluginMarkerMavenPublication"
+    ]
+  },
+  ":plugin:signAndroidTestPluginMarkerMavenPublication": {
+    "label": ":plugin:signAndroidTestPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:generatePomFileForAndroidTestPluginMarkerMavenPublication"
+    ]
+  },
+  ":plugin:signPluginMavenPublication": {
+    "label": ":plugin:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:generateMetadataFileForPluginMavenPublication",
+      ":plugin:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":plugin:sourcesJar": {
+    "label": ":plugin:sourcesJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:generateNet.twisterrob.android-appToNet.twisterrob.gradle.plugin.android-appDeprecationPluginResources",
+      ":plugin:generateNet.twisterrob.android-appToNet.twisterrob.gradle.plugin.android-appDeprecationPluginSources",
+      ":plugin:generateNet.twisterrob.android-libraryToNet.twisterrob.gradle.plugin.android-libraryDeprecationPluginResources",
+      ":plugin:generateNet.twisterrob.android-libraryToNet.twisterrob.gradle.plugin.android-libraryDeprecationPluginSources",
+      ":plugin:generateNet.twisterrob.android-testToNet.twisterrob.gradle.plugin.android-testDeprecationPluginResources",
+      ":plugin:generateNet.twisterrob.android-testToNet.twisterrob.gradle.plugin.android-testDeprecationPluginSources"
+    ]
+  },
+  ":plugin:testFixturesJar": {
+    "label": ":plugin:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":pmd:classes": {
+    "label": ":pmd:classes",
+    "deps": [
+      ":pmd:compileJava",
+      ":pmd:processResources"
+    ]
+  },
+  ":pmd:clean": {
+    "label": ":pmd:clean",
+    "deps": []
+  },
+  ":pmd:compileJava": {
+    "label": ":pmd:compileJava",
+    "deps": [
+      ":pmd:compileKotlin"
+    ]
+  },
+  ":pmd:compileKotlin": {
+    "label": ":pmd:compileKotlin",
+    "deps": [
+      ":common:compileGroovy",
+      ":pmd:generateNet.twisterrob.pmdToNet.twisterrob.gradle.plugin.pmdDeprecationPluginSources"
+    ]
+  },
+  ":pmd:compileTestFixturesJava": {
+    "label": ":pmd:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":pmd:compileTestFixturesKotlin"
+    ]
+  },
+  ":pmd:compileTestFixturesKotlin": {
+    "label": ":pmd:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":pmd:compileJava",
+      ":test:internal:compileJava"
+    ]
+  },
+  ":pmd:compileTestJava": {
+    "label": ":pmd:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":pmd:compileTestKotlin"
+    ]
+  },
+  ":pmd:compileTestKotlin": {
+    "label": ":pmd:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":pmd:compileTestFixturesJava"
+    ]
+  },
+  ":pmd:dokkaJavadoc": {
+    "label": ":pmd:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":common:compileGroovy",
+      ":pmd:generateNet.twisterrob.pmdToNet.twisterrob.gradle.plugin.pmdDeprecationPluginSources"
+    ]
+  },
+  ":pmd:generateMetadataFileForPluginMavenPublication": {
+    "label": ":pmd:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":pmd:jar",
+      ":pmd:javadocJar",
+      ":pmd:sourcesJar"
+    ]
+  },
+  ":pmd:generateNet.twisterrob.pmdToNet.twisterrob.gradle.plugin.pmdDeprecationPluginResources": {
+    "label": ":pmd:generateNet.twisterrob.pmdToNet.twisterrob.gradle.plugin.pmdDeprecationPluginResources",
+    "deps": []
+  },
+  ":pmd:generateNet.twisterrob.pmdToNet.twisterrob.gradle.plugin.pmdDeprecationPluginSources": {
+    "label": ":pmd:generateNet.twisterrob.pmdToNet.twisterrob.gradle.plugin.pmdDeprecationPluginSources",
+    "deps": []
+  },
+  ":pmd:generatePomFileForPluginMavenPublication": {
+    "label": ":pmd:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":pmd:generatePomFileForPmdPluginMarkerMavenPublication": {
+    "label": ":pmd:generatePomFileForPmdPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":pmd:jar": {
+    "label": ":pmd:jar",
+    "deps": [
+      ":pmd:classes"
+    ]
+  },
+  ":pmd:javadocJar": {
+    "label": ":pmd:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":pmd:dokkaJavadoc"
+    ]
+  },
+  ":pmd:pluginDescriptors": {
+    "label": ":pmd:pluginDescriptors",
+    "deps": []
+  },
+  ":pmd:processResources": {
+    "label": ":pmd:processResources",
+    "deps": [
+      ":pmd:generateNet.twisterrob.pmdToNet.twisterrob.gradle.plugin.pmdDeprecationPluginResources",
+      ":pmd:pluginDescriptors"
+    ]
+  },
+  ":pmd:signPluginMavenPublication": {
+    "label": ":pmd:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":pmd:generateMetadataFileForPluginMavenPublication",
+      ":pmd:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":pmd:signPmdPluginMarkerMavenPublication": {
+    "label": ":pmd:signPmdPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":pmd:generatePomFileForPmdPluginMarkerMavenPublication"
+    ]
+  },
+  ":pmd:sourcesJar": {
+    "label": ":pmd:sourcesJar",
+    "type": "unknown",
+    "deps": [
+      ":pmd:generateNet.twisterrob.pmdToNet.twisterrob.gradle.plugin.pmdDeprecationPluginResources",
+      ":pmd:generateNet.twisterrob.pmdToNet.twisterrob.gradle.plugin.pmdDeprecationPluginSources"
+    ]
+  },
+  ":pmd:testFixturesJar": {
+    "label": ":pmd:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":quality:classes": {
+    "label": ":quality:classes",
+    "deps": [
+      ":quality:compileJava",
+      ":quality:processResources"
+    ]
+  },
+  ":quality:clean": {
+    "label": ":quality:clean",
+    "deps": []
+  },
+  ":quality:compileJava": {
+    "label": ":quality:compileJava",
+    "deps": [
+      ":quality:compileKotlin"
+    ]
+  },
+  ":quality:compileKotlin": {
+    "label": ":quality:compileKotlin",
+    "deps": [
+      ":checkstyle:compileJava",
+      ":pmd:compileJava",
+      ":quality:generateNet.twisterrob.qualityToNet.twisterrob.gradle.plugin.qualityDeprecationPluginSources",
+      ":compat:agp:compileJava"
+    ]
+  },
+  ":quality:compileTestFixturesJava": {
+    "label": ":quality:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":quality:compileTestFixturesKotlin"
+    ]
+  },
+  ":quality:compileTestFixturesKotlin": {
+    "label": ":quality:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":quality:compileJava",
+      ":test:internal:compileJava"
+    ]
+  },
+  ":quality:compileTestJava": {
+    "label": ":quality:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":quality:compileTestKotlin"
+    ]
+  },
+  ":quality:compileTestKotlin": {
+    "label": ":quality:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:compileTestFixturesJava",
+      ":pmd:compileTestFixturesJava",
+      ":quality:compileTestFixturesJava"
+    ]
+  },
+  ":quality:dokkaJavadoc": {
+    "label": ":quality:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":checkstyle:compileJava",
+      ":pmd:compileJava",
+      ":quality:generateNet.twisterrob.qualityToNet.twisterrob.gradle.plugin.qualityDeprecationPluginSources",
+      ":compat:agp:compileJava"
+    ]
+  },
+  ":quality:generateMetadataFileForPluginMavenPublication": {
+    "label": ":quality:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":quality:jar",
+      ":quality:javadocJar",
+      ":quality:sourcesJar"
+    ]
+  },
+  ":quality:generateNet.twisterrob.qualityToNet.twisterrob.gradle.plugin.qualityDeprecationPluginResources": {
+    "label": ":quality:generateNet.twisterrob.qualityToNet.twisterrob.gradle.plugin.qualityDeprecationPluginResources",
+    "deps": []
+  },
+  ":quality:generateNet.twisterrob.qualityToNet.twisterrob.gradle.plugin.qualityDeprecationPluginSources": {
+    "label": ":quality:generateNet.twisterrob.qualityToNet.twisterrob.gradle.plugin.qualityDeprecationPluginSources",
+    "deps": []
+  },
+  ":quality:generatePomFileForPluginMavenPublication": {
+    "label": ":quality:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":quality:generatePomFileForQualityPluginMarkerMavenPublication": {
+    "label": ":quality:generatePomFileForQualityPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":quality:jar": {
+    "label": ":quality:jar",
+    "deps": [
+      ":quality:classes"
+    ]
+  },
+  ":quality:javadocJar": {
+    "label": ":quality:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":quality:dokkaJavadoc"
+    ]
+  },
+  ":quality:pluginDescriptors": {
+    "label": ":quality:pluginDescriptors",
+    "deps": []
+  },
+  ":quality:processResources": {
+    "label": ":quality:processResources",
+    "deps": [
+      ":quality:generateNet.twisterrob.qualityToNet.twisterrob.gradle.plugin.qualityDeprecationPluginResources",
+      ":quality:pluginDescriptors"
+    ]
+  },
+  ":quality:signPluginMavenPublication": {
+    "label": ":quality:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":quality:generateMetadataFileForPluginMavenPublication",
+      ":quality:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":quality:signQualityPluginMarkerMavenPublication": {
+    "label": ":quality:signQualityPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":quality:generatePomFileForQualityPluginMarkerMavenPublication"
+    ]
+  },
+  ":quality:sourcesJar": {
+    "label": ":quality:sourcesJar",
+    "type": "unknown",
+    "deps": [
+      ":quality:generateNet.twisterrob.qualityToNet.twisterrob.gradle.plugin.qualityDeprecationPluginResources",
+      ":quality:generateNet.twisterrob.qualityToNet.twisterrob.gradle.plugin.qualityDeprecationPluginSources"
+    ]
+  },
+  ":quality:testFixturesJar": {
+    "label": ":quality:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":test:classes": {
+    "label": ":test:classes",
+    "deps": [
+      ":test:compileJava",
+      ":test:processResources"
+    ]
+  },
+  ":test:clean": {
+    "label": ":test:clean",
+    "deps": []
+  },
+  ":test:compileJava": {
+    "label": ":test:compileJava",
+    "deps": [
+      ":test:compileKotlin"
+    ]
+  },
+  ":test:compileKotlin": {
+    "label": ":test:compileKotlin",
+    "deps": [
+      ":common:compileGroovy",
+      ":test:generateNet.twisterrob.gradle.testToNet.twisterrob.gradle.plugin.gradle.testDeprecationPluginSources"
+    ]
+  },
+  ":test:compileTestFixturesJava": {
+    "label": ":test:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":test:compileTestFixturesKotlin"
+    ]
+  },
+  ":test:compileTestFixturesKotlin": {
+    "label": ":test:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":test:compileJava"
+    ]
+  },
+  ":test:compileTestJava": {
+    "label": ":test:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":test:compileTestKotlin"
+    ]
+  },
+  ":test:compileTestKotlin": {
+    "label": ":test:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":test:compileTestFixturesJava",
+      ":test:internal:compileJava"
+    ]
+  },
+  ":test:dokkaJavadoc": {
+    "label": ":test:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":common:compileGroovy",
+      ":test:generateNet.twisterrob.gradle.testToNet.twisterrob.gradle.plugin.gradle.testDeprecationPluginSources"
+    ]
+  },
+  ":test:generateMetadataFileForPluginMavenPublication": {
+    "label": ":test:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":test:jar",
+      ":test:javadocJar",
+      ":test:sourcesJar"
+    ]
+  },
+  ":test:generateNet.twisterrob.gradle.testToNet.twisterrob.gradle.plugin.gradle.testDeprecationPluginResources": {
+    "label": ":test:generateNet.twisterrob.gradle.testToNet.twisterrob.gradle.plugin.gradle.testDeprecationPluginResources",
+    "deps": []
+  },
+  ":test:generateNet.twisterrob.gradle.testToNet.twisterrob.gradle.plugin.gradle.testDeprecationPluginSources": {
+    "label": ":test:generateNet.twisterrob.gradle.testToNet.twisterrob.gradle.plugin.gradle.testDeprecationPluginSources",
+    "deps": []
+  },
+  ":test:generatePomFileForGradleTestPluginMarkerMavenPublication": {
+    "label": ":test:generatePomFileForGradleTestPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":test:generatePomFileForPluginMavenPublication": {
+    "label": ":test:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":test:jar": {
+    "label": ":test:jar",
+    "deps": [
+      ":test:classes"
+    ]
+  },
+  ":test:javadocJar": {
+    "label": ":test:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":test:dokkaJavadoc"
+    ]
+  },
+  ":test:packageTestResources": {
+    "label": ":test:packageTestResources",
+    "type": "unknown",
+    "deps": []
+  },
+  ":test:pluginDescriptors": {
+    "label": ":test:pluginDescriptors",
+    "deps": []
+  },
+  ":test:processResources": {
+    "label": ":test:processResources",
+    "deps": [
+      ":test:generateNet.twisterrob.gradle.testToNet.twisterrob.gradle.plugin.gradle.testDeprecationPluginResources",
+      ":test:pluginDescriptors"
+    ]
+  },
+  ":test:signGradleTestPluginMarkerMavenPublication": {
+    "label": ":test:signGradleTestPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":test:generatePomFileForGradleTestPluginMarkerMavenPublication"
+    ]
+  },
+  ":test:signPluginMavenPublication": {
+    "label": ":test:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":test:generateMetadataFileForPluginMavenPublication",
+      ":test:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":test:sourcesJar": {
+    "label": ":test:sourcesJar",
+    "type": "unknown",
+    "deps": [
+      ":test:generateNet.twisterrob.gradle.testToNet.twisterrob.gradle.plugin.gradle.testDeprecationPluginResources",
+      ":test:generateNet.twisterrob.gradle.testToNet.twisterrob.gradle.plugin.gradle.testDeprecationPluginSources"
+    ]
+  },
+  ":test:testFixturesJar": {
+    "label": ":test:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":browser:agp-40x:classes": {
+    "label": ":browser:agp-40x:classes",
+    "deps": [
+      ":browser:agp-40x:compileJava",
+      ":browser:agp-40x:processResources"
+    ]
+  },
+  ":browser:agp-40x:clean": {
+    "label": ":browser:agp-40x:clean",
+    "deps": []
+  },
+  ":browser:agp-40x:compileJava": {
+    "label": ":browser:agp-40x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-40x:jar": {
+    "label": ":browser:agp-40x:jar",
+    "deps": [
+      ":browser:agp-40x:classes"
+    ]
+  },
+  ":browser:agp-40x:processResources": {
+    "label": ":browser:agp-40x:processResources",
+    "deps": []
+  },
+  ":browser:agp-41x:classes": {
+    "label": ":browser:agp-41x:classes",
+    "deps": [
+      ":browser:agp-41x:compileJava",
+      ":browser:agp-41x:processResources"
+    ]
+  },
+  ":browser:agp-41x:clean": {
+    "label": ":browser:agp-41x:clean",
+    "deps": []
+  },
+  ":browser:agp-41x:compileJava": {
+    "label": ":browser:agp-41x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-41x:jar": {
+    "label": ":browser:agp-41x:jar",
+    "deps": [
+      ":browser:agp-41x:classes"
+    ]
+  },
+  ":browser:agp-41x:processResources": {
+    "label": ":browser:agp-41x:processResources",
+    "deps": []
+  },
+  ":browser:agp-42x:classes": {
+    "label": ":browser:agp-42x:classes",
+    "deps": [
+      ":browser:agp-42x:compileJava",
+      ":browser:agp-42x:processResources"
+    ]
+  },
+  ":browser:agp-42x:clean": {
+    "label": ":browser:agp-42x:clean",
+    "deps": []
+  },
+  ":browser:agp-42x:compileJava": {
+    "label": ":browser:agp-42x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-42x:jar": {
+    "label": ":browser:agp-42x:jar",
+    "deps": [
+      ":browser:agp-42x:classes"
+    ]
+  },
+  ":browser:agp-42x:processResources": {
+    "label": ":browser:agp-42x:processResources",
+    "deps": []
+  },
+  ":browser:agp-70x:classes": {
+    "label": ":browser:agp-70x:classes",
+    "deps": [
+      ":browser:agp-70x:compileJava",
+      ":browser:agp-70x:processResources"
+    ]
+  },
+  ":browser:agp-70x:clean": {
+    "label": ":browser:agp-70x:clean",
+    "deps": []
+  },
+  ":browser:agp-70x:compileJava": {
+    "label": ":browser:agp-70x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-70x:jar": {
+    "label": ":browser:agp-70x:jar",
+    "deps": [
+      ":browser:agp-70x:classes"
+    ]
+  },
+  ":browser:agp-70x:processResources": {
+    "label": ":browser:agp-70x:processResources",
+    "deps": []
+  },
+  ":browser:agp-71x:classes": {
+    "label": ":browser:agp-71x:classes",
+    "deps": [
+      ":browser:agp-71x:compileJava",
+      ":browser:agp-71x:processResources"
+    ]
+  },
+  ":browser:agp-71x:clean": {
+    "label": ":browser:agp-71x:clean",
+    "deps": []
+  },
+  ":browser:agp-71x:compileJava": {
+    "label": ":browser:agp-71x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-71x:jar": {
+    "label": ":browser:agp-71x:jar",
+    "deps": [
+      ":browser:agp-71x:classes"
+    ]
+  },
+  ":browser:agp-71x:processResources": {
+    "label": ":browser:agp-71x:processResources",
+    "deps": []
+  },
+  ":browser:agp-72x:classes": {
+    "label": ":browser:agp-72x:classes",
+    "deps": [
+      ":browser:agp-72x:compileJava",
+      ":browser:agp-72x:processResources"
+    ]
+  },
+  ":browser:agp-72x:clean": {
+    "label": ":browser:agp-72x:clean",
+    "deps": []
+  },
+  ":browser:agp-72x:compileJava": {
+    "label": ":browser:agp-72x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-72x:jar": {
+    "label": ":browser:agp-72x:jar",
+    "deps": [
+      ":browser:agp-72x:classes"
+    ]
+  },
+  ":browser:agp-72x:processResources": {
+    "label": ":browser:agp-72x:processResources",
+    "deps": []
+  },
+  ":browser:agp-73x:classes": {
+    "label": ":browser:agp-73x:classes",
+    "deps": [
+      ":browser:agp-73x:compileJava",
+      ":browser:agp-73x:processResources"
+    ]
+  },
+  ":browser:agp-73x:clean": {
+    "label": ":browser:agp-73x:clean",
+    "deps": []
+  },
+  ":browser:agp-73x:compileJava": {
+    "label": ":browser:agp-73x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-73x:jar": {
+    "label": ":browser:agp-73x:jar",
+    "deps": [
+      ":browser:agp-73x:classes"
+    ]
+  },
+  ":browser:agp-73x:processResources": {
+    "label": ":browser:agp-73x:processResources",
+    "deps": []
+  },
+  ":browser:agp-74x:classes": {
+    "label": ":browser:agp-74x:classes",
+    "deps": [
+      ":browser:agp-74x:compileJava",
+      ":browser:agp-74x:processResources"
+    ]
+  },
+  ":browser:agp-74x:clean": {
+    "label": ":browser:agp-74x:clean",
+    "deps": []
+  },
+  ":browser:agp-74x:compileJava": {
+    "label": ":browser:agp-74x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-74x:jar": {
+    "label": ":browser:agp-74x:jar",
+    "deps": [
+      ":browser:agp-74x:classes"
+    ]
+  },
+  ":browser:agp-74x:processResources": {
+    "label": ":browser:agp-74x:processResources",
+    "deps": []
+  },
+  ":browser:agp-80x:classes": {
+    "label": ":browser:agp-80x:classes",
+    "deps": [
+      ":browser:agp-80x:compileJava",
+      ":browser:agp-80x:processResources"
+    ]
+  },
+  ":browser:agp-80x:clean": {
+    "label": ":browser:agp-80x:clean",
+    "deps": []
+  },
+  ":browser:agp-80x:compileJava": {
+    "label": ":browser:agp-80x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-80x:jar": {
+    "label": ":browser:agp-80x:jar",
+    "deps": [
+      ":browser:agp-80x:classes"
+    ]
+  },
+  ":browser:agp-80x:processResources": {
+    "label": ":browser:agp-80x:processResources",
+    "deps": []
+  },
+  ":browser:agp-81x:classes": {
+    "label": ":browser:agp-81x:classes",
+    "deps": [
+      ":browser:agp-81x:compileJava",
+      ":browser:agp-81x:processResources"
+    ]
+  },
+  ":browser:agp-81x:clean": {
+    "label": ":browser:agp-81x:clean",
+    "deps": []
+  },
+  ":browser:agp-81x:compileJava": {
+    "label": ":browser:agp-81x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-81x:jar": {
+    "label": ":browser:agp-81x:jar",
+    "deps": [
+      ":browser:agp-81x:classes"
+    ]
+  },
+  ":browser:agp-81x:processResources": {
+    "label": ":browser:agp-81x:processResources",
+    "deps": []
+  },
+  ":browser:agp-82x:classes": {
+    "label": ":browser:agp-82x:classes",
+    "deps": [
+      ":browser:agp-82x:compileJava",
+      ":browser:agp-82x:processResources"
+    ]
+  },
+  ":browser:agp-82x:clean": {
+    "label": ":browser:agp-82x:clean",
+    "deps": []
+  },
+  ":browser:agp-82x:compileJava": {
+    "label": ":browser:agp-82x:compileJava",
+    "deps": []
+  },
+  ":browser:agp-82x:jar": {
+    "label": ":browser:agp-82x:jar",
+    "deps": [
+      ":browser:agp-82x:classes"
+    ]
+  },
+  ":browser:agp-82x:processResources": {
+    "label": ":browser:agp-82x:processResources",
+    "deps": []
+  },
+  ":browser:checkstyle:classes": {
+    "label": ":browser:checkstyle:classes",
+    "deps": [
+      ":browser:checkstyle:compileJava",
+      ":browser:checkstyle:processResources"
+    ]
+  },
+  ":browser:checkstyle:clean": {
+    "label": ":browser:checkstyle:clean",
+    "deps": []
+  },
+  ":browser:checkstyle:compileJava": {
+    "label": ":browser:checkstyle:compileJava",
+    "deps": []
+  },
+  ":browser:checkstyle:jar": {
+    "label": ":browser:checkstyle:jar",
+    "deps": [
+      ":browser:checkstyle:classes"
+    ]
+  },
+  ":browser:checkstyle:processResources": {
+    "label": ":browser:checkstyle:processResources",
+    "deps": []
+  },
+  ":browser:lint:classes": {
+    "label": ":browser:lint:classes",
+    "deps": [
+      ":browser:lint:compileJava",
+      ":browser:lint:processResources"
+    ]
+  },
+  ":browser:lint:clean": {
+    "label": ":browser:lint:clean",
+    "deps": []
+  },
+  ":browser:lint:compileJava": {
+    "label": ":browser:lint:compileJava",
+    "deps": []
+  },
+  ":browser:lint:jar": {
+    "label": ":browser:lint:jar",
+    "deps": [
+      ":browser:lint:classes"
+    ]
+  },
+  ":browser:lint:processResources": {
+    "label": ":browser:lint:processResources",
+    "deps": []
+  },
+  ":browser:pmd:classes": {
+    "label": ":browser:pmd:classes",
+    "deps": [
+      ":browser:pmd:compileJava",
+      ":browser:pmd:processResources"
+    ]
+  },
+  ":browser:pmd:clean": {
+    "label": ":browser:pmd:clean",
+    "deps": []
+  },
+  ":browser:pmd:compileJava": {
+    "label": ":browser:pmd:compileJava",
+    "deps": []
+  },
+  ":browser:pmd:jar": {
+    "label": ":browser:pmd:jar",
+    "deps": [
+      ":browser:pmd:classes"
+    ]
+  },
+  ":browser:pmd:processResources": {
+    "label": ":browser:pmd:processResources",
+    "deps": []
+  },
+  ":compat:agp:classes": {
+    "label": ":compat:agp:classes",
+    "deps": [
+      ":compat:agp:compileJava",
+      ":compat:agp:processResources"
+    ]
+  },
+  ":compat:agp:clean": {
+    "label": ":compat:agp:clean",
+    "deps": []
+  },
+  ":compat:agp:compileJava": {
+    "label": ":compat:agp:compileJava",
+    "deps": [
+      ":compat:agp:compileKotlin"
+    ]
+  },
+  ":compat:agp:compileKotlin": {
+    "label": ":compat:agp:compileKotlin",
+    "deps": [
+      ":compat:agp-70x:compileJava",
+      ":compat:agp-71x:compileJava",
+      ":compat:agp-72x:compileJava",
+      ":compat:agp-73x:compileJava",
+      ":compat:agp-74x:compileJava",
+      ":compat:agp-80x:compileJava",
+      ":compat:agp-81x:compileJava",
+      ":compat:agp-82x:compileJava"
+    ]
+  },
+  ":compat:agp:compileTestJava": {
+    "label": ":compat:agp:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp:compileTestKotlin"
+    ]
+  },
+  ":compat:agp:compileTestKotlin": {
+    "label": ":compat:agp:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp:classes",
+      ":test:internal:compileJava"
+    ]
+  },
+  ":compat:agp:dokkaJavadoc": {
+    "label": ":compat:agp:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-70x:compileJava",
+      ":compat:agp-71x:compileJava",
+      ":compat:agp-72x:compileJava",
+      ":compat:agp-73x:compileJava",
+      ":compat:agp-74x:compileJava",
+      ":compat:agp-80x:compileJava",
+      ":compat:agp-81x:compileJava",
+      ":compat:agp-82x:compileJava"
+    ]
+  },
+  ":compat:agp:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:agp:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp:jar",
+      ":compat:agp:javadocJar",
+      ":compat:agp:sourcesJar"
+    ]
+  },
+  ":compat:agp:generatePomFileForLibraryPublication": {
+    "label": ":compat:agp:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp:jar": {
+    "label": ":compat:agp:jar",
+    "deps": [
+      ":compat:agp:classes"
+    ]
+  },
+  ":compat:agp:javadocJar": {
+    "label": ":compat:agp:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp:dokkaJavadoc"
+    ]
+  },
+  ":compat:agp:processResources": {
+    "label": ":compat:agp:processResources",
+    "deps": []
+  },
+  ":compat:agp:signLibraryPublication": {
+    "label": ":compat:agp:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp:generateMetadataFileForLibraryPublication",
+      ":compat:agp:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:agp:sourcesJar": {
+    "label": ":compat:agp:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-70x:classes": {
+    "label": ":compat:agp-70x:classes",
+    "deps": [
+      ":compat:agp-70x:compileJava",
+      ":compat:agp-70x:processResources"
+    ]
+  },
+  ":compat:agp-70x:clean": {
+    "label": ":compat:agp-70x:clean",
+    "deps": []
+  },
+  ":compat:agp-70x:compileJava": {
+    "label": ":compat:agp-70x:compileJava",
+    "deps": [
+      ":compat:agp-70x:compileKotlin"
+    ]
+  },
+  ":compat:agp-70x:compileKotlin": {
+    "label": ":compat:agp-70x:compileKotlin",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-70x:compileTestJava": {
+    "label": ":compat:agp-70x:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-70x:compileTestKotlin"
+    ]
+  },
+  ":compat:agp-70x:compileTestKotlin": {
+    "label": ":compat:agp-70x:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-70x:classes"
+    ]
+  },
+  ":compat:agp-70x:dokkaJavadoc": {
+    "label": ":compat:agp-70x:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-70x:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:agp-70x:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-70x:jar",
+      ":compat:agp-70x:javadocJar",
+      ":compat:agp-70x:sourcesJar"
+    ]
+  },
+  ":compat:agp-70x:generatePomFileForLibraryPublication": {
+    "label": ":compat:agp-70x:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-70x:jar": {
+    "label": ":compat:agp-70x:jar",
+    "deps": [
+      ":compat:agp-70x:classes"
+    ]
+  },
+  ":compat:agp-70x:javadocJar": {
+    "label": ":compat:agp-70x:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-70x:dokkaJavadoc"
+    ]
+  },
+  ":compat:agp-70x:processResources": {
+    "label": ":compat:agp-70x:processResources",
+    "deps": []
+  },
+  ":compat:agp-70x:signLibraryPublication": {
+    "label": ":compat:agp-70x:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-70x:generateMetadataFileForLibraryPublication",
+      ":compat:agp-70x:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:agp-70x:sourcesJar": {
+    "label": ":compat:agp-70x:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-71x:classes": {
+    "label": ":compat:agp-71x:classes",
+    "deps": [
+      ":compat:agp-71x:compileJava",
+      ":compat:agp-71x:processResources"
+    ]
+  },
+  ":compat:agp-71x:clean": {
+    "label": ":compat:agp-71x:clean",
+    "deps": []
+  },
+  ":compat:agp-71x:compileJava": {
+    "label": ":compat:agp-71x:compileJava",
+    "deps": [
+      ":compat:agp-71x:compileKotlin"
+    ]
+  },
+  ":compat:agp-71x:compileKotlin": {
+    "label": ":compat:agp-71x:compileKotlin",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-71x:compileTestJava": {
+    "label": ":compat:agp-71x:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-71x:compileTestKotlin"
+    ]
+  },
+  ":compat:agp-71x:compileTestKotlin": {
+    "label": ":compat:agp-71x:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-71x:classes"
+    ]
+  },
+  ":compat:agp-71x:dokkaJavadoc": {
+    "label": ":compat:agp-71x:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-71x:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:agp-71x:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-71x:jar",
+      ":compat:agp-71x:javadocJar",
+      ":compat:agp-71x:sourcesJar"
+    ]
+  },
+  ":compat:agp-71x:generatePomFileForLibraryPublication": {
+    "label": ":compat:agp-71x:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-71x:jar": {
+    "label": ":compat:agp-71x:jar",
+    "deps": [
+      ":compat:agp-71x:classes"
+    ]
+  },
+  ":compat:agp-71x:javadocJar": {
+    "label": ":compat:agp-71x:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-71x:dokkaJavadoc"
+    ]
+  },
+  ":compat:agp-71x:processResources": {
+    "label": ":compat:agp-71x:processResources",
+    "deps": []
+  },
+  ":compat:agp-71x:signLibraryPublication": {
+    "label": ":compat:agp-71x:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-71x:generateMetadataFileForLibraryPublication",
+      ":compat:agp-71x:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:agp-71x:sourcesJar": {
+    "label": ":compat:agp-71x:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-72x:classes": {
+    "label": ":compat:agp-72x:classes",
+    "deps": [
+      ":compat:agp-72x:compileJava",
+      ":compat:agp-72x:processResources"
+    ]
+  },
+  ":compat:agp-72x:clean": {
+    "label": ":compat:agp-72x:clean",
+    "deps": []
+  },
+  ":compat:agp-72x:compileJava": {
+    "label": ":compat:agp-72x:compileJava",
+    "deps": [
+      ":compat:agp-72x:compileKotlin"
+    ]
+  },
+  ":compat:agp-72x:compileKotlin": {
+    "label": ":compat:agp-72x:compileKotlin",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-72x:compileTestJava": {
+    "label": ":compat:agp-72x:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-72x:compileTestKotlin"
+    ]
+  },
+  ":compat:agp-72x:compileTestKotlin": {
+    "label": ":compat:agp-72x:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-72x:classes"
+    ]
+  },
+  ":compat:agp-72x:dokkaJavadoc": {
+    "label": ":compat:agp-72x:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-72x:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:agp-72x:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-72x:jar",
+      ":compat:agp-72x:javadocJar",
+      ":compat:agp-72x:sourcesJar"
+    ]
+  },
+  ":compat:agp-72x:generatePomFileForLibraryPublication": {
+    "label": ":compat:agp-72x:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-72x:jar": {
+    "label": ":compat:agp-72x:jar",
+    "deps": [
+      ":compat:agp-72x:classes"
+    ]
+  },
+  ":compat:agp-72x:javadocJar": {
+    "label": ":compat:agp-72x:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-72x:dokkaJavadoc"
+    ]
+  },
+  ":compat:agp-72x:processResources": {
+    "label": ":compat:agp-72x:processResources",
+    "deps": []
+  },
+  ":compat:agp-72x:signLibraryPublication": {
+    "label": ":compat:agp-72x:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-72x:generateMetadataFileForLibraryPublication",
+      ":compat:agp-72x:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:agp-72x:sourcesJar": {
+    "label": ":compat:agp-72x:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-73x:classes": {
+    "label": ":compat:agp-73x:classes",
+    "deps": [
+      ":compat:agp-73x:compileJava",
+      ":compat:agp-73x:processResources"
+    ]
+  },
+  ":compat:agp-73x:clean": {
+    "label": ":compat:agp-73x:clean",
+    "deps": []
+  },
+  ":compat:agp-73x:compileJava": {
+    "label": ":compat:agp-73x:compileJava",
+    "deps": [
+      ":compat:agp-73x:compileKotlin"
+    ]
+  },
+  ":compat:agp-73x:compileKotlin": {
+    "label": ":compat:agp-73x:compileKotlin",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-73x:compileTestJava": {
+    "label": ":compat:agp-73x:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-73x:compileTestKotlin"
+    ]
+  },
+  ":compat:agp-73x:compileTestKotlin": {
+    "label": ":compat:agp-73x:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-73x:classes"
+    ]
+  },
+  ":compat:agp-73x:dokkaJavadoc": {
+    "label": ":compat:agp-73x:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-73x:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:agp-73x:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-73x:jar",
+      ":compat:agp-73x:javadocJar",
+      ":compat:agp-73x:sourcesJar"
+    ]
+  },
+  ":compat:agp-73x:generatePomFileForLibraryPublication": {
+    "label": ":compat:agp-73x:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-73x:jar": {
+    "label": ":compat:agp-73x:jar",
+    "deps": [
+      ":compat:agp-73x:classes"
+    ]
+  },
+  ":compat:agp-73x:javadocJar": {
+    "label": ":compat:agp-73x:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-73x:dokkaJavadoc"
+    ]
+  },
+  ":compat:agp-73x:processResources": {
+    "label": ":compat:agp-73x:processResources",
+    "deps": []
+  },
+  ":compat:agp-73x:signLibraryPublication": {
+    "label": ":compat:agp-73x:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-73x:generateMetadataFileForLibraryPublication",
+      ":compat:agp-73x:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:agp-73x:sourcesJar": {
+    "label": ":compat:agp-73x:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-74x:classes": {
+    "label": ":compat:agp-74x:classes",
+    "deps": [
+      ":compat:agp-74x:compileJava",
+      ":compat:agp-74x:processResources"
+    ]
+  },
+  ":compat:agp-74x:clean": {
+    "label": ":compat:agp-74x:clean",
+    "deps": []
+  },
+  ":compat:agp-74x:compileJava": {
+    "label": ":compat:agp-74x:compileJava",
+    "deps": [
+      ":compat:agp-74x:compileKotlin"
+    ]
+  },
+  ":compat:agp-74x:compileKotlin": {
+    "label": ":compat:agp-74x:compileKotlin",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-74x:compileTestJava": {
+    "label": ":compat:agp-74x:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-74x:compileTestKotlin"
+    ]
+  },
+  ":compat:agp-74x:compileTestKotlin": {
+    "label": ":compat:agp-74x:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-74x:classes"
+    ]
+  },
+  ":compat:agp-74x:dokkaJavadoc": {
+    "label": ":compat:agp-74x:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-74x:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:agp-74x:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-74x:jar",
+      ":compat:agp-74x:javadocJar",
+      ":compat:agp-74x:sourcesJar"
+    ]
+  },
+  ":compat:agp-74x:generatePomFileForLibraryPublication": {
+    "label": ":compat:agp-74x:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-74x:jar": {
+    "label": ":compat:agp-74x:jar",
+    "deps": [
+      ":compat:agp-74x:classes"
+    ]
+  },
+  ":compat:agp-74x:javadocJar": {
+    "label": ":compat:agp-74x:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-74x:dokkaJavadoc"
+    ]
+  },
+  ":compat:agp-74x:processResources": {
+    "label": ":compat:agp-74x:processResources",
+    "deps": []
+  },
+  ":compat:agp-74x:signLibraryPublication": {
+    "label": ":compat:agp-74x:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-74x:generateMetadataFileForLibraryPublication",
+      ":compat:agp-74x:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:agp-74x:sourcesJar": {
+    "label": ":compat:agp-74x:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-80x:classes": {
+    "label": ":compat:agp-80x:classes",
+    "deps": [
+      ":compat:agp-80x:compileJava",
+      ":compat:agp-80x:processResources"
+    ]
+  },
+  ":compat:agp-80x:clean": {
+    "label": ":compat:agp-80x:clean",
+    "deps": []
+  },
+  ":compat:agp-80x:compileJava": {
+    "label": ":compat:agp-80x:compileJava",
+    "deps": [
+      ":compat:agp-80x:compileKotlin"
+    ]
+  },
+  ":compat:agp-80x:compileKotlin": {
+    "label": ":compat:agp-80x:compileKotlin",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-80x:compileTestJava": {
+    "label": ":compat:agp-80x:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-80x:compileTestKotlin"
+    ]
+  },
+  ":compat:agp-80x:compileTestKotlin": {
+    "label": ":compat:agp-80x:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-80x:classes"
+    ]
+  },
+  ":compat:agp-80x:dokkaJavadoc": {
+    "label": ":compat:agp-80x:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-80x:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:agp-80x:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-80x:jar",
+      ":compat:agp-80x:javadocJar",
+      ":compat:agp-80x:sourcesJar"
+    ]
+  },
+  ":compat:agp-80x:generatePomFileForLibraryPublication": {
+    "label": ":compat:agp-80x:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-80x:jar": {
+    "label": ":compat:agp-80x:jar",
+    "deps": [
+      ":compat:agp-80x:classes"
+    ]
+  },
+  ":compat:agp-80x:javadocJar": {
+    "label": ":compat:agp-80x:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-80x:dokkaJavadoc"
+    ]
+  },
+  ":compat:agp-80x:processResources": {
+    "label": ":compat:agp-80x:processResources",
+    "deps": []
+  },
+  ":compat:agp-80x:signLibraryPublication": {
+    "label": ":compat:agp-80x:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-80x:generateMetadataFileForLibraryPublication",
+      ":compat:agp-80x:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:agp-80x:sourcesJar": {
+    "label": ":compat:agp-80x:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-81x:classes": {
+    "label": ":compat:agp-81x:classes",
+    "deps": [
+      ":compat:agp-81x:compileJava",
+      ":compat:agp-81x:processResources"
+    ]
+  },
+  ":compat:agp-81x:clean": {
+    "label": ":compat:agp-81x:clean",
+    "deps": []
+  },
+  ":compat:agp-81x:compileJava": {
+    "label": ":compat:agp-81x:compileJava",
+    "deps": [
+      ":compat:agp-81x:compileKotlin"
+    ]
+  },
+  ":compat:agp-81x:compileKotlin": {
+    "label": ":compat:agp-81x:compileKotlin",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-81x:compileTestJava": {
+    "label": ":compat:agp-81x:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-81x:compileTestKotlin"
+    ]
+  },
+  ":compat:agp-81x:compileTestKotlin": {
+    "label": ":compat:agp-81x:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-81x:classes"
+    ]
+  },
+  ":compat:agp-81x:dokkaJavadoc": {
+    "label": ":compat:agp-81x:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-81x:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:agp-81x:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-81x:jar",
+      ":compat:agp-81x:javadocJar",
+      ":compat:agp-81x:sourcesJar"
+    ]
+  },
+  ":compat:agp-81x:generatePomFileForLibraryPublication": {
+    "label": ":compat:agp-81x:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-81x:jar": {
+    "label": ":compat:agp-81x:jar",
+    "deps": [
+      ":compat:agp-81x:classes"
+    ]
+  },
+  ":compat:agp-81x:javadocJar": {
+    "label": ":compat:agp-81x:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-81x:dokkaJavadoc"
+    ]
+  },
+  ":compat:agp-81x:processResources": {
+    "label": ":compat:agp-81x:processResources",
+    "deps": []
+  },
+  ":compat:agp-81x:signLibraryPublication": {
+    "label": ":compat:agp-81x:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-81x:generateMetadataFileForLibraryPublication",
+      ":compat:agp-81x:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:agp-81x:sourcesJar": {
+    "label": ":compat:agp-81x:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-82x:classes": {
+    "label": ":compat:agp-82x:classes",
+    "deps": [
+      ":compat:agp-82x:compileJava",
+      ":compat:agp-82x:processResources"
+    ]
+  },
+  ":compat:agp-82x:clean": {
+    "label": ":compat:agp-82x:clean",
+    "deps": []
+  },
+  ":compat:agp-82x:compileJava": {
+    "label": ":compat:agp-82x:compileJava",
+    "deps": [
+      ":compat:agp-82x:compileKotlin"
+    ]
+  },
+  ":compat:agp-82x:compileKotlin": {
+    "label": ":compat:agp-82x:compileKotlin",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-82x:compileTestJava": {
+    "label": ":compat:agp-82x:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-82x:compileTestKotlin"
+    ]
+  },
+  ":compat:agp-82x:compileTestKotlin": {
+    "label": ":compat:agp-82x:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-82x:classes"
+    ]
+  },
+  ":compat:agp-82x:dokkaJavadoc": {
+    "label": ":compat:agp-82x:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:compileJava"
+    ]
+  },
+  ":compat:agp-82x:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:agp-82x:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-82x:jar",
+      ":compat:agp-82x:javadocJar",
+      ":compat:agp-82x:sourcesJar"
+    ]
+  },
+  ":compat:agp-82x:generatePomFileForLibraryPublication": {
+    "label": ":compat:agp-82x:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-82x:jar": {
+    "label": ":compat:agp-82x:jar",
+    "deps": [
+      ":compat:agp-82x:classes"
+    ]
+  },
+  ":compat:agp-82x:javadocJar": {
+    "label": ":compat:agp-82x:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-82x:dokkaJavadoc"
+    ]
+  },
+  ":compat:agp-82x:processResources": {
+    "label": ":compat:agp-82x:processResources",
+    "deps": []
+  },
+  ":compat:agp-82x:signLibraryPublication": {
+    "label": ":compat:agp-82x:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-82x:generateMetadataFileForLibraryPublication",
+      ":compat:agp-82x:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:agp-82x:sourcesJar": {
+    "label": ":compat:agp-82x:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-base:classes": {
+    "label": ":compat:agp-base:classes",
+    "deps": [
+      ":compat:agp-base:compileJava",
+      ":compat:agp-base:processResources"
+    ]
+  },
+  ":compat:agp-base:clean": {
+    "label": ":compat:agp-base:clean",
+    "deps": []
+  },
+  ":compat:agp-base:compileJava": {
+    "label": ":compat:agp-base:compileJava",
+    "deps": [
+      ":compat:agp-base:compileKotlin"
+    ]
+  },
+  ":compat:agp-base:compileKotlin": {
+    "label": ":compat:agp-base:compileKotlin",
+    "deps": []
+  },
+  ":compat:agp-base:compileTestJava": {
+    "label": ":compat:agp-base:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:compileTestKotlin"
+    ]
+  },
+  ":compat:agp-base:compileTestKotlin": {
+    "label": ":compat:agp-base:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":test:internal:compileJava"
+    ]
+  },
+  ":compat:agp-base:dokkaJavadoc": {
+    "label": ":compat:agp-base:dokkaJavadoc",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-base:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:agp-base:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:jar",
+      ":compat:agp-base:javadocJar",
+      ":compat:agp-base:sourcesJar"
+    ]
+  },
+  ":compat:agp-base:generatePomFileForLibraryPublication": {
+    "label": ":compat:agp-base:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:agp-base:jar": {
+    "label": ":compat:agp-base:jar",
+    "deps": [
+      ":compat:agp-base:classes"
+    ]
+  },
+  ":compat:agp-base:javadocJar": {
+    "label": ":compat:agp-base:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:dokkaJavadoc"
+    ]
+  },
+  ":compat:agp-base:processResources": {
+    "label": ":compat:agp-base:processResources",
+    "deps": []
+  },
+  ":compat:agp-base:signLibraryPublication": {
+    "label": ":compat:agp-base:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:agp-base:generateMetadataFileForLibraryPublication",
+      ":compat:agp-base:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:agp-base:sourcesJar": {
+    "label": ":compat:agp-base:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:gradle:classes": {
+    "label": ":compat:gradle:classes",
+    "deps": [
+      ":compat:gradle:compileJava",
+      ":compat:gradle:processResources"
+    ]
+  },
+  ":compat:gradle:clean": {
+    "label": ":compat:gradle:clean",
+    "deps": []
+  },
+  ":compat:gradle:compileJava": {
+    "label": ":compat:gradle:compileJava",
+    "deps": [
+      ":compat:gradle:compileKotlin"
+    ]
+  },
+  ":compat:gradle:compileKotlin": {
+    "label": ":compat:gradle:compileKotlin",
+    "deps": []
+  },
+  ":compat:gradle:compileTestJava": {
+    "label": ":compat:gradle:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:gradle:compileTestKotlin"
+    ]
+  },
+  ":compat:gradle:compileTestKotlin": {
+    "label": ":compat:gradle:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":test:internal:compileJava"
+    ]
+  },
+  ":compat:gradle:dokkaJavadoc": {
+    "label": ":compat:gradle:dokkaJavadoc",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:gradle:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:gradle:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:gradle:jar",
+      ":compat:gradle:javadocJar",
+      ":compat:gradle:sourcesJar"
+    ]
+  },
+  ":compat:gradle:generatePomFileForLibraryPublication": {
+    "label": ":compat:gradle:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:gradle:jar": {
+    "label": ":compat:gradle:jar",
+    "deps": [
+      ":compat:gradle:classes"
+    ]
+  },
+  ":compat:gradle:javadocJar": {
+    "label": ":compat:gradle:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:gradle:dokkaJavadoc"
+    ]
+  },
+  ":compat:gradle:processResources": {
+    "label": ":compat:gradle:processResources",
+    "deps": []
+  },
+  ":compat:gradle:signLibraryPublication": {
+    "label": ":compat:gradle:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:gradle:generateMetadataFileForLibraryPublication",
+      ":compat:gradle:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:gradle:sourcesJar": {
+    "label": ":compat:gradle:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:kotlin-base:classes": {
+    "label": ":compat:kotlin-base:classes",
+    "deps": [
+      ":compat:kotlin-base:compileJava",
+      ":compat:kotlin-base:processResources"
+    ]
+  },
+  ":compat:kotlin-base:clean": {
+    "label": ":compat:kotlin-base:clean",
+    "deps": []
+  },
+  ":compat:kotlin-base:compileJava": {
+    "label": ":compat:kotlin-base:compileJava",
+    "deps": [
+      ":compat:kotlin-base:compileKotlin"
+    ]
+  },
+  ":compat:kotlin-base:compileKotlin": {
+    "label": ":compat:kotlin-base:compileKotlin",
+    "deps": []
+  },
+  ":compat:kotlin-base:compileTestJava": {
+    "label": ":compat:kotlin-base:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":compat:kotlin-base:compileTestKotlin"
+    ]
+  },
+  ":compat:kotlin-base:compileTestKotlin": {
+    "label": ":compat:kotlin-base:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":compat:kotlin-base:classes",
+      ":test:internal:compileJava"
+    ]
+  },
+  ":compat:kotlin-base:dokkaJavadoc": {
+    "label": ":compat:kotlin-base:dokkaJavadoc",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:kotlin-base:generateMetadataFileForLibraryPublication": {
+    "label": ":compat:kotlin-base:generateMetadataFileForLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:kotlin-base:jar",
+      ":compat:kotlin-base:javadocJar",
+      ":compat:kotlin-base:sourcesJar"
+    ]
+  },
+  ":compat:kotlin-base:generatePomFileForLibraryPublication": {
+    "label": ":compat:kotlin-base:generatePomFileForLibraryPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":compat:kotlin-base:jar": {
+    "label": ":compat:kotlin-base:jar",
+    "deps": [
+      ":compat:kotlin-base:classes"
+    ]
+  },
+  ":compat:kotlin-base:javadocJar": {
+    "label": ":compat:kotlin-base:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":compat:kotlin-base:dokkaJavadoc"
+    ]
+  },
+  ":compat:kotlin-base:processResources": {
+    "label": ":compat:kotlin-base:processResources",
+    "deps": []
+  },
+  ":compat:kotlin-base:signLibraryPublication": {
+    "label": ":compat:kotlin-base:signLibraryPublication",
+    "type": "unknown",
+    "deps": [
+      ":compat:kotlin-base:generateMetadataFileForLibraryPublication",
+      ":compat:kotlin-base:generatePomFileForLibraryPublication"
+    ]
+  },
+  ":compat:kotlin-base:sourcesJar": {
+    "label": ":compat:kotlin-base:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:base:classes": {
+    "label": ":plugin:base:classes",
+    "deps": [
+      ":plugin:base:compileJava",
+      ":plugin:base:processResources"
+    ]
+  },
+  ":plugin:base:clean": {
+    "label": ":plugin:base:clean",
+    "deps": []
+  },
+  ":plugin:base:compileJava": {
+    "label": ":plugin:base:compileJava",
+    "deps": [
+      ":plugin:base:compileKotlin"
+    ]
+  },
+  ":plugin:base:compileKotlin": {
+    "label": ":plugin:base:compileKotlin",
+    "deps": [
+      ":common:compileGroovy",
+      ":compat:agp:compileJava",
+      ":plugin:base:generateNet.twisterrob.rootToNet.twisterrob.gradle.plugin.rootDeprecationPluginSources"
+    ]
+  },
+  ":plugin:base:compileTestFixturesJava": {
+    "label": ":plugin:base:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestFixturesKotlin"
+    ]
+  },
+  ":plugin:base:compileTestFixturesKotlin": {
+    "label": ":plugin:base:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileJava",
+      ":test:internal:compileJava"
+    ]
+  },
+  ":plugin:base:compileTestJava": {
+    "label": ":plugin:base:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestKotlin"
+    ]
+  },
+  ":plugin:base:compileTestKotlin": {
+    "label": ":plugin:base:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestFixturesJava"
+    ]
+  },
+  ":plugin:base:dokkaJavadoc": {
+    "label": ":plugin:base:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":common:compileGroovy",
+      ":compat:agp:compileJava",
+      ":plugin:base:generateNet.twisterrob.rootToNet.twisterrob.gradle.plugin.rootDeprecationPluginSources"
+    ]
+  },
+  ":plugin:base:generateMetadataFileForPluginMavenPublication": {
+    "label": ":plugin:base:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:jar",
+      ":plugin:base:javadocJar",
+      ":plugin:base:sourcesJar"
+    ]
+  },
+  ":plugin:base:generateNet.twisterrob.rootToNet.twisterrob.gradle.plugin.rootDeprecationPluginResources": {
+    "label": ":plugin:base:generateNet.twisterrob.rootToNet.twisterrob.gradle.plugin.rootDeprecationPluginResources",
+    "deps": []
+  },
+  ":plugin:base:generateNet.twisterrob.rootToNet.twisterrob.gradle.plugin.rootDeprecationPluginSources": {
+    "label": ":plugin:base:generateNet.twisterrob.rootToNet.twisterrob.gradle.plugin.rootDeprecationPluginSources",
+    "deps": []
+  },
+  ":plugin:base:generatePomFileForPluginMavenPublication": {
+    "label": ":plugin:base:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:base:generatePomFileForRootPluginMarkerMavenPublication": {
+    "label": ":plugin:base:generatePomFileForRootPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:base:jar": {
+    "label": ":plugin:base:jar",
+    "deps": [
+      ":plugin:base:classes"
+    ]
+  },
+  ":plugin:base:javadocJar": {
+    "label": ":plugin:base:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:dokkaJavadoc"
+    ]
+  },
+  ":plugin:base:pluginDescriptors": {
+    "label": ":plugin:base:pluginDescriptors",
+    "deps": []
+  },
+  ":plugin:base:processResources": {
+    "label": ":plugin:base:processResources",
+    "deps": [
+      ":plugin:base:generateNet.twisterrob.rootToNet.twisterrob.gradle.plugin.rootDeprecationPluginResources",
+      ":plugin:base:pluginDescriptors"
+    ]
+  },
+  ":plugin:base:signPluginMavenPublication": {
+    "label": ":plugin:base:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:generateMetadataFileForPluginMavenPublication",
+      ":plugin:base:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":plugin:base:signRootPluginMarkerMavenPublication": {
+    "label": ":plugin:base:signRootPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:generatePomFileForRootPluginMarkerMavenPublication"
+    ]
+  },
+  ":plugin:base:sourcesJar": {
+    "label": ":plugin:base:sourcesJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:generateNet.twisterrob.rootToNet.twisterrob.gradle.plugin.rootDeprecationPluginResources",
+      ":plugin:base:generateNet.twisterrob.rootToNet.twisterrob.gradle.plugin.rootDeprecationPluginSources"
+    ]
+  },
+  ":plugin:base:testFixturesJar": {
+    "label": ":plugin:base:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:building:classes": {
+    "label": ":plugin:building:classes",
+    "deps": [
+      ":plugin:building:compileJava",
+      ":plugin:building:processResources"
+    ]
+  },
+  ":plugin:building:clean": {
+    "label": ":plugin:building:clean",
+    "deps": []
+  },
+  ":plugin:building:compileJava": {
+    "label": ":plugin:building:compileJava",
+    "deps": [
+      ":plugin:building:compileKotlin"
+    ]
+  },
+  ":plugin:building:compileKotlin": {
+    "label": ":plugin:building:compileKotlin",
+    "deps": [
+      ":plugin:versioning:compileJava"
+    ]
+  },
+  ":plugin:building:compileTestFixturesJava": {
+    "label": ":plugin:building:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:building:compileTestFixturesKotlin"
+    ]
+  },
+  ":plugin:building:compileTestFixturesKotlin": {
+    "label": ":plugin:building:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:building:compileJava"
+    ]
+  },
+  ":plugin:building:compileTestJava": {
+    "label": ":plugin:building:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:building:compileTestKotlin"
+    ]
+  },
+  ":plugin:building:compileTestKotlin": {
+    "label": ":plugin:building:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestFixturesJava",
+      ":plugin:building:compileTestFixturesJava",
+      ":plugin:versioning:compileTestFixturesJava"
+    ]
+  },
+  ":plugin:building:dokkaJavadoc": {
+    "label": ":plugin:building:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":plugin:versioning:compileJava"
+    ]
+  },
+  ":plugin:building:generateMetadataFileForPluginMavenPublication": {
+    "label": ":plugin:building:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:building:jar",
+      ":plugin:building:javadocJar",
+      ":plugin:building:sourcesJar"
+    ]
+  },
+  ":plugin:building:generatePomFileForPluginMavenPublication": {
+    "label": ":plugin:building:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:building:jar": {
+    "label": ":plugin:building:jar",
+    "deps": [
+      ":plugin:building:classes"
+    ]
+  },
+  ":plugin:building:javadocJar": {
+    "label": ":plugin:building:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:building:dokkaJavadoc"
+    ]
+  },
+  ":plugin:building:pluginDescriptors": {
+    "label": ":plugin:building:pluginDescriptors",
+    "deps": []
+  },
+  ":plugin:building:processResources": {
+    "label": ":plugin:building:processResources",
+    "deps": [
+      ":plugin:building:pluginDescriptors"
+    ]
+  },
+  ":plugin:building:signPluginMavenPublication": {
+    "label": ":plugin:building:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:building:generateMetadataFileForPluginMavenPublication",
+      ":plugin:building:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":plugin:building:sourcesJar": {
+    "label": ":plugin:building:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:building:testFixturesJar": {
+    "label": ":plugin:building:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:languages:classes": {
+    "label": ":plugin:languages:classes",
+    "deps": [
+      ":plugin:languages:compileJava",
+      ":plugin:languages:processResources"
+    ]
+  },
+  ":plugin:languages:clean": {
+    "label": ":plugin:languages:clean",
+    "deps": []
+  },
+  ":plugin:languages:compileJava": {
+    "label": ":plugin:languages:compileJava",
+    "deps": [
+      ":plugin:languages:compileKotlin"
+    ]
+  },
+  ":plugin:languages:compileKotlin": {
+    "label": ":plugin:languages:compileKotlin",
+    "deps": [
+      ":plugin:base:compileJava",
+      ":plugin:languages:generateNet.twisterrob.java-libraryToNet.twisterrob.gradle.plugin.java-libraryDeprecationPluginSources",
+      ":plugin:languages:generateNet.twisterrob.javaToNet.twisterrob.gradle.plugin.javaDeprecationPluginSources",
+      ":plugin:languages:generateNet.twisterrob.kotlinToNet.twisterrob.gradle.plugin.kotlinDeprecationPluginSources"
+    ]
+  },
+  ":plugin:languages:compileTestFixturesJava": {
+    "label": ":plugin:languages:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:languages:compileTestFixturesKotlin"
+    ]
+  },
+  ":plugin:languages:compileTestFixturesKotlin": {
+    "label": ":plugin:languages:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:languages:compileJava"
+    ]
+  },
+  ":plugin:languages:compileTestJava": {
+    "label": ":plugin:languages:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:languages:compileTestKotlin"
+    ]
+  },
+  ":plugin:languages:compileTestKotlin": {
+    "label": ":plugin:languages:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestFixturesJava",
+      ":plugin:languages:compileTestFixturesJava"
+    ]
+  },
+  ":plugin:languages:dokkaJavadoc": {
+    "label": ":plugin:languages:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileJava",
+      ":plugin:languages:generateNet.twisterrob.java-libraryToNet.twisterrob.gradle.plugin.java-libraryDeprecationPluginSources",
+      ":plugin:languages:generateNet.twisterrob.javaToNet.twisterrob.gradle.plugin.javaDeprecationPluginSources",
+      ":plugin:languages:generateNet.twisterrob.kotlinToNet.twisterrob.gradle.plugin.kotlinDeprecationPluginSources"
+    ]
+  },
+  ":plugin:languages:generateMetadataFileForPluginMavenPublication": {
+    "label": ":plugin:languages:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:languages:jar",
+      ":plugin:languages:javadocJar",
+      ":plugin:languages:sourcesJar"
+    ]
+  },
+  ":plugin:languages:generateNet.twisterrob.java-libraryToNet.twisterrob.gradle.plugin.java-libraryDeprecationPluginResources": {
+    "label": ":plugin:languages:generateNet.twisterrob.java-libraryToNet.twisterrob.gradle.plugin.java-libraryDeprecationPluginResources",
+    "deps": []
+  },
+  ":plugin:languages:generateNet.twisterrob.java-libraryToNet.twisterrob.gradle.plugin.java-libraryDeprecationPluginSources": {
+    "label": ":plugin:languages:generateNet.twisterrob.java-libraryToNet.twisterrob.gradle.plugin.java-libraryDeprecationPluginSources",
+    "deps": []
+  },
+  ":plugin:languages:generateNet.twisterrob.javaToNet.twisterrob.gradle.plugin.javaDeprecationPluginResources": {
+    "label": ":plugin:languages:generateNet.twisterrob.javaToNet.twisterrob.gradle.plugin.javaDeprecationPluginResources",
+    "deps": []
+  },
+  ":plugin:languages:generateNet.twisterrob.javaToNet.twisterrob.gradle.plugin.javaDeprecationPluginSources": {
+    "label": ":plugin:languages:generateNet.twisterrob.javaToNet.twisterrob.gradle.plugin.javaDeprecationPluginSources",
+    "deps": []
+  },
+  ":plugin:languages:generateNet.twisterrob.kotlinToNet.twisterrob.gradle.plugin.kotlinDeprecationPluginResources": {
+    "label": ":plugin:languages:generateNet.twisterrob.kotlinToNet.twisterrob.gradle.plugin.kotlinDeprecationPluginResources",
+    "deps": []
+  },
+  ":plugin:languages:generateNet.twisterrob.kotlinToNet.twisterrob.gradle.plugin.kotlinDeprecationPluginSources": {
+    "label": ":plugin:languages:generateNet.twisterrob.kotlinToNet.twisterrob.gradle.plugin.kotlinDeprecationPluginSources",
+    "deps": []
+  },
+  ":plugin:languages:generatePomFileForJavaLibraryPluginMarkerMavenPublication": {
+    "label": ":plugin:languages:generatePomFileForJavaLibraryPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:languages:generatePomFileForJavaPluginMarkerMavenPublication": {
+    "label": ":plugin:languages:generatePomFileForJavaPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:languages:generatePomFileForKotlinPluginMarkerMavenPublication": {
+    "label": ":plugin:languages:generatePomFileForKotlinPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:languages:generatePomFileForPluginMavenPublication": {
+    "label": ":plugin:languages:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:languages:jar": {
+    "label": ":plugin:languages:jar",
+    "deps": [
+      ":plugin:languages:classes"
+    ]
+  },
+  ":plugin:languages:javadocJar": {
+    "label": ":plugin:languages:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:languages:dokkaJavadoc"
+    ]
+  },
+  ":plugin:languages:pluginDescriptors": {
+    "label": ":plugin:languages:pluginDescriptors",
+    "deps": []
+  },
+  ":plugin:languages:processResources": {
+    "label": ":plugin:languages:processResources",
+    "deps": [
+      ":plugin:languages:generateNet.twisterrob.java-libraryToNet.twisterrob.gradle.plugin.java-libraryDeprecationPluginResources",
+      ":plugin:languages:generateNet.twisterrob.javaToNet.twisterrob.gradle.plugin.javaDeprecationPluginResources",
+      ":plugin:languages:generateNet.twisterrob.kotlinToNet.twisterrob.gradle.plugin.kotlinDeprecationPluginResources",
+      ":plugin:languages:pluginDescriptors"
+    ]
+  },
+  ":plugin:languages:signJavaLibraryPluginMarkerMavenPublication": {
+    "label": ":plugin:languages:signJavaLibraryPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:languages:generatePomFileForJavaLibraryPluginMarkerMavenPublication"
+    ]
+  },
+  ":plugin:languages:signJavaPluginMarkerMavenPublication": {
+    "label": ":plugin:languages:signJavaPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:languages:generatePomFileForJavaPluginMarkerMavenPublication"
+    ]
+  },
+  ":plugin:languages:signKotlinPluginMarkerMavenPublication": {
+    "label": ":plugin:languages:signKotlinPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:languages:generatePomFileForKotlinPluginMarkerMavenPublication"
+    ]
+  },
+  ":plugin:languages:signPluginMavenPublication": {
+    "label": ":plugin:languages:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:languages:generateMetadataFileForPluginMavenPublication",
+      ":plugin:languages:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":plugin:languages:sourcesJar": {
+    "label": ":plugin:languages:sourcesJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:languages:generateNet.twisterrob.java-libraryToNet.twisterrob.gradle.plugin.java-libraryDeprecationPluginResources",
+      ":plugin:languages:generateNet.twisterrob.java-libraryToNet.twisterrob.gradle.plugin.java-libraryDeprecationPluginSources",
+      ":plugin:languages:generateNet.twisterrob.javaToNet.twisterrob.gradle.plugin.javaDeprecationPluginResources",
+      ":plugin:languages:generateNet.twisterrob.javaToNet.twisterrob.gradle.plugin.javaDeprecationPluginSources",
+      ":plugin:languages:generateNet.twisterrob.kotlinToNet.twisterrob.gradle.plugin.kotlinDeprecationPluginResources",
+      ":plugin:languages:generateNet.twisterrob.kotlinToNet.twisterrob.gradle.plugin.kotlinDeprecationPluginSources"
+    ]
+  },
+  ":plugin:languages:testFixturesJar": {
+    "label": ":plugin:languages:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:release:classes": {
+    "label": ":plugin:release:classes",
+    "deps": [
+      ":plugin:release:compileJava",
+      ":plugin:release:processResources"
+    ]
+  },
+  ":plugin:release:clean": {
+    "label": ":plugin:release:clean",
+    "deps": []
+  },
+  ":plugin:release:compileJava": {
+    "label": ":plugin:release:compileJava",
+    "deps": [
+      ":plugin:release:compileKotlin"
+    ]
+  },
+  ":plugin:release:compileKotlin": {
+    "label": ":plugin:release:compileKotlin",
+    "deps": [
+      ":plugin:versioning:compileJava"
+    ]
+  },
+  ":plugin:release:compileTestFixturesJava": {
+    "label": ":plugin:release:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:release:compileTestFixturesKotlin"
+    ]
+  },
+  ":plugin:release:compileTestFixturesKotlin": {
+    "label": ":plugin:release:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:release:compileJava"
+    ]
+  },
+  ":plugin:release:compileTestJava": {
+    "label": ":plugin:release:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:release:compileTestKotlin"
+    ]
+  },
+  ":plugin:release:compileTestKotlin": {
+    "label": ":plugin:release:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestFixturesJava",
+      ":plugin:release:compileTestFixturesJava"
+    ]
+  },
+  ":plugin:release:dokkaJavadoc": {
+    "label": ":plugin:release:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":plugin:versioning:compileJava"
+    ]
+  },
+  ":plugin:release:generateMetadataFileForPluginMavenPublication": {
+    "label": ":plugin:release:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:release:jar",
+      ":plugin:release:javadocJar",
+      ":plugin:release:sourcesJar"
+    ]
+  },
+  ":plugin:release:generatePomFileForPluginMavenPublication": {
+    "label": ":plugin:release:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:release:jar": {
+    "label": ":plugin:release:jar",
+    "deps": [
+      ":plugin:release:classes"
+    ]
+  },
+  ":plugin:release:javadocJar": {
+    "label": ":plugin:release:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:release:dokkaJavadoc"
+    ]
+  },
+  ":plugin:release:pluginDescriptors": {
+    "label": ":plugin:release:pluginDescriptors",
+    "deps": []
+  },
+  ":plugin:release:processResources": {
+    "label": ":plugin:release:processResources",
+    "deps": [
+      ":plugin:release:pluginDescriptors"
+    ]
+  },
+  ":plugin:release:signPluginMavenPublication": {
+    "label": ":plugin:release:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:release:generateMetadataFileForPluginMavenPublication",
+      ":plugin:release:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":plugin:release:sourcesJar": {
+    "label": ":plugin:release:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:release:testFixturesJar": {
+    "label": ":plugin:release:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:reporting:classes": {
+    "label": ":plugin:reporting:classes",
+    "deps": [
+      ":plugin:reporting:compileJava",
+      ":plugin:reporting:processResources"
+    ]
+  },
+  ":plugin:reporting:clean": {
+    "label": ":plugin:reporting:clean",
+    "deps": []
+  },
+  ":plugin:reporting:compileJava": {
+    "label": ":plugin:reporting:compileJava",
+    "deps": [
+      ":plugin:reporting:compileKotlin"
+    ]
+  },
+  ":plugin:reporting:compileKotlin": {
+    "label": ":plugin:reporting:compileKotlin",
+    "deps": [
+      ":plugin:base:compileJava"
+    ]
+  },
+  ":plugin:reporting:compileTestFixturesJava": {
+    "label": ":plugin:reporting:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:reporting:compileTestFixturesKotlin"
+    ]
+  },
+  ":plugin:reporting:compileTestFixturesKotlin": {
+    "label": ":plugin:reporting:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:reporting:compileJava"
+    ]
+  },
+  ":plugin:reporting:compileTestJava": {
+    "label": ":plugin:reporting:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:reporting:compileTestKotlin"
+    ]
+  },
+  ":plugin:reporting:compileTestKotlin": {
+    "label": ":plugin:reporting:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestFixturesJava",
+      ":plugin:reporting:compileTestFixturesJava"
+    ]
+  },
+  ":plugin:reporting:dokkaJavadoc": {
+    "label": ":plugin:reporting:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileJava"
+    ]
+  },
+  ":plugin:reporting:generateMetadataFileForPluginMavenPublication": {
+    "label": ":plugin:reporting:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:reporting:jar",
+      ":plugin:reporting:javadocJar",
+      ":plugin:reporting:sourcesJar"
+    ]
+  },
+  ":plugin:reporting:generatePomFileForPluginMavenPublication": {
+    "label": ":plugin:reporting:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:reporting:jar": {
+    "label": ":plugin:reporting:jar",
+    "deps": [
+      ":plugin:reporting:classes"
+    ]
+  },
+  ":plugin:reporting:javadocJar": {
+    "label": ":plugin:reporting:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:reporting:dokkaJavadoc"
+    ]
+  },
+  ":plugin:reporting:pluginDescriptors": {
+    "label": ":plugin:reporting:pluginDescriptors",
+    "deps": []
+  },
+  ":plugin:reporting:processResources": {
+    "label": ":plugin:reporting:processResources",
+    "deps": [
+      ":plugin:reporting:pluginDescriptors"
+    ]
+  },
+  ":plugin:reporting:signPluginMavenPublication": {
+    "label": ":plugin:reporting:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:reporting:generateMetadataFileForPluginMavenPublication",
+      ":plugin:reporting:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":plugin:reporting:sourcesJar": {
+    "label": ":plugin:reporting:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:reporting:testFixturesJar": {
+    "label": ":plugin:reporting:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:settings:classes": {
+    "label": ":plugin:settings:classes",
+    "deps": [
+      ":plugin:settings:compileJava",
+      ":plugin:settings:processResources"
+    ]
+  },
+  ":plugin:settings:clean": {
+    "label": ":plugin:settings:clean",
+    "deps": []
+  },
+  ":plugin:settings:compileJava": {
+    "label": ":plugin:settings:compileJava",
+    "deps": [
+      ":plugin:settings:compileKotlin"
+    ]
+  },
+  ":plugin:settings:compileKotlin": {
+    "label": ":plugin:settings:compileKotlin",
+    "deps": [
+      ":compat:gradle:compileJava"
+    ]
+  },
+  ":plugin:settings:compileTestFixturesJava": {
+    "label": ":plugin:settings:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:settings:compileTestFixturesKotlin"
+    ]
+  },
+  ":plugin:settings:compileTestFixturesKotlin": {
+    "label": ":plugin:settings:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:settings:compileJava"
+    ]
+  },
+  ":plugin:settings:compileTestJava": {
+    "label": ":plugin:settings:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:settings:compileTestKotlin"
+    ]
+  },
+  ":plugin:settings:compileTestKotlin": {
+    "label": ":plugin:settings:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestFixturesJava",
+      ":plugin:settings:compileTestFixturesJava"
+    ]
+  },
+  ":plugin:settings:dokkaJavadoc": {
+    "label": ":plugin:settings:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":compat:gradle:compileJava"
+    ]
+  },
+  ":plugin:settings:generateMetadataFileForPluginMavenPublication": {
+    "label": ":plugin:settings:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:settings:jar",
+      ":plugin:settings:javadocJar",
+      ":plugin:settings:sourcesJar"
+    ]
+  },
+  ":plugin:settings:generatePomFileForPluginMavenPublication": {
+    "label": ":plugin:settings:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:settings:generatePomFileForSettingsPluginMarkerMavenPublication": {
+    "label": ":plugin:settings:generatePomFileForSettingsPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:settings:jar": {
+    "label": ":plugin:settings:jar",
+    "deps": [
+      ":plugin:settings:classes"
+    ]
+  },
+  ":plugin:settings:javadocJar": {
+    "label": ":plugin:settings:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:settings:dokkaJavadoc"
+    ]
+  },
+  ":plugin:settings:pluginDescriptors": {
+    "label": ":plugin:settings:pluginDescriptors",
+    "deps": []
+  },
+  ":plugin:settings:processResources": {
+    "label": ":plugin:settings:processResources",
+    "deps": [
+      ":plugin:settings:pluginDescriptors"
+    ]
+  },
+  ":plugin:settings:signPluginMavenPublication": {
+    "label": ":plugin:settings:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:settings:generateMetadataFileForPluginMavenPublication",
+      ":plugin:settings:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":plugin:settings:signSettingsPluginMarkerMavenPublication": {
+    "label": ":plugin:settings:signSettingsPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:settings:generatePomFileForSettingsPluginMarkerMavenPublication"
+    ]
+  },
+  ":plugin:settings:sourcesJar": {
+    "label": ":plugin:settings:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:settings:testFixturesJar": {
+    "label": ":plugin:settings:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:signing:classes": {
+    "label": ":plugin:signing:classes",
+    "deps": [
+      ":plugin:signing:compileJava",
+      ":plugin:signing:processResources"
+    ]
+  },
+  ":plugin:signing:clean": {
+    "label": ":plugin:signing:clean",
+    "deps": []
+  },
+  ":plugin:signing:compileJava": {
+    "label": ":plugin:signing:compileJava",
+    "deps": [
+      ":plugin:signing:compileKotlin"
+    ]
+  },
+  ":plugin:signing:compileKotlin": {
+    "label": ":plugin:signing:compileKotlin",
+    "deps": [
+      ":plugin:base:compileJava"
+    ]
+  },
+  ":plugin:signing:compileTestFixturesJava": {
+    "label": ":plugin:signing:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:signing:compileTestFixturesKotlin"
+    ]
+  },
+  ":plugin:signing:compileTestFixturesKotlin": {
+    "label": ":plugin:signing:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:signing:compileJava"
+    ]
+  },
+  ":plugin:signing:compileTestJava": {
+    "label": ":plugin:signing:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:signing:compileTestKotlin"
+    ]
+  },
+  ":plugin:signing:compileTestKotlin": {
+    "label": ":plugin:signing:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestFixturesJava",
+      ":plugin:signing:compileTestFixturesJava"
+    ]
+  },
+  ":plugin:signing:dokkaJavadoc": {
+    "label": ":plugin:signing:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileJava"
+    ]
+  },
+  ":plugin:signing:generateMetadataFileForPluginMavenPublication": {
+    "label": ":plugin:signing:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:signing:jar",
+      ":plugin:signing:javadocJar",
+      ":plugin:signing:sourcesJar"
+    ]
+  },
+  ":plugin:signing:generatePomFileForPluginMavenPublication": {
+    "label": ":plugin:signing:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:signing:jar": {
+    "label": ":plugin:signing:jar",
+    "deps": [
+      ":plugin:signing:classes"
+    ]
+  },
+  ":plugin:signing:javadocJar": {
+    "label": ":plugin:signing:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:signing:dokkaJavadoc"
+    ]
+  },
+  ":plugin:signing:pluginDescriptors": {
+    "label": ":plugin:signing:pluginDescriptors",
+    "deps": []
+  },
+  ":plugin:signing:processResources": {
+    "label": ":plugin:signing:processResources",
+    "deps": [
+      ":plugin:signing:pluginDescriptors"
+    ]
+  },
+  ":plugin:signing:signPluginMavenPublication": {
+    "label": ":plugin:signing:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:signing:generateMetadataFileForPluginMavenPublication",
+      ":plugin:signing:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":plugin:signing:sourcesJar": {
+    "label": ":plugin:signing:sourcesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:signing:testFixturesJar": {
+    "label": ":plugin:signing:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:versioning:classes": {
+    "label": ":plugin:versioning:classes",
+    "deps": [
+      ":plugin:versioning:compileJava",
+      ":plugin:versioning:processResources"
+    ]
+  },
+  ":plugin:versioning:clean": {
+    "label": ":plugin:versioning:clean",
+    "deps": []
+  },
+  ":plugin:versioning:compileJava": {
+    "label": ":plugin:versioning:compileJava",
+    "deps": [
+      ":plugin:versioning:compileKotlin"
+    ]
+  },
+  ":plugin:versioning:compileKotlin": {
+    "label": ":plugin:versioning:compileKotlin",
+    "deps": [
+      ":plugin:base:compileJava",
+      ":plugin:versioning:generateNet.twisterrob.vcsToNet.twisterrob.gradle.plugin.vcsDeprecationPluginSources"
+    ]
+  },
+  ":plugin:versioning:compileTestFixturesJava": {
+    "label": ":plugin:versioning:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:versioning:compileTestFixturesKotlin"
+    ]
+  },
+  ":plugin:versioning:compileTestFixturesKotlin": {
+    "label": ":plugin:versioning:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:versioning:compileJava"
+    ]
+  },
+  ":plugin:versioning:compileTestJava": {
+    "label": ":plugin:versioning:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":plugin:versioning:compileTestKotlin"
+    ]
+  },
+  ":plugin:versioning:compileTestKotlin": {
+    "label": ":plugin:versioning:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestFixturesJava",
+      ":plugin:versioning:compileTestFixturesJava"
+    ]
+  },
+  ":plugin:versioning:dokkaJavadoc": {
+    "label": ":plugin:versioning:dokkaJavadoc",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileJava",
+      ":plugin:versioning:generateNet.twisterrob.vcsToNet.twisterrob.gradle.plugin.vcsDeprecationPluginSources"
+    ]
+  },
+  ":plugin:versioning:generateMetadataFileForPluginMavenPublication": {
+    "label": ":plugin:versioning:generateMetadataFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:versioning:jar",
+      ":plugin:versioning:javadocJar",
+      ":plugin:versioning:sourcesJar"
+    ]
+  },
+  ":plugin:versioning:generateNet.twisterrob.vcsToNet.twisterrob.gradle.plugin.vcsDeprecationPluginResources": {
+    "label": ":plugin:versioning:generateNet.twisterrob.vcsToNet.twisterrob.gradle.plugin.vcsDeprecationPluginResources",
+    "deps": []
+  },
+  ":plugin:versioning:generateNet.twisterrob.vcsToNet.twisterrob.gradle.plugin.vcsDeprecationPluginSources": {
+    "label": ":plugin:versioning:generateNet.twisterrob.vcsToNet.twisterrob.gradle.plugin.vcsDeprecationPluginSources",
+    "deps": []
+  },
+  ":plugin:versioning:generatePomFileForPluginMavenPublication": {
+    "label": ":plugin:versioning:generatePomFileForPluginMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:versioning:generatePomFileForVcsPluginMarkerMavenPublication": {
+    "label": ":plugin:versioning:generatePomFileForVcsPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": []
+  },
+  ":plugin:versioning:jar": {
+    "label": ":plugin:versioning:jar",
+    "deps": [
+      ":plugin:versioning:classes"
+    ]
+  },
+  ":plugin:versioning:javadocJar": {
+    "label": ":plugin:versioning:javadocJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:versioning:dokkaJavadoc"
+    ]
+  },
+  ":plugin:versioning:pluginDescriptors": {
+    "label": ":plugin:versioning:pluginDescriptors",
+    "deps": []
+  },
+  ":plugin:versioning:processResources": {
+    "label": ":plugin:versioning:processResources",
+    "deps": [
+      ":plugin:versioning:generateNet.twisterrob.vcsToNet.twisterrob.gradle.plugin.vcsDeprecationPluginResources",
+      ":plugin:versioning:pluginDescriptors"
+    ]
+  },
+  ":plugin:versioning:signPluginMavenPublication": {
+    "label": ":plugin:versioning:signPluginMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:versioning:generateMetadataFileForPluginMavenPublication",
+      ":plugin:versioning:generatePomFileForPluginMavenPublication"
+    ]
+  },
+  ":plugin:versioning:signVcsPluginMarkerMavenPublication": {
+    "label": ":plugin:versioning:signVcsPluginMarkerMavenPublication",
+    "type": "unknown",
+    "deps": [
+      ":plugin:versioning:generatePomFileForVcsPluginMarkerMavenPublication"
+    ]
+  },
+  ":plugin:versioning:sourcesJar": {
+    "label": ":plugin:versioning:sourcesJar",
+    "type": "unknown",
+    "deps": [
+      ":plugin:versioning:generateNet.twisterrob.vcsToNet.twisterrob.gradle.plugin.vcsDeprecationPluginResources",
+      ":plugin:versioning:generateNet.twisterrob.vcsToNet.twisterrob.gradle.plugin.vcsDeprecationPluginSources"
+    ]
+  },
+  ":plugin:versioning:testFixturesJar": {
+    "label": ":plugin:versioning:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":test:integration:classes": {
+    "label": ":test:integration:classes",
+    "deps": [
+      ":test:integration:compileJava",
+      ":test:integration:processResources"
+    ]
+  },
+  ":test:integration:clean": {
+    "label": ":test:integration:clean",
+    "deps": []
+  },
+  ":test:integration:compileJava": {
+    "label": ":test:integration:compileJava",
+    "deps": [
+      ":test:integration:compileKotlin"
+    ]
+  },
+  ":test:integration:compileKotlin": {
+    "label": ":test:integration:compileKotlin",
+    "deps": [
+      ":plugin:compileJava",
+      ":quality:compileJava",
+      ":test:compileJava",
+      ":compat:kotlin-base:compileJava"
+    ]
+  },
+  ":test:integration:compileTestFixturesJava": {
+    "label": ":test:integration:compileTestFixturesJava",
+    "type": "unknown",
+    "deps": [
+      ":test:integration:compileTestFixturesKotlin"
+    ]
+  },
+  ":test:integration:compileTestFixturesKotlin": {
+    "label": ":test:integration:compileTestFixturesKotlin",
+    "type": "unknown",
+    "deps": [
+      ":test:integration:compileJava"
+    ]
+  },
+  ":test:integration:compileTestJava": {
+    "label": ":test:integration:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":test:integration:compileTestKotlin"
+    ]
+  },
+  ":test:integration:compileTestKotlin": {
+    "label": ":test:integration:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":plugin:base:compileTestFixturesJava",
+      ":test:integration:compileTestFixturesJava"
+    ]
+  },
+  ":test:integration:jar": {
+    "label": ":test:integration:jar",
+    "deps": [
+      ":test:integration:classes"
+    ]
+  },
+  ":test:integration:pluginDescriptors": {
+    "label": ":test:integration:pluginDescriptors",
+    "deps": []
+  },
+  ":test:integration:processResources": {
+    "label": ":test:integration:processResources",
+    "deps": [
+      ":test:integration:pluginDescriptors"
+    ]
+  },
+  ":test:integration:testFixturesJar": {
+    "label": ":test:integration:testFixturesJar",
+    "type": "unknown",
+    "deps": []
+  },
+  ":test:internal:classes": {
+    "label": ":test:internal:classes",
+    "deps": [
+      ":test:internal:compileJava",
+      ":test:internal:processResources"
+    ]
+  },
+  ":test:internal:clean": {
+    "label": ":test:internal:clean",
+    "deps": []
+  },
+  ":test:internal:compileJava": {
+    "label": ":test:internal:compileJava",
+    "deps": [
+      ":test:internal:compileKotlin"
+    ]
+  },
+  ":test:internal:compileKotlin": {
+    "label": ":test:internal:compileKotlin",
+    "deps": [
+      ":test:compileJava"
+    ]
+  },
+  ":test:internal:compileTestJava": {
+    "label": ":test:internal:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":test:internal:compileTestKotlin"
+    ]
+  },
+  ":test:internal:compileTestKotlin": {
+    "label": ":test:internal:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":test:internal:classes"
+    ]
+  },
+  ":test:internal:jar": {
+    "label": ":test:internal:jar",
+    "deps": [
+      ":test:internal:classes"
+    ]
+  },
+  ":test:internal:processResources": {
+    "label": ":test:internal:processResources",
+    "deps": []
+  },
+  ":test:internal:runtime:classes": {
+    "label": ":test:internal:runtime:classes",
+    "deps": [
+      ":test:internal:runtime:compileJava",
+      ":test:internal:runtime:processResources"
+    ]
+  },
+  ":test:internal:runtime:clean": {
+    "label": ":test:internal:runtime:clean",
+    "deps": []
+  },
+  ":test:internal:runtime:compileJava": {
+    "label": ":test:internal:runtime:compileJava",
+    "deps": [
+      ":test:internal:runtime:compileKotlin"
+    ]
+  },
+  ":test:internal:runtime:compileKotlin": {
+    "label": ":test:internal:runtime:compileKotlin",
+    "deps": [
+      ":plugin:settings:compileJava"
+    ]
+  },
+  ":test:internal:runtime:compileTestJava": {
+    "label": ":test:internal:runtime:compileTestJava",
+    "type": "unknown",
+    "deps": [
+      ":test:internal:runtime:compileTestKotlin"
+    ]
+  },
+  ":test:internal:runtime:compileTestKotlin": {
+    "label": ":test:internal:runtime:compileTestKotlin",
+    "type": "unknown",
+    "deps": [
+      ":test:internal:runtime:classes"
+    ]
+  },
+  ":test:internal:runtime:jar": {
+    "label": ":test:internal:runtime:jar",
+    "deps": [
+      ":test:internal:runtime:classes"
+    ]
+  },
+  ":test:internal:runtime:processResources": {
+    "label": ":test:internal:runtime:processResources",
+    "deps": []
+  }
+}
