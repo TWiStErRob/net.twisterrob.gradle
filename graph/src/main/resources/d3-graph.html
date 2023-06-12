@@ -40,7 +40,7 @@
 			<rect id="legend-bg" />
 			<text id="legend-header">Legend</text>
 		</g>
-		<!--<circle r="20" transform="translate(-100, -100)" />-->
+		<!--<circle id="cursor" r="20" transform="translate(-100, -100)" />-->
 	</svg>
 	<div id="details" style="visibility: hidden;">
 		<div id="detail-running" class="loader"></div>
@@ -54,16 +54,17 @@
 	</div>
 	<div id="menu">
 		<button onclick="force.stop()">Freeze</button>
-		<button onclick="force.resume()">Thaw</button>
+		<button onclick="force.restart()">Thaw</button>
 		<button onclick="force.stop(); zoomFit(0.95, 500)">Fit</button>
 	</div>
 	<script>//<![CDATA[
 'use strict';
 function main() {
 	// needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
-	setTimeout(function() {
-		console.debug("Startup " + navigator.userAgent);
-		//resize();
+	setTimeout(function startUp() {
+		console.debug(`Startup ${navigator.userAgent}`);
+		resize();
+		buildLegend(legendData);
 		details.init();
 		if (window['java'] !== undefined) {
 			console.debug("We're in JavaFX");
@@ -74,45 +75,44 @@ function main() {
 	}, 0);
 }
 
-const zoom = d3.behavior
+const zoom = d3
 	.zoom()
 	.scaleExtent([ 1 / 4, 4 ])
-	.on('zoom.zoom', function() {
-		console.trace("zoom", d3.event.translate, d3.event.scale);
-		root.attr('transform',
-			'translate(' + d3.event.translate + ')'
-			+   'scale(' + d3.event.scale     + ')');
+	.on('zoom', function svgZoom(event) {
+		const transform = event.transform;
+		console.debug("zoom", transform);
+		root.attr('transform', `translate(${transform.x},${transform.y}) scale(${transform.k})`);
 	})
 ;
 
 const svg = d3
 	.select('svg')
 	.call(zoom)
-	//.on('mousemove', function() {
-	//	cursor.attr('transform', 'translate(' + d3.mouse(this) + ')');
+	//.on('mousemove', function svgMouseMove(event) {
+	//	cursor.attr('transform', `translate(${d3.pointer(event, this)})`);
 	//})
 ;
 
 let demoIdCounter = 0;
 svg.select('#background')
-	.on('click', function() {
+	.on('click', function backgroundClick() {
 		selectNode(null);
 	})
-	.on('mousedown', function() {
-		if (d3.event.button !== 1) {
+	.on('mousedown', function backgroundMiddleMouseDown(event) {
+		if (event.button !== 1) {
 			return;
 		}
-		d3.event.preventDefault();
-		const point = d3.mouse(node_group.node());
+		event.preventDefault();
+		const point = d3.pointer(event, node_group.node());
 		model.add({
-			id: '____' + demoIdCounter++ + '____',
+			id: `____${demoIdCounter++}____`,
 			type: 'unknown',
 			x: point[0],
 			y: point[1],
 		});
 		/*
 		// Add links to any nearby nodes.
-		nodes.forEach(function(target) {
+		nodes.forEach(target => {
 			const x = target.x - node.x,
 			      y = target.y - node.y;
 			if (Math.sqrt(x * x + y * y) < 30) {
@@ -127,33 +127,14 @@ const root = svg.select('#root');
 const node_group = svg.select('#nodes');
 const link_group = svg.select('#links');
 
-const force = d3.layout
-	.force()
-	.gravity(0.03)
-	.linkStrength(0.3)
-	.charge(-400)
-	.on('tick', function tick() {
-		//const q = d3.geom.quadtree(nodes);
-		//node.each(function(n) { q.visit(phys.collide(n)) });
-		link
-			.attr('x1', function(d) { return phys.pointOnRect(d.source, d.target).x; })
-			.attr('y1', function(d) { return phys.pointOnRect(d.source, d.target).y; })
-			.attr('x2', function(d) { return phys.pointOnRect(d.target, d.source).x; })
-			.attr('y2', function(d) { return phys.pointOnRect(d.target, d.source).y; })
-		;
-
-		node
-			.attr('transform', function translate(d) {
-				return 'translate(' + d.x + ',' + d.y + ')';
-			})
-		;
-
-		details.refreshDisplay();
-		//zoomFit();
-	})
+const force = d3
+	.forceSimulation()
+	.force('forceCenter', d3.forceCenter().strength(0.03)) 
+	.force('forceLink', d3.forceLink().strength(0.3))
+	.force('forceCharge', d3.forceManyBody().strength(-400))
 ;
 
-const details = function() {
+const details = function Details() {
 	const det = d3.select('#details');
 	const progressUI = det.select('#detail-running');
 	const nameUI = det.select('#detail-name').insert('span');
@@ -163,14 +144,8 @@ const details = function() {
 	const posUI = det.select('#detail-pos');
 	const dependsUI = det.select('#detail-depends');
 	const dependentsUI = det.select('#detail-dependents');
-	// Workaround for: https://github.com/mbostock/d3/issues/94,
-	// keep reference to #text and update it later, dependsUI.text("") would clear <li>s too
-	const dependsUILabel = d3.select(document.createTextNode(""));
-	dependsUI.node().appendChild(dependsUILabel.node());
-	const dependentsUILabel = d3.select(document.createTextNode(""));
-	dependentsUI.node().appendChild(dependentsUILabel.node());
 
-	nameUI.on('click', function() {
+	nameUI.on('click', function nameUIClick() {
 		det.classed('collapsed', !det.classed('collapsed'));
 	});
 	let currentNode = null;
@@ -178,18 +153,22 @@ const details = function() {
 	let currentNodeIsActive = false;
 
 
-	function bindDeps(/* d3.selection<ul> */ ui, label, /* Array<String> */ deps) {
-		const dependsData = ui.selectAll('li').data(deps, function(d) { return d; });
-		dependsData.exit().remove();
-
-		dependsData.enter()
-			.append('li')
-			.text(function(d) { return d; })
-			.on('click', function(d) {
+	function bindDeps(/* d3.selection<ul> */ ui, /* Array<String> */ deps) {
+		ui
+			.selectAll('li')
+			.data(deps, d => d)
+			.join('li')
+			.text(d => d)
+			.on('click', function detailsDependencyClick(event, d) {
 				selectNode(graph[d]);
 			})
 		;
-		label.text(deps.length === 0? "nothing" : "");
+		ui
+			.selectAll('span')
+			.data(deps.length === 0 ? [ "nothing" ] : [ ])
+			.join('span')
+			.text(d => d)
+		;
 	}
 
 	function display(d) {
@@ -207,35 +186,35 @@ const details = function() {
 			typeUI.text(d.type || 'normal');
 			stateUI.text(d.state || 'scheduled');
 			progressUI.style('display', d.state === 'executing'? 'block' : 'none');
-			posUI.text(d.x.toFixed(2) + ", " + d.y.toFixed(2));
+			posUI.text(`${d.x.toFixed(2)}, ${d.y.toFixed(2)}`);
 
-			bindDeps(dependsUI, dependsUILabel, d.deps);
-			bindDeps(dependentsUI, dependentsUILabel, d.depsInverse);
+			bindDeps(dependsUI, d.deps);
+			bindDeps(dependentsUI, d.depsInverse);
 		}
 
 		currentNode = d;
 	}
 
 	function autoPick() {
-		const executing = node.filter('.executing');
-		return executing.size() === 0? null : executing.datum();
+		const executing = nodes.filter(d => d.state === 'executing');
+		return executing.length === 0? null : executing[0];
 	}
 
 	return {
-		init: function() {
+		init() {
 			display(null);
 		},
-		showNode: function(d) {
+		showNode(d) {
 			if (!currentNodeIsLocked) {
 				currentNodeIsActive = true;
 				display(d);
 			}
 		},
-		hideNode: function(_ /*d*/) {
+		hideNode(/*d*/) {
 			currentNodeIsActive = false;
 			this.refreshDisplay();
 		},
-		lockNode: function(d) {
+		lockNode(d) {
 			if (d) {
 				currentNodeIsLocked = true;
 				display(d);
@@ -244,7 +223,7 @@ const details = function() {
 				display(autoPick());
 			}
 		},
-		refreshDisplay: function() {
+		refreshDisplay() {
 			if (!currentNodeIsLocked && !currentNodeIsActive) {
 				display(autoPick());
 			} else {
@@ -254,85 +233,113 @@ const details = function() {
 	};
 }();
 
-const graph = {};
+// noinspection ES6ConvertVarToLetConst
+var graph = {}; // window.graph is referenced as such.
 const nodes = force.nodes();
-const links = force.links();
-let node = node_group.selectAll('.node');
-let link = link_group.selectAll('.link');
-let uiNodes, uiLinks;
+const links = force.force('forceLink').links();
 
 d3.select(window).on('resize', resize);
 
 function resize() {
-	const width = window.innerWidth, height = window.innerHeight;
-	console.trace("Resize", force.size(), [ width, height ]);
-	//zoom.center([width/2, height/2]);
-	force.size([ width, height ]).resume();
-	lapsedZoomFit(5, 0);
+	const centerX = window.innerWidth / 2, centerY = window.innerHeight / 2;
+	const forceCenter = force.force('forceCenter');
+	console.debug("Resize center", [ forceCenter.x(), forceCenter.y() ], [ centerX, centerY ]);
+	//zoom.center([ centerX, centerY ]);
+	forceCenter.x(centerX).y(centerY);
+	force.restart();
 }
 
-function restart(first) {
-	link = link.data(links);
-	link.exit().remove();
-	uiLinks = link
-		.enter()
-		.append('line')
-		.each(function(d) { d.ui.edge = this; })
-		.attr('id', function(d) {
-			return d.linkId();
-		})
-		.attr('class', 'link')
-		.style('marker-start', 'url(#arrow-in)')
-		//.style('marker-end', 'url(#arrow-out)')
+function rebuild() {
+	const uiLinks = link_group
+		.selectAll('.link')
+		.data(links, d => d.linkId())
+		.join(
+			enter => enter
+				.append('line')
+				.each(function storeUiLink(d) { d.ui.edge = this; })
+				.attr('id', d => d.linkId())
+				.attr('class', 'link')
+				.style('marker-start', 'url(#arrow-in)')
+				//.style('marker-end', 'url(#arrow-out)')
+		)
 	;
 
-	node = node.data(nodes);
-	node.exit().remove();
-
-	uiNodes = createNodes(node);
-	uiNodes
-		.on('click', function(d) {
+	const uiNodes = node_group
+		.selectAll('.node')
+		.data(nodes, d => d.ui.nodeId())
+		.joinNodes()
+		.on('click', function nodeClick(event, d) {
 			selectNode(d);
 		})
-		.on('mousedown', function(d) {
+		.on('mousedown', function nodeMouseDown(event, d) {
 			details.lockNode(d);
 		})
-		.on('mouseup', function(_ /*d*/) {
+		.on('mouseup', function nodeMouseUp(/*event, d*/) {
 			details.lockNode(null);
 		})
-		.on('mouseover', function(d) {
+		.on('mouseover', function nodeMouseOver(event, d) {
 			details.showNode(d);
 		})
-		.on('mouseout', function(d) {
+		.on('mouseout', function nodeMouseOut(event, d) {
 			details.hideNode(d);
 		})
-		.call(force
+		.call(d3
 			.drag()
-			.on('dragstart', function() {
-				d3.event.sourceEvent.stopPropagation();
-			}),
-		);
+			.on('start', function dragStart(event, d) {
+				if (!event.active) {
+					force.alphaTarget(0.3).restart();
+				}
+				d.fx = d.x;
+				d.fy = d.y;
+			})
+			.on('drag', function dragMove(event, d) {
+				d.fx = event.x;
+				d.fy = event.y;
+			})
+			.on('end', function dragEnd(event, d) {
+				if (!event.active) {
+					force.alphaTarget(0);
+				}
+				d.fx = null;
+				d.fy = null;
+			})
+		)
+	;
 
-	force.start();
-	if (first) {
-		lapsedZoomFit(200, 0);
-	}
+	details.refreshDisplay();
+
+	force.stop()
+	force.nodes(nodes);
+	force.force('forceLink').links(links);
+	force.on('tick', function forceTick() {
+		//const q = d3.geom.quadtree(nodes);
+		//node.each(function(n) { q.visit(phys.collide(n)) });
+		uiLinks
+			.attr('x1', d => phys.pointOnRect(d.source, d.target).x)
+			.attr('y1', d => phys.pointOnRect(d.source, d.target).y)
+			.attr('x2', d => phys.pointOnRect(d.target, d.source).x)
+			.attr('y2', d => phys.pointOnRect(d.target, d.source).y)
+		;
+
+		uiNodes
+			.attr('transform', d => `translate(${d.x},${d.y})`)
+		;
+	});
+	force.restart();
 }
 
 function selectNode(d) { // TODO use #task-id for back navigation support
-	uiNodes.filter('.selected').classed('selected', false);
+	node_group.selectAll('.node.selected').classed('selected', false);
 	if (d) {
-		d3.select(d.ui.node).classed('selected', true);
+		if (d.ui) {
+			d3.select(d.ui.node).classed('selected', true);
+			details.lockNode(d);
+		} else {
+			console.warn("Cannot select node, probably not displayed.", d);
+		}
+	} else {
+		details.lockNode(null);
 	}
-	details.lockNode(d);
-}
-
-function lapsedZoomFit(ticks, transitionDuration) {
-	for (let i = ticks; i > 0; --i) {
-		force.tick();
-	}
-	force.stop();
-	zoomFit(0.75, transitionDuration);
 }
 
 /**
@@ -354,84 +361,89 @@ function zoomFit(paddingPercent, transitionDuration) {
 	const scale = paddingPercent / Math.max(width / fullWidth, height / fullHeight);
 	const translate = [ fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY ];
 
-	console.trace("zoomFit", translate, scale);
-	root
+	console.debug("zoomFit", translate, scale);
+	svg
 		.transition()
 		.duration(transitionDuration)
-		.call(zoom.translate(translate).scale(scale).event);
+		.call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
 }
 
+// noinspection JSValidateJSDoc
+/**
+ * @see net.twisterrob.gradle.graph.vis.d3.interop.TaskTypeSerializer for type values.
+ * @see net.twisterrob.gradle.graph.vis.d3.interop.TaskResultSerializer for state values.
+ */
 const legendData = [
-	{ classes: '', title: "task" },
-	{ classes: 'success', title: "Success" },
-	{ classes: 'uptodate', title: "UP-TO-DATE" },
-	{ classes: 'failure', title: "FAILED" },
-	{ classes: 'skipped', title: "SKIPPED" },
-	{ classes: 'executing', title: "Executing..." },
-	{ classes: 'requested', title: "Requested" },
-	{ classes: 'excluded', title: "--exclude-task" },
-	{ classes: 'nowork', title: "No Work" },
-	{ classes: 'unknown', title: "Unknown" },
-	{ classes: 'selected', title: "Selected" },
+	{ type: 'normal', title: "task" }, // Normally this is empty string, add actual value to make it visible.
+	{ state: 'success', title: "Success" },
+	{ state: 'uptodate', title: "UP-TO-DATE" },
+	{ state: 'failure', title: "FAILED" },
+	{ state: 'skipped', title: "SKIPPED" },
+	{ state: 'executing', title: "Executing..." },
+	{ type: 'requested', title: "Requested" },
+	{ type: 'excluded', title: "--exclude-task" },
+	{ state: 'nowork', title: "No Work" },
+	{ type: 'unknown', title: "Unknown" },
+	{ state: 'selected', title: "Selected" }, // Special state, only in UI.
 ];
-!function buildLegend() {
+function buildLegend(legendData) {
 	for (const i in legendData) {
 		const legendDatum = legendData[i];
 		// TODO use nodify?
 		legendDatum.ui = {
 			data: legendDatum,
-			project: function() { return ""; },
-			label: function() { return this.data.title; },
-			nodeId: function() { return 'legend_' + this.data.id; },
+			project() { return ":sub:module"; },
+			label() { return this.data.title; },
+			nodeId() { return `legend_${this.data.id}`; },
 		};
 		legendDatum.deps = [];
 		legendDatum.depsInverse = [];
-		legendDatum.id = legendData[i].classes.replace(/ /, '-');
+		legendDatum.id = legendData[i].type || legendData[i].state;
 	}
+
 	const legend = svg
 		.select('#legend');
-	let legendNodes = legend
-		.selectAll('.node')
-		.data(legendData)
-	;
+
 	const legendHeader = legend
 		.select('#legend-header')
-		.on('click', function() {
-			legend.classed('collapsed', !legend.classed('collapsed'));
-			autoSizeLegend();
-		})
+		.on('click', toggleLegend)
 	;
 	const headerHeight = legendHeader.node().getBBox().height;
-	// noinspection JSUnusedAssignment
-	legendNodes = createNodes(legendNodes)
-		.attr('class', function(d) { return 'node ' + d.classes; })
-		.attr('transform', function(d, i) { return 'translate(0,' + (headerHeight + 10 + i * d.height * 1.3) + ')'; })
+
+	// noinspection JSUnusedLocalSymbols
+	const legendNodes = legend
+		.selectAll('.node')
+		.data(legendData, d => d.ui.nodeId())
+		.joinNodes()
+		.attr('transform', (d, i) => `translate(0,${headerHeight + 10 + i * d.height * 1.3})`)
 	;
 
-	const legendBG = legend
+	const legendBackground = legend
 		.select('#legend-bg')
-		.on('click', function() {
-			legend.classed('collapsed', !legend.classed('collapsed'));
-			autoSizeLegend();
-		})
+		.on('click', toggleLegend)
 	;
+
+	function toggleLegend() {
+		legend.classed('collapsed', !legend.classed('collapsed'));
+		autoSizeLegend();
+	}
 
 	function autoSizeLegend() {
-		legendBG.style('display', 'none');
+		legendBackground.style('display', 'none');
 		const legendBox = legend.node().getBBox();
 		const legendPadding = 16;
-		legendBG
-			.attr("x", legendBox.x - legendPadding)
-			.attr("y", legendBox.y - legendPadding)
-			.attr("width", legendBox.width + 2 * legendPadding)
-			.attr("height", legendBox.height + 2 * legendPadding)
+		legendBackground
+			.attr('x', legendBox.x - legendPadding)
+			.attr('y', legendBox.y - legendPadding)
+			.attr('width', legendBox.width + 2 * legendPadding)
+			.attr('height', legendBox.height + 2 * legendPadding)
 		;
-		legendBG.style('display', 'block');
+		legendBackground.style('display', 'block');
 	}
 
 	autoSizeLegend();
 	legend.style('visibility', 'visible');
-}(legendData);
+}
 
 function nodeClasses(d) {
 	return 'node'
@@ -442,53 +454,64 @@ function nodeClasses(d) {
 	;
 }
 
-function createNodes(nodeData) {
-	const uiNodes = nodeData
-		.enter()
-		.append('g')
-		.each(function(d) { d.ui.node = this; })
-		.attr('id', function(d) { return d.ui.nodeId(); })
-	;
-	nodeData
-		.attr("class", nodeClasses)
-	;
-	const rect = uiNodes.append('rect')
-		.each(function(d) { d.ui.bg = this; })
-	;
-	//noinspection JSUnusedLocalSymbols
-	const text = uiNodes.append('text')
-		.each(function(d) { d.ui.text = this; })
-		.classed('label', true)
-		.text(function(d) { return d.ui.label(); })
-	;
-	//uiNodes.append('circle').attr("cx", 0).attr("cy", 0).attr("r", 3).attr("fill", "red");
-	const padding = { x: 5, y: 4 };
+// Note: this could almost be replaced with ….call(joinNodes).…,
+// but call() doesn't return the function's return value, so it doesn't chain properly.
+// noinspection JSPotentiallyInvalidConstructorUsage
+d3.selection.prototype.joinNodes = function joinNodes() {
+	return this
+		.join(
+			enter => {
+				const uiNodes = enter
+					.append('g')
+					.each(function storeUiNode(d) { d.ui.node = this; })
+					.attr('id', d => d.ui.nodeId())
 
-	rect
-		.attr('width', function(d) { return d.ui.text.getBBox().width + 2.0 * padding.x; })
-		.attr('height', function(d) { return d.ui.text.getBBox().height + 2.0 * padding.y; })
-		.attr('x', function(_ /*d*/) { return +d3.select(this).attr('width') / -2.0; })
-		.attr('y', function(_ /*d*/) { return +d3.select(this).attr('height') / -2.0; })
-	;
+				const rect = uiNodes.append('rect')
+					.each(function storeUiNodeBackground(d) { d.ui.bg = this; })
+				;
+				// This needs to be appended after the rectangle so that the DOM-order is correct for z-ordering.
+				//noinspection JSUnusedLocalSymbols
+				const text = uiNodes.append('text')
+					.each(function storeUiNodeText(d) { d.ui.text = this; })
+					.classed('label', true)
+					.text(d => d.ui.label())
+				;
+				//uiNodes.append('circle').attr('cx', 0).attr('cy', 0).attr('r', 3).attr('fill', 'red');
+				const padding = { x: 5, y: 4 };
 
-	uiNodes.append('text')
-		.classed('project', true)
-		.text(function(d) { return d.ui.project(); })
-		.attr('x', function(d) { return +d3.select(d.ui.bg).attr('x') + +d3.select(d.ui.bg).attr('width') - padding.x; })
-		.attr('y', function(d) { return +d3.select(d.ui.bg).attr('y') - 1; })
-	;
+				// This needs to be after inserting text, because the background rectangle size depends on the rendered text.
+				rect
+					.attr('width', d => d.ui.text.getBBox().width + 2.0 * padding.x)
+					.attr('height', d => d.ui.text.getBBox().height + 2.0 * padding.y)
+					.attr('x', d => +d3.select(d.ui.bg).attr('width') / -2.0)
+					.attr('y', d => +d3.select(d.ui.bg).attr('height') / -2.0)
+				;
 
-	uiNodes.each(function(d) {
-		const box = d.ui.node.getBBox();
-		d.width = box.width;
-		d.height = box.height;
-	});
-	return nodeData;
+				//noinspection JSUnusedLocalSymbols
+				const module = uiNodes.append('text')
+					.classed('project', true)
+					.text(d => d.ui.project())
+					.attr('x', d => +d3.select(d.ui.bg).attr('x') + +d3.select(d.ui.bg).attr('width') - padding.x)
+					.attr('y', d => +d3.select(d.ui.bg).attr('y') - 1)
+				;
+				// This needs to be after everything is built, because it depends on the rendered size.
+				return uiNodes
+					
+			},
+		)
+		// Recalculate the visual state on new and existing nodes, as the state might've changed.
+		.attr('class', nodeClasses)
+		.each(function resizeUiNode(d) {
+			const box = d.ui.node.getBBox();
+			d.width = box.width;
+			d.height = box.height;
+		})
+	;
 }
 
-let model = function() {
+let model = function Model() {
 	return {
-		init: function(graph) {
+		init(graph) {
 			function filter(d) { return d.type === 'unknown'; }
 
 			if (typeof graph === 'string') {
@@ -522,18 +545,29 @@ let model = function() {
 					fromNode.links.push(link);
 				}
 			}
-			restart(true);
+			rebuild();
+			force
+				.alphaTarget(1)
+				.tick(3000)
+				.alphaTarget(0)
+			;
+			// setTimeout is required to allow the browser to render the nodes.
+			setTimeout(() => zoomFit(0.95, 0), 0);
 		},
-		update: function(task, result) {
-			const node = d3.select('#' + constructNodeId(task));
+		update(task, result) {
+			// This method should be just the commented lines, except it's too slow for an ever-changing execution.
+			// Gradle changes task states multiple times per second, so it's better to focus on updating what's really changed.
+			//graph[task].state = result;
+			const node = d3.select(`#${constructNodeId(task)}`);
 			const data = node.datum();
 			data.state = result;
-			node.attr('class', nodeClasses(data));
+			//rebuild();
+			node.attr("class", nodeClasses(data));
 			details.refreshDisplay();
 		},
-		add: function(data) {
+		add(data) {
 			nodes.push(nodify(data.id, data));
-			restart();
+			rebuild();
 		},
 	};
 
@@ -542,11 +576,11 @@ let model = function() {
 	}
 
 	function constructNodeId(name) {
-		return 'node_' + cleanName(name);
+		return `node_${cleanName(name)}`;
 	}
 
 	function constructLinkId(from, to) {
-		return 'link_' + cleanName(from) + '_' + cleanName(to);
+		return `link_${cleanName(from)}_${cleanName(to)}`;
 	}
 
 	function nodify(id, node) {
@@ -562,28 +596,28 @@ let model = function() {
 				node: null,
 				text: null,
 				bg: null,
-				project: function() {
+				project() {
 					const label = this.data.label || this.data.id;
 					return label.replace(/^:?(.+):.+$|.*/, '$1');
 				},
-				label: function() {
+				label() {
 					const label = this.data.label || this.data.id;
 					return label.replace(/^:?(.*):/, '');
 				},
-				nodeId: function() {
+				nodeId() {
 					return constructNodeId(this.data.id);
 				},
 			},
-			x2: function() {
+			x2() {
 				return this.x + this.width;
 			},
-			y2: function() {
+			y2() {
 				return this.y + this.height;
 			},
 		};
 
 		node.toString = function() {
-			return this.id + " @ " + this.x + "," + this.y + " " + this.width + "x" + this.height;
+			return `${this.id} @ ${this.x},${this.y} ${this.width}x${this.height}`;
 		};
 
 		for (const i in defaults) {
@@ -595,7 +629,7 @@ let model = function() {
 			if (node[i] === undefined) {
 				node[i] = viewModel[i];
 			} else {
-				console.error("Property " + i + " already exists", node, viewModel);
+				console.error(`Property ${i} already exists`, node, viewModel);
 			}
 		}
 		return node; // == $.merge(node, defaults, viewModel);
@@ -609,11 +643,11 @@ let model = function() {
 			ui: {
 				edge: null,
 			},
-			linkId: function() {
+			linkId() {
 				return constructLinkId(this.source.id, this.target.id);
 			},
-			toString: function() {
-				return this.source + " -> " + this.target;
+			toString() {
+				return `${this.source} -> ${this.target}`;
 			},
 		};
 	}
@@ -623,11 +657,11 @@ if (window.java) {
 	model = function javafy(model) {
 		function javaEntry(name, fun) {
 			return function() {
-				console.trace(name + "(" + JSON.stringify(arguments) + ")");
+				console.trace(`${name}(${JSON.stringify(arguments)})`);
 				try {
 					return fun.apply(this, arguments);
 				} catch (e) {
-					console.warn(e.name + ": " + e.message + " " + e.stack);
+					console.warn(`${e.name}: ${e.message} ${e.stack}`);
 				}
 			};
 		}
@@ -660,7 +694,7 @@ function autoSizeText(elem, min, max, step, lastChange) {
 	const parentSize = { width: px(parentStyle.width), height: px(parentStyle.height) };
 	let fontSize = px(style.fontSize);
 
-	//console.debug("autoSizeText(" + elem.textContent + ", " + min + ", " + max + ")", fontSize, elemSize, parentSize);
+	//console.debug(`autoSizeText(${elem.textContent}, ${min}, ${max})`, fontSize, elemSize, parentSize);
 	let change = 0, stop = false;
 	const needsSmaller = elemSize.width > parentSize.width || elemSize.height > parentSize.height;
 	const needsBigger = elemSize.width < parentSize.width && elemSize.height < parentSize.height;
@@ -689,7 +723,7 @@ function autoSizeText(elem, min, max, step, lastChange) {
 	if (change !== 0) {
 		fontSize += change;
 		if (min <= fontSize && fontSize <= max) {
-			elem.style.setProperty('font-size', fontSize + 'px');
+			elem.style.setProperty('font-size', `${fontSize}px`);
 		}
 	} else {
 		stop = true;
@@ -735,7 +769,7 @@ function demo() {
 	};
 
 	model.init(allDeps);
-	setTimeout(function() {
+	setTimeout(function demoDelayedEffects() {
 		model.update("generateDebugResValues", 'success');
 		model.update("generateDebugBuildConfig", 'executing');
 	}, 1000);
