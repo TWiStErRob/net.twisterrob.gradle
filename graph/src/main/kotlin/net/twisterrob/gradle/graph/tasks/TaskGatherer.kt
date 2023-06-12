@@ -45,7 +45,7 @@ class TaskGatherer(
 		}
 		settings.gradle.addProjectEvaluationListener(object : ProjectEvaluationListener {
 			override fun beforeEvaluate(project: Project) {
-				project.tasks.whenTaskAdded { task ->
+				project.tasks.configureEach { task ->
 					data(task)
 				}
 			}
