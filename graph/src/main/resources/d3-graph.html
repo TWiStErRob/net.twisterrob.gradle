@@ -60,9 +60,6 @@
 	<script>//<![CDATA[
 'use strict';
 
-// See net.twisterrob.gradle.graph.vis.d3.GraphWindow.setupBrowser
-const isJavaHosted = window.isJavaHosted === true;
-
 function main() {
 	// needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
 	setTimeout(function startUp() {
@@ -70,7 +67,9 @@ function main() {
 		resize();
 		buildLegend(legendData);
 		details.init();
-		if (isJavaHosted) {
+		// See net.twisterrob.gradle.graph.vis.d3.GraphWindow.setupBrowser
+		// noinspection JSUnresolvedReference
+		if (window.isJavaHosted === true) {
 			console.debug("We're in JavaFX");
 		} else {
 			demo();
@@ -661,29 +660,6 @@ let model = function Model() {
 		};
 	}
 }();
-
-if (isJavaHosted) {
-	model = function javafy(model) {
-		function javaEntry(name, fun) {
-			return function() {
-				console.trace(`${name}(${JSON.stringify(arguments)})`);
-				try {
-					return fun.apply(this, arguments);
-				} catch (e) {
-					console.warn(`${e.name}: ${e.message} ${e.stack}`);
-				}
-			};
-		}
-
-		for (const item in model) {
-			if (typeof model[item] === 'function') {
-				model[item] = javaEntry(item, model[item]);
-			}
-		}
-		return model;
-	}(model);
-}
-
 
 function autoSizeText(elem, min, max, step, lastChange) {
 	min = min || 1;

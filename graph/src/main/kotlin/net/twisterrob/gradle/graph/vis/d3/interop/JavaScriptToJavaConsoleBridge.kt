@@ -41,7 +41,7 @@ class JavaScriptToJavaConsoleBridge private constructor(
 			val javaBridgeName = "javaConsole"
 			window.setMember(javaBridgeName, java)
 			val log = java::log.name
-			@Language("javascript")
+			@Language("JavaScript")
 			val replaceConsoleLogging = """
 				console.log = function() { ${javaBridgeName}.${log}(arguments, 'log') };
 				console.debug = function() { ${javaBridgeName}.${log}(arguments, 'debug') };
