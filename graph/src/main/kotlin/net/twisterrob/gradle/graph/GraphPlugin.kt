@@ -53,7 +53,7 @@ class GraphPlugin @Inject constructor(
 			}
 		}
 
-		@Suppress("DEPRECATION") // Configuration cache.
+		@Suppress("DEPRECATION") // TODO Configuration cache.
 		settings.gradle.taskGraph.addTaskExecutionListener(object : org.gradle.api.execution.TaskExecutionListener {
 			override fun beforeExecute(task: Task) {
 				vis.update(task, TaskResult.Executing)
