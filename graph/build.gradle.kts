@@ -7,8 +7,8 @@ plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.8.22"
 	id("io.gitlab.arturbosch.detekt") version "1.23.0"
 	id("org.gradle.idea")
+	id("net.twisterrob.gradle.build.webjars")
 }
-apply(from = "gradle/webjars.gradle.kts")
 
 group = "net.twisterrob.gradle"
 version = "0.1"
