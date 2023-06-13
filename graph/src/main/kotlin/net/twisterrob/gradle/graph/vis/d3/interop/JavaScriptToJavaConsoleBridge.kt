@@ -61,8 +61,9 @@ private operator fun JSObject.iterator(): Iterator<Any?> =
 			index < length
 
 		override fun next(): Any? =
-			if (hasNext())
+			if (hasNext()) {
 				this@iterator.getSlot(index++)
-			else
+			} else {
 				throw NoSuchElementException()
+			}
 	}
