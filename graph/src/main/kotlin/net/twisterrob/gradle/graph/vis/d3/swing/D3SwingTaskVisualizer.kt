@@ -2,6 +2,7 @@ package net.twisterrob.gradle.graph.vis.d3.swing
 
 import javafx.application.Platform
 import javafx.embed.swing.JFXPanel
+import net.twisterrob.gradle.graph.logger
 import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskResult
 import net.twisterrob.gradle.graph.vis.d3.GradleJULFixer
@@ -14,6 +15,8 @@ import java.awt.event.WindowEvent
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
 import javax.swing.WindowConstants
+
+private val LOG = logger<D3SwingTaskVisualizer>()
 
 class D3SwingTaskVisualizer(
 	cache: PersistentCache
@@ -69,16 +72,15 @@ class D3SwingTaskVisualizer(
 			}
 			return fxPanel
 		} catch (@Suppress("TooGenericExceptionCaught") ex: RuntimeException) {
+			// TooGenericExceptionCaught: that's what JavaFX declares.
 			// TooGenericExceptionCaught: want to catch everything, because JavaFX problems should not crash Gradle.
 			if (ex.cause is UnsatisfiedLinkError) {
-				System.err.println( // TODO logging
-					"Sorry, JavaFX is clashing in Gradle daemon, "
-							+ "try again after a `gradle --stop` or add `--no-daemon`\n"
-							+ ex.cause.toString()
+				LOG.error(
+					"Sorry, JavaFX is clashing in Gradle daemon, try again after a `gradle --stop` or add `--no-daemon`",
+					ex
 				)
 			} else {
-				@Suppress("PrintStackTrace") // TODO logging
-				ex.printStackTrace()
+				LOG.error("launching, failed", ex)
 			}
 			return null
 		}

@@ -18,6 +18,8 @@ import org.gradle.cache.internal.filelock.LockOptionsBuilder.mode
 import org.gradle.cache.scopes.ScopedCacheBuilderFactory
 import javax.inject.Inject
 
+private val LOG = logger<GraphPlugin>()
+
 class GraphPlugin @Inject constructor(
 	private val cacheRepository: ScopedCacheBuilderFactory,
 ) : Plugin<Settings> {
@@ -129,7 +131,7 @@ private fun hasJavaFX(): Boolean =
 	try {
 		javafx.application.Platform::class.java
 		true
-	} catch (ignore: NoClassDefFoundError) {
+	} catch (ex: NoClassDefFoundError) {
 		val dependency = """
 			No JavaFX Runtime found on buildscript classpath,
 			falling back to primitive GraphStream visualization.
@@ -138,7 +140,7 @@ private fun hasJavaFX(): Boolean =
 				visualizer = ${GraphStreamTaskVisualizer::class.java.name}
 			}
 		""".trimIndent()
-		System.err.println(dependency) // TODO logging
+		LOG.warn(dependency, ex)
 		false
 	}
 

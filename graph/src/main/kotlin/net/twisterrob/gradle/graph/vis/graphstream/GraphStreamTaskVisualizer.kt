@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.graph.vis.graphstream
 
+import net.twisterrob.gradle.graph.logger
 import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskResult
 import net.twisterrob.gradle.graph.tasks.TaskType
@@ -18,6 +19,8 @@ import java.awt.event.WindowEvent
 import java.io.IOException
 import java.util.EnumMap
 import javax.swing.SwingUtilities
+
+private val LOG = logger<GraphStreamTaskVisualizer>()
 
 class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
@@ -93,7 +96,7 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 			node.removeClass(value)
 		}
 		node.addClass(classMappingResult.getValue(result))
-		//println(task.name + ": " + node.classes)
+		LOG.trace("{}: {}", task.name, node.classes)
 	}
 
 	companion object {

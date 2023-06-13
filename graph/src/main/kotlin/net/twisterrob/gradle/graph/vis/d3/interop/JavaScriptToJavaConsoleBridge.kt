@@ -1,8 +1,11 @@
 package net.twisterrob.gradle.graph.vis.d3.interop
 
 import javafx.scene.web.WebEngine
+import net.twisterrob.gradle.graph.logger
 import netscape.javascript.JSObject
 import org.intellij.lang.annotations.Language
+
+private val LOG = logger<JavaScriptToJavaConsoleBridge>()
 
 /**
  * A hackier alternative to `WebConsoleListener`, which is internal, but better featured (shows line number).
@@ -17,19 +20,13 @@ class JavaScriptToJavaConsoleBridge private constructor(
 	/**
 	 * @thread JavaFX Application Thread
 	 */
-	fun log(args: JSObject, level: String) {
-		System.err.printf("console.%s(", level)
-		var i = 0
-		val len = args.getMember("length") as Int
-		while (i < len) {
-			val arg = args.getSlot(i)
-			System.err.print(JSON.call("stringify", arg))
-			if (i < len - 1) {
-				System.err.print(", ")
-			}
-			i++
-		}
-		System.err.printf(")%n")
+	fun log(arguments: JSObject, level: String) {
+		val args = arguments
+			.iterator()
+			.asSequence()
+			.map { JSON.call("stringify", it) }
+			.toList()
+		LOG.trace("console.{}({})", level, args.joinToString(", "))
 	}
 
 	companion object {
@@ -54,3 +51,18 @@ class JavaScriptToJavaConsoleBridge private constructor(
 		}
 	}
 }
+
+private operator fun JSObject.iterator(): Iterator<Any?> =
+	object : Iterator<Any?> {
+		private var index: Int = 0
+		private val length: Int = this@iterator.getMember("length") as Int
+
+		override fun hasNext(): Boolean =
+			index < length
+
+		override fun next(): Any? =
+			if (hasNext())
+				this@iterator.getSlot(index++)
+			else
+				throw NoSuchElementException()
+	}

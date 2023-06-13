@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.graph.vis.d3
 
-import net.twisterrob.gradle.graph.Debug
+import net.twisterrob.gradle.graph.logger
+
+private val LOG = logger<GraphWindow>()
 
 /**
  * See [Background](http://stackoverflow.com/a/31100941/253468).
@@ -9,12 +11,12 @@ import net.twisterrob.gradle.graph.Debug
 class GradleJULFixer : Thread(GradleJULFixer::class.java.name) {
 
 	init {
-		log("creating")
+		LOG.trace("creating")
 		isDaemon = true
 	}
 
 	override fun start() {
-		log("starting")
+		LOG.trace("starting")
 		fix() // fix quickly
 		super.start()
 	}
@@ -30,7 +32,7 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.name) {
 				Thread.sleep(@Suppress("MagicNumber") 50) // yield, but also listen for interrupts
 			}
 		} catch (ex: InterruptedException) {
-			log("interrupted")
+			LOG.trace("interrupted")
 			Thread.currentThread().interrupt()
 		}
 	}
@@ -49,7 +51,7 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.name) {
 
 		@JvmStatic
 		fun fix() {
-			log("fixing")
+			LOG.trace("fixing")
 			disable("com.sun.webpane.sg.prism.WCGraphicsPrismContext")
 			disable("com.sun.webpane.perf") // should disable all children as well
 			disable("com.sun.webpane") // should disable all children as well
@@ -61,13 +63,6 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.name) {
 
 		private fun disable(name: String) {
 			java.util.logging.Logger.getLogger(name).level = java.util.logging.Level.OFF
-		}
-
-		private fun log(x: String) {
-			if (Debug.JavaFx) {
-				@Suppress("ForbiddenMethodCall") // TODO logging
-				println("--------------------------> $x")
-			}
 		}
 	}
 }

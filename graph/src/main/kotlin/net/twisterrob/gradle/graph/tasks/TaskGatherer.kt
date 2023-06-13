@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.graph.tasks
 
-import net.twisterrob.gradle.graph.Debug
+import net.twisterrob.gradle.graph.logger
 import org.gradle.api.Project
 import org.gradle.api.ProjectEvaluationListener
 import org.gradle.api.ProjectState
@@ -11,6 +11,8 @@ import org.gradle.api.internal.tasks.TaskDependencyResolveException
 import org.gradle.configurationcache.extensions.serviceOf
 import org.gradle.execution.TaskSelector
 import java.util.TreeMap
+
+private val LOG = logger<TaskGatherer>()
 
 class TaskGatherer(
 	private val settings: Settings
@@ -42,19 +44,13 @@ class TaskGatherer(
 			if (isSimplify) {
 				TransitiveReduction().run(all.values)
 			}
-			if (Debug.Gradle) {
-				@Suppress("ForbiddenMethodCall") // TODO logging
-				println("graphPopulated")
-			}
+			LOG.debug("TaskExecutionGraph ready, calling TaskGraphListener.graphPopulated.")
 			taskGraphListener?.run { graphPopulated(all) }
 		}
 		settings.gradle.addProjectEvaluationListener(object : ProjectEvaluationListener {
 			override fun beforeEvaluate(project: Project) {
 				project.tasks.configureEach { task ->
-					if (Debug.Gradle) {
-						@Suppress("ForbiddenMethodCall") // TODO logging
-						println("configureEach: $task")
-					}
+					LOG.trace("configureEach: {}", task)
 					data(task)
 				}
 			}
@@ -82,7 +78,7 @@ class TaskGatherer(
 		val tasks: MutableSet<Task> = HashSet()
 		for (path in settings.gradle.startParameter.excludedTaskNames) {
 //			val selection = selector.getSelection(path)
-//			println("-${path} -> ${selection.tasks.map { it.name }}")
+//			LOG.debug("-${path} -> ${selection.tasks.map { it.name }}")
 //			tasks.addAll(selection.tasks)
 		}
 		return tasks
@@ -97,7 +93,7 @@ class TaskGatherer(
 		for (request in settings.gradle.startParameter.taskRequests) {
 			for (path in request.args) {
 //				val selection = selector.getSelection(request.projectPath, path)
-//				println("${request.projectPath}:${path} -> ${selection.tasks.map { it.name }}")
+//				LOG.debug("${request.projectPath}:${path} -> ${selection.tasks.map { it.name }}")
 //				tasks.addAll(selection.tasks)
 			}
 		}
@@ -122,11 +118,11 @@ private class ResolveDependencies(
 		}
 		val deps: Set<Task> =
 			try {
-				// TODO why is this erroring?
 				taskData.task.taskDependencies.getDependencies(taskData.task) as Set<Task>
-			} catch (ignore: TaskDependencyResolveException) {
-				@Suppress("ForbiddenMethodCall") // TODO logging
-				println(ignore)
+			} catch (ex: TaskDependencyResolveException) {
+				// TODO why is this erroring on sample project 3 times?
+				// Not passing the exception to the logger, because don't want full stack trace here.
+				LOG.warn("Cannot resolve dependency of ${taskData.task}: " + ex)
 				emptySet()
 			}
 		for (dep in deps) {
@@ -135,6 +131,10 @@ private class ResolveDependencies(
 			addResolvedDependencies(data)
 		}
 		taskData.isVisited = true
+	}
+
+	companion object {
+		private val LOG = logger<ResolveDependencies>()
 	}
 }
 
@@ -184,12 +184,20 @@ private class TransitiveReduction {
 	private fun tryReduce(vertex0: TaskData, child: TaskData) {
 		if (vertex0.depsDirect.remove(child)) { // edges.discard((vertex0, child))
 			val alternatePath = path + child
-			//println "${vertex0.task.name} -> ${child.task.name}" +
-			//		" is replaced by ${alternatePath*.task*.name.join(' -> ')}"
+			if (LOG.isTraceEnabled) {
+				LOG.trace("{} -> {} is replaced by {}", vertex0.task.name, child.task.name, alternatePath.pathString)
+			}
 			val old = vertex0.depsImplicit.put(child, alternatePath)
-			if (old != null) {
-				//println "Path already existed: ${old*.task*.name.join(' -> ')}"
+			if (old != null && LOG.isTraceEnabled) {
+				LOG.trace("Path already existed: {}", old.pathString)
 			}
 		}
+	}
+
+	companion object {
+		private val LOG = logger<TransitiveReduction>()
+
+		private val List<TaskData>.pathString: String
+			get() = this.joinToString(" -> ") { it.task.name }
 	}
 }

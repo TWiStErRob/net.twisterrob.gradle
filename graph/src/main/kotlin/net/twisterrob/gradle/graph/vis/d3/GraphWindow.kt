@@ -7,7 +7,7 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.paint.Color
 import javafx.scene.web.WebEngine
 import javafx.scene.web.WebView
-import net.twisterrob.gradle.graph.Debug
+import net.twisterrob.gradle.graph.logger
 import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskResult
 import net.twisterrob.gradle.graph.tasks.TaskType
@@ -25,6 +25,8 @@ import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import javax.annotation.OverridingMethodsMustInvokeSuper
+
+private val LOG = logger<GraphWindow>()
 
 // https://blogs.oracle.com/javafx/entry/communicating_between_javascript_and_javafx
 // http://docs.oracle.com/javafx/2/webview/jfxpub-webview.htm
@@ -57,32 +59,31 @@ abstract class GraphWindow : TaskVisualizer {
 			setBackgroundColor(getPage(webEngine))
 			webEngine.userStyleSheetLocation = buildCSSDataURI()
 		}
-		if (Debug.WebView) {
+		if (LOG.isDebugEnabled) {
 			com.sun.javafx.webkit.WebConsoleListener
 				.setDefaultListener { _, message, lineNumber, sourceId ->
+					/** Enables clickable links from logs. */
 					fun String.relocate(): String =
 						this.replace(
 							"""jar:file:/.*?/graph-.*?\.jar!/""".toRegex(),
-							Regex.escapeReplacement(Debug.ResourcesFolder)
+							// TODO extract somehow
+							Regex.escapeReplacement("""P:\projects\workspace\net.twisterrob.gradle\graph\src\main\resources\""")
 						)
-					@Suppress("ForbiddenMethodCall") // TODO logging
-					println("console: ${message.relocate()} (${sourceId.relocate()}:${lineNumber})")
+					LOG.debug("console: ${message.relocate()} (${sourceId.relocate()}:${lineNumber})")
 				}
 		}
 		// Used in d3-graph.html.
 		(webEngine.executeScript("window") as JSObject).setMember("isJavaHosted", true)
 		webEngine.loadWorker.stateProperty().addListener { value, oldState, newState ->
-			if (Debug.WebView) {
-				System.err.printf("WebView state changed: %s -> %s: %s%n", oldState, newState, value)
-			}
+			LOG.debug("WebView state changed: {} -> {}: {}", oldState, newState, value)
 			when (newState) {
 				null -> error("newState cannot be null")
 				Worker.State.READY -> error("It never becomes ready, it starts there.")
 				Worker.State.SCHEDULED -> { } // Normal operation
 				Worker.State.RUNNING -> { } // Normal operation
 				Worker.State.SUCCEEDED -> bridge = JavaToJavaScriptModelBridge(webEngine)
-				Worker.State.CANCELLED -> error("Web loading cancelled")
-				Worker.State.FAILED -> webEngine.loadWorker.exception?.printStackTrace()
+				Worker.State.CANCELLED -> error("Web loading cancelled.")
+				Worker.State.FAILED -> LOG.error("Couldn't load page.", webEngine.loadWorker.exception)
 			}
 		}
 		try {
@@ -94,8 +95,7 @@ abstract class GraphWindow : TaskVisualizer {
 			// TODO is load and loadContent faster?
 			webEngine.load(d3Resource.toExternalForm())
 		} catch (ex: IOException) {
-			@Suppress("PrintStackTrace") // TODO logging
-			ex.printStackTrace()
+			LOG.error("Failed to load d3-graph.html from resources.", ex)
 		}
 		return webView
 	}
@@ -145,12 +145,10 @@ abstract class GraphWindow : TaskVisualizer {
 
 		private fun setBackgroundColor(page: Any?) {
 			if (page is com.sun.webkit.WebPage) {
-				@Suppress("ForbiddenMethodCall") // TODO logging
-				println("webpane.platform")
+				LOG.trace("webpane.platform")
 				page.setBackgroundColor(0x00000000)
 			} else {
-				@Suppress("ForbiddenMethodCall") // TODO logging
-				println("Unknown page: " + page?.javaClass)
+				LOG.warn("Unknown page: {}", page?.javaClass)
 			}
 		}
 
@@ -161,12 +159,10 @@ abstract class GraphWindow : TaskVisualizer {
 					.apply { isAccessible = true }
 					.get(webEngine)
 			} catch (ex: NoSuchFieldException) {
-				@Suppress("PrintStackTrace") // TODO logging
-				ex.printStackTrace()
+				LOG.error("Cannot find WebEngine.page", ex)
 				null
 			} catch (ex: IllegalAccessException) {
-				@Suppress("PrintStackTrace") // TODO logging
-				ex.printStackTrace()
+				LOG.error("Cannot read WebEngine.page", ex)
 				null
 			}
 	}

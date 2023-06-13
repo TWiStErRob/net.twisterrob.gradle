@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.graph.vis
 
+import net.twisterrob.gradle.graph.logger
 import org.gradle.cache.PersistentCache
 import java.io.Closeable
 import java.io.File
@@ -13,6 +14,9 @@ import java.util.Properties
 abstract class VisualizerOptions<Options : Any> protected constructor(
 	private val cache: PersistentCache
 ) : Closeable {
+
+	@Suppress("PrivatePropertyName", "VariableNaming") // Keep conventional name.
+	private val LOG = logger(this)
 
 	private val storageFileName: String
 		get() = this::class.java.name + ".properties"
@@ -32,7 +36,7 @@ abstract class VisualizerOptions<Options : Any> protected constructor(
 				}
 			}
 		} catch (ex: OverlappingFileLockException) {
-			System.err.println("Cannot read options, using defaults: $ex") // TODO logging
+			LOG.error("Cannot read options, using defaults.", ex)
 			createDefault()
 		}
 		set(value) {
@@ -47,7 +51,7 @@ abstract class VisualizerOptions<Options : Any> protected constructor(
 					}
 				}
 			} catch (ex: OverlappingFileLockException) {
-				System.err.println("Cannot save options: $ex") // TODO logging
+				LOG.error("Cannot save options.", ex)
 			}
 		}
 
