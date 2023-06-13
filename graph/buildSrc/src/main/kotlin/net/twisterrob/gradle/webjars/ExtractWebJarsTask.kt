@@ -1,8 +1,10 @@
 package net.twisterrob.gradle.webjars
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileSystemOperations
@@ -16,13 +18,11 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.UntrackedTask
 import org.gradle.kotlin.dsl.submit
 import org.gradle.workers.WorkerExecutor
 import java.io.File
 import javax.inject.Inject
 
-@UntrackedTask(because = "The output directory might overlap with existing source folder.")
 abstract class ExtractWebJarsTask @Inject constructor(
 	private val files: FileSystemOperations,
 	private val workers: WorkerExecutor,
@@ -52,8 +52,8 @@ abstract class ExtractWebJarsTask @Inject constructor(
 	 * }
 	 * ```
 	 *
-	 * See https://docs.gradle.org/8.1.1/userguide/incremental_build.html#ex-resolved-artifacts-as-task-input
-	 * Related https://github.com/gradle/gradle/issues/25372
+	 * See [docs](https://docs.gradle.org/8.1.1/userguide/incremental_build.html#ex-resolved-artifacts-as-task-input).
+	 * Related [documentation issue](https://github.com/gradle/gradle/issues/25372).
 	 */
 	fun fromConfiguration(configuration: Provider<Configuration>) {
 		configurationFiles.setFrom(configuration)

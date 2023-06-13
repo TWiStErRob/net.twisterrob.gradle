@@ -12,7 +12,8 @@ import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
 import javax.inject.Inject
 
-abstract class ExtractWebJarAction @Inject constructor(
+// TODO consider artifact transformations instead.
+internal abstract class ExtractWebJarAction @Inject constructor(
 	private val files: FileSystemOperations,
 	private val archives: ArchiveOperations,
 ) : WorkAction<ExtractWebJarAction.Parameters> {

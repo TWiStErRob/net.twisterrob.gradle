@@ -21,6 +21,7 @@ intoFirstResourceFolder()
 fun intoFirstResourceFolder() {
 	val extractWebJars by tasks.registering(ExtractWebJarsTask::class) {
 		fromConfiguration(configurations.named("webjars"))
+		doNotTrackState("The output directory overlaps with an existing source folder.")
 		outputDirectory.set(project.layout.dir(sourceSets.named("main").map { it.resources.srcDirs.first() }))
 	}
 	tasks.named("processResources").configure { dependsOn(extractWebJars) }
