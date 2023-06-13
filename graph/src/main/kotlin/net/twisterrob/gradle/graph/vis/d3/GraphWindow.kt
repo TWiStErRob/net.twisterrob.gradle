@@ -65,6 +65,7 @@ abstract class GraphWindow : TaskVisualizer {
 							"""jar:file:/.*?/graph-.*?\.jar!/""".toRegex(),
 							Regex.escapeReplacement(Debug.ResourcesFolder)
 						)
+					@Suppress("ForbiddenMethodCall") // TODO logging
 					println("console: ${message.relocate()} (${sourceId.relocate()}:${lineNumber})")
 				}
 		}
@@ -72,7 +73,7 @@ abstract class GraphWindow : TaskVisualizer {
 		(webEngine.executeScript("window") as JSObject).setMember("isJavaHosted", true)
 		webEngine.loadWorker.stateProperty().addListener { value, oldState, newState ->
 			if (Debug.WebView) {
-				System.err.printf("State changed: %s -> %s: %s%n", oldState, newState, value)
+				System.err.printf("WebView state changed: %s -> %s: %s%n", oldState, newState, value)
 			}
 			when (newState) {
 				null -> error("newState cannot be null")

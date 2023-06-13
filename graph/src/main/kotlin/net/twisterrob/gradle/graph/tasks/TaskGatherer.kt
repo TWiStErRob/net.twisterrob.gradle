@@ -43,6 +43,7 @@ class TaskGatherer(
 				TransitiveReduction().run(all.values)
 			}
 			if (Debug.Gradle) {
+				@Suppress("ForbiddenMethodCall") // TODO logging
 				println("graphPopulated")
 			}
 			taskGraphListener?.run { graphPopulated(all) }
@@ -51,6 +52,7 @@ class TaskGatherer(
 			override fun beforeEvaluate(project: Project) {
 				project.tasks.configureEach { task ->
 					if (Debug.Gradle) {
+						@Suppress("ForbiddenMethodCall") // TODO logging
 						println("configureEach: $task")
 					}
 					data(task)

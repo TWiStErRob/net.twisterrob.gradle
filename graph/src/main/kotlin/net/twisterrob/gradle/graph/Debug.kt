@@ -6,7 +6,7 @@ object Debug {
 	 */
 	const val ResourcesFolder: String = """"""
 	const val JavaFx: Boolean = false
-	const val WebView: Boolean = true
+	const val WebView: Boolean = false
 	const val JavaScriptInterop: Boolean = false
-	const val Gradle: Boolean = true
+	const val Gradle: Boolean = false
 }
