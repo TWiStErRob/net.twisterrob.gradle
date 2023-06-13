@@ -43,7 +43,7 @@ abstract class ExtractWebJarsTask @Inject constructor(
 	abstract val outputDirectory: DirectoryProperty
 
 	init {
-		// See https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:requirements
+		// TODEL https://github.com/gradle/gradle/issues/25372
 		@Suppress("LeakingThis")
 		notCompatibleWithConfigurationCache(
 			"Doc says 'Provider<Set<ResolvedArtifactResult>> that can be mapped as an input to your task'."
