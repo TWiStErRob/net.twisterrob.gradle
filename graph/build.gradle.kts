@@ -35,6 +35,8 @@ dependencies {
 //	implementation("org.graphstream:gs-ui-swing:2.0")
 	implementation("com.google.code.gson:gson:2.10.1")
 	implementation("org.jetbrains:annotations:24.0.1")
+	implementation("com.vladsch.javafx-webview-debugger:javafx-webview-debugger:0.8.6")
+	implementation("com.vladsch.javafx-webview-debugger:webview-debug-sample:0.8.0")
 
 	"webjars"("org.webjars.npm:d3:7.8.4") {
 		// Avoid pulling in all small modules, using the merged .js file instead.

@@ -1,6 +1,9 @@
 package net.twisterrob.gradle.graph.vis.d3
 
 import com.google.gson.GsonBuilder
+import com.vladsch.javafx.webview.debugger.DevToolsDebuggerJsBridge
+import com.vladsch.javafx.webview.debugger.JfxDebuggerAccess
+import com.vladsch.javafx.webview.debugger.LogHandler
 import javafx.concurrent.Worker
 import javafx.scene.Scene
 import javafx.scene.layout.BorderPane
@@ -52,6 +55,7 @@ abstract class GraphWindow : TaskVisualizer {
 	 */
 	protected open fun setupBrowser(): WebView {
 		val webView = WebView()
+		setupDebugger(webView)
 		val webEngine: WebEngine = webView.engine
 		if (@Suppress("ConstantConditionIf", "RedundantSuppression") false) {
 			setBackgroundColor(getPage(webEngine))
@@ -98,6 +102,69 @@ abstract class GraphWindow : TaskVisualizer {
 		}
 		return webView
 	}
+
+private fun setupDebugger(webView: WebView) {
+	// Patch default LogHandler... the initialization order is wrong: LOG_HANDLER forward-references NULL.
+	//LogHandler.LOG_HANDLER = LogHandler.NULL
+	// Optionally override LogHandler with my own implementation to log wherever I want it to route.
+	LogHandler.LOG_HANDLER = @Suppress("StringLiteralDuplication") object : LogHandler() {
+		// @formatter:off
+		override fun error(message: String) { log("error", message) }
+		override fun error(message: String, t: Throwable) { log("error", message, t) }
+		override fun error(t: Throwable) { log("error", null, t) }
+		override fun info(message: String) { log("info", message) }
+		override fun info(message: String, t: Throwable) { log("info", message, t) }
+		override fun info(t: Throwable) { log("info", null, t) }
+		override fun warn(message: String) { log("warn", message) }
+		override fun warn(message: String, t: Throwable) { log("warn", message, t) }
+		override fun warn(t: Throwable) { log("warn",null, t) }
+		// Disable debug logging in JfxWebSocketServer about the Dev Tools protocol,
+		// because it causes unconditional logs to System.out/err rather than to debug().
+		override fun isDebugEnabled(): Boolean = false
+		override fun debug(message: String) { log("debug", message) }
+		override fun debug(message: String, t: Throwable) { log("debug", message, t) }
+		override fun debug(t: Throwable) { log("debug", null, t) }
+		override fun isTraceEnabled(): Boolean = true
+		override fun trace(message: String) { log("trace", message) }
+		override fun trace(message: String, t: Throwable) { log("trace", message, t) }
+		override fun trace(t: Throwable) { log("trace", null, t) }
+		// @formatter:on
+		private fun log(level: String, message: String? = null, t: Throwable? = null) {
+			println("[$level] $message")
+			t?.printStackTrace()
+		}
+	}
+	val bridge = DevToolsDebuggerJsBridge(webView, webView.engine, 0, null, false)
+	webView.engine.loadWorker.stateProperty().addListener { _, _, newState ->
+		when (newState) {
+			Worker.State.SCHEDULED -> {
+				// According to docs, there's no need for custom load() method,
+				// this event will fire at the right time.
+				bridge.pageReloading()
+			}
+			Worker.State.RUNNING -> {
+				// Required since Debugger.globalObjectCleared appears to be not called.
+				webView.engine.executeScript(
+					bridge::class.java
+						.getDeclaredField("myJfxDebuggerAccess")
+						.apply { isAccessible = true }
+						.get(bridge)
+						.let { it as JfxDebuggerAccess }
+						.jsBridgeHelperScript()
+				)
+			}
+			Worker.State.SUCCEEDED -> {
+				bridge.connectJsBridge()
+				val port = @Suppress("MagicNumber") 9222
+				bridge.startDebugServer(port, Throwable::printStackTrace) {
+					// Note: URL protocol changed at one point from chrome-devtools:// to devtools://.
+					println("Ready at devtools://devtools/bundled/inspector.html?ws=localhost:${port}")
+				}
+			}
+			else -> {} // Nothing to do.
+		}
+	}
+}
 
 	@OverridingMethodsMustInvokeSuper
 	override fun initModel(graph: Map<Task, TaskData>) {
