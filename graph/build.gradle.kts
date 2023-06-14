@@ -8,6 +8,7 @@ plugins {
 	id("io.gitlab.arturbosch.detekt") version "1.23.0"
 	id("org.gradle.idea")
 	id("net.twisterrob.gradle.build.webjars")
+	id("org.jetbrains.kotlinx.kover") version "0.7.1"
 }
 
 group = "net.twisterrob.gradle"
@@ -31,6 +32,7 @@ dependencies {
 	implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 	implementation("org.jetbrains.kotlin:kotlin-stdlib")
 	implementation("org.graphstream:gs-core:1.3")
+	implementation("org.slf4j:slf4j-api:2.0.7")
 //	implementation("org.graphstream:gs-core:2.0")
 //	implementation("org.graphstream:gs-ui-swing:2.0")
 	implementation("com.google.code.gson:gson:2.10.1")
@@ -41,7 +43,11 @@ dependencies {
 		isTransitive = false
 	}
 
-	testImplementation("junit:junit:4.13.2")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+	testImplementation("org.junit.platform:junit-platform-launcher:1.9.3")
+	testImplementation("org.mockito:mockito-core:5.3.1")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
+	testImplementation("org.hamcrest:hamcrest:2.2")
 }
 
 javafx {
@@ -53,8 +59,8 @@ javafx {
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -65,7 +71,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-	compilerOptions.jvmTarget.set(JvmTarget.fromTarget("1.8"))
+	compilerOptions.jvmTarget.set(JvmTarget.fromTarget("11"))
 	compilerOptions.allWarningsAsErrors.set(true)
 }
 
@@ -78,6 +84,10 @@ tasks.named<Jar>("jar") {
 			//"Built-Date" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(Date()),
 		)
 	}
+}
+
+tasks.test.configure {
+	useJUnitPlatform()
 }
 
 idea {
