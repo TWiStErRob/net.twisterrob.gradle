@@ -5,6 +5,7 @@ import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskResult
 import net.twisterrob.gradle.graph.vis.TaskVisualizer
 import org.gradle.api.Task
+import org.gradle.api.initialization.Settings
 import org.gradle.cache.PersistentCache
 
 /**
@@ -13,19 +14,19 @@ import org.gradle.cache.PersistentCache
 class D3JavaFXTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
 	private var window: GraphWindow? = null
-	private val settings: Settings
+	private val options: Options
 
 	init {
-		settings = Settings(cache)
+		options = Options(cache)
 	}
 
-	override fun showUI(project: org.gradle.api.initialization.Settings) {
-		JavaFXApplication.startLaunch(settings.settings)
-		window = JavaFXApplication.show(project)?.also { window ->
-			settings.settings.applyTo(window.stage)
+	override fun showUI(settings: Settings) {
+		JavaFXApplication.startLaunch(options.options)
+		window = JavaFXApplication.show(settings)?.also { window ->
+			options.options.applyTo(window.stage)
 			window.stage.setOnHiding { event ->
-				settings.settings = Settings.WindowLocation(event.source as Window)
-				settings.close()
+				options.options = Options.WindowLocation(event.source as Window)
+				options.close()
 			}
 		}
 	}
@@ -40,7 +41,7 @@ class D3JavaFXTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
 	override fun closeUI() {
 		if (window == null) {
-			settings.close()
+			options.close()
 		}
 		window = null
 		JavaFXApplication.hide()

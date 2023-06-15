@@ -46,6 +46,7 @@
 		<div id="detail-running" class="loader"></div>
 		<div id="detail-name"></div>
 		<div id="detail-project"></div>
+		<div id="detail-task"></div>
 		<div id="detail-type"></div>
 		<div id="detail-state"></div>
 		<div id="detail-pos"></div>
@@ -59,25 +60,27 @@
 	</div>
 	<script>//<![CDATA[
 'use strict';
+
 function main() {
 	// needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
 	setTimeout(function startUp() {
 		console.debug(`Startup ${navigator.userAgent}`);
-		resize();
 		buildLegend(legendData);
 		details.init();
-		if (window['java'] !== undefined) {
+		// See net.twisterrob.gradle.graph.vis.d3.GraphWindow.setupBrowser
+		// noinspection JSUnresolvedReference
+		if (window.isJavaHosted === true) {
 			console.debug("We're in JavaFX");
 		} else {
-			demo();
 			console.debug("We're in a browser");
+			demo();
 		}
 	}, 0);
 }
 
 const zoom = d3
 	.zoom()
-	.scaleExtent([ 1 / 4, 4 ])
+	//.scaleExtent([ 1 / 4, 4 ])
 	.on('zoom', function svgZoom(event) {
 		const transform = event.transform;
 		console.debug("zoom", transform);
@@ -129,9 +132,27 @@ const link_group = svg.select('#links');
 
 const force = d3
 	.forceSimulation()
-	.force('forceCenter', d3.forceCenter().strength(0.03)) 
-	.force('forceLink', d3.forceLink().strength(0.3))
-	.force('forceCharge', d3.forceManyBody().strength(-400))
+	.force('forceLink', d3.forceLink()
+			.id(node => node.id)
+			.distance(100) // "Average" width of nodes.
+			.strength(0.4) // Don't pull too hard to allow layout forming.
+	)
+	.force('forceCharge', d3.forceManyBody()
+			.strength(-400)
+			.distanceMax(2000) // Reduce range of repel to constrain fly-away unconnected nodes.
+	)
+	// forceCenter() does nothing, so using x + y to pull things in.
+	// .force('forceCenter', d3.forceCenter().strength(1))
+	// Assuming a normal screen, so the nodes are laid out in a laying rectangle.
+	.force("forceX", d3.forceX()
+			.strength(0.05)
+	)
+	.force("forceY", d3.forceY()
+			.strength(0.1)
+	)
+	// TODO when collision is enabled, the link strength can be increased a bit.
+	//.force('forceCollision', d3.forceCollide(100))
+	//.force('forceCollision', phys.forceCollideRect())
 ;
 
 const details = function Details() {
@@ -139,6 +160,7 @@ const details = function Details() {
 	const progressUI = det.select('#detail-running');
 	const nameUI = det.select('#detail-name').insert('span');
 	const projectUI = det.select('#detail-project');
+	const taskUI = det.select('#detail-task');
 	const typeUI = det.select('#detail-type');
 	const stateUI = det.select('#detail-state');
 	const posUI = det.select('#detail-pos');
@@ -183,6 +205,7 @@ const details = function Details() {
 			nameUI.text(d.ui.label());
 			autoSizeText(nameUI.node());
 			projectUI.text(d.ui.project() || "root project");
+			taskUI.text(d.ui.taskName());
 			typeUI.text(d.type || 'normal');
 			stateUI.text(d.state || 'scheduled');
 			progressUI.style('display', d.state === 'executing'? 'block' : 'none');
@@ -238,17 +261,6 @@ var graph = {}; // window.graph is referenced as such.
 const nodes = force.nodes();
 const links = force.force('forceLink').links();
 
-d3.select(window).on('resize', resize);
-
-function resize() {
-	const centerX = window.innerWidth / 2, centerY = window.innerHeight / 2;
-	const forceCenter = force.force('forceCenter');
-	console.debug("Resize center", [ forceCenter.x(), forceCenter.y() ], [ centerX, centerY ]);
-	//zoom.center([ centerX, centerY ]);
-	forceCenter.x(centerX).y(centerY);
-	force.restart();
-}
-
 function rebuild() {
 	const uiLinks = link_group
 		.selectAll('.link')
@@ -276,12 +288,6 @@ function rebuild() {
 		})
 		.on('mouseup', function nodeMouseUp(/*event, d*/) {
 			details.lockNode(null);
-		})
-		.on('mouseover', function nodeMouseOver(event, d) {
-			details.showNode(d);
-		})
-		.on('mouseout', function nodeMouseOut(event, d) {
-			details.hideNode(d);
 		})
 		.call(d3
 			.drag()
@@ -375,10 +381,12 @@ function zoomFit(paddingPercent, transitionDuration) {
  */
 const legendData = [
 	{ type: 'normal', title: "task" }, // Normally this is empty string, add actual value to make it visible.
-	{ state: 'success', title: "Success" },
+	{ state: 'success', title: "SUCCESS" },
 	{ state: 'uptodate', title: "UP-TO-DATE" },
 	{ state: 'failure', title: "FAILED" },
 	{ state: 'skipped', title: "SKIPPED" },
+	{ state: 'fromcache', title: "FROM-CACHE" },
+	{ state: 'nosource', title: "NO-SOURCE" },
 	{ state: 'executing', title: "Executing..." },
 	{ type: 'requested', title: "Requested" },
 	{ type: 'excluded', title: "--exclude-task" },
@@ -392,7 +400,8 @@ function buildLegend(legendData) {
 		// TODO use nodify?
 		legendDatum.ui = {
 			data: legendDatum,
-			project() { return ":sub:module"; },
+			project() { return ":legend"; },
+			taskName() { return "legendTask"; },
 			label() { return this.data.title; },
 			nodeId() { return `legend_${this.data.id}`; },
 		};
@@ -415,8 +424,11 @@ function buildLegend(legendData) {
 		.selectAll('.node')
 		.data(legendData, d => d.ui.nodeId())
 		.joinNodes()
-		.attr('transform', (d, i) => `translate(0,${headerHeight + 10 + i * d.height * 1.3})`)
-	;
+		.each((d, i) => {
+			d.x = 0;
+			d.y = headerHeight + 10 + i * d.height * 1.3;
+		})
+		.attr('transform', d => `translate(${d.x},${d.y})`)	;
 
 	const legendBackground = legend
 		.select('#legend-bg')
@@ -465,6 +477,12 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 					.append('g')
 					.each(function storeUiNode(d) { d.ui.node = this; })
 					.attr('id', d => d.ui.nodeId())
+					.on('mouseover', function nodeMouseOver(event, d) {
+						details.showNode(d);
+					})
+					.on('mouseout', function nodeMouseOut(event, d) {
+						details.hideNode(d);
+					})
 
 				const rect = uiNodes.append('rect')
 					.each(function storeUiNodeBackground(d) { d.ui.bg = this; })
@@ -548,7 +566,7 @@ let model = function Model() {
 			rebuild();
 			force
 				.alphaTarget(1)
-				.tick(3000)
+				.tick(300)
 				.alphaTarget(0)
 			;
 			// setTimeout is required to allow the browser to render the nodes.
@@ -572,7 +590,8 @@ let model = function Model() {
 	};
 
 	function cleanName(name) {
-		return name.replace(/:/g, '-');
+		// Normally this would clean `:foo:bar` to `-foo-bar`, but generalized to be safe.
+		return name.replace(/[^a-zA-Z0-9_]/g, '-');
 	}
 
 	function constructNodeId(name) {
@@ -600,9 +619,20 @@ let model = function Model() {
 					const label = this.data.label || this.data.id;
 					return label.replace(/^:?(.+):.+$|.*/, '$1');
 				},
-				label() {
+				taskName() {
 					const label = this.data.label || this.data.id;
 					return label.replace(/^:?(.*):/, '');
+				},
+				label() {
+					const label = this.taskName();
+					if (label.length <= 25) {
+						return label;
+					}
+					const parts = label.split(/(.[a-z]+)/).filter(g => g)
+					if (parts.length <= 2) {
+						return label.substring(0, 12) + '…' + label.substring(label.length - 12);
+					}
+					return parts[0] + '…' + parts[parts.length - 1];
 				},
 				nodeId() {
 					return constructNodeId(this.data.id);
@@ -652,29 +682,6 @@ let model = function Model() {
 		};
 	}
 }();
-//noinspection JSUnresolvedReference
-if (window.java) {
-	model = function javafy(model) {
-		function javaEntry(name, fun) {
-			return function() {
-				console.trace(`${name}(${JSON.stringify(arguments)})`);
-				try {
-					return fun.apply(this, arguments);
-				} catch (e) {
-					console.warn(`${e.name}: ${e.message} ${e.stack}`);
-				}
-			};
-		}
-
-		for (const item in model) {
-			if (typeof model[item] === 'function') {
-				model[item] = javaEntry(item, model[item]);
-			}
-		}
-		return model;
-	}(model);
-}
-
 
 function autoSizeText(elem, min, max, step, lastChange) {
 	min = min || 1;
@@ -733,45 +740,13 @@ function autoSizeText(elem, min, max, step, lastChange) {
 	}
 }
 
-function demo() {
-	const allDeps = {
-		":onlyIf": { deps: [] },
-		":sub:proj:throwTask": { state: 'failure', deps: [] },
-		preBuild: { state: 'skipped', deps: [ ":onlyIf", ":sub:proj:throwTask" ] },
-		preDebugBuild: { state: 'success', deps: [ "preBuild" ] },
-		checkDebugManifest: { state: 'uptodate', deps: [ "preDebugBuild" ] },
-		prepareDebugDependencies: { state: 'success', deps: [ /*"preDebugBuild",*/ "checkDebugManifest" ] },
-		compileDebugAidl: { deps: [ "prepareDebugDependencies" ] },
-		compileDebugRenderscript: { deps: [ "prepareDebugDependencies"/*, "checkDebugManifest"*/ ] },
-		generateDebugBuildConfig: { deps: [ "checkDebugManifest" ] },
-		generateDebugAssets: { deps: [] },
-		mergeDebugAssets: { deps: [ "prepareDebugDependencies", "generateDebugAssets" ] },
-		generateDebugResValues: { deps: [] },
-		generateDebugResources: { deps: [ "generateDebugResValues", "compileDebugRenderscript" ] },
-		mergeDebugResources: { deps: [ "generateDebugResources" ] },
-		processDebugManifest: { deps: [ "prepareDebugDependencies" ] },
-		processDebugResources: { deps: [ "mergeDebugAssets", "mergeDebugResources", "processDebugManifest" ] },
-		generateDebugSources: { deps: [ /*"compileDebugRenderscript",*/ "compileDebugAidl", "processDebugResources", "generateDebugBuildConfig" ] },
-		processDebugJavaRes: { deps: [] },
-		compileDebugJava: { state: 'nowork', deps: [ /*"prepareDebugDependencies",*/ "processDebugJavaRes", "generateDebugSources", "_debugCompile" ] },
-		compileDebugNdk: { type: 'excluded', deps: [ "preDebugBuild" ] },
-		compileDebugSources: { deps: [ "compileDebugJava", "compileDebugNdk" ] },
-		preDexDebug: { deps: [ "_debugApk" ] },
-		dexDebug: { deps: [ "compileDebugJava", "preDexDebug" ] },
-		validateDebugSigning: { deps: [] },
-		packageDebug: { deps: [ /*"compileDebugJava",*/ "validateDebugSigning", /*"processDebugJavaRes",*/ "dexDebug", /*"processDebugResources",*/ "compileDebugNdk" ] },
-		zipalignDebug: { deps: [ "packageDebug" ] },
-		assembleDebug: { type: 'requested', deps: [ "zipalignDebug", "compileDebugSources" ] },
-		assembleRelease: { type: 'requested', deps: [] },
-		":lib:assemble": { type: 'requested', deps: [ "assembleRelease", "assembleDebug" ] },
-		_debugApk: { type: 'unknown', deps: [] },
-		_debugCompile: { type: 'unknown', deps: [] },
-	};
-
-	model.init(allDeps);
+async function demo() {
+	const graph = await d3.json("demos/com.android.application v1.2.0 - gradlew build.json");
+	//const graph = await d3.json("demos/net.twisterrob.gradle - gradlew clean jar.json");
+	model.init(graph);
 	setTimeout(function demoDelayedEffects() {
-		model.update("generateDebugResValues", 'success');
-		model.update("generateDebugBuildConfig", 'executing');
+		model.update(Object.keys(graph)[0], 'success');
+		model.update(Object.keys(graph)[1], 'executing');
 	}, 1000);
 }
 

@@ -1,18 +1,22 @@
 package net.twisterrob.gradle.graph.vis.d3
 
+import net.twisterrob.gradle.graph.logger
+
+private val LOG = logger<GraphWindow>()
+
 /**
  * See [Background](http://stackoverflow.com/a/31100941/253468).
  * @see com.sun.webpane.sg.prism.FXGraphicsManager com.sun.webpane.platform.graphics.WCGPerfMeter
  */
-class GradleJULFixer : Thread(GradleJULFixer::class.java.simpleName) {
+class GradleJULFixer : Thread(GradleJULFixer::class.java.name) {
 
 	init {
-		log("creating")
+		LOG.trace("creating")
 		isDaemon = true
 	}
 
 	override fun start() {
-		log("starting")
+		LOG.trace("starting")
 		fix() // fix quickly
 		super.start()
 	}
@@ -28,14 +32,12 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.simpleName) {
 				Thread.sleep(@Suppress("MagicNumber") 50) // yield, but also listen for interrupts
 			}
 		} catch (ex: InterruptedException) {
-			log("interrupted")
+			LOG.trace("interrupted")
 			Thread.currentThread().interrupt()
 		}
 	}
 
 	companion object {
-
-		private const val DEBUG = false
 
 		@Suppress("SimplifyBooleanWithConstants")
 		val isFixed: Boolean
@@ -49,7 +51,7 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.simpleName) {
 
 		@JvmStatic
 		fun fix() {
-			log("fixing")
+			LOG.trace("fixing")
 			disable("com.sun.webpane.sg.prism.WCGraphicsPrismContext")
 			disable("com.sun.webpane.perf") // should disable all children as well
 			disable("com.sun.webpane") // should disable all children as well
@@ -61,13 +63,6 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.simpleName) {
 
 		private fun disable(name: String) {
 			java.util.logging.Logger.getLogger(name).level = java.util.logging.Level.OFF
-		}
-
-		private fun log(x: String) {
-			if (DEBUG) {
-				@Suppress("ForbiddenMethodCall") // TODO logging
-				println("--------------------------> $x")
-			}
 		}
 	}
 }

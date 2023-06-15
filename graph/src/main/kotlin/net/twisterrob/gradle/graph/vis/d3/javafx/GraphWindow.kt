@@ -14,9 +14,9 @@ class GraphWindow(
 		stage.title = "Gradle Build Graph"
 	}
 
-	override fun showUI(project: Settings) {
-		super.showUI(project)
-		stage.title = "${project.rootProject.name} - Gradle Build Graph"
+	override fun showUI(settings: Settings) {
+		super.showUI(settings)
+		stage.title = "${settings.rootProject.name} - Gradle Build Graph"
 		// Delay display so that bridge's runLater runs first.
 		Platform.runLater(stage::show)
 	}
