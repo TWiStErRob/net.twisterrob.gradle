@@ -2,10 +2,12 @@ package net.twisterrob.gradle.graph.vis.d3.swing
 
 import javafx.application.Platform
 import javafx.embed.swing.JFXPanel
+import net.twisterrob.gradle.graph.logger
 import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskResult
 import net.twisterrob.gradle.graph.vis.d3.GradleJULFixer
 import org.gradle.api.Task
+import org.gradle.api.initialization.Settings
 import org.gradle.cache.PersistentCache
 import java.awt.Color
 import java.awt.event.WindowAdapter
@@ -14,16 +16,18 @@ import javax.swing.JFrame
 import javax.swing.SwingUtilities
 import javax.swing.WindowConstants
 
+private val LOG = logger<D3SwingTaskVisualizer>()
+
 class D3SwingTaskVisualizer(
 	cache: PersistentCache
 ) : net.twisterrob.gradle.graph.vis.d3.GraphWindow() {
 
-	private val settings: Settings
+	private val options: Options
 	var window: JFrame? = null
 
 	//private final GradleJULFixer fixer = new GradleJULFixer();
 	init {
-		settings = Settings(cache)
+		options = Options(cache)
 		SwingUtilities.invokeLater {
 			/** @thread Swing Event Dispatch Thread */
 			window = createUI()
@@ -41,12 +45,12 @@ class D3SwingTaskVisualizer(
 			addWindowListener(object : WindowAdapter() {
 				/** @thread Swing Event Dispatch Thread */
 				override fun windowClosed(e: WindowEvent) {
-					settings.settings = Settings.WindowLocation(e.window)
-					settings.close()
+					options.options = Options.WindowLocation(e.window)
+					options.close()
 				}
 			})
 		}
-		val settings = settings.settings
+		val settings = options.options
 		settings.applyTo(window)
 		GradleJULFixer.fix()
 		val fxPanel = initFX(settings)
@@ -58,26 +62,25 @@ class D3SwingTaskVisualizer(
 		return window
 	}
 
-	private fun initFX(settings: Settings.WindowLocation): JFXPanel? {
+	private fun initFX(options: Options.WindowLocation): JFXPanel? {
 		try {
 			Platform.setImplicitExit(false)
 			val fxPanel = JFXPanel()
 			Platform.runLater {
 				/** @thread JavaFX Application Thread */
-				fxPanel.scene = createScene(settings.width.toDouble(), settings.height.toDouble())
+				fxPanel.scene = createScene(options.width.toDouble(), options.height.toDouble())
 			}
 			return fxPanel
 		} catch (@Suppress("TooGenericExceptionCaught") ex: RuntimeException) {
+			// TooGenericExceptionCaught: that's what JavaFX declares.
 			// TooGenericExceptionCaught: want to catch everything, because JavaFX problems should not crash Gradle.
 			if (ex.cause is UnsatisfiedLinkError) {
-				System.err.println( // TODO logging
-					"Sorry, JavaFX is clashing in Gradle daemon, "
-							+ "try again after a `gradle --stop` or add `--no-daemon`\n"
-							+ ex.cause.toString()
+				LOG.error(
+					"Sorry, JavaFX is clashing in Gradle daemon, try again after a `gradle --stop` or add `--no-daemon`",
+					ex
 				)
 			} else {
-				@Suppress("PrintStackTrace") // TODO logging
-				ex.printStackTrace()
+				LOG.error("launching, failed", ex)
 			}
 			return null
 		}
@@ -92,13 +95,13 @@ class D3SwingTaskVisualizer(
 		block(window)
 	}
 
-	override fun showUI(project: org.gradle.api.initialization.Settings) {
-		super.showUI(project)
+	override fun showUI(settings: Settings) {
+		super.showUI(settings)
 		//fixer.start()
 		SwingUtilities.invokeLater {
 			/** @thread Swing Event Dispatch Thread */
 			withValidWindow { window ->
-				window.title = "${project.rootProject.name} - Gradle Build Graph"
+				window.title = "${settings.rootProject.name} - Gradle Build Graph"
 				window.isVisible = true
 			}
 		}
@@ -119,7 +122,7 @@ class D3SwingTaskVisualizer(
 	override fun closeUI() {
 		super.closeUI()
 		//fixer.interrupt()
-		settings.close()
+		options.close()
 		SwingUtilities.invokeLater {
 			/** @thread Swing Event Dispatch Thread */
 			withValidWindow(JFrame::dispose)

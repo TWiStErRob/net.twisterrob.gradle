@@ -7,7 +7,7 @@ import org.gradle.api.initialization.Settings
 
 interface TaskVisualizer {
 
-	fun showUI(project: Settings)
+	fun showUI(settings: Settings)
 	fun initModel(graph: Map<Task, TaskData>)
 	fun update(task: Task, result: TaskResult)
 

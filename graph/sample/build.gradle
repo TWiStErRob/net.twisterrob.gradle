@@ -1,5 +1,5 @@
 if (!project.hasProperty('fast')) {
-	println("Adding an artificial random delay to every task!, use -Pfast to disable.")
+	logger.warn("Adding an artificial random delay to every task!, use -Pfast to disable.")
 	allprojects { p ->
 		p.afterEvaluate {
 			p.tasks.all { Task task ->

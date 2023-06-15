@@ -13,8 +13,13 @@ idea {
 				dir.resolve(".idea"),
 			)
 
-		val examples = listOf("local", "release", "snapshot")
-			.map { rootDir.resolve("docs/examples").resolve(it) }
+		val examples = listOf(
+			"docs/examples/local",
+			"docs/examples/release",
+			"docs/examples/snapshot",
+			"graph/sample",
+		)
+			.map(rootDir::resolve)
 			.flatMap(::excludedInProject)
 		val debuggers = rootDir
 			.resolve("docs/debug")

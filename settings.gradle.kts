@@ -7,6 +7,7 @@ rootProject.name = "net-twisterrob-gradle"
 
 pluginManagement {
 	includeBuild("gradle/plugins")
+	includeBuild("graph")
 }
 
 plugins {

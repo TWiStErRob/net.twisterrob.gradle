@@ -1,10 +1,12 @@
 package net.twisterrob.gradle.graph.vis.graphstream
 
+import net.twisterrob.gradle.graph.logger
 import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskResult
 import net.twisterrob.gradle.graph.tasks.TaskType
 import net.twisterrob.gradle.graph.vis.TaskVisualizer
 import org.gradle.api.Task
+import org.gradle.api.initialization.Settings
 import org.gradle.cache.PersistentCache
 import org.graphstream.graph.Edge
 import org.graphstream.graph.Graph
@@ -18,6 +20,8 @@ import java.io.IOException
 import java.util.EnumMap
 import javax.swing.SwingUtilities
 
+private val LOG = logger<GraphStreamTaskVisualizer>()
+
 class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
 	@Suppress("LateinitUsage") // TODO use some kind of factory to make invalid state non-representable.
@@ -26,11 +30,11 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 	@Suppress("LateinitUsage") // TODO use some kind of factory to make invalid state non-representable.
 	private lateinit var viewer: Viewer
 
-	private val settings: Settings = Settings(cache)
+	private val options: Options = Options(cache)
 
-	override fun showUI(project: org.gradle.api.initialization.Settings) {
+	override fun showUI(settings: Settings) {
 		System.setProperty("org.graphstream.ui", "swing") // 2.0
-		graph = MultiGraph(project.rootProject.name)
+		graph = MultiGraph(settings.rootProject.name)
 		try {
 			val css = this::class.java.getResourceAsStream("/graphstream.css").bufferedReader().readText()
 			graph.setAttribute("ui.stylesheet", css)
@@ -46,11 +50,11 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 		viewer.closeFramePolicy = Viewer.CloseFramePolicy.CLOSE_VIEWER
 		window.addWindowListener(object : WindowAdapter() {
 			override fun windowClosing(e: WindowEvent) {
-				settings.settings = Settings.WindowLocation(e.window)
-				settings.close()
+				options.options = Options.WindowLocation(e.window)
+				options.close()
 			}
 		})
-		settings.settings.applyTo(viewer)
+		options.options.applyTo(viewer)
 	}
 
 	override fun initModel(graph: Map<Task, TaskData>) {
@@ -78,8 +82,8 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 		val view = viewer.defaultView
 		if (view != null) {
 			SwingUtilities.invokeLater {
-				settings.settings = Settings.WindowLocation(SwingUtilities.getWindowAncestor(view as Component))
-				settings.close()
+				options.options = Options.WindowLocation(SwingUtilities.getWindowAncestor(view as Component))
+				options.close()
 				viewer.removeView(view.id)
 				viewer.close()
 			}
@@ -92,7 +96,7 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 			node.removeClass(value)
 		}
 		node.addClass(classMappingResult.getValue(result))
-		//println(task.name + ": " + node.classes)
+		LOG.trace("{}: {}", task.name, node.classes)
 	}
 
 	companion object {
@@ -105,6 +109,8 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 				this[TaskResult.NoWork] = "nowork"
 				this[TaskResult.Skipped] = "skipped"
 				this[TaskResult.UpToDate] = "uptodate"
+				this[TaskResult.NoSource] = "nosource"
+				this[TaskResult.FromCache] = "fromcache"
 				this[TaskResult.Failure] = "failure"
 				check(this.keys.size == TaskResult.values().size)
 			}

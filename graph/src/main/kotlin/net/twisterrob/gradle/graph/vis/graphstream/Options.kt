@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.graph.vis.graphstream
 
-import net.twisterrob.gradle.graph.vis.VisualizerSettings
+import net.twisterrob.gradle.graph.vis.VisualizerOptions
 import org.gradle.cache.PersistentCache
 import org.graphstream.ui.view.Viewer
 import java.awt.Component
@@ -8,11 +8,11 @@ import java.util.Properties
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
-internal class Settings(
+internal class Options(
 	cache: PersistentCache
-) : VisualizerSettings<Settings.WindowLocation>(cache) {
+) : VisualizerOptions<Options.WindowLocation>(cache) {
 
-	override fun readSettings(props: Properties): WindowLocation {
+	override fun readOptions(props: Properties): WindowLocation {
 		val default = createDefault()
 		return WindowLocation(
 			x = props.getProperty("x").toIntOr(default.x),
@@ -22,12 +22,12 @@ internal class Settings(
 		)
 	}
 
-	override fun writeSettings(settings: WindowLocation): Properties =
+	override fun writeOptions(options: WindowLocation): Properties =
 		Properties().apply {
-			this["x"] = settings.x.toString()
-			this["y"] = settings.y.toString()
-			this["width"] = settings.width.toString()
-			this["height"] = settings.height.toString()
+			this["x"] = options.x.toString()
+			this["y"] = options.y.toString()
+			this["width"] = options.width.toString()
+			this["height"] = options.height.toString()
 		}
 
 	override fun createDefault(): WindowLocation =

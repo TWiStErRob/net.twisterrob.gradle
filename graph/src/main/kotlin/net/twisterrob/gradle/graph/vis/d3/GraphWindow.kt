@@ -7,11 +7,12 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.paint.Color
 import javafx.scene.web.WebEngine
 import javafx.scene.web.WebView
+import net.twisterrob.gradle.graph.logger
 import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskResult
 import net.twisterrob.gradle.graph.tasks.TaskType
 import net.twisterrob.gradle.graph.vis.TaskVisualizer
-import net.twisterrob.gradle.graph.vis.d3.interop.JavaScriptBridge
+import net.twisterrob.gradle.graph.vis.d3.interop.JavaToJavaScriptModelBridge
 import net.twisterrob.gradle.graph.vis.d3.interop.TaskDataSerializer
 import net.twisterrob.gradle.graph.vis.d3.interop.TaskResultSerializer
 import net.twisterrob.gradle.graph.vis.d3.interop.TaskSerializer
@@ -25,12 +26,14 @@ import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import javax.annotation.OverridingMethodsMustInvokeSuper
 
+private val LOG = logger<GraphWindow>()
+
 // https://blogs.oracle.com/javafx/entry/communicating_between_javascript_and_javafx
 // http://docs.oracle.com/javafx/2/webview/jfxpub-webview.htm
 @Suppress("UnnecessaryAbstractClass") // Subclasses must override some methods.
 abstract class GraphWindow : TaskVisualizer {
 
-	private var bridge: JavaScriptBridge? = null
+	private var bridge: JavaToJavaScriptModelBridge? = null
 
 	protected open val isBrowserReady: Boolean
 		get() = bridge != null
@@ -56,21 +59,31 @@ abstract class GraphWindow : TaskVisualizer {
 			setBackgroundColor(getPage(webEngine))
 			webEngine.userStyleSheetLocation = buildCSSDataURI()
 		}
-		@Suppress("UNUSED_ANONYMOUS_PARAMETER")
+		if (LOG.isDebugEnabled) {
+			com.sun.javafx.webkit.WebConsoleListener
+				.setDefaultListener { _, message, lineNumber, sourceId ->
+					/** Enables clickable links from logs. */
+					fun String.relocate(): String =
+						this.replace(
+							"""jar:file:/.*?/graph-.*?\.jar!/""".toRegex(),
+							// TODO extract somehow
+							Regex.escapeReplacement("""P:\projects\workspace\net.twisterrob.gradle\graph\src\main\resources\""")
+						)
+					LOG.debug("console: ${message.relocate()} (${sourceId.relocate()}:${lineNumber})")
+				}
+		}
+		// Used in d3-graph.html.
+		(webEngine.executeScript("window") as JSObject).setMember("isJavaHosted", true)
 		webEngine.loadWorker.stateProperty().addListener { value, oldState, newState ->
-			//System.err.println(String.format("State changed: %s -> %s: %s\n", oldState, newState, value));
-			val ex = webEngine.loadWorker.exception
-			if (ex != null && newState == Worker.State.FAILED) {
-				ex.printStackTrace()
-			}
-			if (newState == Worker.State.SUCCEEDED) {
-				val jsWindow = webEngine.executeScript("window") as JSObject
-				val bridge = JavaScriptBridge(webEngine)
-				webEngine.executeScript("console.log = function() { java.log(arguments) };")
-				//webEngine.executeScript("console.debug = function() { java.log(arguments) };");
-				jsWindow.setMember("java", bridge)
-
-				this@GraphWindow.bridge = bridge
+			LOG.debug("WebView state changed: {} -> {}: {}", oldState, newState, value)
+			when (newState) {
+				null -> error("newState cannot be null")
+				Worker.State.READY -> error("It never becomes ready, it starts there.")
+				Worker.State.SCHEDULED -> { } // Normal operation
+				Worker.State.RUNNING -> { } // Normal operation
+				Worker.State.SUCCEEDED -> bridge = JavaToJavaScriptModelBridge(webEngine)
+				Worker.State.CANCELLED -> error("Web loading cancelled.")
+				Worker.State.FAILED -> LOG.error("Couldn't load page.", webEngine.loadWorker.exception)
 			}
 		}
 		try {
@@ -82,8 +95,7 @@ abstract class GraphWindow : TaskVisualizer {
 			// TODO is load and loadContent faster?
 			webEngine.load(d3Resource.toExternalForm())
 		} catch (ex: IOException) {
-			@Suppress("PrintStackTrace") // TODO logging
-			ex.printStackTrace()
+			LOG.error("Failed to load d3-graph.html from resources.", ex)
 		}
 		return webView
 	}
@@ -107,7 +119,7 @@ abstract class GraphWindow : TaskVisualizer {
 	}
 
 	@OverridingMethodsMustInvokeSuper
-	override fun showUI(project: Settings) {
+	override fun showUI(settings: Settings) {
 		if (isBrowserReady) {
 			initModel(emptyMap()) // Reset graph before displaying it again.
 		}
@@ -133,12 +145,10 @@ abstract class GraphWindow : TaskVisualizer {
 
 		private fun setBackgroundColor(page: Any?) {
 			if (page is com.sun.webkit.WebPage) {
-				@Suppress("ForbiddenMethodCall") // TODO logging
-				println("webpane.platform")
+				LOG.trace("webpane.platform")
 				page.setBackgroundColor(0x00000000)
 			} else {
-				@Suppress("ForbiddenMethodCall") // TODO logging
-				println("Unknown page: " + page?.javaClass)
+				LOG.warn("Unknown page: {}", page?.javaClass)
 			}
 		}
 
@@ -149,12 +159,10 @@ abstract class GraphWindow : TaskVisualizer {
 					.apply { isAccessible = true }
 					.get(webEngine)
 			} catch (ex: NoSuchFieldException) {
-				@Suppress("PrintStackTrace") // TODO logging
-				ex.printStackTrace()
+				LOG.error("Cannot find WebEngine.page", ex)
 				null
 			} catch (ex: IllegalAccessException) {
-				@Suppress("PrintStackTrace") // TODO logging
-				ex.printStackTrace()
+				LOG.error("Cannot read WebEngine.page", ex)
 				null
 			}
 	}

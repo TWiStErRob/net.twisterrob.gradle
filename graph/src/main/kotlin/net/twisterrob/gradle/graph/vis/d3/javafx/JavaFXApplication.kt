@@ -3,10 +3,14 @@ package net.twisterrob.gradle.graph.vis.d3.javafx
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.stage.Stage
+import net.twisterrob.gradle.graph.logger
 import net.twisterrob.gradle.graph.vis.d3.GradleJULFixer
+import org.gradle.api.initialization.Settings
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
+
+private val LOG = logger<JavaFXApplication>()
 
 @Suppress("UnsafeCallOnNullableType") // TODO rewrite this class without static/nullable/lateinit state.
 class JavaFXApplication : Application() {
@@ -18,20 +22,20 @@ class JavaFXApplication : Application() {
 
 	init {
 		app = this
-		log("ctor")
+		LOG.trace("ctor")
 	}
 
 	@Throws(Exception::class)
 	override fun init() {
-		log("init")
+		LOG.trace("init")
 		fixer.start()
 		super.init()
 	}
 
 	@Throws(Exception::class)
 	override fun start(stage: Stage) {
-		log("start")
-		settings!!.applyTo(stage)
+		LOG.trace("start")
+		options!!.applyTo(stage)
 		ui = GraphWindow(stage)
 		initialized!!.countDown()
 		//fixer.interrupt(); // from here on it doesn't really matter, because most of JavaFX is already up and running
@@ -39,7 +43,7 @@ class JavaFXApplication : Application() {
 
 	@Throws(Exception::class)
 	override fun stop() {
-		log("stop")
+		LOG.trace("stop")
 		super.stop()
 		fixer.interrupt()
 	}
@@ -82,62 +86,58 @@ class JavaFXApplication : Application() {
 
 	companion object {
 
-		private const val DEBUG: Boolean = false
-
 		@Suppress("LateinitUsage") // TODO convert to a proper object/singleton/etc.
 		@Volatile
 		private lateinit var app: JavaFXApplication
 
 		private var initialized: AbortableCountDownLatch? = null
 
-		private var settings: Settings.WindowLocation? = null
+		private var options: Options.WindowLocation? = null
 
-		internal fun startLaunch(settings: Settings.WindowLocation) {
-			log("startLaunch")
+		internal fun startLaunch(options: Options.WindowLocation) {
+			LOG.trace("startLaunch")
 			if (initialized == null) {
 				initialized = AbortableCountDownLatch(1)
-				JavaFXApplication.settings = settings
-				log("launching in background")
-				thread {
-					log("launching")
+				JavaFXApplication.options = options
+				LOG.trace("launching in background")
+				thread(name = "Launcher for ${JavaFXApplication::class.java.name}") {
+					LOG.trace("launching")
 					try {
 						Platform.setImplicitExit(false) // Keep JavaFX alive.
 						launch(JavaFXApplication::class.java)
 					} catch (@Suppress("TooGenericExceptionCaught") ex: RuntimeException) {
 						// TooGenericExceptionCaught: that's what JavaFX declares.
+						// TooGenericExceptionCaught: want to catch everything, because JavaFX problems should not crash Gradle.
 						if (ex.cause is UnsatisfiedLinkError) {
-							System.err.println( // TODO logging
-								"Sorry, JavaFX is clashing in Gradle daemon, "
-										+ "try again after a `gradle --stop` or add `--no-daemon`\n"
-										+ ex.cause.toString()
+							LOG.error(
+								"Sorry, JavaFX is clashing in Gradle daemon, try again after a `gradle --stop` or add `--no-daemon`",
+								ex
 							)
 						} else {
-							ex.printStackTrace()
+							LOG.error("launching, failed", ex)
 						}
 						initialized!!.abort()
 					}
 				}
 			} else {
-				log("already initialized, wait for show()")
+				LOG.trace("already initialized, wait for show()")
 			}
 		}
 
-		fun show(project: org.gradle.api.initialization.Settings): GraphWindow? {
+		fun show(settings: Settings): GraphWindow? {
 			try {
-				log("show, waiting")
+				LOG.trace("show, waiting")
 				initialized!!.await()
-				log("show, initialized")
+				LOG.trace("show, initialized")
 				Platform.runLater {
-					log("show, showUI")
-					app.ui!!.showUI(project)
+					LOG.trace("show, showUI")
+					app.ui!!.showUI(settings)
 				}
 				return app.ui
-			} catch (ignore: AbortableCountDownLatch.AbortedException) {
-				// TODO logging
-				//System.err.println("No JavaFX Application UI will be shown")
+			} catch (ex: AbortableCountDownLatch.AbortedException) {
+				LOG.warn("No JavaFX Application UI will be shown", ex)
 			} catch (ex: InterruptedException) {
-				@Suppress("PrintStackTrace") // TODO logging
-				ex.printStackTrace()
+				LOG.warn("show, interrupted", ex)
 				Thread.currentThread().interrupt()
 			}
 			return null
@@ -145,27 +145,18 @@ class JavaFXApplication : Application() {
 
 		fun hide() {
 			try {
-				log("hide, waiting")
+				LOG.trace("hide, waiting")
 				initialized!!.await()
-				log("hide, initialized")
+				LOG.trace("hide, initialized")
 				Platform.runLater {
-					log("hide, closeUI")
+					LOG.trace("hide, closeUI")
 					app.ui!!.closeUI()
 				}
-			} catch (ignore: AbortableCountDownLatch.AbortedException) {
-				// TODO logging
-				//System.err.println("JavaFX Application UI cannot be hidden")
+			} catch (ex: AbortableCountDownLatch.AbortedException) {
+				LOG.warn("JavaFX Application UI cannot be hidden", ex)
 			} catch (ex: InterruptedException) {
-				@Suppress("PrintStackTrace") // TODO logging
-				ex.printStackTrace()
+				LOG.warn("hide, interrupted", ex)
 				Thread.currentThread().interrupt()
-			}
-		}
-
-		fun log(message: String?) {
-			if (DEBUG) {
-				@Suppress("ForbiddenMethodCall") // TODO logging
-				println(message)
 			}
 		}
 	}

@@ -18,6 +18,8 @@ import org.gradle.cache.internal.filelock.LockOptionsBuilder.mode
 import org.gradle.cache.scopes.ScopedCacheBuilderFactory
 import javax.inject.Inject
 
+private val LOG = logger<GraphPlugin>()
+
 class GraphPlugin @Inject constructor(
 	private val cacheRepository: ScopedCacheBuilderFactory,
 ) : Plugin<Settings> {
@@ -26,11 +28,11 @@ class GraphPlugin @Inject constructor(
 	private lateinit var vis: TaskVisualizer
 
 	/** See [SO](http://stackoverflow.com/a/11237184/253468). */
-	override fun apply(project: Settings) {
-		val extension = project.extensions.create("graphSettings", GraphSettingsExtension::class.java)
+	override fun apply(settings: Settings) {
+		val extension = settings.extensions.create("graphSettings", GraphSettingsExtension::class.java)
 
-		val gatherer = TaskGatherer(project)
-		project.gradle.addBuildListener(object : BuildAdapter() {
+		val gatherer = TaskGatherer(settings)
+		settings.gradle.addBuildListener(object : BuildAdapter() {
 			override fun settingsEvaluated(settings: Settings) {
 				vis = createGraph(extension.visualizer)
 				vis.showUI(settings)
@@ -51,8 +53,8 @@ class GraphPlugin @Inject constructor(
 			}
 		}
 
-		@Suppress("DEPRECATION") // Configuration cache.
-		project.gradle.taskGraph.addTaskExecutionListener(object : org.gradle.api.execution.TaskExecutionListener {
+		@Suppress("DEPRECATION") // TODO Configuration cache.
+		settings.gradle.taskGraph.addTaskExecutionListener(object : org.gradle.api.execution.TaskExecutionListener {
 			override fun beforeExecute(task: Task) {
 				vis.update(task, TaskResult.Executing)
 			}
@@ -80,11 +82,18 @@ class GraphPlugin @Inject constructor(
 				state.failure != null ->
 					TaskResult.Failure
 
+				state.noSource ->
+					TaskResult.NoSource
+
+				// TaskExecutionOutcome.FROM_CACHE is also up-to-date, so this needs to be first.
+				state.skipped && state.skipMessage == "FROM-CACHE" ->
+					TaskResult.FromCache
+
+				state.upToDate ->
+					TaskResult.UpToDate
+
 				state.skipped && state.skipMessage == "SKIPPED" ->
 					TaskResult.Skipped
-
-				state.skipped && state.skipMessage == "UP-TO-DATE" ->
-					TaskResult.UpToDate
 
 				!state.didWork ->
 					TaskResult.NoWork
@@ -122,7 +131,7 @@ private fun hasJavaFX(): Boolean =
 	try {
 		javafx.application.Platform::class.java
 		true
-	} catch (ignore: NoClassDefFoundError) {
+	} catch (ex: NoClassDefFoundError) {
 		val dependency = """
 			No JavaFX Runtime found on buildscript classpath,
 			falling back to primitive GraphStream visualization.
@@ -131,7 +140,7 @@ private fun hasJavaFX(): Boolean =
 				visualizer = ${GraphStreamTaskVisualizer::class.java.name}
 			}
 		""".trimIndent()
-		System.err.println(dependency) // TODO logging
+		LOG.warn(dependency, ex)
 		false
 	}
 
