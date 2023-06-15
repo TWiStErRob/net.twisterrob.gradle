@@ -1,10 +1,20 @@
 package net.twisterrob.gradle.graph
 
+import net.twisterrob.gradle.logging.JavaPackageHierarchyBasedMap
+import net.twisterrob.gradle.logging.RedirectParser
+import net.twisterrob.gradle.logging.RedirectingLoggerFactory
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 internal inline fun <reified T> logger(): Logger =
-	LoggerFactory.getLogger(T::class.java)
+	createLogger(T::class.java)
 
 internal fun logger(obj: Any): Logger =
-	LoggerFactory.getLogger(obj::class.java)
+	createLogger(obj::class.java)
+
+private fun createLogger(clazz: Class<*>): Logger =
+	redirects.getLogger(clazz.name)
+
+private val redirects: RedirectingLoggerFactory by lazy {
+	val map = RedirectParser().parse(System.getProperties())
+	RedirectingLoggerFactory(JavaPackageHierarchyBasedMap(map)::pickFor)
+}
