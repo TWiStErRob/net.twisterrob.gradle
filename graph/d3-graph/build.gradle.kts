@@ -1,16 +1,9 @@
 plugins {
-	id("org.jetbrains.kotlin.js")
+	id("org.jetbrains.kotlin.multiplatform")
 }
 
 repositories {
 	mavenCentral()
-}
-
-dependencies {
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-js")
-	implementation(npm("d3", "7.8.4"))
-
-	testImplementation("org.jetbrains.kotlin:kotlin-test-js")
 }
 
 kotlin {
@@ -20,8 +13,21 @@ kotlin {
 		binaries.executable()
 		//generateTypeScriptDefinitions()
 	}
-	sourceSets.named("main") {
-		languageSettings.optIn("kotlin.js.ExperimentalJsExport")
+	@Suppress("UNUSED_VARIABLE")
+	sourceSets {
+		val jsMain by getting {
+			languageSettings.optIn("kotlin.js.ExperimentalJsExport")
+			dependencies {
+				implementation("org.jetbrains.kotlin:kotlin-stdlib-js")
+				implementation(npm("d3", "7.8.4"))
+			}
+		}
+		val jsTest by getting {
+			languageSettings.optIn("kotlin.js.ExperimentalJsExport")
+			dependencies {
+				implementation("org.jetbrains.kotlin:kotlin-test-js")
+			}
+		}
 	}
 }
 
@@ -32,16 +38,16 @@ val distributions: NamedDomainObjectProvider<Configuration> by configurations.re
 }
 
 artifacts {
-	add(distributions.name, tasks.named("browserDevelopmentExecutableDistribution"))
+	add(distributions.name, tasks.named("jsBrowserDevelopmentExecutableDistribution"))
 }
 //</editor-fold>
 
 // TODEL Workaround for https://youtrack.jetbrains.com/issue/KT-57203, fixed in 1.9.0-Beta.
-tasks.named("browserProductionWebpack").configure {
-	dependsOn("productionExecutableCompileSync")
-	dependsOn("developmentExecutableCompileSync")
+tasks.named("jsBrowserProductionWebpack").configure {
+	dependsOn("jsProductionExecutableCompileSync")
+	dependsOn("jsDevelopmentExecutableCompileSync")
 }
-tasks.named("browserDevelopmentWebpack").configure {
-	dependsOn("developmentExecutableCompileSync")
-	dependsOn("productionExecutableCompileSync")
+tasks.named("jsBrowserDevelopmentWebpack").configure {
+	dependsOn("jsDevelopmentExecutableCompileSync")
+	dependsOn("jsProductionExecutableCompileSync")
 }
