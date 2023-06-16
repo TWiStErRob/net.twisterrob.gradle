@@ -7,7 +7,6 @@ plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.8.22"
 	id("io.gitlab.arturbosch.detekt") version "1.23.0"
 	id("org.gradle.idea")
-	id("net.twisterrob.gradle.build.webjars")
 	id("org.jetbrains.kotlinx.kover") version "0.7.1"
 }
 
@@ -37,11 +36,6 @@ dependencies {
 //	implementation("org.graphstream:gs-ui-swing:2.0")
 	implementation("com.google.code.gson:gson:2.10.1")
 	implementation("org.jetbrains:annotations:24.0.1")
-
-	"webjars"("org.webjars.npm:d3:7.8.4") {
-		// Avoid pulling in all small modules, using the merged .js file instead.
-		isTransitive = false
-	}
 
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
 	testImplementation("org.junit.platform:junit-platform-launcher:1.9.3")
@@ -127,3 +121,38 @@ detekt {
 	basePath = rootProject.projectDir.absolutePath
 	parallel = true
 }
+
+plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin> {
+	configure<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension> {
+		// Relocate default folder to prevent polluting root folder.
+		lockFileDirectory = project.layout.projectDirectory.dir("gradle/kotlin-js-store").asFile
+		// Don't ask me to run another task, just do it!
+		// > Execution failed for task ':kotlinStoreYarnLock'.
+		// > > yarn.lock was changed. Run the `kotlinUpgradeYarnLock` task to actualize yarn.lock file
+		yarnLockMismatchReport = org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING
+		// Disable silly output:
+		// > > Task :kotlinNpmInstall
+		// > warning Ignored scripts due to flag.
+		ignoreScripts = false
+	}
+}
+
+//<editor-fold desc="Use generated javascript from :d3-graph">
+val javascript: Configuration by configurations.creating {
+	isCanBeConsumed = false
+	isCanBeResolved = true
+}
+
+dependencies {
+	javascript(project(":d3-graph")) {
+		targetConfiguration = "distributions"
+	}
+}
+
+val copyOutputFromProject: TaskProvider<Sync> by tasks.registering(Sync::class) {
+	from(javascript)
+	into("src/main/resources-generated/")
+}
+
+sourceSets.main.configure { resources.srcDir(copyOutputFromProject) }
+//</editor-fold>
