@@ -94,6 +94,14 @@ tasks.test.configure {
 	useJUnitPlatform()
 }
 
+koverReport {
+	defaults {
+		verify {
+			onCheck = false
+		}
+	}
+}
+
 idea {
 	module {
 		fun excludedInProject(dir: File): List<File> =
