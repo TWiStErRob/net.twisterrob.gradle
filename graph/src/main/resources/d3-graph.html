@@ -5,7 +5,7 @@
 	<title>Gradle Task Graph</title>
 	<link rel="stylesheet" href="d3-graph.css" />
 	<!-- src==xlink:href in svg-->
-	<script src="d3.js" charset="utf-8"></script>
+	<script src="d3-graph.js"></script>
 	<script src="d3-graph.phys.js"></script>
 </head>
 <body>
@@ -58,6 +58,7 @@
 		<button id="menu-thaw">Thaw</button>
 		<button id="menu-fit">Fit</button>
 	</div>
+	<script>d3 = window["d3-graph"].d3 || (() => { throw "Missing d3" })();</script>
 	<script src="d3-graph.legacy.js"></script>
 </body>
 </html>
