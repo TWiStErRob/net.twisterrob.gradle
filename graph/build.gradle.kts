@@ -75,6 +75,10 @@ tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions.allWarningsAsErrors.set(true)
 }
 
+webjars {
+	extractIntoFirstJavaResourcesFolder()
+}
+
 tasks.named<Jar>("jar") {
 	manifest {
 		attributes(
