@@ -8,7 +8,7 @@
 	<script src="d3.js" charset="utf-8"></script>
 	<script src="d3-graph.phys.js"></script>
 </head>
-<body onload="main()">
+<body>
 	<svg xmlns="http://www.w3.org/2000/svg" pointer-events="all">
 		<defs>
 			<radialGradient id="background-gradient" cx="70%" cy="100%" r="90%" fy="60%">
@@ -54,9 +54,9 @@
 		<ul id="detail-dependents"></ul>
 	</div>
 	<div id="menu">
-		<button onclick="force.stop()">Freeze</button>
-		<button onclick="force.restart()">Thaw</button>
-		<button onclick="force.stop(); zoomFit(0.95, 500)">Fit</button>
+		<button id="menu-freeze">Freeze</button>
+		<button id="menu-thaw">Thaw</button>
+		<button id="menu-fit">Fit</button>
 	</div>
 	<script src="d3-graph.js"></script>
 </body>

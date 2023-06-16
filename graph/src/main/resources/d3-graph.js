@@ -1,5 +1,19 @@
 'use strict';
 
+d3.select(document).on("DOMContentLoaded", function(event) {
+    main();
+});
+d3.select("#menu-freeze").on('click', function menuFreeze_onClick(event) {
+    force.stop();
+});
+d3.select("#menu-thaw").on('click', function menuThaw_onClick(event) {
+    force.restart();
+});
+d3.select("#menu-fit").on('click', function menuFit_onClick(event) {
+    force.stop();
+    zoomFit(0.95, 500);
+});
+
 function main() {
     // needs extra dispatch because LoadWorker.SUCCEEDED is after window.onload
     setTimeout(function startUp() {
