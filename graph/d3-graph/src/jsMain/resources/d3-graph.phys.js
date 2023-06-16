@@ -14,24 +14,18 @@
  * @property {number} height - the vertical extent of the rectangle, starting from {@link Rect.y}
  */
 
-const phys = function () {
-return {
-	pointOnRect,
-	forceCollideRect,
-};
-
 /**
  * @param {Rect} rect
  * @param {Point} point
  * @returns {Point}
  */
-function pointOnRect(rect, point) {
+export function pointOnRect(rect, point) {
 	const w = rect.width / 2;
 	const h = rect.height / 2;
 	return pointOnRectImpl(point.x, point.y, rect.x - w, rect.y - h, rect.x + w, rect.y + h, false);
 }
 
-function forceCollideRect() {
+export function forceCollideRect() {
 	let nodes;
 
 	function force(alpha) {
@@ -188,5 +182,3 @@ function pointOnRectImpl(x, y, minX, minY, maxX, maxY, check) {
 	throw `Cannot find intersection for ${x}, ${y} inside rectangle ${minY}, ${minY} - ${maxX}, ${maxY}.`;
 	// TODO test and fix: Cannot find intersection for 1.6132698912796644e+258, 4.87568661162857e+258 inside rectangle 4.87568661162857e+258, 4.87568661162857e+258 - 1.6132698912796644e+258, 4.87568661162857e+258.
 }
-
-}();
