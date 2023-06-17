@@ -1,7 +1,4 @@
-//import * as d3 from './d3.js'; // This doesn't work in Chrome, it still exports as window.d3.
-// noinspection ES6UnusedImports
-import * as D3 from './d3.js';
-import * as phys from './d3-graph.phys.js';
+'use strict';
 
 d3.select(document).on("DOMContentLoaded", function(event) {
     main();

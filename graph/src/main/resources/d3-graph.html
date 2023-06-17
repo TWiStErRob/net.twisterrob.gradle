@@ -4,9 +4,11 @@
 	<meta charset="utf-8" />
 	<title>Gradle Task Graph</title>
 	<link rel="stylesheet" href="d3-graph.css" />
+	<!-- src==xlink:href in svg-->
+	<script src="d3.js" charset="utf-8"></script>
+	<script src="d3-graph.phys.js"></script>
 </head>
 <body>
-	<!-- src==xlink:href in svg-->
 	<svg xmlns="http://www.w3.org/2000/svg" pointer-events="all">
 		<defs>
 			<radialGradient id="background-gradient" cx="70%" cy="100%" r="90%" fy="60%">
@@ -56,6 +58,6 @@
 		<button id="menu-thaw">Thaw</button>
 		<button id="menu-fit">Fit</button>
 	</div>
-	<script type="module" src="d3-graph.js"></script>
+	<script src="d3-graph.js"></script>
 </body>
 </html>
