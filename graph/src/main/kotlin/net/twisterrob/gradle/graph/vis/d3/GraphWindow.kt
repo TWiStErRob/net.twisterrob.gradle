@@ -61,7 +61,7 @@ abstract class GraphWindow : TaskVisualizer {
 		}
 		if (LOG.isDebugEnabled) {
 			com.sun.javafx.webkit.WebConsoleListener
-				.setDefaultListener { _, message, lineNumber, sourceId ->
+				.setDefaultListener { _, message, lineNumber, sourceId: String? ->
 					/** Enables clickable links from logs. */
 					fun String.relocate(): String =
 						this.replace(
@@ -69,7 +69,7 @@ abstract class GraphWindow : TaskVisualizer {
 							// TODO extract somehow
 							Regex.escapeReplacement("""P:\projects\workspace\net.twisterrob.gradle\graph\src\main\resources\""")
 						)
-					LOG.debug("console: ${message.relocate()} (${sourceId.relocate()}:${lineNumber})")
+					LOG.debug("console: ${message.relocate()} (${sourceId?.relocate()}:${lineNumber})")
 				}
 		}
 		// Used in d3-graph.html.
