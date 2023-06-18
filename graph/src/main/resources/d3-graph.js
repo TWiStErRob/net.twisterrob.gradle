@@ -217,8 +217,8 @@ const details = function Details() {
 	};
 }();
 
-/** @type {Object.<string, VisualTask>} */
 // noinspection ES6ConvertVarToLetConst
+/** @type {Object.<string, VisualTask>} */
 var graph = {}; // window.graph is referenced as such.
 /** @type {VisualTask[]} */
 const nodes = force.nodes();
