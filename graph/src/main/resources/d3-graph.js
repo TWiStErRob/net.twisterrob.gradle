@@ -62,9 +62,11 @@ svg.select('#background')
 		}
 		event.preventDefault();
 		const point = d3.pointer(event, node_group.node());
-		model.add({
+		model.__add({
 			label: `____${demoIdCounter++}____`,
 			type: 'unknown',
+			deps: [],
+			depsInverse: [],
 			x: point[0],
 			y: point[1],
 		});
@@ -424,7 +426,7 @@ function buildLegend(legendData) {
 
 /**
  * @param {VisualTask} d
- * @return {string}
+ * @returns {string}
  */
 function nodeClasses(d) {
 	return 'node'
@@ -497,55 +499,101 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 
 let model = function Model() {
 
+	/** @typedef {string} LogicalTaskId */
+	/** @typedef {string} VisualTaskId */
+	/** @typedef {string} VisualDepId */
+
 	/**
-	 * @param {LogicalTaskId} id
-	 * @param {TaskData} data
-	 * @returns {VisualTask}
+	 * @typedef {Object} TaskData
+	 * Represents what's passed in through interop, see net.twisterrob.gradle.graph.vis.d3.interop.TaskDataSerializer.
+	 * @property {LogicalTaskId} label
+	 * @property {string} [type]
+	 * @property {string} [state]
+	 * @property {LogicalTaskId[]} [deps]
+	 * @property {LogicalTaskId[]} [depsInverse] Added by this code, not passed in.
 	 */
-	function nodify(id, data) {
-		data.deps = data.deps || [];
-		data.depsInverse = [];
-		return {
-			id: id,
-			links: [],
-			data: data,
-			svgGroup: null,
-			svgText: null,
-			svgBg: null,
-			project() {
-				const label = this.data.label;
-				return label.replace(/^:?(.+):.+$|.*/, '$1');
-			},
-			taskName() {
-				const label = this.data.label;
-				return label.replace(/^:?(.*):/, '');
-			},
-			label() {
-				const label = this.taskName();
-				if (label.length <= 25) {
-					return label;
-				}
-				const parts = label.split(/(.[a-z]+)/).filter(g => g)
-				if (parts.length <= 2) {
-					return label.substring(0, 12) + '…' + label.substring(label.length - 12);
-				}
-				return parts[0] + '…' + parts[parts.length - 1];
-			},
-			nodeId() {
-				return constructNodeId(this.data.label);
-			},
-			x2() {
-				return this.x + this.width;
-			},
-			y2() {
-				return this.y + this.height;
-			},
-			toString() {
-				return `${this.id} @ ${this.x},${this.y} ${this.width}x${this.height}`;
-			},
-		};
+
+	/**
+	 * @class
+	 */
+	class VisualTask {
+		/**
+		 * @param {LogicalTaskId} id
+		 * @param {TaskData} data
+		 */
+		constructor(id, data) {
+			/** @type {LogicalTaskId} */
+			this.id = id;
+			/** @type {VisualDep[]} */
+			this.links = [];
+			/** @type {TaskData} */
+			this.data = data;
+			/** @type {SVGGElement} */
+			this.svgGroup = null;
+			/** @type {SVGTextElement} */
+			this.svgText = null;
+			/** @type {SVGRectElement} */
+			this.svgBg = null;
+			/** @type {number} calculated, used by force */
+			this.x = undefined;
+			/** @type {number} calculated, used by force */
+			this.y = undefined;
+			/** @type {number} calculated, used by dijkstra */
+			this.width = undefined;
+			/** @type {number} calculated, used by dijkstra */
+			this.height = undefined;
+			/** @type {number} added and used by force */
+			this.vx = undefined;
+			/** @type {number} added and used by force */
+			this.vy = undefined;
+			/** @type {number} added by drag */
+			this.fx = undefined;
+			/** @type {number} added by drag */
+			this.fy = undefined;
+		}
+
+		project() {
+			const label = this.data.label;
+			return label.replace(/^:?(.+):.+$|.*/, '$1');
+		}
+
+		taskName() {
+			const label = this.data.label;
+			return label.replace(/^:?(.*):/, '');
+		}
+
+		label() {
+			const label = this.taskName();
+			if (label.length <= 25) {
+				return label;
+			}
+			const parts = label.split(/(.[a-z]+)/).filter(g => g)
+			if (parts.length <= 2) {
+				return label.substring(0, 12) + '…' + label.substring(label.length - 12);
+			}
+			return parts[0] + '…' + parts[parts.length - 1];
+		}
+
+		/**
+		 * @returns {VisualTaskId}
+		 */
+		nodeId() {
+			return constructNodeId(this.data.label);
+		}
+		x2() {
+			return this.x + this.width;
+		}
+		y2() {
+			return this.y + this.height;
+		}
+		toString() {
+			return `${this.id} @ ${this.x},${this.y} ${this.width}x${this.height}`;
+		}
 	}
 
+	/**
+	 * @class
+	 */
 	class VisualDep {
 		/**
 		 * @param {VisualTask} fromNode
@@ -593,7 +641,8 @@ let model = function Model() {
 				if (filter(data)) {
 					continue;
 				}
-				const node = nodify(nodeKey, data);
+				data.depsInverse = [];
+				const node = new VisualTask(nodeKey, data);
 				visualGraph[nodeKey] = node;
 				nodes.push(node);
 			}
@@ -625,6 +674,7 @@ let model = function Model() {
 			// setTimeout is required to allow the browser to render the nodes.
 			setTimeout(() => zoomFit(0.95, 0), 0);
 		},
+
 		/**
 		 * @param {LogicalTaskId} task
 		 * @param {string} result
@@ -641,18 +691,19 @@ let model = function Model() {
 			node.attr("class", nodeClasses(data));
 			details.refreshDisplay();
 		},
+
 		/**
 		 * @param {TaskData} data
 		 */
-		add(data) {
-			nodes.push(nodify(data.label, data));
+		__add(data) {
+			nodes.push(new VisualTask(data.label, data));
 			rebuild();
 		},
 	};
 
 	/**
 	 * @param {LogicalTaskId} name
-	 * @return {string}
+	 * @returns {string}
 	 */
 	function cleanName(name) {
 		// Normally this would clean `:foo:bar` to `-foo-bar`, but generalized to be safe.
@@ -661,7 +712,7 @@ let model = function Model() {
 
 	/**
 	 * @param {LogicalTaskId} name
-	 * @return {VisualTaskId}
+	 * @returns {VisualTaskId}
 	 */
 	function constructNodeId(name) {
 		return `node_${cleanName(name)}`;
@@ -670,46 +721,11 @@ let model = function Model() {
 	/**
 	 * @param {LogicalTaskId} from
 	 * @param {LogicalTaskId} to
-	 * @return {VisualDepId}
+	 * @returns {VisualDepId}
 	 */
 	function constructLinkId(from, to) {
 		return `link_${cleanName(from)}_${cleanName(to)}`;
 	}
-
-	/** @typedef {string} LogicalTaskId */
-	/** @typedef {string} VisualTaskId */
-	/** @typedef {string} VisualDepId */
-
-	/**
-	 * @typedef {Object} TaskData
-	 * Represents what's passed in through interop, seenet.twisterrob.gradle.graph.vis.d3.interop.TaskDataSerializer.
-	 * @property {LogicalTaskId} label
-	 * @property {string} [type]
-	 * @property {string} [state]
-	 * @property {LogicalTaskId[]} [deps]
-	 * @property {LogicalTaskId[]} [depsInverse] Added by this code, not passed in.
-	 */
-
-	/**
-	 * @typedef {Object} VisualTask
-	 * @property {LogicalTaskId} id
-	 * @property {VisualDep[]} links
-	 * @property {TaskData} data
-	 * @property {SVGGElement} svgGroup
-	 * @property {SVGTextElement} svgText
-	 * @property {SVGRectElement} svgBg
-	 * @property {function(): string} project
-	 * @property {function(): string} taskName
-	 * @property {function(): string} label
-	 * @property {function(): VisualTaskId} nodeId
-	 * @property {number} x added by force
-	 * @property {number} y added by force
-	 * @property {number} width
-	 * @property {number} height
-	 * @property {function(): number} x2
-	 * @property {function(): number} y2
-	 * @property {function(): string} toString
-	 */
 }();
 
 /**

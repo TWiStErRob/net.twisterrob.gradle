@@ -141,7 +141,7 @@ function angle(start, end) {
  * @param {number} maxX the "right" side of the rectangle
  * @param {number} maxY the "bottom" side of the rectangle
  * @param {boolean} check whether to treat point inside the rect as error
- * @return {Point} an object with x and y members for the intersection
+ * @returns {Point} an object with x and y members for the intersection
  * @throws if check == true and (x,y) is inside the rectangle
  * @author TWiStErRob
  * @see <a href="http://stackoverflow.com/a/18292964/253468">based on</a>
