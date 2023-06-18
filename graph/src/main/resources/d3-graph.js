@@ -496,6 +496,56 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 }
 
 let model = function Model() {
+
+	/**
+	 * @param {LogicalTaskId} id
+	 * @param {TaskData} data
+	 * @returns {VisualTask}
+	 */
+	function nodify(id, data) {
+		data.deps = data.deps || [];
+		data.depsInverse = [];
+		return {
+			id: id,
+			links: [],
+			data: data,
+			svgGroup: null,
+			svgText: null,
+			svgBg: null,
+			project() {
+				const label = this.data.label;
+				return label.replace(/^:?(.+):.+$|.*/, '$1');
+			},
+			taskName() {
+				const label = this.data.label;
+				return label.replace(/^:?(.*):/, '');
+			},
+			label() {
+				const label = this.taskName();
+				if (label.length <= 25) {
+					return label;
+				}
+				const parts = label.split(/(.[a-z]+)/).filter(g => g)
+				if (parts.length <= 2) {
+					return label.substring(0, 12) + '…' + label.substring(label.length - 12);
+				}
+				return parts[0] + '…' + parts[parts.length - 1];
+			},
+			nodeId() {
+				return constructNodeId(this.data.label);
+			},
+			x2() {
+				return this.x + this.width;
+			},
+			y2() {
+				return this.y + this.height;
+			},
+			toString() {
+				return `${this.id} @ ${this.x},${this.y} ${this.width}x${this.height}`;
+			},
+		};
+	}
+
 	class VisualDep {
 		/**
 		 * @param {VisualTask} fromNode
@@ -660,55 +710,6 @@ let model = function Model() {
 	 * @property {function(): number} y2
 	 * @property {function(): string} toString
 	 */
-
-	/**
-	 * @param {LogicalTaskId} id
-	 * @param {TaskData} data
-	 * @returns {VisualTask}
-	 */
-	function nodify(id, data) {
-		data.deps = data.deps || [];
-		data.depsInverse = [];
-		return {
-			id: id,
-			links: [],
-			data: data,
-			svgGroup: null,
-			svgText: null,
-			svgBg: null,
-			project() {
-				const label = this.data.label;
-				return label.replace(/^:?(.+):.+$|.*/, '$1');
-			},
-			taskName() {
-				const label = this.data.label;
-				return label.replace(/^:?(.*):/, '');
-			},
-			label() {
-				const label = this.taskName();
-				if (label.length <= 25) {
-					return label;
-				}
-				const parts = label.split(/(.[a-z]+)/).filter(g => g)
-				if (parts.length <= 2) {
-					return label.substring(0, 12) + '…' + label.substring(label.length - 12);
-				}
-				return parts[0] + '…' + parts[parts.length - 1];
-			},
-			nodeId() {
-				return constructNodeId(this.data.label);
-			},
-			x2() {
-				return this.x + this.width;
-			},
-			y2() {
-				return this.y + this.height;
-			},
-			toString() {
-				return `${this.id} @ ${this.x},${this.y} ${this.width}x${this.height}`;
-			},
-		};
-	}
 }();
 
 /**
