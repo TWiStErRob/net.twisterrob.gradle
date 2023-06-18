@@ -75,6 +75,10 @@ tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions.allWarningsAsErrors.set(true)
 }
 
+webjars {
+	extractIntoFirstJavaResourcesFolder()
+}
+
 tasks.named<Jar>("jar") {
 	manifest {
 		attributes(
@@ -88,6 +92,14 @@ tasks.named<Jar>("jar") {
 
 tasks.test.configure {
 	useJUnitPlatform()
+}
+
+koverReport {
+	defaults {
+		verify {
+			onCheck = false
+		}
+	}
 }
 
 idea {
