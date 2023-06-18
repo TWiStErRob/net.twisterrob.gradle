@@ -222,18 +222,18 @@ const details = function Details() {
 var graph = {}; // window.graph is referenced as such.
 /** @type {VisualTask[]} */
 const nodes = force.nodes();
-/** @type {VisualDependency[]} */
+/** @type {VisualDep[]} */
 const links = force.force('forceLink').links();
 
 function rebuild() {
 	const uiLinks = link_group
 		.selectAll('.link')
-		.data(links, d => d.linkId())
+		.data(links, /** @param {VisualDep} d */ d => d.linkId())
 		.join(
 			enter => enter
 				.append('line')
-				.each(function storeUiLink(d) { d.ui.edge = this; })
-				.attr('id', d => d.linkId())
+				.each(/** @param {VisualDep} d */ function storeUiLink(d) { d.ui.edge = this; })
+				.attr('id', /** @param {VisualDep} d */ d => d.linkId())
 				.attr('class', 'link')
 				.style('marker-start', 'url(#arrow-in)')
 				//.style('marker-end', 'url(#arrow-out)')
@@ -285,10 +285,10 @@ function rebuild() {
 		//const q = d3.geom.quadtree(nodes);
 		//node.each(function(n) { q.visit(phys.collide(n)) });
 		uiLinks
-			.attr('x1', d => phys.pointOnRect(d.source, d.target).x)
-			.attr('y1', d => phys.pointOnRect(d.source, d.target).y)
-			.attr('x2', d => phys.pointOnRect(d.target, d.source).x)
-			.attr('y2', d => phys.pointOnRect(d.target, d.source).y)
+			.attr('x1', /** @param {VisualDep} d */ d => phys.pointOnRect(d.source, d.target).x)
+			.attr('y1', /** @param {VisualDep} d */ d => phys.pointOnRect(d.source, d.target).y)
+			.attr('x2', /** @param {VisualDep} d */ d => phys.pointOnRect(d.target, d.source).x)
+			.attr('y2', /** @param {VisualDep} d */ d => phys.pointOnRect(d.target, d.source).y)
 		;
 
 		uiNodes
@@ -495,6 +495,37 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 }
 
 let model = function Model() {
+	class VisualDep {
+		/**
+		 * @param {VisualTask} fromNode
+		 * @param {VisualTask} toNode
+		 */
+		constructor(fromNode, toNode) {
+			/** @type {VisualTask} */
+			this.source = fromNode;
+			/** @type {VisualTask} */
+			this.target = toNode;
+			/** @type {number} */
+			this.weight = 1;
+			/** @type {Object} */
+			this.ui = {
+				/** @type {SVGElement} */
+				edge: null,
+			};
+		}
+
+		/**
+		 * @returns {VisualDepId}
+		 */
+		linkId() {
+			return constructLinkId(this.source.id, this.target.id);
+		}
+
+		toString() {
+			return `${this.source} -> ${this.target}`;
+		}
+	}
+
 	return {
 		/**
 		 * @param {string|Object.<string, LogicalTask>} rawGraph
@@ -536,7 +567,7 @@ let model = function Model() {
 						continue;
 					}
 					toNode.depsInverse.push(fromNode.id);
-					const link = createLink(fromNode, toNode);
+					const link = new VisualDep(fromNode, toNode);
 					links.push(link);
 					fromNode.links.push(link);
 				}
@@ -594,7 +625,7 @@ let model = function Model() {
 	/**
 	 * @param {LogicalTaskId} from
 	 * @param {LogicalTaskId} to
-	 * @return {VisualDependencyId}
+	 * @return {VisualDepId}
 	 */
 	function constructLinkId(from, to) {
 		return `link_${cleanName(from)}_${cleanName(to)}`;
@@ -602,7 +633,7 @@ let model = function Model() {
 
 	/** @typedef {string} LogicalTaskId */
 	/** @typedef {string} VisualTaskId */
-	/** @typedef {string} VisualDependencyId */
+	/** @typedef {string} VisualDepId */
 
 	/**
 	 * @typedef {Object} LogicalTask
@@ -621,7 +652,7 @@ let model = function Model() {
 	 * @property {string} state from LogicalTask
 	 * @property {LogicalTaskId[]} deps
 	 * @property {LogicalTaskId[]} depsInverse
-	 * @property {VisualDependency[]} links
+	 * @property {VisualDep[]} links
 	 * @property {Object} ui
 	 * @property {LogicalTask} ui.data
 	 * @property {SVGGElement} ui.node
@@ -706,39 +737,6 @@ let model = function Model() {
 			}
 		}
 		return node; // == $.merge(node, defaults, viewModel);
-	}
-
-	/**
-	 * @typedef {Object} VisualDependency
-	 * @property {VisualTask} source
-	 * @property {VisualTask} target
-	 * @property {number} weight
-	 * @property {Object} ui
-	 * @property {SVGElement} ui.edge
-	 * @property {function(): string} linkId
-	 * @property {function(): string} toString
-	 */
-
-	/**
-	 * @param {VisualTask} fromNode
-	 * @param {VisualTask} toNode
-	 * @returns {VisualDependency}
-	 */
-	function createLink(fromNode, toNode) {
-		return {
-			source: fromNode,
-			target: toNode,
-			weight: 1,
-			ui: {
-				edge: null,
-			},
-			linkId() {
-				return constructLinkId(this.source.id, this.target.id);
-			},
-			toString() {
-				return `${this.source} -> ${this.target}`;
-			},
-		};
 	}
 }();
 
