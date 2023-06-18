@@ -123,12 +123,17 @@ const details = function Details() {
     nameUI.on('click', function nameUIClick() {
         det.classed('collapsed', !det.classed('collapsed'));
     });
+    /** @type {VisualTask|null} */
     let currentNode = null;
     let currentNodeIsLocked = false;
     let currentNodeIsActive = false;
 
 
-    function bindDeps(/* d3.selection<ul> */ ui, /* Array<String> */ deps) {
+    /**
+     * @param ui `d3.selection<ul>`, but don't know how to express it in JSDoc.
+     * @param {LogicalTaskId[]} deps
+     */
+    function bindDeps(ui, deps) {
         ui
             .selectAll('li')
             .data(deps, d => d)
@@ -146,6 +151,9 @@ const details = function Details() {
         ;
     }
 
+    /**
+     * @param {VisualTask|null} d
+     */
     function display(d) {
         if (currentNode && !d && stateUI.text() === 'executing') {
             display(currentNode);
@@ -209,9 +217,12 @@ const details = function Details() {
     };
 }();
 
+/** @type {Object.<string, VisualTask>} */
 // noinspection ES6ConvertVarToLetConst
 var graph = {}; // window.graph is referenced as such.
+/** @type {VisualTask[]} */
 const nodes = force.nodes();
+/** @type {VisualDependency[]} */
 const links = force.force('forceLink').links();
 
 function rebuild() {
@@ -302,18 +313,18 @@ function selectNode(d) { // TODO use #task-id for back navigation support
 }
 
 /**
- * @param paddingPercent 0.0 to 1.0, recommended close to 1.0
- * @param transitionDuration milliseconds, positive, can be 0
+ * @param {number} paddingPercent 0.0 to 1.0, recommended close to 1.0
+ * @param {number} transitionDuration milliseconds, positive, can be 0
  */
 function zoomFit(paddingPercent, transitionDuration) {
     const bounds = root.node().getBBox();
     const parent = root.node().parentElement;
     const fullWidth  = parent.clientWidth,
-        fullHeight = parent.clientHeight;
+          fullHeight = parent.clientHeight;
     const width  = bounds.width,
-        height = bounds.height;
+          height = bounds.height;
     const midX = bounds.x + width / 2,
-        midY = bounds.y + height / 2;
+          midY = bounds.y + height / 2;
     if (width === 0 || height === 0) {
         return; // Nothing to fit.
     }
@@ -410,6 +421,10 @@ function buildLegend(legendData) {
     legend.style('visibility', 'visible');
 }
 
+/**
+ * @param {VisualTask} d
+ * @return {string}
+ */
 function nodeClasses(d) {
     return 'node'
         + (d.type? ' ' + d.type : '')
@@ -472,7 +487,7 @@ d3.selection.prototype.joinNodes = function joinNodes() {
         )
         // Recalculate the visual state on new and existing nodes, as the state might've changed.
         .attr('class', nodeClasses)
-        .each(function resizeUiNode(d) {
+        .each(/** @param {VisualTask} d */ function resizeUiNode(d) {
             const box = d.ui.node.getBBox();
             d.width = box.width;
             d.height = box.height;
@@ -482,12 +497,22 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 
 let model = function Model() {
     return {
-        init(graph) {
+        /**
+         * @param {string|Object.<string, LogicalTask>} rawGraph
+         */
+        init(rawGraph) {
+            /**
+             * @param {LogicalTask} d
+             * @return {boolean}
+             */
             function filter(d) { return d.type === 'unknown'; }
 
-            if (typeof graph === 'string') {
-                graph = JSON.parse(graph);
-            }
+            /**
+             * @type {Object.<string, VisualTask>} TODO not actually the right type yet when executing.
+             */
+            const graph = (typeof rawGraph === 'string')
+                ? JSON.parse(rawGraph)
+                : rawGraph;
             window.graph = graph;
 
             nodes.length = 0;
@@ -499,6 +524,7 @@ let model = function Model() {
                 const node = nodify(dataIndex, data);
                 nodes.push(node);
             }
+            // TODO After the previous loop, graph changes type from Map<string, LogicalTask> to Map<string, VisualTask>.
             links.length = 0;
             for (const nodeIndex in graph) {
                 const fromNode = graph[nodeIndex];
@@ -525,6 +551,10 @@ let model = function Model() {
             // setTimeout is required to allow the browser to render the nodes.
             setTimeout(() => zoomFit(0.95, 0), 0);
         },
+        /**
+         * @param {LogicalTaskId} task
+         * @param {string} result
+         */
         update(task, result) {
             // This method should be just the commented lines, except it's too slow for an ever-changing execution.
             // Gradle changes task states multiple times per second, so it's better to focus on updating what's really changed.
@@ -536,25 +566,86 @@ let model = function Model() {
             node.attr("class", nodeClasses(data));
             details.refreshDisplay();
         },
+        /**
+         * @param {LogicalTask} data
+         */
         add(data) {
             nodes.push(nodify(data.id, data));
             rebuild();
         },
     };
 
+    /**
+     * @param {LogicalTaskId} name
+     * @return {string}
+     */
     function cleanName(name) {
         // Normally this would clean `:foo:bar` to `-foo-bar`, but generalized to be safe.
         return name.replace(/[^a-zA-Z0-9_]/g, '-');
     }
 
+    /**
+     * @param {LogicalTaskId} name
+     * @return {VisualTaskId}
+     */
     function constructNodeId(name) {
         return `node_${cleanName(name)}`;
     }
 
+    /**
+     * @param {LogicalTaskId} from
+     * @param {LogicalTaskId} to
+     * @return {VisualDependencyId}
+     */
     function constructLinkId(from, to) {
         return `link_${cleanName(from)}_${cleanName(to)}`;
     }
 
+    /** @typedef {string} LogicalTaskId */
+    /** @typedef {string} VisualTaskId */
+    /** @typedef {string} VisualDependencyId */
+
+    /**
+     * @typedef {Object} LogicalTask
+     * @property {LogicalTaskId} id
+     * @property {string} label
+     * @property {string} type
+     * @property {string} state
+     */
+
+    /**
+     * @typedef {Object} VisualTask
+     * @augments LogicalTask TODO remove this, it's weird that objects change type in place.
+     * @property {LogicalTaskId} id from LogicalTask
+     * @property {string} label from LogicalTask
+     * @property {string} type from LogicalTask
+     * @property {string} state from LogicalTask
+     * @property {LogicalTaskId[]} deps
+     * @property {LogicalTaskId[]} depsInverse
+     * @property {VisualDependency[]} links
+     * @property {Object} ui
+     * @property {LogicalTask} ui.data
+     * @property {SVGGElement} ui.node
+     * @property {SVGTextElement} ui.text
+     * @property {SVGRectElement} ui.bg
+     * @property {function(): string} ui.project
+     * @property {function(): string} ui.taskName
+     * @property {function(): string} ui.label
+     * @property {function(): VisualTaskId} ui.nodeId
+     * @property {number} x added by force
+     * @property {number} y added by force
+     * @property {number} width
+     * @property {number} height
+     * @property {function(): number} x2
+     * @property {function(): number} y2
+     * @property {function(): string} toString
+     */
+
+    /**
+     * @param {LogicalTaskId} id
+     * @param {LogicalTask} node
+     * @returns {VisualTask}
+     */
     function nodify(id, node) {
         const defaults = {
             id: id,
@@ -618,6 +709,22 @@ let model = function Model() {
         return node; // == $.merge(node, defaults, viewModel);
     }
 
+    /**
+     * @typedef {Object} VisualDependency
+     * @property {VisualTask} source
+     * @property {VisualTask} target
+     * @property {number} weight
+     * @property {Object} ui
+     * @property {SVGElement} ui.edge
+     * @property {function(): string} linkId
+     * @property {function(): string} toString
+     */
+
+    /**
+     * @param {VisualTask} fromNode
+     * @param {VisualTask} toNode
+     * @returns {VisualDependency}
+     */
     function createLink(fromNode, toNode) {
         return {
             source: fromNode,
@@ -636,12 +743,18 @@ let model = function Model() {
     }
 }();
 
-function autoSizeText(elem, min, max, step, lastChange) {
-    min = min || 1;
-    max = max || Infinity;
-    step = step || 1;
-    lastChange = lastChange !== undefined? lastChange : 0;
-
+/**
+ * @param {SVGElement} elem
+ * @param {number} min
+ * @param {number} max
+ * @param {number} step
+ * @param {number} lastChange
+ */
+function autoSizeText(elem, min = 1, max = Infinity, step = 1, lastChange = 0) {
+    /**
+     * @param {string} pixelStyle
+     * @returns {number}
+     */
     function px(pixelStyle) {
         return +pixelStyle.slice(0, -2);
     }
@@ -693,6 +806,9 @@ function autoSizeText(elem, min, max, step, lastChange) {
     }
 }
 
+/**
+ * @returns {void}
+ */
 async function demo() {
     const graph = await d3.json("demos/com.android.application v1.2.0 - gradlew build.json");
     //const graph = await d3.json("demos/net.twisterrob.gradle - gradlew clean jar.json");

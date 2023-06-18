@@ -1,4 +1,19 @@
 'use strict';
+
+/**
+ * @typedef {Object} Point
+ * @property {number} x - the horizontal coordinate of the point in 2D space. Higher x values are further right.
+ * @property {number} y - the vertical coordinate of the point in 2D space. Higher y values are further up.
+ */
+
+/**
+ * @typedef {Object} Rect
+ * @property {number} x - the horizontal coordinate of the point in 2D space. Higher x values are further right.
+ * @property {number} y - the vertical coordinate of the point in 2D space. Higher y values are further up.
+ * @property {number} width - the horizontal extent of the rectangle, starting from {@link Rect.x}
+ * @property {number} height - the vertical extent of the rectangle, starting from {@link Rect.y}
+ */
+
 const phys = function() {
 	return {
 		pointOnRect,
@@ -6,10 +21,15 @@ const phys = function() {
 	};
 }();
 
+/**
+ * @param {Rect} rect
+ * @param {Point} point
+ * @returns {Point}
+ */
 function pointOnRect(rect, point) {
 	const w = rect.width / 2;
 	const h = rect.height / 2;
-	return pointOnRectImpl(point.x, point.y, rect.x - w, rect.y - h, rect.x + w, rect.y + h);
+	return pointOnRectImpl(point.x, point.y, rect.x - w, rect.y - h, rect.x + w, rect.y + h, false);
 }
 
 function forceCollideRect() {
@@ -34,6 +54,9 @@ function forceCollideRect() {
 	return force;
 }
 
+/**
+ * @returns {boolean}
+ */
 function overlap(a, b) {
 	const topLeft = a.x < b.x && b.x < a.x2() && a.y < b.y && b.y < a.y2();
 	const bottomRight = a.x < b.x2() && b.x2() < a.x2() && a.y < b.y2() && b.y2() < a.y2();
@@ -42,6 +65,10 @@ function overlap(a, b) {
 	return topLeft || bottomRight || topRight || bottomLeft;
 }
 
+/**
+ * @param n {{x: number, y: number, x2: function(): number, y2: function(): number}}
+ * @returns {function(*, number, number, number, number): boolean}
+ */
 function collide(n) {
 	const padding = 10,
 		nx1     = n.x - padding,
@@ -82,6 +109,11 @@ function correct(n, q) {
 	q.y += dy;
 }
 
+/**
+ * @param {Point} start
+ * @param {Point} end
+ * @returns {number}
+ */
 function angle(start, end) {
 	const dy = end.y - start.y;
 	const dx = end.x - start.x;
@@ -102,14 +134,14 @@ function angle(start, end) {
  *       even though minY may not be the "top" of the rectangle
  *       because the coordinate system is flipped.
  *
- * @param x horizontal coordinate of point to build the line segment from
- * @param y vertical coordinate of point to build the line segment from
- * @param minX the "left" side of the rectangle
- * @param minY the "top" side of the rectangle
- * @param maxX the "right" side of the rectangle
- * @param maxY the "bottom" side of the rectangle
- * @param check whether to treat point inside the rect as error
- * @return an object with x and y members for the intersection
+ * @param {number} x horizontal coordinate of point to build the line segment from
+ * @param {number} y vertical coordinate of point to build the line segment from
+ * @param {number} minX the "left" side of the rectangle
+ * @param {number} minY the "top" side of the rectangle
+ * @param {number} maxX the "right" side of the rectangle
+ * @param {number} maxY the "bottom" side of the rectangle
+ * @param {boolean} check whether to treat point inside the rect as error
+ * @return {Point} an object with x and y members for the intersection
  * @throws if check == true and (x,y) is inside the rectangle
  * @author TWiStErRob
  * @see <a href="http://stackoverflow.com/a/18292964/253468">based on</a>
