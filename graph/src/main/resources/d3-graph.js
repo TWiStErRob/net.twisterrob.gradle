@@ -309,7 +309,7 @@ function rebuild() {
 function selectNode(d) { // TODO use #task-id for back navigation support
 	node_group.selectAll('.node.selected').classed('selected', false);
 	if (d) {
-		d3.select(d.node).classed('selected', true);
+		d3.select(d.svgGroup).classed('selected', true);
 	}
 	details.lockNode(d);
 }
@@ -443,7 +443,7 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 			enter => {
 				const uiNodes = enter
 					.append('g')
-					.each(/** @param {VisualTask} d */ function storeUiNode(d) { d.node = this; })
+					.each(/** @param {VisualTask} d */ function storeUiNode(d) { d.svgGroup = this; })
 					.attr('id', /** @param {VisualTask} d */ d => d.nodeId())
 					.on('mouseover', /** @param {VisualTask} d */ function nodeMouseOver(event, d) {
 						details.showNode(d);
@@ -453,12 +453,12 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 					})
 
 				const rect = uiNodes.append('rect')
-					.each(/** @param {VisualTask} d */ function storeUiNodeBackground(d) { d.bg = this; })
+					.each(/** @param {VisualTask} d */ function storeUiNodeBackground(d) { d.svgBg = this; })
 				;
 				// This needs to be appended after the rectangle so that the DOM-order is correct for z-ordering.
 				//noinspection JSUnusedLocalSymbols
 				const text = uiNodes.append('text')
-					.each(/** @param {VisualTask} d */ function storeUiNodeText(d) { d.text = this; })
+					.each(/** @param {VisualTask} d */ function storeUiNodeText(d) { d.svgText = this; })
 					.classed('label', true)
 					.text(/** @param {VisualTask} d */ d => d.label())
 				;
@@ -467,18 +467,18 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 
 				// This needs to be after inserting text, because the background rectangle size depends on the rendered text.
 				rect
-					.attr('width', /** @param {VisualTask} d */ d => d.text.getBBox().width + 2.0 * padding.x)
-					.attr('height', /** @param {VisualTask} d */ d => d.text.getBBox().height + 2.0 * padding.y)
-					.attr('x', /** @param {VisualTask} d */ d => +d3.select(d.bg).attr('width') / -2.0)
-					.attr('y', /** @param {VisualTask} d */ d => +d3.select(d.bg).attr('height') / -2.0)
+					.attr('width', /** @param {VisualTask} d */ d => d.svgText.getBBox().width + 2.0 * padding.x)
+					.attr('height', /** @param {VisualTask} d */ d => d.svgText.getBBox().height + 2.0 * padding.y)
+					.attr('x', /** @param {VisualTask} d */ d => +d3.select(d.svgBg).attr('width') / -2.0)
+					.attr('y', /** @param {VisualTask} d */ d => +d3.select(d.svgBg).attr('height') / -2.0)
 				;
 
 				//noinspection JSUnusedLocalSymbols
 				const module = uiNodes.append('text')
 					.classed('project', true)
 					.text(/** @param {VisualTask} d */ d => d.project())
-					.attr('x', /** @param {VisualTask} d */ d => +d3.select(d.bg).attr('x') + +d3.select(d.bg).attr('width') - padding.x)
-					.attr('y', /** @param {VisualTask} d */ d => +d3.select(d.bg).attr('y') - 1)
+					.attr('x', /** @param {VisualTask} d */ d => +d3.select(d.svgBg).attr('x') + +d3.select(d.svgBg).attr('width') - padding.x)
+					.attr('y', /** @param {VisualTask} d */ d => +d3.select(d.svgBg).attr('y') - 1)
 				;
 				// This needs to be after everything is built, because it depends on the rendered size.
 				return uiNodes
@@ -487,7 +487,7 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 		// Recalculate the visual state on new and existing nodes, as the state might've changed.
 		.attr('class', nodeClasses)
 		.each(/** @param {VisualTask} d */ function resizeUiNode(d) {
-			const box = d.node.getBBox();
+			const box = d.svgGroup.getBBox();
 			d.width = box.width;
 			d.height = box.height;
 		})
@@ -647,9 +647,9 @@ let model = function Model() {
 	 * @property {string} state from LogicalTask
 	 * @property {VisualDep[]} links
 	 * @property {TaskData} data
-	 * @property {SVGGElement} node
-	 * @property {SVGTextElement} text
-	 * @property {SVGRectElement} bg
+	 * @property {SVGGElement} svgGroup
+	 * @property {SVGTextElement} svgText
+	 * @property {SVGRectElement} svgBg
 	 * @property {function(): string} project
 	 * @property {function(): string} taskName
 	 * @property {function(): string} label
@@ -677,9 +677,9 @@ let model = function Model() {
 			state: data.state,
 			links: [],
 			data: data,
-			node: null,
-			text: null,
-			bg: null,
+			svgGroup: null,
+			svgText: null,
+			svgBg: null,
 			project() {
 				const label = this.data.label;
 				return label.replace(/^:?(.+):.+$|.*/, '$1');
