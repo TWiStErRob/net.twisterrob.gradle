@@ -1,3 +1,5 @@
+// noinspection JSCommentMatchesSignature
+
 'use strict';
 
 d3.select(document).on("DOMContentLoaded", function(/*event*/) {
@@ -260,18 +262,18 @@ function rebuild() {
 		})
 		.call(d3
 			.drag()
-			.on('start', function dragStart(event, d) {
+			.on('start', /** @param {VisualTask} d */ function dragStart(event, d) {
 				if (!event.active) {
 					force.alphaTarget(0.3).restart();
 				}
 				d.fx = d.x;
 				d.fy = d.y;
 			})
-			.on('drag', function dragMove(event, d) {
+			.on('drag', /** @param {VisualTask} d */ function dragMove(event, d) {
 				d.fx = event.x;
 				d.fy = event.y;
 			})
-			.on('end', function dragEnd(event, d) {
+			.on('end', /** @param {VisualTask} d */ function dragEnd(event, d) {
 				if (!event.active) {
 					force.alphaTarget(0);
 				}
@@ -297,7 +299,7 @@ function rebuild() {
 		;
 
 		uiNodes
-			.attr('transform', d => `translate(${d.x},${d.y})`)
+			.attr('transform', /** @param {VisualTask} d */ d => `translate(${d.x},${d.y})`)
 		;
 	});
 	force.restart();
@@ -366,12 +368,11 @@ function buildLegend(legendData) {
 		d.depsInverse = [];
 	});
 	const visualLegend = legendData.map(d => ({
-		id: d.type || d.state,
 		data: d,
 		project() { return ":legend"; },
 		taskName() { return "legendTask"; },
 		label() { return this.data.title; },
-		nodeId() { return `legend_${this.data.id}`; },
+		nodeId() { return `legend_${this.data.type || this.data.state}`; },
 	}));
 
 	const legend = svg
@@ -641,10 +642,7 @@ let model = function Model() {
 
 	/**
 	 * @typedef {Object} VisualTask
-	 * @property {LogicalTaskId} id from LogicalTask
-	 * @property {string} label from LogicalTask
-	 * @property {string} type from LogicalTask
-	 * @property {string} state from LogicalTask
+	 * @property {LogicalTaskId} id
 	 * @property {VisualDep[]} links
 	 * @property {TaskData} data
 	 * @property {SVGGElement} svgGroup
@@ -673,8 +671,6 @@ let model = function Model() {
 		data.depsInverse = [];
 		return {
 			id: id,
-			type: data.type,
-			state: data.state,
 			links: [],
 			data: data,
 			svgGroup: null,
