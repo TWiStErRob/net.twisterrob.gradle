@@ -1,15 +1,15 @@
 'use strict';
 
-d3.select(document).on("DOMContentLoaded", function(event) {
+d3.select(document).on("DOMContentLoaded", function(/*event*/) {
 	main();
 });
-d3.select("#menu-freeze").on('click', function menuFreeze_onClick(event) {
+d3.select("#menu-freeze").on('click', function menuFreeze_onClick(/*event*/) {
 	force.stop();
 });
-d3.select("#menu-thaw").on('click', function menuThaw_onClick(event) {
+d3.select("#menu-thaw").on('click', function menuThaw_onClick(/*event*/) {
 	force.restart();
 });
-d3.select("#menu-fit").on('click', function menuFit_onClick(event) {
+d3.select("#menu-fit").on('click', function menuFit_onClick(/*event*/) {
 	force.stop();
 	zoomFit(0.95, 500);
 });
@@ -61,7 +61,7 @@ svg.select('#background')
 		event.preventDefault();
 		const point = d3.pointer(event, node_group.node());
 		model.add({
-			id: `____${demoIdCounter++}____`,
+			label: `____${demoIdCounter++}____`,
 			type: 'unknown',
 			x: point[0],
 			y: point[1],
@@ -217,9 +217,8 @@ const details = function Details() {
 	};
 }();
 
-// noinspection ES6ConvertVarToLetConst
-/** @type {Object.<string, VisualTask>} */
-var graph = {}; // window.graph is referenced as such.
+/** @type {Object.<LogicalTaskId, VisualTask>} */
+let graph = {}; // Not const, it'll be overwritten later.
 /** @type {VisualTask[]} */
 const nodes = force.nodes();
 /** @type {VisualDep[]} */
@@ -528,44 +527,40 @@ let model = function Model() {
 
 	return {
 		/**
-		 * @param {string|Object.<string, LogicalTask>} rawGraph
+		 * @param {string} rawGraph
 		 */
 		init(rawGraph) {
-			/**
-			 * @param {LogicalTask} d
-			 * @return {boolean}
-			 */
+			/** @param {TaskData} d */
 			function filter(d) { return d.type === 'unknown'; }
 
-			/**
-			 * @type {Object.<string, VisualTask>} TODO not actually the right type yet when executing.
-			 */
-			const graph = (typeof rawGraph === 'string')
-				? JSON.parse(rawGraph)
-				: rawGraph;
-			window.graph = graph;
+			/** @type {Object.<LogicalTaskId, TaskData>} */
+			const logicalGraph = JSON.parse(rawGraph);
 
 			nodes.length = 0;
-			for (const dataIndex in graph) {
-				const data = graph[dataIndex];
+			/** @type {Object.<LogicalTaskId, VisualTask>} */
+			const visualGraph = {};
+			for (const nodeKey in logicalGraph) {
+				const data = logicalGraph[nodeKey];
 				if (filter(data)) {
 					continue;
 				}
-				const node = nodify(dataIndex, data);
+				const node = nodify(nodeKey, data);
+				visualGraph[nodeKey] = node;
 				nodes.push(node);
 			}
-			// TODO After the previous loop, graph changes type from Map<string, LogicalTask> to Map<string, VisualTask>.
+			graph = visualGraph;
 			links.length = 0;
-			for (const nodeIndex in graph) {
-				const fromNode = graph[nodeIndex];
-				if (filter(fromNode)) {
+			for (const nodeKey in visualGraph) {
+				if (filter(logicalGraph[nodeKey])) {
 					continue;
 				}
+				const fromNode = visualGraph[nodeKey];
 				for (const depIndex in fromNode.deps) {
-					const toNode = graph[fromNode.deps[depIndex]];
-					if (filter(toNode)) {
+					let depKey = fromNode.deps[depIndex];
+					if (filter(logicalGraph[depKey])) {
 						continue;
 					}
+					const toNode = visualGraph[depKey];
 					toNode.depsInverse.push(fromNode.id);
 					const link = new VisualDep(fromNode, toNode);
 					links.push(link);
@@ -597,10 +592,10 @@ let model = function Model() {
 			details.refreshDisplay();
 		},
 		/**
-		 * @param {LogicalTask} data
+		 * @param {TaskData} data
 		 */
 		add(data) {
-			nodes.push(nodify(data.id, data));
+			nodes.push(nodify(data.label, data));
 			rebuild();
 		},
 	};
@@ -636,16 +631,16 @@ let model = function Model() {
 	/** @typedef {string} VisualDepId */
 
 	/**
-	 * @typedef {Object} LogicalTask
-	 * @property {LogicalTaskId} id
-	 * @property {string} label
-	 * @property {string} type
-	 * @property {string} state
+	 * @typedef {Object} TaskData
+	 * Represents what's passed in through interop, seenet.twisterrob.gradle.graph.vis.d3.interop.TaskDataSerializer.
+	 * @property {LogicalTaskId} label
+	 * @property {string} [type]
+	 * @property {string} [state]
+	 * @property {LogicalTaskId[]} [deps]
 	 */
 
 	/**
 	 * @typedef {Object} VisualTask
-	 * @augments LogicalTask TODO remove this, it's weird that objects change type in place.
 	 * @property {LogicalTaskId} id from LogicalTask
 	 * @property {string} label from LogicalTask
 	 * @property {string} type from LogicalTask
@@ -654,7 +649,7 @@ let model = function Model() {
 	 * @property {LogicalTaskId[]} depsInverse
 	 * @property {VisualDep[]} links
 	 * @property {Object} ui
-	 * @property {LogicalTask} ui.data
+	 * @property {TaskData} ui.data
 	 * @property {SVGGElement} ui.node
 	 * @property {SVGTextElement} ui.text
 	 * @property {SVGRectElement} ui.bg
@@ -673,28 +668,29 @@ let model = function Model() {
 
 	/**
 	 * @param {LogicalTaskId} id
-	 * @param {LogicalTask} node
+	 * @param {TaskData} data
 	 * @returns {VisualTask}
 	 */
-	function nodify(id, node) {
-		const defaults = {
+	function nodify(id, data) {
+		return {
 			id: id,
-			deps: [],
+			label: data.label,
+			type: data.type,
+			state: data.state,
+			deps: data.deps || [],
 			depsInverse: [],
-		};
-		const viewModel = {
 			links: [],
 			ui: {
-				data: node,
+				data: data,
 				node: null,
 				text: null,
 				bg: null,
 				project() {
-					const label = this.data.label || this.data.id;
+					const label = this.data.label;
 					return label.replace(/^:?(.+):.+$|.*/, '$1');
 				},
 				taskName() {
-					const label = this.data.label || this.data.id;
+					const label = this.data.label;
 					return label.replace(/^:?(.*):/, '');
 				},
 				label() {
@@ -709,7 +705,7 @@ let model = function Model() {
 					return parts[0] + '…' + parts[parts.length - 1];
 				},
 				nodeId() {
-					return constructNodeId(this.data.id);
+					return constructNodeId(this.data.label);
 				},
 			},
 			x2() {
@@ -718,25 +714,10 @@ let model = function Model() {
 			y2() {
 				return this.y + this.height;
 			},
+			toString() {
+				return `${this.id} @ ${this.x},${this.y} ${this.width}x${this.height}`;
+			},
 		};
-
-		node.toString = function() {
-			return `${this.id} @ ${this.x},${this.y} ${this.width}x${this.height}`;
-		};
-
-		for (const i in defaults) {
-			if (node[i] === undefined) {
-				node[i] = defaults[i];
-			}
-		}
-		for (const i in viewModel) {
-			if (node[i] === undefined) {
-				node[i] = viewModel[i];
-			} else {
-				console.error(`Property ${i} already exists`, node, viewModel);
-			}
-		}
-		return node; // == $.merge(node, defaults, viewModel);
 	}
 }();
 
@@ -809,7 +790,11 @@ function autoSizeText(elem, min = 1, max = Infinity, step = 1, lastChange = 0) {
 async function demo() {
 	const graph = await d3.json("demos/com.android.application v1.2.0 - gradlew build.json");
 	//const graph = await d3.json("demos/net.twisterrob.gradle - gradlew clean jar.json");
-	model.init(graph);
+	for (const id in graph) {
+		// Mimic TaskDataSerializer.
+		graph[id].label = id;
+	}
+	model.init(JSON.stringify(graph));
 	setTimeout(function demoDelayedEffects() {
 		model.update(Object.keys(graph)[0], 'success');
 		model.update(Object.keys(graph)[1], 'executing');
