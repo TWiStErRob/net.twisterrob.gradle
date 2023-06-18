@@ -167,20 +167,20 @@ const details = function Details() {
 			autoSizeText(nameUI.node());
 			projectUI.text(d.ui.project() || "root project");
 			taskUI.text(d.ui.taskName());
-			typeUI.text(d.type || 'normal');
-			stateUI.text(d.state || 'scheduled');
-			progressUI.style('display', d.state === 'executing'? 'block' : 'none');
+			typeUI.text(d.data.type || 'normal');
+			stateUI.text(d.data.state || 'scheduled');
+			progressUI.style('display', d.data.state === 'executing'? 'block' : 'none');
 			posUI.text(`${d.x.toFixed(2)}, ${d.y.toFixed(2)}`);
 
-			bindDeps(dependsUI, d.deps);
-			bindDeps(dependentsUI, d.depsInverse);
+			bindDeps(dependsUI, d.data.deps);
+			bindDeps(dependentsUI, d.data.depsInverse);
 		}
 
 		currentNode = d;
 	}
 
 	function autoPick() {
-		const executing = nodes.filter(d => d.state === 'executing');
+		const executing = nodes.filter(/** @param {VisualTask} d */ d => d.data.state === 'executing');
 		return executing.length === 0? null : executing[0];
 	}
 
@@ -188,6 +188,9 @@ const details = function Details() {
 		init() {
 			display(null);
 		},
+		/**
+		 * @param {VisualTask|null} d
+		 */
 		showNode(d) {
 			if (!currentNodeIsLocked) {
 				currentNodeIsActive = true;
@@ -198,6 +201,9 @@ const details = function Details() {
 			currentNodeIsActive = false;
 			this.refreshDisplay();
 		},
+		/**
+		 * @param {VisualTask|null} d
+		 */
 		lockNode(d) {
 			if (d) {
 				currentNodeIsLocked = true;
@@ -241,12 +247,12 @@ function rebuild() {
 
 	const uiNodes = node_group
 		.selectAll('.node')
-		.data(nodes, d => d.ui.nodeId())
+		.data(nodes, /** @param {VisualTask} d */ d => d.ui.nodeId())
 		.joinNodes()
-		.on('click', function nodeClick(event, d) {
+		.on('click',/** @param {VisualTask} d */ function nodeClick(event, d) {
 			selectNode(d);
 		})
-		.on('mousedown', function nodeMouseDown(event, d) {
+		.on('mousedown', /** @param {VisualTask} d */ function nodeMouseDown(event, d) {
 			details.lockNode(d);
 		})
 		.on('mouseup', function nodeMouseUp(/*event, d*/) {
@@ -297,6 +303,9 @@ function rebuild() {
 	force.restart();
 }
 
+/**
+ * @param {VisualTask|null} d
+ */
 function selectNode(d) { // TODO use #task-id for back navigation support
 	node_group.selectAll('.node.selected').classed('selected', false);
 	if (d) {
@@ -358,20 +367,21 @@ const legendData = [
 	{ state: 'selected', title: "Selected" }, // Special state, only in UI.
 ];
 function buildLegend(legendData) {
-	for (const i in legendData) {
-		const legendDatum = legendData[i];
-		// TODO use nodify?
-		legendDatum.ui = {
-			data: legendDatum,
+	legendData.forEach(d => {
+		d.deps = [];
+		d.depsInverse = [];
+	});
+	const visualLegend = legendData.map(d => ({
+		id: d.type || d.state,
+		data: d,
+		ui: {
+			data: d,
 			project() { return ":legend"; },
 			taskName() { return "legendTask"; },
 			label() { return this.data.title; },
 			nodeId() { return `legend_${this.data.id}`; },
-		};
-		legendDatum.deps = [];
-		legendDatum.depsInverse = [];
-		legendDatum.id = legendData[i].type || legendData[i].state;
-	}
+		},
+	}));
 
 	const legend = svg
 		.select('#legend');
@@ -385,7 +395,7 @@ function buildLegend(legendData) {
 	// noinspection JSUnusedLocalSymbols
 	const legendNodes = legend
 		.selectAll('.node')
-		.data(legendData, d => d.ui.nodeId())
+		.data(visualLegend, d => d.ui.nodeId())
 		.joinNodes()
 		.each((d, i) => {
 			d.x = 0;
@@ -426,10 +436,10 @@ function buildLegend(legendData) {
  */
 function nodeClasses(d) {
 	return 'node'
-		 + (d.type? ' ' + d.type : '')
-		 + (d.state? ' ' + d.state : '')
-		 + (d.deps.length === 0? ' leaf' : '')
-		 + (d.deps.length === 1 && d.depsInverse.length === 1? ' straight' : '')
+		 + (d.data.type? ' ' + d.data.type : '')
+		 + (d.data.state? ' ' + d.data.state : '')
+		 + (d.data.deps.length === 0? ' leaf' : '')
+		 + (d.data.deps.length === 1 && d.data.depsInverse.length === 1? ' straight' : '')
 	;
 }
 
@@ -442,42 +452,42 @@ d3.selection.prototype.joinNodes = function joinNodes() {
 			enter => {
 				const uiNodes = enter
 					.append('g')
-					.each(function storeUiNode(d) { d.ui.node = this; })
-					.attr('id', d => d.ui.nodeId())
-					.on('mouseover', function nodeMouseOver(event, d) {
+					.each(/** @param {VisualTask} d */ function storeUiNode(d) { d.ui.node = this; })
+					.attr('id', /** @param {VisualTask} d */ d => d.ui.nodeId())
+					.on('mouseover', /** @param {VisualTask} d */ function nodeMouseOver(event, d) {
 						details.showNode(d);
 					})
-					.on('mouseout', function nodeMouseOut(event, d) {
+					.on('mouseout', /** @param {VisualTask} d */ function nodeMouseOut(event, d) {
 						details.hideNode(d);
 					})
 
 				const rect = uiNodes.append('rect')
-					.each(function storeUiNodeBackground(d) { d.ui.bg = this; })
+					.each(/** @param {VisualTask} d */ function storeUiNodeBackground(d) { d.ui.bg = this; })
 				;
 				// This needs to be appended after the rectangle so that the DOM-order is correct for z-ordering.
 				//noinspection JSUnusedLocalSymbols
 				const text = uiNodes.append('text')
-					.each(function storeUiNodeText(d) { d.ui.text = this; })
+					.each(/** @param {VisualTask} d */ function storeUiNodeText(d) { d.ui.text = this; })
 					.classed('label', true)
-					.text(d => d.ui.label())
+					.text(/** @param {VisualTask} d */ d => d.ui.label())
 				;
 				//uiNodes.append('circle').attr('cx', 0).attr('cy', 0).attr('r', 3).attr('fill', 'red');
 				const padding = { x: 5, y: 4 };
 
 				// This needs to be after inserting text, because the background rectangle size depends on the rendered text.
 				rect
-					.attr('width', d => d.ui.text.getBBox().width + 2.0 * padding.x)
-					.attr('height', d => d.ui.text.getBBox().height + 2.0 * padding.y)
-					.attr('x', d => +d3.select(d.ui.bg).attr('width') / -2.0)
-					.attr('y', d => +d3.select(d.ui.bg).attr('height') / -2.0)
+					.attr('width', /** @param {VisualTask} d */ d => d.ui.text.getBBox().width + 2.0 * padding.x)
+					.attr('height', /** @param {VisualTask} d */ d => d.ui.text.getBBox().height + 2.0 * padding.y)
+					.attr('x', /** @param {VisualTask} d */ d => +d3.select(d.ui.bg).attr('width') / -2.0)
+					.attr('y', /** @param {VisualTask} d */ d => +d3.select(d.ui.bg).attr('height') / -2.0)
 				;
 
 				//noinspection JSUnusedLocalSymbols
 				const module = uiNodes.append('text')
 					.classed('project', true)
-					.text(d => d.ui.project())
-					.attr('x', d => +d3.select(d.ui.bg).attr('x') + +d3.select(d.ui.bg).attr('width') - padding.x)
-					.attr('y', d => +d3.select(d.ui.bg).attr('y') - 1)
+					.text(/** @param {VisualTask} d */ d => d.ui.project())
+					.attr('x', /** @param {VisualTask} d */ d => +d3.select(d.ui.bg).attr('x') + +d3.select(d.ui.bg).attr('width') - padding.x)
+					.attr('y', /** @param {VisualTask} d */ d => +d3.select(d.ui.bg).attr('y') - 1)
 				;
 				// This needs to be after everything is built, because it depends on the rendered size.
 				return uiNodes
@@ -555,13 +565,13 @@ let model = function Model() {
 					continue;
 				}
 				const fromNode = visualGraph[nodeKey];
-				for (const depIndex in fromNode.deps) {
-					let depKey = fromNode.deps[depIndex];
+				for (const depIndex in fromNode.data.deps) {
+					let depKey = fromNode.data.deps[depIndex];
 					if (filter(logicalGraph[depKey])) {
 						continue;
 					}
 					const toNode = visualGraph[depKey];
-					toNode.depsInverse.push(fromNode.id);
+					toNode.data.depsInverse.push(fromNode.id);
 					const link = new VisualDep(fromNode, toNode);
 					links.push(link);
 					fromNode.links.push(link);
@@ -585,8 +595,9 @@ let model = function Model() {
 			// Gradle changes task states multiple times per second, so it's better to focus on updating what's really changed.
 			//graph[task].state = result;
 			const node = d3.select(`#${constructNodeId(task)}`);
+			/** @type {VisualTask} */
 			const data = node.datum();
-			data.state = result;
+			data.data.state = result;
 			//rebuild();
 			node.attr("class", nodeClasses(data));
 			details.refreshDisplay();
@@ -637,6 +648,7 @@ let model = function Model() {
 	 * @property {string} [type]
 	 * @property {string} [state]
 	 * @property {LogicalTaskId[]} [deps]
+	 * @property {LogicalTaskId[]} [depsInverse] Added by this code, not passed in.
 	 */
 
 	/**
@@ -645,9 +657,8 @@ let model = function Model() {
 	 * @property {string} label from LogicalTask
 	 * @property {string} type from LogicalTask
 	 * @property {string} state from LogicalTask
-	 * @property {LogicalTaskId[]} deps
-	 * @property {LogicalTaskId[]} depsInverse
 	 * @property {VisualDep[]} links
+	 * @property {TaskData} data
 	 * @property {Object} ui
 	 * @property {TaskData} ui.data
 	 * @property {SVGGElement} ui.node
@@ -672,25 +683,25 @@ let model = function Model() {
 	 * @returns {VisualTask}
 	 */
 	function nodify(id, data) {
+		data.deps = data.deps || [];
+		data.depsInverse = [];
 		return {
 			id: id,
-			label: data.label,
 			type: data.type,
 			state: data.state,
-			deps: data.deps || [],
-			depsInverse: [],
 			links: [],
+			data: data,
 			ui: {
-				data: data,
+				__data: data,
 				node: null,
 				text: null,
 				bg: null,
 				project() {
-					const label = this.data.label;
+					const label = this.__data.label;
 					return label.replace(/^:?(.+):.+$|.*/, '$1');
 				},
 				taskName() {
-					const label = this.data.label;
+					const label = this.__data.label;
 					return label.replace(/^:?(.*):/, '');
 				},
 				label() {
@@ -705,7 +716,7 @@ let model = function Model() {
 					return parts[0] + '…' + parts[parts.length - 1];
 				},
 				nodeId() {
-					return constructNodeId(this.data.label);
+					return constructNodeId(this.__data.label);
 				},
 			},
 			x2() {
