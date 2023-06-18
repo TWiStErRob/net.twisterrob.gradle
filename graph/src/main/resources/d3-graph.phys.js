@@ -14,12 +14,11 @@
  * @property {number} height - the vertical extent of the rectangle, starting from {@link Rect.y}
  */
 
-const phys = function() {
-	return {
-		pointOnRect,
-		forceCollideRect,
-	};
-}();
+const phys = function () {
+return {
+	pointOnRect,
+	forceCollideRect,
+};
 
 /**
  * @param {Rect} rect
@@ -71,10 +70,10 @@ function overlap(a, b) {
  */
 function collide(n) {
 	const padding = 10,
-		nx1     = n.x - padding,
-		nx2     = n.x2() + padding,
-		ny1     = n.y - padding,
-		ny2     = n.y2() + padding;
+	      nx1     = n.x - padding,
+	      nx2     = n.x2() + padding,
+	      ny1     = n.y - padding,
+	      ny2     = n.y2() + padding;
 	return function(quad, x1, y1, x2, y2) {
 		const res = (nx2 < x1 || x2 < nx1) || (ny2 < y1 || y2 < ny1);
 		// const rect = `${Math.round(x1)},${Math.round(y1)} - ${Math.round(x2)},${Math.round(y2)}`;
@@ -189,3 +188,5 @@ function pointOnRectImpl(x, y, minX, minY, maxX, maxY, check) {
 	throw `Cannot find intersection for ${x}, ${y} inside rectangle ${minY}, ${minY} - ${maxX}, ${maxY}.`;
 	// TODO test and fix: Cannot find intersection for 1.6132698912796644e+258, 4.87568661162857e+258 inside rectangle 4.87568661162857e+258, 4.87568661162857e+258 - 1.6132698912796644e+258, 4.87568661162857e+258.
 }
+
+}();
