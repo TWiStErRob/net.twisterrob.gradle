@@ -77,7 +77,7 @@ class VersionsTaskTest : BaseIntgTest() {
 	}
 
 	@Test fun `print checkstyle version (Gradle 7 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("7.6.1")
+		gradle.gradleVersion = GradleVersion.version("7.6.2")
 
 		@Language("gradle")
 		val script = """
@@ -93,12 +93,12 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 7.6.1""")
+		result.assertHasOutputLine("""Gradle version: 7.6.2""")
 		result.assertHasOutputLine("""Checkstyle version: 8.45.1""")
 	}
 
 	@Test fun `print pmd version (Gradle 7 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("7.6.1")
+		gradle.gradleVersion = GradleVersion.version("7.6.2")
 
 		@Language("gradle")
 		val script = """
@@ -114,7 +114,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 7.6.1""")
+		result.assertHasOutputLine("""Gradle version: 7.6.2""")
 		result.assertHasOutputLine("""PMD version: 6.48.0""")
 	}
 
