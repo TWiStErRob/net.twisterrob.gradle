@@ -14,6 +14,7 @@ plugins {
 	// Allows using classes / functions from gradle/plugins project.
 	id("net.twisterrob.gradle.build.settings")
 	id("net.twisterrob.gradle.build.enterprise")
+	//id("net.twisterrob.graph")
 }
 
 // buildscript { enableDependencyLocking(settings) }

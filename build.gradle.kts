@@ -52,3 +52,15 @@ if (libs.nexus.get().version == "1.3.0") {
 	val error: (String) -> Unit = if (isCI) ::error else logger::warn
 	error("Gradle Nexus Plugin Version changed, please review suppression.")
 }
+
+/*
+allprojects {
+	afterEvaluate {
+		tasks.configureEach {
+			doLast {
+				Thread.sleep((Math.random() * 1500).toLong())
+			}
+		}
+	}
+}
+*/
