@@ -6,7 +6,7 @@ buildscript {
 	}
 	dependencies {
 		// Using old syntax, because it's not possible to otherwise conditionally apply the plugin.
-		classpath("org.gradle.toolchains:foojay-resolver:0.5.0")
+		classpath("org.gradle.toolchains:foojay-resolver:0.6.0")
 	}
 }
 
