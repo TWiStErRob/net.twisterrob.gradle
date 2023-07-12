@@ -28,7 +28,7 @@ class AGPVersionsTest {
 
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
 		// This is not using AGPVersion() because Renovate needs to update this one. See "Update AGP version test.".
-		val expected = AGPVersion.parse("8.2.0-alpha11")
+		val expected = AGPVersion.parse("8.2.0-alpha12")
 
 		val actual = AGPVersions.CLASSPATH
 
