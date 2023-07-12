@@ -120,7 +120,7 @@
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
 			"matchStrings": [
-				"AGP .*? on Gradle ( - plugin)? \\(.*? on .*?\\) Test Results (XMLs|HTMLs|HTML)",
+				"AGP (.*?) on Gradle (.*?)( - plugin)? \\((.*?) on (.*?)\\) Test Results (XMLs|HTMLs|HTML)",
 				"\\(.*?\\)",
 				"\\((?<currentValue>.*) on "
 			],
@@ -165,7 +165,7 @@
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"AGP .*? on Gradle ( - plugin)? \\(.*? on .*?\\) Test Results (XMLs|HTMLs|HTML)",
+				"AGP (.*?) on Gradle (.*?)( - plugin)? \\((.*?) on (.*?)\\) Test Results (XMLs|HTMLs|HTML)",
 				"\\(.*?\\)",
 				" on (?<currentValue>.*)\\)"
 			],
