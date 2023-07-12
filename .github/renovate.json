@@ -103,15 +103,28 @@
 	],
 	"regexManagers": [
 		{
-			"description": "Update AGP compatibility CI matrix values and artifact names.",
+			"description": "Update AGP compatibility CI matrix values.",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
 			"matchStrings": [
-				"  agp: '(?<currentValue>.*)'",
-				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?<currentValue>.*) on (?:.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
+				"  agp: '(?<currentValue>.*)'"
 			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update AGP compatibility CI artifact names.",
+			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"datasourceTemplate": "maven",
+			"registryUrlTemplate": "https://maven.google.com",
+			"depNameTemplate": "com.android.tools.build:gradle",
+			"matchStrings": [
+				"AGP (.*?) on Gradle (.*?)( - plugin)? \\((.*?) on (.*?)\\) Test Results (XMLs|HTMLs|HTML)",
+				"\\(.*?\\)",
+				"\\((?<currentValue>.*) on "
+			],
+			"matchStringsStrategy": "recursive",
 			"versioningTemplate": "gradle"
 		},
 		{
@@ -137,14 +150,26 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"description": "Update Gradle compatibility CI matrix values and artifact names.",
+			"description": "Update Gradle compatibility CI matrix values.",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"  gradle: '(?<currentValue>.*)'",
-				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?:.*) on (?<currentValue>.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
+				"  gradle: '(?<currentValue>.*)'"
 			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update Gradle compatibility CI artifact names.",
+			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"datasourceTemplate": "gradle-version",
+			"depNameTemplate": "gradle",
+			"matchStrings": [
+				"AGP (.*?) on Gradle (.*?)( - plugin)? \\((.*?) on (.*?)\\) Test Results (XMLs|HTMLs|HTML)",
+				"\\(.*?\\)",
+				" on (?<currentValue>.*)\\)"
+			],
+			"matchStringsStrategy": "recursive",
 			"versioningTemplate": "gradle"
 		},
 		{
