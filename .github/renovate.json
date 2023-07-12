@@ -103,15 +103,26 @@
 	],
 	"regexManagers": [
 		{
-			"description": "Update AGP compatibility CI matrix values and artifact names.",
+			"description": "Update AGP compatibility CI matrix values.",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
 			"matchStrings": [
-				"  agp: '(?<currentValue>.*)'",
-				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?<currentValue>.*) on (?:.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
+				"  agp: '(?<currentValue>.*)'"
 			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update AGP compatibility CI artifact names.",
+			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"datasourceTemplate": "maven",
+			"registryUrlTemplate": "https://maven.google.com",
+			"depNameTemplate": "com.android.tools.build:gradle",
+			"matchStrings": [
+				"AGP (?<agpName>.*?) on Gradle (?<gradleName>.*?)(?<plugin> - plugin)? \\((?<currentValue>.*?) on (?<gradleExact>.*?)\\) Test Results (?<artifactType>XMLs|HTMLs|HTML)"
+			],
+			"autoReplaceStringTemplate": "AGP {{{agpName}}} on Gradle {{{gradleName}}}{{{plugin}}} ({{{newValue}}} on {{{gradleExact}}}) Test Results {{{artifactType}}}",
 			"versioningTemplate": "gradle"
 		},
 		{
@@ -137,14 +148,24 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"description": "Update Gradle compatibility CI matrix values and artifact names.",
+			"description": "Update Gradle compatibility CI matrix values.",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"  gradle: '(?<currentValue>.*)'",
-				"AGP (?:.*) on Gradle (?:.*)(?: - plugin)? \\((?:.*) on (?<currentValue>.*)\\) Test Results (?:XMLs|HTMLs|HTML)"
+				"  gradle: '(?<currentValue>.*)'"
 			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update Gradle compatibility CI artifact names.",
+			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"datasourceTemplate": "gradle-version",
+			"depNameTemplate": "gradle",
+			"matchStrings": [
+				"AGP (?<agpName>.*?) on Gradle (?<gradleName>.*?)(?<plugin> - plugin)? \\((?<agpExact>.*?) on (?<currentValue>.*?)\\) Test Results (?<artifactType>XMLs|HTMLs|HTML)"
+			],
+			"autoReplaceStringTemplate": "AGP {{{agpName}}} on Gradle {{{gradleName}}}{{{plugin}}} ({{{agpExact}}} on {{{newValue}}}) Test Results {{{artifactType}}}",
 			"versioningTemplate": "gradle"
 		},
 		{
