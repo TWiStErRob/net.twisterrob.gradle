@@ -5,6 +5,7 @@ package net.twisterrob.gradle
 
 import org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler
 import org.gradle.util.GradleVersion
+import java.lang.reflect.Field
 import java.util.regex.Pattern
 
 /**
@@ -98,12 +99,13 @@ import java.util.regex.Pattern
  * The flag [RegexOption.DOT_MATCHES_ALL] is enforced so `.` will match newlines and the regex is easier to write.
  * This can be disabled with `(?-s)` inline if you know what you're doing.
  */
+@Suppress("UseIfInsteadOfWhen")
 fun doNotNagAbout(message: Regex) {
 	// In Gradle 4.7.0 (c633542) org.gradle.util.SingleMessageLogger#deprecatedFeatureHandler came to be in a refactor.
 	// In Gradle 6.2.0 it was split (247fd32) to org.gradle.util.DeprecationLogger#deprecatedFeatureHandler
 	// and then further split (308086a) to org.gradle.internal.deprecation.DeprecationLogger#deprecatedFeatureHandler
 	// and then renamed (a75aedd) to #DEPRECATED_FEATURE_HANDLER.
-	val loggerField = when {
+	val loggerField: Field = when {
 		GradleVersion.version("6.2.0") <= GradleVersion.current().baseVersion -> {
 			Class.forName("org.gradle.internal.deprecation.DeprecationLogger")
 				.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
@@ -120,10 +122,20 @@ fun doNotNagAbout(message: Regex) {
 	}
 	val deprecationLogger: Any = loggerField.get(null)
 
-	// LoggingDeprecatedFeatureHandler#messages was added in Gradle 1.8.
-	val messagesField = LoggingDeprecatedFeatureHandler::class.java
-		.getDeclaredField("messages")
-		.apply { isAccessible = true }
+	val messagesField: Field = when {
+		GradleVersion.version("8.3") <= GradleVersion.current().baseVersion -> {
+			LoggingDeprecatedFeatureHandler::class.java
+				.getDeclaredField("loggedMessages")
+				.apply { isAccessible = true }
+		}
+		else -> {
+			// LoggingDeprecatedFeatureHandler#messages was added in Gradle 1.8.
+			LoggingDeprecatedFeatureHandler::class.java
+				.getDeclaredField("messages")
+				.apply { isAccessible = true }
+		}
+	}
+
 	@Suppress("UNCHECKED_CAST")
 	val messages: MutableSet<String> = messagesField.get(deprecationLogger) as MutableSet<String>
 
