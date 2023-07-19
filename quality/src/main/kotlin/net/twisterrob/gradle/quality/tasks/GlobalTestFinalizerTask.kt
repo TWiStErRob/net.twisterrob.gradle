@@ -22,7 +22,7 @@ import java.io.File
 open class GlobalTestFinalizerTask : TestReport() {
 
 	init {
-		destinationDirCompat = project.buildDir.resolve("reports/tests/allTests")
+		destinationDirCompat = project.layout.buildDirectory.dir("reports/tests/allTests").get().asFile
 	}
 
 	@TaskAction
@@ -74,6 +74,7 @@ private val Test.detachBinaryResultsDirectory: Provider<Directory>
 	// but also detach from the DirectoryProperty, which references its owning task.
 	get() = project.provider { this.binaryResultsDirectory.get() }
 
+// STOPSHIP use property?
 @Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
 private var TestReport.destinationDirCompat: File
 	get() =

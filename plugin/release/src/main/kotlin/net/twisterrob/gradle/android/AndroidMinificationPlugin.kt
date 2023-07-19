@@ -12,11 +12,12 @@ import com.android.build.gradle.internal.tasks.R8Task
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
-import java.io.File
 
 class AndroidMinificationPlugin : BasePlugin() {
 
@@ -28,16 +29,18 @@ class AndroidMinificationPlugin : BasePlugin() {
 		/**
 		 * @see com.android.build.gradle.ProguardFiles#getDefaultProguardFile
 		 */
-		val proguardBase = project.buildDir.resolve(SdkConstants.FD_INTERMEDIATES).resolve("proguard-rules")
+		val proguardBase = project.layout.buildDirectory
+			.dir(SdkConstants.FD_INTERMEDIATES)
+			.map { it.dir("proguard-rules") }
 		// TODO review ExtractProguardFiles task's files
-		val defaultAndroidRulesFile = proguardBase.resolve("android.pro")
-		val myProguardRulesFile = proguardBase.resolve("twisterrob.pro")
-		val myDebugProguardRulesFile = proguardBase.resolve("twisterrob-debug.pro")
-		val myReleaseProguardRulesFile = proguardBase.resolve("twisterrob-release.pro")
+		val defaultAndroidRulesFile = proguardBase.map { it.file("android.pro") }
+		val myProguardRulesFile = proguardBase.map { it.file("twisterrob.pro") }
+		val myDebugProguardRulesFile = proguardBase.map { it.file("twisterrob-debug.pro") }
+		val myReleaseProguardRulesFile = proguardBase.map { it.file("twisterrob-release.pro") }
 
 		android.apply {
-			defaultConfig.proguardFiles.add(defaultAndroidRulesFile)
-			defaultConfig.proguardFiles.add(myProguardRulesFile)
+			defaultConfig.proguardFile(defaultAndroidRulesFile)
+			defaultConfig.proguardFile(myProguardRulesFile)
 
 			project.plugins.withType<AppPlugin> {
 				val release = buildTypes["release"]
@@ -46,9 +49,9 @@ class AndroidMinificationPlugin : BasePlugin() {
 
 			buildTypes.all { buildType ->
 				if (buildType.isDebuggable) {
-					buildType.proguardFiles.add(myDebugProguardRulesFile)
+					buildType.proguardFile(myDebugProguardRulesFile)
 				} else {
-					buildType.proguardFiles.add(myReleaseProguardRulesFile)
+					buildType.proguardFile(myReleaseProguardRulesFile)
 				}
 			}
 			setupAutoProguardFiles()
@@ -61,10 +64,10 @@ class AndroidMinificationPlugin : BasePlugin() {
 			outputs.file(myDebugProguardRulesFile)
 			outputs.file(myReleaseProguardRulesFile)
 			outputs.upToDateWhen {
-				defaultAndroidRulesFile.lastModified() == builtDate.toEpochMilli()
-						&& myProguardRulesFile.lastModified() == builtDate.toEpochMilli()
-						&& myDebugProguardRulesFile.lastModified() == builtDate.toEpochMilli()
-						&& myReleaseProguardRulesFile.lastModified() == builtDate.toEpochMilli()
+				defaultAndroidRulesFile.get().asFile.lastModified() == builtDate.toEpochMilli()
+						&& myProguardRulesFile.get().asFile.lastModified() == builtDate.toEpochMilli()
+						&& myDebugProguardRulesFile.get().asFile.lastModified() == builtDate.toEpochMilli()
+						&& myReleaseProguardRulesFile.get().asFile.lastModified() == builtDate.toEpochMilli()
 			}
 			doLast {
 				copy("/android.pro", defaultAndroidRulesFile)
@@ -115,7 +118,8 @@ class AndroidMinificationPlugin : BasePlugin() {
 	}
 
 	companion object {
-		private fun copy(internalName: String, targetFile: File) {
+		private fun copy(internalName: String, target: Provider<RegularFile>) {
+			val targetFile = target.get().asFile
 			targetFile.parentFile.mkdirs()
 			val resource = AndroidMinificationPlugin::class.java.getResourceAsStream(internalName)
 				?: error("Cannot find ${internalName} to copy to ${targetFile}.")

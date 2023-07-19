@@ -312,8 +312,8 @@ private fun violations(
 	return Violations(
 		module = project.path,
 		parser = type,
-		report = project.buildDir.resolve("""reports\$type$suffix.html"""),
-		result = project.buildDir.resolve("""reports\$type$suffix.xml"""),
+		report = project.layout.buildDirectory.file("""reports\$type$suffix.html""").get().asFile,
+		result = project.layout.buildDirectory.file("""reports\$type$suffix.xml""").get().asFile,
 		variant = variant,
 		violations = violations.toList().ifEmpty { null },
 	)
