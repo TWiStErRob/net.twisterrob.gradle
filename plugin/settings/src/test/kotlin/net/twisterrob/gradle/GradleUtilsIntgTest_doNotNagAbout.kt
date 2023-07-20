@@ -50,7 +50,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		result.verifyNagging("Fake nagging for test", 7)
 	}
 
-	@Test fun `disable nagging for specific feature`() {
+	@Test fun `disable nagging for specific feature used in configuration phase`() {
 		assumeTrue(canNagUser(gradle.gradleVersion))
 
 		val buildFileLine =
@@ -73,6 +73,37 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		""".trimIndent()
 		val result = gradle.runBuild {
 			run(script)
+		}
+
+		result.assertNoOutputLine(Regex(""".*Fake nagging for test.*"""))
+	}
+
+	@Test fun `disable nagging for specific feature used in execution phase`() {
+		assumeTrue(canNagUser(gradle.gradleVersion))
+
+		val buildFileLine =
+			if (GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion) {
+				"""
+					"Build file '${'$'}{buildFile.absolutePath}': line 13${'$'}{System.lineSeparator()}" +
+				""".trimIndent()
+			} else {
+				""
+			}
+		val gradleVersion = nextMajorVersion(gradle.gradleVersion)
+		@Suppress("UnnecessaryQualifiedReference")
+		val script = """
+			net.twisterrob.gradle.GradleUtils.doNotNagAbout(
+				${buildFileLine}
+				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradleVersion}."
+			)
+			tasks.register("nag") {
+				doLast {
+					${nag("""Fake nagging for test""")}
+				}
+			}
+		""".trimIndent()
+		val result = gradle.runBuild {
+			run(script, "nag")
 		}
 
 		result.assertNoOutputLine(Regex(""".*Fake nagging for test.*"""))
