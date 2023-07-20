@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.internal.nagging
 
+import net.twisterrob.gradle.buildFlowFinished
 import net.twisterrob.gradle.isDoNotNagAboutDiagnosticsEnabled
 import org.gradle.api.invocation.Gradle
 import org.gradle.util.GradleVersion
@@ -14,8 +15,11 @@ internal fun reviewIfNaggingCausesFailure(gradle: Gradle) {
 		//   Too early in build lifecycle (e.g. task execution).
 		// * `gradle.taskGraph.whenReady { clearErrorIfNoMessages() }`
 		//   Too early in build lifecycle (e.g. task execution).
-		@Suppress("DEPRECATION")
-		gradle.buildFinished { clearErrorIfNoMessages() }
+		// * `gradle.buildFinished { clearErrorIfNoMessages() }`
+		//   It's around the right time, but it's deprecated.
+		// * `FlowScope` is the only way I see now.
+		//   It's available since Gradle 8.1, it's still incubating in 8.3.
+		gradle.buildFlowFinished { clearErrorIfNoMessages() }
 	}
 }
 

@@ -1,6 +1,8 @@
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
+	// Need to use Kotlin DSL in this module, because some of the code is shared between this and /gradle/:plugins builds.
+	`kotlin-dsl`
 }
 
 base.archivesName.set("twister-convention-settings")
