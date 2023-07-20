@@ -30,6 +30,8 @@ private abstract class BaseIgnoringSet(
 		}
 		ignorePatterns.add(regex)
 	}
+
+	abstract override fun add(element: String): Boolean
 }
 
 /**

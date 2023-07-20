@@ -19,7 +19,7 @@ fun Gradle.buildFlowFinished(action: (Throwable?) -> Unit) {
 	serviceOf<FlowScope>().always(ExecuteAction::class.java) {
 		parameters.action.set(action)
 		val buildResult = serviceOf<FlowProviders>().buildWorkResult
-		parameters.failure.set(buildResult.map { it.failure.orElse(null) })
+		parameters.failure.set(buildResult.map { workResult -> workResult.failure.orElse(null) })
 	}
 }
 

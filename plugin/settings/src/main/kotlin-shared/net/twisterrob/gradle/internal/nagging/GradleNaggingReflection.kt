@@ -9,6 +9,7 @@ import java.lang.reflect.Field
  * Reflection wrapper to access Gradle's internal nagging mechanism.
  * Encapsulates reflective accesses in a typed interface.
  */
+@Suppress("PropertyUsedBeforeDeclaration") // Ordering is from high level to low level. High level properties are lazy.
 internal object GradleNaggingReflection {
 
 	/**
@@ -20,6 +21,7 @@ internal object GradleNaggingReflection {
 	/**
 	 * @since Gradle 4.7.0 because of [deprecatedFeatureHandler].
 	 */
+	@Suppress("DoubleMutabilityForCollection") // It's reflective access to a field, which is actually final 😅.
 	var messages: MutableSet<String>
 		@Suppress("UNCHECKED_CAST")
 		get() = messagesField.get(deprecatedFeatureHandler) as MutableSet<String>

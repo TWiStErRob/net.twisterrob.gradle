@@ -26,19 +26,23 @@ internal fun reviewIfNaggingCausesFailure(gradle: Gradle) {
 private fun clearErrorIfNoMessages() {
 	if (GradleNaggingReflection.messages.isEmpty()) {
 		if (isDoNotNagAboutDiagnosticsEnabled) {
+			@Suppress("ForbiddenMethodCall") // This will be shown in the console, as the user explicitly asked for it.
 			println(
 				"No deprecation messages at the end of build, " +
-						"resetting error from ${GradleNaggingReflection.error}."
+						"resetting error from ${GradleNaggingReflection.error ?: "null"}."
 			)
 		}
 		GradleNaggingReflection.error = null
 	} else {
 		if (isDoNotNagAboutDiagnosticsEnabled) {
-			println(
-				"Deprecation messages found, keeping error:\n"
-						+ "${GradleNaggingReflection.error}\n"
-						+ "Messages:\n"
-						+ GradleNaggingReflection.messages.joinToString("\n")
+			@Suppress("ForbiddenMethodCall") // This will be shown in the console, as the user explicitly asked for it.
+			print(
+				buildString {
+					appendLine("Deprecation messages found, keeping error:")
+					appendLine(GradleNaggingReflection.error)
+					appendLine("Messages:")
+					appendLine(GradleNaggingReflection.messages.joinToString("\n"))
+				}
 			)
 		}
 	}
