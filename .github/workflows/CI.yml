@@ -626,15 +626,15 @@ jobs:
             build-tools: '33.0.2'
             test-task: 'testReport :plugin:tests'
 
-          - name: "AGP 8.2.x on Gradle 8.1+"
-            gradle: '8.1.1'
+          - name: "AGP 8.2.x on Gradle 8.2+"
+            gradle: '8.2.1'
             gradle-java: '17'
             agp: '8.2.0-alpha13'
             kotlin: '1.6.21'
             build-tools: '34.0.0-rc3'
             test-task: 'testReport :quality:tests'
-          - name: "AGP 8.2.x on Gradle 8.1+ - plugin"
-            gradle: '8.1.1'
+          - name: "AGP 8.2.x on Gradle 8.2+ - plugin"
+            gradle: '8.2.1'
             gradle-java: '17'
             agp: '8.2.0-alpha13'
             kotlin: '1.6.21'
@@ -944,19 +944,19 @@ jobs:
           name: 'AGP preview on Gradle preview - plugin (8.2.0-alpha13 on 8.2.1) Test Results XMLs'
           path: 'artifacts/AGP preview on Gradle preview - plugin (8.2.0-alpha13 on 8.2.1) Test Results XMLs'
 
-      - name: "Download 'AGP 8.2.x on Gradle 8.1+ (8.2.0-alpha13 on 8.1.1) Test Results XMLs' artifact."
+      - name: "Download 'AGP 8.2.x on Gradle 8.2+ (8.2.0-alpha13 on 8.2.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: 'AGP 8.2.x on Gradle 8.1+ (8.2.0-alpha13 on 8.1.1) Test Results XMLs'
-          path: 'artifacts/AGP 8.2.x on Gradle 8.1+ (8.2.0-alpha13 on 8.1.1) Test Results XMLs'
+          name: 'AGP 8.2.x on Gradle 8.2+ (8.2.0-alpha13 on 8.2.1) Test Results XMLs'
+          path: 'artifacts/AGP 8.2.x on Gradle 8.2+ (8.2.0-alpha13 on 8.2.1) Test Results XMLs'
 
-      - name: "Download 'AGP 8.2.x on Gradle 8.1+ - plugin (8.2.0-alpha13 on 8.1.1) Test Results XMLs' artifact."
+      - name: "Download 'AGP 8.2.x on Gradle 8.2+ - plugin (8.2.0-alpha13 on 8.2.1) Test Results XMLs' artifact."
         if: success() || failure()
         uses: actions/download-artifact@v3
         with:
-          name: 'AGP 8.2.x on Gradle 8.1+ - plugin (8.2.0-alpha13 on 8.1.1) Test Results XMLs'
-          path: 'artifacts/AGP 8.2.x on Gradle 8.1+ - plugin (8.2.0-alpha13 on 8.1.1) Test Results XMLs'
+          name: 'AGP 8.2.x on Gradle 8.2+ - plugin (8.2.0-alpha13 on 8.2.1) Test Results XMLs'
+          path: 'artifacts/AGP 8.2.x on Gradle 8.2+ - plugin (8.2.0-alpha13 on 8.2.1) Test Results XMLs'
 
       - name: "Download 'AGP 8.2.x on Gradle 8.x (8.2.0-alpha13 on 8.2.1) Test Results XMLs' artifact."
         if: success() || failure()
