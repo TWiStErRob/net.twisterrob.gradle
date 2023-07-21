@@ -30,7 +30,7 @@ class NaggingPluginForTest : Plugin<Gradle> {
 	 * Access from `build.gradle`:
 	 * ```groovy
 	 * def doNotNagAboutForTest = rootProject.ext["doNotNagAboutForTest"]
-	 * doNotNagAboutForTest("7.4" to "8.0", "7.2" to "7.4.1", "message")
+	 * doNotNagAboutForTest(new kotlin.Pair("7.4", "8.0"), new kotlin.Pair("7.2", "7.4.1"), "message")
 	 * ```
 	 *
 	 * Access from `build.gradle.kts`:
