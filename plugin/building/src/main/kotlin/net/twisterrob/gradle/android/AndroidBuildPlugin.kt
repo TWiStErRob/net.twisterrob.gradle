@@ -151,10 +151,12 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				"META-INF/androidx.*.version",
 
 				// Needed for compiling against top-level functions. Since APK is end product, this is not necessary.
+				// TODO consider not including this for AARs.
 				"**/*.kotlin_metadata",
-				// Kotlin builds these things in, found no docs so far about their necessity, so try to exclude.
-				"**/*.kotlin_module",
-				"**/*.kotlin_builtins",
+				// kotlin_module file holds @OptionalExpectation, @JvmMultifileClass, module annotations.
+				//"**/*.kotlin_module",
+				// kotlin_builtins are required for org.jetbrains.kotlin:kotlin-reflect.
+				//"**/*.kotlin_builtins",
 
 				// Readmes
 				// (e.g. hamcrest-library-2.1.jar and hamcrest-core-2.1.jar both pack a readme to encourage upgrade)
