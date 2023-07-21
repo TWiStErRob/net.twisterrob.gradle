@@ -216,6 +216,21 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
+	@Test fun `buildConfig warning is not shown (debug)`() {
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleDebug").build()
+
+		result.assertSuccess(":assembleDebug")
+		// AGP 7.4+: WARNING: Accessing value buildConfigFields in variant debug has no effect as the feature buildConfig is disabled.
+		result.assertNoOutputLine(Regex("""WARNING:.* buildConfigFields .*"""))
+	}
+
 	@Test fun `can disable buildConfig generation (debug)`() {
 		// Default build.gradle has the app plugin applied.
 		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
