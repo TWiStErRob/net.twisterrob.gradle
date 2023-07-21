@@ -34,6 +34,8 @@ run {
 	}
 	// The copied code is marked as generated for IDEA, so it warns when it's accidentally edited.
 	idea.module.generatedSourceDirs.add(sharedCodeFolder)
+	// The copied code is also excluded, because it keeps showing up in code navigation and search.
+	idea.module.excludeDirs.add(sharedCodeFolder)
 	// Some tasks will rely on this copied code, so make sure their inputs are appropriately marked.
 	tasks.named("compileKotlin").configure { dependsOn(copyReusableSources) }
 	tasks.named("detektMain").configure { dependsOn(copyReusableSources) }
