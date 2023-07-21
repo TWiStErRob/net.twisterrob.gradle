@@ -16,7 +16,7 @@ initscript {
 	}
 }
 
-apply<net.twisterrob.gradle.nagging.NaggingPlugin>()
+apply<net.twisterrob.gradle.nagging.NaggingPluginForTest>()
 
 //System.setProperty("net.twisterrob.gradle.nagging.diagnostics", "true")
 

@@ -8,7 +8,7 @@ import org.gradle.api.plugins.ExtensionAware
 /**
  * Used from `init.gradle.kts` in test resources.
  */
-class NaggingPlugin : Plugin<Gradle> {
+class NaggingPluginForTest : Plugin<Gradle> {
 	override fun apply(gradle: Gradle) {
 		gradle.rootProject(::exposeDoNotNagAboutExtras)
 		gradle.beforeSettings(::exposeDoNotNagAboutExtras)
