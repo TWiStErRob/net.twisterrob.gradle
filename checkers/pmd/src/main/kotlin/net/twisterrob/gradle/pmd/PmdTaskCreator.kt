@@ -18,7 +18,8 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 			override fun setupConfigLocations(task: PmdTask) {
 				task.ruleSets = emptyList() // default is java-basic
 				val rootConfig = task.project.rootProject.file("config/pmd/pmd.xml")
-				val subConfig = task.project.file("config/pmd/pmd.xml")
+				@Suppress("MaxChainedCallsOnSameLine")
+				val subConfig = task.project.layout.projectDirectory.file("config/pmd/pmd.xml").asFile
 				val config: File? = listOf(subConfig, rootConfig).firstOrNull { it.exists() }
 				if (config != null) {
 					task.ruleSetFiles += task.project.files(config)
@@ -46,8 +47,10 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 			) {
 				super.setupSources(task, variants)
 
-				val buildPath = task.project.buildDir.toPath()
-				val projectPath = task.project.projectDir.toPath()
+				@Suppress("MaxChainedCallsOnSameLine")
+				val buildPath = task.project.layout.buildDirectory.get().asFile.toPath()
+				@Suppress("MaxChainedCallsOnSameLine")
+				val projectPath = task.project.layout.projectDirectory.asFile.toPath()
 				if (!buildPath.startsWith(projectPath)) {
 					task.logger.warn(
 						"""

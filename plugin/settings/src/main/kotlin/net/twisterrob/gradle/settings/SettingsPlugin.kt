@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.settings
 
+import net.twisterrob.gradle.internal.nagging.reviewIfNaggingCausesFailure
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
 
@@ -13,6 +14,6 @@ import org.gradle.api.initialization.Settings
  */
 class SettingsPlugin : Plugin<Settings> {
 	override fun apply(settings: Settings) {
-		// Nothing to do, yet.
+		reviewIfNaggingCausesFailure(settings.gradle)
 	}
 }

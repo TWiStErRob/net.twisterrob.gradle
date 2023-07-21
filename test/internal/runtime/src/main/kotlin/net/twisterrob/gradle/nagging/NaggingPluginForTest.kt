@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.nagging
 
+import net.twisterrob.gradle.settings.SettingsPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.plugins.ExtensionAware
@@ -7,10 +8,14 @@ import org.gradle.api.plugins.ExtensionAware
 /**
  * Used from `init.gradle.kts` in test resources.
  */
-class NaggingPlugin : Plugin<Gradle> {
+@Suppress("unused") // Used from nagging.init.gradle.kts
+class NaggingPluginForTest : Plugin<Gradle> {
 	override fun apply(gradle: Gradle) {
 		gradle.rootProject(::exposeDoNotNagAboutExtras)
 		gradle.beforeSettings(::exposeDoNotNagAboutExtras)
+		gradle.settingsEvaluated {
+			it.plugins.apply(SettingsPlugin::class.java)
+		}
 	}
 
 	/**
@@ -25,7 +30,7 @@ class NaggingPlugin : Plugin<Gradle> {
 	 * Access from `build.gradle`:
 	 * ```groovy
 	 * def doNotNagAboutForTest = rootProject.ext["doNotNagAboutForTest"]
-	 * doNotNagAboutForTest("7.4" to "8.0", "7.2" to "7.4.1", "message")
+	 * doNotNagAboutForTest(new kotlin.Pair("7.4", "8.0"), new kotlin.Pair("7.2", "7.4.1"), "message")
 	 * ```
 	 *
 	 * Access from `build.gradle.kts`:

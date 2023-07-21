@@ -9,6 +9,7 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.fixtures.ContentMergeMode
+import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -18,6 +19,7 @@ import org.junit.jupiter.params.provider.ValueSource
 /**
  * See all `gradlePlugin { plugins { create() { id =` blocks in this project's build.gradle.kts files.
  */
+@Suppress("PropertyUsedBeforeDeclaration") // settings is a lazy property.
 @ExtendWith(GradleRunnerRuleExtension::class)
 class PluginIntegrationTest : BaseIntgTest() {
 
@@ -325,9 +327,9 @@ class PluginIntegrationTest : BaseIntgTest() {
 		)
 	}
 
-	companion object {
+	private val settings: String
 		@Language("gradle.kts")
-		val settings: String = """
+		get() = """
 			import java.io.PrintWriter
 			import java.io.StringWriter
 			
@@ -361,37 +363,46 @@ class PluginIntegrationTest : BaseIntgTest() {
 			}
 		""".trimIndent()
 
-		private fun calculateExceptionallyRealizedTasks(): List<String> {
-			val generalTasks: List<String> = listOf(
-				":help",
-			)
-			val agpTasks: List<String> =
-				if (AGPVersions.UNDER_TEST compatible AGPVersions.v72x) {
-					// Known bad tasks on AGP 7.2: old version, situation unlikely to change.
-					listOf(
-						":compileDebugRenderscript",
-						":compileReleaseRenderscript",
-					)
-				} else {
-					emptyList()
-				}
-			val kgpTasks: List<String> =
-				if (KotlinVersions.UNDER_TEST.inRange(KotlinVersions.v1720, KotlinVersions.v190)) {
-					// https://youtrack.jetbrains.com/issue/KT-54468
-					// Known bad tasks on Kotlin 1.7.20-1.8.21 (fixed in 1.9.0):
-					// with K2 ongoing, situation unlikely to change.
-					listOf(
-						":compileDebugKotlin",
-						":compileReleaseKotlin",
-						":compileDebugUnitTestKotlin",
-						":compileReleaseUnitTestKotlin",
-						":compileDebugAndroidTestKotlin",
-					)
-				} else {
-					emptyList()
-				}
-			return generalTasks + agpTasks + kgpTasks
-		}
+	private fun calculateExceptionallyRealizedTasks(): List<String> {
+		val generalTasks: List<String> = listOf(
+			":help",
+		)
+		val agpTasks: List<String> =
+			if (AGPVersions.UNDER_TEST compatible AGPVersions.v72x) {
+				// Known bad tasks on AGP 7.2: old version, situation unlikely to change.
+				listOf(
+					":compileDebugRenderscript",
+					":compileReleaseRenderscript",
+				)
+			} else {
+				emptyList()
+			}
+		val kgpTasks: List<String> =
+			if (KotlinVersions.UNDER_TEST.inRange(KotlinVersions.v1720, KotlinVersions.v190)) {
+				// https://youtrack.jetbrains.com/issue/KT-54468
+				// Known bad tasks on Kotlin 1.7.20-1.8.21 (fixed in 1.9.0):
+				// with K2 ongoing, situation unlikely to change.
+				listOf(
+					":compileDebugKotlin",
+					":compileReleaseKotlin",
+					":compileDebugUnitTestKotlin",
+					":compileReleaseUnitTestKotlin",
+					":compileDebugAndroidTestKotlin",
+				)
+			} else {
+				emptyList()
+			}
+		val gradleTasks: List<String> =
+			if (GradleVersion.version("8.3") == gradle.gradleVersion.baseVersion) {
+				// https://github.com/gradle/gradle/issues/25841
+				// This only affects `kotlin project doesn't create tasks when using plugin`(String) test.
+				listOf(
+						":compileJava",
+				)
+			} else {
+				emptyList()
+			}
+		return generalTasks + agpTasks + kgpTasks + gradleTasks
 	}
 
 	/**

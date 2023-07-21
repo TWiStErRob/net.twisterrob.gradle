@@ -10,7 +10,7 @@ description = "Plugins for Gradle that support Android flavors."
 project.tasks.register<TestReport>("testReport") {
 	group = LifecycleBasePlugin.VERIFICATION_GROUP
 	description = "Run and report on all tests in the project. Add `-x test` to just generate report."
-	destinationDirectory.set(file("${buildDir}/reports/tests/all"))
+	destinationDirectory.set(project.layout.buildDirectory.dir("reports/tests/all"))
 
 	val tests = subprojects
 		.flatMap { it.tasks.withType(Test::class) } // Forces to create the tasks.

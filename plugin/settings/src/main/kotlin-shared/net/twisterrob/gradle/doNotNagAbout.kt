@@ -3,6 +3,8 @@
 
 package net.twisterrob.gradle
 
+import net.twisterrob.gradle.internal.nagging.GradleNaggingReflection
+import net.twisterrob.gradle.internal.nagging.IgnoringSet
 import org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler
 import org.gradle.util.GradleVersion
 import java.util.regex.Pattern
@@ -24,12 +26,7 @@ import java.util.regex.Pattern
  *    This gives us the ability to specifically ignore an instance of a type of message.
  *    This is useful if multiple plugins are behind on fixing the deprecations.
  *  - `fail` was not a valid option for `--warning-mode` before Gradle 5.6.0.
- *  - In case it's not working, enable diagnostic logging by putting this before the first `doNotNagAbout` call:
- *    ```
- *    System.setProperty("net.twisterrob.gradle.nagging.diagnostics", "true")
- *    ```
- *    or by setting `systemProp.net.twisterrob.gradle.nagging.diagnostics=true` in `gradle.properties`
- *    or by setting [isDoNotNagAboutDiagnosticsEnabled] to `true`.
+ *  - In case it's not working, enable diagnostic logging, see [isDoNotNagAboutDiagnosticsEnabled].
  *
  * ### Example 1 - suppressing generic deprecation.
  * Realistic usage example with Gradle 7.5.1 and Android Gradle Plugin 7.2.2:
@@ -99,36 +96,8 @@ import java.util.regex.Pattern
  * This can be disabled with `(?-s)` inline if you know what you're doing.
  */
 fun doNotNagAbout(message: Regex) {
-	// In Gradle 4.7.0 (c633542) org.gradle.util.SingleMessageLogger#deprecatedFeatureHandler came to be in a refactor.
-	// In Gradle 6.2.0 it was split (247fd32) to org.gradle.util.DeprecationLogger#deprecatedFeatureHandler
-	// and then further split (308086a) to org.gradle.internal.deprecation.DeprecationLogger#deprecatedFeatureHandler
-	// and then renamed (a75aedd) to #DEPRECATED_FEATURE_HANDLER.
-	val loggerField = when {
-		GradleVersion.version("6.2.0") <= GradleVersion.current().baseVersion -> {
-			Class.forName("org.gradle.internal.deprecation.DeprecationLogger")
-				.getDeclaredField("DEPRECATED_FEATURE_HANDLER")
-				.apply { isAccessible = true }
-		}
-		GradleVersion.version("4.7.0") <= GradleVersion.current().baseVersion -> {
-			Class.forName("org.gradle.util.SingleMessageLogger")
-				.getDeclaredField("deprecatedFeatureHandler")
-				.apply { isAccessible = true }
-		}
-		else -> {
-			error("Gradle ${GradleVersion.current()} too old, cannot ignore deprecation: $message")
-		}
-	}
-	val deprecationLogger: Any = loggerField.get(null)
-
-	// LoggingDeprecatedFeatureHandler#messages was added in Gradle 1.8.
-	val messagesField = LoggingDeprecatedFeatureHandler::class.java
-		.getDeclaredField("messages")
-		.apply { isAccessible = true }
-	@Suppress("UNCHECKED_CAST")
-	val messages: MutableSet<String> = messagesField.get(deprecationLogger) as MutableSet<String>
-
-	val ignore = IgnoringSet.wrap(messages)
-	messagesField.set(deprecationLogger, ignore)
+	val ignore = IgnoringSet.wrap(GradleNaggingReflection.messages)
+	GradleNaggingReflection.messages = ignore
 	val regex = Regex(message.pattern, message.options + setOf(RegexOption.DOT_MATCHES_ALL))
 	ignore.ignorePattern(regex)
 }
@@ -213,45 +182,15 @@ fun doNotNagAbout(message: Pattern) {
 	doNotNagAbout(message.toRegex())
 }
 
-private class IgnoringSet(
-	private val backingSet: MutableSet<String>
-) : MutableSet<String> by backingSet {
-
-	private val ignorePatterns: MutableSet<Regex> = mutableSetOf()
-
-	fun ignorePattern(regex: Regex) {
-		if (isDoNotNagAboutDiagnosticsEnabled) {
-			@Suppress("ForbiddenMethodCall") // This will be shown in the console, as the user explicitly asked for it.
-			println("Ignoring pattern: ${regex}")
-		}
-		ignorePatterns.add(regex)
-	}
-
-	override fun add(element: String): Boolean {
-		val isIgnored = ignorePatterns.any { it.matches(element) }
-		val isNew = backingSet.add(element)
-		if (isDoNotNagAboutDiagnosticsEnabled) {
-			val state = if (isNew) "first seen" else "already added"
-			val ignores = ignorePatterns.joinToString(separator = "\n") { ignorePattern ->
-				val matching = if (ignorePattern.matches(element)) "**matching**" else "not matching"
-				val ignoreRegex = ignorePattern.toString().prependIndent("   ")
-				@Suppress("StringShouldBeRawString") // It would be more complex because of interpolations.
-				" - Deprecation is ${matching} ignore pattern:\n   ```regex\n${ignoreRegex}\n   ```"
-			}
-			@Suppress(
-				"ForbiddenMethodCall", // This will be shown in the console, as the user explicitly asked for it.
-				"StringShouldBeRawString", // It would be more complex because of interpolations.
-			)
-			println("Nagging about ${state} deprecation:\n```\n${element}\n```\n${ignores}")
-		}
-		return !isIgnored && isNew
-	}
-
-	companion object {
-		fun wrap(backingSet: MutableSet<String>): IgnoringSet =
-			if (backingSet is IgnoringSet) backingSet else IgnoringSet(backingSet)
-	}
-}
-
+/**
+ * Enables diagnostics to help figure out why a pattern is not matching a deprecation.
+ * The output will be in the console via println(), not --info or other hidden mechanism.
+ * Do not keep this turned on, use it only for debugging.
+ *
+ * To enable, make sure the flag is set before the first `doNotNagAbout` call.
+ *  * set `systemProp.net.twisterrob.gradle.nagging.diagnostics=true` in `gradle.properties`
+ *  * call `System.setProperty("net.twisterrob.gradle.nagging.diagnostics", "true")` (usually in settings.gradle)
+ *  * set this property [isDoNotNagAboutDiagnosticsEnabled] to `true` (usually in settings.gradle)
+ */
 var isDoNotNagAboutDiagnosticsEnabled: Boolean =
 	System.getProperty("net.twisterrob.gradle.nagging.diagnostics", "false").toBoolean()

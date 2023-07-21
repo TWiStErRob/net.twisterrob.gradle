@@ -312,12 +312,16 @@ private fun violations(
 	return Violations(
 		module = project.path,
 		parser = type,
-		report = project.buildDir.resolve("""reports\$type$suffix.html"""),
-		result = project.buildDir.resolve("""reports\$type$suffix.xml"""),
+		report = project.buildFile("reports/${type}${suffix}.html"),
+		result = project.buildFile("reports/${type}${suffix}.xml"),
 		variant = variant,
 		violations = violations.toList().ifEmpty { null },
 	)
 }
+
+private fun Project.buildFile(path: String): File =
+	@Suppress("MaxChainedCallsOnSameLine")
+	this.layout.buildDirectory.file(path).get().asFile
 
 private fun Violations.noViolations(): Violations =
 	Violations(

@@ -3,6 +3,7 @@
 package net.twisterrob.gradle.vcs
 
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.lib.GpgConfig.GpgFormat
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Ref
 import org.eclipse.jgit.revwalk.RevCommit
@@ -19,6 +20,17 @@ fun createGitRepository(repoDir: File): Git =
 		.init()
 		.call {
 			setDirectory(repoDir)
+		}
+		.apply {
+			// The following in .gitconfig blows up:
+			// ```
+			// [gpg]
+			//     format = ssh
+			// ```
+			// with IllegalArgumentException: Invalid value: gpg.format=ssh
+			// at org.eclipse.jgit.lib.GpgConfig.<init>(GpgConfig.java:86)
+			// in JGIT 6.6.0.202305301015-r
+			repository.config.setEnum("gpg", null,  "format", GpgFormat.OPENPGP)
 		}
 		.also { result -> println("Repository ${repoDir} created at ${result}") }
 

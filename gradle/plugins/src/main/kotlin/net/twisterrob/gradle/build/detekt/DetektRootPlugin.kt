@@ -31,7 +31,7 @@ private fun configureDetektReportMerging(
 ) {
 	project.tasks.register<ReportMergeTask>("detektReportMerge${mergedExtension.capitalized()}") {
 		val detektReportMergeTask = this@register
-		output.set(project.buildDir.resolve("reports/detekt/merge.${mergedExtension}"))
+		output.set(project.layout.buildDirectory.file("reports/detekt/merge.${mergedExtension}"))
 		// Intentionally eager: at the point detektReportMergeXml is configured,
 		// we need to know about all the Detekt tasks for their report locations.
 		project.evaluationDependsOnChildren()

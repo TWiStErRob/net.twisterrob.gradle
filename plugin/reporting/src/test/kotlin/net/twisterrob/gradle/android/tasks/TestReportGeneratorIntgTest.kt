@@ -31,8 +31,8 @@ class TestReportGeneratorIntgTest : BaseIntgTest() {
 		val script = """
 			//noinspection GroovyAssignabilityCheck
 			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.java.name}) {
-				input.set(new File(rootDir, 'my_test_input'))
-				output.set(new File(buildDir, 'my_test_results'))
+				input = rootProject.layout.projectDirectory.dir('my_test_input')
+				output = project.layout.buildDirectory.dir('my_test_results')
 				//outputs.upToDateWhen { false }
 			}
 		""".trimIndent()
@@ -51,7 +51,7 @@ class TestReportGeneratorIntgTest : BaseIntgTest() {
 		val script = """
 			//noinspection GroovyAssignabilityCheck
 			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.java.name}) {
-				input.set(new File(rootDir, 'subfolder'))
+				input = rootProject.layout.projectDirectory.dir('subfolder')
 			}
 		""".trimIndent()
 
@@ -69,7 +69,7 @@ class TestReportGeneratorIntgTest : BaseIntgTest() {
 		val script = """
 			//noinspection GroovyAssignabilityCheck
 			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.java.name}) {
-				output.set(new File(rootDir, 'subfolder'))
+				output = rootProject.layout.projectDirectory.dir('subfolder')
 			}
 		""".trimIndent()
 

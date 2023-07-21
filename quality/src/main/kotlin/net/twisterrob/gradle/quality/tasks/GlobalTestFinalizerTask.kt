@@ -8,6 +8,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.testing.Test
@@ -16,13 +17,20 @@ import org.gradle.kotlin.dsl.withType
 import org.gradle.util.GradleVersion
 import org.gradle.work.DisableCachingByDefault
 import se.bjurr.violations.lib.model.SEVERITY
-import java.io.File
 
 @DisableCachingByDefault(because = "Base class is not cacheable yet. (Gradle 8.0)")
 open class GlobalTestFinalizerTask : TestReport() {
 
+	/**
+	 * Need to save the value to a field, so that we can query the provider in @TaskAction.
+	 * Without this, usages (`.get()`) fail with the following exception:
+	 * > Querying the mapped value of task ':testReport' property 'destinationDirectory' before task ':testReport' has completed is not supported
+	 */
+	@get:Internal
+	internal val output: Provider<Directory> = project.layout.buildDirectory.dir("reports/tests/allTests")
+
 	init {
-		destinationDirCompat = project.buildDir.resolve("reports/tests/allTests")
+		destinationDirCompat = output
 	}
 
 	@TaskAction
@@ -41,7 +49,7 @@ open class GlobalTestFinalizerTask : TestReport() {
 		}
 		val errors = violations.filter { it.severity == SEVERITY.ERROR }
 		if (errors.isNotEmpty()) {
-			val report = destinationDirCompat.resolve("index.html").toURI()
+			val report = output.map { it.file("index.html") }.get().asFile.toURI()
 			throw GradleException("There were ${errors.size} failing tests. See the report at: ${report}")
 		}
 	}
@@ -74,16 +82,21 @@ private val Test.detachBinaryResultsDirectory: Provider<Directory>
 	// but also detach from the DirectoryProperty, which references its owning task.
 	get() = project.provider { this.binaryResultsDirectory.get() }
 
+/**
+ * Note: this is no ordinary DirectoryProperty,
+ * `destinationDirCompat.set(...)` won't work, use `destinationDirCompat::set` instead.
+ */
 @Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
-private var TestReport.destinationDirCompat: File
+private var TestReport.destinationDirCompat: Provider<Directory>
 	get() =
 		when {
 			GradleVersion.version("7.4") <= GradleVersion.current().baseVersion -> {
-				this.destinationDirectory.get().asFile
+				this.destinationDirectory
 			}
 			else -> {
 				@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 9 */)
-				this.destinationDir
+				val destinationDir = this.destinationDir
+				this.project.objects.directoryProperty().fileValue(destinationDir)
 			}
 		}
 	set(value) {
@@ -93,7 +106,7 @@ private var TestReport.destinationDirCompat: File
 			}
 			else -> {
 				@Suppress("DEPRECATION" /* Gradle 7.6, to be removed in Gradle 9 */)
-				this.destinationDir = value
+				this.destinationDir = value.get().asFile
 			}
 		}
 	}

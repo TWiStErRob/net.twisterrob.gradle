@@ -132,8 +132,10 @@ T : VerificationTask {
 			variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
 		) {
 			// TODO classpath
-			val buildPath = task.project.buildDir.toPath()
-			val projectPath = task.project.projectDir.toPath()
+			@Suppress("MaxChainedCallsOnSameLine")
+			val buildPath = task.project.layout.buildDirectory.get().asFile.toPath()
+			@Suppress("MaxChainedCallsOnSameLine")
+			val projectPath = task.project.layout.projectDirectory.asFile.toPath()
 			if (!buildPath.startsWith(projectPath)) {
 				task.logger.warn(
 					"""

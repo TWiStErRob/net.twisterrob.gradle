@@ -395,6 +395,27 @@ class MergeGradleScriptsKtTest {
 			)
 		}
 
+		@Test fun `commented import-looking statements`() {
+			mergeTest(
+				script1 = """
+					plugins {
+						id("some.plugin")
+					}
+				""".trimIndent(),
+				script2 = """
+					//noinspection UnnecessaryQualifiedReference .gradle files don't auto-import kotlin. namespace.
+					println(new kotlin.Pair(1, 2))
+				""".trimIndent(),
+				mergeExpectation = """
+					plugins {
+						id("some.plugin")
+					}
+					//noinspection UnnecessaryQualifiedReference .gradle files don't auto-import kotlin. namespace.
+					println(new kotlin.Pair(1, 2))
+				""".trimIndent()
+			)
+		}
+
 		@Suppress("GroovyAssignabilityCheck") // Intentionally wrong.
 		@Test fun `leaves nested plugins blocks alone`() {
 			mergeTest(

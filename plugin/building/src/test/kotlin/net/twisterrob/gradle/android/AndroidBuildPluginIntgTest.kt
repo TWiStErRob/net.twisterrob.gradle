@@ -216,6 +216,21 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
+	@Test fun `buildConfig warning is not shown (debug)`() {
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.android-app")
+			}
+		""".trimIndent()
+
+		val result = gradle.run(script, "assembleDebug").build()
+
+		result.assertSuccess(":assembleDebug")
+		// AGP 7.4+: WARNING: Accessing value buildConfigFields in variant debug has no effect as the feature buildConfig is disabled.
+		result.assertNoOutputLine(Regex("""WARNING:.* buildConfigFields .*"""))
+	}
+
 	@Test fun `can disable buildConfig generation (debug)`() {
 		// Default build.gradle has the app plugin applied.
 		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
@@ -307,6 +322,20 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				//noinspection UnnecessaryQualifiedReference
 				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
 			}
+			def doNotNagAboutForTest = rootProject.ext["doNotNagAboutForTest"]
+			//noinspection UnnecessaryQualifiedReference .gradle files don't auto-import kotlin. namespace.
+			doNotNagAboutForTest(
+				// Task :checkDebugUnitTestAarMetadata execution prints this.
+				// It's suppressed in nagging.init.gradle already, but for some reason the stack trace is non-existent
+				// for this occurrence, but only when this test is executed after another test in this same test class.
+				// Adding .withDebug(true) changes behavior and does not reproduce any more, so can't figure out what's wrong.
+				new kotlin.Pair("8.3", "8.4"),
+				new kotlin.Pair("7.4", "8.2"),
+				"The BuildIdentifier.getName() method has been deprecated. " +
+				"This is scheduled to be removed in Gradle 9.0. Use getBuildPath() to get a unique identifier for the build. " +
+				"Consult the upgrading guide for further information: " +
+				"https://docs.gradle.org/8.3-rc-1/userguide/upgrading_version_8.html#build_identifier_name_and_current_deprecation"
+			)
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug", "test").build()
