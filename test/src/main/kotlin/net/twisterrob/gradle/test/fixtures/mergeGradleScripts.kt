@@ -18,7 +18,7 @@ internal fun mergeGradleScripts(script1: String, script2: String): String {
 
 private fun splitBlocks(script: String): Blocks {
 	val importsRegex =
-		Regex("""(?sm)(.*?)((?:^import\s+[^\r\n]+?\r?\n)*import\s+[^\r\n]+?)\r?\n(.*)""")
+		Regex("""(?sm)(.*?)((?:^import\s+[^\r\n]+?\r?\n)*^import\s+[^\r\n]+?)\r?\n(.*)""")
 
 	fun blockRegex(name: String): Regex =
 		@Suppress("RegExpRedundantEscape")
