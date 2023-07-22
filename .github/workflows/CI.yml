@@ -107,6 +107,7 @@ jobs:
           detektTestFixtures
           detektReportMergeSarif
           detektReportMergeXml
+          -Pnet.twisterrob.gradle.build.detektReportMergeIncludedBuilds=true
 
       - name: "Upload 'Detekt Results' artifact."
         if: success() || failure()

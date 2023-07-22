@@ -7,6 +7,8 @@ import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
+import org.gradle.api.initialization.IncludedBuild
+import org.gradle.api.invocation.Gradle
 import org.gradle.api.provider.Provider
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.register
@@ -47,5 +49,36 @@ private fun configureDetektReportMerging(
 				detektReportMergeTask.mustRunAfter(detektReportingTask)
 				detektReportMergeTask.input.from(detektReportingTask.reportFile())
 			}
+		val mergeIncludedBuilds = project.providers
+			.gradleProperty("net.twisterrob.gradle.build.detektReportMergeIncludedBuilds")
+			.map(String::toBooleanStrict)
+		if (mergeIncludedBuilds.get()) {
+			mergeReportFromIncludedBuilds(detektReportMergeTask, project.gradle, mergedExtension)
+		}
 	}
 }
+
+private fun mergeReportFromIncludedBuilds(
+	detektReportMergeTask: ReportMergeTask,
+	gradle: Gradle,
+	mergedExtension: String,
+) {
+	@Suppress("NamedArguments")
+	gradle.includedBuilds.forEach { includedBuild ->
+		detektReportMergeTask.mergeReportFrom(includedBuild, ":detekt", "detekt.${mergedExtension}")
+		detektReportMergeTask.mergeReportFrom(includedBuild, ":detektMain", "main.${mergedExtension}")
+		detektReportMergeTask.mergeReportFrom(includedBuild, ":detektTest", "test.${mergedExtension}")
+	}
+}
+
+private fun ReportMergeTask.mergeReportFrom(
+	includedBuild: IncludedBuild,
+	detektTaskName: String,
+	detektReportName: String,
+) {
+	val detektTask = includedBuild.task(detektTaskName)
+	this.dependsOn(detektTask) // mustRunAfter not possible since Gradle 8.0!
+	val reportPath = "build/reports/detekt/${detektReportName}"
+	this.input.from(includedBuild.projectDir.resolve(reportPath))
+}
+
