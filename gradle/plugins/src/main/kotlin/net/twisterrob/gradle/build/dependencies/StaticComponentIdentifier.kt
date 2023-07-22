@@ -12,12 +12,16 @@ class StaticComponentIdentifier(private val displayName: String) : ComponentIden
 
 	override fun equals(other: Any?): Boolean =
 		when {
-			this === other -> true
+			this === other -> {
+				true
+			}
 			other != null && this::class == other::class -> {
 				val that = other as StaticComponentIdentifier
 				this.displayName == that.displayName
 			}
-			else -> false
+			else -> {
+				false
+			}
 		}
 
 	override fun hashCode(): Int =

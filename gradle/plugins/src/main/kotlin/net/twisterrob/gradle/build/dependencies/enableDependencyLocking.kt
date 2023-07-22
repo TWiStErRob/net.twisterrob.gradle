@@ -10,6 +10,8 @@ import org.gradle.kotlin.dsl.dependencyLocking
 import java.io.File
 
 /**
+ * Enable dependency locking for all relevant configurations in a project and relocate lock files.
+ *
  * Use in build.gradle.kts:
  * ```
  * enableDependencyLocking()
@@ -27,6 +29,8 @@ fun Project.enableDependencyLocking() {
 }
 
 /**
+ * Enable dependency locking for all relevant configurations in a module buildscript and relocate lock files.
+ *
  * Use in build.gradle.kts:
  * ```
  * buildscript { enableDependencyLocking(project) }
@@ -40,6 +44,8 @@ fun ScriptHandler.enableDependencyLocking(project: Project) {
 }
 
 /**
+ * Enable dependency locking for all relevant configurations in a settings buildscript and relocate lock files.
+ *
  * Use in settings.gradle.kts:
  * ```
  * buildscript { enableDependencyLocking(settings) }

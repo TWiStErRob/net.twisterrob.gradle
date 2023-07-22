@@ -26,8 +26,11 @@ internal class DetektPlugin : Plugin<Project> {
 			parallel = true
 
 			project.tasks.withType<Detekt>().configureEach {
+				@Suppress("MaxChainedCallsOnSameLine")
 				languageVersion = project.libs.versions.kotlin.language.get()
 				jvmTarget = project.libs.versions.java.get()
+				// Detekt falsely resolves this to DetektExtension.report because of Kotlin DSL.
+				@Suppress("Detekt.Deprecation")
 				reports {
 					html.required.set(true) // human
 					txt.required.set(true) // console

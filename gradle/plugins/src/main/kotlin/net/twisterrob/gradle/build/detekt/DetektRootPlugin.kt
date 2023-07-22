@@ -18,6 +18,11 @@ internal class DetektRootPlugin : Plugin<Project> {
 		require(project.subprojects.isNotEmpty()) {
 			"${this} can only be applied to the root or container project."
 		}
+		configureDetektReportMerging(project)
+	}
+
+	@Suppress("NamedArguments")
+	private fun configureDetektReportMerging(project: Project) {
 		configureDetektReportMerging(project, "sarif", DetektReports::sarif, Detekt::sarifReportFile)
 		configureDetektReportMerging(project, "xml", DetektReports::xml, Detekt::xmlReportFile)
 	}

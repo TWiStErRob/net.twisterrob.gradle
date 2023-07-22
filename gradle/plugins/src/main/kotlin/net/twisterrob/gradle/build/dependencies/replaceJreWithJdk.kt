@@ -4,11 +4,11 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencyResolveDetails
 
 fun Configuration.replaceKotlinJre7WithJdk7() {
-	resolutionStrategy.eachDependency { replaceJreWithJdk(7) }
+	resolutionStrategy.eachDependency { replaceJreWithJdk(@Suppress("MagicNumber") 7) }
 }
 
 fun Configuration.replaceKotlinJre8WithJdk8() {
-	resolutionStrategy.eachDependency { replaceJreWithJdk(8) }
+	resolutionStrategy.eachDependency { replaceJreWithJdk(@Suppress("MagicNumber") 8) }
 }
 
 /**
@@ -20,7 +20,10 @@ private fun DependencyResolveDetails.replaceJreWithJdk(version: Int) {
 	if (requested.group == "org.jetbrains.kotlin") {
 		because("https://kotlinlang.org/docs/reference/whatsnew12.html#kotlin-standard-library-artifacts-and-split-packages")
 		when (requested.name) {
-			"kotlin-stdlib-jre$version" -> useTarget("${target.group}:kotlin-stdlib-jdk$version:${target.version}")
+			"kotlin-stdlib-jre${version}" -> {
+				val targetVersion = target.version ?: error("No version in ${this} / ${this.target}")
+				useTarget("${target.group}:kotlin-stdlib-jdk${version}:${targetVersion}")
+			}
 		}
 	}
 }

@@ -11,6 +11,10 @@ import org.gradle.kotlin.dsl.KotlinClosure2
 import java.util.EnumSet
 import kotlin.math.absoluteValue
 
+@Suppress(
+	"CyclomaticComplexMethod", "CognitiveComplexMethod", // TODO
+	"FunctionMaxLength" // Rather be explicit about what it does.
+)
 fun Test.configureVerboseReportsForGithubActions() {
 	testLogging {
 		// disable all events, output handled by custom callbacks below
@@ -21,6 +25,7 @@ fun Test.configureVerboseReportsForGithubActions() {
 		showCauses = true
 		showStackTraces = true
 	}
+	@Suppress("UseDataClass") // Wouldn't be used.
 	class TestInfo(
 		val descriptor: TestDescriptor,
 		val stdOut: StringBuilder = StringBuilder(),
@@ -29,10 +34,10 @@ fun Test.configureVerboseReportsForGithubActions() {
 
 	val lookup = mutableMapOf<TestDescriptor, TestInfo>()
 	beforeSuite(KotlinClosure1<TestDescriptor, Any>({
-		lookup.put(this, TestInfo(this))
+		lookup[this] = TestInfo(this)
 	}))
 	beforeTest(KotlinClosure1<TestDescriptor, Any>({
-		lookup.put(this, TestInfo(this))
+		lookup[this] = TestInfo(this)
 	}))
 	onOutput(KotlinClosure2({ descriptor: TestDescriptor, event: TestOutputEvent ->
 		val info = lookup.getValue(descriptor)
@@ -43,53 +48,58 @@ fun Test.configureVerboseReportsForGithubActions() {
 	}))
 
 	fun logResults(testType: String, descriptor: TestDescriptor, result: TestResult) {
+		@Suppress("ForbiddenMethodCall") // Need to output raw as the result is parsed by GitHub Actions.
+		val outputToConsole: (String) -> Unit = ::println
 
 		fun fold(outputType: String, condition: Boolean, output: () -> Unit) {
 			val id = descriptor.toString().hashCode().absoluteValue
 			if (condition) {
-				println("::group::${testType}_${outputType}_${id}")
+				outputToConsole("::group::${testType}_${outputType}_${id}")
 				output()
-				println("::endgroup:: ")
+				outputToConsole("::endgroup:: ")
 			}
 		}
 
-		val info = lookup.remove(descriptor)!!
+		val info = lookup.remove(descriptor) ?: error("Could not find ${descriptor} in ${lookup.keys}")
 		val hasStdOut = info.stdOut.isNotEmpty()
 		val hasStdErr = info.stdErr.isNotEmpty()
 		val hasError = result.exception != null
 		val hasAnything = hasStdOut || hasStdErr || hasError
 
+		val groupSuite = "Suite"
+		val groupClass = "Class"
 		val groupName = when (val className = descriptor.className) {
-			null -> "Suite"
-			descriptor.name -> "Class"
+			null -> groupSuite
+			descriptor.name -> groupClass
 			else -> className
 		}
 		val name = descriptor.name
 		val fullName = "${groupName} > ${name}"
-		if (groupName == "Suite" && name.startsWith("Gradle Test Executor") && !hasAnything) {
+		if (groupName == groupSuite && name.startsWith("Gradle Test Executor") && !hasAnything) {
 			// Don't log, this is because of concurrency.
 			return
-		} else if (groupName == "Suite" && name.startsWith("Gradle Test Run") && !hasAnything) {
+		} else if (groupName == groupSuite && name.startsWith("Gradle Test Run") && !hasAnything) {
 			// Don't log, this is because of Gradle's system.
 			return
-		} else if (groupName == "Class" && !hasAnything) {
+		} else if (groupName == groupClass && !hasAnything) {
 			// Don't log, individual tests are enough.
 			return
 		}
 
-		println("${fullName} ${result.resultType}")
+		outputToConsole("${fullName} ${result.resultType}")
 
 		fold("ex", hasError) {
-			println("EXCEPTION ${fullName}")
-			result.exception!!.printStackTrace()
+			outputToConsole("EXCEPTION ${fullName}")
+			val ex = result.exception ?: error("Logic issue, hasError, but no exception")
+			outputToConsole(ex.stackTraceToString())
 		}
 		fold("out", hasStdOut) {
-			println("STANDARD_OUT ${fullName}")
-			println(info.stdOut)
+			outputToConsole("STANDARD_OUT ${fullName}")
+			outputToConsole(info.stdOut.toString())
 		}
 		fold("err", hasStdErr) {
-			println("STANDARD_ERR ${fullName}")
-			println(info.stdErr)
+			outputToConsole("STANDARD_ERR ${fullName}")
+			outputToConsole(info.stdErr.toString())
 		}
 	}
 	afterTest(KotlinClosure2({ descriptor: TestDescriptor, result: TestResult ->

@@ -1,3 +1,5 @@
+@file:Suppress("MissingPackageDeclaration") // In default package so it "just works" in build.gradle.kts files.
+
 import net.twisterrob.gradle.build.deprecation.DeprecatedPluginGradleDescriptorGeneratingTask
 import net.twisterrob.gradle.build.deprecation.DeprecatedPluginKotlinGeneratingTask
 import net.twisterrob.gradle.build.dsl.java

@@ -18,6 +18,7 @@ nexusPublishing {
 
 			val sonatypeUsername: String? by project
 			val sonatypePassword: String? by project
+			@Suppress("UnnecessaryParentheses") // REPORT Would be confusing without.
 			require((sonatypeUsername == null) == (sonatypePassword == null)) {
 				// Explicit check for existence of both, because otherwise it just fails with a misleading error:
 				// > Execution failed for task ':initializeSonatypeStagingRepository'.
