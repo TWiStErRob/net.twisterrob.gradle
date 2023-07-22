@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("GradleUtils")
+
 package net.twisterrob.gradle
 
 import org.gradle.api.Incubating
