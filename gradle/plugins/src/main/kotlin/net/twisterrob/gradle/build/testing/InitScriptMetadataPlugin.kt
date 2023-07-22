@@ -49,7 +49,7 @@ class InitScriptMetadataPlugin : Plugin<Project> {
 				configuration
 					.incoming
 					.artifactView {
-						componentFilter(SerializableLambdas.spec { excludeGradleApi(it) })
+						componentFilter(SerializableLambdas.spec { id -> excludeGradleApi(id) })
 					}
 					.files
 			})

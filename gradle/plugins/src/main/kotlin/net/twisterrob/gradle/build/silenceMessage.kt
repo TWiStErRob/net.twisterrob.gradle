@@ -14,8 +14,9 @@ private class MessageSilencer(
 ) : ContextAwareTaskLogger.MessageRewriter {
 
 	override fun rewrite(logLevel: LogLevel, message: String): String? =
-		if (message in messageToSilence)
+		if (message in messageToSilence) {
 			null
-		else
+		} else {
 			message
+		}
 }

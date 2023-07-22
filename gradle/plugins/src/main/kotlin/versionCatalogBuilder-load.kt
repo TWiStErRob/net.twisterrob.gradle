@@ -1,3 +1,5 @@
+@file:Suppress("MissingPackageDeclaration") // In default package so it "just works" in build.gradle.kts files.
+
 import org.gradle.api.file.FileCollection
 import org.gradle.api.initialization.dsl.VersionCatalogBuilder
 import java.io.File

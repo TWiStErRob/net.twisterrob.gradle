@@ -65,5 +65,16 @@ detekt {
 			html.required.set(true) // human
 			txt.required.set(true) // console
 		}
+		if (this.name == "detektMain") {
+			// Detekt fails on these files with an internal compile error, so exclude for now.
+			exclude("**/net.twisterrob.gradle.build.*.gradle.kts")
+			// Cannot do much about the violations in Gradle generated code; also causes OOM.
+			// build/generated-sources/kotlin-dsl-accessors/kotlin/gradle/kotlin/dsl/accessors/
+			exclude("gradle/kotlin/dsl/accessors/")
+			// build/generated-sources/kotlin-dsl-external-plugin-spec-builders/kotlin/gradle/kotlin/dsl/plugins/
+			exclude("gradle/kotlin/dsl/plugins/")
+			// build/generated-sources/kotlin-dsl-plugins/kotlin/Net_twisterrob_gradle_build_*Plugin
+			exclude("Net_twisterrob_gradle_build_*Plugin.kt")
+		}
 	}
 }

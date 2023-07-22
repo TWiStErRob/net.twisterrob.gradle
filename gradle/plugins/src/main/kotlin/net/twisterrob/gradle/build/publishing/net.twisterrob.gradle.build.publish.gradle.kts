@@ -50,58 +50,59 @@ normalization {
 /**
  * @see org.jetbrains.dokka.gradle.DokkaPlugin
  */
+@Suppress("PropertyName", "VariableNaming")
 val DOKKA_TASK_NAME: String = "dokkaJavadoc"
 
-		// Note: org.gradle.api.publish.plugins.PublishingPlugin.apply calls publications.all,
-		// so most code here is eagerly executed, even inside register { }!
+// Note: org.gradle.api.publish.plugins.PublishingPlugin.apply calls publications.all,
+// so most code here is eagerly executed, even inside register { }!
 
-		project.java.withDokkaJar(project, project.tasks.named(DOKKA_TASK_NAME))
-		project.java.withSourcesJar()
-		setupDoc(project)
-		setupSigning(project)
-		project.plugins.withId("net.twisterrob.gradle.build.module.library") {
-			project.publishing.apply {
-				publications {
-					register<MavenPublication>("library") {
-						setupModuleIdentity(project)
+project.java.withDokkaJar(project, project.tasks.named(DOKKA_TASK_NAME))
+project.java.withSourcesJar()
+setupDoc(project)
+setupSigning(project)
+project.plugins.withId("net.twisterrob.gradle.build.module.library") {
+	project.publishing.apply {
+		publications {
+			register<MavenPublication>("library") {
+				setupModuleIdentity(project)
+				setupPublication(project)
+				// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
+				from(project.components["java"])
+			}
+		}
+	}
+}
+project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
+	registerPublicationsTasks(project)
+	@Suppress("UnstableApiUsage")
+	project.gradlePlugin.apply {
+		website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
+		vcsUrl.set("https://github.com/TWiStErRob/net.twisterrob.gradle.git")
+	}
+	// Configure built-in pluginMaven publication created by java-gradle-plugin.
+	// Have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin.
+	// Cannot be relying on the `maybeCreate` usage in MavenPluginPublishPlugin.addMainPublication,
+	// because the module name is set in afterEvaluate in setupModuleIdentity and MPPP already read it.
+	// This is described in https://github.com/gradle/gradle/issues/23551.
+	project.afterEvaluate {
+		project.publishing.apply {
+			publications {
+				named<MavenPublication>("pluginMaven").configure pluginMaven@{
+					setupModuleIdentity(project)
+					setupPublication(project)
+					handleTestFixtures()
+					// TODEL work around https://github.com/gradle/gradle/issues/23551
+					fixMarkers(project)
+				}
+				withType<MavenPublication>()
+					.matching { it.name.endsWith("PluginMarkerMaven") }
+					.configureEach pluginMarkerMaven@{
 						setupPublication(project)
-						// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
-						from(project.components["java"])
 					}
-				}
 			}
 		}
-		project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
-			registerPublicationsTasks(project)
-			@Suppress("UnstableApiUsage")
-			project.gradlePlugin.apply {
-				website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
-				vcsUrl.set("https://github.com/TWiStErRob/net.twisterrob.gradle.git")
-			}
-			// Configure built-in pluginMaven publication created by java-gradle-plugin.
-			// Have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin.
-			// Cannot be relying on the `maybeCreate` usage in MavenPluginPublishPlugin.addMainPublication,
-			// because the module name is set in afterEvaluate in setupModuleIdentity and MPPP already read it.
-			// This is described in https://github.com/gradle/gradle/issues/23551.
-			project.afterEvaluate {
-				project.publishing.apply {
-					publications {
-						named<MavenPublication>("pluginMaven").configure pluginMaven@{
-							setupModuleIdentity(project)
-							setupPublication(project)
-							handleTestFixtures()
-							// TODEL work around https://github.com/gradle/gradle/issues/23551
-							fixMarkers(project)
-						}
-						withType<MavenPublication>()
-							.matching { it.name.endsWith("PluginMarkerMaven") }
-							.configureEach pluginMarkerMaven@{
-								setupPublication(project)
-							}
-					}
-				}
-			}
-		}
+	}
+}
 
 fun MavenPublication.setupPublication(project: Project) {
 	project.configure<SigningExtension> {
