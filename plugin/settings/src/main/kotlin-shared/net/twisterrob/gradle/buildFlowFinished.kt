@@ -9,13 +9,15 @@ import org.gradle.api.invocation.Gradle
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.kotlin.dsl.support.serviceOf
+import java.util.function.Consumer
 
 /**
+ * Note: Not using an `Action<Throwable?>` because Kotlin DSL would make the parameter a receiver.
  * @since Gradle 8.1
  */
 @Incubating
 @Suppress("UnstableApiUsage")
-fun Gradle.buildFlowFinished(action: (Throwable?) -> Unit) {
+fun Gradle.buildFlowFinished(action: Consumer<Throwable?>) {
 	serviceOf<FlowScope>().always(ExecuteAction::class.java) {
 		parameters.action.set(action)
 		val buildResult = serviceOf<FlowProviders>().buildWorkResult
@@ -27,13 +29,14 @@ fun Gradle.buildFlowFinished(action: (Throwable?) -> Unit) {
 private class ExecuteAction : FlowAction<ExecuteAction.Parameters> {
 	interface Parameters : FlowParameters {
 		@get:Input
-		val action: Property<(Throwable?) -> Unit>
+		val action: Property<Consumer<Throwable?>>
 
 		@get:Input
 		val failure: Property<Throwable>
 	}
 
 	override fun execute(parameters: Parameters) {
-		parameters.action.get().invoke(parameters.failure.orNull)
+		@Suppress("TYPE_MISMATCH") // It's declared nullable, it is nullable.
+		parameters.action.get().accept(parameters.failure.orNull)
 	}
 }
