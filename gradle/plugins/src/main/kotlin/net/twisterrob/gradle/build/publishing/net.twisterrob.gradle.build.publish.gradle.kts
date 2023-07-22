@@ -144,6 +144,7 @@ fun setupDoc(project: Project) {
 		dokkaSourceSets.configureEach {
 			reportUndocumented.set(false)
 		}
+		notCompatibleWithConfigurationCache("https://github.com/Kotlin/dokka/issues/1217")
 	}
 }
 
