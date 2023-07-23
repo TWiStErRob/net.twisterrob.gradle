@@ -33,7 +33,6 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
     * Open [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories), log in and **close staging repository**; check output at console to validate.
  1. Archive and final integration test.
     * Run `p:\repos\release\net.twisterrob.gradle\download-repo.bat`  
-      Need to change mvn2get.json's `remote_repo_urls`.
     * Use it in a real project from staging repository (update URL and version number!):
       ```kotlin
       repositories {
