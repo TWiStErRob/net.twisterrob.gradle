@@ -26,7 +26,7 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       gradlew publishLibraryPublicationToSonatypeRepository publishPluginMavenPublicationToSonatypeRepository publishAllPluginMarkerMavenPublicationsToSonatypeRepository
       ```  
       (Note: all tasks have to be executed at once, otherwise it creates multiple staging repositories.)
-      * _If this fails, fix and amend last commit._
+      * _If this fails, fix and push to Release PR._
       * > Failed to load staging profiles, server at https://s01.oss.sonatype.org/service/local/ responded with status code 401, body:
 
         Means the username or password is wrong.
@@ -51,7 +51,7 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       }
       ```
  1. Repeat previous steps as necessary.
- 1. Merge the PR to `main`.
+ 1. Merge the Release PR to `main`.
  1. Release staging repository at [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories)
  1. Watch [Maven Central](https://repo1.maven.org/maven2/net/twisterrob/gradle/twister-quality/) for the artifact to appear. May take a few minutes.
 
