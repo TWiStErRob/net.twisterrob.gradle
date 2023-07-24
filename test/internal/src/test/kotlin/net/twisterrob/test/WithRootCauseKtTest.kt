@@ -56,12 +56,24 @@ class WithRootCauseKtTest {
 
 	@Nested
 	inner class `self causation` {
+
 		@Test
 		fun `cannot set self as root cause`() {
 			val ex = Throwable()
 
 			assertThrows<IllegalArgumentException> {
 				ex.withRootCause(ex)
+			}
+		}
+
+		@Test
+		fun `cannot set self swapping chain`() {
+			val ex1 = Throwable()
+			val ex2 = Throwable()
+			ex1.initCause(ex2)
+
+			assertThrows<IllegalArgumentException> {
+				ex1.withRootCause(ex1)
 			}
 		}
 
@@ -80,7 +92,40 @@ class WithRootCauseKtTest {
 	}
 
 	@Nested
+	inner class `infinite chains` {
+
+		@Test
+		fun `fails fast on infinite swapping chain`() {
+			val ex1 = Throwable()
+			val ex2 = Throwable()
+			ex1.initCause(ex2)
+			ex2.initCause(ex1)
+			val cause = Throwable()
+
+			assertThrows<IllegalArgumentException> {
+				ex1.withRootCause(cause)
+			}
+		}
+
+		@Test
+		fun `fails fast on infinite circular chain`() {
+			val ex1 = Throwable()
+			val ex2 = Throwable()
+			val ex3 = Throwable()
+			ex1.initCause(ex2)
+			ex2.initCause(ex3)
+			ex3.initCause(ex1)
+			val cause = Throwable()
+
+			assertThrows<IllegalArgumentException> {
+				ex1.withRootCause(cause)
+			}
+		}
+	}
+
+	@Nested
 	inner class `regressions validation` {
+
 		/**
 		 * To verify the presence of the problem in
 		 * [ota4j-team/opentest4j#5](https://github.com/ota4j-team/opentest4j/issues/5#issuecomment-940474063).
