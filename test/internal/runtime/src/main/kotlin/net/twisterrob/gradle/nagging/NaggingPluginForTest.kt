@@ -13,7 +13,7 @@ class NaggingPluginForTest : Plugin<Gradle> {
 		gradle.rootProject(::exposeDoNotNagAboutExtras)
 		gradle.beforeSettings(::exposeDoNotNagAboutExtras)
 		gradle.settingsEvaluated {
-			it.plugins.apply("net.twisterrob.gradle.plugin.nagging")
+			it.plugins.apply(NaggingPlugin::class.java) // net.twisterrob.gradle.plugin.nagging
 		}
 	}
 
