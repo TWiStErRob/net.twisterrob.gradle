@@ -22,17 +22,18 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junitpioneer.jupiter.Issue
 
 /**
+ * @see net.twisterrob.gradle.nagging.NaggingPlugin
  * @see doNotNagAbout
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
-	@BeforeEach fun applySettingsPlugin() {
+	@BeforeEach fun applyPlugin() {
 		@Language("gradle")
 		val settings = """
 			plugins {
-				id("net.twisterrob.gradle.plugin.settings")
+				id("net.twisterrob.gradle.plugin.nagging")
 			}
 		""".trimIndent()
 		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
@@ -180,29 +181,115 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		val script = """
 			apply plugin: 'java'
 			// Do something that triggers many deprecation nags.
-			for (int i in 1..50) {
-				// Uses Conventions which are deprecated and nag.
-				// Uses BasePluginConvention.setArchivesBaseName(String) which is deprecated and nags.
-				archivesBaseName = 'trigger-nagging' // line 6
+			for (int i in 1..1000) {
+				${nagManyTimes()}
 			}
-			// ClosureBackedAction type is deprecated, nagging is in the class initializer.
-			//noinspection GrDeprecatedAPIUsage,UnnecessaryQualifiedReference
-			org.gradle.util.ClosureBackedAction.of {} // line 10
+			${nagOnce()}
 		""".trimIndent()
+
 		val result = gradle.runBuild {
 			run(script, "--warning-mode=all")
 		}
 
-		result.assertHasOutputLine(
-			"""The org.gradle.api.plugins.BasePluginConvention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_8.html#base_convention_deprecation"""
-		)
-		result.assertHasOutputLine(Regex("""Build file '\Q${gradle.buildFile.absolutePath}\E': line 6"""))
-		result.assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:6\)"""))
-		result.assertHasOutputLine(
-			"""The org.gradle.util.ClosureBackedAction type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_7.html#org_gradle_util_reports_deprecations"""
-		)
-		result.assertHasOutputLine(Regex("""Build file '\Q${gradle.buildFile.absolutePath}\E': line 10"""))
-		result.assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:10\)"""))
+		result.verifyNagManyTimes()
+		result.verifyNagOnce()
+	}
+
+	private fun nagManyTimes(): String =
+		when {
+			GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion -> {
+				"""
+					// Uses Conventions which are deprecated and nag.
+					// Uses BasePluginConvention.setArchivesBaseName(String) which is deprecated and nags.
+					archivesBaseName = 'trigger-nagging' // line 6
+				""".trimIndent()
+			}
+			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
+				"""
+					repositories.jcenter()
+				""".trimIndent()
+			}
+			else -> {
+				error("Cannot nag many times for ${gradle.gradleVersion}")
+			}
+		}
+
+	private fun BuildResult.verifyNagManyTimes() {
+		when {
+			GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"The org.gradle.api.plugins.BasePluginConvention type has been deprecated. " +
+							"This is scheduled to be removed in Gradle 9.0. " +
+							"Consult the upgrading guide for further information: " +
+							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_8.html" +
+							"#base_convention_deprecation"
+				)
+				assertHasOutputLine(Regex("""Build file '\Q${gradle.buildFile.absolutePath}\E': line 6"""))
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:6\)"""))
+			}
+			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"Internal API constructor DefaultDomainObjectSet(Class<T>) has been deprecated. " +
+							"This is scheduled to be removed in Gradle 8.0. " +
+							"Please use ObjectFactory.domainObjectSet(Class<T>) instead. " +
+							"See https://docs.gradle.org/7.0.2/userguide/custom_gradle_types.html#domainobjectset " +
+							"for more details."
+				)
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:4\)"""))
+			}
+			else -> {
+				error("Cannot nag many times for ${gradle.gradleVersion}")
+			}
+		}
+	}
+
+	private fun nagOnce(): String =
+		when {
+			GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion -> {
+				"""
+					// ClosureBackedAction type is deprecated, nagging is in the class initializer.
+					//noinspection GrDeprecatedAPIUsage,UnnecessaryQualifiedReference
+					org.gradle.util.ClosureBackedAction.of {} // line 10
+				""".trimIndent()
+			}
+			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
+				"""
+					new org.gradle.api.internal.DefaultDomainObjectSet(String.class)
+				""".trimIndent()
+			}
+			else -> {
+				error("Cannot nag once for ${gradle.gradleVersion}")
+			}
+		}
+
+	private fun BuildResult.verifyNagOnce() {
+		when {
+			GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"The org.gradle.util.ClosureBackedAction type has been deprecated. " +
+							"This is scheduled to be removed in Gradle 9.0. " +
+							"Consult the upgrading guide for further information: " +
+							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_7.html" +
+							"#org_gradle_util_reports_deprecations"
+				)
+				assertHasOutputLine(Regex("""Build file '\Q${gradle.buildFile.absolutePath}\E': line 10"""))
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:10\)"""))
+			}
+			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"The RepositoryHandler.jcenter() method has been deprecated. " +
+							"This is scheduled to be removed in Gradle 8.0. " +
+							"JFrog announced JCenter's shutdown in February 2021. " +
+							"Use mavenCentral() instead. " +
+							"Consult the upgrading guide for further information: " +
+							"https://docs.gradle.org/7.0.2/userguide/upgrading_version_6.html#jcenter_deprecation"
+				)
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:6\)"""))
+			}
+			else -> {
+				error("Cannot nag once for ${gradle.gradleVersion}")
+			}
+		}
 	}
 
 	private fun BuildResult.verifyNagging(feature: String, line: Int) {

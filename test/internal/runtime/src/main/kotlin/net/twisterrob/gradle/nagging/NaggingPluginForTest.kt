@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.nagging
 
-import net.twisterrob.gradle.settings.SettingsPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.plugins.ExtensionAware
@@ -14,7 +13,7 @@ class NaggingPluginForTest : Plugin<Gradle> {
 		gradle.rootProject(::exposeDoNotNagAboutExtras)
 		gradle.beforeSettings(::exposeDoNotNagAboutExtras)
 		gradle.settingsEvaluated {
-			it.plugins.apply(SettingsPlugin::class.java)
+			it.plugins.apply(NaggingPlugin::class.java)
 		}
 	}
 
