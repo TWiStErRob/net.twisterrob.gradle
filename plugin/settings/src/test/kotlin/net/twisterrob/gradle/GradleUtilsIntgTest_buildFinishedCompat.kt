@@ -40,7 +40,7 @@ class GradleUtilsIntgTest_buildFinishedCompat : BaseIntgTest() {
 		result.assertHasOutputLine("Build ended: null")
 	}
 
-	@Test fun `shows failure (groovy)`() {
+	@Test fun `shows fail exception (groovy)`() {
 		val script = """
 			net.twisterrob.gradle.GradleUtils.buildFinishedCompat(gradle) { println("Build ended: ${'$'}it") }
 			throw new IOException("fail")
