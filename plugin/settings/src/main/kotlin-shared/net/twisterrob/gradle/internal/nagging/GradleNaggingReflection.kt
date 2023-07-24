@@ -41,19 +41,6 @@ internal object GradleNaggingReflection {
 	val remainingStackTraces: AtomicInteger
 		get() = deprecatedFeatureHandler.get<Any>(problemStreamField).get(remainingStackTracesField)
 
-	private val problemStream: Any
-		get() = problemStreamField.get(deprecatedFeatureHandler)
-
-	private val problemStreamField: Field =
-		Class.forName("org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler")
-			.getDeclaredField("problemStream")
-			.apply { isAccessible = true }
-
-	private val remainingStackTracesField: Field =
-		Class.forName("org.gradle.internal.problems.DefaultProblemDiagnosticsFactory\$DefaultProblemStream")
-			.getDeclaredField("remainingStackTraces")
-			.apply { isAccessible = true }
-
 	/**
 	 * History:
 	 * * Gradle 4.7.0 added (c633542) `org.gradle.util.SingleMessageLogger#deprecatedFeatureHandler` in a refactor.
@@ -64,7 +51,7 @@ internal object GradleNaggingReflection {
 	 *
 	 * @since Gradle 4.7.0 because it's not worth supporting older versions than this, might be possible.
 	 */
-	private val deprecatedFeatureHandlerField: Field =
+	private val deprecatedFeatureHandlerField: Field by lazy {
 		when {
 			GradleVersion.version("6.2.0") <= GradleVersion.current().baseVersion -> {
 				Class.forName("org.gradle.internal.deprecation.DeprecationLogger")
@@ -80,6 +67,7 @@ internal object GradleNaggingReflection {
 				error("Gradle ${GradleVersion.current()} too old, cannot ignore deprecation nagging.")
 			}
 		}
+	}
 
 	/**
 	 * History:
@@ -91,7 +79,7 @@ internal object GradleNaggingReflection {
 	 *
 	 * @since Gradle 1.8 because it's not worth supporting older versions than this, might be possible.
 	 */
-	private val messagesField: Field =
+	private val messagesField: Field by lazy {
 		@Suppress("UseIfInsteadOfWhen")
 		when {
 			GradleVersion.version("8.3") <= GradleVersion.current().baseVersion -> { // 8.3.0 would fail, because of RC1
@@ -105,6 +93,7 @@ internal object GradleNaggingReflection {
 					.apply { isAccessible = true }
 			}
 		}
+	}
 
 	/**
 	 * History:
@@ -114,7 +103,7 @@ internal object GradleNaggingReflection {
 	 *
 	 * @since Gradle 5.6.0 because of support.
 	 */
-	private val errorField: Field =
+	private val errorField: Field by lazy {
 		@Suppress("UseIfInsteadOfWhen")
 		when {
 			GradleVersion.version("5.6.0") <= GradleVersion.current().baseVersion -> {
@@ -126,6 +115,19 @@ internal object GradleNaggingReflection {
 				error("Gradle ${GradleVersion.current()} too old, failing on deprecations is not supported.")
 			}
 		}
+	}
+
+	private val problemStreamField: Field by lazy {
+		Class.forName("org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler")
+			.getDeclaredField("problemStream")
+			.apply { isAccessible = true }
+	}
+
+	private val remainingStackTracesField: Field by lazy {
+		Class.forName("org.gradle.internal.problems.DefaultProblemDiagnosticsFactory\$DefaultProblemStream")
+			.getDeclaredField("remainingStackTraces")
+			.apply { isAccessible = true }
+	}
 }
 
 private inline fun <reified T> Any?.get(field: Field): T =
