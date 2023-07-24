@@ -17,31 +17,29 @@ internal object GradleNaggingReflection {
 	 * @since Gradle 4.7.0 because of [deprecatedFeatureHandlerField].
 	 */
 	private val deprecatedFeatureHandler: Any
-		get() = deprecatedFeatureHandlerField.get(null)
+		get() = null.get(deprecatedFeatureHandlerField) // static
 
 	/**
 	 * @since Gradle 4.7.0 because of [deprecatedFeatureHandler].
 	 */
 	@Suppress("DoubleMutabilityForCollection") // It's reflective access to a field, which is actually final 😅.
 	var messages: MutableSet<String>
-		@Suppress("UNCHECKED_CAST")
-		get() = messagesField.get(deprecatedFeatureHandler) as MutableSet<String>
+		get() = deprecatedFeatureHandler.get(messagesField)
 		set(value) {
-			messagesField.set(deprecatedFeatureHandler, value)
+			deprecatedFeatureHandler.set(messagesField, value)
 		}
 
 	/**
 	 * @since Gradle 5.6.0 because of [errorField].
 	 */
 	var error: GradleException?
-		@Suppress("CastToNullableType") // Know the type and know it's nullable.
-		get() = errorField.get(deprecatedFeatureHandler) as GradleException?
+		get() = deprecatedFeatureHandler.get(errorField)
 		set(value) {
-			errorField.set(deprecatedFeatureHandler, value)
+			deprecatedFeatureHandler.set(errorField, value)
 		}
 
 	val remainingStackTraces: AtomicInteger
-		get() = remainingStackTracesField.get(problemStream) as AtomicInteger
+		get() = deprecatedFeatureHandler.get<Any>(problemStreamField).get(remainingStackTracesField)
 
 	private val problemStream: Any
 		get() = problemStreamField.get(deprecatedFeatureHandler)
@@ -128,4 +126,11 @@ internal object GradleNaggingReflection {
 				error("Gradle ${GradleVersion.current()} too old, failing on deprecations is not supported.")
 			}
 		}
+}
+
+private inline fun <reified T> Any?.get(field: Field): T =
+	field.get(this) as T
+
+private inline fun <reified T> Any?.set(field: Field, value: T) {
+	field.set(this, value)
 }
