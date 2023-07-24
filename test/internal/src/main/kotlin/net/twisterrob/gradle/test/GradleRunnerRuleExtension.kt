@@ -14,7 +14,7 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 		override val extraArgs: Array<String>
 			get() = super.extraArgs + arrayOf(
 				// https://docs.gradle.org/5.6/release-notes.html#fail-the-build-on-deprecation-warnings
-				"--warning-mode=fail",
+				"-Porg.gradle.warning.mode=fail", // Allowing individual tests to override with `-P` or --warning-mode.
 				"--init-script=runtime.init.gradle.kts",
 				"--init-script=nagging.init.gradle.kts",
 			)

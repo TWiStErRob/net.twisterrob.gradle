@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junitpioneer.jupiter.Issue
 
 /**
  * @see doNotNagAbout
@@ -169,6 +170,39 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		result.assertNoOutputLine("Build file '${gradle.buildFile.absolutePath}': line 12")
 		result.assertHasOutputLine("Build file '${gradle.buildFile.absolutePath}': line 20")
 		result.verifyNagging("Fake nagging for test", 20)
+	}
+
+	/**
+	 * This test is meant to show deprecation nagging in their full glory.
+	 */
+	@Issue("https://github.com/gradle/gradle/issues/25872")
+	@Test fun `stack traces are visible after many nags`() {
+		val script = """
+			apply plugin: 'java'
+			// Do something that triggers many deprecation nags.
+			for (int i in 1..50) {
+				// Uses Conventions which are deprecated and nag.
+				// Uses BasePluginConvention.setArchivesBaseName(String) which is deprecated and nags.
+				archivesBaseName = 'trigger-nagging' // line 6
+			}
+			// ClosureBackedAction type is deprecated, nagging is in the class initializer.
+			//noinspection GrDeprecatedAPIUsage,UnnecessaryQualifiedReference
+			org.gradle.util.ClosureBackedAction.of {} // line 10
+		""".trimIndent()
+		val result = gradle.runBuild {
+			run(script, "--warning-mode=all")
+		}
+
+		result.assertHasOutputLine(
+			"""The org.gradle.api.plugins.BasePluginConvention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_8.html#base_convention_deprecation"""
+		)
+		result.assertHasOutputLine(Regex("""Build file '\Q${gradle.buildFile.absolutePath}\E': line 6"""))
+		result.assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:6\)"""))
+		result.assertHasOutputLine(
+			"""The org.gradle.util.ClosureBackedAction type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_7.html#org_gradle_util_reports_deprecations"""
+		)
+		result.assertHasOutputLine(Regex("""Build file '\Q${gradle.buildFile.absolutePath}\E': line 10"""))
+		result.assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:10\)"""))
 	}
 
 	private fun BuildResult.verifyNagging(feature: String, line: Int) {
