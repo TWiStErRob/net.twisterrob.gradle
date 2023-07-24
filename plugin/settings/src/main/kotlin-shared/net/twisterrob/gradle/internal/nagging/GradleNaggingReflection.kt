@@ -4,6 +4,7 @@ import org.gradle.api.GradleException
 import org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler
 import org.gradle.util.GradleVersion
 import java.lang.reflect.Field
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Reflection wrapper to access Gradle's internal nagging mechanism.
@@ -38,6 +39,22 @@ internal object GradleNaggingReflection {
 		set(value) {
 			errorField.set(deprecatedFeatureHandler, value)
 		}
+
+	val remainingStackTraces: AtomicInteger
+		get() = remainingStackTracesField.get(problemStream) as AtomicInteger
+
+	private val problemStream: Any
+		get() = problemStreamField.get(deprecatedFeatureHandler)
+
+	private val problemStreamField: Field =
+		Class.forName("org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler")
+			.getDeclaredField("problemStream")
+			.apply { isAccessible = true }
+
+	private val remainingStackTracesField: Field =
+		Class.forName("org.gradle.internal.problems.DefaultProblemDiagnosticsFactory\$DefaultProblemStream")
+			.getDeclaredField("remainingStackTraces")
+			.apply { isAccessible = true }
 
 	/**
 	 * History:
