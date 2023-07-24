@@ -15,7 +15,7 @@ import org.gradle.api.initialization.Settings
  */
 class SettingsPlugin : Plugin<Settings> {
 	override fun apply(settings: Settings) {
-		allowUnlimitedStacksForNagging()
-		reviewIfNaggingCausesFailure(settings.gradle)
+		settings.gradle.allowUnlimitedStacksForNagging()
+		settings.gradle.reviewIfNaggingCausesFailure()
 	}
 }

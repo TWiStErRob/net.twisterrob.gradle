@@ -2,4 +2,4 @@ import net.twisterrob.gradle.build.testing.resetGradleTestWorkerIdToDefault
 import net.twisterrob.gradle.internal.nagging.reviewIfNaggingCausesFailure
 
 gradle.resetGradleTestWorkerIdToDefault()
-reviewIfNaggingCausesFailure(gradle)
+gradle.reviewIfNaggingCausesFailure()

@@ -10,7 +10,10 @@ import java.util.concurrent.atomic.AtomicInteger
  * Reflection wrapper to access Gradle's internal nagging mechanism.
  * Encapsulates reflective accesses in a typed interface.
  */
-@Suppress("PropertyUsedBeforeDeclaration") // Ordering is from high level to low level. High level properties are lazy.
+@Suppress(
+	"PropertyUsedBeforeDeclaration",  // Ordering is from high level to low level. High level properties are lazy.
+	"UseIfInsteadOfWhen", // Be consistent between simple and more complex cases. Preparing for future additions.
+)
 internal object GradleNaggingReflection {
 
 	/**
@@ -38,6 +41,9 @@ internal object GradleNaggingReflection {
 			deprecatedFeatureHandler.set(errorField, value)
 		}
 
+	/**
+	 * @since Gradle 8.3-rc-1 because of [problemStreamField] and [remainingStackTracesField].
+	 */
 	val remainingStackTraces: AtomicInteger
 		get() = deprecatedFeatureHandler.get<Any>(problemStreamField).get(remainingStackTracesField)
 
@@ -80,17 +86,19 @@ internal object GradleNaggingReflection {
 	 * @since Gradle 1.8 because it's not worth supporting older versions than this, might be possible.
 	 */
 	private val messagesField: Field by lazy {
-		@Suppress("UseIfInsteadOfWhen")
 		when {
-			GradleVersion.version("8.3") <= GradleVersion.current().baseVersion -> { // 8.3.0 would fail, because of RC1
+			GradleVersion.version("8.3") <= GradleVersion.current().baseVersion -> { // "8.3.0" would fail, because of RC1
 				LoggingDeprecatedFeatureHandler::class.java
 					.getDeclaredField("loggedMessages")
 					.apply { isAccessible = true }
 			}
-			else -> {
+			GradleVersion.version("1.8") <= GradleVersion.current().baseVersion -> {
 				LoggingDeprecatedFeatureHandler::class.java
 					.getDeclaredField("messages")
 					.apply { isAccessible = true }
+			}
+			else -> {
+				error("Gradle ${GradleVersion.current()} too old, cannot ignore deprecation nagging.")
 			}
 		}
 	}
@@ -104,7 +112,6 @@ internal object GradleNaggingReflection {
 	 * @since Gradle 5.6.0 because of support.
 	 */
 	private val errorField: Field by lazy {
-		@Suppress("UseIfInsteadOfWhen")
 		when {
 			GradleVersion.version("5.6.0") <= GradleVersion.current().baseVersion -> {
 				LoggingDeprecatedFeatureHandler::class.java
@@ -117,16 +124,45 @@ internal object GradleNaggingReflection {
 		}
 	}
 
+	/**
+	 * History:
+	 *  * Gradle 8.2 and before: there was no abstraction, the stack was contained directly in FeatureUsage objects.
+	 *  * Gradle 8.3-rc-1 (f6f651d/#25156) started using DefaultProblemDiagnosticsFactory for creating stack traces.
+	 *  * Gradle 8.3-rc-1 (59feb1/#25216) introduced this field.
+	 *
+	 * @since Gradle 8.3-rc-1
+	 */
 	private val problemStreamField: Field by lazy {
-		Class.forName("org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler")
-			.getDeclaredField("problemStream")
-			.apply { isAccessible = true }
+		when {
+			GradleVersion.version("8.3") <= GradleVersion.current().baseVersion -> {
+				Class.forName("org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler")
+					.getDeclaredField("problemStream")
+					.apply { isAccessible = true }
+			}
+			else -> {
+				error("Gradle ${GradleVersion.current()} too old, there's no limit on nagging stack traces.")
+			}
+		}
 	}
 
+	/**
+	 * History:
+	 *  * Gradle 8.2 and before: there was no limitation on number of stack traces printed.
+	 *  * Gradle 8.3-rc-1 (59feb1/#25216) introduced this field.
+	 *
+	 * @since Gradle 8.3-rc-1
+	 */
 	private val remainingStackTracesField: Field by lazy {
-		Class.forName("org.gradle.internal.problems.DefaultProblemDiagnosticsFactory\$DefaultProblemStream")
-			.getDeclaredField("remainingStackTraces")
-			.apply { isAccessible = true }
+		when {
+			GradleVersion.version("8.3") <= GradleVersion.current().baseVersion -> {
+				Class.forName("org.gradle.internal.problems.DefaultProblemDiagnosticsFactory\$DefaultProblemStream")
+					.getDeclaredField("remainingStackTraces")
+					.apply { isAccessible = true }
+			}
+			else -> {
+				error("Gradle ${GradleVersion.current()} too old, there's no limit on nagging stack traces.")
+			}
+		}
 	}
 }
 
