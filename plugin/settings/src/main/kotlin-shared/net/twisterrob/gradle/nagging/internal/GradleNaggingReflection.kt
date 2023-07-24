@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.internal.nagging
+package net.twisterrob.gradle.nagging.internal
 
 import org.gradle.api.GradleException
 import org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler

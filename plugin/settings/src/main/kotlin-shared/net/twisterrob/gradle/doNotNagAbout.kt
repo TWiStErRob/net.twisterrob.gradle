@@ -3,8 +3,8 @@
 
 package net.twisterrob.gradle
 
-import net.twisterrob.gradle.internal.nagging.GradleNaggingReflection
-import net.twisterrob.gradle.internal.nagging.IgnoringSet
+import net.twisterrob.gradle.nagging.internal.GradleNaggingReflection
+import net.twisterrob.gradle.nagging.internal.IgnoringSet
 import org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler
 import org.gradle.util.GradleVersion
 import java.util.regex.Pattern

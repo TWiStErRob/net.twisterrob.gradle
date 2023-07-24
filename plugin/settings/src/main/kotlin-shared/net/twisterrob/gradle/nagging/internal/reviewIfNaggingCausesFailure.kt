@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.internal.nagging
+package net.twisterrob.gradle.nagging.internal
 
 import net.twisterrob.gradle.buildFinishedCompat
 import net.twisterrob.gradle.isDoNotNagAboutDiagnosticsEnabled

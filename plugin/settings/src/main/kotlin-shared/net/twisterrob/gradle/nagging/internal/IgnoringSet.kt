@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.internal.nagging
+package net.twisterrob.gradle.nagging.internal
 
 import net.twisterrob.gradle.isDoNotNagAboutDiagnosticsEnabled
 import org.gradle.util.GradleVersion

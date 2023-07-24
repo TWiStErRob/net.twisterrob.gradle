@@ -20,13 +20,28 @@ gradlePlugin {
 				Features:
 				 * Exposes utility functions used in many projects:
 				   * `enableFeaturePreviewQuietly`
-				   * `doNotNagAbout`
+				   * `buildFinishedCompat`
+				   * `disableLoggingFor`
 				   * `slug`
 				 * No logic yet.
 			""".trimIndent()
 			tags.set(setOf("utilities", "settings", "logging"))
 			implementationClass = "net.twisterrob.gradle.settings.SettingsPlugin"
 			// deprecateId(project, "net.twisterrob.settings") // Manually added, because Plugin<Settings>
+		}
+		create("nagging") {
+			id = "net.twisterrob.gradle.plugin.nagging"
+			displayName = "Gradle Nagging Settings Plugin"
+			description = """
+				TWiStErRob's Nagging plugin for Gradle Settings files.
+				
+				Features:
+				 * Exposes utility functions used in many projects:
+				   * `doNotNagAbout`
+				 * No logic yet.
+			""".trimIndent()
+			tags.set(setOf("utilities", "settings", "logging"))
+			implementationClass = "net.twisterrob.gradle.nagging.NaggingPlugin"
 		}
 	}
 }
