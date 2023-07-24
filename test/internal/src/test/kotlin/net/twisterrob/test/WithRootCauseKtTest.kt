@@ -81,21 +81,10 @@ class WithRootCauseKtTest {
 
 	@Nested
 	inner class `regressions validation` {
-
 		/**
 		 * To verify the presence of the problem in
 		 * [ota4j-team/opentest4j#5](https://github.com/ota4j-team/opentest4j/issues/5#issuecomment-940474063).
 		 */
-		@Test
-		fun `cannot initCause of AssertionFailedError`() {
-			val ex = AssertionFailedError()
-			val cause = Throwable()
-
-			assertThrows<IllegalStateException> {
-				ex.initCause(cause)
-			}
-		}
-
 		@Test
 		fun `can add root cause to AssertionFailedError`() {
 			val ex = AssertionFailedError()
