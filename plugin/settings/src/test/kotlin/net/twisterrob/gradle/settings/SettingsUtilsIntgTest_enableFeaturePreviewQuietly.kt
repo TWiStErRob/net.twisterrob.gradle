@@ -21,9 +21,10 @@ import org.junit.jupiter.api.extension.ExtendWith
  * * [org.gradle.api.internal.FeaturePreviews.Feature.GROOVY_COMPILATION_AVOIDANCE]
  *   exists from Gradle 6.1.1 (and probably even earlier) to Gradle 7.5.1 (and probably even further),
  *   but is hard to trigger for testing.
+ * @see enableFeaturePreviewQuietly
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class SettingsPluginIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
+class SettingsUtilsIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	@Test fun `outputs info line when applying typesafe accessors`() {

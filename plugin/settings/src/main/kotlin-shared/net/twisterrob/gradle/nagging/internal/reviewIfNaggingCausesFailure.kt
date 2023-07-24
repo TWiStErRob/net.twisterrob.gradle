@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.internal.nagging
+package net.twisterrob.gradle.nagging.internal
 
 import net.twisterrob.gradle.buildFinishedCompat
 import net.twisterrob.gradle.isDoNotNagAboutDiagnosticsEnabled
@@ -8,7 +8,7 @@ import org.gradle.util.GradleVersion
 /**
  * @see IgnoringSetGradle83
  */
-internal fun reviewIfNaggingCausesFailure(gradle: Gradle) {
+internal fun Gradle.reviewIfNaggingCausesFailure() {
 	if (GradleVersion.version("8.3") <= GradleVersion.current().baseVersion) {
 		// Alternatives considered:
 		// * `gradle.projectsEvaluated { clearErrorIfNoMessages() }`
@@ -19,7 +19,7 @@ internal fun reviewIfNaggingCausesFailure(gradle: Gradle) {
 		//   It's around the right time, but it's deprecated.
 		// * `FlowScope` is the only way I see now.
 		//   It's available since Gradle 8.1, it's still incubating in 8.3.
-		gradle.buildFinishedCompat { clearErrorIfNoMessages() }
+		this.buildFinishedCompat { clearErrorIfNoMessages() }
 	}
 }
 
