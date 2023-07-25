@@ -23,11 +23,11 @@ For details on what was changed in different versions, see [CHANGELOG](CHANGELOG
 
 ## Compatibility
 
-Android Gradle Plugin 3.1.4 — 8.1.x on Gradle 4.9 — 8.1.x
+Android Gradle Plugin 3.1.4 — 8.1.x on Gradle 4.9 — 8.3.x
 as listed in [AGP's compatibility guide](https://developer.android.com/studio/releases/gradle-plugin#updating-gradle)
 are covered by different plugin versions.
 
-Currently supported version are Android Gradle Plugin 7.0.x — 8.1.x on Gradle 7.0 — 8.2.1 where compatible.
+Currently supported version are Android Gradle Plugin 7.0.x — 8.1.x on Gradle 7.0 — 8.3-rc-1 where compatible.
 
 | AGP →<br/>Gradle ↓ |   3.1.x    |   3.2.x    |    3.3.x     |    3.4.x     |     3.5.x     |     3.6.x     |     4.0.x     |     4.1.x     |   4.2.x ^3    |  7.0.x   |  7.1.x   |  7.2.x   |  7.3.x   |  7.4.x   |  8.0.x   |  8.1.x   |
 |:-------------------|:----------:|:----------:|:------------:|:------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
@@ -48,6 +48,7 @@ Currently supported version are Android Gradle Plugin 7.0.x — 8.1.x on Gradle 
 | 7.5 - 7.5.1        |     ❓      |     ❓      |      ❓       |      ❓       |       ❓       |       ❓       |       ❓       |       ❓       | 0.14 - 0.15.1 | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.15 - ∞ | 0.15 - ∞ |    ❌     |    ❌     |
 | 7.6 - 7.6.1        |     ❓      |     ❓      |      ❓       |      ❓       |       ❓       |       ❓       |       ❓       |       ❓       | 0.14 - 0.15.1 | 0.14 - ∞ | 0.14 - ∞ | 0.14 - ∞ | 0.15 - ∞ | 0.15 - ∞ |    ❌     |    ❌     |
 | 8.0 - 8.2          |     ❓      |     ❓      |      ❓       |      ❓       |       ❓       |       ❓       |       ❓       |       ❓       |       ❓       |    ❓     |    ❓     |    ❓     |    ❓     | 0.15 - ∞ | 0.16 - ∞ | 0.16 - ∞ |
+| 8.3-rc-1           |     ❓      |     ❓      |      ❓       |      ❓       |       ❓       |       ❓       |       ❓       |       ❓       |       ❓       |    ❓     |    ❓     |    ❓     |    ❓     | 0.16 - ∞ | 0.16 - ∞ | 0.16 - ∞ |
 
  * ❓ = not sure if it's supported by AGP, never tested.
  * ❌ = incompatible based on AGP compatibility.
