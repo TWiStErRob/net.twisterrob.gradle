@@ -4,7 +4,6 @@ import org.gradle.api.GradleException
 import org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler
 import org.gradle.util.GradleVersion
 import java.lang.reflect.Field
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Reflection wrapper to access Gradle's internal nagging mechanism.
@@ -40,12 +39,6 @@ internal object GradleNaggingReflection {
 		set(value) {
 			deprecatedFeatureHandler.set(errorField, value)
 		}
-
-	/**
-	 * @since Gradle 8.3-rc-1 because of [problemStreamField] and [remainingStackTracesField].
-	 */
-	val remainingStackTraces: AtomicInteger
-		get() = deprecatedFeatureHandler.get<Any>(problemStreamField).get(remainingStackTracesField)
 
 	/**
 	 * History:
@@ -120,47 +113,6 @@ internal object GradleNaggingReflection {
 			}
 			else -> {
 				error("Gradle ${GradleVersion.current()} too old, failing on deprecations is not supported.")
-			}
-		}
-	}
-
-	/**
-	 * History:
-	 *  * Gradle 8.2 and before: there was no abstraction, the stack was contained directly in FeatureUsage objects.
-	 *  * Gradle 8.3-rc-1 (f6f651d/#25156) started using DefaultProblemDiagnosticsFactory for creating stack traces.
-	 *  * Gradle 8.3-rc-1 (59feb1/#25216) introduced this field.
-	 *
-	 * @since Gradle 8.3-rc-1
-	 */
-	private val problemStreamField: Field by lazy {
-		when {
-			GradleVersion.version("8.3") <= GradleVersion.current().baseVersion -> {
-				Class.forName("org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler")
-					.getDeclaredField("problemStream")
-					.apply { isAccessible = true }
-			}
-			else -> {
-				error("Gradle ${GradleVersion.current()} too old, there's no limit on nagging stack traces.")
-			}
-		}
-	}
-
-	/**
-	 * History:
-	 *  * Gradle 8.2 and before: there was no limitation on number of stack traces printed.
-	 *  * Gradle 8.3-rc-1 (59feb1/#25216) introduced this field.
-	 *
-	 * @since Gradle 8.3-rc-1
-	 */
-	private val remainingStackTracesField: Field by lazy {
-		when {
-			GradleVersion.version("8.3") <= GradleVersion.current().baseVersion -> {
-				Class.forName("org.gradle.internal.problems.DefaultProblemDiagnosticsFactory\$DefaultProblemStream")
-					.getDeclaredField("remainingStackTraces")
-					.apply { isAccessible = true }
-			}
-			else -> {
-				error("Gradle ${GradleVersion.current()} too old, there's no limit on nagging stack traces.")
 			}
 		}
 	}

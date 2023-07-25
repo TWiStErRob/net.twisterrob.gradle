@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.nagging
 
-import net.twisterrob.gradle.nagging.internal.allowUnlimitedStacksForNagging
 import net.twisterrob.gradle.nagging.internal.reviewIfNaggingCausesFailure
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
@@ -15,7 +14,6 @@ import org.gradle.api.initialization.Settings
  */
 class NaggingPlugin : Plugin<Settings> {
 	override fun apply(settings: Settings) {
-		settings.gradle.allowUnlimitedStacksForNagging()
 		settings.gradle.reviewIfNaggingCausesFailure()
 	}
 }
