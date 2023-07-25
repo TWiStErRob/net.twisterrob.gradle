@@ -49,7 +49,8 @@
 			"description": "Disable updating plugins in example projects, they're part of the release process.",
 			"matchPackageNames": [
 				"net.twisterrob.gradle.plugin.quality",
-				"net.twisterrob.gradle.plugin.settings"
+				"net.twisterrob.gradle.plugin.settings",
+				"net.twisterrob.gradle.plugin.nagging"
 			],
 			"matchPaths": [
 				"docs/examples/release/**",
