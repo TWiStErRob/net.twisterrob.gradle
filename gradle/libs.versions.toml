@@ -23,13 +23,13 @@ gradle-publish = "1.2.0"
 
 # See [lint] which is affected by this.
 # Versions: https://maven.google.com/web/index.html#com.android.tools.build:gradle
-agp = "8.2.0-alpha13"
+agp = "8.2.0-alpha14"
 
 # = 23.0.0 + [agp].
 # @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
 # @see builder-model//version.properties
 # Versions: https://maven.google.com/web/index.html#com.android.tools.lint:lint
-agp-tools = "31.2.0-alpha13"
+agp-tools = "31.2.0-alpha14"
 
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # Actual Kotlin version for dependencies. It has to be older to make sure a Gradle-compatible version is used.
