@@ -69,8 +69,7 @@ jobs:
   build:
     name: "1 🔨 Build"
     runs-on: ubuntu-22.04
-    # A run took 5.5 minutes, give it a bit of a buffer (there's networking involved, download and upload), and constrain.
-    timeout-minutes: 20
+    timeout-minutes: 30
     needs: validate
     steps:
       - name: "Set up JDK 17."
