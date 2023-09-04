@@ -21,7 +21,7 @@ jobs:
     timeout-minutes: 2
     steps:
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Validate Gradle Wrapper JARs."
         uses: gradle/wrapper-validation-action@v1
@@ -42,7 +42,7 @@ jobs:
         uses: android-actions/setup-android@v2
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Build the Graph plugin."
         working-directory: graph
@@ -82,7 +82,7 @@ jobs:
         uses: android-actions/setup-android@v2
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Check publicly available release version first, this should be independent of repository state.
       - name: "Verify docs/examples/release."
@@ -267,7 +267,7 @@ jobs:
           esac
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # TODEL https://github.com/gradle/wrapper-validation-action/issues/69
       # Commented out, because action is not stable enough for parallel workflows ^.
