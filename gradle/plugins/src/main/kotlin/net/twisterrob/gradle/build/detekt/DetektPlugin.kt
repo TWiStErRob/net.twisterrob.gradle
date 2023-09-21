@@ -9,6 +9,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.withType
 
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 internal abstract class DetektPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {

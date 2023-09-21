@@ -31,12 +31,14 @@ internal abstract class DeprecatedPluginKotlinGeneratingTask : DefaultTask() {
 		val packageName = implementationClass.substringBeforeLast('.')
 		val className = implementationClass.substringAfterLast('.')
 		@Language("kotlin")
+		@Suppress("ClassName")
 		val deprecatedPluginSourceCode = """
 			package ${packageName}
 			
 			import net.twisterrob.gradle.internal.deprecation.DeprecatedProjectPlugin
 			
-			internal class ${className}Deprecated : DeprecatedProjectPlugin(
+			@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+			internal abstract class ${className}Deprecated : DeprecatedProjectPlugin(
 				oldName = "${oldName.get()}",
 				newName = "${newName.get()}",
 			)

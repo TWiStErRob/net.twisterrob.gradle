@@ -20,6 +20,7 @@ import org.gradle.kotlin.dsl.register
 /**
  * @see org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
  */
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class InitScriptMetadataPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
