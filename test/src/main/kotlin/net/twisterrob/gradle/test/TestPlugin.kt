@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import java.net.JarURLConnection
 import java.util.jar.Attributes
 
-class TestPlugin : BaseExposedPlugin() {
+abstract class TestPlugin : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

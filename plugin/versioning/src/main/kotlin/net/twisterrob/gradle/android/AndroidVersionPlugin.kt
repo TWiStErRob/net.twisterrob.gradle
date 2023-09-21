@@ -163,7 +163,7 @@ abstract class AndroidVersionExtension {
 	}
 }
 
-class AndroidVersionPlugin : BasePlugin() {
+abstract class AndroidVersionPlugin : BasePlugin() {
 
 	private val android: AppExtension by lazy {
 		if (!project.plugins.hasPlugin("com.android.application")) {

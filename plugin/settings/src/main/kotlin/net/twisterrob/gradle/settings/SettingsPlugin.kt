@@ -11,7 +11,7 @@ import org.gradle.api.initialization.Settings
  * }
  * ```
  */
-class SettingsPlugin : Plugin<Settings> {
+abstract class SettingsPlugin : Plugin<Settings> {
 	override fun apply(settings: Settings) {
 		// Nothing to do, yet.
 	}

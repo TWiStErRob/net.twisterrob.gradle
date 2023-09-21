@@ -6,7 +6,7 @@ import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
 
-class AndroidSigningPlugin : BasePlugin() {
+abstract class AndroidSigningPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

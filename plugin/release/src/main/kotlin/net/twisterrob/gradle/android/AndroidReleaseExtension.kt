@@ -5,9 +5,9 @@ import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.kotlin.dsl.getByName
 
-interface AndroidReleaseExtension {
+abstract class AndroidReleaseExtension {
 
-	val directory: DirectoryProperty
+	abstract val directory: DirectoryProperty
 
 	companion object {
 

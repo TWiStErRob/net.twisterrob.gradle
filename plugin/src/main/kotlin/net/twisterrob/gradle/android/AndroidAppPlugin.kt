@@ -6,7 +6,7 @@ import net.twisterrob.gradle.vcs.VCSPlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 
-class AndroidAppPlugin : BaseExposedPlugin() {
+abstract class AndroidAppPlugin : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

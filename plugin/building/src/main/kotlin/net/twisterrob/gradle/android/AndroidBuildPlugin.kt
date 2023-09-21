@@ -37,7 +37,7 @@ abstract class AndroidBuildPluginExtension {
 	}
 }
 
-class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
+abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

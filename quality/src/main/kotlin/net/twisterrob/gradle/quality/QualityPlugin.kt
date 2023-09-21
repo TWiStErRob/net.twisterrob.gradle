@@ -13,7 +13,7 @@ import net.twisterrob.gradle.quality.tasks.ValidateViolationsTask
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 
-class QualityPlugin : BaseExposedPlugin() {
+abstract class QualityPlugin : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

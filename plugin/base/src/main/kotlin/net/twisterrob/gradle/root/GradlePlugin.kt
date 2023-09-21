@@ -6,7 +6,7 @@ import org.gradle.api.Task
 import org.gradle.kotlin.dsl.register
 import org.gradle.util.GradleVersion
 
-class GradlePlugin : BasePlugin() {
+abstract class GradlePlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

@@ -9,7 +9,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.withType
 
-internal class DetektPlugin : Plugin<Project> {
+internal abstract class DetektPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
 		project.plugins.apply("io.gitlab.arturbosch.detekt")

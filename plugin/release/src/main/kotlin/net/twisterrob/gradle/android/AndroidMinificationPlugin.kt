@@ -19,7 +19,7 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
-class AndroidMinificationPlugin : BasePlugin() {
+abstract class AndroidMinificationPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

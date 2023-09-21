@@ -10,7 +10,7 @@ import org.gradle.plugin.devel.PluginDeclaration
 import org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
 import org.gradle.plugin.devel.tasks.ValidatePlugins
 
-class GradlePluginValidationPlugin : Plugin<Project> {
+abstract class GradlePluginValidationPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
 		project.plugins.withId("org.gradle.java-gradle-plugin") {
