@@ -47,7 +47,7 @@ import java.util.Properties
  * @see version
  */
 @Suppress("MemberVisibilityCanBePrivate")
-open class AndroidVersionExtension {
+abstract class AndroidVersionExtension {
 
 	private var isAutoVersionSet: Boolean = false
 

@@ -19,7 +19,7 @@ import org.gradle.work.DisableCachingByDefault
 import se.bjurr.violations.lib.model.SEVERITY
 
 @DisableCachingByDefault(because = "Base class is not cacheable yet. (Gradle 8.0)")
-open class GlobalTestFinalizerTask : TestReport() {
+abstract class GlobalTestFinalizerTask : TestReport() {
 
 	/**
 	 * Need to save the value to a field, so that we can query the provider in @TaskAction.

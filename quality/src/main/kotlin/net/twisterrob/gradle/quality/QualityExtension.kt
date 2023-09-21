@@ -8,7 +8,7 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.kotlin.dsl.getByType
 
-open class QualityExtension(
+abstract class QualityExtension(
 	val project: Project
 ) {
 

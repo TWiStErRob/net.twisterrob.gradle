@@ -27,7 +27,7 @@ import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
-open class AndroidBuildPluginExtension {
+abstract class AndroidBuildPluginExtension {
 
 	var isDecorateBuildConfig: Boolean = true
 

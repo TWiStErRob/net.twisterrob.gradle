@@ -18,7 +18,7 @@ import java.io.File
 import java.io.PrintStream
 import java.security.Permission
 
-class SVNPlugin : BasePlugin() {
+abstract class SVNPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -26,7 +26,7 @@ class SVNPlugin : BasePlugin() {
 	}
 }
 
-open class SVNPluginExtension(
+abstract class SVNPluginExtension(
 	private val rootDir: File
 ) : VCSExtension {
 

@@ -21,7 +21,7 @@ import java.io.File
 @Suppress("DEPRECATION" /* AGP 7.0 */)
 private typealias BaseVariant = com.android.build.gradle.api.BaseVariant
 
-open class VariantTaskCreator<T>(
+abstract class VariantTaskCreator<T>(
 	private val project: Project,
 	private val baseName: String,
 	private val pluginName: String,

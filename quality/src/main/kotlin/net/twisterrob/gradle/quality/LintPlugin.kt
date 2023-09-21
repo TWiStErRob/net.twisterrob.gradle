@@ -5,7 +5,7 @@ import net.twisterrob.gradle.common.registerTask
 import net.twisterrob.gradle.quality.tasks.GlobalLintGlobalFinalizerTask
 import org.gradle.api.Project
 
-internal open class LintPlugin : BasePlugin() {
+internal abstract class LintPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

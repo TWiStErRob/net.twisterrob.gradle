@@ -8,7 +8,7 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 
 @CacheableTask
-open class CheckStyleTask : Checkstyle(), TargetChecker {
+abstract class CheckStyleTask : Checkstyle(), TargetChecker {
 
 	@Input
 	override var checkTargetName: String = ALL_VARIANTS_NAME

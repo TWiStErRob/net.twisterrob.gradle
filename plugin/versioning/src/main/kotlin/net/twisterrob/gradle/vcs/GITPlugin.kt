@@ -17,7 +17,7 @@ import org.gradle.kotlin.dsl.create
 import java.io.File
 import java.io.FileNotFoundException
 
-class GITPlugin : BasePlugin() {
+abstract class GITPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -25,7 +25,7 @@ class GITPlugin : BasePlugin() {
 	}
 }
 
-open class GITPluginExtension(
+abstract class GITPluginExtension(
 	private val rootDir: File
 ) : VCSExtension {
 

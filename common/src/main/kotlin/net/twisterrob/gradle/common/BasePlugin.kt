@@ -9,7 +9,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 
-open class BasePlugin : Plugin<Project> {
+abstract class BasePlugin : Plugin<Project> {
 
 	@Suppress(
 		"PropertyName", // Keep it consistent with external loggers.

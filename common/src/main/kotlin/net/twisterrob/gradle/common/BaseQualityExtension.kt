@@ -5,7 +5,7 @@ import org.gradle.api.internal.file.pattern.PatternMatcherFactory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.util.PatternSet
 
-open class BaseQualityExtension<T>(
+abstract class BaseQualityExtension<T>(
 	internal var taskConfigurator: Action<TaskConfigurator<T>> = Action {}
 ) where T : SourceTask {
 
