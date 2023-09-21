@@ -8,7 +8,8 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 
-open class VCSPluginExtension : VCSExtension {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class VCSPluginExtension : VCSExtension {
 
 	var current: VCSExtension = DummyVcsExtension
 		internal set
@@ -43,7 +44,8 @@ open class VCSPluginExtension : VCSExtension {
 	}
 }
 
-class VCSPlugin : BaseExposedPlugin() {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class VCSPlugin : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

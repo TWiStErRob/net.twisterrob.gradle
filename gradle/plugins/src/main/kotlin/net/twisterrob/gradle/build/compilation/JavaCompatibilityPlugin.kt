@@ -3,7 +3,8 @@ package net.twisterrob.gradle.build.compilation
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class JavaCompatibilityPlugin : Plugin<Project> {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class JavaCompatibilityPlugin : Plugin<Project> {
 	override fun apply(target: Project) {
 		target.dependencies.components {
 			// AGP 8.0.0-alpha10 requires Java 17 (https://issuetracker.google.com/issues/241546506)

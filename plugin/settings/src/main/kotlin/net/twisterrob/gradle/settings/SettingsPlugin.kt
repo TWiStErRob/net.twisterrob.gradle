@@ -11,7 +11,8 @@ import org.gradle.api.initialization.Settings
  * }
  * ```
  */
-class SettingsPlugin : Plugin<Settings> {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class SettingsPlugin : Plugin<Settings> {
 	override fun apply(settings: Settings) {
 		// Nothing to do, yet.
 	}

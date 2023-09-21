@@ -6,7 +6,8 @@ import net.twisterrob.gradle.vcs.VCSPlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 
-class AndroidLibraryPlugin : BaseExposedPlugin() {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class AndroidLibraryPlugin : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

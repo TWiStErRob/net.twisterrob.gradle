@@ -13,7 +13,8 @@ import org.gradle.api.initialization.Settings
  * }
  * ```
  */
-class NaggingPlugin : Plugin<Settings> {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class NaggingPlugin : Plugin<Settings> {
 	override fun apply(settings: Settings) {
 		settings.gradle.allowUnlimitedStacksForNagging()
 		settings.gradle.reviewIfNaggingCausesFailure()

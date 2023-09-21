@@ -18,7 +18,8 @@ import java.io.File
 import java.io.PrintStream
 import java.security.Permission
 
-class SVNPlugin : BasePlugin() {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class SVNPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -26,7 +27,8 @@ class SVNPlugin : BasePlugin() {
 	}
 }
 
-open class SVNPluginExtension(
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class SVNPluginExtension(
 	private val rootDir: File
 ) : VCSExtension {
 

@@ -1,3 +1,4 @@
 package net.twisterrob.gradle.common
 
-open class BaseExposedPlugin : BasePlugin()
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class BaseExposedPlugin : BasePlugin()
