@@ -19,6 +19,7 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidMinificationPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {

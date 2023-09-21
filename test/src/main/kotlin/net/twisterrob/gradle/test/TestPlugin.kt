@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import java.net.JarURLConnection
 import java.util.jar.Attributes
 
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class TestPlugin : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {

@@ -4,6 +4,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.SourceTask
 
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class BaseQualityPlugin(
 	private val taskCreatorType: Class<out VariantTaskCreator<*>>,
 	private val extensionName: String,
@@ -29,4 +30,5 @@ abstract class BaseQualityPlugin(
 private inline fun <T, reified P1> Class<T>.newInstance(p1: P1?): T =
 	this.getDeclaredConstructor(P1::class.java).newInstance(p1)
 
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 private abstract class FakeQualityExtension

@@ -46,7 +46,10 @@ import java.util.Properties
  * Note: in Groovy DSL this is automatic.
  * @see version
  */
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress(
+	"MemberVisibilityCanBePrivate",
+	"UnnecessaryAbstractClass", // Gradle convention.
+)
 abstract class AndroidVersionExtension {
 
 	private var isAutoVersionSet: Boolean = false
@@ -163,6 +166,7 @@ abstract class AndroidVersionExtension {
 	}
 }
 
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidVersionPlugin : BasePlugin() {
 
 	private val android: AppExtension by lazy {

@@ -6,6 +6,7 @@ import net.twisterrob.gradle.vcs.VCSPlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidTestPlugin : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {

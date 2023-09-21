@@ -17,6 +17,7 @@ import org.gradle.kotlin.dsl.create
 import java.io.File
 import java.io.FileNotFoundException
 
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class GITPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
@@ -25,6 +26,7 @@ abstract class GITPlugin : BasePlugin() {
 	}
 }
 
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class GITPluginExtension(
 	private val rootDir: File
 ) : VCSExtension {
