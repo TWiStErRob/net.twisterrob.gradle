@@ -20,7 +20,8 @@ import javax.inject.Inject
 
 private val LOG = logger<GraphPlugin>()
 
-class GraphPlugin @Inject constructor(
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class GraphPlugin @Inject constructor(
 	private val cacheRepository: ScopedCacheBuilderFactory,
 ) : Plugin<Settings> {
 
@@ -116,7 +117,7 @@ class GraphPlugin @Inject constructor(
 	}
 }
 
-@Suppress("UnnecessaryAbstractClass") // Gradle extensions must be abstract.
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class GraphSettingsExtension {
 
 	var isKeepOpen: Boolean = false

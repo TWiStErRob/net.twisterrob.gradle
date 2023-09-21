@@ -8,7 +8,7 @@ import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.named
 
-open class ExtractWebJarsExtension(
+abstract class ExtractWebJarsExtension(
 	private val project: Project,
 ) {
 	fun extractInto(target: SourceDirectorySet) {

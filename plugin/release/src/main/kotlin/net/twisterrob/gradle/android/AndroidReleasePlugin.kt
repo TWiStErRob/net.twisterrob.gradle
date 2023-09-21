@@ -25,7 +25,8 @@ import java.io.File
 import java.io.IOException
 import java.util.zip.ZipFile
 
-class AndroidReleasePlugin : BasePlugin() {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class AndroidReleasePlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)

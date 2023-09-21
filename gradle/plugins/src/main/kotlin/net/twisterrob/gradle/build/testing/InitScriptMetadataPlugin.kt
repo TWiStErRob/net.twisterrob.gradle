@@ -20,7 +20,8 @@ import org.gradle.kotlin.dsl.register
 /**
  * @see org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
  */
-class InitScriptMetadataPlugin : Plugin<Project> {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class InitScriptMetadataPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
 		val initScriptConfiguration = project.createClasspath()

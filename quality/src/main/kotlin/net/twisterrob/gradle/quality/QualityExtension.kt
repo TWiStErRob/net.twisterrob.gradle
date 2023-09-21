@@ -8,7 +8,8 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.kotlin.dsl.getByType
 
-open class QualityExtension(
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+abstract class QualityExtension(
 	val project: Project
 ) {
 

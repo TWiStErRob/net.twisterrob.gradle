@@ -14,7 +14,8 @@ import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
-internal class DetektRootPlugin : Plugin<Project> {
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+internal abstract class DetektRootPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
 		require(project.subprojects.isNotEmpty()) {
