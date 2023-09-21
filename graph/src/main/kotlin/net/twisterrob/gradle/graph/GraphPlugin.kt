@@ -116,7 +116,7 @@ class GraphPlugin @Inject constructor(
 	}
 }
 
-@Suppress("UnnecessaryAbstractClass") // Gradle extensions must be abstract.
+@Suppress("UnnecessaryAbstractClass") // Gradle convention.
 abstract class GraphSettingsExtension {
 
 	var isKeepOpen: Boolean = false
