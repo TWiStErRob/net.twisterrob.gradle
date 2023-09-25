@@ -39,7 +39,7 @@ jobs:
           distribution: zulu
 
       - name: "Set up Android SDK."
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
@@ -79,7 +79,7 @@ jobs:
           distribution: zulu
 
       - name: "Set up Android SDK."
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
@@ -227,7 +227,7 @@ jobs:
           distribution: zulu
 
       - name: "Set up Android SDK."
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
 
       - name: "Install Android SDK components."
         run: |
