@@ -61,7 +61,7 @@ junit5-pioneer = "2.1.0"
 # Artifacts: https://mvnrepository.com/artifact/org.mockito/mockito-core
 # Changelog (1.x, 2.x and 3.x): https://github.com/mockito/mockito/blob/main/doc/release-notes/official.md
 # Changelog (4.x): https://github.com/mockito/mockito/releases
-mockito = "5.5.0"
+mockito = "5.6.0"
 # GitHub releases: https://github.com/nhaarman/mockito-kotlin/releases
 mockito-kotlin = "5.1.0"
 # GitHub releases: https://github.com/mockk/mockk/releases
