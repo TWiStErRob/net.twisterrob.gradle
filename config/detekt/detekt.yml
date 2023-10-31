@@ -99,10 +99,6 @@ style:
     # I'm a tab guy, I don't pay for space in advance.
     active: false
 
-  OptionalWhenBraces:
-    # TODEL https://github.com/detekt/detekt/issues/5133
-    active: false
-
   ReturnCount:
     # Default 2 is not enough, usually a single guard and a condition simply violates this.
     max: 3
