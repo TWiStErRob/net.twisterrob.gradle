@@ -104,8 +104,8 @@
 	],
 	"customManagers": [
 		{
-			"customType": "regex",
 			"description": "Update AGP compatibility CI matrix values.",
+			"customType": "regex",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -116,8 +116,8 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"customType": "regex",
 			"description": "Update AGP compatibility CI artifact names.",
+			"customType": "regex",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -131,8 +131,8 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"customType": "regex",
 			"description": "Update AGP version test.",
+			"customType": "regex",
 			"fileMatch": ["^compat/agp-base/src/test/kotlin/net/twisterrob/gradle/common/AGPVersionsTest\\.kt$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -143,8 +143,8 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"customType": "regex",
 			"description": "Update AGP defaults for local runs.",
+			"customType": "regex",
 			"fileMatch": ["^gradle\\.properties$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -155,8 +155,8 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"customType": "regex",
 			"description": "Update Gradle compatibility CI matrix values.",
+			"customType": "regex",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -166,8 +166,8 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"customType": "regex",
 			"description": "Update Gradle compatibility CI artifact names.",
+			"customType": "regex",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -180,8 +180,8 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"customType": "regex",
 			"description": "Update Gradle defaults for local runs.",
+			"customType": "regex",
 			"fileMatch": ["^gradle\\.properties$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -191,8 +191,8 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"customType": "regex",
 			"description": "Update Gradle latest tests.",
+			"customType": "regex",
 			"fileMatch": ["^quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest\\.kt$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -203,8 +203,8 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"customType": "regex",
 			"description": "Update Gradle latest compatibility.",
+			"customType": "regex",
 			"fileMatch": ["^README\\.md$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
