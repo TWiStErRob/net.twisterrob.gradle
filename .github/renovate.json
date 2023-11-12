@@ -13,10 +13,13 @@
 			"matchPackageNames": [
 				"com.android.tools.build:gradle"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"gradle/agp.versions.toml"
 			],
-			"matchUpdateTypes": ["major", "minor"],
+			"matchUpdateTypes": [
+				"major",
+				"minor"
+			],
 			"enabled": false
 		},
 		{
@@ -25,11 +28,14 @@
 				"com.android.tools.build:gradle",
 				"gradle"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				".github/workflows/CI.yml",
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
 			],
-			"matchUpdateTypes": ["major", "minor"],
+			"matchUpdateTypes": [
+				"major",
+				"minor"
+			],
 			"enabled": false
 		},
 		{
@@ -38,11 +44,13 @@
 				"com.android.tools.build:gradle",
 				"gradle"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
 			],
 			"matchCurrentVersion": "[8.0,)",
-			"matchUpdateTypes": ["minor"],
+			"matchUpdateTypes": [
+				"minor"
+			],
 			"enabled": true
 		},
 		{
@@ -52,7 +60,7 @@
 				"net.twisterrob.gradle.plugin.settings",
 				"net.twisterrob.gradle.plugin.nagging"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"docs/examples/release/**",
 				"docs/examples/snapshot/**",
 				"docs/examples/local/**"
@@ -65,7 +73,7 @@
 				"com.android.tools.build:gradle",
 				"com.android.application"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"docs/debug/agp*-gradle*/build.gradle",
 				"docs/debug/agp*-gradle*/build.gradle.kts",
 				"docs/debug/agp*-gradle*/settings.gradle",
@@ -75,7 +83,10 @@
 				"docs/debug/agp*-gradle*/buildSrc/settings.gradle",
 				"docs/debug/agp*-gradle*/buildSrc/settings.gradle.kts"
 			],
-			"matchUpdateTypes": ["major", "minor"],
+			"matchUpdateTypes": [
+				"major",
+				"minor"
+			],
 			"enabled": false
 		},
 		{
@@ -83,10 +94,13 @@
 			"matchPackageNames": [
 				"gradle"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"docs/debug/agp*-gradle*/gradle/wrapper/gradle-wrapper.properties"
 			],
-			"matchUpdateTypes": ["major", "minor"],
+			"matchUpdateTypes": [
+				"major",
+				"minor"
+			],
 			"enabled": false
 		},
 		{
@@ -94,18 +108,24 @@
 			"matchPackagePatterns": [
 				"^org\\.jetbrains\\.kotlin:kotlin-.*$"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"gradle/libs.versions.toml"
 			],
 			"matchCurrentVersion": "1.4.32",
-			"matchUpdateTypes": ["major", "minor"],
+			"matchUpdateTypes": [
+				"major",
+				"minor"
+			],
 			"enabled": false
 		}
 	],
-	"regexManagers": [
+	"customManagers": [
 		{
+			"customType": "regex",
 			"description": "Update AGP compatibility CI matrix values.",
-			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"fileMatch": [
+				"^\\.github/workflows/CI\\.yml$"
+			],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
@@ -115,8 +135,11 @@
 			"versioningTemplate": "gradle"
 		},
 		{
+			"customType": "regex",
 			"description": "Update AGP compatibility CI artifact names.",
-			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"fileMatch": [
+				"^\\.github/workflows/CI\\.yml$"
+			],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
@@ -129,8 +152,11 @@
 			"versioningTemplate": "gradle"
 		},
 		{
+			"customType": "regex",
 			"description": "Update AGP version test.",
-			"fileMatch": ["^compat/agp-base/src/test/kotlin/net/twisterrob/gradle/common/AGPVersionsTest\\.kt$"],
+			"fileMatch": [
+				"^compat/agp-base/src/test/kotlin/net/twisterrob/gradle/common/AGPVersionsTest\\.kt$"
+			],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
@@ -140,8 +166,11 @@
 			"versioningTemplate": "gradle"
 		},
 		{
+			"customType": "regex",
 			"description": "Update AGP defaults for local runs.",
-			"fileMatch": ["^gradle\\.properties$"],
+			"fileMatch": [
+				"^gradle\\.properties$"
+			],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
@@ -151,8 +180,11 @@
 			"versioningTemplate": "gradle"
 		},
 		{
+			"customType": "regex",
 			"description": "Update Gradle compatibility CI matrix values.",
-			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"fileMatch": [
+				"^\\.github/workflows/CI\\.yml$"
+			],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
@@ -161,8 +193,11 @@
 			"versioningTemplate": "gradle"
 		},
 		{
+			"customType": "regex",
 			"description": "Update Gradle compatibility CI artifact names.",
-			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
+			"fileMatch": [
+				"^\\.github/workflows/CI\\.yml$"
+			],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
@@ -174,8 +209,11 @@
 			"versioningTemplate": "gradle"
 		},
 		{
+			"customType": "regex",
 			"description": "Update Gradle defaults for local runs.",
-			"fileMatch": ["^gradle\\.properties$"],
+			"fileMatch": [
+				"^gradle\\.properties$"
+			],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
@@ -184,8 +222,11 @@
 			"versioningTemplate": "gradle"
 		},
 		{
+			"customType": "regex",
 			"description": "Update Gradle latest tests.",
-			"fileMatch": ["^quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest\\.kt$"],
+			"fileMatch": [
+				"^quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest\\.kt$"
+			],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
@@ -195,8 +236,11 @@
 			"versioningTemplate": "gradle"
 		},
 		{
+			"customType": "regex",
 			"description": "Update Gradle latest compatibility.",
-			"fileMatch": ["^README\\.md$"],
+			"fileMatch": [
+				"^README\\.md$"
+			],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
