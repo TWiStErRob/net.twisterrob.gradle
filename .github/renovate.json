@@ -13,7 +13,7 @@
 			"matchPackageNames": [
 				"com.android.tools.build:gradle"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"gradle/agp.versions.toml"
 			],
 			"matchUpdateTypes": ["major", "minor"],
@@ -25,7 +25,7 @@
 				"com.android.tools.build:gradle",
 				"gradle"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				".github/workflows/CI.yml",
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
 			],
@@ -38,7 +38,7 @@
 				"com.android.tools.build:gradle",
 				"gradle"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
 			],
 			"matchCurrentVersion": "[8.0,)",
@@ -52,7 +52,7 @@
 				"net.twisterrob.gradle.plugin.settings",
 				"net.twisterrob.gradle.plugin.nagging"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"docs/examples/release/**",
 				"docs/examples/snapshot/**",
 				"docs/examples/local/**"
@@ -65,7 +65,7 @@
 				"com.android.tools.build:gradle",
 				"com.android.application"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"docs/debug/agp*-gradle*/build.gradle",
 				"docs/debug/agp*-gradle*/build.gradle.kts",
 				"docs/debug/agp*-gradle*/settings.gradle",
@@ -83,7 +83,7 @@
 			"matchPackageNames": [
 				"gradle"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"docs/debug/agp*-gradle*/gradle/wrapper/gradle-wrapper.properties"
 			],
 			"matchUpdateTypes": ["major", "minor"],
@@ -94,7 +94,7 @@
 			"matchPackagePatterns": [
 				"^org\\.jetbrains\\.kotlin:kotlin-.*$"
 			],
-			"matchPaths": [
+			"matchFileNames": [
 				"gradle/libs.versions.toml"
 			],
 			"matchCurrentVersion": "1.4.32",
@@ -102,9 +102,10 @@
 			"enabled": false
 		}
 	],
-	"regexManagers": [
+	"customManagers": [
 		{
 			"description": "Update AGP compatibility CI matrix values.",
+			"customType": "regex",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -116,6 +117,7 @@
 		},
 		{
 			"description": "Update AGP compatibility CI artifact names.",
+			"customType": "regex",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -130,6 +132,7 @@
 		},
 		{
 			"description": "Update AGP version test.",
+			"customType": "regex",
 			"fileMatch": ["^compat/agp-base/src/test/kotlin/net/twisterrob/gradle/common/AGPVersionsTest\\.kt$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -141,6 +144,7 @@
 		},
 		{
 			"description": "Update AGP defaults for local runs.",
+			"customType": "regex",
 			"fileMatch": ["^gradle\\.properties$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -152,6 +156,7 @@
 		},
 		{
 			"description": "Update Gradle compatibility CI matrix values.",
+			"customType": "regex",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -162,6 +167,7 @@
 		},
 		{
 			"description": "Update Gradle compatibility CI artifact names.",
+			"customType": "regex",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -175,6 +181,7 @@
 		},
 		{
 			"description": "Update Gradle defaults for local runs.",
+			"customType": "regex",
 			"fileMatch": ["^gradle\\.properties$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -185,6 +192,7 @@
 		},
 		{
 			"description": "Update Gradle latest tests.",
+			"customType": "regex",
 			"fileMatch": ["^quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest\\.kt$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -196,6 +204,7 @@
 		},
 		{
 			"description": "Update Gradle latest compatibility.",
+			"customType": "regex",
 			"fileMatch": ["^README\\.md$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
