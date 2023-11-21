@@ -40,6 +40,8 @@ jobs:
 
       - name: "Set up Android SDK."
         uses: android-actions/setup-android@v3
+        with:
+          log-accepted-android-sdk-licenses: false
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
@@ -80,6 +82,8 @@ jobs:
 
       - name: "Set up Android SDK."
         uses: android-actions/setup-android@v3
+        with:
+          log-accepted-android-sdk-licenses: false
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
@@ -228,25 +232,18 @@ jobs:
 
       - name: "Set up Android SDK."
         uses: android-actions/setup-android@v3
+        with:
+          log-accepted-android-sdk-licenses: false
 
       - name: "Install Android SDK components."
         run: |
-          # The following are already done by setup-android@v2 action:
-          # sdkmanager --install "cmdline-tools;latest"
-          # sdkmanager --install "tools"
-          # sdkmanager --install "platform-tools"
-
-          # Update, because setup-android@v2 installs "cmdline-tools;3.0" as latest, but there's 4.0 already.
-          echo sdkmanager --update
-          sdkmanager --update
-
           # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
           echo sdkmanager --install "build-tools;${{ matrix.build-tools }}"
           sdkmanager --install "build-tools;${{ matrix.build-tools }}"
 
-          # compileSdkVersion for almost all tests, may need an extra `yes | sdkmanager "platforms;android-30"` step.
-          echo sdkmanager --install "platforms;android-30"
-          sdkmanager --install "platforms;android-30"
+          # compileSdk for almost all tests.
+          echo sdkmanager --install "platforms;android-33"
+          sdkmanager --install "platforms;android-33"
 
       - name: "Set up JDK(s)."
         run: |
