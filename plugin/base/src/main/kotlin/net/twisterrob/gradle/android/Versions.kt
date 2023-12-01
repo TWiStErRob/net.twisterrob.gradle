@@ -31,4 +31,4 @@ const val VERSION_SDK_COMPILE_NAME: String = "13" // Android 13 (T)
  *
  * @see com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
  */
-const val VERSION_BUILD_TOOLS: String = "33.0.2"
+const val VERSION_BUILD_TOOLS: String = "34.0.0"
