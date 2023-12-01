@@ -310,7 +310,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			android.twisterrob.decorateBuildConfig = false
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
-				testImplementation 'org.robolectric:robolectric:4.9.2'
+				testImplementation 'org.robolectric:robolectric:4.11.1'
 				// Can't use the latest version, 1.4.1-alpha01 is the last version that's compatible with Kotlin 1.4.32.
 				// > e: .../transformed/core-1.5.0-api.jar!/META-INF/androidx.test.core.kotlin_module:
 				// > Module was compiled with an incompatible version of Kotlin.
@@ -377,7 +377,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			android.buildFeatures.buildConfig = true
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
-				testImplementation 'org.robolectric:robolectric:4.9.2'
+				testImplementation 'org.robolectric:robolectric:4.11.1'
 				// Can't use the latest version, 1.4.1-alpha01 is the last version that's compatible with Kotlin 1.4.32.
 				// > e: .../transformed/core-1.5.0-api.jar!/META-INF/androidx.test.core.kotlin_module:
 				// > Module was compiled with an incompatible version of Kotlin.
@@ -448,7 +448,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			android.buildFeatures.buildConfig = true
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
-				testImplementation 'org.robolectric:robolectric:4.9.2'
+				testImplementation 'org.robolectric:robolectric:4.11.1'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
 			tasks.withType(Test).configureEach {
