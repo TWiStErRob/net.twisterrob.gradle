@@ -3,8 +3,11 @@ plugins {
 }
 
 nexusPublishing {
-	packageGroup.set(project.providers.gradleProperty("projectGroup"))
-	useStaging.set(project.providers.gradleProperty("projectVersion").map { !it.endsWith("-SNAPSHOT") })
+	val projectGroup = project.providers.gradleProperty("projectGroup")
+	val projectVersion = project.providers.gradleProperty("projectVersion")
+	packageGroup.set(projectGroup)
+	useStaging.set(projectVersion.map { !it.endsWith("-SNAPSHOT") })
+	repositoryDescription.set(project.provider { "${projectGroup.get()}:${projectVersion.get()}" })
 	repositories {
 		sonatype {
 			// For :publish...PublicationToSonatypeRepository, projectVersion suffix chooses repo.
