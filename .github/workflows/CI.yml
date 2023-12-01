@@ -242,8 +242,8 @@ jobs:
           sdkmanager --install "build-tools;${{ matrix.build-tools }}"
 
           # compileSdk for almost all tests.
-          echo sdkmanager --install "platforms;android-33"
-          sdkmanager --install "platforms;android-33"
+          echo sdkmanager --install "platforms;android-34"
+          sdkmanager --install "platforms;android-34"
 
       - name: "Set up JDK(s)."
         run: |

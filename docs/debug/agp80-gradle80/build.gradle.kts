@@ -4,5 +4,5 @@ plugins {
 
 android {
 	namespace = "test.project"
-	compileSdk = 33
+	compileSdk = 34
 }
