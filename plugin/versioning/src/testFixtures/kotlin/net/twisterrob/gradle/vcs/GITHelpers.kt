@@ -48,19 +48,19 @@ fun Git.doCommitSingleFile(file: File, message: String): RevCommit {
 		.call {
 			setMessage(message)
 		}
-		.also { println("Committed revision ${it.id}: ${it.fullMessage}") }
+		.also { commit -> println("Committed revision ${commit.id}: ${commit.fullMessage}") }
 }
 
-fun Git.doCheckout(ref: ObjectId): Ref? =
-	this.doCheckout(ref.name)
+fun Git.doCheckout(objectId: ObjectId): Ref? =
+	this.doCheckout(objectId.name)
 
-fun Git.doCheckout(ref: String): Ref? {
+fun Git.doCheckout(name: String): Ref? {
 	return this
 		.checkout()
 		.call {
-			setName(ref)
+			setName(name)
 		}
-		.also { println("Checked out ${ref} as ${it?.objectId}") }
+		.also { ref -> println("Checked out ${name} as ${ref?.objectId ?: name}") }
 }
 
 private fun <R, T : Callable<R>> T.call(block: T.() -> Unit): R =

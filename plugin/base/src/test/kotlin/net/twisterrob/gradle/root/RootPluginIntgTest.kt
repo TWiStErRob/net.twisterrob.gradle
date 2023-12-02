@@ -4,6 +4,7 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.fqcn
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -23,7 +24,7 @@ class RootPluginIntgTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.root")
 			}
 			
-			plugins.withType(${GradlePlugin::class.qualifiedName}) {
+			plugins.withType(${GradlePlugin::class.fqcn}) {
 				println("Gradle Plugin applied")
 			}
 		""".trimIndent()
