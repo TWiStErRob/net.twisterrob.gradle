@@ -543,6 +543,8 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		private const val MAVEN_CENTRAL: String = ArtifactRepositoryContainer.DEFAULT_MAVEN_CENTRAL_REPO_NAME
 
 		/**
+		 * Pick an Android SDK level that is supported by Robolectric based on the current Java version runtime.
+		 *
 		 * `[Robolectric] WARN:`
 		 *  * Android SDK 16 requires Java 8 (have Java _). Tests won't be run on SDK 16 unless explicitly requested.
 		 *  * Android SDK 17 requires Java 8 (have Java _). Tests won't be run on SDK 17 unless explicitly requested.
@@ -564,12 +566,12 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		 *  * Android SDK 34 requires Java 17 (have Java _). Tests won't be run on SDK 34 unless explicitly requested.
 		 */
 		private val ROBOLECTRIC_API_LEVEL: String =
-			when (JavaVersion.current()) {
-				JavaVersion.VERSION_17 -> "UPSIDE_DOWN_CAKE" // 34
-				JavaVersion.VERSION_11 -> "TIRAMISU" // 33
-				JavaVersion.VERSION_1_9 -> "S" // 31 (S_V2 could also work, but that's non-phone release.)
-				JavaVersion.VERSION_1_8 -> "P" // 28
-				else -> "P" // 28
+			when {
+				JavaVersion.VERSION_17 <= JavaVersion.current() -> "UPSIDE_DOWN_CAKE" // 34
+				JavaVersion.VERSION_11 <= JavaVersion.current() -> "TIRAMISU" // 33
+				JavaVersion.VERSION_1_9 <= JavaVersion.current() -> "S" // 31 (S_V2 could also work, but that's non-phone release.)
+				JavaVersion.VERSION_1_8 <= JavaVersion.current() -> "P" // 28
+				else -> error("What are you running on? ${JavaVersion.current()}")
 			}
 	}
 }
