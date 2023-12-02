@@ -387,6 +387,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				testImplementation("androidx.test:core:1.4.1-alpha01")
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
+			android.testOptions.unitTests.all { testLogging { exceptionFormat = 'full' } }
 			tasks.withType(Test).configureEach {
 				//noinspection UnnecessaryQualifiedReference
 				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
