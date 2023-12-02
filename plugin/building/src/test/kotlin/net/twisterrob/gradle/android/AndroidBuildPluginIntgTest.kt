@@ -319,9 +319,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				testImplementation("androidx.test:core:1.4.1-alpha01")
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
-			tasks.withType(Test).configureEach {
-				//noinspection UnnecessaryQualifiedReference
-				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+			android.testOptions.unitTests.all {
+				testLogging {
+					//noinspection UnnecessaryQualifiedReference
+					events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+					//noinspection UnnecessaryQualifiedReference
+					exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+				}
 			}
 		""".trimIndent()
 
@@ -387,10 +391,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				testImplementation("androidx.test:core:1.4.1-alpha01")
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
-			android.testOptions.unitTests.all { testLogging { exceptionFormat = 'full' } }
-			tasks.withType(Test).configureEach {
-				//noinspection UnnecessaryQualifiedReference
-				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+			android.testOptions.unitTests.all {
+				testLogging {
+					//noinspection UnnecessaryQualifiedReference
+					events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+					//noinspection UnnecessaryQualifiedReference
+					exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+				}
 			}
 		""".trimIndent()
 
@@ -455,9 +462,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				testImplementation 'org.robolectric:robolectric:4.11.1'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
-			tasks.withType(Test).configureEach {
-				//noinspection UnnecessaryQualifiedReference
-				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+			android.testOptions.unitTests.all {
+				testLogging {
+					//noinspection UnnecessaryQualifiedReference
+					events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+					//noinspection UnnecessaryQualifiedReference
+					exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+				}
 			}
 			tasks.named("calculateBuildConfigBuildTime").configure { buildTime.set(1234567890L) }
 		""".trimIndent()
