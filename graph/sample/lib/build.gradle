@@ -4,5 +4,5 @@ plugins {
 
 android {
 	namespace = "com.example.lib"
-	compileSdk = 33
+	compileSdk = 34
 }

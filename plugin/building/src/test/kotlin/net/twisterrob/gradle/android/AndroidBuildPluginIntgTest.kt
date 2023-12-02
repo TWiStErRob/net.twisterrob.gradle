@@ -10,6 +10,7 @@ import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.root
+import org.gradle.api.JavaVersion
 import org.gradle.api.artifacts.ArtifactRepositoryContainer
 import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
 import org.intellij.lang.annotations.Language
@@ -310,7 +311,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			android.twisterrob.decorateBuildConfig = false
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
-				testImplementation 'org.robolectric:robolectric:4.9.2'
+				testImplementation 'org.robolectric:robolectric:4.11.1'
 				// Can't use the latest version, 1.4.1-alpha01 is the last version that's compatible with Kotlin 1.4.32.
 				// > e: .../transformed/core-1.5.0-api.jar!/META-INF/androidx.test.core.kotlin_module:
 				// > Module was compiled with an incompatible version of Kotlin.
@@ -318,9 +319,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				testImplementation("androidx.test:core:1.4.1-alpha01")
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
-			tasks.withType(Test).configureEach {
-				//noinspection UnnecessaryQualifiedReference
-				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+			android.testOptions.unitTests.all {
+				testLogging {
+					//noinspection UnnecessaryQualifiedReference
+					events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+					//noinspection UnnecessaryQualifiedReference
+					exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+				}
 			}
 		""".trimIndent()
 
@@ -342,6 +347,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			import org.junit.Test
 			
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
+			@org.robolectric.annotation.Config(sdk = [android.os.Build.VERSION_CODES.${ROBOLECTRIC_API_LEVEL}])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@Test fun test() { // using Robolectric to access resources at runtime
@@ -377,7 +383,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			android.buildFeatures.buildConfig = true
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
-				testImplementation 'org.robolectric:robolectric:4.9.2'
+				testImplementation 'org.robolectric:robolectric:4.11.1'
 				// Can't use the latest version, 1.4.1-alpha01 is the last version that's compatible with Kotlin 1.4.32.
 				// > e: .../transformed/core-1.5.0-api.jar!/META-INF/androidx.test.core.kotlin_module:
 				// > Module was compiled with an incompatible version of Kotlin.
@@ -385,9 +391,13 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				testImplementation("androidx.test:core:1.4.1-alpha01")
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
-			tasks.withType(Test).configureEach {
-				//noinspection UnnecessaryQualifiedReference
-				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+			android.testOptions.unitTests.all {
+				testLogging {
+					//noinspection UnnecessaryQualifiedReference
+					events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+					//noinspection UnnecessaryQualifiedReference
+					exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+				}
 			}
 		""".trimIndent()
 
@@ -421,6 +431,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			import org.junit.Test
 			
 			@org.junit.runner.RunWith(org.robolectric.RobolectricTestRunner::class)
+			@org.robolectric.annotation.Config(sdk = [android.os.Build.VERSION_CODES.${ROBOLECTRIC_API_LEVEL}])
 			class ResourceTest {
 				@Suppress("USELESS_CAST") // validate the type and nullity of values
 				@Test fun test() { // using Robolectric to access resources at runtime
@@ -448,12 +459,16 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			android.buildFeatures.buildConfig = true
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
-				testImplementation 'org.robolectric:robolectric:4.9.2'
+				testImplementation 'org.robolectric:robolectric:4.11.1'
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
-			tasks.withType(Test).configureEach {
-				//noinspection UnnecessaryQualifiedReference
-				testLogging.events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+			android.testOptions.unitTests.all {
+				testLogging {
+					//noinspection UnnecessaryQualifiedReference
+					events = org.gradle.api.tasks.testing.logging.TestLogEvent.values().toList().toSet()
+					//noinspection UnnecessaryQualifiedReference
+					exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+				}
 			}
 			tasks.named("calculateBuildConfigBuildTime").configure { buildTime.set(1234567890L) }
 		""".trimIndent()
@@ -538,5 +553,37 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 	companion object {
 		private const val GOOGLE: String = DefaultRepositoryHandler.GOOGLE_REPO_NAME
 		private const val MAVEN_CENTRAL: String = ArtifactRepositoryContainer.DEFAULT_MAVEN_CENTRAL_REPO_NAME
+
+		/**
+		 * Pick an Android SDK level that is supported by Robolectric based on the current Java version runtime.
+		 *
+		 * `[Robolectric] WARN:`
+		 *  * Android SDK 16 requires Java 8 (have Java _). Tests won't be run on SDK 16 unless explicitly requested.
+		 *  * Android SDK 17 requires Java 8 (have Java _). Tests won't be run on SDK 17 unless explicitly requested.
+		 *  * Android SDK 18 requires Java 8 (have Java _). Tests won't be run on SDK 18 unless explicitly requested.
+		 *  * Android SDK 19 requires Java 8 (have Java _). Tests won't be run on SDK 19 unless explicitly requested.
+		 *  * Android SDK 21 requires Java 8 (have Java _). Tests won't be run on SDK 21 unless explicitly requested.
+		 *  * Android SDK 22 requires Java 8 (have Java _). Tests won't be run on SDK 22 unless explicitly requested.
+		 *  * Android SDK 23 requires Java 8 (have Java _). Tests won't be run on SDK 23 unless explicitly requested.
+		 *  * Android SDK 24 requires Java 8 (have Java _). Tests won't be run on SDK 24 unless explicitly requested.
+		 *  * Android SDK 25 requires Java 8 (have Java _). Tests won't be run on SDK 25 unless explicitly requested.
+		 *  * Android SDK 26 requires Java 8 (have Java _). Tests won't be run on SDK 26 unless explicitly requested.
+		 *  * Android SDK 27 requires Java 8 (have Java _). Tests won't be run on SDK 27 unless explicitly requested.
+		 *  * Android SDK 28 requires Java 8 (have Java _). Tests won't be run on SDK 28 unless explicitly requested.
+		 *  * Android SDK 29 requires Java 9 (have Java _). Tests won't be run on SDK 29 unless explicitly requested.
+		 *  * Android SDK 30 requires Java 9 (have Java _). Tests won't be run on SDK 30 unless explicitly requested.
+		 *  * Android SDK 31 requires Java 9? (have Java _). Tests won't be run on SDK 31 unless explicitly requested.
+		 *  * Android SDK 32 requires Java 9? (have Java _). Tests won't be run on SDK 32 unless explicitly requested.
+		 *  * Android SDK 33 requires Java 11 (have Java _). Tests won't be run on SDK 33 unless explicitly requested.
+		 *  * Android SDK 34 requires Java 17 (have Java _). Tests won't be run on SDK 34 unless explicitly requested.
+		 */
+		private val ROBOLECTRIC_API_LEVEL: String =
+			when {
+				JavaVersion.VERSION_17 <= JavaVersion.current() -> "UPSIDE_DOWN_CAKE" // 34
+				JavaVersion.VERSION_11 <= JavaVersion.current() -> "TIRAMISU" // 33
+				JavaVersion.VERSION_1_9 <= JavaVersion.current() -> "S" // 31 (S_V2 could also work, but that's non-phone release.)
+				JavaVersion.VERSION_1_8 <= JavaVersion.current() -> "P" // 28
+				else -> error("What are you running on? ${JavaVersion.current()}")
+			}
 	}
 }

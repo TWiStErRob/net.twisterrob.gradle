@@ -85,6 +85,13 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:68)"
 )
 doNotNagAboutStackForTest(
+	"8.2" to "8.4",
+	"7.4" to "8.0",
+	// > Configure project : when using android.testOptions.unitTests.all { }
+	"The org.gradle.util.ConfigureUtil type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#org_gradle_util_reports_deprecations",
+	"at com.android.build.gradle.internal.dsl.TestOptions\$UnitTestOptions\$all\$1.execute(TestOptions.kt:115)"
+)
+doNotNagAboutStackForTest(
 	"8.3" to "8.4",
 	"7.4" to "8.0",
 	// > Configure project : in TestReportGeneratorIntgTest
