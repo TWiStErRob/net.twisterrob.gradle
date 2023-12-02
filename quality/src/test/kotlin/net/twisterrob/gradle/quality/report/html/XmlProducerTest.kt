@@ -36,7 +36,7 @@ class XmlProducerTest {
 	) {
 		private lateinit var results: Start<Violations>
 		private lateinit var list: List<Violations>
-		private lateinit var grouped: Map<Category, Map<Reporter, List<Violation>>>
+		private lateinit var grouped: Map<Category?, Map<Reporter, List<Violation>>>
 		private lateinit var projectName: String
 		private val project: Project = mockk()
 
@@ -50,7 +50,7 @@ class XmlProducerTest {
 			every { results.list } returns list
 		}
 
-		fun stubResultIsGrouped(grouped: Map<Category, Map<Reporter, List<Violation>>>) {
+		fun stubResultIsGrouped(grouped: Map<Category?, Map<Reporter, List<Violation>>>) {
 			this.grouped = grouped
 			mockkStatic(::group.javaMethod!!.declaringClass.name)
 			every { group(list) } returns grouped

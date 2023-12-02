@@ -4,6 +4,7 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.fqcn
 import net.twisterrob.gradle.test.root
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
@@ -104,6 +105,6 @@ class GITPluginIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script).build()
 
-		result.assertHasOutputLine("""VCS.current: ${DummyVcsExtension::class.qualifiedName}@[a-z0-9]{1,8}""".toRegex())
+		result.assertHasOutputLine("""VCS.current: ${DummyVcsExtension::class.fqcn}@[a-z0-9]{1,8}""".toRegex())
 	}
 }
