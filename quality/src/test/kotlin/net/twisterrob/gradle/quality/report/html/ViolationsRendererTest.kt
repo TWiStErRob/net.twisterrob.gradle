@@ -5,6 +5,7 @@ import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.report.html.model.build
 import net.twisterrob.gradle.quality.report.html.model.setField
 import net.twisterrob.gradle.test.ProjectBuilder
+import net.twisterrob.gradle.test.fqcn
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.intellij.lang.annotations.Language
@@ -29,7 +30,7 @@ class ViolationsRendererTest {
 	@Test fun `xmlWriter produces a supported writer for test`() {
 		val writer = StringWriter().xmlWriter()
 
-		val actual = writer::class.qualifiedName
+		val actual = writer::class.fqcn
 
 		assertEquals("com.sun.xml.internal.stream.writers.XMLStreamWriterImpl", actual)
 	}
@@ -70,7 +71,7 @@ class ViolationsRendererTest {
 		}
 		val fixtCategory: Category = fixture.build()
 		val fixtReporter: Reporter = fixture.build()
-		val violations: Map<Category, Map<Reporter, List<Violation>>> =
+		val violations: Map<Category?, Map<Reporter, List<Violation>>> =
 			mapOf(fixtCategory to mapOf(fixtReporter to listOf(fixtViolation)))
 
 		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
@@ -102,7 +103,7 @@ class ViolationsRendererTest {
 				</source>
 				<details
 					 rule="${fixtViolation.rule}"
-					 category="${fixtViolation.category}"
+					 category="${fixtViolation.category ?: error("Should not be null")}"
 					 severity="${fixtViolation.severity}">
 					<message><![CDATA[${fixtViolation.message}]]></message>
 					<context type="code" language="binary"
@@ -151,7 +152,7 @@ class ViolationsRendererTest {
 		}
 		val fixtCategory: Category = fixture.build()
 		val fixtReporter: Reporter = fixture.build()
-		val violations: Map<Category, Map<Reporter, List<Violation>>> =
+		val violations: Map<Category?, Map<Reporter, List<Violation>>> =
 			mapOf(fixtCategory to mapOf(fixtReporter to listOf(fixtViolation)))
 
 		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
@@ -183,7 +184,7 @@ class ViolationsRendererTest {
 				</source>
 				<details
 					 rule="${fixtViolation.rule}"
-					 category="${fixtViolation.category}"
+					 category="${fixtViolation.category ?: error("Should not be null")}"
 					 severity="${fixtViolation.severity}">
 					<message><![CDATA[${fixtViolation.message}]]></message>
 					<context type="error"
@@ -221,7 +222,7 @@ class ViolationsRendererTest {
 	companion object {
 
 		private fun render(
-			violations: Map<Category, Map<Reporter, List<Violation>>> = emptyMap(),
+			violations: Map<Category?, Map<Reporter, List<Violation>>> = emptyMap(),
 			projectName: String = "test project",
 			xslPath: String? = null
 		): String {

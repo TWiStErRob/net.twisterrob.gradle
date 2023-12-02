@@ -14,7 +14,7 @@ import javax.xml.stream.XMLStreamWriter
 
 internal fun renderXml(
 	to: XMLStreamWriter,
-	from: Map<Category, Map<Reporter, List<Violation>>>,
+	from: Map<Category?, Map<Reporter, List<Violation>>>,
 	projectName: String,
 	xslPath: String? = null
 ) {

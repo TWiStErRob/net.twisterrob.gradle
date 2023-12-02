@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.runners.model.Statement
 import java.io.File
 import java.util.Date
+import kotlin.reflect.KClass
 
 val GradleRunnerRule.root: File
 	get() = this.settingsFile.parentFile!!
@@ -63,6 +64,9 @@ private fun File.type(): String =
 		exists() -> "e"
 		else -> "!"
 	}
+
+val KClass<*>.fqcn: String
+	get() = this.qualifiedName ?: error("Invalid class ${this}, has no qualified name.")
 
 fun BuildResult.assertNoTask(taskPath: String) {
 	assertNull(this.task(taskPath), "${taskPath} task found")

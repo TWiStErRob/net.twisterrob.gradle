@@ -56,10 +56,10 @@ class TableGenerator(
 					return@row emptyList<String>()
 				}
 				val cells = parsers.map cell@{
-					when (byParserCounts[it]) {
+					when (val count = byParserCounts[it]) {
 						0 -> zeroCount
 						null -> missingCount
-						else -> byParserCounts[it].toString()
+						else -> count.toString()
 					}
 				}
 				val row = String.format(rowFormat, *(listOf(byModule.key, byVariant.key) + cells).toTypedArray())
