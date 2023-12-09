@@ -25,7 +25,7 @@ fun JavaPluginExtension.withDokkaJar(project: Project, artifactTask: TaskProvide
 		JavaPlugin.JAVADOC_ELEMENTS_CONFIGURATION_NAME,
 		null,
 		DocsType.JAVADOC,
-		emptyList(),
+		emptySet(),
 		this.sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).javadocJarTaskName,
 		artifactTask,
 		project as ProjectInternal,
