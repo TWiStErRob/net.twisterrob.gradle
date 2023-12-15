@@ -114,7 +114,7 @@ jobs:
 
       - name: "Upload 'Detekt Results' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Detekt Results'
           path: |
@@ -137,7 +137,7 @@ jobs:
 
       - name: "Upload 'Gradle Plugin Validation Report' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Gradle Plugin Validation Report'
           path: |
@@ -145,7 +145,7 @@ jobs:
 
       - name: "Upload JARs, Maven and Gradle metadata as 'Intermediate Artifacts' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'Intermediate Artifacts'
           path: |
@@ -155,7 +155,7 @@ jobs:
 
       - name: "Upload 'mavenLocal()' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'mavenLocal'
           path: |
@@ -348,21 +348,21 @@ jobs:
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results XMLs' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: '${{ env.JOB_NAME }} Test Results XMLs'
           path: '${{ github.workspace }}/**/build/test-results/test/TEST-*.xml'
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results HTML' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: '${{ env.JOB_NAME }} Test Results HTML'
           path: '${{ github.workspace }}/build/reports/tests/all/'
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results HTMLs' artifact."
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: '${{ env.JOB_NAME }} Test Results HTMLs'
           path: '${{ github.workspace }}/**/build/reports/tests/test/'
