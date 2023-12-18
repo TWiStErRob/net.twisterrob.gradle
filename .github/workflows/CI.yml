@@ -701,6 +701,7 @@ jobs:
           path: artifacts
 
       - name: "Publish 'Test Results' check suite."
+        # Publish as much as possible even if some artifacts are missing (hopefully those jobs have failed separately).
         if: success() || failure()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
