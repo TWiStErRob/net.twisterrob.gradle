@@ -700,10 +700,6 @@ jobs:
           pattern: '* Test Results XMLs'
           path: artifacts
 
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: artifacts
-
       - name: "Publish 'Test Results' check suite."
         if: success() || failure()
         uses: EnricoMi/publish-unit-test-result-action@v2
