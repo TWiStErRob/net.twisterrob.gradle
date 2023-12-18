@@ -116,21 +116,6 @@
 			"versioningTemplate": "gradle"
 		},
 		{
-			"description": "Update AGP compatibility CI artifact names.",
-			"customType": "regex",
-			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
-			"datasourceTemplate": "maven",
-			"registryUrlTemplate": "https://maven.google.com",
-			"depNameTemplate": "com.android.tools.build:gradle",
-			"matchStrings": [
-				"AGP (.*?) on Gradle (.*?)( - plugin)? \\((.*?) on (.*?)\\) Test Results (XMLs|HTMLs|HTML)",
-				"\\(.*?\\)",
-				"\\((?<currentValue>.*) on "
-			],
-			"matchStringsStrategy": "recursive",
-			"versioningTemplate": "gradle"
-		},
-		{
 			"description": "Update AGP version test.",
 			"customType": "regex",
 			"fileMatch": ["^compat/agp-base/src/test/kotlin/net/twisterrob/gradle/common/AGPVersionsTest\\.kt$"],
@@ -163,20 +148,6 @@
 			"matchStrings": [
 				"  gradle: '(?<currentValue>.*)'"
 			],
-			"versioningTemplate": "gradle"
-		},
-		{
-			"description": "Update Gradle compatibility CI artifact names.",
-			"customType": "regex",
-			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
-			"datasourceTemplate": "gradle-version",
-			"depNameTemplate": "gradle",
-			"matchStrings": [
-				"AGP (.*?) on Gradle (.*?)( - plugin)? \\((.*?) on (.*?)\\) Test Results (XMLs|HTMLs|HTML)",
-				"\\(.*?\\)",
-				" on (?<currentValue>.*)\\)"
-			],
-			"matchStringsStrategy": "recursive",
 			"versioningTemplate": "gradle"
 		},
 		{
