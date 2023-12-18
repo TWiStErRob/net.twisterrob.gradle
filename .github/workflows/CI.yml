@@ -695,7 +695,7 @@ jobs:
 
     steps:
       - name: "Download '... Test Results XMLs' Artifacts."
-        uses: actions/download-artifact@robherley/glob-downloads
+        uses: actions/download-artifact@v4
         with:
           pattern: '* Test Results XMLs'
           path: artifacts
