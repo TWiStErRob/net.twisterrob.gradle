@@ -31,7 +31,7 @@ plugins.withId("org.gradle.java") {
 						"Implementation-Vendor" to project.group,
 						"Implementation-Title" to project.base.archivesName.get(),
 						"Implementation-Version" to project.version,
-						"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+						"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now()),
 					)
 				)
 			}
@@ -74,9 +74,10 @@ project.plugins.withId("net.twisterrob.gradle.build.module.library") {
 }
 project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
 	registerPublicationsTasks(project)
-	@Suppress("UnstableApiUsage")
 	project.gradlePlugin.apply {
+		@Suppress("UnstableApiUsage")
 		website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
+		@Suppress("UnstableApiUsage")
 		vcsUrl.set("https://github.com/TWiStErRob/net.twisterrob.gradle.git")
 	}
 	project.publishing.publications.apply {
