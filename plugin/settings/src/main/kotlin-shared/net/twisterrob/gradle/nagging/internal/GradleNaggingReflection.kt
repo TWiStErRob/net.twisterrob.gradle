@@ -11,8 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger
  * Encapsulates reflective accesses in a typed interface.
  */
 @Suppress(
-	"PropertyUsedBeforeDeclaration",  // Ordering is from high level to low level. High level properties are lazy.
-	"UseIfInsteadOfWhen", // Be consistent between simple and more complex cases. Preparing for future additions.
+	"detekt.PropertyUsedBeforeDeclaration", // Ordering is from high level to low level. High level properties are lazy.
+	"detekt.UseIfInsteadOfWhen", // Be consistent between simple and more complex cases. Preparing for future additions.
 )
 internal object GradleNaggingReflection {
 
@@ -25,7 +25,7 @@ internal object GradleNaggingReflection {
 	/**
 	 * @since Gradle 4.7.0 because of [deprecatedFeatureHandler].
 	 */
-	@Suppress("DoubleMutabilityForCollection") // It's reflective access to a field, which is actually final 😅.
+	@Suppress("detekt.DoubleMutabilityForCollection") // It's reflective access to a field, which is actually final 😅.
 	var messages: MutableSet<String>
 		get() = deprecatedFeatureHandler.get(messagesField)
 		set(value) {

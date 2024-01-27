@@ -9,7 +9,7 @@ import org.gradle.util.GradleVersion
 private typealias Builder<T> = DeprecationMessageBuilder<T>
 
 fun <T : Builder<T>> Builder<T>.willBeRemovedInGradleNextMajor(current: GradleVersion): Builder<T> {
-	@Suppress("MagicNumber")
+	@Suppress("detekt.MagicNumber")
 	val nextMajor = nextMajorVersionNumber(current)
 	Builder::class.java
 		.getDeclaredMethod("willBeRemovedInGradle$nextMajor")

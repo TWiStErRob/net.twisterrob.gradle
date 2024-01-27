@@ -19,7 +19,7 @@ import org.junit.jupiter.params.provider.ValueSource
 /**
  * See all `gradlePlugin { plugins { create() { id =` blocks in this project's build.gradle.kts files.
  */
-@Suppress("PropertyUsedBeforeDeclaration") // settings is a lazy property.
+@Suppress("detekt.PropertyUsedBeforeDeclaration") // settings is a lazy property.
 @ExtendWith(GradleRunnerRuleExtension::class)
 class PluginIntegrationTest : BaseIntgTest() {
 

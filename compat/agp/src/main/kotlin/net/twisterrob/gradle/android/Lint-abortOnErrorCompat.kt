@@ -12,7 +12,7 @@ import net.twisterrob.gradle.internal.android.abortOnErrorCompat71x
  * * AGP 7.0.x introduced [Lint.isAbortOnError].
  * * AGP 7.1.x renamed [Lint.isAbortOnError] to [Lint.abortOnError].
  */
-@Suppress("BooleanPropertyNaming") // Following AGP's naming.
+@Suppress("detekt.BooleanPropertyNaming") // Following AGP's naming.
 var Lint.abortOnErrorCompat: Boolean
 	get() =
 		when {

@@ -249,7 +249,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 	}
 
-	@Suppress("LongMethod") // Multiple files are listed in this one method.
+	@Suppress("detekt.LongMethod") // Multiple files are listed in this one method.
 	@Test fun `can disable buildConfig decoration (debug)`() {
 		// Default build.gradle has the app plugin applied.
 		gradle.buildFile.writeText(gradle.buildFile.readText().replace("id(\"com.android.application\")", ""))
@@ -336,7 +336,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":testDebugUnitTest")
 	}
 
-	@Suppress("LongMethod") // Multiple files are listed in this one method.
+	@Suppress("detekt.LongMethod") // Multiple files are listed in this one method.
 	@Test fun `adds custom resources and BuildConfig values`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 

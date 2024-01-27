@@ -2,7 +2,7 @@ package net.twisterrob.gradle.quality.tasks
 
 import java.io.File
 
-@Suppress("UseDataClass") // https://github.com/detekt/detekt/issues/5339
+@Suppress("detekt.UseDataClass") // https://github.com/detekt/detekt/issues/5339
 class ViolationTestResources(
 	private val rootProject: File
 ) {
@@ -22,7 +22,7 @@ class ViolationTestResources(
 	 *  1. Amend the commit to include changes in this file.
 	 *  1. Run the test with Java 11 set in `Settings | Build, Execution, Deployment | Build Tools | Gradle`.
 	 */
-	@Suppress("StringLiteralDuplication")
+	@Suppress("detekt.StringLiteralDuplication")
 	inner class Everything {
 
 		val checkstyleReport: String
@@ -42,7 +42,7 @@ class ViolationTestResources(
 		 * NOR COMMIT THIS FILE IN IDEA (https://youtrack.jetbrains.com/issue/IDEA-79736)
 		 * @see Everything for how to update this.
 		 */
-		@Suppress("MaxLineLength")
+		@Suppress("detekt.MaxLineLength")
 		val violationsXml: String
 			get() = read("ViolationTestResources/everything/violations.xml")
 				// <violations project="..."
@@ -90,7 +90,7 @@ class ViolationTestResources(
 		 * NOR COMMIT THIS FILE IN IDEA (https://youtrack.jetbrains.com/issue/IDEA-79736)
 		 * @see Everything for how to update this.
 		 */
-		@Suppress("MaxLineLength")
+		@Suppress("detekt.MaxLineLength")
 		val violationsHtml: String
 			get() = read("ViolationTestResources/everything/violations.html")
 				// <title>...

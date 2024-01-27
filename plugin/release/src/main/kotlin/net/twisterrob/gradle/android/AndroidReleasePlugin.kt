@@ -25,13 +25,13 @@ import java.io.File
 import java.io.IOException
 import java.util.zip.ZipFile
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidReleasePlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
 		val android = project.extensions.getByName<BaseExtension>("android")
-		@Suppress("UnnecessaryApply") // Conventional Gradle pattern.
+		@Suppress("detekt.UnnecessaryApply") // Conventional Gradle pattern.
 		android.extensions.create<AndroidReleaseExtension>(AndroidReleaseExtension.NAME).apply {
 			directory.convention(project.releaseDirectory())
 		}

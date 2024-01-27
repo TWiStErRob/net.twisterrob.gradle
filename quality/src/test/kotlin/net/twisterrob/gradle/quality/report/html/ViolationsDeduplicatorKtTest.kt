@@ -320,7 +320,7 @@ private fun violations(
 }
 
 private fun Project.buildFile(path: String): File =
-	@Suppress("MaxChainedCallsOnSameLine")
+	@Suppress("detekt.MaxChainedCallsOnSameLine")
 	this.layout.buildDirectory.file(path).get().asFile
 
 private fun Violations.noViolations(): Violations =

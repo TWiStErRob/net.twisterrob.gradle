@@ -13,7 +13,7 @@ class KotlinVersionsTest {
 		/**
 		 * List of AGP versions from https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-gradle-plugin.
 		 */
-		@Suppress("LongMethod")
+		@Suppress("detekt.LongMethod")
 		@JvmStatic
 		fun mavenCentral(): List<Arguments> =
 			listOf(

@@ -7,7 +7,7 @@ base.archivesName = "twister-convention-plugins"
 description = "Convention Plugins: Gradle Plugins used by my hobby projects."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
+	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
 	plugins {
 		create("androidApp") {
 			id = "net.twisterrob.gradle.plugin.android-app"

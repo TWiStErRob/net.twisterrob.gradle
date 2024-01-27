@@ -11,7 +11,8 @@ class AndroidInstallRunnerTaskTest {
 
 	@DisabledOnJre(JRE.JAVA_11, disabledReason = "https://github.com/TWiStErRob/net.twisterrob.gradle/issues/380")
 	@Test fun `one match in the middle`() {
-		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
+		// Unsuppressable "Xml declaration should precede all document content".
+		@Suppress("detekt.MultilineRawStringIndentation")
 		@Language("xml")
 		val androidManifest =
 			"""<?xml version="1.0" encoding="utf-8"?>

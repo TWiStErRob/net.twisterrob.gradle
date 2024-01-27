@@ -98,7 +98,7 @@ dependencyResolutionManagement {
 val gradleVersion: String = GradleVersion.current().version
 
 // TODEL Gradle 8.2 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320266.
-@Suppress("MaxLineLength", "StringLiteralDuplication")
+@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
 if ((System.getProperty("idea.version") ?: "") < "2023.3") {
 	// There are ton of warnings, ignoring them all by their class names in one suppression.
 	doNotNagAbout(
@@ -133,9 +133,9 @@ if ((System.getProperty("idea.version") ?: "") < "2023.3") {
 }
 
 // TODEL Gradle 8.2 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320307.
-@Suppress("MaxLineLength", "StringLiteralDuplication")
+@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
 if ((System.getProperty("idea.version") ?: "") < "2023.3") {
-	@Suppress("MaxLineLength", "StringLiteralDuplication")
+	@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
 	doNotNagAbout(
 		"The BuildIdentifier.getName() method has been deprecated. " +
 				"This is scheduled to be removed in Gradle 9.0. " +

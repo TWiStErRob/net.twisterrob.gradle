@@ -18,9 +18,9 @@ internal fun collapseUniform(violations: List<Violation>): List<Violation> =
 		.mapValues { (_, list) -> collapseFile(list) }
 		.flatMap { it.value }
 
-@Suppress("CyclomaticComplexMethod") // TODEL https://github.com/detekt/detekt/issues/5344
+@Suppress("detekt.CyclomaticComplexMethod") // TODEL https://github.com/detekt/detekt/issues/5344
 internal fun collapseFile(violations: List<Violation>): List<Violation> {
-	@Suppress("SimplifyBooleanWithConstants", "UnnecessaryPartOfBinaryExpression")
+	@Suppress("SimplifyBooleanWithConstants", "detekt.UnnecessaryPartOfBinaryExpression")
 	fun verySimilarProblem(v1: Violation, v2: Violation): Boolean =
 		true // help the autoformat
 				&& v1.rule == v2.rule
@@ -63,7 +63,7 @@ internal fun collapseFile(violations: List<Violation>): List<Violation> {
 		)
 	}
 
-	@Suppress("DoubleMutabilityForCollection") // Complex algorithm.
+	@Suppress("detekt.DoubleMutabilityForCollection") // Complex algorithm.
 	var continuation: MutableList<Violation> = mutableListOf(violations.first())
 	val mergeds = mutableListOf<Violation>()
 	for (next in violations.asSequence().drop(1)) {

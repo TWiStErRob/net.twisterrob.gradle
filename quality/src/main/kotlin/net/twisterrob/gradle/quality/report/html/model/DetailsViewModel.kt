@@ -3,7 +3,7 @@ package net.twisterrob.gradle.quality.report.html.model
 import net.twisterrob.gradle.quality.Violation
 import java.net.URI
 
-@Suppress("UseDataClass") // TODEL https://github.com/detekt/detekt/issues/5339
+@Suppress("detekt.UseDataClass") // TODEL https://github.com/detekt/detekt/issues/5339
 class DetailsViewModel(private val v: Violation) {
 	val rule: String get() = v.rule
 	val suppression: String? get() = SuppressionGenerator().getSuppression(v)

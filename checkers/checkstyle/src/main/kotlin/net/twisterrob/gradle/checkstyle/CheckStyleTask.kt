@@ -8,7 +8,7 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 
 @CacheableTask
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class CheckStyleTask : Checkstyle(), TargetChecker {
 
 	@Input

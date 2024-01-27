@@ -48,7 +48,7 @@ import java.util.Properties
  */
 @Suppress(
 	"MemberVisibilityCanBePrivate",
-	"UnnecessaryAbstractClass", // Gradle convention.
+	"detekt.UnnecessaryAbstractClass", // Gradle convention.
 )
 abstract class AndroidVersionExtension {
 
@@ -78,14 +78,14 @@ abstract class AndroidVersionExtension {
 			field = value
 			autoVersion()
 		}
-	var minorMagnitude: Int = @Suppress("MagicNumber") 100
+	var minorMagnitude: Int = @Suppress("detekt.MagicNumber") 100
 
 	var patch: Int = 0 // P 0..99
 		set(value) {
 			field = value
 			autoVersion()
 		}
-	var patchMagnitude: Int = @Suppress("MagicNumber") 100
+	var patchMagnitude: Int = @Suppress("detekt.MagicNumber") 100
 
 	var build: Int = 0 // B 0..999
 		set(value) {
@@ -93,7 +93,7 @@ abstract class AndroidVersionExtension {
 			autoVersion()
 		}
 
-	var buildMagnitude: Int = @Suppress("MagicNumber") 1000
+	var buildMagnitude: Int = @Suppress("detekt.MagicNumber") 1000
 
 	var versionNameFormat: (version: AndroidVersionExtension) -> String =
 		{ version ->
@@ -121,9 +121,9 @@ abstract class AndroidVersionExtension {
 	/** VCS versionCode pattern is MMMNPBBBBB (which fits into 2147483648). */
 	fun versionByVCS(vcs: VCSExtension) {
 		// major magnitude is the rest // M 0..213
-		minorMagnitude = @Suppress("MagicNumber") 10 // N 0..9
-		patchMagnitude = @Suppress("MagicNumber") 10 // P 0..9
-		buildMagnitude = @Suppress("MagicNumber") 100_000 // B 0..99999
+		minorMagnitude = @Suppress("detekt.MagicNumber") 10 // N 0..9
+		patchMagnitude = @Suppress("detekt.MagicNumber") 10 // P 0..9
+		buildMagnitude = @Suppress("detekt.MagicNumber") 100_000 // B 0..99999
 		build = vcs.revisionNumber
 		versionNameFormat = { version ->
 			buildString {
@@ -166,7 +166,7 @@ abstract class AndroidVersionExtension {
 	}
 }
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidVersionPlugin : BasePlugin() {
 
 	private val android: AppExtension by lazy {
@@ -176,7 +176,7 @@ abstract class AndroidVersionPlugin : BasePlugin() {
 		project.extensions["android"] as AppExtension
 	}
 
-	@Suppress("LateinitUsage") // TODO can be probably refactored to put the when inside the withId and pass params.
+	@Suppress("detekt.LateinitUsage") // TODO can be probably refactored to put the when inside the withId and pass params.
 	private lateinit var version: AndroidVersionExtension
 
 	override fun apply(target: Project) {
@@ -235,7 +235,7 @@ abstract class AndroidVersionPlugin : BasePlugin() {
 	}
 
 	private fun AndroidTestImpl.setOutputFileName(apkName: Provider<String>, variant: String) {
-		@Suppress("UnnecessaryLet") // It looks fine there, completing the chain.
+		@Suppress("detekt.UnnecessaryLet") // It looks fine there, completing the chain.
 		when {
 			AGPVersions.v81x <= AGPVersions.CLASSPATH -> {
 				project.afterEvaluate { _ ->

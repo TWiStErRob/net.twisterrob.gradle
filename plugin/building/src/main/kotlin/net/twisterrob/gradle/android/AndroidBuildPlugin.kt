@@ -27,7 +27,7 @@ import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidBuildPluginExtension {
 
 	var isDecorateBuildConfig: Boolean = true
@@ -38,7 +38,7 @@ abstract class AndroidBuildPluginExtension {
 	}
 }
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	override fun apply(target: Project) {

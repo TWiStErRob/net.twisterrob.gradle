@@ -21,7 +21,7 @@ internal class RedirectParser {
 				mapping.split("->")
 					.also { require(it.size == 2) { "Invalid mapping: ${levelMapping}" } }
 			}
-			.flatMap @Suppress("UseIfInsteadOfWhen") { split ->
+			.flatMap @Suppress("detekt.UseIfInsteadOfWhen") { split ->
 				val froms = when (val fromRaw = split[0].trim()) {
 					"TRACE" -> arrayOf<LogLevel?>(null)
 					"*" -> @Suppress("UNCHECKED_CAST") (LogLevel.values() as Array<LogLevel?> + null)

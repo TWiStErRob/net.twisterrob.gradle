@@ -8,7 +8,7 @@ class DocumentationGenerator {
 	/**
 	 * @return a [URI], not a [java.net.URL], because URL resolves the DNS.
 	 */
-	@Suppress("CognitiveComplexMethod", "UseLet") // Nicely structured, so it's ok.
+	@Suppress("detekt.CognitiveComplexMethod", "detekt.UseLet") // Nicely structured, so it's ok.
 	fun getDocumentationUrl(v: Violation): URI? =
 		when (v.source.reporter) {
 			"ANDROIDLINT" -> {

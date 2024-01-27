@@ -1,6 +1,6 @@
 @file:Suppress(
 	"NOTHING_TO_INLINE", // Keep inlines for consistency.
-	"TooManyFunctions", // This file defines a full DSL framework.
+	"detekt.TooManyFunctions", // This file defines a full DSL framework.
 )
 
 package net.twisterrob.gradle.quality.report.html
@@ -49,7 +49,7 @@ inline fun XMLStreamWriter.element(
 		writeEndElement()
 	}
 
-@Suppress("CanBeNonNullable") // TODEL https://github.com/detekt/detekt/issues/5331
+@Suppress("detekt.CanBeNonNullable") // TODEL https://github.com/detekt/detekt/issues/5331
 inline fun <T : Any> XMLStreamWriter.optionalElement(
 	name: String,
 	value: T?,
@@ -78,7 +78,7 @@ inline fun XMLStreamWriter.attribute(name: String, value: Any) {
 	writeAttribute(name, value.toString())
 }
 
-@Suppress("CanBeNonNullable") // TODEL https://github.com/detekt/detekt/issues/5331
+@Suppress("detekt.CanBeNonNullable") // TODEL https://github.com/detekt/detekt/issues/5331
 inline fun <T : Any> XMLStreamWriter.optionalAttribute(
 	name: String,
 	value: T?,

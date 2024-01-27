@@ -142,7 +142,7 @@ private class ResolveDependencies(
 private class TransitiveReduction {
 
 	/** list of nodes to get from `vertex0` to `child0`. */
-	private val path: MutableList<TaskData> = ArrayList(@Suppress("MagicNumber") 10)
+	private val path: MutableList<TaskData> = ArrayList(@Suppress("detekt.MagicNumber") 10)
 
 	fun run(graph: Collection<TaskData>) {
 		for (vertex0 in graph) {

@@ -1,4 +1,4 @@
-@file:Suppress("TooManyFunctions") // This defines a whole module in one file.
+@file:Suppress("detekt.TooManyFunctions") // This defines a whole module in one file.
 
 package net.twisterrob.gradle.quality.report.html
 
@@ -71,7 +71,7 @@ private fun mergeIntersections(violations: List<Violations>): List<Violations> =
 		.groupBy { it.parser.rewrite() }
 		.flatMap { (_, list) -> mergeIntersectionsForParser(list) }
 
-@Suppress("ReturnCount") // Open to suggestions.
+@Suppress("detekt.ReturnCount") // Open to suggestions.
 private fun mergeIntersectionsForParser(violations: List<Violations>): List<Violations> {
 	@Suppress("USELESS_CAST") // Make sure chains use the typealiases.
 	val byVariant = violations.groupBy { it.variant as Variant }
@@ -125,7 +125,7 @@ private fun intersect(list1: List<Violation>, list2: List<Violation>): List<Viol
 	return intersection.map { it.violation }
 }
 
-@Suppress("UseDataClass") // External equals/hashCode for deduplication.
+@Suppress("detekt.UseDataClass") // External equals/hashCode for deduplication.
 private class Deduper(val violation: Violation) {
 
 	override fun equals(other: Any?): Boolean {

@@ -9,7 +9,7 @@ base.archivesName = "twister-gradle-test"
 description = "Test: Gradle test plugin."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
+	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
 	plugins {
 		create("gradleTest") {
 			id = "net.twisterrob.gradle.plugin.gradle.test"

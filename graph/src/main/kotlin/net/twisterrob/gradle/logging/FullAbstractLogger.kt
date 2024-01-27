@@ -7,7 +7,7 @@ import org.slf4j.helpers.AbstractLogger
 /**
  * An [AbstractLogger] that also routes all the trace functions to a central place.
  */
-@Suppress("TooManyFunctions")
+@Suppress("detekt.TooManyFunctions")
 abstract class FullAbstractLogger : AbstractLogger() {
 	abstract fun handleNormalizedIsEnabledCall(level: Level, marker: Marker?): Boolean
 

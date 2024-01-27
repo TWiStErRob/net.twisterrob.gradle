@@ -60,7 +60,7 @@ private fun JavaCompile.configureCompilerArgs(isTestTask: Boolean) {
  * Since the suggested usage is [org.gradle.api.Task.doFirst],
  * it doesn't matter if it's before or after the relevant `options.compilerArgs += [ ... ]` setup.
  */
-@Suppress("StringLiteralDuplication")
+@Suppress("detekt.StringLiteralDuplication")
 private fun JavaCompile.removeDuplicateCompilerArgs() {
 	logger.debug("${this} (input): ${options.compilerArgs}")
 	val duplicates = options.compilerArgs
@@ -88,7 +88,7 @@ private fun JavaCompile.removeDuplicateCompilerArgs() {
  * Since the suggested usage is [org.gradle.api.Task.doFirst],
  * it doesn't matter if it's before or after the relevant `options.compilerArgs += [ ... ]` setup.
  */
-@Suppress("StringLiteralDuplication", "UnusedPrivateMember")
+@Suppress("detekt.StringLiteralDuplication", "detekt.UnusedPrivateMember")
 private fun JavaCompile.removeDuplicateCompilerArgs2() {
 	logger.debug("${this} (input): ${options.compilerArgs}")
 	fun xlintName(arg: String): String? =

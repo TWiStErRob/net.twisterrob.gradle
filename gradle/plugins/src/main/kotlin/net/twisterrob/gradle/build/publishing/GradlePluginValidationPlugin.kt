@@ -11,7 +11,7 @@ import org.gradle.plugin.devel.PluginDeclaration
 import org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
 import org.gradle.plugin.devel.tasks.ValidatePlugins
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class GradlePluginValidationPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {

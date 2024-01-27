@@ -30,7 +30,7 @@ class LintMessageDetailsSplitterTest {
 		assertEquals("""Missing density variation folders in `src\main\res`: drawable-hdpi""", output.message)
 	}
 
-	@Suppress("LongMethod") // Stack traces are long.
+	@Suppress("detekt.LongMethod") // Stack traces are long.
 	@Test
 	fun `LintError specific message gets formatted`() {
 		val input = fixture.build<Violation>().apply {

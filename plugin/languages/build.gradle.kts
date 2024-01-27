@@ -7,7 +7,7 @@ base.archivesName = "twister-convention-languages"
 description = "Languages Convention Plugin: Gradle Plugin to apply Java and Kotlin conventions."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
+	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
 	plugins {
 		create("java") {
 			id = "net.twisterrob.gradle.plugin.java"

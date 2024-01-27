@@ -39,7 +39,7 @@ class D3SwingTaskVisualizer(
 		val window = JFrame("Gradle Build Graph").apply {
 			//isUndecorated = true
 			//background = Color(0, 0, 0, 0) // Transparent black.
-			contentPane.background = @Suppress("MagicNumber") Color(255, 255, 255, 255) // Opaque white.
+			contentPane.background = @Suppress("detekt.MagicNumber") Color(255, 255, 255, 255) // Opaque white.
 			defaultCloseOperation = WindowConstants.HIDE_ON_CLOSE
 			createBufferStrategy(1)
 			addWindowListener(object : WindowAdapter() {
@@ -71,7 +71,7 @@ class D3SwingTaskVisualizer(
 				fxPanel.scene = createScene(options.width.toDouble(), options.height.toDouble())
 			}
 			return fxPanel
-		} catch (@Suppress("TooGenericExceptionCaught") ex: RuntimeException) {
+		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: RuntimeException) {
 			// TooGenericExceptionCaught: that's what JavaFX declares.
 			// TooGenericExceptionCaught: want to catch everything, because JavaFX problems should not crash Gradle.
 			if (ex.cause is UnsatisfiedLinkError) {

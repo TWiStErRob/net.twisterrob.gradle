@@ -19,7 +19,7 @@ import org.gradle.work.DisableCachingByDefault
 import se.bjurr.violations.lib.model.SEVERITY
 
 @DisableCachingByDefault(because = "Base class is not cacheable yet. (Gradle 8.0)")
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class GlobalTestFinalizerTask : TestReport() {
 
 	/**
@@ -87,7 +87,7 @@ private val Test.detachBinaryResultsDirectory: Provider<Directory>
  * Note: this is no ordinary DirectoryProperty,
  * `destinationDirCompat.set(...)` won't work, use `destinationDirCompat::set` instead.
  */
-@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
+@Suppress("detekt.UseIfInsteadOfWhen") // Preparing for future new version ranges.
 private var TestReport.destinationDirCompat: Provider<Directory>
 	get() =
 		when {
@@ -112,7 +112,7 @@ private var TestReport.destinationDirCompat: Provider<Directory>
 		}
 	}
 
-@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
+@Suppress("detekt.UseIfInsteadOfWhen") // Preparing for future new version ranges.
 private var TestReport.testResultsCompat: FileCollection
 	get() =
 		when {

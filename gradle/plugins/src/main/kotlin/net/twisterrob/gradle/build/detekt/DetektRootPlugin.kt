@@ -15,7 +15,7 @@ import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 internal abstract class DetektRootPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
@@ -25,7 +25,7 @@ internal abstract class DetektRootPlugin : Plugin<Project> {
 		configureDetektReportMerging(project)
 	}
 
-	@Suppress("NamedArguments")
+	@Suppress("detekt.NamedArguments")
 	private fun configureDetektReportMerging(project: Project) {
 		configureDetektReportMerging(project, "sarif", DetektReports::sarif, Detekt::sarifReportFile)
 		configureDetektReportMerging(project, "xml", DetektReports::xml, Detekt::xmlReportFile)
@@ -65,7 +65,7 @@ private fun mergeReportFromIncludedBuilds(
 	gradle: Gradle,
 	mergedExtension: String,
 ) {
-	@Suppress("NamedArguments")
+	@Suppress("detekt.NamedArguments")
 	gradle.includedBuilds.forEach { includedBuild ->
 		detektReportMergeTask.mergeReportFrom(includedBuild, ":detekt", "detekt.${mergedExtension}")
 		detektReportMergeTask.mergeReportFrom(includedBuild, ":detektMain", "main.${mergedExtension}")

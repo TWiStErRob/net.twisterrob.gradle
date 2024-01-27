@@ -135,7 +135,7 @@ class LintPluginTest : BaseIntgTest() {
 		`set up 3 modules with a lint failures`()
 		gradle.basedOn("android-multi_module")
 
-		@Suppress("MaxLineLength")
+		@Suppress("detekt.MaxLineLength")
 		@Language("gradle")
 		val script = """
 			plugins {

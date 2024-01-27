@@ -142,7 +142,7 @@ class GradleLogLevelRedirectingLoggerTest {
 	companion object {
 
 		@JvmStatic
-		@Suppress("NamedArguments")
+		@Suppress("detekt.NamedArguments")
 		val GRADLE_LEVELS: List<GradleLevel> =
 			listOf(
 				GradleLevel(null, Logger::isTraceEnabled, Logger::trace, Logger::trace, Logger::trace),
@@ -167,9 +167,9 @@ class GradleLogLevelRedirectingLoggerTest {
 			)
 
 		@JvmStatic
-		@Suppress("NamedArguments")
+		@Suppress("detekt.NamedArguments")
 		val SLF4J_LEVELS: List<Slf4jLevel> =
-			@Suppress("MaxLineLength") // Keep it simple.
+			@Suppress("detekt.MaxLineLength") // Keep it simple.
 			listOf(
 				//@formatter:off
 				Slf4jLevel(Level.ERROR, Logger::isErrorEnabled, Logger::error, Logger::error, Logger::error, Logger::error, Logger::error),
@@ -181,8 +181,8 @@ class GradleLogLevelRedirectingLoggerTest {
 			)
 
 		@Suppress(
-			"LongParameterList", // It's how many variants of log methods exists in SLF4J.
-			"UseDataClass", // No need to use data class here, none of its methods would be used.
+			"detekt.LongParameterList", // It's how many variants of log methods exists in SLF4J.
+			"detekt.UseDataClass", // No need to use data class here, none of its methods would be used.
 		)
 		class Slf4jLevel(
 			val level: Level,
@@ -201,8 +201,8 @@ class GradleLogLevelRedirectingLoggerTest {
 		}
 
 		@Suppress(
-			"LongParameterList", // It's how many variants of log methods exists in SLF4J.
-			"UseDataClass", // No need to use data class here, none of its methods would be used.
+			"detekt.LongParameterList", // It's how many variants of log methods exists in SLF4J.
+			"detekt.UseDataClass", // No need to use data class here, none of its methods would be used.
 		)
 		class GradleLevel(
 			val level: LogLevel?,

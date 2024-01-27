@@ -25,7 +25,7 @@ rootProject {
 	val javaRuntimeVersion = System.getProperty("java.runtime.version")
 	val javaHome = System.getProperty("java.home")
 	val javaHomeEnv = System.getenv("JAVA_HOME")
-	@Suppress("NullableToStringCall") // Debug info, null is OK.
+	@Suppress("detekt.NullableToStringCall") // Debug info, null is OK.
 	val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
 	val kotlinRuntime = KotlinVersion.CURRENT
 	val kotlinPlugin = project.getKotlinPluginVersion()

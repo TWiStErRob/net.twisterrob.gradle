@@ -7,7 +7,7 @@ base.archivesName = "twister-convention-versioning"
 description = "Versioning Convention Plugin: Gradle Plugin to set up versioning through properties and DSL."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
+	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
 	plugins {
 		create("vcs") {
 			id = "net.twisterrob.gradle.plugin.vcs"

@@ -36,7 +36,8 @@ class ViolationsRendererTest {
 	}
 
 	@Test fun `renderXml writes preamble`() {
-		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
+		// Unsuppressable "Xml declaration should precede all document content".
+		@Suppress("detekt.MultilineRawStringIndentation")
 		@Language("XML")
 		val expected = """<?xml version="1.0" encoding="utf-8"?>
 			<?xml-stylesheet type="text/xsl" href="some/path/to.xsl"?>
@@ -49,7 +50,8 @@ class ViolationsRendererTest {
 	}
 
 	@Test fun `renderXml writes project name on root`() {
-		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
+		// Unsuppressable "Xml declaration should precede all document content".
+		@Suppress("detekt.MultilineRawStringIndentation")
 		@Language("XML")
 		val expected = """<?xml version="1.0" encoding="utf-8"?>
 			<violations project="test project"></violations>
@@ -60,7 +62,7 @@ class ViolationsRendererTest {
 		assertEquals(expected.unformat(), rendered)
 	}
 
-	@Suppress("LongMethod")
+	@Suppress("detekt.LongMethod")
 	@Test fun `renderXml renders a violation`(@TempDir temp: File) {
 		val fixtViolation: Violation = fixture.build {
 			location.setField("module", ProjectBuilder().withProjectDir(temp).build())
@@ -74,7 +76,8 @@ class ViolationsRendererTest {
 		val violations: Map<Category?, Map<Reporter, List<Violation>>> =
 			mapOf(fixtCategory to mapOf(fixtReporter to listOf(fixtViolation)))
 
-		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
+		// Unsuppressable "Xml declaration should precede all document content".
+		@Suppress("detekt.MultilineRawStringIndentation")
 		@Language("XML")
 		val expected = """<?xml version="1.0" encoding="utf-8"?>
 			<violations project="test project">
@@ -144,7 +147,7 @@ class ViolationsRendererTest {
 	}
 
 	@EnabledOnOs(OS.WINDOWS)
-	@Suppress("LongMethod")
+	@Suppress("detekt.LongMethod")
 	@Test fun `renderXml renders a violation with external file`(@TempDir temp: File) {
 		val fixtViolation: Violation = fixture.build {
 			location.setField("module", ProjectBuilder().withProjectDir(temp).build())
@@ -155,7 +158,8 @@ class ViolationsRendererTest {
 		val violations: Map<Category?, Map<Reporter, List<Violation>>> =
 			mapOf(fixtCategory to mapOf(fixtReporter to listOf(fixtViolation)))
 
-		@Suppress("MultilineRawStringIndentation") // Unsuppressable "Xml declaration should precede all document content".
+		// Unsuppressable "Xml declaration should precede all document content".
+		@Suppress("detekt.MultilineRawStringIndentation")
 		@Language("XML")
 		val expected = """<?xml version="1.0" encoding="utf-8"?>
 			<violations project="test project">

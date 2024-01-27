@@ -196,7 +196,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	}
 
 	private fun nagManyTimes(): String =
-		@Suppress("UseIfInsteadOfWhen")
+		@Suppress("detekt.UseIfInsteadOfWhen")
 		when {
 			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
 				"""
