@@ -5,7 +5,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-gradle-test")
+base.archivesName = "twister-gradle-test"
 description = "Test: Gradle test plugin."
 
 gradlePlugin {
@@ -20,7 +20,7 @@ gradlePlugin {
 				A wrapper for `org.gradle.testkit.runner.GradleRunner` to reduce boilerplate.
 				Also contains helpers for building a project on disk from code and assert the results of an execution.
 			""".trimIndent()
-			tags.set(setOf("gradle", "test", "plugin-development"))
+			tags = setOf("gradle", "test", "plugin-development")
 			implementationClass = "net.twisterrob.gradle.test.TestPlugin"
 			deprecateId(project, "net.twisterrob.gradle.test")
 		}

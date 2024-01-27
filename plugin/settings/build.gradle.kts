@@ -5,7 +5,7 @@ plugins {
 	`kotlin-dsl`
 }
 
-base.archivesName.set("twister-convention-settings")
+base.archivesName = "twister-convention-settings"
 description = "Settings Convention Plugin: Gradle Plugin to apply in settings.gradle files."
 
 gradlePlugin {
@@ -25,7 +25,7 @@ gradlePlugin {
 				   * `slug`
 				 * No logic yet.
 			""".trimIndent()
-			tags.set(setOf("utilities", "settings", "logging"))
+			tags = setOf("utilities", "settings", "logging")
 			implementationClass = "net.twisterrob.gradle.settings.SettingsPlugin"
 			// deprecateId(project, "net.twisterrob.settings") // Manually added, because Plugin<Settings>
 		}
@@ -40,7 +40,7 @@ gradlePlugin {
 				   * `doNotNagAbout`
 				 * No logic yet.
 			""".trimIndent()
-			tags.set(setOf("utilities", "settings", "logging"))
+			tags = setOf("utilities", "settings", "logging")
 			implementationClass = "net.twisterrob.gradle.nagging.NaggingPlugin"
 		}
 	}

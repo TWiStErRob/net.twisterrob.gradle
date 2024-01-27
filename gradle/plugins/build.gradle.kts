@@ -43,8 +43,8 @@ run {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	compilerOptions.verbose.set(true)
-	compilerOptions.allWarningsAsErrors.set(true)
+	compilerOptions.verbose = true
+	compilerOptions.allWarningsAsErrors = true
 }
 
 // Note: duplicated from DetektPlugin because can't apply project this build.gradle.kts is defining.
@@ -62,8 +62,8 @@ detekt {
 
 	project.tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 		reports {
-			html.required.set(true) // human
-			txt.required.set(true) // console
+			html.required = true // human
+			txt.required = true // console
 		}
 		if (this.name == "detektMain") {
 			// Detekt fails on these files with an internal compile error, so exclude for now.

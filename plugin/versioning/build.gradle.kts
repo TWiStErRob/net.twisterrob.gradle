@@ -3,7 +3,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-convention-versioning")
+base.archivesName = "twister-convention-versioning"
 description = "Versioning Convention Plugin: Gradle Plugin to set up versioning through properties and DSL."
 
 gradlePlugin {
@@ -22,7 +22,7 @@ gradlePlugin {
 				 * Rename Android APK to contain more information:
 				   `{applicationId}@{versionCode}-v{versionName}+{variant}.apk`
 			""".trimIndent()
-			tags.set(setOf("conventions", "android", "versioning", "git", "svn", "vcs"))
+			tags = setOf("conventions", "android", "versioning", "git", "svn", "vcs")
 			implementationClass = "net.twisterrob.gradle.vcs.VCSPlugin"
 			deprecateId(project, "net.twisterrob.vcs")
 		}

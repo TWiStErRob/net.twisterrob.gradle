@@ -76,9 +76,9 @@ project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
 	registerPublicationsTasks(project)
 	project.gradlePlugin.apply {
 		@Suppress("UnstableApiUsage")
-		website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
+		website = "https://github.com/TWiStErRob/net.twisterrob.gradle"
 		@Suppress("UnstableApiUsage")
-		vcsUrl.set("https://github.com/TWiStErRob/net.twisterrob.gradle.git")
+		vcsUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle.git"
 	}
 	project.publishing.publications.apply {
 		// Pre-configure pluginMaven for MavenPluginPublishPlugin, it'll set up other things.
@@ -117,9 +117,9 @@ fun MavenPublication.handleTestFixtures() {
 fun setupDoc(project: Project) {
 	project.tasks.named<DokkaTask>(DOKKA_TASK_NAME) {
 		// TODO https://github.com/Kotlin/dokka/issues/1894
-		moduleName.set(this.project.base.archivesName)
+		moduleName = this.project.base.archivesName
 		dokkaSourceSets.configureEach {
-			reportUndocumented.set(false)
+			reportUndocumented = false
 		}
 	}
 }
@@ -151,31 +151,31 @@ fun MavenPublication.setupModuleIdentity(project: Project) {
 					"${project} must have a description with format: \"Module Display Name: Module description.\""
 							+ ", found ${project.description}"
 				)
-			name.set(projectDescription.substringBefore(": ").also { check(it.isNotBlank()) })
-			description.set(projectDescription.substringAfter(": ").also { check(it.isNotBlank()) })
+			name = projectDescription.substringBefore(": ").also { check(it.isNotBlank()) }
+			description = projectDescription.substringAfter(": ").also { check(it.isNotBlank()) }
 		}
 	}
 }
 
 fun MavenPublication.setupLinks(project: Project) {
 	pom {
-		url.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
+		url = "https://github.com/TWiStErRob/net.twisterrob.gradle"
 		scm {
-			connection.set("scm:git:github.com/TWiStErRob/net.twisterrob.gradle.git")
-			developerConnection.set("scm:git:ssh://github.com/TWiStErRob/net.twisterrob.gradle.git")
-			url.set("https://github.com/TWiStErRob/net.twisterrob.gradle/tree/main")
+			connection = "scm:git:github.com/TWiStErRob/net.twisterrob.gradle.git"
+			developerConnection = "scm:git:ssh://github.com/TWiStErRob/net.twisterrob.gradle.git"
+			url = "https://github.com/TWiStErRob/net.twisterrob.gradle/tree/main"
 		}
 		licenses {
 			license {
-				name.set("Unlicense")
-				url.set("https://github.com/TWiStErRob/net.twisterrob.gradle/blob/v${project.version}/LICENCE")
+				name = "Unlicense"
+				url = "https://github.com/TWiStErRob/net.twisterrob.gradle/blob/v${project.version}/LICENCE"
 			}
 		}
 		developers {
 			developer {
-				id.set("TWiStErRob")
-				name.set("Robert Papp")
-				email.set("papp.robert.s@gmail.com")
+				id = "TWiStErRob"
+				name = "Robert Papp"
+				email = "papp.robert.s@gmail.com"
 			}
 		}
 	}

@@ -7,6 +7,7 @@ import net.twisterrob.gradle.build.dsl.libs
 import net.twisterrob.gradle.slug
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.withType
 
 @Suppress("UnnecessaryAbstractClass") // Gradle convention.
@@ -33,8 +34,8 @@ internal abstract class DetektPlugin : Plugin<Project> {
 				// Detekt falsely resolves this to DetektExtension.report because of Kotlin DSL.
 				@Suppress("Detekt.Deprecation")
 				reports {
-					html.required.set(true) // human
-					txt.required.set(true) // console
+					html.required = true // human
+					txt.required = true // console
 				}
 			}
 		}

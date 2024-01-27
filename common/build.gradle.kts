@@ -4,7 +4,7 @@ plugins {
 	id("org.gradle.groovy")
 }
 
-base.archivesName.set("twister-quality-common")
+base.archivesName = "twister-quality-common"
 description = "Common: Shared classes between checkers (not to be consumed directly)."
 
 dependencies {

@@ -3,7 +3,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-compat-agp-7.3.x")
+base.archivesName = "twister-compat-agp-7.3.x"
 description = "AGP Compatibility 7.3.x: Compatibility layer for Android Gradle Plugin 7.3.x."
 
 dependencies {
