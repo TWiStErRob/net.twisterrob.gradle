@@ -79,28 +79,18 @@ project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
 		website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
 		vcsUrl.set("https://github.com/TWiStErRob/net.twisterrob.gradle.git")
 	}
-	// Configure built-in pluginMaven publication created by java-gradle-plugin.
-	// Have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin.
-	// Cannot be relying on the `maybeCreate` usage in MavenPluginPublishPlugin.addMainPublication,
-	// because the module name is set in afterEvaluate in setupModuleIdentity and MPPP already read it.
-	// This is described in https://github.com/gradle/gradle/issues/23551.
-	project.afterEvaluate {
-		project.publishing.apply {
-			publications {
-				named<MavenPublication>("pluginMaven").configure pluginMaven@{
-					setupModuleIdentity(project)
-					setupPublication(project)
-					handleTestFixtures()
-					// TODEL work around https://github.com/gradle/gradle/issues/23551
-					fixMarkers(project)
-				}
-				withType<MavenPublication>()
-					.matching { it.name.endsWith("PluginMarkerMaven") }
-					.configureEach pluginMarkerMaven@{
-						setupPublication(project)
-					}
-			}
+	project.publishing.publications.apply {
+		// Pre-configure pluginMaven for MavenPluginPublishPlugin, it'll set up other things.
+		create<MavenPublication>("pluginMaven") {
+			setupModuleIdentity(project)
+			setupPublication(project)
+			handleTestFixtures()
 		}
+		withType<MavenPublication>()
+			.matching { it.name.endsWith("PluginMarkerMaven") }
+			.configureEach {
+				setupPublication(project)
+			}
 	}
 }
 
@@ -110,21 +100,6 @@ fun MavenPublication.setupPublication(project: Project) {
 	}
 	setupLinks(project)
 	reorderNodes(project)
-}
-
-fun MavenPublication.fixMarkers(project: Project) {
-	project.gradlePlugin.plugins.forEach { plugin ->
-		// Needs to be eager getByName rather than named because we're already inside a named block at call-site.
-		project.publishing.publications.getByName<MavenPublication>("${plugin.name}PluginMarkerMaven") {
-			pom.withXml {
-				asNode()
-					.getChild("dependencies")
-					.getChild("dependency")
-					.getChild("artifactId")
-					.setValue(this@fixMarkers.artifactId)
-			}
-		}
-	}
 }
 
 @Suppress("UnusedReceiverParameter")
@@ -164,6 +139,7 @@ fun setupSigning(project: Project) {
 }
 
 fun MavenPublication.setupModuleIdentity(project: Project) {
+	// Delayed configuration, so that project.* is set up properly in corresponding modules' build.gradle.kts.
 	project.afterEvaluate {
 		artifactId = project.base.archivesName.get()
 		version = project.version as String
