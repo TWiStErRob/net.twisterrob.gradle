@@ -14,6 +14,6 @@ configurations.named("compileOnly").configure { extendsFrom(webjars.get()) }
 
 val extractWebJars by tasks.registering(ExtractWebJarsTask::class) {
 	fromConfiguration(configurations.named("webjars"))
-	cleanFirst.set(true)
-	outputDirectory.set(project.layout.buildDirectory.dir("webjars-as-resources"))
+	cleanFirst = true
+	outputDirectory = project.layout.buildDirectory.dir("webjars-as-resources")
 }
