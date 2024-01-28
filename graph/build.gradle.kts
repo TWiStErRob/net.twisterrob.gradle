@@ -38,7 +38,7 @@ dependencies {
 	implementation("com.google.code.gson:gson:2.10.1")
 	implementation("org.jetbrains:annotations:24.1.0")
 
-	"webjars"("org.webjars.npm:d3:7.8.4") {
+	"webjars"("org.webjars.npm:d3:7.8.5") {
 		// Avoid pulling in all small modules, using the merged .js file instead.
 		isTransitive = false
 	}
