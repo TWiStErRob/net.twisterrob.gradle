@@ -1,0 +1,4 @@
+style:
+  UnusedImports:
+    # Have to turn it off, because detekt doesn't understand compiler plugins (e.g. org.gradle.kotlin.dsl.assign).
+    active: false
