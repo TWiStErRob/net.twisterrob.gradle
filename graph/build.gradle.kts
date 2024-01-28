@@ -46,7 +46,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
 	testImplementation("org.junit.platform:junit-platform-launcher:1.10.1")
 	testImplementation("org.mockito:mockito-core:5.10.0")
-	testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 	testImplementation("org.hamcrest:hamcrest:2.2")
 }
 
