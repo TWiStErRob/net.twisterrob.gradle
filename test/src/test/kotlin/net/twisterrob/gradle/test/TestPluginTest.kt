@@ -24,9 +24,9 @@ class TestPluginTest : BaseIntgTest() {
 	 *  * `Testception` sets up a simple Gradle build and checks its output.
 	 *  * `Testception` is being run from `:test` task in the project that's set up in this test method.
 	 */
-	@Suppress("LongMethod") // Multiple files are listed in this one method.
+	@Suppress("detekt.LongMethod") // Multiple files are listed in this one method.
 	@Test fun `gradle test plugin test`() {
-		@Suppress("StringShouldBeRawString") // https://github.com/detekt/detekt/issues/6145#issuecomment-1563091070
+		@Suppress("detekt.StringShouldBeRawString") // https://github.com/detekt/detekt/issues/6145#issuecomment-1563091070
 		val triplet = "\"\"\""
 		@Suppress("GrPackage") // It will be written to the right folder.
 		@Language("groovy")

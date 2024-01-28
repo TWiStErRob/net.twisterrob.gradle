@@ -3,11 +3,11 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-convention-plugins")
+base.archivesName = "twister-convention-plugins"
 description = "Convention Plugins: Gradle Plugins used by my hobby projects."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
+	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
 	plugins {
 		create("androidApp") {
 			id = "net.twisterrob.gradle.plugin.android-app"
@@ -24,7 +24,7 @@ gradlePlugin {
 				 * Rename APK file name to contain more information.
 				 * Release artifact generation (ZIP including APK and other files).
 			""".trimIndent()
-			tags.set(setOf("conventions", "android", "versioning", "proguard"))
+			tags = setOf("conventions", "android", "versioning", "proguard")
 			implementationClass = "net.twisterrob.gradle.android.AndroidAppPlugin"
 			deprecateId(project, "net.twisterrob.android-app")
 		}
@@ -36,7 +36,7 @@ gradlePlugin {
 				
 				Various utilities and setup for minimal configuration of libraries.
 			""".trimIndent()
-			tags.set(setOf("conventions", "android"))
+			tags = setOf("conventions", "android")
 			implementationClass = "net.twisterrob.gradle.android.AndroidLibraryPlugin"
 			deprecateId(project, "net.twisterrob.android-library")
 		}
@@ -46,7 +46,7 @@ gradlePlugin {
 			description = """
 				TWiStErRob's Convention plugin for Android test modules.
 			""".trimIndent()
-			tags.set(setOf("conventions", "android"))
+			tags = setOf("conventions", "android")
 			implementationClass = "net.twisterrob.gradle.android.AndroidTestPlugin"
 			deprecateId(project, "net.twisterrob.android-test")
 		}

@@ -121,7 +121,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 				gatherer.allTasksFrom(subproject).forEach { reportTask ->
 					try {
 						action(gatherer, reportTask)
-					} catch (@Suppress("TooGenericExceptionCaught") ex: RuntimeException) {
+					} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: RuntimeException) {
 						// Slap on more information to the exception.
 						throw GradleException("Cannot configure $reportTask from $gatherer gatherer in $subproject", ex)
 					}

@@ -3,7 +3,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-compat-gradle")
+base.archivesName = "twister-compat-gradle"
 description = "Gradle Compatibility: Support methods for compatibility with all supported Gradle versions."
 
 dependencies {

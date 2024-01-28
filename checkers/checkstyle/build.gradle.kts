@@ -5,11 +5,11 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-quality-checkstyle")
+base.archivesName = "twister-quality-checkstyle"
 description = "Checkstyle: Checkstyle quality setup plugin for Gradle."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
+	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
 	plugins {
 		create("checkstyle") {
 			id = "net.twisterrob.gradle.plugin.checkstyle"
@@ -22,7 +22,7 @@ gradlePlugin {
 				 * Conventional location: config/checkstyle/checkstyle.xml
 				 * Cleaner reporting by removing redundant info from reports.
 			""".trimIndent()
-			tags.set(setOf("conventions", "checkstyle"))
+			tags = setOf("conventions", "checkstyle")
 			implementationClass = "net.twisterrob.gradle.checkstyle.CheckStylePlugin"
 			deprecateId(project, "net.twisterrob.checkstyle")
 		}

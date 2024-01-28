@@ -197,7 +197,7 @@ class PmdPluginTest : BaseIntgTest() {
 		modules.forEach { modulePath ->
 			gradle.settingsFile.appendText("""include("${modulePath}")${System.lineSeparator()}""")
 
-			@Suppress("BracesOnIfStatements") // Language annotation doesn't work on implicit block return.
+			@Suppress("detekt.BracesOnIfStatements") // Language annotation doesn't work on implicit block return.
 			@Language("gradle")
 			val subProject = if (modulePath in applyTo)
 				"""

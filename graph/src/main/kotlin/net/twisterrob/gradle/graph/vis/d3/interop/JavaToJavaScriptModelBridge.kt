@@ -23,7 +23,7 @@ class JavaToJavaScriptModelBridge(engine: WebEngine) {
 	private fun modelCall(methodName: String, vararg args: Any?) {
 		val argsStr = args.contentToString()
 		if (LOG.isDebugEnabled) {
-			val shortArgsStr = argsStr.collapseJson().abbreviate(@Suppress("MagicNumber") 150)
+			val shortArgsStr = argsStr.collapseJson().abbreviate(@Suppress("detekt.MagicNumber") 150)
 			LOG.debug("model.{}({})", methodName, shortArgsStr)
 		}
 		Platform.runLater {

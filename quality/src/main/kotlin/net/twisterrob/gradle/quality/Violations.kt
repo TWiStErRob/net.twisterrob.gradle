@@ -1,4 +1,4 @@
-@file:Suppress("LongParameterList") // Collection of "data" classes, they have a lot to hold.
+@file:Suppress("detekt.LongParameterList") // Collection of "data" classes, they have a lot to hold.
 
 package net.twisterrob.gradle.quality
 
@@ -6,7 +6,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import java.io.File
 
-@Suppress("UseDataClass") // Don't want to define equals/hashCode/component methods as they all imply something.
+@Suppress("detekt.UseDataClass") // Don't want to define equals/hashCode/component methods as they all imply something.
 class Violations(
 	@JvmField val parser: String,
 	@JvmField val module: String,
@@ -31,7 +31,7 @@ class Violations(
 	}
 }
 
-@Suppress("UseDataClass") // Don't want to define equals/hashCode/component methods as they all imply something.
+@Suppress("detekt.UseDataClass") // Don't want to define equals/hashCode/component methods as they all imply something.
 class Violation(
 	val rule: String,
 	val category: String?,
@@ -42,7 +42,7 @@ class Violation(
 	val source: Source
 ) {
 
-	@Suppress("MaxLineLength")
+	@Suppress("detekt.MaxLineLength")
 	override fun toString(): String =
 		"Violation(rule='$rule', category=${category ?: "null"}, severity=$severity, message='$message', specifics=$specifics, location=$location, source=$source)"
 
@@ -62,7 +62,7 @@ class Violation(
 		val column: Int
 	) {
 
-		@Suppress("MaxLineLength")
+		@Suppress("detekt.MaxLineLength")
 		override fun toString(): String =
 			"Location(module=$module, task=$task, variant='$variant', file=$file, startLine=$startLine, endLine=$endLine, column=$column)"
 	}
@@ -76,7 +76,7 @@ class Violation(
 		val humanReport: File?
 	) {
 
-		@Suppress("MaxLineLength")
+		@Suppress("detekt.MaxLineLength")
 		override fun toString(): String =
 			"Source(parser='$parser', gatherer='$gatherer', reporter='$reporter', source='$source', report=$report, humanReport=${humanReport ?: "null"})"
 	}

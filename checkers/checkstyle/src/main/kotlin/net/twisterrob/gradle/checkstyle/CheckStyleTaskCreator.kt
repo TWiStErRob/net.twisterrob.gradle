@@ -15,7 +15,7 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 	CheckStyleExtension::class.java
 ) {
 
-	@Suppress("CognitiveComplexMethod") // TODEL https://github.com/detekt/detekt/issues/5560
+	@Suppress("detekt.CognitiveComplexMethod") // TODEL https://github.com/detekt/detekt/issues/5560
 	override fun taskConfigurator(): VariantTaskCreator<CheckStyleTask>.DefaultTaskConfig =
 		object : VariantTaskCreator<CheckStyleTask>.DefaultTaskConfig() {
 

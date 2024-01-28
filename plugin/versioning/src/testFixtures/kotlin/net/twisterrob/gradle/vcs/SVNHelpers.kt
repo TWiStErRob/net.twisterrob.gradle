@@ -1,4 +1,4 @@
-@file:Suppress("ForbiddenMethodCall")
+@file:Suppress("detekt.ForbiddenMethodCall")
 
 package net.twisterrob.gradle.vcs
 
@@ -81,7 +81,7 @@ inline fun <V : Any, T : SvnOperation<V>> T.execute(block: (operation: T, result
 	return result
 }
 
-@Suppress("ForbiddenVoid") // SvnScheduleForAddition extends SvnOperation<Void>, <Unit> doesn't work.
+@Suppress("detekt.ForbiddenVoid") // SvnScheduleForAddition extends SvnOperation<Void>, <Unit> doesn't work.
 inline fun <T : SvnOperation<Void>> T.execute(block: (operation: T) -> Unit) {
 	run()
 	block(this)

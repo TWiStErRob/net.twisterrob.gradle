@@ -6,6 +6,7 @@ import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.dsl.DependencyLockingHandler
 import org.gradle.api.initialization.Settings
 import org.gradle.api.initialization.dsl.ScriptHandler
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.dependencyLocking
 import java.io.File
 
@@ -59,7 +60,7 @@ fun ScriptHandler.enableDependencyLocking(settings: Settings) {
 }
 
 private fun DependencyLockingHandler.relocateLockFile(root: File, name: String) {
-	lockFile.set(root.resolve("gradle/dependency-locks/$name.lockfile"))
+	lockFile = root.resolve("gradle/dependency-locks/$name.lockfile")
 }
 
 private fun ConfigurationContainer.activateDependencyLocking() {

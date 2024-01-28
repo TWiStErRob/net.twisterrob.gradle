@@ -100,7 +100,7 @@ abstract class HtmlReportTask : BaseViolationsTask() {
 				.newTransformer(StreamSource(xslOutputFile.reader()))
 				.transform(StreamSource(xmlFile.reader()), StreamResult(htmlFile))
 			logger.lifecycle("Wrote HTML report to ${SdkUtils.fileToUrlString(htmlFile.absoluteFile)}")
-		} catch (@Suppress("TooGenericExceptionCaught") ex: Throwable) {
+		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Throwable) {
 			// Slap on more information to the exception.
 			throw GradleException("Cannot transform ${xmlFile}\nto ${htmlFile}\nusing ${xslOutputFile}", ex)
 		}

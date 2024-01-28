@@ -5,7 +5,7 @@ import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.TableGenerator
 import org.gradle.api.tasks.UntrackedTask
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 @UntrackedTask(because = "It is used to inspect state, output is console.")
 abstract class ConsoleReportTask : BaseViolationsTask() {
 
@@ -29,7 +29,7 @@ abstract class ConsoleReportTask : BaseViolationsTask() {
 			.map { violation ->
 				val message = violation.message.replace("""(\r?\n)+""".toRegex(), System.lineSeparator())
 				val loc = violation.location
-				@Suppress("StringShouldBeRawString") // Not using raw string literals because of the new-line requirements.
+				@Suppress("detekt.StringShouldBeRawString") // Not using raw string literals because of the new-line requirements.
 				return@map (""
 						+ "\n${loc.file.absolutePath}:${loc.startLine} in ${loc.module}/${loc.variant}"
 						+ "\n\t${violation.source.reporter}/${violation.rule}"

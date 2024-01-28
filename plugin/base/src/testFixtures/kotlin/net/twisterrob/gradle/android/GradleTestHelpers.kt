@@ -58,7 +58,7 @@ fun resolveFromJDK(command: String): File {
 		jre.resolve("bin"),
 		jre.parentFile.resolve("bin")
 	)
-	@Suppress("SpreadOperator")
+	@Suppress("detekt.SpreadOperator")
 	return resolveFromFolders(command, *dirs)
 }
 
@@ -70,7 +70,7 @@ private fun resolveFromFolders(command: String, vararg dirs: File): File {
 		?: error("Cannot find any of ${variants} in any of these folders:\n${dirs.joinToString("\n")}")
 }
 
-@Suppress("LongParameterList") // Simply these many things contribute to APK metadata.
+@Suppress("detekt.LongParameterList") // Simply these many things contribute to APK metadata.
 fun assertDefaultDebugBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
@@ -94,7 +94,7 @@ fun assertDefaultDebugBadging(
 	)
 }
 
-@Suppress("LongParameterList") // Simply these many things contribute to APK metadata.
+@Suppress("detekt.LongParameterList") // Simply these many things contribute to APK metadata.
 fun assertDefaultReleaseBadging(
 	apk: File,
 	applicationId: String = packageName,
@@ -118,7 +118,7 @@ fun assertDefaultReleaseBadging(
 	)
 }
 
-@Suppress("LongParameterList", "LongMethod") // Simply these many things contribute to APK metadata.
+@Suppress("detekt.LongParameterList", "detekt.LongMethod") // Simply these many things contribute to APK metadata.
 fun assertDefaultBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
@@ -133,7 +133,7 @@ fun assertDefaultBadging(
 ) {
 	try {
 		assertThat(apk.absolutePath, apk, anExistingFile())
-	} catch (@Suppress("SwallowedException", "TooGenericExceptionCaught") ex: Throwable) {
+	} catch (@Suppress("detekt.SwallowedException", "detekt.TooGenericExceptionCaught") ex: Throwable) {
 		// Detekt doesn't see into the extension fun.
 		val contents = apk
 			.parentFile
@@ -149,7 +149,7 @@ fun assertDefaultBadging(
 			null
 		}
 	val (expectation: String, expectedOutput: String) =
-		if (compileSdkVersion < @Suppress("MagicNumber") 28) {
+		if (compileSdkVersion < @Suppress("detekt.MagicNumber") 28) {
 			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2
 			"compileSdkVersion < 28" to """
 				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName'
@@ -221,10 +221,10 @@ fun devices(): List<IDevice> {
 	val bridge = AndroidDebugBridge.createBridge(
 		resolveFromAndroidSDK("adb").absolutePath,
 		false,
-		@Suppress("MagicNumber") 10,
+		@Suppress("detekt.MagicNumber") 10,
 		TimeUnit.SECONDS
 	)
-	@Suppress("MagicNumber")
+	@Suppress("detekt.MagicNumber")
 	ensuredWait(5000L, 1000L, "Cannot get device list") {
 		bridge.hasInitialDeviceList()
 	}

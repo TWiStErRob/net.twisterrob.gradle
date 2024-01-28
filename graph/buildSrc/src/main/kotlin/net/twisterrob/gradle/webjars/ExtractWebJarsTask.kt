@@ -18,6 +18,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.submit
 import org.gradle.workers.WorkerExecutor
 import java.io.File
@@ -57,12 +58,12 @@ abstract class ExtractWebJarsTask @Inject constructor(
 	 */
 	fun fromConfiguration(configuration: Provider<Configuration>) {
 		configurationFiles.setFrom(configuration)
-		artifacts.set(configuration.flatMap { it.incoming.artifacts.resolvedArtifacts }.map {
+		artifacts = configuration.flatMap { it.incoming.artifacts.resolvedArtifacts }.map {
 			it
 				.associateBy({ it.id.componentIdentifier }, { it.file })
 				.filterKeys { it is ModuleComponentIdentifier }
 				.mapKeys { it.key as ModuleComponentIdentifier }
-		})
+		}
 	}
 
 	@TaskAction
@@ -73,9 +74,9 @@ abstract class ExtractWebJarsTask @Inject constructor(
 		val work = workers.noIsolation()
 		artifacts.get().forEach { (id, file) ->
 			work.submit(ExtractWebJarAction::class) {
-				this.localWebJar.set(file)
-				this.artifactId.set("${id.group}:${id.module}:${id.version}")
-				this.outputDirectory.set(this@ExtractWebJarsTask.outputDirectory)
+				this.localWebJar = file
+				this.artifactId = "${id.group}:${id.module}:${id.version}"
+				this.outputDirectory = this@ExtractWebJarsTask.outputDirectory
 			}
 		}
 		work.await()

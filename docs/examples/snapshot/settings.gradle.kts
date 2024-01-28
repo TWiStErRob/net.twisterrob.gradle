@@ -38,7 +38,7 @@ plugins {
 }
 
 dependencyResolutionManagement {
-	repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+	repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
 	repositories {
 		google()
 		mavenCentral()
@@ -53,7 +53,7 @@ val gradleVersion: String = GradleVersion.current().version
 
 // TODEL Gradle 8.2 vs AGP 8.0.2 https://issuetracker.google.com/issues/279306626
 // Gradle 8.2 M1 added nagging for BuildIdentifier.*, which was not replaced in AGP 8.0.x yet.
-@Suppress("MaxLineLength")
+@Suppress("detekt.MaxLineLength")
 doNotNagAbout(
 	"The BuildIdentifier.isCurrentBuild() method has been deprecated. " +
 			"This is scheduled to be removed in Gradle 9.0. " +

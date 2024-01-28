@@ -7,7 +7,7 @@ import org.gradle.api.attributes.java.TargetJvmVersion
 import javax.inject.Inject
 
 @CacheableRule
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class LatestAgpTargetJvmLoweringRule @Inject constructor(
 	private val jvmVersionOverride: Int
 ) : ComponentMetadataRule {

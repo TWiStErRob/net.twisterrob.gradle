@@ -3,7 +3,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-convention-signing")
+base.archivesName = "twister-convention-signing"
 description = "Signing Convention Plugin: Gradle Plugin to apply Android Signing conventions."
 
 gradlePlugin {

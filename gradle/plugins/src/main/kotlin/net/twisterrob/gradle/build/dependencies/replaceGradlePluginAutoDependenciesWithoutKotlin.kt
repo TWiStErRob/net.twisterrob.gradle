@@ -10,7 +10,7 @@ import org.gradle.kotlin.dsl.gradleKotlinDsl
 /**
  * Alternative solution: https://stackoverflow.com/a/64825340/253468
  */
-@Suppress("FunctionMaxLength") // Rather be explicit about what it does.
+@Suppress("detekt.FunctionMaxLength") // Rather be explicit about what it does.
 fun Project.replaceGradlePluginAutoDependenciesWithoutKotlin() {
 	plugins.withId("org.gradle.java-gradle-plugin") {
 		dependencies {

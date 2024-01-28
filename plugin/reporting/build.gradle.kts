@@ -3,7 +3,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-convention-reporting")
+base.archivesName = "twister-convention-reporting"
 description = "Reporting Convention Plugin: Gradle tasks to support reporting."
 
 gradlePlugin {

@@ -36,7 +36,6 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 	companion object {
 
-		@Suppress("")
 		@Language("java")
 		private val testFile: String = """
 			import org.junit.*;

@@ -30,7 +30,7 @@ private val LOG = logger<GraphWindow>()
 
 // https://blogs.oracle.com/javafx/entry/communicating_between_javascript_and_javafx
 // http://docs.oracle.com/javafx/2/webview/jfxpub-webview.htm
-@Suppress("UnnecessaryAbstractClass") // Subclasses must override some methods.
+@Suppress("detekt.UnnecessaryAbstractClass") // Subclasses must override some methods.
 abstract class GraphWindow : TaskVisualizer {
 
 	private var bridge: JavaToJavaScriptModelBridge? = null

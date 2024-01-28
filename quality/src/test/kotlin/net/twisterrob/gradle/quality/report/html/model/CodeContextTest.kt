@@ -15,7 +15,7 @@ import org.mockito.kotlin.mock
 import java.io.File
 import java.io.FileNotFoundException
 
-@Suppress("NamedArguments")
+@Suppress("detekt.NamedArguments")
 class CodeContextTest {
 
 	@TempDir lateinit var temp: File

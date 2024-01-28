@@ -12,7 +12,7 @@ import net.twisterrob.gradle.internal.android.checkAllWarningsCompat71x
  * * AGP 7.0.x introduced [Lint.isCheckAllWarnings].
  * * AGP 7.1.x renamed [Lint.isCheckAllWarnings] to [Lint.checkAllWarnings].
  */
-@Suppress("BooleanPropertyNaming") // Following AGP's naming.
+@Suppress("detekt.BooleanPropertyNaming") // Following AGP's naming.
 var Lint.checkAllWarningsCompat: Boolean
 	get() =
 		when {

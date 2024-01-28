@@ -194,7 +194,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		modules.forEach { module ->
 			gradle.settingsFile.appendText("""include("${module}")${System.lineSeparator()}""")
 
-			@Suppress("BracesOnIfStatements") // Language annotation doesn't work on implicit block return.
+			@Suppress("detekt.BracesOnIfStatements") // Language annotation doesn't work on implicit block return.
 			@Language("gradle")
 			val subProject = if (module in applyTo)
 				"""

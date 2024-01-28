@@ -26,8 +26,10 @@ data class AGPVersion(
 	override fun compareTo(other: AGPVersion): Int =
 		compareValuesBy(this, other, AGPVersion::major, AGPVersion::minor, AGPVersion::type, AGPVersion::patch)
 
-	// TODEL https://github.com/detekt/detekt/issues/5321
-	@Suppress("ReturnCount", "DataClassContainsFunctions")
+	@Suppress(
+		"detekt.ReturnCount",
+		"detekt.DataClassContainsFunctions", // TODEL https://github.com/detekt/detekt/issues/5321
+	)
 	infix fun compatible(other: AGPVersion): Boolean {
 		require(other.minor == null || other.type == null || other.patch == null) { "${other} must be a joker." }
 		if (this.major != other.major) return false

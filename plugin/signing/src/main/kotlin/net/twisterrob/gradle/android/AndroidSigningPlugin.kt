@@ -6,7 +6,7 @@ import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidSigningPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
@@ -31,7 +31,7 @@ abstract class AndroidSigningPlugin : BasePlugin() {
 		}
 	}
 
-	@Suppress("CastToNullableType") // Map<String, ?> -> it could be anything, it could be a null too.
+	@Suppress("detekt.CastToNullableType") // Map<String, ?> -> it could be anything, it could be a null too.
 	@Throws(ClassCastException::class) // If property is not a String.
 	private fun optionalProp(name: String): String? =
 		project.properties[name] as String?

@@ -29,7 +29,7 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.name) {
 				if (!isFixed) {
 					fix()
 				}
-				Thread.sleep(@Suppress("MagicNumber") 50) // yield, but also listen for interrupts
+				Thread.sleep(@Suppress("detekt.MagicNumber") 50) // yield, but also listen for interrupts
 			}
 		} catch (ex: InterruptedException) {
 			LOG.trace("interrupted")

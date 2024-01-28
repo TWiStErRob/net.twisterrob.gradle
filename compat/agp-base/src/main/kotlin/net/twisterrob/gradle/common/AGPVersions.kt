@@ -5,7 +5,7 @@ import org.jetbrains.annotations.TestOnly
 /**
  * Version constants for the Android Gradle Plugin.
  */
-@Suppress("MagicNumber") // Meant for hardcoding version numbers.
+@Suppress("detekt.MagicNumber") // Meant for hardcoding version numbers.
 object AGPVersions {
 
 	/**

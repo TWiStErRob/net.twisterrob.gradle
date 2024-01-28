@@ -4,11 +4,11 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencyResolveDetails
 
 fun Configuration.replaceKotlinJre7WithJdk7() {
-	resolutionStrategy.eachDependency { replaceJreWithJdk(@Suppress("MagicNumber") 7) }
+	resolutionStrategy.eachDependency { replaceJreWithJdk(@Suppress("detekt.MagicNumber") 7) }
 }
 
 fun Configuration.replaceKotlinJre8WithJdk8() {
-	resolutionStrategy.eachDependency { replaceJreWithJdk(@Suppress("MagicNumber") 8) }
+	resolutionStrategy.eachDependency { replaceJreWithJdk(@Suppress("detekt.MagicNumber") 8) }
 }
 
 /**

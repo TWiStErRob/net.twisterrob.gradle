@@ -55,7 +55,7 @@ fun BuildResult.assertNoOutputLine(reason: String?, unexpectedLine: String) {
 }
 
 private fun BuildResult.assertRegex(reason: String?, regex: Regex, positive: Boolean = true) {
-	val message = @Suppress("MultilineRawStringIndentation") """
+	val message = @Suppress("detekt.MultilineRawStringIndentation") """
 		${reason.orEmpty()}
 		Expected:
 		${if (positive) "" else "No match for "}${regex}

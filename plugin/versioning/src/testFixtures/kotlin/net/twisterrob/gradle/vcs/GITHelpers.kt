@@ -1,4 +1,4 @@
-@file:Suppress("ForbiddenMethodCall")
+@file:Suppress("detekt.ForbiddenMethodCall")
 
 package net.twisterrob.gradle.vcs
 

@@ -4,13 +4,14 @@ import net.twisterrob.gradle.build.dsl.gradlePlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.named
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.gradle.plugin.devel.PluginDeclaration
 import org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
 import org.gradle.plugin.devel.tasks.ValidatePlugins
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class GradlePluginValidationPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
@@ -30,9 +31,9 @@ abstract class GradlePluginValidationPlugin : Plugin<Project> {
 	 */
 	private fun configureValidatePlugins(tasks: TaskContainer) {
 		tasks.named<ValidatePlugins>("validatePlugins").configure {
-			ignoreFailures.set(false)
-			failOnWarning.set(true)
-			enableStricterValidation.set(true)
+			ignoreFailures = false
+			failOnWarning = true
+			enableStricterValidation = true
 		}
 	}
 

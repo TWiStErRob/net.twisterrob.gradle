@@ -11,10 +11,11 @@ import org.gradle.api.initialization.IncludedBuild
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.provider.Provider
 import org.gradle.configurationcache.extensions.capitalized
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 internal abstract class DetektRootPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
@@ -24,7 +25,7 @@ internal abstract class DetektRootPlugin : Plugin<Project> {
 		configureDetektReportMerging(project)
 	}
 
-	@Suppress("NamedArguments")
+	@Suppress("detekt.NamedArguments")
 	private fun configureDetektReportMerging(project: Project) {
 		configureDetektReportMerging(project, "sarif", DetektReports::sarif, Detekt::sarifReportFile)
 		configureDetektReportMerging(project, "xml", DetektReports::xml, Detekt::xmlReportFile)
@@ -39,13 +40,13 @@ private fun configureDetektReportMerging(
 ) {
 	project.tasks.register<ReportMergeTask>("detektReportMerge${mergedExtension.capitalized()}") {
 		val detektReportMergeTask = this@register
-		output.set(project.layout.buildDirectory.file("reports/detekt/merge.${mergedExtension}"))
+		output = project.layout.buildDirectory.file("reports/detekt/merge.${mergedExtension}")
 		// Intentionally eager: at the point detektReportMergeXml is configured,
 		// we need to know about all the Detekt tasks for their report locations.
 		project.evaluationDependsOnChildren()
 		project.allprojects
 			.flatMap { it.tasks.withType<Detekt>() } // Forces to create the tasks.
-			.onEach { it.reports { report().required.set(true) } }
+			.onEach { it.reports { report().required = true } }
 			.forEach { detektReportingTask ->
 				detektReportMergeTask.mustRunAfter(detektReportingTask)
 				detektReportMergeTask.input.from(detektReportingTask.reportFile())
@@ -64,7 +65,7 @@ private fun mergeReportFromIncludedBuilds(
 	gradle: Gradle,
 	mergedExtension: String,
 ) {
-	@Suppress("NamedArguments")
+	@Suppress("detekt.NamedArguments")
 	gradle.includedBuilds.forEach { includedBuild ->
 		detektReportMergeTask.mergeReportFrom(includedBuild, ":detekt", "detekt.${mergedExtension}")
 		detektReportMergeTask.mergeReportFrom(includedBuild, ":detektMain", "main.${mergedExtension}")

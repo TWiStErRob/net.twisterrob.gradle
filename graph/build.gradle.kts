@@ -71,8 +71,8 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-	compilerOptions.jvmTarget.set(JvmTarget.fromTarget("11"))
-	compilerOptions.allWarningsAsErrors.set(true)
+	compilerOptions.jvmTarget = JvmTarget.fromTarget("11")
+	compilerOptions.allWarningsAsErrors = true
 }
 
 webjars {

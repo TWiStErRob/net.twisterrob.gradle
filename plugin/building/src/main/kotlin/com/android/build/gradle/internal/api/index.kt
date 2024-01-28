@@ -12,10 +12,10 @@ internal val com.android.build.gradle.api.BaseVariant.productionVariant: BaseVar
 
 @Suppress("DEPRECATION" /* AGP 7.0 */)
 internal val com.android.build.gradle.api.BaseVariant.androidTestVariant: BaseVariantImpl?
-	@Suppress("CastToNullableType")
+	@Suppress("detekt.CastToNullableType")
 	get() = (this as TestedVariant).testVariant as BaseVariantImpl?
 
 @Suppress("DEPRECATION" /* AGP 7.0 */)
 internal val com.android.build.gradle.api.BaseVariant.unitTestVariant: BaseVariantImpl?
-	@Suppress("CastToNullableType")
+	@Suppress("detekt.CastToNullableType")
 	get() = (this as TestedVariant).unitTestVariant as BaseVariantImpl?

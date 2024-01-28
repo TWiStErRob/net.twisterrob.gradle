@@ -4,7 +4,6 @@
 		"local>TWiStErRob/renovate-config"
 	],
 	"ignorePaths": [
-		"graph/**",
 		"**/src/test/resources/**"
 	],
 	"packageRules": [

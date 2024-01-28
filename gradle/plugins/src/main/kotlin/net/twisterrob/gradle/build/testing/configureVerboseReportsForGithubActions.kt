@@ -12,8 +12,8 @@ import java.util.EnumSet
 import kotlin.math.absoluteValue
 
 @Suppress(
-	"CyclomaticComplexMethod", "CognitiveComplexMethod", // TODO
-	"FunctionMaxLength" // Rather be explicit about what it does.
+	"detekt.CyclomaticComplexMethod", "detekt.CognitiveComplexMethod", // TODO
+	"detekt.FunctionMaxLength" // Rather be explicit about what it does.
 )
 fun Test.configureVerboseReportsForGithubActions() {
 	testLogging {
@@ -25,7 +25,7 @@ fun Test.configureVerboseReportsForGithubActions() {
 		showCauses = true
 		showStackTraces = true
 	}
-	@Suppress("UseDataClass") // Wouldn't be used.
+	@Suppress("detekt.UseDataClass") // Wouldn't be used.
 	class TestInfo(
 		val descriptor: TestDescriptor,
 		val stdOut: StringBuilder = StringBuilder(),
@@ -48,7 +48,7 @@ fun Test.configureVerboseReportsForGithubActions() {
 	}))
 
 	fun logResults(testType: String, descriptor: TestDescriptor, result: TestResult) {
-		@Suppress("ForbiddenMethodCall") // Need to output raw as the result is parsed by GitHub Actions.
+		@Suppress("detekt.ForbiddenMethodCall") // Need to output raw as the result is parsed by GitHub Actions.
 		val outputToConsole: (String) -> Unit = ::println
 
 		fun fold(outputType: String, condition: Boolean, output: () -> Unit) {

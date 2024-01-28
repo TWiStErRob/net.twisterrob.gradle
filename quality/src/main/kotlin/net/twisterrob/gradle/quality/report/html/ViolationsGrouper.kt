@@ -10,7 +10,7 @@ internal typealias Reporter = String
 internal fun group(violationss: List<Violations>): Map<Category?, Map<Reporter, List<Violation>>> {
 	val allViolations = violationss.flatMap { it.violations.orEmpty() }
 
-	@Suppress("CastToNullableType") // TODEL false positive https://github.com/detekt/detekt/issues/6676
+	@Suppress("detekt.CastToNullableType") // TODEL false positive https://github.com/detekt/detekt/issues/6676
 	val group = allViolations
 		.groupBy { it.category as Category? }
 		.toSortedMap(nullsLast(compareBy { it }))

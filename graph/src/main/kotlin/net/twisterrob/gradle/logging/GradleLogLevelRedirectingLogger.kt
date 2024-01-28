@@ -73,14 +73,14 @@ class GradleLogLevelRedirectingLogger(
 				LogLevel.DEBUG -> this.isDebugEnabled
 			}
 
-		@Suppress("SpreadOperator", "CyclomaticComplexMethod", "CognitiveComplexMethod")
+		@Suppress("detekt.SpreadOperator", "detekt.CyclomaticComplexMethod", "detekt.CognitiveComplexMethod")
 		private fun Logger.dispatchLog(
 			level: LogLevel?,
 			message: String,
 			arguments: Array<out Any?>?,
 			throwable: Throwable?
 		) {
-			@Suppress("UnnecessaryLet") // No other exhaustive way to do this.
+			@Suppress("detekt.UnnecessaryLet") // No other exhaustive way to do this.
 			when (level) {
 				null /* Level.TRACE */ -> when {
 					arguments == null && throwable == null -> this.trace(message)

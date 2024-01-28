@@ -24,10 +24,10 @@ private val LOG = logger<GraphStreamTaskVisualizer>()
 
 class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 
-	@Suppress("LateinitUsage") // TODO use some kind of factory to make invalid state non-representable.
+	@Suppress("detekt.LateinitUsage") // TODO use some kind of factory to make invalid state non-representable.
 	private lateinit var graph: Graph
 
-	@Suppress("LateinitUsage") // TODO use some kind of factory to make invalid state non-representable.
+	@Suppress("detekt.LateinitUsage") // TODO use some kind of factory to make invalid state non-representable.
 	private lateinit var viewer: Viewer
 
 	private val options: Options = Options(cache)
@@ -64,14 +64,14 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 			val node = this.graph.addNode<Node>(id(data.task))
 			node.label = data.task.path
 			node.addClass(classMappingType.getValue(data.type))
-			//node.setAttribute("layout.weight", @Suppress("MagicNumber") 100)
+			//node.setAttribute("layout.weight", @Suppress("detekt.MagicNumber") 100)
 		}
 		for (data in graph.values) {
 			val from = this.graph.getNode<Node>(id(data.task))
 			for (dep in data.depsDirect) {
 				val to = this.graph.getNode<Node>(id(dep.task))
 				val edge = this.graph.addEdge<Edge>(id(data.task, dep.task), from, to, true)
-				edge.setAttribute("layout.weight", @Suppress("MagicNumber") 10)
+				edge.setAttribute("layout.weight", @Suppress("detekt.MagicNumber") 10)
 			}
 		}
 		// See org.graphstream.ui.layout.springbox.BarnesHutLayout for what attributes it uses.

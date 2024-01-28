@@ -15,7 +15,7 @@ private typealias DependencyAdder = DependencyHandler.(Any) -> Dependency?
 
 const val VERSION_KOTLIN: String = "1.4.32"
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class KotlinPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {

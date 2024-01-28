@@ -17,7 +17,7 @@ import java.net.URI
 /**
  * Simplified [org.junit.Rule] around [GradleRunner] to reduce code repetition.
  */
-@Suppress("BooleanPropertyNaming") // These are clear names.
+@Suppress("detekt.BooleanPropertyNaming") // These are clear names.
 open class GradleRunnerRule : TestRule {
 
 	private val temp = TemporaryFolder()
@@ -160,13 +160,13 @@ open class GradleRunnerRule : TestRule {
 		val javaRuntimeName: String? by systemProperty("java.runtime.name")
 		val javaRuntimeVersion: String? by systemProperty("java.runtime.version")
 		val javaHome: String? by systemProperty("java.home")
-		@Suppress("NullableToStringCall") // Debug info, null is OK.
+		@Suppress("detekt.NullableToStringCall") // Debug info, null is OK.
 		val java = "${javaVendor} ${javaRuntimeName} ${javaVersion} (${javaRuntimeVersion} ${javaVersionDate})"
 		val kotlin = KotlinVersion.CURRENT
 		val gradleTestWorker = gradleTestWorkerId?.let { "#${it}" } ?: "no ${TestWorker.WORKER_ID_SYS_PROPERTY}"
-		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
+		@Suppress("detekt.ForbiddenMethodCall") // TODO abstract logging.
 		println(
-			@Suppress("MultilineRawStringIndentation") """
+			@Suppress("detekt.MultilineRawStringIndentation") """
 				Test Java: ${java} from ${javaHome ?: "missing java.home"}.
 				Test Kotlin stdlib: ${kotlin}.
 				Requesting ${gradleVersion} in worker ${gradleTestWorker} at ${testKitDir?.absolutePath ?: "no testKitDir"}.
@@ -219,7 +219,7 @@ ${buildContentForLogging().prependIndent("\t\t\t\t")}
 				"""classpath files("${it.absolutePath.replace("\\", "\\\\")}")"""
 			}
 		@Language("gradle")
-		val buildscript = @Suppress("MultilineRawStringIndentation") """
+		val buildscript = @Suppress("detekt.MultilineRawStringIndentation") """
 			buildscript {
 				dependencies {
 ${classPaths.prependIndent("\t\t\t\t\t")}
@@ -263,7 +263,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	/**
 	 * The returned file will exist.
 	 */
-	@Suppress("ReturnCount")
+	@Suppress("detekt.ReturnCount")
 	private fun getFile(vararg path: String): File {
 		if (path.size == 1 && path[0] == "build.gradle") {
 			return buildFile.apply { createNewFile() }
@@ -305,7 +305,7 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 
 	//@Test:given/@Before
 	fun basedOn(folder: File): GradleRunnerRule {
-		@Suppress("ForbiddenMethodCall") // TODO abstract logging.
+		@Suppress("detekt.ForbiddenMethodCall") // TODO abstract logging.
 		println("Deploying ${folder} into ${temp.root}")
 		folder.copyRecursively(temp.root, overwrite = false) onError@{ file, ex ->
 			if (ex !is FileAlreadyExistsException) throw ex

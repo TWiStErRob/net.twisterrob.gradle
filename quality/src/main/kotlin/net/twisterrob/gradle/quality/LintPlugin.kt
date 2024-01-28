@@ -5,7 +5,7 @@ import net.twisterrob.gradle.common.registerTask
 import net.twisterrob.gradle.quality.tasks.GlobalLintGlobalFinalizerTask
 import org.gradle.api.Project
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 internal abstract class LintPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {

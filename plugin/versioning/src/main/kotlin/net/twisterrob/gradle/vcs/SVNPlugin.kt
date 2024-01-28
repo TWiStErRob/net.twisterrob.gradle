@@ -18,7 +18,7 @@ import java.io.File
 import java.io.PrintStream
 import java.security.Permission
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class SVNPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
@@ -27,7 +27,7 @@ abstract class SVNPlugin : BasePlugin() {
 	}
 }
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class SVNPluginExtension(
 	private val rootDir: File
 ) : VCSExtension {

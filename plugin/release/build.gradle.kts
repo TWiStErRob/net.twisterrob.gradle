@@ -5,7 +5,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-convention-release")
+base.archivesName = "twister-convention-release"
 description = "Release Convention Plugin: Gradle Plugin to handle conventional releasing."
 
 gradlePlugin {

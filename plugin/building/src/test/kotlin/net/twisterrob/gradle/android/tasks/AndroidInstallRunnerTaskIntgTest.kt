@@ -28,7 +28,7 @@ class AndroidInstallRunnerTaskIntgTest : BaseAndroidIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
-	@Suppress("LongMethod")
+	@Suppress("detekt.LongMethod")
 	@Test fun `adds run task, or installs and runs activity (debug)`() {
 		// Having multiple paths in tests in not nice, but flaky tests are even worse.
 		// Multiple @Test methods with assumeTrue|False would work, but then there's always ignored tests.

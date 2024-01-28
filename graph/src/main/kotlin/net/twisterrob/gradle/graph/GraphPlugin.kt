@@ -20,12 +20,12 @@ import javax.inject.Inject
 
 private val LOG = logger<GraphPlugin>()
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class GraphPlugin @Inject constructor(
 	private val cacheRepository: ScopedCacheBuilderFactory,
 ) : Plugin<Settings> {
 
-	@Suppress("LateinitUsage") // TODO refactor to object.
+	@Suppress("detekt.LateinitUsage") // TODO refactor to object.
 	private lateinit var vis: TaskVisualizer
 
 	/** See [SO](http://stackoverflow.com/a/11237184/253468). */
@@ -117,7 +117,7 @@ abstract class GraphPlugin @Inject constructor(
 	}
 }
 
-@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class GraphSettingsExtension {
 
 	var isKeepOpen: Boolean = false

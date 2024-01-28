@@ -428,7 +428,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
-	@Suppress("LongMethod") // Variants are fun, aren't they.
+	@Suppress("detekt.LongMethod") // Variants are fun, aren't they.
 	@Test fun `variant versioning works`() {
 		@Language("gradle")
 		val script = """
