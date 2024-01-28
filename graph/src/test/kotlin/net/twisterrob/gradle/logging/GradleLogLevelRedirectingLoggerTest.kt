@@ -49,7 +49,7 @@ class GradleLogLevelRedirectingLoggerTest {
 			dynamicContainer("from ${input.level}",
 				GRADLE_LEVELS.map { output ->
 					dynamicContainer(
-						"to ${output.level}",
+						"to ${output.level ?: "<null level>"}",
 						listOf(
 							dynamicTest("with message") { withMessage(input, output) },
 							dynamicTest("with throwable") { withThrowable(input, output) },

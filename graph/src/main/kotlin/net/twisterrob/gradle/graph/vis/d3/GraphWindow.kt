@@ -69,7 +69,7 @@ abstract class GraphWindow : TaskVisualizer {
 							// TODO extract somehow
 							Regex.escapeReplacement("""P:\projects\workspace\net.twisterrob.gradle\graph\src\main\resources\""")
 						)
-					LOG.debug("console: ${message.relocate()} (${sourceId?.relocate()}:${lineNumber})")
+					LOG.debug("console: ${message.relocate()} (${sourceId?.relocate() ?: "no sourceId"}:${lineNumber})")
 				}
 		}
 		// Used in d3-graph.html.
