@@ -4,11 +4,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("java-gradle-plugin")
 	id("org.openjfx.javafxplugin") version "0.0.14"
-	id("org.jetbrains.kotlin.jvm") version "1.8.22"
-	id("io.gitlab.arturbosch.detekt") version "1.23.0"
+	id("org.jetbrains.kotlin.jvm") version "1.9.22"
+	id("io.gitlab.arturbosch.detekt") version "1.23.4"
 	id("org.gradle.idea")
 	id("net.twisterrob.gradle.build.webjars")
-	id("org.jetbrains.kotlinx.kover") version "0.7.1"
+	id("org.jetbrains.kotlinx.kover") version "0.7.5"
 }
 
 group = "net.twisterrob.gradle"
@@ -31,22 +31,24 @@ dependencies {
 	api(gradleApi()) // java-gradle-plugin
 	implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 	implementation("org.jetbrains.kotlin:kotlin-stdlib")
-	implementation("org.graphstream:gs-core:1.3")
-	implementation("org.slf4j:slf4j-api:2.0.7")
+	implementation("org.graphstream:gs-core:1.3") {
+		exclude(group = "junit", module = "junit")
+	}
+	implementation("org.slf4j:slf4j-api:2.0.11")
 //	implementation("org.graphstream:gs-core:2.0")
 //	implementation("org.graphstream:gs-ui-swing:2.0")
 	implementation("com.google.code.gson:gson:2.10.1")
-	implementation("org.jetbrains:annotations:24.0.1")
+	implementation("org.jetbrains:annotations:24.1.0")
 
-	"webjars"("org.webjars.npm:d3:7.8.4") {
+	"webjars"("org.webjars.npm:d3:7.8.5") {
 		// Avoid pulling in all small modules, using the merged .js file instead.
 		isTransitive = false
 	}
 
-	testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
-	testImplementation("org.junit.platform:junit-platform-launcher:1.9.3")
-	testImplementation("org.mockito:mockito-core:5.3.1")
-	testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
+	testImplementation("org.junit.platform:junit-platform-launcher:1.10.1")
+	testImplementation("org.mockito:mockito-core:5.10.0")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 	testImplementation("org.hamcrest:hamcrest:2.2")
 }
 

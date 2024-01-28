@@ -99,6 +99,15 @@
 			"matchCurrentVersion": "1.4.32",
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
+		},
+		{
+			"description": "Keep gs-core on older version for now.",
+			"matchPackageNames": [
+				"org.graphstream:gs-core"
+			],
+			"matchCurrentVersion": "1.3",
+			"matchUpdateTypes": ["major"],
+			"enabled": false
 		}
 	],
 	"customManagers": [

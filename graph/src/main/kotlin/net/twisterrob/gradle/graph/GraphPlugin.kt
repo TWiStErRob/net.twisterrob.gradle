@@ -109,8 +109,8 @@ abstract class GraphPlugin @Inject constructor(
 								Executed: ${state.executed}
 								Did work: ${state.didWork}
 								Skipped: ${state.skipped}
-								Skip message: ${state.skipMessage}
-								Failure: ${state.failure}
+								Skip message: ${state.skipMessage ?: "null"}
+								Failure: ${state.failure ?: "null"}
 						""".trimIndent()
 					)
 			}
