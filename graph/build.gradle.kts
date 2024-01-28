@@ -32,7 +32,7 @@ dependencies {
 	implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 	implementation("org.jetbrains.kotlin:kotlin-stdlib")
 	implementation("org.graphstream:gs-core:1.3")
-	implementation("org.slf4j:slf4j-api:2.0.7")
+	implementation("org.slf4j:slf4j-api:2.0.11")
 //	implementation("org.graphstream:gs-core:2.0")
 //	implementation("org.graphstream:gs-ui-swing:2.0")
 	implementation("com.google.code.gson:gson:2.10.1")
