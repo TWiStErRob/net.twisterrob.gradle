@@ -2,6 +2,7 @@ package net.twisterrob.gradle.vcs.svn
 
 import net.twisterrob.gradle.vcs.VCSExtension
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
 import org.gradle.api.file.FileCollection
 import org.tmatesoft.svn.cli.SVN
 import org.tmatesoft.svn.core.SVNException
@@ -11,13 +12,12 @@ import org.tmatesoft.svn.core.wc.SVNClientManager
 import org.tmatesoft.svn.core.wc.SVNStatus
 import org.tmatesoft.svn.core.wc.SVNWCUtil
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.PrintStream
 import java.security.Permission
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class SvnPluginExtension(
-	private val rootDir: File
+	private val rootDir: Directory
 ) : VCSExtension {
 
 	// Same as: new XmlSlurper().parseText(SVN.cli('info', '--xml')).entry.commit.@revision
@@ -28,7 +28,7 @@ abstract class SvnPluginExtension(
 		get() = revisionNumber.toString()
 
 	override val isAvailableQuick: Boolean
-		get() = rootDir.resolve(SVNFileUtil.getAdminDirectoryName()).exists()
+		get() = rootDir.dir(SVNFileUtil.getAdminDirectoryName()).asFile.exists()
 
 	// Same as 'svn info'.execute([], project.rootDir).waitFor() == 0
 	override val isAvailable: Boolean
@@ -41,14 +41,14 @@ abstract class SvnPluginExtension(
 
 	override fun files(project: Project): FileCollection =
 		project.files(
-			rootDir.resolve(".svn/wc.db"),
+			rootDir.file(".svn/wc.db"),
 		)
 
 	private fun open(): SVNStatus {
 		val options: ISVNOptions = SVNWCUtil.createDefaultOptions(true)
 		val clientManager = SVNClientManager.newInstance(options)
 		val statusClient = clientManager.statusClient
-		return statusClient.doStatus(rootDir, false)
+		return statusClient.doStatus(rootDir.asFile, false)
 	}
 
 	// key method/closure - used as: def out = doSvnMain( 'your', 'svn', 'args', 'go', 'here' );

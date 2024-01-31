@@ -6,24 +6,24 @@ import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.eclipse.jgit.lib.RepositoryCache
 import org.eclipse.jgit.util.FS
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
 import org.gradle.api.file.FileCollection
-import java.io.File
 import java.io.FileNotFoundException
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class GitPluginExtension(
-	private val rootDir: File
+	private val rootDir: Directory
 ) : VCSExtension {
 
 	override val isAvailableQuick: Boolean
-		get() = rootDir.resolve(".git").exists()
+		get() = rootDir.dir(".git").asFile.exists()
 
 	// 'git describe --always'.execute([], project.rootDir).waitFor() == 0
 	override val isAvailable: Boolean
 		get() {
 			// Check more than just the presence of .git to lessen the possibility of detecting "git",
 			// but not actually having a git repository.
-			RepositoryCache.FileKey.resolve(rootDir, FS.DETECTED) ?: return false
+			RepositoryCache.FileKey.resolve(rootDir.asFile, FS.DETECTED) ?: return false
 			return try {
 				// Actually try to open the repository now.
 				inRepo { /* Just open, then close. */ }
@@ -74,7 +74,7 @@ abstract class GitPluginExtension(
 		)
 
 	private inline fun <T> inRepo(block: Git.() -> T): T =
-		inRepo(rootDir, block)
+		inRepo(rootDir.asFile, block)
 
 	companion object {
 
