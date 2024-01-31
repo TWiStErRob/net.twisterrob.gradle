@@ -89,7 +89,8 @@ class GitPluginIntgTest : BaseIntgTest() {
 		val result = gradle.run(script).buildAndFail()
 
 		result.assertHasOutputLine("""VCS.current: extension '${GitPluginExtension.NAME}'""".toRegex())
-		result.assertHasOutputLine("""> ${RepositoryNotFoundException::class.fqcn}: repository not found: \Q${gradle.root.absolutePath}\E""".toRegex())
+		val message = """repository not found: ${gradle.root.absolutePath}"""
+		result.assertHasOutputLine("""> ${RepositoryNotFoundException::class.fqcn}: \Q${message}\E""".toRegex())
 	}
 
 	/**
