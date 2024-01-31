@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.vcs
+package net.twisterrob.gradle.vcs.git
 
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -6,6 +6,9 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.fqcn
 import net.twisterrob.gradle.test.root
+import net.twisterrob.gradle.vcs.DummyVcsExtension
+import net.twisterrob.gradle.vcs.createTestFileToCommit
+import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -86,7 +89,7 @@ class GITPluginIntgTest : BaseIntgTest() {
 		val result = gradle.run(script).buildAndFail()
 
 		result.assertHasOutputLine("""VCS.current: extension '${GITPluginExtension.NAME}'""".toRegex())
-		result.assertHasOutputLine("""> repository not found: \Q${gradle.root.absolutePath}\E""".toRegex())
+		result.assertHasOutputLine("""> ${RepositoryNotFoundException::class.fqcn}: repository not found: \Q${gradle.root.absolutePath}\E""".toRegex())
 	}
 
 	/**

@@ -1,10 +1,11 @@
-package net.twisterrob.gradle.vcs
+package net.twisterrob.gradle.vcs.svn
 
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.root
+import net.twisterrob.gradle.vcs.createTestFileToCommit
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

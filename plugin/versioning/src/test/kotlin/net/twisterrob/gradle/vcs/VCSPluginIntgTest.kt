@@ -5,6 +5,11 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.root
+import net.twisterrob.gradle.vcs.git.git
+import net.twisterrob.gradle.vcs.svn.SVNPluginExtension
+import net.twisterrob.gradle.vcs.svn.doCheckout
+import net.twisterrob.gradle.vcs.svn.doCreateRepository
+import net.twisterrob.gradle.vcs.svn.svn
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

@@ -1,6 +1,6 @@
 @file:Suppress("detekt.ForbiddenMethodCall")
 
-package net.twisterrob.gradle.vcs
+package net.twisterrob.gradle.vcs.svn
 
 import org.tmatesoft.svn.core.SVNCommitInfo
 import org.tmatesoft.svn.core.SVNURL
