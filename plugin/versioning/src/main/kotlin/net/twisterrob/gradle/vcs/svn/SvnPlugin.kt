@@ -1,4 +1,4 @@
-package net.twisterrob.gradle.vcs.git
+package net.twisterrob.gradle.vcs.svn
 
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.kotlin.dsl.extensions
@@ -7,10 +7,10 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
-abstract class GITPlugin : BasePlugin() {
+abstract class SvnPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-		project.vcs.extensions.create<GITPluginExtension>(GITPluginExtension.NAME, project.rootDir)
+		project.vcs.extensions.create<SvnPluginExtension>(SvnPluginExtension.NAME, project.rootDir)
 	}
 }

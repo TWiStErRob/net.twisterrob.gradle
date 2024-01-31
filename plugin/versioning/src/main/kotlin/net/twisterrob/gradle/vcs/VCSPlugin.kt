@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.vcs
 
 import net.twisterrob.gradle.common.BaseExposedPlugin
-import net.twisterrob.gradle.vcs.git.GITPlugin
-import net.twisterrob.gradle.vcs.svn.SVNPlugin
+import net.twisterrob.gradle.vcs.git.GitPlugin
+import net.twisterrob.gradle.vcs.svn.SvnPlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
@@ -14,8 +14,8 @@ abstract class VCSPlugin : BaseExposedPlugin() {
 		super.apply(target)
 
 		val vcs = project.extensions.create<VCSPluginExtension>(VCSPluginExtension.NAME)
-		project.apply<SVNPlugin>()
-		project.apply<GITPlugin>()
+		project.apply<SvnPlugin>()
+		project.apply<GitPlugin>()
 		vcs.current = vcs.whichVCS()
 	}
 

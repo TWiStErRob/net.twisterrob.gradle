@@ -6,7 +6,7 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.root
 import net.twisterrob.gradle.vcs.git.git
-import net.twisterrob.gradle.vcs.svn.SVNPluginExtension
+import net.twisterrob.gradle.vcs.svn.SvnPluginExtension
 import net.twisterrob.gradle.vcs.svn.doCheckout
 import net.twisterrob.gradle.vcs.svn.doCreateRepository
 import net.twisterrob.gradle.vcs.svn.svn
@@ -42,7 +42,7 @@ class VCSPluginIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script).build()
 
-		result.assertHasOutputLine("""VCS.current: extension '${SVNPluginExtension.NAME}'""".toRegex())
+		result.assertHasOutputLine("""VCS.current: extension '${SvnPluginExtension.NAME}'""".toRegex())
 	}
 
 	@Test fun `applying by the old name is deprecated`() {

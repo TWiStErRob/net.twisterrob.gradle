@@ -16,7 +16,7 @@ import java.io.PrintStream
 import java.security.Permission
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
-abstract class SVNPluginExtension(
+abstract class SvnPluginExtension(
 	private val rootDir: File
 ) : VCSExtension {
 

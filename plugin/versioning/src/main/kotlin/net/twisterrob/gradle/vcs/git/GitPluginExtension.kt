@@ -11,7 +11,7 @@ import java.io.File
 import java.io.FileNotFoundException
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
-abstract class GITPluginExtension(
+abstract class GitPluginExtension(
 	private val rootDir: File
 ) : VCSExtension {
 

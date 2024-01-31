@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 /**
- * @see SVNPlugin
- * @see SVNPluginExtension
+ * @see SvnPlugin
+ * @see SvnPluginExtension
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class SVNPluginIntgTest : BaseIntgTest() {
+class SvnPluginIntgTest : BaseIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
@@ -35,7 +35,7 @@ class SVNPluginIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script).build()
 
-		result.assertHasOutputLine("""VCS.current: extension '${SVNPluginExtension.NAME}'""".toRegex())
+		result.assertHasOutputLine("""VCS.current: extension '${SvnPluginExtension.NAME}'""".toRegex())
 	}
 
 	@Test fun `svn revision detected correctly`() {

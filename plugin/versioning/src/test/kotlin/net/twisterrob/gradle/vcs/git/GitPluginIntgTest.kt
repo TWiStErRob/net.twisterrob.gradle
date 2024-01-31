@@ -14,11 +14,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 /**
- * @see GITPlugin
- * @see GITPluginExtension
+ * @see GitPlugin
+ * @see GitPluginExtension
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
-class GITPluginIntgTest : BaseIntgTest() {
+class GitPluginIntgTest : BaseIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
@@ -36,7 +36,7 @@ class GITPluginIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script).build()
 
-		result.assertHasOutputLine("""VCS.current: extension '${GITPluginExtension.NAME}'""".toRegex())
+		result.assertHasOutputLine("""VCS.current: extension '${GitPluginExtension.NAME}'""".toRegex())
 	}
 
 	@Test fun `git revision detected correctly`() {
@@ -88,7 +88,7 @@ class GITPluginIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script).buildAndFail()
 
-		result.assertHasOutputLine("""VCS.current: extension '${GITPluginExtension.NAME}'""".toRegex())
+		result.assertHasOutputLine("""VCS.current: extension '${GitPluginExtension.NAME}'""".toRegex())
 		result.assertHasOutputLine("""> ${RepositoryNotFoundException::class.fqcn}: repository not found: \Q${gradle.root.absolutePath}\E""".toRegex())
 	}
 
