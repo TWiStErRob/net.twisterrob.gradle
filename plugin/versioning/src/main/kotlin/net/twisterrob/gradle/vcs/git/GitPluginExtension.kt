@@ -1,33 +1,17 @@
-package net.twisterrob.gradle.vcs
+package net.twisterrob.gradle.vcs.git
 
-import net.twisterrob.gradle.common.BasePlugin
-import net.twisterrob.gradle.kotlin.dsl.extensions
-import net.twisterrob.gradle.vcs.VCSPluginExtension.Companion.vcs
+import net.twisterrob.gradle.vcs.VCSExtension
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.errors.RepositoryNotFoundException
-import org.eclipse.jgit.lib.AbbreviatedObjectId
-import org.eclipse.jgit.lib.AnyObjectId
-import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.RepositoryCache
-import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.util.FS
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
-import org.gradle.kotlin.dsl.create
 import java.io.File
 import java.io.FileNotFoundException
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
-abstract class GITPlugin : BasePlugin() {
-
-	override fun apply(target: Project) {
-		super.apply(target)
-		project.vcs.extensions.create<GITPluginExtension>(GITPluginExtension.NAME, project.rootDir)
-	}
-}
-
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
-abstract class GITPluginExtension(
+abstract class GitPluginExtension(
 	private val rootDir: File
 ) : VCSExtension {
 
@@ -97,21 +81,3 @@ abstract class GITPluginExtension(
 		internal const val NAME: String = "git"
 	}
 }
-
-private inline fun <T> inRepo(dir: File, block: Git.() -> T): T {
-	val repo = Git.open(dir)
-	return repo.use(block)
-}
-
-private val Git.head: ObjectId
-	get() = this.repository.resolve("HEAD")
-
-private inline fun <T> Git.walk(block: RevWalk.() -> T): T {
-	val walk = RevWalk(this.repository)
-	return walk.use(block)
-}
-
-private fun Git.abbreviate(objectId: AnyObjectId): AbbreviatedObjectId =
-	this.repository.newObjectReader().use { reader ->
-		reader.abbreviate(objectId)
-	}

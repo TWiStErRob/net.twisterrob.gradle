@@ -1,6 +1,6 @@
 @file:Suppress("detekt.ForbiddenMethodCall")
 
-package net.twisterrob.gradle.vcs
+package net.twisterrob.gradle.vcs.git
 
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.GpgConfig.GpgFormat

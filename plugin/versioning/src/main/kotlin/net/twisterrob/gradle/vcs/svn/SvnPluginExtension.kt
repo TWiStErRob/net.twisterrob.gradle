@@ -1,11 +1,8 @@
-package net.twisterrob.gradle.vcs
+package net.twisterrob.gradle.vcs.svn
 
-import net.twisterrob.gradle.common.BasePlugin
-import net.twisterrob.gradle.kotlin.dsl.extensions
-import net.twisterrob.gradle.vcs.VCSPluginExtension.Companion.vcs
+import net.twisterrob.gradle.vcs.VCSExtension
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
-import org.gradle.kotlin.dsl.create
 import org.tmatesoft.svn.cli.SVN
 import org.tmatesoft.svn.core.SVNException
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil
@@ -19,16 +16,7 @@ import java.io.PrintStream
 import java.security.Permission
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
-abstract class SVNPlugin : BasePlugin() {
-
-	override fun apply(target: Project) {
-		super.apply(target)
-		project.vcs.extensions.create<SVNPluginExtension>(SVNPluginExtension.NAME, project.rootDir)
-	}
-}
-
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
-abstract class SVNPluginExtension(
+abstract class SvnPluginExtension(
 	private val rootDir: File
 ) : VCSExtension {
 
