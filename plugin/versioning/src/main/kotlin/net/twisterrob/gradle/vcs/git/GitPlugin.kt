@@ -11,6 +11,7 @@ abstract class GitPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-		project.vcs.extensions.create<GitPluginExtension>(GitPluginExtension.NAME, project.rootDir)
+		val rootDir = project.rootProject.layout.projectDirectory
+		project.vcs.extensions.create<GitPluginExtension>(GitPluginExtension.NAME, rootDir)
 	}
 }
