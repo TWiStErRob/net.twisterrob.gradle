@@ -14,6 +14,8 @@ fun <T, U, V, R> Provider<T>.zip(
 	}
 
 /**
+ * Compatibility function that takes into account the version of Gradle to call [Provider.forUseAtConfigurationTime].
+ *
  *  * [Added in Gradle 6.5](https://github.com/gradle/gradle/commit/934c0f0b610066179389ba1189950433db5ed85f)
  *  * [Marked for replacement in Gradle 7.4](https://github.com/gradle/gradle/pull/19732)
  *  * [Deprecated in Gradle 7.3 RC4](https://github.com/gradle/gradle/commit/e9ebbf68d212edc8d082d77af65e3bbeeb553bd0)
@@ -23,6 +25,7 @@ fun <T, U, V, R> Provider<T>.zip(
  *
  * @see Provider.forUseAtConfigurationTime
  */
+@Suppress("detekt.FunctionMaxLength") // Gradle's function name.
 fun <T> Provider<T>.forUseAtConfigurationTimeCompat(): Provider<T> =
 	if (GradleVersion.current() < GradleVersion.version("6.5")) {
 		// Gradle < 6.5 doesn't have this function.
