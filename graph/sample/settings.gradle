@@ -1,5 +1,5 @@
 pluginManagement {
-	includeBuild("../")
+	includeBuild("../") // alternatively use mavenLocal() and `version "0.1-SNAPSHOT"` when referenced.
 	repositories {
 		google()
 		mavenCentral()
