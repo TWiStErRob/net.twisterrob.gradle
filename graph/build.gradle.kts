@@ -17,7 +17,7 @@ version = "0.1"
 gradlePlugin {
 	plugins {
 		register("graph") {
-			id = "net.twisterrob.graph"
+			id = "net.twisterrob.gradle.graph"
 			implementationClass = "net.twisterrob.gradle.graph.GraphPlugin"
 		}
 	}
