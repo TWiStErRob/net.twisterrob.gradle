@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "net.twisterrob.gradle"
-version = "0.1"
+version = "0.1-SNAPSHOT"
 
 gradlePlugin {
 	plugins {
