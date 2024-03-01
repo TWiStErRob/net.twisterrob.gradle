@@ -1,5 +1,5 @@
 plugins {
-	id("com.android.application") version "8.2.2"
+	id("com.android.application") version "8.3.0"
 	id("net.twisterrob.gradle.plugin.quality") version "0.16"
 }
 
