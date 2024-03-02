@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.build.testing
 
-import net.twisterrob.gradle.build.dependencies.StaticComponentIdentifier
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -79,8 +78,6 @@ private fun excludeGradleApi(componentId: ComponentIdentifier): Boolean =
 	when (componentId) {
 		// Gradle built-in internal DependencyFactoryInternal.ClassPathNotation
 		is OpaqueComponentIdentifier -> false
-		// My override of DependencyFactoryInternal.ClassPathNotation, needs to be ignored the same as above.
-		is StaticComponentIdentifier -> false
 		// Ignore Kotlin stdlib and related libraries, Gradle will provide the right version for those.
 		is ModuleComponentIdentifier -> !componentId.group.startsWith("org.jetbrains")
 		// Internal project(":...") dependencies are fine, that's why this whole hack exists.
