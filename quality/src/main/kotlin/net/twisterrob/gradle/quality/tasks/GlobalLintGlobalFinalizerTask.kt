@@ -120,7 +120,12 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				if (variant !is TestVariant) {
 					taskProvider.configure { task ->
 						val artifacts = variant.artifacts.unwrapCast<ArtifactsImpl>()
-						task.xmlReports.add(artifacts.get(InternalArtifactType.LINT_XML_REPORT))
+						// TODO call append in Gradle 8.7, see "Empty provider values are ignored" section at
+						//  https://docs.gradle.org/8.7-rc-1/release-notes.html#convenient-api-for-updating-collection-properties
+						task.xmlReports.add(
+							artifacts.get(InternalArtifactType.LINT_XML_REPORT)
+								.orElse(layout.projectDirectory.file("definitely-non-existent-file"))
+						)
 					}
 				}
 			}
