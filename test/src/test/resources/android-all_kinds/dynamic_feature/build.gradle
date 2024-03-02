@@ -6,3 +6,7 @@ android {
 	namespace = "test.project.dynamic_feature"
 	compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
 }
+
+dependencies {
+	implementation(project(":app"))
+}
