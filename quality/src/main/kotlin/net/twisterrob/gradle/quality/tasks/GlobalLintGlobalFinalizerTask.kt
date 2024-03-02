@@ -23,6 +23,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
@@ -42,6 +43,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	 * otherwise it'll spam the logs with [java.io.FileNotFoundException]s.
 	 */
 	@get:InputFiles
+	@get:Optional
 	@get:PathSensitive(PathSensitivity.NONE)
 	abstract val xmlReports: ListProperty<RegularFile>
 
@@ -67,7 +69,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	fun failOnFailures() {
 		val gatherer = LintReportGatherer()
 		val violationsByFile = xmlReports
-			.get()
+			.getOrElse(emptyList())
 			.map { it.asFile }
 			.filter(File::exists)
 			.associateBy({ it }) { gatherer.findViolations(it) }
