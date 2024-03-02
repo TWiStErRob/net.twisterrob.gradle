@@ -59,6 +59,7 @@ include(":browser:agp-74x")
 include(":browser:agp-80x")
 include(":browser:agp-81x")
 include(":browser:agp-82x")
+include(":browser:agp-83x")
 
 include(":plugin")
 include(":plugin:base")
