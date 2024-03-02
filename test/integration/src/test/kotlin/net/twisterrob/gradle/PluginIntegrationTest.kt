@@ -401,6 +401,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 					GradleVersion.version("8.3"),
 					GradleVersion.version("8.4"),
 					GradleVersion.version("8.5"),
+					GradleVersion.version("8.6"),
 					-> listOf(
 						":compileJava",
 					)
