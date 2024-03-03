@@ -188,7 +188,19 @@
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"on Gradle .* — (?<currentValue>.*) where compatible."
+				"on Gradle .*? — (?<currentValue>[^ ]+)"
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update AGP latest compatibility.",
+			"customType": "regex",
+			"fileMatch": ["^README\\.md$"],
+			"datasourceTemplate": "maven",
+			"registryUrlTemplate": "https://maven.google.com",
+			"depNameTemplate": "com.android.tools.build:gradle",
+			"matchStrings": [
+				"Android Gradle Plugin .*? — (?<currentValue>[^ ]+) on"
 			],
 			"versioningTemplate": "gradle"
 		}
