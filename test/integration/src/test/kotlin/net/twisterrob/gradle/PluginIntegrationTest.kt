@@ -393,12 +393,20 @@ class PluginIntegrationTest : BaseIntgTest() {
 				emptyList()
 			}
 		val gradleTasks: List<String> =
-			if (GradleVersion.version("8.3") == gradle.gradleVersion.baseVersion) {
-				// https://github.com/gradle/gradle/issues/25841
+			if (KotlinVersions.UNDER_TEST < KotlinVersions.v200) {
 				// This only affects `kotlin project doesn't create tasks when using plugin`(String) test.
-				listOf(
+				// https://youtrack.jetbrains.com/issue/KT-60664 fixed in 2.0.0-Beta4.
+				// (originally: https://github.com/gradle/gradle/issues/25841)
+				when (gradle.gradleVersion.baseVersion) {
+					GradleVersion.version("8.3"),
+					GradleVersion.version("8.4"),
+					GradleVersion.version("8.5"),
+					GradleVersion.version("8.6"),
+					-> listOf(
 						":compileJava",
-				)
+					)
+					else -> emptyList()
+				}
 			} else {
 				emptyList()
 			}
@@ -436,6 +444,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 private val KotlinVersions.v1720: KotlinVersion get() = KotlinVersion(1, 7, 20)
 @Suppress("UnusedReceiverParameter") // To make it only available through the object.
 private val KotlinVersions.v190: KotlinVersion get() = KotlinVersion(1, 9, 0)
+@Suppress("UnusedReceiverParameter") // To make it only available through the object.
+private val KotlinVersions.v200: KotlinVersion get() = KotlinVersion(2, 0, 0)
 
 private fun KotlinVersion.inRange(fromInclusive: KotlinVersion, toExcl: KotlinVersion): Boolean =
 	fromInclusive <= this && this < toExcl
