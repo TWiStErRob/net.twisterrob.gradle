@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -98,17 +99,20 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 
-		verifyWithApkSigner(gradle.root.apk("release").absolutePath).also {
-			// REPORT this should be empty, AGP 4.2.0 introduced this file.
+		verifyWithApkSigner(gradle.root.apk("release").absolutePath).also { apkSignerOutput ->
+			val expectedWarnings = listOfNotNull(
+				if (AGPVersions.UNDER_TEST < AGPVersions.v70x) null else {
+					// REPORT this should be empty, AGP 4.2.0 introduced this file.
+					unprotectedJarEntry("com/android/build/gradle/app-metadata.properties")
+				},
+				if (AGPVersions.UNDER_TEST < AGPVersions.v83x) null else {
+					// REPORT this should be empty, AGP 8.3.0 introduced this file.
+					unprotectedJarEntry("version-control-info.textproto")
+				},
+			)
 			assertEquals(
-				"WARNING: "
-						+ "META-INF/com/android/build/gradle/app-metadata.properties not protected by signature."
-						+ " "
-						+ "Unauthorized modifications to this JAR entry will not be detected."
-						+ " "
-						+ "Delete or move the entry outside of META-INF/."
-						+ System.lineSeparator(),
-				it
+				expectedWarnings.joinToString(separator = ""),
+				apkSignerOutput
 			)
 		}
 		verifyWithJarSigner(gradle.root.apk("release").absolutePath).also {
@@ -144,4 +148,11 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 
 			apk
 		).runCommand()
+
+	private fun unprotectedJarEntry(path: String): String =
+		"WARNING: " +
+				"META-INF/${path} not protected by signature. " +
+				"Unauthorized modifications to this JAR entry will not be detected. " +
+				"Delete or move the entry outside of META-INF/." +
+				System.lineSeparator()
 }
