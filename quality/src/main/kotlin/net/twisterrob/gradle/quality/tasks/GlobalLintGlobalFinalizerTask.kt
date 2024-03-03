@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality.tasks
 
 import com.android.build.api.artifact.impl.ArtifactsImpl
+import com.android.build.api.variant.DynamicFeatureVariant
 import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
@@ -119,13 +120,13 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				android.lint.xmlReport = true
 			}
 			androidComponents.onVariantsCompat { variant ->
-				if (variant !is TestVariant) {
+				if (variant !is TestVariant && variant !is DynamicFeatureVariant) {
 					taskProvider.configure { task ->
 						val artifacts = variant.artifacts.unwrapCast<ArtifactsImpl>()
-						// TODO call append in Gradle 8.7, see "Empty provider values are ignored" section at
-						//  https://docs.gradle.org/8.7-rc-1/release-notes.html#convenient-api-for-updating-collection-properties
 						task.xmlReports.add(
 							artifacts.get(InternalArtifactType.LINT_XML_REPORT)
+								// TODO call append in Gradle 8.7, see "Empty provider values are ignored" section at
+								//  https://docs.gradle.org/8.7-rc-1/release-notes.html#convenient-api-for-updating-collection-properties
 								.orElse(layout.projectDirectory.file("definitely-non-existent-file"))
 						)
 					}
