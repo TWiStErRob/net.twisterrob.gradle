@@ -676,28 +676,28 @@ jobs:
             gradle: '8.6' # https://gradle.org/releases/
             gradle-java: '17'
             agp: '8.3.0' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
-            kotlin: '1.8.21' # https://kotlinlang.org/docs/releases.html#release-details
+            kotlin: '1.9.22' # https://kotlinlang.org/docs/releases.html#release-details
             build-tools: '34.0.0'
             test-task: 'testReport :quality:tests'
           - name: "AGP stable on Gradle stable - plugin"
             gradle: '8.6' # https://gradle.org/releases/
             gradle-java: '17'
             agp: '8.3.0' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
-            kotlin: '1.8.21' # https://kotlinlang.org/docs/releases.html#release-details
+            kotlin: '1.9.22' # https://kotlinlang.org/docs/releases.html#release-details
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
           - name: "AGP preview on Gradle preview"
             gradle: '8.6' # https://services.gradle.org/distributions/
             gradle-java: '17'
             agp: '8.3.0' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
-            kotlin: '1.9.0' # https://kotlinlang.org/docs/eap.html#build-details
+            kotlin: '2.0.0-Beta4' # https://kotlinlang.org/docs/eap.html#build-details
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
             test-task: 'testReport :quality:tests'
           - name: "AGP preview on Gradle preview - plugin"
             gradle: '8.6' # https://services.gradle.org/distributions/
             gradle-java: '17'
             agp: '8.3.0' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
-            kotlin: '1.9.0' # https://kotlinlang.org/docs/eap.html#build-details
+            kotlin: '2.0.0-Beta4' # https://kotlinlang.org/docs/eap.html#build-details
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
             test-task: 'testReport :plugin:tests'
 

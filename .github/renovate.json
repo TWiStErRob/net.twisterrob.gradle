@@ -114,6 +114,7 @@
 		{
 			"description": "Update AGP compatibility CI matrix values.",
 			"customType": "regex",
+			"matchStringsStrategy": "any",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -126,6 +127,7 @@
 		{
 			"description": "Update AGP version test.",
 			"customType": "regex",
+			"matchStringsStrategy": "any",
 			"fileMatch": ["^compat/agp-base/src/test/kotlin/net/twisterrob/gradle/common/AGPVersionsTest\\.kt$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -138,6 +140,7 @@
 		{
 			"description": "Update AGP defaults for local runs.",
 			"customType": "regex",
+			"matchStringsStrategy": "any",
 			"fileMatch": ["^gradle\\.properties$"],
 			"datasourceTemplate": "maven",
 			"registryUrlTemplate": "https://maven.google.com",
@@ -150,6 +153,7 @@
 		{
 			"description": "Update Gradle compatibility CI matrix values.",
 			"customType": "regex",
+			"matchStringsStrategy": "any",
 			"fileMatch": ["^\\.github/workflows/CI\\.yml$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -161,6 +165,7 @@
 		{
 			"description": "Update Gradle defaults for local runs.",
 			"customType": "regex",
+			"matchStringsStrategy": "any",
 			"fileMatch": ["^gradle\\.properties$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -172,6 +177,7 @@
 		{
 			"description": "Update Gradle latest tests.",
 			"customType": "regex",
+			"matchStringsStrategy": "any",
 			"fileMatch": ["^quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest\\.kt$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
@@ -184,11 +190,25 @@
 		{
 			"description": "Update Gradle latest compatibility.",
 			"customType": "regex",
+			"matchStringsStrategy": "any",
 			"fileMatch": ["^README\\.md$"],
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"on Gradle .* — (?<currentValue>.*) where compatible."
+				"on Gradle .*? — (?<currentValue>\\S+)"
+			],
+			"versioningTemplate": "gradle"
+		},
+		{
+			"description": "Update AGP latest compatibility.",
+			"customType": "regex",
+			"matchStringsStrategy": "any",
+			"fileMatch": ["^README\\.md$"],
+			"datasourceTemplate": "maven",
+			"registryUrlTemplate": "https://maven.google.com",
+			"depNameTemplate": "com.android.tools.build:gradle",
+			"matchStrings": [
+				"Android Gradle Plugin .*? — (?<currentValue>\\S+) on"
 			],
 			"versioningTemplate": "gradle"
 		}
