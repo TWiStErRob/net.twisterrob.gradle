@@ -188,7 +188,7 @@
 			"datasourceTemplate": "gradle-version",
 			"depNameTemplate": "gradle",
 			"matchStrings": [
-				"on Gradle .*? — (?<currentValue>[^ ]+)"
+				"on Gradle .*? — (?<currentValue>\\S+)"
 			],
 			"versioningTemplate": "gradle"
 		},
@@ -200,7 +200,7 @@
 			"registryUrlTemplate": "https://maven.google.com",
 			"depNameTemplate": "com.android.tools.build:gradle",
 			"matchStrings": [
-				"Android Gradle Plugin .*? — (?<currentValue>[^ ]+) on"
+				"Android Gradle Plugin .*? — (?<currentValue>\\S+) on"
 			],
 			"versioningTemplate": "gradle"
 		}
