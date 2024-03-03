@@ -54,6 +54,7 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		}
 	}
 
+	@Suppress("detekt.LongMethod")
 	@Test fun `applies signing config from properties (release)`(@TempDir temp: File) {
 		val generationParams = mapOf(
 			"-alias" to "gradle.plugin.test",
