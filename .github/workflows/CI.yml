@@ -131,8 +131,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Gradle Plugin Validation Report'
+          if-no-files-found: error
           path: |
-            ${{ github.workspace }}/**/build/reports/plugin-development/validation-report.txt
+            ${{ github.workspace }}/**/build/reports/plugin-development/validation-report.json
 
       - name: "Upload JARs, Maven and Gradle metadata as 'Intermediate Artifacts' artifact."
         if: success() || failure()
