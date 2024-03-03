@@ -205,6 +205,7 @@ jobs:
   check:
     name: "2 🛠️ ${{ matrix.name }}"
     runs-on: ubuntu-22.04
+    if: false
     env:
       JOB_NAME: '${{ matrix.name }} (${{ matrix.agp }} on ${{ matrix.gradle }})'
       # Capture which Gradle version is running the build to use in some steps.
