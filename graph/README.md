@@ -9,7 +9,7 @@ pluginManagement {
 	includeBuild("path/to/this/folder")
 }
 plugins {
-	id("net.twisterrob.graph")
+	id("net.twisterrob.gradle.graph")
 }
 ```
 and execute with `gradlew --no-daemon` (otherwise there are native library classloading problems).

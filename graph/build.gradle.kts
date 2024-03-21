@@ -2,7 +2,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("java-gradle-plugin")
+	id("org.gradle.java-gradle-plugin")
+	id("org.gradle.maven-publish")
 	id("org.openjfx.javafxplugin") version "0.0.14"
 	id("org.jetbrains.kotlin.jvm") version "1.9.23"
 	id("io.gitlab.arturbosch.detekt") version "1.23.5"
@@ -12,12 +13,12 @@ plugins {
 }
 
 group = "net.twisterrob.gradle"
-version = "0.1"
+version = "0.1-SNAPSHOT"
 
 gradlePlugin {
 	plugins {
 		register("graph") {
-			id = "net.twisterrob.graph"
+			id = "net.twisterrob.gradle.graph"
 			implementationClass = "net.twisterrob.gradle.graph.GraphPlugin"
 		}
 	}
