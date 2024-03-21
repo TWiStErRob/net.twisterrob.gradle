@@ -188,6 +188,7 @@ private fun CacheBuilder.withInitialLockModeCompat(mode: FileLockManager.LockMod
 			withInitialLockMode(mode)
 		} else {
 			//@formatter:off
+			@Suppress("detekt.DataClassContainsFunctions") // Gradle API compatibility, needs hashCode/equals.
 			data class SimpleLockOptions(private val mode: FileLockManager.LockMode) : LockOptions {
 				override fun getMode(): FileLockManager.LockMode = this.mode
 				override fun isUseCrossVersionImplementation(): Boolean = false
