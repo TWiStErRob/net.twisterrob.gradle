@@ -42,7 +42,7 @@ kotlin-build = "1.9.23"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
 kotlin-dokka = "1.9.20"
 
-detekt = "1.23.5"
+detekt = "1.23.6"
 
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases
 # Artifacts: https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/
