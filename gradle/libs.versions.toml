@@ -18,7 +18,7 @@ jetbrains = "24.1.0"
 nexus = "1.3.0"
 
 # https://docs.gradle.com/enterprise/gradle-plugin/#release_history
-gradle-enterprise = "3.17"
+gradle-develocity = "3.17"
 gradle-publish = "1.2.1"
 
 # See [lint] which is affected by this.
@@ -90,7 +90,7 @@ annotations-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref =
 annotations-jetbrains = { module = "org.jetbrains:annotations", version.ref = "jetbrains" }
 
 nexus = { module = "io.github.gradle-nexus.publish-plugin:io.github.gradle-nexus.publish-plugin.gradle.plugin", version.ref = "nexus" }
-gradle-enterprise = { module = "com.gradle.enterprise:com.gradle.enterprise.gradle.plugin", version.ref = "gradle-enterprise" }
+gradle-develocity = { module = "com.gradle.develocity:com.gradle.develocity.gradle.plugin", version.ref = "gradle-develocity" }
 gradle-publish = { module = "com.gradle.plugin-publish:com.gradle.plugin-publish.gradle.plugin", version.ref = "gradle-publish" }
 
 # Compatibility: https://developer.android.com/studio/releases/gradle-plugin#updating-gradle

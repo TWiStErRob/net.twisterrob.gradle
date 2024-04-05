@@ -13,7 +13,7 @@ pluginManagement {
 plugins {
 	// Allows using classes / functions from gradle/plugins project.
 	id("net.twisterrob.gradle.build.settings")
-	id("net.twisterrob.gradle.build.enterprise")
+	id("net.twisterrob.gradle.build.develocity")
 }
 
 // buildscript { enableDependencyLocking(settings) }

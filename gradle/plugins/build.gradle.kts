@@ -13,7 +13,7 @@ dependencies {
 	implementation(libs.kotlin.gradle)
 	implementation(libs.kotlin.dokka)
 	implementation(libs.detekt)
-	implementation(libs.gradle.enterprise)
+	implementation(libs.gradle.develocity)
 	implementation(libs.nexus)
 
 	// TODEL https://github.com/gradle/gradle/issues/15383
