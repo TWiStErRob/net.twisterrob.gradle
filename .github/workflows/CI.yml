@@ -124,6 +124,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Detekt Results'
+          if-no-files-found: error
           path: |
             ${{ github.workspace }}/**/build/reports/detekt/
             ${{ github.workspace }}/build/reports/detekt/merge.*
@@ -156,6 +157,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Intermediate Artifacts'
+          if-no-files-found: error
           path: |
             ${{ github.workspace }}/**/build/libs/*.jar
             ${{ github.workspace }}/**/build/publications/release/module.json
@@ -166,6 +168,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'mavenLocal'
+          if-no-files-found: error
           path: |
             ~/.m2/repository/**
 
@@ -365,6 +368,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: '${{ env.JOB_NAME }} Test Results XMLs'
+          if-no-files-found: error
           path: '${{ github.workspace }}/**/build/test-results/test/TEST-*.xml'
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results HTML' artifact."
@@ -372,6 +376,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: '${{ env.JOB_NAME }} Test Results HTML'
+          if-no-files-found: error
           path: '${{ github.workspace }}/build/reports/tests/all/'
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results HTMLs' artifact."
@@ -379,6 +384,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: '${{ env.JOB_NAME }} Test Results HTMLs'
+          if-no-files-found: error
           path: '${{ github.workspace }}/**/build/reports/tests/test/'
 
       - name: "Cleanup Gradle files before caching."
