@@ -26,9 +26,13 @@ jobs:
     name: "1 🔨 Graph"
     needs: validate
     timeout-minutes: 10
-    
+
+    permissions:
+      # actions/checkout
+      contents: read
+
     runs-on: ubuntu-22.04
-    defaults: 
+    defaults:
       run:
         shell: bash
 
@@ -74,6 +78,14 @@ jobs:
     name: "1 🔨 Build"
     needs: validate
     timeout-minutes: 30
+
+    permissions:
+      # actions/checkout
+      contents: read
+      # github/codeql-action/upload-sarif
+      security-events: write
+      # andymckay/cancel-action
+      actions: write
 
     runs-on: ubuntu-22.04
     defaults:
@@ -229,6 +241,12 @@ jobs:
     name: "2 🛠️ ${{ matrix.name }}"
     needs: validate
     timeout-minutes: 45
+    
+    permissions:
+      # actions/checkout
+      contents: read
+      # github/codeql-action/upload-sarif
+      security-events: write
 
     env:
       JOB_NAME: '${{ matrix.name }} (${{ matrix.agp }} on ${{ matrix.gradle }})'
@@ -339,7 +357,8 @@ jobs:
 
             # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build.
             ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
-          key: "${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}"
+          key: |
+            ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
           restore-keys: |
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
@@ -357,7 +376,8 @@ jobs:
 
             # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar'" during test runs.
             /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/${{ matrix.gradle }}/generated-gradle-jars/
-          key: "${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}"
+          key: |
+            ${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}
 
       - name: "Check ${{ env.JOB_NAME }}."
         env:
@@ -760,6 +780,10 @@ jobs:
     # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
     # It often runs out of time, because 1 of the many artifact downloads takes many minutes.
     timeout-minutes: 10
+
+    permissions:
+      # EnricoMi/publish-unit-test-result-action
+      checks: write
 
     runs-on: ubuntu-22.04
     steps:
