@@ -336,8 +336,8 @@ jobs:
           GRADLE_VERSION: ${{ matrix.gradle }}
         run: |
           # Create an empty project with wrapper using ${GRADLE_VERSION}.
-          mkdir "~/gradle-${GRADLE_VERSION}"
-          cd "~/gradle-${GRADLE_VERSION}"
+          mkdir "${HOME}/gradle-${GRADLE_VERSION}"
+          cd "${HOME}/gradle-${GRADLE_VERSION}"
           touch settings.gradle
           "${GITHUB_WORKSPACE}/gradlew" wrapper --gradle-version "${GRADLE_VERSION}" --distribution-type all --quiet
           # Run a no-op gradlew command in an empty project with a specific wrapper version.
