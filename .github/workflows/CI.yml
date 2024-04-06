@@ -126,8 +126,8 @@ jobs:
           name: 'Detekt Results'
           if-no-files-found: error
           path: |
-            ${{ github.workspace }}/**/build/reports/detekt/
-            ${{ github.workspace }}/build/reports/detekt/merge.*
+            **/build/reports/detekt/
+            build/reports/detekt/merge.*
 
       - name: "Publish 'Code scanning results / detekt' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
@@ -150,7 +150,7 @@ jobs:
           name: 'Gradle Plugin Validation Report'
           if-no-files-found: error
           path: |
-            ${{ github.workspace }}/**/build/reports/plugin-development/validation-report.json
+            **/build/reports/plugin-development/validation-report.json
 
       - name: "Upload JARs, Maven and Gradle metadata as 'Intermediate Artifacts' artifact."
         if: ${{ success() || failure() }}
@@ -159,9 +159,9 @@ jobs:
           name: 'Intermediate Artifacts'
           if-no-files-found: error
           path: |
-            ${{ github.workspace }}/**/build/libs/*.jar
-            ${{ github.workspace }}/**/build/publications/release/module.json
-            ${{ github.workspace }}/**/build/publications/release/pom-default.xml
+            **/build/libs/*.jar
+            **/build/publications/release/module.json
+            **/build/publications/release/pom-default.xml
 
       - name: "Upload 'mavenLocal()' artifact."
         if: ${{ success() || failure() }}
@@ -239,7 +239,9 @@ jobs:
         shell: bash
 
     steps:
-      - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
+
+      - name: "Trigger details."
+        run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
 
       - name: "Set up JDK 17."
         uses: actions/setup-java@v4
@@ -253,18 +255,22 @@ jobs:
           log-accepted-android-sdk-licenses: false
 
       - name: "Install Android SDK components."
+        env:
+          CURRENT_BUILD_TOOLS_VERSION: ${{ matrix.build-tools }}
         run: |
           # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
-          echo sdkmanager --install "build-tools;${{ matrix.build-tools }}"
-          sdkmanager --install "build-tools;${{ matrix.build-tools }}"
+          echo sdkmanager --install "build-tools;${CURRENT_BUILD_TOOLS_VERSION}"
+          sdkmanager --install "build-tools;${CURRENT_BUILD_TOOLS_VERSION}"
 
           # compileSdk for almost all tests.
           echo sdkmanager --install "platforms;android-34"
           sdkmanager --install "platforms;android-34"
 
       - name: "Set up JDK(s)."
+        env:
+          JAVA_VERSION: ${{ matrix.gradle-java }}
         run: |
-          case ${{ matrix.gradle-java }} in
+          case ${JAVA_VERSION} in
             8)
               echo "JAVA_HOME=$JAVA_HOME_8_X64" | tee --append $GITHUB_ENV
             ;;
@@ -275,7 +281,7 @@ jobs:
               echo "JAVA_HOME=$JAVA_HOME_17_X64" | tee --append $GITHUB_ENV
             ;;
             *)
-              echo "Unrecognized matrix.gradle-java=${{ matrix.gradle-java }}."
+              echo "Unrecognized matrix.gradle-java=${JAVA_VERSION}."
               exit 1
             ;;
           esac
@@ -302,13 +308,15 @@ jobs:
           grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?(?:-(?:rc|milestone)-\d+)?)$' gradle.version.log > gradle.version
           echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
 
-      - name: "Download Gradle ${{ matrix.gradle }} running the tests."
+      - name: "Download Gradle ${{ env.GRADLE_VERSION }} running the tests."
+        env:
+          GRADLE_VERSION: ${{ matrix.gradle }}
         run: |
-          # Create an empty project with wrapper using ${{ matrix.gradle }}.
-          mkdir ~/gradle-${{ matrix.gradle }}
-          cd ~/gradle-${{ matrix.gradle }}
+          # Create an empty project with wrapper using ${GRADLE_VERSION}.
+          mkdir "~/gradle-${GRADLE_VERSION}"
+          cd "~/gradle-${GRADLE_VERSION}"
           touch settings.gradle
-          ${{ github.workspace }}/gradlew wrapper --gradle-version ${{ matrix.gradle }} --distribution-type all --quiet
+          "${GITHUB_WORKSPACE}/gradlew" wrapper --gradle-version "${GRADLE_VERSION}" --distribution-type all --quiet
           # Run a no-op gradlew command in an empty project with a specific wrapper version.
           ./gradlew --no-daemon --version
 
@@ -326,7 +334,7 @@ jobs:
 
             # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build.
             ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
-          key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
+          key: "${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}"
           restore-keys: |
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
@@ -344,9 +352,13 @@ jobs:
 
             # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar'" during test runs.
             /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/${{ matrix.gradle }}/generated-gradle-jars/
-          key: ${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}
+          key: "${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}"
 
       - name: "Check ${{ env.JOB_NAME }}."
+        env:
+          MATRIX_AGP: ${{ matrix.agp }}
+          MATRIX_KOTLIN: ${{ matrix.kotlin }}
+          MATRIX_GRADLE: ${{ matrix.gradle }}
         # To run specific test, replace `${{ matrix.test-task }}` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
         run: >
           ./gradlew
@@ -358,9 +370,9 @@ jobs:
           --continue
           ${{ matrix.test-task }}
           -Pnet.twisterrob.gradle.build.verboseReports=true
-          -Pnet.twisterrob.test.android.pluginVersion=${{ matrix.agp }}
-          -Pnet.twisterrob.test.kotlin.pluginVersion=${{ matrix.kotlin }}
-          -Pnet.twisterrob.gradle.runner.gradleVersion=${{ matrix.gradle }}
+          -Pnet.twisterrob.test.android.pluginVersion="${MATRIX_AGP}"
+          -Pnet.twisterrob.test.kotlin.pluginVersion="${MATRIX_KOTLIN}"
+          -Pnet.twisterrob.gradle.runner.gradleVersion="${MATRIX_GRADLE}"
         #  -Pnet.twisterrob.test.gradle.javaHomeEnv=JAVA_HOME_${{ matrix.gradle-java }}_X64
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results XMLs' artifact."
@@ -369,7 +381,8 @@ jobs:
         with:
           name: '${{ env.JOB_NAME }} Test Results XMLs'
           if-no-files-found: error
-          path: '${{ github.workspace }}/**/build/test-results/test/TEST-*.xml'
+          path: |
+            **/build/test-results/test/TEST-*.xml
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results HTML' artifact."
         if: ${{ success() || failure() }}
@@ -377,7 +390,8 @@ jobs:
         with:
           name: '${{ env.JOB_NAME }} Test Results HTML'
           if-no-files-found: error
-          path: '${{ github.workspace }}/build/reports/tests/all/'
+          path: |
+            build/reports/tests/all/
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results HTMLs' artifact."
         if: ${{ success() || failure() }}
@@ -385,7 +399,8 @@ jobs:
         with:
           name: '${{ env.JOB_NAME }} Test Results HTMLs'
           if-no-files-found: error
-          path: '${{ github.workspace }}/**/build/reports/tests/test/'
+          path: |
+            **/build/reports/tests/test/
 
       - name: "Cleanup Gradle files before caching."
         run: |
@@ -397,9 +412,9 @@ jobs:
       - name: "Cleanup Gradle Test Kit files before caching."
         run: |
           # Don't cache lock files to prevent breaking future builds
-          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/modules-2/modules-2.lock
-          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/modules-2/gc.properties
-          rm -fr /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/*/plugin-resolution/
+          rm -f  /tmp/.gradle-test-kit-${USER}-*/caches/modules-2/modules-2.lock
+          rm -f  /tmp/.gradle-test-kit-${USER}-*/caches/modules-2/gc.properties
+          rm -fr /tmp/.gradle-test-kit-${USER}-*/caches/*/plugin-resolution/
 
     strategy:
       fail-fast: false
