@@ -15,13 +15,27 @@ concurrency:
 jobs:
   validate:
     name: "0 🦺 Validation"
-    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@19333c04e57739ec6074b09c6ca09c225c94dc09 # v1
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@5f662c65d1300162033c61e269cb2e63a26a990e # v3
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
 
   graph:
     name: "1 🔨 Graph"
-    runs-on: ubuntu-22.04
-    timeout-minutes: 10
     needs: validate
+    timeout-minutes: 10
+
+    permissions:
+      # actions/checkout
+      contents: read
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
     steps:
       - name: "Set up JDK 17."
         uses: actions/setup-java@v4
@@ -59,11 +73,25 @@ jobs:
           --exclude-task compileRShaders
           -Pfast
 
+
   build:
     name: "1 🔨 Build"
-    runs-on: ubuntu-22.04
-    timeout-minutes: 30
     needs: validate
+    timeout-minutes: 30
+
+    permissions:
+      # actions/checkout
+      contents: read
+      # github/codeql-action/upload-sarif
+      security-events: write
+      # andymckay/cancel-action
+      actions: write
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
     steps:
       - name: "Set up JDK 17."
         uses: actions/setup-java@v4
@@ -82,7 +110,7 @@ jobs:
       # Check publicly available release version first, this should be independent of repository state.
       - name: "Verify docs/examples/release."
         working-directory: docs/examples/release
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
       - name: "Build Gradle plugins."
@@ -104,22 +132,23 @@ jobs:
           -Pnet.twisterrob.gradle.build.detektReportMergeIncludedBuilds=true
 
       - name: "Upload 'Detekt Results' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Detekt Results'
+          if-no-files-found: error
           path: |
-            ${{ github.workspace }}/**/build/reports/detekt/
-            ${{ github.workspace }}/build/reports/detekt/merge.*
+            **/build/reports/detekt/
+            build/reports/detekt/merge.*
 
       - name: "Publish 'Code scanning results / detekt' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         with:
           sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif
 
       - name: "Cancel other jobs on Build failure, no need to check / test it."
-        if: failure()
+        if: ${{ failure() }}
         uses: andymckay/cancel-action@0.4
 
       - name: "Publish Gradle plugins to mavenLocal()."
@@ -127,59 +156,66 @@ jobs:
         run: ./gradlew --no-daemon --no-build-cache --no-configuration-cache --stacktrace publishToMavenLocal
 
       - name: "Upload 'Gradle Plugin Validation Report' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Gradle Plugin Validation Report'
           if-no-files-found: error
           path: |
-            ${{ github.workspace }}/**/build/reports/plugin-development/validation-report.json
+            **/build/reports/plugin-development/validation-report.json
 
       - name: "Upload JARs, Maven and Gradle metadata as 'Intermediate Artifacts' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'Intermediate Artifacts'
+          if-no-files-found: error
           path: |
-            ${{ github.workspace }}/**/build/libs/*.jar
-            ${{ github.workspace }}/**/build/publications/release/module.json
-            ${{ github.workspace }}/**/build/publications/release/pom-default.xml
+            **/build/libs/*.jar
+            **/build/publications/release/module.json
+            **/build/publications/release/pom-default.xml
 
       - name: "Upload 'mavenLocal()' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'mavenLocal'
+          if-no-files-found: error
           path: |
             ~/.m2/repository/**
 
       - name: "Parse env.PROJECT_VERSION."
-        run: echo "PROJECT_VERSION=$(grep --color=never --perl-regexp --only-matching '(?<=^projectVersion=)(.*)$' gradle.properties)" | tee --append $GITHUB_ENV
+        run: echo "PROJECT_VERSION=$(grep --color=never --perl-regexp --only-matching '(?<=^projectVersion=)(.*)$' gradle.properties)" | tee --append "${GITHUB_ENV}"
 
       - name: "Calculate env.SNAPSHOT_VERSION for branches."
         # ${{ github.event.pull_request.number }} is not available for push.
-        if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref != 'refs/heads/main'
-        run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION | sed -re "s/^(.*)(-SNAPSHOT)$/\1.$(echo ${{ github.ref }} | sed -re 's/^refs\/heads\///' | tr / -)\2/")" | tee --append $GITHUB_ENV
+        if: ${{ endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref != 'refs/heads/main' }}
+        run: echo "SNAPSHOT_VERSION=$(echo "${PROJECT_VERSION}" | sed -re "s/^(.*)(-SNAPSHOT)$/\1.$(echo "${GITHUB_REF_NAME}" | tr / -)\2/")" | tee --append "${GITHUB_ENV}"
 
       - name: "Calculate env.SNAPSHOT_VERSION for main."
-        if: endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/main'
-        run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION)" | tee --append $GITHUB_ENV
+        if: ${{ endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/main' }}
+        run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION)" | tee --append "${GITHUB_ENV}"
 
       - name: "Verify docs/examples/local for release."
         working-directory: docs/examples/local
-        if: env.SNAPSHOT_VERSION == ''
+        if: ${{ env.SNAPSHOT_VERSION == '' }}
         run: |
-          sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}-SNAPSHOT"/version "${{ env.PROJECT_VERSION }}"/g' build.gradle.kts
-          sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}-SNAPSHOT"/version "${{ env.PROJECT_VERSION }}"/g' settings.gradle.kts
+          sed -i.bak -re "s/version \"${PROJECT_VERSION}-SNAPSHOT\"/version \"${PROJECT_VERSION}\"/g" build.gradle.kts
+          sed -i.bak -re "s/version \"${PROJECT_VERSION}-SNAPSHOT\"/version \"${PROJECT_VERSION}\"/g" settings.gradle.kts
           ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
       - name: "Verify docs/examples/local for snapshot."
         working-directory: docs/examples/local
-        if: env.SNAPSHOT_VERSION != ''
+        if: ${{ env.SNAPSHOT_VERSION != '' }}
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
       - name: "Publish Gradle plugins to Sonatype Snapshot with version ${{ env.SNAPSHOT_VERSION }}."
-        if: env.SNAPSHOT_VERSION != ''
+        if: ${{ env.SNAPSHOT_VERSION != '' }}
+        env:
+          # Implicit: -PsonatypeUsername=...
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
+          # Implicit: -PsonatypePassword=...
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
         # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
         run: >
           ./gradlew
@@ -191,30 +227,44 @@ jobs:
           publishLibraryPublicationToSonatypeRepository
           publishPluginMavenPublicationToSonatypeRepository
           publishAllPluginMarkerMavenPublicationsToSonatypeRepository
-          -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}
-          -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
-          -PprojectVersion=${{ env.SNAPSHOT_VERSION }}
+          -PprojectVersion="${SNAPSHOT_VERSION}"
 
       - name: "Verify docs/examples/snapshot with version ${{ env.SNAPSHOT_VERSION }}."
         working-directory: docs/examples/snapshot
-        if: env.SNAPSHOT_VERSION != ''
+        if: ${{ env.SNAPSHOT_VERSION != '' }}
         run: |
-          sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}"/version "${{ env.SNAPSHOT_VERSION }}"/g' build.gradle.kts
-          sed -i.bak -re 's/version "${{ env.PROJECT_VERSION }}"/version "${{ env.SNAPSHOT_VERSION }}"/g' settings.gradle.kts
+          sed -i.bak -re "s/version \"${PROJECT_VERSION}\"/version \"${SNAPSHOT_VERSION}\"/g" build.gradle.kts
+          sed -i.bak -re "s/version \"${PROJECT_VERSION}\"/version \"${SNAPSHOT_VERSION}\"/g" settings.gradle.kts
           ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
   check:
     name: "2 🛠️ ${{ matrix.name }}"
-    runs-on: ubuntu-22.04
+    needs: validate
+    timeout-minutes: 45
+    
+    permissions:
+      # actions/checkout
+      contents: read
+      # github/codeql-action/upload-sarif
+      security-events: write
+
     env:
       JOB_NAME: '${{ matrix.name }} (${{ matrix.agp }} on ${{ matrix.gradle }})'
       # Capture which Gradle version is running the build to use in some steps.
-      # Value will be written in a later step using `>> $GITHUB_ENV`.
+      # Value will be written in a later step using `>> "${GITHUB_ENV}"`.
       GRADLE_VERSION: '0.0.0'
-    timeout-minutes: 45
-    needs: validate
+
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+
     steps:
-      - run: echo "Running in response to a ${{ github.event_name }} event, building ${{ github.event.compare }} changes."
+
+      - name: "Trigger details."
+        env:
+          COMPARE_URL: ${{ github.event.compare }}
+        run: echo "Running in response to a ${GITHUB_EVENT_NAME} event, building ${COMPARE_URL} changes."
 
       - name: "Set up JDK 17."
         uses: actions/setup-java@v4
@@ -228,29 +278,33 @@ jobs:
           log-accepted-android-sdk-licenses: false
 
       - name: "Install Android SDK components."
+        env:
+          CURRENT_BUILD_TOOLS_VERSION: ${{ matrix.build-tools }}
         run: |
           # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
-          echo sdkmanager --install "build-tools;${{ matrix.build-tools }}"
-          sdkmanager --install "build-tools;${{ matrix.build-tools }}"
+          echo sdkmanager --install "build-tools;${CURRENT_BUILD_TOOLS_VERSION}"
+          sdkmanager --install "build-tools;${CURRENT_BUILD_TOOLS_VERSION}"
 
           # compileSdk for almost all tests.
           echo sdkmanager --install "platforms;android-34"
           sdkmanager --install "platforms;android-34"
 
       - name: "Set up JDK(s)."
+        env:
+          JAVA_VERSION: ${{ matrix.gradle-java }}
         run: |
-          case ${{ matrix.gradle-java }} in
+          case ${JAVA_VERSION} in
             8)
-              echo "JAVA_HOME=$JAVA_HOME_8_X64" | tee --append $GITHUB_ENV
+              echo "JAVA_HOME=$JAVA_HOME_8_X64" | tee --append "${GITHUB_ENV}"
             ;;
             11)
-              echo "JAVA_HOME=$JAVA_HOME_11_X64" | tee --append $GITHUB_ENV
+              echo "JAVA_HOME=$JAVA_HOME_11_X64" | tee --append "${GITHUB_ENV}"
             ;;
             17)
-              echo "JAVA_HOME=$JAVA_HOME_17_X64" | tee --append $GITHUB_ENV
+              echo "JAVA_HOME=$JAVA_HOME_17_X64" | tee --append "${GITHUB_ENV}"
             ;;
             *)
-              echo "Unrecognized matrix.gradle-java=${{ matrix.gradle-java }}."
+              echo "Unrecognized matrix.gradle-java=${JAVA_VERSION}."
               exit 1
             ;;
           esac
@@ -275,15 +329,17 @@ jobs:
           # Capture version for later usage.
           # Note: the $ is very important no prevent matching the "Welcome to Gradle x.y.z!" line.
           grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?(?:-(?:rc|milestone)-\d+)?)$' gradle.version.log > gradle.version
-          echo "GRADLE_VERSION=$(<gradle.version)" | tee --append $GITHUB_ENV
+          echo "GRADLE_VERSION=$(<gradle.version)" | tee --append "${GITHUB_ENV}"
 
-      - name: "Download Gradle ${{ matrix.gradle }} running the tests."
+      - name: "Download Gradle ${{ env.GRADLE_VERSION }} running the tests."
+        env:
+          GRADLE_VERSION: ${{ matrix.gradle }}
         run: |
-          # Create an empty project with wrapper using ${{ matrix.gradle }}.
-          mkdir ~/gradle-${{ matrix.gradle }}
-          cd ~/gradle-${{ matrix.gradle }}
+          # Create an empty project with wrapper using ${GRADLE_VERSION}.
+          mkdir "${HOME}/gradle-${GRADLE_VERSION}"
+          cd "${HOME}/gradle-${GRADLE_VERSION}"
           touch settings.gradle
-          ${{ github.workspace }}/gradlew wrapper --gradle-version ${{ matrix.gradle }} --distribution-type all --quiet
+          "${GITHUB_WORKSPACE}/gradlew" wrapper --gradle-version "${GRADLE_VERSION}" --distribution-type all --quiet
           # Run a no-op gradlew command in an empty project with a specific wrapper version.
           ./gradlew --no-daemon --version
 
@@ -301,7 +357,8 @@ jobs:
 
             # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build.
             ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
-          key: ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
+          key: |
+            ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
           restore-keys: |
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
@@ -319,9 +376,14 @@ jobs:
 
             # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar'" during test runs.
             /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/${{ matrix.gradle }}/generated-gradle-jars/
-          key: ${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}
+          key: |
+            ${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}
 
       - name: "Check ${{ env.JOB_NAME }}."
+        env:
+          MATRIX_AGP: ${{ matrix.agp }}
+          MATRIX_KOTLIN: ${{ matrix.kotlin }}
+          MATRIX_GRADLE: ${{ matrix.gradle }}
         # To run specific test, replace `${{ matrix.test-task }}` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
         run: >
           ./gradlew
@@ -333,31 +395,37 @@ jobs:
           --continue
           ${{ matrix.test-task }}
           -Pnet.twisterrob.gradle.build.verboseReports=true
-          -Pnet.twisterrob.test.android.pluginVersion=${{ matrix.agp }}
-          -Pnet.twisterrob.test.kotlin.pluginVersion=${{ matrix.kotlin }}
-          -Pnet.twisterrob.gradle.runner.gradleVersion=${{ matrix.gradle }}
+          -Pnet.twisterrob.test.android.pluginVersion="${MATRIX_AGP}"
+          -Pnet.twisterrob.test.kotlin.pluginVersion="${MATRIX_KOTLIN}"
+          -Pnet.twisterrob.gradle.runner.gradleVersion="${MATRIX_GRADLE}"
         #  -Pnet.twisterrob.test.gradle.javaHomeEnv=JAVA_HOME_${{ matrix.gradle-java }}_X64
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results XMLs' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: '${{ env.JOB_NAME }} Test Results XMLs'
-          path: '${{ github.workspace }}/**/build/test-results/test/TEST-*.xml'
+          if-no-files-found: error
+          path: |
+            **/build/test-results/test/TEST-*.xml
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results HTML' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: '${{ env.JOB_NAME }} Test Results HTML'
-          path: '${{ github.workspace }}/build/reports/tests/all/'
+          if-no-files-found: error
+          path: |
+            build/reports/tests/all/
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results HTMLs' artifact."
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: '${{ env.JOB_NAME }} Test Results HTMLs'
-          path: '${{ github.workspace }}/**/build/reports/tests/test/'
+          if-no-files-found: error
+          path: |
+            **/build/reports/tests/test/
 
       - name: "Cleanup Gradle files before caching."
         run: |
@@ -369,9 +437,9 @@ jobs:
       - name: "Cleanup Gradle Test Kit files before caching."
         run: |
           # Don't cache lock files to prevent breaking future builds
-          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/modules-2/modules-2.lock
-          rm -f  /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/modules-2/gc.properties
-          rm -fr /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/*/plugin-resolution/
+          rm -f  /tmp/.gradle-test-kit-${USER}-*/caches/modules-2/modules-2.lock
+          rm -f  /tmp/.gradle-test-kit-${USER}-*/caches/modules-2/gc.properties
+          rm -fr /tmp/.gradle-test-kit-${USER}-*/caches/*/plugin-resolution/
 
     strategy:
       fail-fast: false
@@ -706,14 +774,18 @@ jobs:
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
     name: "3 📢 Publish Tests Results"
-    runs-on: ubuntu-22.04
     needs: check
     # The dependency job might be skipped, we don't need to run this job then.
-    if: success() || failure()
+    if: ${{ success() || failure() }}
     # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
     # It often runs out of time, because 1 of the many artifact downloads takes many minutes.
     timeout-minutes: 10
 
+    permissions:
+      # EnricoMi/publish-unit-test-result-action
+      checks: write
+
+    runs-on: ubuntu-22.04
     steps:
       - name: "Download '... Test Results XMLs' Artifacts."
         uses: actions/download-artifact@v4
@@ -723,7 +795,7 @@ jobs:
 
       - name: "Publish 'Test Results' check suite."
         # Publish as much as possible even if some artifacts are missing (hopefully those jobs have failed separately).
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: '0 🔔 Test Results'
