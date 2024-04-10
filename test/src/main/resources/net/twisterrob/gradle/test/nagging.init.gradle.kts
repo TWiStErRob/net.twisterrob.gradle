@@ -106,11 +106,12 @@ doNotNagAboutStackForTest(
 )
 doNotNagAboutStackForTest(
 	"8.7" to "8.8",
-	"7.4" to "8.0",
+	"7.4" to "8.2",
 	// > Configure project : in all Android tests
-	// Example test: AndroidBuildPluginIntgTest`can override compileSdk (debug)`
+	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
 	"Declaring client module dependencies has been deprecated. This is scheduled to be removed in Gradle 9.0. Please use component metadata rules instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#declaring_client_module_dependencies",
-	"at com.android.build.gradle.internal.res.Aapt2FromMaven\$Companion.create(Aapt2FromMaven.kt:138)"
+	// AGP 7.4: line 138; AGP 8.0, 8.1: line 136
+	"at com.android.build.gradle.internal.res.Aapt2FromMaven\$Companion.create(Aapt2FromMaven.kt:13"
 )
 
 if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.6.0") {
