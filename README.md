@@ -23,11 +23,11 @@ For details on what was changed in different versions, see [CHANGELOG](CHANGELOG
 
 ## Compatibility
 
-Android Gradle Plugin 3.1.4 — 8.3.1 on Gradle 4.9 — 8.7 as listed in
+Android Gradle Plugin 3.1.4 — 8.3.2 on Gradle 4.9 — 8.7 as listed in
 [AGP's compatibility guide](https://developer.android.com/studio/releases/gradle-plugin#updating-gradle)
 are covered by different plugin versions.
 
-Currently supported version are Android Gradle Plugin 7.0.2 — 8.3.1 on Gradle 7.0 — 8.7 where compatible.
+Currently supported version are Android Gradle Plugin 7.0.2 — 8.3.2 on Gradle 7.0 — 8.7 where compatible.
 
 | AGP →<br/>Gradle ↓ |   3.1.x    |   3.2.x    |    3.3.x     |    3.4.x     |     3.5.x     |     3.6.x     |     4.0.x     |     4.1.x     |   4.2.x ^3    |  7.0.x   |  7.1.x   |  7.2.x   |  7.3.x   |  7.4.x   |  8.0.x   |  8.1.x   |  8.2.x   |  8.3.x   |
 |:-------------------|:----------:|:----------:|:------------:|:------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
