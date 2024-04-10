@@ -62,6 +62,9 @@ include(":browser:agp-81x")
 include(":browser:agp-82x")
 include(":browser:agp-83x")
 include(":browser:agp-84x")
+include(":browser:kotlin-14x")
+include(":browser:kotlin-16x")
+include(":browser:kotlin-19x")
 
 include(":plugin")
 include(":plugin:base")
@@ -93,6 +96,7 @@ dependencyResolutionManagement {
 			// Implicit behavior: from(files("gradle/libs.versions.toml"))
 			// Load additional libraries from other files:
 			load(file("gradle/agp.versions.toml"))
+			load(file("gradle/kotlin.versions.toml"))
 		}
 	}
 }

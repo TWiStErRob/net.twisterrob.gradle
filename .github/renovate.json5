@@ -19,6 +19,17 @@
 			"enabled": false
 		},
 		{
+			"description": "Disable updating Kotlin compatibility dependencies, they have a specific version, and will break the build. Allow patches.",
+			"matchPackageNames": [
+				"org.jetbrains.kotlin:kotlin-gradle-plugin"
+			],
+			"matchFileNames": [
+				"gradle/kotlin.versions.toml"
+			],
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		},
+		{
 			"description": "Disable updating CI matrix, they use the latest patch of a specific minor.",
 			"matchPackageNames": [
 				"com.android.tools.build:gradle",
