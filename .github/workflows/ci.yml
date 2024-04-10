@@ -745,14 +745,14 @@ jobs:
             gradle: '8.7' # https://gradle.org/releases/
             gradle-java: '17'
             agp: '8.3.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
-            kotlin: '1.9.22' # https://kotlinlang.org/docs/releases.html#release-details
+            kotlin: '1.9.23' # https://kotlinlang.org/docs/releases.html#release-details
             build-tools: '34.0.0'
             test-task: 'testReport :quality:tests'
           - name: "AGP stable on Gradle stable - plugin"
             gradle: '8.7' # https://gradle.org/releases/
             gradle-java: '17'
             agp: '8.3.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
-            kotlin: '1.9.22' # https://kotlinlang.org/docs/releases.html#release-details
+            kotlin: '1.9.23' # https://kotlinlang.org/docs/releases.html#release-details
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
           - name: "AGP preview on Gradle preview"
