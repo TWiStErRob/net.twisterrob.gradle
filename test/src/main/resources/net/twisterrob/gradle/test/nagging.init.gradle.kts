@@ -189,6 +189,13 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.20") {
 		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
 		"at org.jetbrains.kotlin.gradle.plugin.GradleUtilsKt.getConvention(gradleUtils.kt:30)"
 	)
+	// Example test: KotlinPluginIntgTest.`can test kotlin with JUnit in Android Test App`
+	doNotNagAboutStackForTest(
+		"8.7" to "8.8",
+		"0.0" to "100.0",
+		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
+		"at org.jetbrains.kotlin.gradle.plugin.mpp.SyncKotlinAndAndroidSourceSetsKt.setKotlinSourceSet(syncKotlinAndAndroidSourceSets.kt:145)"
+	)
 }
 
 if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.0") {
