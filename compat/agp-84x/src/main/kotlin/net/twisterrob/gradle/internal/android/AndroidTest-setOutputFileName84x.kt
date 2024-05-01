@@ -28,6 +28,11 @@ private var MultiOutputHandler.singleOutputFileName: Provider<String>
 		singleOutputFileNameField.set(this, value)
 	}
 
+/**
+ * Cannot reference the real class, because it's internal, so use the instance instead.
+ *
+ * @see com.android.build.api.variant.impl.SingleOutputHandler.singleOutputFileName
+ */
 private val MultiOutputHandler.singleOutputFileNameField: Field
 	get() = this::class.java
 		.getDeclaredField("singleOutputFileName")
