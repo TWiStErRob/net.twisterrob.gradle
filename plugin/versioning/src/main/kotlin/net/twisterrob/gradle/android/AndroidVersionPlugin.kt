@@ -1,7 +1,5 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.api.component.impl.DeviceTestImpl
-import com.android.build.api.variant.AndroidTest
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ComponentIdentity
 import com.android.build.api.variant.GeneratesApk
@@ -224,8 +222,7 @@ abstract class AndroidVersionPlugin : BasePlugin() {
 		)
 
 		variant.androidTestCompat?.let { androidTest ->
-			val androidTestImpl = androidTest.unwrapCast<AndroidTest, DeviceTestImpl>()
-			androidTestImpl.setOutputFileName(
+			androidTest.unwrapCast().setOutputFileName(
 				apkName = androidTest.replacementApkNameProvider(versionCode, versionName),
 				project = project,
 				variant = variant.name
