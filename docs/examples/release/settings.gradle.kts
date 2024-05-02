@@ -19,8 +19,8 @@ pluginManagement {
 }
 
 plugins {
-	id("net.twisterrob.gradle.plugin.settings") version "0.16"
-	id("net.twisterrob.gradle.plugin.nagging") version "0.16"
+	id("net.twisterrob.gradle.plugin.settings") version "0.17"
+	id("net.twisterrob.gradle.plugin.nagging") version "0.17"
 }
 
 dependencyResolutionManagement {
