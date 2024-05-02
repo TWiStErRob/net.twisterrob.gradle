@@ -33,11 +33,26 @@ The two main entry points are:
 To use the `-SNAPSHOT` builds it's necessary to declare the Sonatype repository:
 ```gradle
 // `repositories { }` in build.gradle > buildscript, or settings.gradle > pluginManagement, or buildSrc > build.gradle
+maven {
+   name = "Sonatype 01: SNAPSHOTs"
+   url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+   content {
+       includeGroup("net.twisterrob.gradle")
+       includeGroupByRegex("net\\.twisterrob\\.gradle\\.plugin\\..*")
+   }
+   mavenContent {
+       snapshotsOnly()
+   }
+}
+```
+or
+```gradle.kts
+// `repositories { }` in build.gradle.kts > buildscript, or settings.gradle.kts > pluginManagement, or buildSrc > build.gradle.kts
 maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
    name = "Sonatype 01: SNAPSHOTs"
    content {
        includeGroup("net.twisterrob.gradle")
-       includeGroupByRegex("net\.twisterrob\.gradle\.plugin\..*")
+       includeGroupByRegex("""net\.twisterrob\.gradle\.plugin\..*""")
    }
    mavenContent {
        snapshotsOnly()
