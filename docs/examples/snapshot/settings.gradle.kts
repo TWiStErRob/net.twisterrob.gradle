@@ -45,8 +45,8 @@ dependencyResolutionManagement {
 	}
 }
 
-if (!JavaVersion.current().isJava11Compatible) {
-	error("Java 11+ is required to build this project, found: ${JavaVersion.current()}.")
+if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
+	error("Java 17+ is required to build this project, found: ${JavaVersion.current()}.")
 }
 
 val gradleVersion: String = GradleVersion.current().version
