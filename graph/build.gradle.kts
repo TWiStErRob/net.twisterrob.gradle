@@ -38,7 +38,7 @@ dependencies {
 	implementation("org.slf4j:slf4j-api:2.0.13")
 //	implementation("org.graphstream:gs-core:2.0")
 //	implementation("org.graphstream:gs-ui-swing:2.0")
-	implementation("com.google.code.gson:gson:2.10.1")
+	implementation("com.google.code.gson:gson:2.11.0")
 	implementation("org.jetbrains:annotations:24.1.0")
 
 	"webjars"("org.webjars.npm:d3:7.9.0") {
