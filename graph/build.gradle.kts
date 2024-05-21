@@ -9,7 +9,7 @@ plugins {
 	id("io.gitlab.arturbosch.detekt") version "1.23.6"
 	id("org.gradle.idea")
 	id("net.twisterrob.gradle.build.webjars")
-	id("org.jetbrains.kotlinx.kover") version "0.7.6"
+	id("org.jetbrains.kotlinx.kover") version "0.8.0"
 }
 
 group = "net.twisterrob.gradle"
@@ -97,10 +97,12 @@ tasks.test.configure {
 	useJUnitPlatform()
 }
 
-koverReport {
-	defaults {
-		verify {
-			onCheck = false
+kover {
+	reports {
+		total {
+			verify {
+				onCheck = false
+			}
 		}
 	}
 }
