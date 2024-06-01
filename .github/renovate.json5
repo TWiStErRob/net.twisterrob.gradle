@@ -33,7 +33,9 @@
 			"description": "Disable updating CI matrix, they use the latest patch of a specific minor.",
 			"matchPackageNames": [
 				"com.android.tools.build:gradle",
-				"gradle"
+			],
+			"matchDepNames": [
+				"gradle",
 			],
 			"matchFileNames": [
 				".github/workflows/CI.yml",
@@ -46,7 +48,9 @@
 			"description": "Re-enable updating Gradle CI matrix for latest version.",
 			"matchPackageNames": [
 				"com.android.tools.build:gradle",
-				"gradle"
+			],
+			"matchDepNames": [
+				"gradle",
 			],
 			"matchFileNames": [
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
@@ -57,7 +61,7 @@
 		},
 		{
 			"description": "Disable updating plugins in example projects, they're part of the release process.",
-			"matchPackageNames": [
+			"matchDepNames": [
 				"net.twisterrob.gradle.plugin.quality",
 				"net.twisterrob.gradle.plugin.settings",
 				"net.twisterrob.gradle.plugin.nagging"
@@ -73,7 +77,9 @@
 			"description": "Disable updating AGP in debug projects, they have a specific version. Allow patches.",
 			"matchPackageNames": [
 				"com.android.tools.build:gradle",
-				"com.android.application"
+			],
+			"matchDepNames": [
+				"com.android.application",
 			],
 			"matchFileNames": [
 				"docs/debug/agp*-gradle*/build.gradle",
@@ -90,7 +96,7 @@
 		},
 		{
 			"description": "Disable updating Gradle in debug projects, they have a specific version. Allow patches.",
-			"matchPackageNames": [
+			"matchDepNames": [
 				"gradle"
 			],
 			"matchFileNames": [
