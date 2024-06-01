@@ -15,9 +15,9 @@ dependencies {
 		isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
 	}
 	// Make sure we don't have many versions of Kotlin lying around.
-	compileOnly(enforcedPlatform(libs.kotlin.bom))
+	compileOnly(platform(libs.kotlin.bom))
 	// Allow tests to use latest.
-	testImplementation(enforcedPlatform(libs.kotlin.bom)) {
+	testImplementation(platform(libs.kotlin.bom)) {
 		version { require(libs.versions.kotlin.build.get()) }
 	}
 }
