@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.gradle.java-gradle-plugin")
 	id("org.gradle.maven-publish")
-	id("org.openjfx.javafxplugin") version "0.0.14"
+	id("org.openjfx.javafxplugin") version "0.1.0"
 	id("org.jetbrains.kotlin.jvm") version "2.0.0"
 	id("io.gitlab.arturbosch.detekt") version "1.23.6"
 	id("org.gradle.idea")
