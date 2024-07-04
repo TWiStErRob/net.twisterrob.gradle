@@ -5,7 +5,6 @@ import net.twisterrob.gradle.build.dsl.publishing
 import net.twisterrob.gradle.build.publishing.GradlePluginValidationPlugin
 import net.twisterrob.gradle.build.publishing.getChild
 import net.twisterrob.gradle.build.publishing.withDokkaJar
-import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.dokka.gradle.DokkaTask
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -212,29 +211,30 @@ fun MavenPublication.reorderNodes(project: Project) {
  * @see org.gradle.api.publish.maven.plugins.MavenPublishPlugin.createPublishTasksForEachMavenRepo
  */
 fun registerPublicationsTasks(project: Project) {
-	val markersName = "allPluginMarkerMavenPublications"
+	val markersFragment = "AllPluginMarkerMavenPublications"
 	val markersDescription = "all Gradle Plugin Marker publications"
 	val markerPublications = project.the<PublishingExtension>()
 		.publications
 		.matching {
 			it is MavenPublication && it.name.endsWith("PluginMarkerMaven")
 		}
-	project.tasks.register("publish${markersName.capitalized()}ToMavenLocal") task@{
+	project.tasks.register("publish${markersFragment}ToMavenLocal") task@{
 		group = PublishingPlugin.PUBLISH_TASK_GROUP
 		description = "Publishes ${markersDescription} produced by this project to the local Maven cache."
 		markerPublications.all publication@{
 			val publication = this@publication.name
-			this@task.dependsOn("publish${publication.capitalized()}PublicationToMavenLocal")
+			this@task.dependsOn("publish${publication.replaceFirstChar(Char::uppercase)}PublicationToMavenLocal")
 		}
 	}
 	project.the<PublishingExtension>().repositories.all repository@{
 		val repository = this@repository.name
-		project.tasks.register("publish${markersName.capitalized()}To${repository.capitalized()}Repository") task@{
+		val repositoryFragment = repository.replaceFirstChar(Char::uppercase)
+		project.tasks.register("publish${markersFragment}To${repositoryFragment}Repository") task@{
 			group = PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Publishes ${markersDescription} produced by this project to the ${repository} repository."
 			markerPublications.all publication@{
-				val publication = this@publication.name
-				this@task.dependsOn("publish${publication.capitalized()}PublicationTo${repository.capitalized()}Repository")
+				val publicationFragment = this@publication.name.replaceFirstChar(Char::uppercase)
+				this@task.dependsOn("publish${publicationFragment}PublicationTo${repositoryFragment}Repository")
 			}
 		}
 	}
