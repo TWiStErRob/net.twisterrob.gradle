@@ -14,7 +14,9 @@ import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
  */
 fun PluginDeclaration.deprecateId(project: Project, oldId: String) {
 	val plugin = this
-	val taskName = "generate${oldId.replaceFirstChar(Char::uppercase)}To${id.replaceFirstChar(Char::uppercase)}DeprecationPlugin"
+	val oldFragment = oldId.replaceFirstChar(Char::uppercase)
+	val newFragment = plugin.id.replaceFirstChar(Char::uppercase)
+	val taskName = "generate${oldFragment}To${newFragment}DeprecationPlugin"
 	project.kotlinExtension.sourceSets.named("main").configure {
 		kotlin.srcDir(
 			project.tasks.register<DeprecatedPluginKotlinGeneratingTask>(taskName + "Sources") {

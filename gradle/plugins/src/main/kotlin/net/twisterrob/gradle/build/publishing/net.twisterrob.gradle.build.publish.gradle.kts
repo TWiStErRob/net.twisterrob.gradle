@@ -211,14 +211,14 @@ fun MavenPublication.reorderNodes(project: Project) {
  * @see org.gradle.api.publish.maven.plugins.MavenPublishPlugin.createPublishTasksForEachMavenRepo
  */
 fun registerPublicationsTasks(project: Project) {
-	val markersName = "allPluginMarkerMavenPublications"
+	val markersFragment = "AllPluginMarkerMavenPublications"
 	val markersDescription = "all Gradle Plugin Marker publications"
 	val markerPublications = project.the<PublishingExtension>()
 		.publications
 		.matching {
 			it is MavenPublication && it.name.endsWith("PluginMarkerMaven")
 		}
-	project.tasks.register("publish${markersName.replaceFirstChar(Char::uppercase)}ToMavenLocal") task@{
+	project.tasks.register("publish${markersFragment}ToMavenLocal") task@{
 		group = PublishingPlugin.PUBLISH_TASK_GROUP
 		description = "Publishes ${markersDescription} produced by this project to the local Maven cache."
 		markerPublications.all publication@{
@@ -228,12 +228,13 @@ fun registerPublicationsTasks(project: Project) {
 	}
 	project.the<PublishingExtension>().repositories.all repository@{
 		val repository = this@repository.name
-		project.tasks.register("publish${markersName.replaceFirstChar(Char::uppercase)}To${repository.replaceFirstChar(Char::uppercase)}Repository") task@{
+		val repositoryFragment = repository.replaceFirstChar(Char::uppercase)
+		project.tasks.register("publish${markersFragment}To${repositoryFragment}Repository") task@{
 			group = PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Publishes ${markersDescription} produced by this project to the ${repository} repository."
 			markerPublications.all publication@{
-				val publication = this@publication.name
-				this@task.dependsOn("publish${publication.replaceFirstChar(Char::uppercase)}PublicationTo${repository.replaceFirstChar(Char::uppercase)}Repository")
+				val publicationFragment = this@publication.name.replaceFirstChar(Char::uppercase)
+				this@task.dependsOn("publish${publicationFragment}PublicationTo${repositoryFragment}Repository")
 			}
 		}
 	}
