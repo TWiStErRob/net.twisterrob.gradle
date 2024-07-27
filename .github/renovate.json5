@@ -107,8 +107,8 @@
 		},
 		{
 			"description": "Disable updating target Kotlin version to stay specific to old Gradle.",
-			"matchPackagePatterns": [
-				"^org\\.jetbrains\\.kotlin:kotlin-.*$"
+			"matchPackageNames": [
+				"org.jetbrains.kotlin:kotlin-*"
 			],
 			"matchFileNames": [
 				"gradle/libs.versions.toml"
