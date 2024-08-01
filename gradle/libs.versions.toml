@@ -34,7 +34,7 @@ agp-tools = "31.5.1"
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # Actual Kotlin version for dependencies. It has to be older to make sure a Gradle-compatible version is used.
 # https://docs.gradle.org/current/userguide/compatibility.html
-kotlin-target = "1.4.32"
+kotlin-target = "1.9.25"
 # Actual Kotlin language and API version for compilation, it restricts language features and metadata.
 kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
