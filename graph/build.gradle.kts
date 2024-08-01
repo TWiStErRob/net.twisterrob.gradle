@@ -50,7 +50,7 @@ dependencies {
 	testImplementation("org.junit.platform:junit-platform-launcher:1.10.3")
 	testImplementation("org.mockito:mockito-core:5.12.0")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-	testImplementation("org.hamcrest:hamcrest:2.2")
+	testImplementation("org.hamcrest:hamcrest:3.0")
 }
 
 javafx {
