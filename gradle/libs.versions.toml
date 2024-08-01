@@ -67,7 +67,7 @@ mockito-kotlin = "5.4.0"
 # GitHub releases: https://github.com/mockk/mockk/releases
 mockk = "1.13.12"
 
-hamcrest = "2.2"
+hamcrest = "3.0"
 
 # GitHub releases: https://github.com/FlexTradeUKLtd/jfixture/tags
 jfixture = "2.7.2"
