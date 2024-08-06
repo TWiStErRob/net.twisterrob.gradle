@@ -38,7 +38,7 @@ kotlin-target = "1.4.32"
 # Actual Kotlin language and API version for compilation, it restricts language features and metadata.
 kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
-kotlin-build = "2.0.0"
+kotlin-build = "2.0.10"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
 kotlin-dokka = "1.9.20"
 
