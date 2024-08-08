@@ -42,18 +42,6 @@
 			"enabled": false
 		},
 		{
-			"description": "Disable updating CI matrix, they use the latest patch of a specific minor.",
-			"matchPackageNames": [
-				"com.android.tools.build:gradle",
-			],
-			"matchFileNames": [
-				".github/workflows/CI.yml",
-				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
-			],
-			"matchUpdateTypes": ["major", "minor"],
-			"enabled": false
-		},
-		{
 			"description": "Re-enable updating Gradle CI matrix for latest version.",
 			"matchDepNames": [
 				"gradle",
@@ -64,6 +52,18 @@
 			"matchCurrentVersion": "[8.0,)",
 			"matchUpdateTypes": ["minor"],
 			"enabled": true
+		},
+		{
+			"description": "Disable updating CI matrix, they use the latest patch of a specific minor.",
+			"matchPackageNames": [
+				"com.android.tools.build:gradle",
+			],
+			"matchFileNames": [
+				".github/workflows/CI.yml",
+				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
+			],
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
 		},
 		{
 			"description": "Re-enable updating Gradle CI matrix for latest version.",
