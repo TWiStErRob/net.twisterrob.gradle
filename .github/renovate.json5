@@ -31,9 +31,6 @@
 		},
 		{
 			"description": "Disable updating CI matrix, they use the latest patch of a specific minor.",
-			"matchPackageNames": [
-				"com.android.tools.build:gradle",
-			],
 			"matchDepNames": [
 				"gradle",
 			],
@@ -45,12 +42,33 @@
 			"enabled": false
 		},
 		{
-			"description": "Re-enable updating Gradle CI matrix for latest version.",
+			"description": "Disable updating CI matrix, they use the latest patch of a specific minor.",
 			"matchPackageNames": [
 				"com.android.tools.build:gradle",
 			],
+			"matchFileNames": [
+				".github/workflows/CI.yml",
+				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
+			],
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		},
+		{
+			"description": "Re-enable updating Gradle CI matrix for latest version.",
 			"matchDepNames": [
 				"gradle",
+			],
+			"matchFileNames": [
+				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
+			],
+			"matchCurrentVersion": "[8.0,)",
+			"matchUpdateTypes": ["minor"],
+			"enabled": true
+		},
+		{
+			"description": "Re-enable updating Gradle CI matrix for latest version.",
+			"matchPackageNames": [
+				"com.android.tools.build:gradle",
 			],
 			"matchFileNames": [
 				"quality/src/test/kotlin/net/twisterrob/gradle/quality/tasks/VersionsTaskTest.kt"
@@ -75,11 +93,26 @@
 		},
 		{
 			"description": "Disable updating AGP in debug projects, they have a specific version. Allow patches.",
-			"matchPackageNames": [
-				"com.android.tools.build:gradle",
-			],
 			"matchDepNames": [
 				"com.android.application",
+			],
+			"matchFileNames": [
+				"docs/debug/agp*-gradle*/build.gradle",
+				"docs/debug/agp*-gradle*/build.gradle.kts",
+				"docs/debug/agp*-gradle*/settings.gradle",
+				"docs/debug/agp*-gradle*/settings.gradle.kts",
+				"docs/debug/agp*-gradle*/buildSrc/build.gradle",
+				"docs/debug/agp*-gradle*/buildSrc/build.gradle.kts",
+				"docs/debug/agp*-gradle*/buildSrc/settings.gradle",
+				"docs/debug/agp*-gradle*/buildSrc/settings.gradle.kts"
+			],
+			"matchUpdateTypes": ["major", "minor"],
+			"enabled": false
+		},
+		{
+			"description": "Disable updating AGP in debug projects, they have a specific version. Allow patches.",
+			"matchPackageNames": [
+				"com.android.tools.build:gradle",
 			],
 			"matchFileNames": [
 				"docs/debug/agp*-gradle*/build.gradle",
