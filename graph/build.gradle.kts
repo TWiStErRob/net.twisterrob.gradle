@@ -35,7 +35,7 @@ dependencies {
 	implementation("org.graphstream:gs-core:1.3") {
 		exclude(group = "junit", module = "junit")
 	}
-	implementation("org.slf4j:slf4j-api:2.0.14")
+	implementation("org.slf4j:slf4j-api:2.0.15")
 //	implementation("org.graphstream:gs-core:2.0")
 //	implementation("org.graphstream:gs-ui-swing:2.0")
 	implementation("com.google.code.gson:gson:2.11.0")
