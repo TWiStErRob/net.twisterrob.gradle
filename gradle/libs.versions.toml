@@ -3,7 +3,7 @@ java = "11"
 
 # Changelog: https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md
 # GitHub Releases: https://github.com/tomasbjerre/violations-lib/tags
-violations = "1.157.1"
+violations = "1.157.3"
 
 # JSR 305: Annotations for Software Defect Detection
 # Documentation: https://jcp.org/en/jsr/detail?id=305
