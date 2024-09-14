@@ -50,7 +50,7 @@ dependencies {
 	}
 
 	testFixturesApi(libs.svnkit)
-	testFixturesApi(libs.jgit17)
+	testFixturesCompileOnlyApi(libs.jgit17)
 }
 
 fun HasAttributes.copyAttributesFrom(providers: ProviderFactory, origin: HasAttributes) {
@@ -62,20 +62,29 @@ fun HasAttributes.copyAttributesFrom(providers: ProviderFactory, origin: HasAttr
 }
 
 fun NamedDomainObjectProvider<Configuration>.createJavaVariant(javaVersion: Int) : Configuration {
-	val runtimeElementsJava = configurations.create("runtimeElementsJava$javaVersion") {
-		extendsFrom(get())
-		copyAttributesFrom(providers, get())
+	val runtimeElementsJava = configurations.consumable("runtimeElementsJava$javaVersion") {
+		val base = get()
+		extendsFrom(base)
+		copyAttributesFrom(providers, base)
 		attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, javaVersion)
 	}
 
-	components.getByName<AdhocComponentWithVariants>("java") {
-		addVariantsFromConfiguration(runtimeElementsJava) { }
+	components.named<AdhocComponentWithVariants>("java").configure {
+		addVariantsFromConfiguration(runtimeElementsJava.get()) { }
 	}
-	return runtimeElementsJava
+
+	val runtimeOnlyJava = configurations.resolvable("runtimeOnlyJava$javaVersion") {
+		val base = configurations.getByName(get().name.replace("Elements", "Only"))
+		extendsFrom(base)
+		runtimeElementsJava.get().extendsFrom(this)
+		copyAttributesFrom(providers, base)
+		attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, javaVersion)
+	}
+	return runtimeOnlyJava.get()
 }
 
-val runtimeElementsJava11: Configuration = configurations.runtimeElements.createJavaVariant(11)
-val runtimeElementsJava17: Configuration = configurations.runtimeElements.createJavaVariant(17)
+val runtimeOnlyJava11 = configurations.runtimeElements.createJavaVariant(11)
+val runtimeOnlyJava17 = configurations.runtimeElements.createJavaVariant(17)
 
 configurations.runtimeElements {
 	attributes {
@@ -87,14 +96,12 @@ components.getByName<AdhocComponentWithVariants>("java") {
 }
 
 dependencies {
-	constraints {
-		runtimeElementsJava11(libs.jgit11) {
-			because("JGit 6.10.0 is the last version to support Java 11. JGit 7.x requires Java 17.")
-			versionConstraint.rejectedVersions.add("[7.0,)")
-		}
-		runtimeElementsJava17(libs.jgit17) {
-			because("JGit 7.x is the first version to require Java 17.")
-			versionConstraint.rejectedVersions.add("(,7.0)")
-		}
+	runtimeOnlyJava11(libs.jgit11) {
+		because("JGit 6.10.0 is the last version to support Java 11. JGit 7.x requires Java 17.")
+		versionConstraint.rejectedVersions.add("[7.0,)")
+	}
+	runtimeOnlyJava17(libs.jgit17) {
+		because("JGit 7.x is the first version to require Java 17.")
+		versionConstraint.rejectedVersions.add("(,7.0)")
 	}
 }
