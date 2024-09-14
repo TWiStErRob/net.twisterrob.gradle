@@ -53,34 +53,37 @@ dependencies {
 	testFixturesApi(libs.jgit17)
 }
 
-val runtimeElementsJava11 by configurations.creating {
-	this.extendsFrom(configurations.runtimeElements.get())
-	val other = configurations.runtimeElements.get().attributes
-	attributes {
-		other.keySet().forEach {
-			@Suppress("UNCHECKED_CAST")
-			attribute(it as Attribute<Any>, other.getAttribute(it)!!)
-		}
-		attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 11)
+fun HasAttributes.copyAttributesFrom(providers: ProviderFactory, origin: HasAttributes) {
+	for (key in origin.attributes.keySet()) {
+		@Suppress("UNCHECKED_CAST") // The origin will make sure it's the right type.
+		val unsafeKey = key as Attribute<Any>
+		this.attributes.attributeProvider(unsafeKey, providers.provider { origin.attributes.getAttribute(key) })
 	}
 }
 
-val runtimeElementsJava17 by configurations.creating {
-	this.extendsFrom(configurations.runtimeElements.get())
-	val other = configurations.runtimeElements.get().attributes
-	attributes {
-		other.keySet().forEach {
-			@Suppress("UNCHECKED_CAST")
-			attribute(it as Attribute<Any>, other.getAttribute(it)!!)
-		}
-		attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
+fun NamedDomainObjectProvider<Configuration>.createJavaVariant(javaVersion: Int) : Configuration {
+	val runtimeElementsJava = configurations.create("runtimeElementsJava$javaVersion") {
+		extendsFrom(get())
+		copyAttributesFrom(providers, get())
+		attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, javaVersion)
 	}
+
+	components.getByName<AdhocComponentWithVariants>("java") {
+		addVariantsFromConfiguration(runtimeElementsJava) { }
+	}
+	return runtimeElementsJava
 }
+
+val runtimeElementsJava11: Configuration = configurations.runtimeElements.createJavaVariant(11)
+val runtimeElementsJava17: Configuration = configurations.runtimeElements.createJavaVariant(17)
 
 configurations.runtimeElements {
 	attributes {
 		attribute(Attribute.of("reject", String::class.java), "yes")
 	}
+}
+components.getByName<AdhocComponentWithVariants>("java") {
+	withVariantsFromConfiguration(configurations.runtimeElements.get()) { skip() }
 }
 
 dependencies {
@@ -94,10 +97,4 @@ dependencies {
 			versionConstraint.rejectedVersions.add("(,7.0)")
 		}
 	}
-}
-
-components.getByName<AdhocComponentWithVariants>("java") {
-	withVariantsFromConfiguration(configurations.runtimeElements.get()) { skip() }
-	addVariantsFromConfiguration(runtimeElementsJava11) {}
-	addVariantsFromConfiguration(runtimeElementsJava17) {}
 }
