@@ -1,3 +1,5 @@
+import net.twisterrob.gradle.build.publishing.createJavaVariant
+
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
@@ -29,6 +31,9 @@ gradlePlugin {
 	}
 }
 
+val runtimeOnlyJava11: Configuration = createJavaVariant(configurations.runtimeElements, JavaLanguageVersion.of(11))
+val runtimeOnlyJava17: Configuration = createJavaVariant(configurations.runtimeElements, JavaLanguageVersion.of(17))
+
 dependencies {
 	implementation(gradleApi())
 	implementation(projects.plugin.base)
@@ -37,8 +42,18 @@ dependencies {
 	implementation(projects.compat.agp)
 	implementation(libs.svnkit)
 	implementation(libs.svnkit.cli)
-	implementation(libs.jgit)
 	compileOnly(libs.android.gradle)
+	compileOnly(libs.jgit17)
+	@Suppress("UnstableApiUsage")
+	runtimeOnlyJava11(libs.jgit11) {
+		because("JGit 6.10.0 is the last version to support Java 11. JGit 7.x requires Java 17.")
+		versionConstraint.rejectedVersions.add("[7.0,)")
+	}
+	@Suppress("UnstableApiUsage")
+	runtimeOnlyJava17(libs.jgit17) {
+		because("JGit 7.x is the first version to require Java 17.")
+		versionConstraint.rejectedVersions.add("(,7.0)")
+	}
 
 	// This plugin is part of the net.twisterrob.gradle.plugin.android-app plugin, not designed to work on its own.
 	runtimeOnly(projects.plugin)
@@ -50,5 +65,5 @@ dependencies {
 	}
 
 	testFixturesApi(libs.svnkit)
-	testFixturesApi(libs.jgit)
+	testFixturesCompileOnlyApi(libs.jgit17)
 }
