@@ -16,12 +16,12 @@ fun Project.createJavaVariant(
 	forConfiguration: NamedDomainObjectProvider<Configuration>,
 	version: JavaLanguageVersion,
 ): Configuration {
-	invalidateConfiguration(forConfiguration)
+	skipConfiguration(forConfiguration)
 	val javaVersion = version.asInt()
 	val runtimeElementsJava = configurations.consumable("${forConfiguration.name}Java$javaVersion") {
 		val base = forConfiguration.get()
 		extendsFrom(base)
-		copyAttributesFrom(providers, base)
+		copyAttributesFrom(providers, base, base.attributes.keySet() - ignore)
 		attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, javaVersion)
 	}
 
@@ -34,24 +34,30 @@ fun Project.createJavaVariant(
 		val base = configurations.getByName(onlyName)
 		extendsFrom(base)
 		runtimeElementsJava.get().extendsFrom(this)
-		copyAttributesFrom(providers, base)
+		copyAttributesFrom(providers, base, base.attributes.keySet() - ignore)
 		attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, javaVersion)
 	}
 	return runtimeOnlyJava.get()
 }
 
-private fun HasAttributes.copyAttributesFrom(providers: ProviderFactory, origin: HasAttributes) {
-	for (key in origin.attributes.keySet()) {
+private fun HasAttributes.copyAttributesFrom(
+	providers: ProviderFactory,
+	origin: HasAttributes,
+	keys: Set<Attribute<*>> = origin.attributes.keySet(),
+) {
+	for (key in keys) {
 		@Suppress("UNCHECKED_CAST") // The origin will make sure it's the right type.
 		val unsafeKey = key as Attribute<Any>
 		this.attributes.attributeProvider(unsafeKey, providers.provider { origin.attributes.getAttribute(key) })
 	}
 }
 
-private fun Project.invalidateConfiguration(configuration: NamedDomainObjectProvider<Configuration>) {
+private val ignore = Attribute.of("ignore", String::class.java)
+
+private fun Project.skipConfiguration(configuration: NamedDomainObjectProvider<Configuration>) {
 	configuration.configure {
 		attributes {
-			attribute(Attribute.of("reject", String::class.java), "yes")
+			attribute(ignore, "yes")
 		}
 	}
 	this.components.getByName<AdhocComponentWithVariants>("java") {
