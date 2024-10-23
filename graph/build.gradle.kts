@@ -39,7 +39,7 @@ dependencies {
 //	implementation("org.graphstream:gs-core:2.0")
 //	implementation("org.graphstream:gs-ui-swing:2.0")
 	implementation("com.google.code.gson:gson:2.11.0")
-	implementation("org.jetbrains:annotations:25.0.0")
+	implementation("org.jetbrains:annotations:26.0.1")
 
 	"webjars"("org.webjars.npm:d3:7.9.0") {
 		// Avoid pulling in all small modules, using the merged .js file instead.
