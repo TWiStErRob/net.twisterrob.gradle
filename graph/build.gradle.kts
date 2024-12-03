@@ -5,11 +5,11 @@ plugins {
 	id("org.gradle.java-gradle-plugin")
 	id("org.gradle.maven-publish")
 	id("org.openjfx.javafxplugin") version "0.0.14"
-	id("org.jetbrains.kotlin.jvm") version "1.9.24"
-	id("io.gitlab.arturbosch.detekt") version "1.23.6"
+	id("org.jetbrains.kotlin.jvm") version "2.0.21"
+	id("io.gitlab.arturbosch.detekt") version "1.23.7"
 	id("org.gradle.idea")
 	id("net.twisterrob.gradle.build.webjars")
-	id("org.jetbrains.kotlinx.kover") version "0.8.0"
+	id("org.jetbrains.kotlinx.kover") version "0.8.3"
 }
 
 group = "net.twisterrob.gradle"
@@ -35,22 +35,22 @@ dependencies {
 	implementation("org.graphstream:gs-core:1.3") {
 		exclude(group = "junit", module = "junit")
 	}
-	implementation("org.slf4j:slf4j-api:2.0.13")
+	implementation("org.slf4j:slf4j-api:2.0.16")
 //	implementation("org.graphstream:gs-core:2.0")
 //	implementation("org.graphstream:gs-ui-swing:2.0")
 	implementation("com.google.code.gson:gson:2.11.0")
-	implementation("org.jetbrains:annotations:24.1.0")
+	implementation("org.jetbrains:annotations:26.0.1")
 
 	"webjars"("org.webjars.npm:d3:7.9.0") {
 		// Avoid pulling in all small modules, using the merged .js file instead.
 		isTransitive = false
 	}
 
-	testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
-	testImplementation("org.junit.platform:junit-platform-launcher:1.10.2")
-	testImplementation("org.mockito:mockito-core:5.12.0")
-	testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
-	testImplementation("org.hamcrest:hamcrest:2.2")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
+	testImplementation("org.junit.platform:junit-platform-launcher:1.11.3")
+	testImplementation("org.mockito:mockito-core:5.14.2")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+	testImplementation("org.hamcrest:hamcrest:3.0")
 }
 
 javafx {

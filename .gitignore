@@ -1,5 +1,6 @@
 # Build outputs
 .gradle/
+.kotlin/
 /build/
 /*/build/
 /*/*/build/

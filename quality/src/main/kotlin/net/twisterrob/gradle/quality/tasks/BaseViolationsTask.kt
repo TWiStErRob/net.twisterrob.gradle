@@ -75,31 +75,31 @@ abstract class BaseViolationsTask : DefaultTask() {
 						variant = gatherer.getName(task),
 						result = gatherer.getParsableReportLocation(task),
 						report = gatherer.getHumanReportLocation(task),
-						violations = gatherer.getViolations(task)?.map {
+						violations = gatherer.getViolations(task)?.map { violation ->
 							Violation(
-								rule = ruleCategoryParser.rule(it),
-								category = ruleCategoryParser.category(it),
-								severity = when (it.severity!!) {
+								rule = ruleCategoryParser.rule(violation),
+								category = ruleCategoryParser.category(violation),
+								severity = when (violation.severity!!) {
 									SEVERITY.INFO -> Violation.Severity.INFO
 									SEVERITY.WARN -> Violation.Severity.WARNING
 									SEVERITY.ERROR -> Violation.Severity.ERROR
 								},
-								message = it.message,
-								specifics = it.specifics.orEmpty(),
+								message = violation.message,
+								specifics = violation.specifics.orEmpty(),
 								location = Violation.Location(
 									module = subproject,
 									task = task,
 									variant = gatherer.getName(task),
-									file = subproject.file(it.file),
-									startLine = it.startLine,
-									endLine = it.endLine,
-									column = it.column
+									file = subproject.file(violation.file),
+									startLine = violation.startLine,
+									endLine = violation.endLine,
+									column = violation.column
 								),
 								source = Violation.Source(
 									gatherer = gatherer.getDisplayName(task),
-									parser = it.parser.name,
-									reporter = it.reporter,
-									source = it.source,
+									parser = violation.parser.name,
+									reporter = violation.reporter,
+									source = violation.source,
 									report = gatherer.getParsableReportLocation(task),
 									humanReport = gatherer.getHumanReportLocation(task)
 								)

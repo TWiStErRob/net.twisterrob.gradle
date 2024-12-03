@@ -10,7 +10,6 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.initialization.IncludedBuild
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.provider.Provider
-import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
@@ -38,7 +37,7 @@ private fun configureDetektReportMerging(
 	report: DetektReports.() -> DetektReport,
 	reportFile: Detekt.() -> Provider<RegularFile>
 ) {
-	project.tasks.register<ReportMergeTask>("detektReportMerge${mergedExtension.capitalized()}") {
+	project.tasks.register<ReportMergeTask>("detektReportMerge${mergedExtension.replaceFirstChar(Char::uppercase)}") {
 		val detektReportMergeTask = this@register
 		output = project.layout.buildDirectory.file("reports/detekt/merge.${mergedExtension}")
 		// Intentionally eager: at the point detektReportMergeXml is configured,
