@@ -48,8 +48,13 @@ fun doNotNagAboutPatternForTest(gradle: Pair<String, String>, agp: Pair<String, 
 	doNotNagAbout(Regex(messageRegex))
 }
 
+/**
+ * @param gradle Inclusive to exclusive version range for Gradle.
+ * @param agp Inclusive to exclusive version range for Android Gradle Plugin.
+ * @param message Error message to log.
+ */
 @Suppress("detekt.NamedArguments") // Variable names are clear enough.
-private fun unsupported(gradle: Pair<String, String>, agp: Pair<String, String>, s: String): Boolean {
+private fun unsupported(gradle: Pair<String, String>, agp: Pair<String, String>, message: String): Boolean {
 	val logger = Logging.getLogger(Gradle::class.java)
 
 	/**
@@ -62,7 +67,7 @@ private fun unsupported(gradle: Pair<String, String>, agp: Pair<String, String>,
 		}
 		if (isDoNotNagAboutDiagnosticsEnabled) {
 			val actual = "${baseVersion}(${fullVersion})"
-			logger.lifecycle("${type} version mismatch: ${minIncl} <= ${actual} < ${maxExcl}, not applying:\n\t${s}")
+			logger.lifecycle("${type} version mismatch: ${minIncl} <= ${actual} < ${maxExcl}, not applying:\n\t${message}")
 		}
 		return false
 	}
@@ -80,6 +85,6 @@ private fun unsupported(gradle: Pair<String, String>, agp: Pair<String, String>,
 	}
 
 	// Not wrapped in isNaggingDiagnosticsEnabled, always want to see active ignores.
-	logger.lifecycle(s)
+	logger.lifecycle(message)
 	return false
 }
