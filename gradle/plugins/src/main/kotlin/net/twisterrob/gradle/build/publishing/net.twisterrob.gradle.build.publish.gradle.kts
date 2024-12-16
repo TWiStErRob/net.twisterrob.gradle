@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter
 plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
+	id("org.jetbrains.dokka")
 	id("org.jetbrains.dokka-javadoc")
 }
 plugins.apply(GradlePluginValidationPlugin::class)

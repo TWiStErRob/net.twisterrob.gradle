@@ -12,6 +12,7 @@ plugins {
 dependencies {
 	implementation(libs.kotlin.gradle)
 	implementation(libs.plugins.kotlin.dokka.asDependency())
+	implementation(libs.plugins.kotlin.dokkaJavadoc.asDependency())
 	implementation(libs.plugins.detekt.asDependency())
 	implementation(libs.gradle.develocity)
 	implementation(libs.nexus)
