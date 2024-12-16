@@ -116,7 +116,6 @@ fun MavenPublication.handleTestFixtures() {
 
 fun setupDoc(project: Project) {
 	project.extensions.configure<DokkaExtension> {
-		// TODO https://github.com/Kotlin/dokka/issues/1894
 		moduleName = project.base.archivesName
 		dokkaSourceSets.configureEach {
 			reportUndocumented = false
