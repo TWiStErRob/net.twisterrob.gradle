@@ -5,7 +5,7 @@ import net.twisterrob.gradle.build.dsl.publishing
 import net.twisterrob.gradle.build.publishing.GradlePluginValidationPlugin
 import net.twisterrob.gradle.build.publishing.getChild
 import net.twisterrob.gradle.build.publishing.withDokkaJar
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.DokkaExtension
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
@@ -114,9 +114,9 @@ fun MavenPublication.handleTestFixtures() {
 }
 
 fun setupDoc(project: Project) {
-	project.tasks.named<DokkaTask>(DOKKA_TASK_NAME) {
+	project.extensions.configure<DokkaExtension> {
 		// TODO https://github.com/Kotlin/dokka/issues/1894
-		moduleName = this.project.base.archivesName
+		moduleName = project.base.archivesName
 		dokkaSourceSets.configureEach {
 			reportUndocumented = false
 		}
