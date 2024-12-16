@@ -51,7 +51,7 @@ normalization {
  * @see org.jetbrains.dokka.gradle.DokkaPlugin
  */
 @Suppress("PropertyName", "VariableNaming")
-val DOKKA_TASK_NAME: String = "dokkaJavadoc"
+val DOKKA_TASK_NAME: String = "dokkaGeneratePublicationJavadoc"
 
 // Note: org.gradle.api.publish.plugins.PublishingPlugin.apply calls publications.all,
 // so most code here is eagerly executed, even inside register { }!
