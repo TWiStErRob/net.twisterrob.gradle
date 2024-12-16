@@ -148,5 +148,5 @@ dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = 
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
+kotlin-dokka = { id = "org.jetbrains.dokka-javadoc", version.ref = "kotlin-dokka" }
 # Note: internal plugins cannot be used with `alias(libs.plugins....)`, because they don't have version.
