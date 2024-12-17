@@ -6,6 +6,8 @@ import net.twisterrob.gradle.build.publishing.GradlePluginValidationPlugin
 import net.twisterrob.gradle.build.publishing.getChild
 import net.twisterrob.gradle.build.publishing.withDokkaJar
 import org.jetbrains.dokka.gradle.DokkaExtension
+import org.jetbrains.dokka.gradle.internal.InternalDokkaGradlePluginApi
+import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
@@ -123,6 +125,11 @@ fun setupDoc(project: Project) {
 		dokkaSourceSets.configureEach {
 			reportUndocumented = false
 		}
+	}
+	project.tasks.withType<DokkaGenerateTask>().configureEach {
+		// TODEL https://github.com/Kotlin/dokka/issues/3958
+		@OptIn(InternalDokkaGradlePluginApi::class)
+		dokkaConfigurationJsonFile.unsetConvention()
 	}
 }
 
