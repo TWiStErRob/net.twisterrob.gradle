@@ -117,6 +117,9 @@ fun MavenPublication.handleTestFixtures() {
 fun setupDoc(project: Project) {
 	project.extensions.configure<DokkaExtension> {
 		moduleName = project.base.archivesName
+		dokkaPublications.configureEach {
+			failOnWarning = true
+		}
 		dokkaSourceSets.configureEach {
 			reportUndocumented = false
 		}
