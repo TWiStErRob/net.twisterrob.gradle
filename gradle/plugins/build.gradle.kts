@@ -11,8 +11,9 @@ plugins {
 // Declaring all the dependencies in this project resolves this issue.
 dependencies {
 	implementation(libs.kotlin.gradle)
-	implementation(libs.kotlin.dokka)
-	implementation(libs.detekt)
+	implementation(libs.plugins.kotlin.dokka.asDependency())
+	implementation(libs.plugins.kotlin.dokkaJavadoc.asDependency())
+	implementation(libs.plugins.detekt.asDependency())
 	implementation(libs.gradle.develocity)
 	implementation(libs.nexus)
 
@@ -81,3 +82,6 @@ detekt {
 		}
 	}
 }
+
+fun Provider<PluginDependency>.asDependency(): Provider<String> =
+	this.map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" }

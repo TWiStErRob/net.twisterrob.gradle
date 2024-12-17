@@ -40,7 +40,7 @@ kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
 kotlin-build = "2.0.21"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
-kotlin-dokka = "1.9.20"
+kotlin-dokka = "2.0.0"
 
 detekt = "1.23.7"
 
@@ -115,9 +115,7 @@ kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre8", versi
 kotlin-stdlib-jre8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre8", version.ref = "kotlin-target" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-target" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-target" }
-kotlin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "kotlin-dokka" }
 kotlin-dsl = { module = "org.gradle:gradle-kotlin-dsl", version.ref = "kotlin-dsl" }
-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 
 junit-legacy = { module = "junit:junit", version.ref = "junit4" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
@@ -150,4 +148,6 @@ dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = 
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
+kotlin-dokkaJavadoc = { id = "org.jetbrains.dokka-javadoc", version.ref = "kotlin-dokka" }
 # Note: internal plugins cannot be used with `alias(libs.plugins....)`, because they don't have version.

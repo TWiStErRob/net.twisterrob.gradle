@@ -5,7 +5,9 @@ import net.twisterrob.gradle.build.dsl.publishing
 import net.twisterrob.gradle.build.publishing.GradlePluginValidationPlugin
 import net.twisterrob.gradle.build.publishing.getChild
 import net.twisterrob.gradle.build.publishing.withDokkaJar
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.DokkaExtension
+import org.jetbrains.dokka.gradle.internal.InternalDokkaGradlePluginApi
+import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
@@ -13,6 +15,7 @@ plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
 	id("org.jetbrains.dokka")
+	id("org.jetbrains.dokka-javadoc")
 }
 plugins.apply(GradlePluginValidationPlugin::class)
 
@@ -50,7 +53,7 @@ normalization {
  * @see org.jetbrains.dokka.gradle.DokkaPlugin
  */
 @Suppress("PropertyName", "VariableNaming")
-val DOKKA_TASK_NAME: String = "dokkaJavadoc"
+val DOKKA_TASK_NAME: String = "dokkaGeneratePublicationJavadoc"
 
 // Note: org.gradle.api.publish.plugins.PublishingPlugin.apply calls publications.all,
 // so most code here is eagerly executed, even inside register { }!
@@ -114,12 +117,25 @@ fun MavenPublication.handleTestFixtures() {
 }
 
 fun setupDoc(project: Project) {
-	project.tasks.named<DokkaTask>(DOKKA_TASK_NAME) {
-		// TODO https://github.com/Kotlin/dokka/issues/1894
-		moduleName = this.project.base.archivesName
+	project.extensions.configure<DokkaExtension> {
+		moduleName = project.base.archivesName
+		dokkaPublications.named("html").configure {
+			enabled = false
+		}
+		dokkaPublications.configureEach {
+			failOnWarning = true
+		}
 		dokkaSourceSets.configureEach {
 			reportUndocumented = false
 		}
+		dokkaGeneratorIsolation = ProcessIsolation {
+			maxHeapSize = "512M"
+		}
+	}
+	project.tasks.withType<DokkaGenerateTask>().configureEach {
+		// TODEL https://github.com/Kotlin/dokka/issues/3958
+		@OptIn(InternalDokkaGradlePluginApi::class)
+		dokkaConfigurationJsonFile.unsetConvention()
 	}
 }
 
