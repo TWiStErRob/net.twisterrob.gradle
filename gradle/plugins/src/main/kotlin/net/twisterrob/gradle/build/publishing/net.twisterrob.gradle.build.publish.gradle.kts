@@ -125,6 +125,9 @@ fun setupDoc(project: Project) {
 		dokkaSourceSets.configureEach {
 			reportUndocumented = false
 		}
+		dokkaGeneratorIsolation = ProcessIsolation {
+			maxHeapSize = "512M"
+		}
 	}
 	project.tasks.withType<DokkaGenerateTask>().configureEach {
 		// TODEL https://github.com/Kotlin/dokka/issues/3958
