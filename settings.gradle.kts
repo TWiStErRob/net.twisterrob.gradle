@@ -2,6 +2,8 @@ import net.twisterrob.gradle.build.dsl.isCI
 import net.twisterrob.gradle.build.settings.enableFeaturePreviewQuietly
 import net.twisterrob.gradle.doNotNagAbout
 
+//net.twisterrob.gradle.isDoNotNagAboutDiagnosticsEnabled = true
+
 // TODEL https://github.com/gradle/gradle/issues/18971
 rootProject.name = "net-twisterrob-gradle"
 
