@@ -2,9 +2,8 @@
 
 package net.twisterrob.gradle.quality
 
-import org.gradle.api.Project
-import org.gradle.api.Task
 import java.io.File
+import java.io.Serializable
 
 @Suppress("detekt.UseDataClass") // Don't want to define equals/hashCode/component methods as they all imply something.
 class Violations(
@@ -52,9 +51,19 @@ class Violation(
 		ERROR
 	}
 
+	class Module(
+		val name: String,
+		val path: String,
+		val rootDir: File,
+		val projectDir: File,
+	): Serializable {
+		fun file(path: String): File =
+			projectDir.resolve(path)
+	}
+
 	class Location(
-		val module: Project,
-		val task: Task,
+		val module: Module,
+		val task: String,
 		val variant: String,
 		val file: File,
 		val startLine: Int,

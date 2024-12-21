@@ -28,7 +28,7 @@ internal fun collapseFile(violations: List<Violation>): List<Violation> {
 				&& v1.severity == v2.severity
 				&& v1.specifics == v2.specifics
 				//&& v1.message == v2.message
-				&& v1.location.module == v2.location.module
+				&& v1.location.module.path == v2.location.module.path
 				//&& v1.location.variant == v2.location.variant
 				&& v1.location.file == v2.location.file
 				//&& v1.location.startLine == v2.location.startLine

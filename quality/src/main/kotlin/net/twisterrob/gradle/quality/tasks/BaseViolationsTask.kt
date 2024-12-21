@@ -16,10 +16,14 @@ import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.UntrackedTask
 import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
+import java.io.File
+import java.io.Serializable
 
 @UntrackedTask(because = "Abstract super-class, not to be instantiated directly.")
 abstract class BaseViolationsTask : DefaultTask() {
@@ -63,51 +67,87 @@ abstract class BaseViolationsTask : DefaultTask() {
 
 	protected abstract fun processViolations(violations: Grouper.Start<Violations>)
 
+	@get:Input
+	abstract val tasks: ListProperty<Result>
+
+	init {
+		tasks.convention(project.provider {
+			project.allprojects.flatMap { subproject ->
+				GATHERERS.flatMap { gatherer ->
+					gatherer.allTasksFrom(subproject).map { task ->
+						Result(
+							module = Violation.Module(
+								name = subproject.name,
+								path = subproject.path,
+								rootDir = subproject.rootDir,
+								projectDir = subproject.projectDir,
+							),
+							gatherer = gatherer,
+							task = task.path,
+							displayName = gatherer.getDisplayName(task),
+							gathererName = gatherer.getName(task),
+							parsableReportLocation = gatherer.getParsableReportLocation(task),
+							humanReportLocation = gatherer.getHumanReportLocation(task),
+						)
+					}
+				}
+			}
+		})
+	}
+
+	data class Result(
+		val module: Violation.Module,
+		val gatherer: TaskReportGatherer<Task>,
+		val task: String,
+		val displayName: String,
+		val gathererName: String,
+		val parsableReportLocation: File,
+		val humanReportLocation: File,
+	) : Serializable
+
 	@TaskAction
 	fun validateViolations() {
 		val ruleCategoryParser = RuleCategoryParser()
-		val results = project.allprojects.flatMap { subproject ->
-			GATHERERS.flatMap { gatherer ->
-				gatherer.allTasksFrom(subproject).map { task ->
-					Violations(
-						parser = gatherer.getDisplayName(task),
-						module = subproject.path,
-						variant = gatherer.getName(task),
-						result = gatherer.getParsableReportLocation(task),
-						report = gatherer.getHumanReportLocation(task),
-						violations = gatherer.getViolations(task)?.map { violation ->
-							Violation(
-								rule = ruleCategoryParser.rule(violation),
-								category = ruleCategoryParser.category(violation),
-								severity = when (violation.severity!!) {
-									SEVERITY.INFO -> Violation.Severity.INFO
-									SEVERITY.WARN -> Violation.Severity.WARNING
-									SEVERITY.ERROR -> Violation.Severity.ERROR
-								},
-								message = violation.message,
-								specifics = violation.specifics.orEmpty(),
-								location = Violation.Location(
-									module = subproject,
-									task = task,
-									variant = gatherer.getName(task),
-									file = subproject.file(violation.file),
-									startLine = violation.startLine,
-									endLine = violation.endLine,
-									column = violation.column
-								),
-								source = Violation.Source(
-									gatherer = gatherer.getDisplayName(task),
-									parser = violation.parser.name,
-									reporter = violation.reporter,
-									source = violation.source,
-									report = gatherer.getParsableReportLocation(task),
-									humanReport = gatherer.getHumanReportLocation(task)
-								)
-							)
-						}
+		val results = tasks.get().map { result ->
+			val gatherer = result.gatherer
+			val subproject = result.module
+			Violations(
+				parser = result.displayName,
+				module = subproject.path,
+				variant = result.gathererName,
+				result = result.parsableReportLocation,
+				report = result.humanReportLocation,
+				violations = gatherer.getViolations(result.parsableReportLocation)?.map { violation ->
+					Violation(
+						rule = ruleCategoryParser.rule(violation),
+						category = ruleCategoryParser.category(violation),
+						severity = when (violation.severity!!) {
+							SEVERITY.INFO -> Violation.Severity.INFO
+							SEVERITY.WARN -> Violation.Severity.WARNING
+							SEVERITY.ERROR -> Violation.Severity.ERROR
+						},
+						message = violation.message,
+						specifics = violation.specifics.orEmpty(),
+						location = Violation.Location(
+							module = subproject,
+							task = result.task,
+							variant = result.gathererName,
+							file = subproject.file(violation.file),
+							startLine = violation.startLine,
+							endLine = violation.endLine,
+							column = violation.column
+						),
+						source = Violation.Source(
+							gatherer = result.displayName,
+							parser = violation.parser.name,
+							reporter = violation.reporter,
+							source = violation.source,
+							report = result.parsableReportLocation,
+							humanReport = result.humanReportLocation,
+						)
 					)
 				}
-			}
+			)
 		}
 		val nullSafeSum = nullSafeSum { v: Violations? -> v?.violations?.size }
 		@Suppress("UNCHECKED_CAST")
