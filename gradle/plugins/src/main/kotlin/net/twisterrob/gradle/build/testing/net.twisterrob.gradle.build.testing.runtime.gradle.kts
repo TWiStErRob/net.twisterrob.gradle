@@ -31,7 +31,7 @@ tasks.withType<Test>().configureEach {
 	val properties = propertyNamesToExposeToJUnitTests
 		.associateBy({ it }) { project.property(it) }
 		.toMutableMap()
-	if (System.getProperties().containsKey("idea.paths.selector")) {
+	if (System.getProperties().containsKey("idea.active")) {
 		logger.debug("Keeping folder contents after test run from IDEA")
 		// see net.twisterrob.gradle.test.GradleRunnerRule
 		properties["net.twisterrob.gradle.runner.clearAfterSuccess"] = "false"
