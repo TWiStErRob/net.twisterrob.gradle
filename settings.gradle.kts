@@ -2,6 +2,8 @@ import net.twisterrob.gradle.build.dsl.isCI
 import net.twisterrob.gradle.build.settings.enableFeaturePreviewQuietly
 import net.twisterrob.gradle.doNotNagAbout
 
+//net.twisterrob.gradle.isDoNotNagAboutDiagnosticsEnabled = true
+
 // TODEL https://github.com/gradle/gradle/issues/18971
 rootProject.name = "net-twisterrob-gradle"
 
@@ -49,6 +51,7 @@ include(":compat:agp-82x")
 include(":compat:agp-83x")
 include(":compat:agp-84x")
 include(":compat:agp-85x")
+include(":compat:agp-86x")
 include(":compat:gradle")
 include(":compat:kotlin-base")
 
@@ -69,7 +72,7 @@ include(":browser:agp-82x")
 include(":browser:agp-83x")
 include(":browser:agp-84x")
 include(":browser:agp-85x")
-//include(":browser:agp-86x")
+include(":browser:agp-86x")
 include(":browser:kotlin-14x")
 include(":browser:kotlin-16x")
 include(":browser:kotlin-19x")
