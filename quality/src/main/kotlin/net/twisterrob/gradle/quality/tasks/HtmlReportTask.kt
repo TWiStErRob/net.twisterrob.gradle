@@ -8,8 +8,10 @@ import net.twisterrob.gradle.quality.report.bestXMLTransformerFactory
 import net.twisterrob.gradle.quality.report.html.produceXml
 import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
@@ -53,7 +55,11 @@ abstract class HtmlReportTask : BaseViolationsTask() {
 	private val xslOutputFile: File
 		get() = xsl.asFile.get()
 
+	@get:Input
+	abstract val projectName: Property<String>
+
 	init {
+		projectName.convention(project.provider { project.rootProject.name })
 		@Suppress("LeakingThis")
 		xml.convention(project.reporting.baseDirectory.file("violations.xml"))
 		@Suppress("LeakingThis")
@@ -87,7 +93,7 @@ abstract class HtmlReportTask : BaseViolationsTask() {
 	}
 
 	override fun processViolations(violations: Grouper.Start<Violations>) {
-		produceXml(violations, project.rootProject.name, xmlFile, xslOutputFile)
+		produceXml(violations, projectName.get(), xmlFile, xslOutputFile)
 		logger.lifecycle("Wrote XML report to ${SdkUtils.fileToUrlString(xmlFile.absoluteFile)}")
 	}
 
