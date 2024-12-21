@@ -115,7 +115,7 @@ doNotNagAboutStackForTest(
 )
 doNotNagAboutForTest(
 	"8.8" to "8.9",
-	"7.4" to "7.5",
+	"7.4" to "8.3",
 	// > Task :generateDebugRFile
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
 	"Mutating the dependencies of configuration ':debugCompileClasspath' after it has been resolved or consumed. This behavior has been deprecated. This will fail with an error in Gradle 9.0. After a Configuration has been resolved, consumed as a variant, or used for generating published metadata, it should not be modified. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#mutate_configuration_after_locking",
@@ -123,7 +123,7 @@ doNotNagAboutForTest(
 )
 doNotNagAboutForTest(
 	"8.8" to "8.9",
-	"7.4" to "7.5",
+	"7.4" to "8.3",
 	// > Task :generateReleaseRFile
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
 	"Mutating the dependencies of configuration ':releaseCompileClasspath' after it has been resolved or consumed. This behavior has been deprecated. This will fail with an error in Gradle 9.0. After a Configuration has been resolved, consumed as a variant, or used for generating published metadata, it should not be modified. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#mutate_configuration_after_locking",
@@ -290,6 +290,16 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "2.0.20") {
 		"8.8" to "8.9",
 		"0.0" to "100.0",
 		"The Configuration.fileCollection(Spec) method has been deprecated. This is scheduled to be removed in Gradle 9.0. Use Configuration.getIncoming().artifactView(Action) with a componentFilter instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecate_filtered_configuration_file_and_filecollection_methods",
-		"at org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin\$createKaptKotlinTask\$kaptTaskProvider\$1.invoke(Kapt3KotlinGradleSubplugin.kt:569)"
+		when ("@net.twisterrob.test.kotlin.pluginVersion@") {
+			in "1.6.20".."1.6.21" ->
+				"at org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin\$createKaptKotlinTask\$kaptTaskProvider\$1.invoke(Kapt3KotlinGradleSubplugin.kt:569)"
+			in "1.7.0".."1.7.10" ->
+				"at org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin\$createKaptKotlinTask\$kaptTaskProvider\$1.invoke(Kapt3KotlinGradleSubplugin.kt:441)"
+			in "1.7.20".."1.9.25" ->
+				"at org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin\$createKaptKotlinTask\$2.invoke(Kapt3KotlinGradleSubplugin.kt:422)"
+			in "2.0.0".."2.0.10" ->
+				"at org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin\$createKaptKotlinTask\$2.invoke(Kapt3KotlinGradleSubplugin.kt:405)"
+			else -> error("Don't know the line number yet for @net.twisterrob.test.kotlin.pluginVersion@.")
+		}
 	)
 }
