@@ -14,3 +14,4 @@ android-gradle-v83x = { module = "com.android.tools.build:gradle", version = "8.
 android-gradle-v84x = { module = "com.android.tools.build:gradle", version = "8.4.2" }
 android-gradle-v85x = { module = "com.android.tools.build:gradle", version = "8.5.2" }
 android-gradle-v86x = { module = "com.android.tools.build:gradle", version = "8.6.1" }
+android-gradle-v87x = { module = "com.android.tools.build:gradle", version = "8.7.3" }
