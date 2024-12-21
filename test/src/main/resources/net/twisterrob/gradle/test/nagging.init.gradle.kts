@@ -113,20 +113,15 @@ doNotNagAboutStackForTest(
 	// AGP 7.4: line 138; AGP 8.0, 8.1: line 136
 	"at com.android.build.gradle.internal.res.Aapt2FromMaven\$Companion.create(Aapt2FromMaven.kt:13"
 )
-doNotNagAboutForTest(
+doNotNagAboutPatternForTest(
 	"8.8" to "8.9",
 	"7.4" to "8.3",
 	// > Task :generateDebugRFile
-	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
-	"Mutating the dependencies of configuration ':debugCompileClasspath' after it has been resolved or consumed. This behavior has been deprecated. This will fail with an error in Gradle 9.0. After a Configuration has been resolved, consumed as a variant, or used for generating published metadata, it should not be modified. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#mutate_configuration_after_locking",
-	//"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:56)"
-)
-doNotNagAboutForTest(
-	"8.8" to "8.9",
-	"7.4" to "8.3",
 	// > Task :generateReleaseRFile
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
-	"Mutating the dependencies of configuration ':releaseCompileClasspath' after it has been resolved or consumed. This behavior has been deprecated. This will fail with an error in Gradle 9.0. After a Configuration has been resolved, consumed as a variant, or used for generating published metadata, it should not be modified. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#mutate_configuration_after_locking",
+	// Example test: KotlinPluginIntgTest.`can test kotlin with JUnit in Android Test App`
+	"Mutating the dependencies of configuration '(:.+)*:(release|debug)CompileClasspath'" +
+			Regex.escape(" after it has been resolved or consumed. This behavior has been deprecated. This will fail with an error in Gradle 9.0. After a Configuration has been resolved, consumed as a variant, or used for generating published metadata, it should not be modified. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#mutate_configuration_after_locking") + ".*",
 	//"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:56)"
 )
 
@@ -282,10 +277,11 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.20") {
 	)
 }
 
-if ("@net.twisterrob.test.kotlin.pluginVersion@" < "2.0.20") {
+if ("@net.twisterrob.test.kotlin.pluginVersion@" in "1.5.20".."2.0.10") {
 	// https://youtrack.jetbrains.com/issue/KT-67838
 	// > Configure project :
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
+	// Introduced in 1.5.20: https://github.com/JetBrains/kotlin/commit/34e0a3caa890246946ec5fc0153a0b3dc4271244
 	doNotNagAboutStackForTest(
 		"8.8" to "8.9",
 		"0.0" to "100.0",
