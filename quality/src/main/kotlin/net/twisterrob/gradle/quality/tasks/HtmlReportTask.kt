@@ -87,7 +87,7 @@ abstract class HtmlReportTask : BaseViolationsTask() {
 	}
 
 	override fun processViolations(violations: Grouper.Start<Violations>) {
-		project.produceXml(violations, xmlFile, xslOutputFile)
+		produceXml(violations, project.rootProject.name, xmlFile, xslOutputFile)
 		logger.lifecycle("Wrote XML report to ${SdkUtils.fileToUrlString(xmlFile.absoluteFile)}")
 	}
 
