@@ -62,7 +62,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure"
 )
 doNotNagAboutStackForTest(
-	"8.0" to "8.9",
+	"8.0" to "8.10",
 	"7.4" to "8.2",
 	// > Task :checkDebugUnitTestAarMetadata, :mergeDebugUnitTestResources, :processDebugUnitTestManifest, :mergeDebugUnitTestAssets
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
@@ -71,7 +71,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.ide.dependencies.BuildMappingUtils.getIdString(BuildMapping.kt:48)"
 )
 doNotNagAboutStackForTest(
-	"8.0" to "8.9",
+	"8.0" to "8.10",
 	"7.4" to "8.2",
 	// > Task :generateDebugLintModel. :lintAnalyzeDebug, :lintReportDebug
 	// > Task :lintAnalyzeDebug
@@ -81,7 +81,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.ide.dependencies.BuildMappingUtils.getBuildId(BuildMapping.kt:40)"
 )
 doNotNagAboutStackForTest(
-	"8.0" to "8.9",
+	"8.0" to "8.10",
 	"7.4" to "8.0",
 	// > Task :lintAnalyzeDebug
 	// Example test: HtmlReportTaskTest.`task is re-executed when lint results are changed`
@@ -89,7 +89,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:68)"
 )
 doNotNagAboutStackForTest(
-	"8.2" to "8.9",
+	"8.2" to "8.10",
 	"7.4" to "8.0",
 	// > Configure project : when using android.testOptions.unitTests.all { }
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
@@ -97,15 +97,16 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.dsl.TestOptions\$UnitTestOptions\$all\$1.execute(TestOptions.kt:115)"
 )
 doNotNagAboutStackForTest(
-	"8.3" to "8.9",
+	"8.3" to "8.10",
 	"7.4" to "8.0",
 	// > Configure project :
 	// Example test: TestReportGeneratorIntgTest
+	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
 	"The org.gradle.util.GUtil type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#org_gradle_util_reports_deprecations",
 	"at com.android.build.gradle.internal.api.DefaultAndroidSourceSet.<init>(DefaultAndroidSourceSet.kt:68)"
 )
 doNotNagAboutStackForTest(
-	"8.7" to "8.9",
+	"8.7" to "8.10",
 	"7.4" to "8.2",
 	// > Configure project : in all Android tests
 	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
@@ -114,7 +115,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.res.Aapt2FromMaven\$Companion.create(Aapt2FromMaven.kt:13"
 )
 doNotNagAboutPatternForTest(
-	"8.8" to "8.9",
+	"8.8" to "8.10",
 	"7.4" to "8.3",
 	// > Task :generateDebugRFile
 	// > Task :generateReleaseRFile
