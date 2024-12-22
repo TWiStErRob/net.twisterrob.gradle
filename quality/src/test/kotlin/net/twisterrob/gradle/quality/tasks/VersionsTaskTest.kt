@@ -119,7 +119,7 @@ class VersionsTaskTest : BaseIntgTest() {
 	}
 
 	@Test fun `print checkstyle version (Gradle 8 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("8.10")
+		gradle.gradleVersion = GradleVersion.version("8.10.2")
 
 		@Language("gradle")
 		val script = """
@@ -140,7 +140,7 @@ class VersionsTaskTest : BaseIntgTest() {
 	}
 
 	@Test fun `print pmd version (Gradle 8 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("8.10")
+		gradle.gradleVersion = GradleVersion.version("8.10.2")
 
 		@Language("gradle")
 		val script = """
