@@ -215,7 +215,7 @@ abstract class AndroidVersionPlugin : BasePlugin() {
 		@Suppress("UNCHECKED_CAST")
 		val versionCode = variantOutput.versionCode.orElse(-1) as Provider<Int>
 		@Suppress("UNCHECKED_CAST")
-		val versionName = variantOutput.versionName.orElse("null") as Provider<String>
+		val versionName = variantOutput.versionName.orElse("") as Provider<String>
 
 		variantOutput.outputFileName.set(
 			variant.replacementApkNameProvider(versionCode, versionName)

@@ -29,7 +29,7 @@ fun File.apk(
 	variant: String,
 	fileName: String = run {
 		val variantSuffix = if (variant != "release") ".${variant}" else ""
-		"${packageName}${variantSuffix}@-1-vnull+${variant}.apk"
+		"${packageName}${variantSuffix}@-1-v+${variant}.apk"
 	}
 ): File =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
