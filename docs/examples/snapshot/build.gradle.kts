@@ -4,13 +4,26 @@ plugins {
 }
 
 android {
-	compileSdk = 34
+	compileSdk = 35
 	defaultConfig {
 		minSdk = 14
-		targetSdk = 34
+		targetSdk = 35
 
 		namespace = "net.twisterrob.quality.examples.snapshot"
 		versionCode = 1
 		versionName = "1.0"
+	}
+	lint {
+		checkAllWarnings = true
+		warningsAsErrors = true
+		disable += listOf(
+			// Project is using renovate to manage dependencies.
+			"AndroidGradlePluginVersion",
+			"GradleDependency",
+			"NewerVersionAvailable",
+			// Manual update for now.
+			"MinSdkTooLow",
+			"OldTargetApi",
+		)
 	}
 }

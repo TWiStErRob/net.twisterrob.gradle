@@ -6,10 +6,7 @@ import org.gradle.api.ProjectEvaluationListener
 import org.gradle.api.ProjectState
 import org.gradle.api.Task
 import org.gradle.api.initialization.Settings
-import org.gradle.api.internal.GradleInternal
 import org.gradle.api.internal.tasks.TaskDependencyResolveException
-import org.gradle.configurationcache.extensions.serviceOf
-import org.gradle.execution.TaskSelector
 import java.util.TreeMap
 
 private val LOG = logger<TaskGatherer>()
@@ -73,8 +70,8 @@ class TaskGatherer(
 	// Last existed in https://github.com/gradle/gradle/blob/v7.1.0/subprojects/core/src/main/java/org/gradle/execution/ExcludedTaskFilteringBuildConfigurationAction.java
 	/** @see org.gradle.execution.ExcludedTaskFilteringBuildConfigurationAction */
 	private fun getExcludedTasks(): Iterable<Task> {
-		@Suppress("UNUSED_VARIABLE") // TODO figure out how to reinstate this
-		val selector = (settings.gradle as GradleInternal).serviceOf<TaskSelector>()
+//		// TODO figure out how to reinstate this
+//		val selector = (settings.gradle as GradleInternal).serviceOf<TaskSelector>()
 		val tasks: MutableSet<Task> = HashSet()
 		for (path in settings.gradle.startParameter.excludedTaskNames) {
 //			val selection = selector.getSelection(path)
@@ -87,8 +84,8 @@ class TaskGatherer(
 	// Last existed in https://github.com/gradle/gradle/blob/v7.5.0/subprojects/core/src/main/java/org/gradle/execution/TaskNameResolvingBuildConfigurationAction.java
 	/** @see org.gradle.execution.TaskNameResolvingBuildConfigurationAction */
 	private fun getRequestedTasks(): Iterable<Task> {
-		@Suppress("UNUSED_VARIABLE") // TODO figure out how to reinstate this
-		val selector = (settings.gradle as GradleInternal).serviceOf<TaskSelector>()
+//		// TODO figure out how to reinstate this
+//		val selector = (settings.gradle as GradleInternal).serviceOf<TaskSelector>()
 		val tasks: MutableSet<Task> = HashSet()
 		for (request in settings.gradle.startParameter.taskRequests) {
 			for (path in request.args) {
