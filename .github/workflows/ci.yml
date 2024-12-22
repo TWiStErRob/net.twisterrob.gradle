@@ -849,7 +849,7 @@ jobs:
 #            kotlin: '1.6.21'
 #            build-tools: '34.0.0'
 #            test-task: 'testReport :quality:tests'
-#          - name: "AGP 8.6.x on Gradle 8.x - plugin"
+#          - name: "AGP 8.7.x on Gradle 8.x - plugin"
 #            gradle: '8.10.2'
 #            gradle-java: '17'
 #            agp: '8.7.3'
