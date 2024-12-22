@@ -842,20 +842,20 @@ jobs:
             kotlin: '1.6.21'
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
-#          - name: "AGP 8.7.x on Gradle 8.x"
-#            gradle: '8.10.2'
-#            gradle-java: '17'
-#            agp: '8.7.3'
-#            kotlin: '1.6.21'
-#            build-tools: '34.0.0'
-#            test-task: 'testReport :quality:tests'
-#          - name: "AGP 8.7.x on Gradle 8.x - plugin"
-#            gradle: '8.10.2'
-#            gradle-java: '17'
-#            agp: '8.7.3'
-#            kotlin: '1.6.21'
-#            build-tools: '34.0.0'
-#            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.7.x on Gradle 8.x"
+            gradle: '8.10.2'
+            gradle-java: '17'
+            agp: '8.7.3'
+            kotlin: '1.6.21'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.7.x on Gradle 8.x - plugin"
+            gradle: '8.10.2'
+            gradle-java: '17'
+            agp: '8.7.3'
+            kotlin: '1.6.21'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
 
           - name: "AGP stable on Gradle stable"
             gradle: '8.10.2' # https://gradle.org/releases/
