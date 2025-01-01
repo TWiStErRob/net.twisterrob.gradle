@@ -73,6 +73,7 @@ open class GradleRunnerRule : TestRule {
 			field = value
 		}
 
+	@set:Deprecated(message = "Set the javaLauncher on the Gradle Test task.", level = DeprecationLevel.ERROR)
 	var javaHome = File(System.getProperty("java.home"))
 		set(value) {
 			setJavaHome(value)
