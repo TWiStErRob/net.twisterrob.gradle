@@ -43,7 +43,7 @@ class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCallback,
 		 * Abusing how [`org.gradle.jvmargs` is not merged](https://github.com/gradle/gradle/issues/19750),
 		 * so not setting Metaspace will make it unlimited.
 		 *
-		 * The heap size set here is following the default in [DaemonParameters.DEFAULT_JVM_8_ARGS] as of Gradle 8.0.
+		 * The heap size set here is following the default in [DaemonParameters.DEFAULT_JVM_ARGS] as of Gradle 8.0.
 		 */
 		private fun configureMemory() {
 			runner.withJvmArguments("-Xmx512M")
