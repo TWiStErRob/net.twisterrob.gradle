@@ -4,7 +4,7 @@ tasks.withType<Test>().configureEach {
 	useJUnitPlatform()
 }
 
-if (project.property("net.twisterrob.gradle.build.verboseReports").toString().toBoolean()) {
+if (providers.gradleProperty("net.twisterrob.gradle.build.verboseReports").map(String::toBoolean).get()) {
 	tasks.withType<Test>().configureEach {
 		configureVerboseReportsForGithubActions()
 	}
@@ -29,20 +29,20 @@ tasks.withType<Test>().configureEach {
 		"net.twisterrob.gradle.runner.clearAfterFailure",
 	)
 	val properties = propertyNamesToExposeToJUnitTests
-		.associateBy({ it }) { project.property(it) }
+		.associateBy({ it }) { providers.gradleProperty(it) }
 		.toMutableMap()
 	if (System.getProperties().containsKey("idea.active")) {
 		logger.debug("Keeping folder contents after test run from IDEA")
 		// see net.twisterrob.gradle.test.GradleRunnerRule
-		properties["net.twisterrob.gradle.runner.clearAfterSuccess"] = "false"
-		properties["net.twisterrob.gradle.runner.clearAfterFailure"] = "false"
+		properties["net.twisterrob.gradle.runner.clearAfterSuccess"] = provider { "false" }
+		properties["net.twisterrob.gradle.runner.clearAfterFailure"] = provider { "false" }
 	}
-	val tmpdir = project.property("net.twisterrob.test.java.io.tmpdir").toString()
+	val tmpdir = providers.gradleProperty("net.twisterrob.test.java.io.tmpdir").get()
 	if (tmpdir.isNotEmpty()) {
 		// Used in GradleTestKitDirRelocator.
-		properties["java.io.tmpdir"] = tmpdir
+		properties["java.io.tmpdir"] = provider { tmpdir }
 	}
 	// TODEL https://github.com/gradle/gradle/issues/861
-	properties.forEach { (name, value) -> inputs.property(name, value) }
-	properties.forEach { (name, value) -> value?.let { jvmArgs("-D${name}=${value}") } }
+	properties.forEach { (name, value) -> inputs.property(name, value.get()) }
+	properties.forEach { (name, value) -> jvmArgs("-D${name}=${value.get()}") }
 }

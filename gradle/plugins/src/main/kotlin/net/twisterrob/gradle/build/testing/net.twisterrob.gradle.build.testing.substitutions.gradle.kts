@@ -4,7 +4,7 @@ tasks.withType<ProcessResources>().configureEach {
 		"net.twisterrob.test.kotlin.pluginVersion",
 		"net.twisterrob.test.android.compileSdkVersion"
 	)
-	val properties = propertyNamesToReplace.associateBy({ it }) { project.property(it) }
+	val properties = propertyNamesToReplace.associateBy({ it }) { providers.gradleProperty(it) }
 	// TODEL https://github.com/gradle/gradle/issues/861
 	properties.forEach { (name, value) -> inputs.property(name, value) }
 	val processedFiles = listOf(
@@ -18,7 +18,7 @@ tasks.withType<ProcessResources>().configureEach {
 	// TODEL https://github.com/gradle/gradle/issues/24698
 	inputs.property("processedFiles", processedFiles)
 	filesMatching(processedFiles) {
-		val replacements = properties + mapOf(
+		val replacements = properties.mapValues { it.value.get() } + mapOf(
 			// custom replacements (`"name" to value`) would come here
 		)
 		filter(mapOf("tokens" to replacements), org.apache.tools.ant.filters.ReplaceTokens::class.java)
