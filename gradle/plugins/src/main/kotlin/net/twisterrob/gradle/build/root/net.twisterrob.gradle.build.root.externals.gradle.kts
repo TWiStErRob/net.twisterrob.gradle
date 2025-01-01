@@ -3,7 +3,7 @@ tasks.register("check") {
 	dependsOn(gradle.includedBuild("plugins").task(":check"))
 }
 
-if (project.property("net.twisterrob.gradle.build.includeExamples").toString().toBoolean()) {
+if (providers.gradleProperty("net.twisterrob.gradle.build.includeExamples").map(String::toBoolean).get()) {
 	tasks.register("assembleExamples") {
 		dependsOn(gradle.includedBuilds.map { it.task(":assemble") })
 	}
