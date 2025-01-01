@@ -4,7 +4,7 @@ tasks.withType<ProcessResources>().configureEach {
 		"net.twisterrob.test.kotlin.pluginVersion",
 		"net.twisterrob.test.android.compileSdkVersion"
 	)
-	val properties = propertyNamesToReplace.associateBy({ it }) { providers.gradleProperty(it) }
+	val properties = propertyNamesToReplace.associateWith(providers::gradleProperty)
 	// TODEL https://github.com/gradle/gradle/issues/861
 	properties.forEach { (name, value) -> inputs.property(name, value) }
 	val processedFiles = listOf(
