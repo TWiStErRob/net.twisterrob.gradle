@@ -37,7 +37,7 @@ jobs:
         shell: bash
 
     steps:
-      - name: "Set up JDK 17."
+      - name: "Set up JDK for Android SDK."
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -50,6 +50,12 @@ jobs:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: zulu
 
       - name: "Build the Graph plugin."
         working-directory: graph
@@ -93,7 +99,7 @@ jobs:
         shell: bash
 
     steps:
-      - name: "Set up JDK 17."
+      - name: "Set up JDK for Android SDK."
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -106,6 +112,12 @@ jobs:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: zulu
 
       # Check publicly available release version first, this should be independent of repository state.
       - name: "Verify docs/examples/release."
@@ -266,7 +278,7 @@ jobs:
           COMPARE_URL: ${{ github.event.compare }}
         run: echo "Running in response to a ${GITHUB_EVENT_NAME} event, building ${COMPARE_URL} changes."
 
-      - name: "Set up JDK 17."
+      - name: "Set up JDK for Android SDK."
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -291,6 +303,12 @@ jobs:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: zulu
 
       # TODEL https://github.com/gradle/wrapper-validation-action/issues/69
       # Commented out, because action is not stable enough for parallel workflows ^.
