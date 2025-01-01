@@ -24,7 +24,6 @@ class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCallback,
 			file(readResource("nagging.init.gradle.kts"), "nagging.init.gradle.kts")
 			file(readResource("runtime.init.gradle.kts"), "runtime.init.gradle.kts")
 			configureMemory()
-			//javaHome = File(System.getenv(System.getProperty("net.twisterrob.test.gradle.javaHomeEnv")))
 		}
 
 		/**

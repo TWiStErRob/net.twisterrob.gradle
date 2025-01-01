@@ -289,26 +289,6 @@ jobs:
           echo sdkmanager --install "platforms;android-34"
           sdkmanager --install "platforms;android-34"
 
-      - name: "Set up JDK(s)."
-        env:
-          JAVA_VERSION: ${{ matrix.gradle-java }}
-        run: |
-          case ${JAVA_VERSION} in
-            8)
-              echo "JAVA_HOME=$JAVA_HOME_8_X64" | tee --append "${GITHUB_ENV}"
-            ;;
-            11)
-              echo "JAVA_HOME=$JAVA_HOME_11_X64" | tee --append "${GITHUB_ENV}"
-            ;;
-            17)
-              echo "JAVA_HOME=$JAVA_HOME_17_X64" | tee --append "${GITHUB_ENV}"
-            ;;
-            *)
-              echo "Unrecognized matrix.gradle-java=${JAVA_VERSION}."
-              exit 1
-            ;;
-          esac
-
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
 
@@ -384,6 +364,7 @@ jobs:
           MATRIX_AGP: ${{ matrix.agp }}
           MATRIX_KOTLIN: ${{ matrix.kotlin }}
           MATRIX_GRADLE: ${{ matrix.gradle }}
+          MATRIX_JAVA: ${{ matrix.gradle-java }}
         # To run specific test, replace `${{ matrix.test-task }}` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
         run: >
           ./gradlew
@@ -398,7 +379,7 @@ jobs:
           -Pnet.twisterrob.test.android.pluginVersion="${MATRIX_AGP}"
           -Pnet.twisterrob.test.kotlin.pluginVersion="${MATRIX_KOTLIN}"
           -Pnet.twisterrob.gradle.runner.gradleVersion="${MATRIX_GRADLE}"
-        #  -Pnet.twisterrob.test.gradle.javaHomeEnv=JAVA_HOME_${{ matrix.gradle-java }}_X64
+          -Pnet.twisterrob.test.gradle.javaVersion="${MATRIX_JAVA}"
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results XMLs' artifact."
         if: ${{ success() || failure() }}

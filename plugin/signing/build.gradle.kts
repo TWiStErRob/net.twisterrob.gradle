@@ -31,6 +31,7 @@ dependencies {
 
 tasks.withType<Test>().configureEach {
 	javaLauncher = javaToolchains.launcherFor {
-		languageVersion = JavaLanguageVersion.of(11)
+		languageVersion = providers.gradleProperty("net.twisterrob.test.gradle.javaVersion")
+			.map(JavaLanguageVersion::of)
 	}
 }

@@ -19,7 +19,7 @@ tasks.withType<Test>().configureEach {
 		// for GradleRunnerRule to use a different Gradle version for tests
 		"net.twisterrob.gradle.runner.gradleVersion",
 		// for tests to decide dynamically
-		"net.twisterrob.test.gradle.javaHomeEnv",
+		"net.twisterrob.test.gradle.javaVersion",
 		"net.twisterrob.test.android.pluginVersion",
 		"net.twisterrob.test.kotlin.pluginVersion",
 		"net.twisterrob.test.android.compileSdkVersion",
