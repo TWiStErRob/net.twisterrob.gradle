@@ -28,3 +28,9 @@ dependencies {
 		version { require(property("net.twisterrob.test.android.pluginVersion").toString()) }
 	}
 }
+
+tasks.withType<Test>().configureEach {
+	javaLauncher = javaToolchains.launcherFor {
+		languageVersion = JavaLanguageVersion.of(11)
+	}
+}
