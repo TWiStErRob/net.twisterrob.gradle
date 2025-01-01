@@ -1,5 +1,9 @@
 import net.twisterrob.gradle.build.testing.configureVerboseReportsForGithubActions
 
+plugins {
+	id("org.gradle.java-base")
+}
+
 tasks.withType<Test>().configureEach {
 	useJUnitPlatform()
 }
@@ -12,6 +16,13 @@ if (providers.gradleProperty("net.twisterrob.gradle.build.verboseReports").map(S
 
 tasks.named<Test>("test") {
 	testLogging.events("passed", "skipped", "failed")
+}
+
+tasks.withType<Test>().configureEach {
+	javaLauncher = javaToolchains.launcherFor {
+		languageVersion = providers.gradleProperty("net.twisterrob.test.gradle.javaVersion")
+			.map(JavaLanguageVersion::of)
+	}
 }
 
 tasks.withType<Test>().configureEach {
