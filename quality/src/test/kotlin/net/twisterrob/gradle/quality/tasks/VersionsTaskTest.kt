@@ -9,6 +9,8 @@ import net.twisterrob.gradle.test.runBuild
 import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledOnJre
+import org.junit.jupiter.api.condition.JRE
 import org.junit.jupiter.api.extension.ExtendWith
 
 /**
@@ -118,8 +120,20 @@ class VersionsTaskTest : BaseIntgTest() {
 		result.assertHasOutputLine("""PMD version: 6.48.0""")
 	}
 
+	@DisabledOnJre(
+		JRE.JAVA_8,
+		JRE.JAVA_9,
+		JRE.JAVA_10,
+		JRE.JAVA_11,
+		JRE.JAVA_12,
+		JRE.JAVA_13,
+		JRE.JAVA_14,
+		JRE.JAVA_15,
+		JRE.JAVA_16,
+		disabledReason = "https://docs.gradle.org/8.10.2/userguide/upgrading_version_8.html#minimum_daemon_jvm_version"
+	)
 	@Test fun `print checkstyle version (Gradle 8 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("8.9")
+		gradle.gradleVersion = GradleVersion.version("8.10.2")
 
 		@Language("gradle")
 		val script = """
@@ -135,12 +149,24 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 8.9""")
+		result.assertHasOutputLine("""Gradle version: 8.10.2""")
 		result.assertHasOutputLine("""Checkstyle version: 9.3""")
 	}
 
+	@DisabledOnJre(
+		JRE.JAVA_8,
+		JRE.JAVA_9,
+		JRE.JAVA_10,
+		JRE.JAVA_11,
+		JRE.JAVA_12,
+		JRE.JAVA_13,
+		JRE.JAVA_14,
+		JRE.JAVA_15,
+		JRE.JAVA_16,
+		disabledReason = "https://docs.gradle.org/8.10.2/userguide/upgrading_version_8.html#minimum_daemon_jvm_version"
+	)
 	@Test fun `print pmd version (Gradle 8 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("8.9")
+		gradle.gradleVersion = GradleVersion.version("8.10.2")
 
 		@Language("gradle")
 		val script = """
@@ -156,7 +182,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 8.9""")
+		result.assertHasOutputLine("""Gradle version: 8.10.2""")
 		result.assertHasOutputLine("""PMD version: 6.55.0""")
 	}
 
