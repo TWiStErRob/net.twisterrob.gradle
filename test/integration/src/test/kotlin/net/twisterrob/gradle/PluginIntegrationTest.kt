@@ -397,13 +397,11 @@ class PluginIntegrationTest : BaseIntgTest() {
 				// This only affects `kotlin project doesn't create tasks when using plugin`(String) test.
 				// https://youtrack.jetbrains.com/issue/KT-60664 fixed in 2.0.0-Beta4.
 				// (originally: https://github.com/gradle/gradle/issues/25841)
-				@Suppress("UnnecessaryLet") // It's the only way to chain.
 				val minorVersion = gradle.gradleVersion.baseVersion
 					.version
 					.replace("""(\d+\.\d+)\.\d+""".toRegex(), "$1")
-					.let(GradleVersion::version)
 				@Suppress("UseIfInsteadOfWhen") // It's easier to read and maintain this way.
-				when (minorVersion) {
+				when (GradleVersion.version(minorVersion)) {
 					in GradleVersion.version("8.3")..GradleVersion.version("8.10") -> listOf(
 						":compileJava",
 					)
