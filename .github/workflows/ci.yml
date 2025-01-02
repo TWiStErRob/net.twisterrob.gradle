@@ -611,14 +611,14 @@ jobs:
             test-task: 'testReport :plugin:tests'
           - name: "AGP 7.4.x on Gradle 8.x"
             gradle: '8.10.2'
-            java: '11'
+            java: '17'
             agp: '7.4.2'
             kotlin: '1.6.21'
             build-tools: '30.0.3'
             test-task: 'testReport :quality:tests'
           - name: "AGP 7.4.x on Gradle 8.x - plugin"
             gradle: '8.10.2'
-            java: '11'
+            java: '17'
             agp: '7.4.2'
             kotlin: '1.6.21'
             build-tools: '34.0.0'
