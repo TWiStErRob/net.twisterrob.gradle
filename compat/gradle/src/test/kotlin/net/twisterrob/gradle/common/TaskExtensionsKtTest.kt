@@ -9,7 +9,7 @@ class TaskExtensionsKtTest {
 	private val project = Project()
 
 	@Test fun `task was launched explicitly`() {
-		val task = project.tasks.create("myTask")
+		val task = project.tasks.register("myTask").get()
 		project.gradle.startParameter.setTaskNames(listOf(":myTask"))
 
 		assertTrue(task.wasLaunchedExplicitly)
@@ -27,7 +27,7 @@ class TaskExtensionsKtTest {
 	}
 
 	@Test fun `task was launched without qualification`() {
-		val task = project.tasks.create("myTask")
+		val task = project.tasks.register("myTask").get()
 		project.gradle.startParameter.setTaskNames(listOf("myTask"))
 
 		assertFalse(task.wasLaunchedExplicitly)
@@ -45,7 +45,7 @@ class TaskExtensionsKtTest {
 	}
 
 	@Test fun `task was launched explicitly among others`() {
-		val task = project.tasks.create("myTask")
+		val task = project.tasks.register("myTask").get()
 		project.gradle.startParameter.setTaskNames(listOf("otherTask", ":myTask", "someTask"))
 
 		assertTrue(task.wasLaunchedExplicitly)
@@ -63,7 +63,7 @@ class TaskExtensionsKtTest {
 	}
 
 	@Test fun `task was launched explicitly and not`() {
-		val task = project.tasks.create("myTask")
+		val task = project.tasks.register("myTask").get()
 		project.gradle.startParameter.setTaskNames(listOf("myTask", ":myTask"))
 
 		assertTrue(task.wasLaunchedExplicitly)
@@ -81,7 +81,7 @@ class TaskExtensionsKtTest {
 	}
 
 	@Test fun `task was not launched explicitly`() {
-		val task = project.tasks.create("myTask")
+		val task = project.tasks.register("myTask").get()
 		project.gradle.startParameter.setTaskNames(emptyList())
 
 		assertFalse(task.wasLaunchedExplicitly)
@@ -99,7 +99,7 @@ class TaskExtensionsKtTest {
 	}
 
 	@Test fun `task was not launched explicitly, but others were`() {
-		val task = project.tasks.create("myTask")
+		val task = project.tasks.register("myTask").get()
 		project.gradle.startParameter.setTaskNames(listOf("otherTask", "someTask"))
 
 		assertFalse(task.wasLaunchedExplicitly)

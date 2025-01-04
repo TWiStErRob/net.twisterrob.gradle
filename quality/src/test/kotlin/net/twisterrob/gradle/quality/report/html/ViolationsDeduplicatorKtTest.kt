@@ -26,7 +26,7 @@ class ViolationsDeduplicatorKtTest {
 	private val fixture = JFixture().apply {
 		customise().sameInstance(Project::class.java, fixtRoot)
 		customise().lazyInstance(Task::class.java) {
-			fixtRoot.tasks.create(build(), DefaultTask::class.java)
+			fixtRoot.tasks.register(build(), DefaultTask::class.java).get()
 		}
 	}
 
