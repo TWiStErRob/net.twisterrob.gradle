@@ -49,12 +49,12 @@ class SettingsUtilsIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 		@Language("gradle")
 		val build = """
 			// Use type-safe project accessors for a sanity check.
-			println("My project: " + projects.myRoot.dependencyProject.rootDir)
+			println("My project: " + projects.myRoot.name)
 		""".trimIndent()
 
 		val result = gradle.run(build).build()
 
-		result.assertHasOutputLine("My project: ${gradle.root}")
+		result.assertHasOutputLine("My project: my-root")
 		result.assertHasOutputLine("Type-safe project accessors is an incubating feature.")
 	}
 
@@ -82,12 +82,12 @@ class SettingsUtilsIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 		@Language("gradle")
 		val build = """
 			// Use type-safe project accessors for a sanity check.
-			println("My project: " + projects.myRoot.dependencyProject.rootDir)
+			println("My project: " + projects.myRoot.name)
 		""".trimIndent()
 
 		val result = gradle.run(build).build()
 
-		result.assertHasOutputLine("My project: ${gradle.root}")
+		result.assertHasOutputLine("My project: my-root")
 		result.assertNoOutputLine("Type-safe project accessors is an incubating feature.")
 	}
 
@@ -115,12 +115,12 @@ class SettingsUtilsIntgTest_enableFeaturePreviewQuietly : BaseIntgTest() {
 		@Language("gradle")
 		val build = """
 			// Use type-safe project accessors for a sanity check.
-			println("My project: " + projects.myRoot.dependencyProject.rootDir)
+			println("My project: " + projects.myRoot.name)
 		""".trimIndent()
 
 		val result = gradle.run(build).build()
 
-		result.assertHasOutputLine("My project: ${gradle.root}")
+		result.assertHasOutputLine("My project: my-root")
 		result.assertNoOutputLine("Type-safe project accessors is an incubating feature.")
 	}
 }

@@ -62,9 +62,12 @@ tasks.register("tests") {
 		projects.test.internal.runtime,
 		projects.test.integration,
 	).forEach { project ->
-		dependsOn(project.dependencyProject.tasks.named("test"))
+		dependsOn(project.task("test"))
 	}
-	dependsOn(projects.compat.dependencyProject.tasks.named("tests"))
+	dependsOn(projects.compat.task("tests"))
 }
 
 pullTestResourcesFrom(projects.test)
+
+private fun ProjectDependency.task(name: String): String =
+	"${this.path}:${name}"

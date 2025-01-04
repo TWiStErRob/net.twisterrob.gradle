@@ -28,7 +28,7 @@ fun Project.exposeTestResources() {
 fun Project.pullTestResourcesFrom(project: ProjectDependency) {
 	val testResources = configurations.create("gobbledTestResources")
 	dependencies {
-		add(testResources.name, project(project.dependencyProject.path, configuration = "exposedTestResources"))
+		add(testResources.name, project(project.path, configuration = "exposedTestResources"))
 	}
 	// This copy is necessary to deduplicate source roots and prevent IDEA warning:
 	// > Duplicate content roots detected:

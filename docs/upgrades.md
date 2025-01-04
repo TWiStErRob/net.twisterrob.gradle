@@ -35,11 +35,7 @@
 # How to upgrade Gradle in the project?
 
  1. Update the gradle wrapper:
-    * Run `gradlew wrapper --distribution-type=all --gradle-version=...`.
-      * in root
-      * in `/gradle/plugins/`
-      * in `/docs/examples/*/`
-      * in `/graph/`
+    * Run `gradlew wrapper --distribution-type=all --gradle-version=...` in all projects (see `wrappers.bat`)
     * Test each with `gradlew build`.
  2. Update `net.twisterrob.gradle.runner.gradleVersion` to the same as `gradle-wrapper.properties`.
  3. Review tests
