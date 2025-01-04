@@ -402,7 +402,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 					.replace("""(\d+\.\d+)\.\d+""".toRegex(), "$1")
 				@Suppress("UseIfInsteadOfWhen") // It's easier to read and maintain this way.
 				when (GradleVersion.version(minorVersion)) {
-					in GradleVersion.version("8.3")..GradleVersion.version("8.11") -> listOf(
+					in GradleVersion.version("8.3")..GradleVersion.version("8.12") -> listOf(
 						":compileJava",
 					)
 					else -> emptyList()
