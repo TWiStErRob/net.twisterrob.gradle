@@ -69,6 +69,5 @@ tasks.register("tests") {
 
 pullTestResourcesFrom(projects.test)
 
-private fun ProjectDependency.task(name: String): TaskProvider<Task> =
-	@Suppress("DEPRECATION")
-	this.dependencyProject.tasks.named(name)
+private fun ProjectDependency.task(name: String): String =
+	"${this.path}:${name}"
