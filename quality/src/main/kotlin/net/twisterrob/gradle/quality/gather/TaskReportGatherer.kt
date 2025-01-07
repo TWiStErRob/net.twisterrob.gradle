@@ -32,4 +32,9 @@ abstract class TaskReportGatherer<T>(
 
 	open fun allTasksFrom(project: Project): TaskCollection<T> =
 		project.tasks.withType(taskType)
+
+	companion object {
+		@Suppress("ConstPropertyName", "UnusedPrivateProperty") // Java magic.
+		private const val serialVersionUID: Long = 1
+	}
 }

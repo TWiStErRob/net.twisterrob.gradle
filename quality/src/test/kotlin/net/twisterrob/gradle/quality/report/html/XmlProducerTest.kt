@@ -38,7 +38,12 @@ class XmlProducerTest {
 		private val projectName: String = "don't matter"
 
 		fun callProduceXml() {
-			produceXml(results, projectName, xmlFile.absoluteFile, xslFile.absoluteFile)
+			produceXml(
+				results = results,
+				projectName = projectName,
+				xmlFile = xmlFile.absoluteFile,
+				xslFile = xslFile.absoluteFile,
+			)
 		}
 
 		fun stubResult(list: List<Violations>) {

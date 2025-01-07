@@ -5,7 +5,6 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
-import net.twisterrob.gradle.test.root
 import org.gradle.util.GradleVersion
 import org.hamcrest.Matchers.greaterThanOrEqualTo
 import org.hamcrest.assumeThat

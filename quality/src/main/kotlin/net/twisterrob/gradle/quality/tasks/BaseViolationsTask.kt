@@ -28,6 +28,9 @@ import java.io.Serializable
 @UntrackedTask(because = "Abstract super-class, not to be instantiated directly.")
 abstract class BaseViolationsTask : DefaultTask() {
 
+	@get:Input
+	internal abstract val tasks: ListProperty<Result>
+
 	init {
 		this.group = JavaBasePlugin.VERIFICATION_GROUP
 		// REPORT this extra task is needed because configureEach runs before
@@ -63,14 +66,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 			// make sure inputs are available when running validation, but don't execute (depend on) reports
 			this.mustRunAfter(reportTask)
 		}
-	}
 
-	protected abstract fun processViolations(violations: Grouper.Start<Violations>)
-
-	@get:Input
-	internal abstract val tasks: ListProperty<Result>
-
-	init {
 		tasks.convention(project.provider {
 			project.allprojects.flatMap { subproject ->
 				GATHERERS.flatMap { gatherer ->
@@ -95,25 +91,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 		})
 	}
 
-	internal data class Result(
-		val subproject: Result.Project,
-		val gatherer: TaskReportGatherer<Task>,
-		val task: String,
-		val displayName: String,
-		val gathererName: String,
-		val parsableReportLocation: File,
-		val humanReportLocation: File,
-	) : Serializable {
-		internal data class Project(
-			val name: String,
-			val path: String,
-			val rootDir: File,
-			val projectDir: File,
-		) : Serializable {
-			internal fun file(path: String): File =
-				projectDir.resolve(path)
-		}
-	}
+	protected abstract fun processViolations(violations: Grouper.Start<Violations>)
 
 	@TaskAction
 	fun validateViolations() {
@@ -180,6 +158,38 @@ abstract class BaseViolationsTask : DefaultTask() {
 					}
 				}
 			}
+		}
+	}
+
+	internal data class Result(
+		val subproject: Result.Project,
+		val gatherer: TaskReportGatherer<Task>,
+		val task: String,
+		val displayName: String,
+		val gathererName: String,
+		val parsableReportLocation: File,
+		val humanReportLocation: File,
+	) : Serializable {
+		internal data class Project(
+			val name: String,
+			val path: String,
+			val rootDir: File,
+			val projectDir: File,
+		) : Serializable {
+
+			@Suppress("DataClassContainsFunctions")
+			internal fun file(path: String): File =
+				projectDir.resolve(path)
+
+			companion object {
+				@Suppress("ConstPropertyName", "UnusedPrivateProperty") // Java magic.
+				private const val serialVersionUID: Long = 1
+			}
+		}
+
+		companion object {
+			@Suppress("ConstPropertyName", "UnusedPrivateProperty") // Java magic.
+			private const val serialVersionUID: Long = 1
 		}
 	}
 
