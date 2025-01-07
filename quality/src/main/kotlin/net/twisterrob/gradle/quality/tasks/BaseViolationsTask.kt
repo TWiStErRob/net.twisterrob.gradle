@@ -68,7 +68,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 	protected abstract fun processViolations(violations: Grouper.Start<Violations>)
 
 	@get:Input
-	abstract val tasks: ListProperty<Result>
+	internal abstract val tasks: ListProperty<Result>
 
 	init {
 		tasks.convention(project.provider {
@@ -76,7 +76,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 				GATHERERS.flatMap { gatherer ->
 					gatherer.allTasksFrom(subproject).map { task ->
 						Result(
-							module = Violation.Module(
+							subproject = Result.Project(
 								name = subproject.name,
 								path = subproject.path,
 								rootDir = subproject.rootDir,
@@ -95,29 +95,37 @@ abstract class BaseViolationsTask : DefaultTask() {
 		})
 	}
 
-	data class Result(
-		val module: Violation.Module,
+	internal data class Result(
+		val subproject: Result.Project,
 		val gatherer: TaskReportGatherer<Task>,
 		val task: String,
 		val displayName: String,
 		val gathererName: String,
 		val parsableReportLocation: File,
 		val humanReportLocation: File,
-	) : Serializable
+	) : Serializable {
+		internal data class Project(
+			val name: String,
+			val path: String,
+			val rootDir: File,
+			val projectDir: File,
+		) : Serializable {
+			internal fun file(path: String): File =
+				projectDir.resolve(path)
+		}
+	}
 
 	@TaskAction
 	fun validateViolations() {
 		val ruleCategoryParser = RuleCategoryParser()
 		val results = tasks.get().map { result ->
-			val gatherer = result.gatherer
-			val subproject = result.module
 			Violations(
 				parser = result.displayName,
-				module = subproject.path,
+				module = result.subproject.path,
 				variant = result.gathererName,
 				result = result.parsableReportLocation,
 				report = result.humanReportLocation,
-				violations = gatherer.getViolations(result.parsableReportLocation)?.map { violation ->
+				violations = result.gatherer.getViolations(result.parsableReportLocation)?.map { violation ->
 					Violation(
 						rule = ruleCategoryParser.rule(violation),
 						category = ruleCategoryParser.category(violation),
@@ -129,10 +137,15 @@ abstract class BaseViolationsTask : DefaultTask() {
 						message = violation.message,
 						specifics = violation.specifics.orEmpty(),
 						location = Violation.Location(
-							module = subproject,
+							module = Violation.Module(
+								name = result.subproject.name,
+								path = result.subproject.path,
+								rootDir = result.subproject.rootDir,
+								projectDir = result.subproject.projectDir,
+							),
 							task = result.task,
 							variant = result.gathererName,
-							file = subproject.file(violation.file),
+							file = result.subproject.file(violation.file),
 							startLine = violation.startLine,
 							endLine = violation.endLine,
 							column = violation.column
