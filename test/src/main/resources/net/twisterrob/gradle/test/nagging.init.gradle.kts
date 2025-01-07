@@ -324,10 +324,3 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" in "1.5.20".."2.0.10") {
 		}
 	)
 }
-
-// TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/509
-doNotNagAboutForTest(
-	"8.12" to "8.13",
-	"0.0" to "100.0",
-	"Invocation of Task.project at execution time has been deprecated. This will fail with an error in Gradle 10.0. This API is incompatible with the configuration cache, which will become the only mode supported by Gradle in a future release. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#task_project"
-)
