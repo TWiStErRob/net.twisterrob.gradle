@@ -51,11 +51,14 @@ class Violation(
 	}
 
 	class Module(
-		val name: String,
 		val path: String,
-		val rootDir: File,
+		val name: String,
 		val projectDir: File,
-	)
+		val rootDir: File,
+	) {
+		override fun toString(): String =
+			"Module(path='$path', name='$name', projectDir=$projectDir, rootDir=$rootDir)"
+	}
 
 	class Location(
 		val module: Module,

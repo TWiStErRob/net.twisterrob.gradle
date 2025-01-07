@@ -116,10 +116,10 @@ abstract class BaseViolationsTask : DefaultTask() {
 						specifics = violation.specifics.orEmpty(),
 						location = Violation.Location(
 							module = Violation.Module(
-								name = result.subproject.name,
 								path = result.subproject.path,
-								rootDir = result.subproject.rootDir,
+								name = result.subproject.name,
 								projectDir = result.subproject.projectDir,
+								rootDir = result.subproject.rootDir,
 							),
 							task = result.task,
 							variant = result.gathererName,

@@ -18,26 +18,26 @@ class LocationViewModelTest {
 
 	private val rootProject
 		get() = Violation.Module(
-			name = "",
 			path = ":",
+			name = "",
+			projectDir = File("."),
 			rootDir = File("."),
-			projectDir = File(".")
 		)
 
 	private val parentProject
 		get() = Violation.Module(
-			name = "sub1",
 			path = ":sub1",
+			name = "sub1",
+			projectDir = File("./sub1"),
 			rootDir = File("."),
-			projectDir = File("./sub1")
 		)
 
 	private val innerProject
 		get() = Violation.Module(
-			name = "sub2",
 			path = ":sub1:sub2",
+			name = "sub2",
+			projectDir = File("./sub1/sub2"),
 			rootDir = File("."),
-			projectDir = File("./sub1/sub2")
 		)
 
 	private val fixture = JFixture().apply {
