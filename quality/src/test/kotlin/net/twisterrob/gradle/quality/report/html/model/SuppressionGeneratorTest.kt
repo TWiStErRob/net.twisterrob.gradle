@@ -2,16 +2,12 @@ package net.twisterrob.gradle.quality.report.html.model
 
 import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
-import net.twisterrob.gradle.test.Project
-import org.gradle.api.Project
-import org.gradle.api.Task
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
-import org.mockito.kotlin.mock
 import java.io.File
 
 class SuppressionGeneratorTest {
@@ -128,10 +124,11 @@ class SuppressionGeneratorTest {
 
 		private fun createAndroidLintFixture(): JFixture {
 			return JFixture().apply {
-				customise().lazyInstance(Project::class.java) { Project() }
-				customise().lazyInstance(Task::class.java) { mock() }
 				customise().intercept(Violation::class.java) {
 					it.source.setField("reporter", "ANDROIDLINT")
+					it.location.module.apply {
+						setField("projectDir", rootDir.resolve(projectDir))
+					}
 				}
 			}
 		}

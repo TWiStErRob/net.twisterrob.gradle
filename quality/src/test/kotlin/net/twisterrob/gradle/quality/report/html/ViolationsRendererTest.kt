@@ -65,7 +65,7 @@ class ViolationsRendererTest {
 	@Suppress("detekt.LongMethod")
 	@Test fun `renderXml renders a violation`(@TempDir temp: File) {
 		val fixtViolation: Violation = fixture.build {
-			location.setField("module", ProjectBuilder().withProjectDir(temp).build())
+			location.setField("module", Violation.Module(":", "", temp, temp))
 			location.setField("file", temp.resolve(fixture.build<String>()))
 			location.setField("startLine", 3)
 			location.setField("endLine", 5)
@@ -150,7 +150,7 @@ class ViolationsRendererTest {
 	@Suppress("detekt.LongMethod")
 	@Test fun `renderXml renders a violation with external file`(@TempDir temp: File) {
 		val fixtViolation: Violation = fixture.build {
-			location.setField("module", ProjectBuilder().withProjectDir(temp).build())
+			location.setField("module", Violation.Module(":", "", temp, temp))
 			location.setField("file", File("A:\\${fixture.build<String>()}\\${fixture.build<String>()}"))
 		}
 		val fixtCategory: Category = fixture.build()
