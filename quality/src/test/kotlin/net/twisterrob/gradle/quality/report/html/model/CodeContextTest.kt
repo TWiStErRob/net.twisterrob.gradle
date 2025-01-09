@@ -2,8 +2,6 @@ package net.twisterrob.gradle.quality.report.html.model
 
 import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
-import org.gradle.api.Project
-import org.gradle.api.Task
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.matchesPattern
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -11,7 +9,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
-import org.mockito.kotlin.mock
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -20,12 +17,7 @@ class CodeContextTest {
 
 	@TempDir lateinit var temp: File
 
-	private val fixture = JFixture().apply {
-		customise().lazyInstance(Project::class.java) {
-			mockProject(buildProjectPath())
-		}
-		customise().lazyInstance(Task::class.java) { mock() }
-	}
+	private val fixture = JFixture()
 
 	@Nested
 	inner class MissingLocation {
