@@ -2,8 +2,6 @@
 
 package net.twisterrob.gradle.quality
 
-import org.gradle.api.Project
-import org.gradle.api.Task
 import java.io.File
 
 @Suppress("detekt.UseDataClass") // Don't want to define equals/hashCode/component methods as they all imply something.
@@ -52,9 +50,19 @@ class Violation(
 		ERROR
 	}
 
+	class Module(
+		val path: String,
+		val name: String,
+		val projectDir: File,
+		val rootDir: File,
+	) {
+		override fun toString(): String =
+			"Module(path='$path', name='$name', projectDir=$projectDir, rootDir=$rootDir)"
+	}
+
 	class Location(
-		val module: Project,
-		val task: Task,
+		val module: Module,
+		val task: String,
 		val variant: String,
 		val file: File,
 		val startLine: Int,

@@ -135,7 +135,7 @@ private class Deduper(val violation: Violation) {
 		if (violation.rule != other.violation.rule) return false
 		if (violation.category != other.violation.category) return false
 		if (violation.message != other.violation.message) return false
-		if (violation.location.module != other.violation.location.module) return false
+		if (violation.location.module.path != other.violation.location.module.path) return false
 		if (violation.location.file != other.violation.location.file) return false
 		if (violation.location.startLine != other.violation.location.startLine) return false
 		if (violation.location.endLine != other.violation.location.endLine) return false
@@ -148,7 +148,7 @@ private class Deduper(val violation: Violation) {
 		var result = violation.rule.hashCode()
 		result = 31 * result + violation.message.hashCode()
 		result = 31 * result + (violation.category?.hashCode() ?: 0)
-		result = 31 * result + violation.location.module.hashCode()
+		result = 31 * result + violation.location.module.path.hashCode()
 		result = 31 * result + violation.location.file.hashCode()
 		result = 31 * result + violation.location.startLine.hashCode()
 		result = 31 * result + violation.location.endLine.hashCode()

@@ -7,7 +7,6 @@ import io.mockk.verify
 import net.twisterrob.gradle.common.grouper.Grouper.Start
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
-import org.gradle.api.Project
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
@@ -23,7 +22,6 @@ class XmlProducerTest {
 		robot.stubResult(emptyList())
 		robot.stubResultIsGrouped(emptyMap())
 		robot.stubGroupIsRendered()
-		robot.stubRootProjectName("don't matter")
 
 		robot.callProduceXml()
 
@@ -37,11 +35,15 @@ class XmlProducerTest {
 		private lateinit var results: Start<Violations>
 		private lateinit var list: List<Violations>
 		private lateinit var grouped: Map<Category?, Map<Reporter, List<Violation>>>
-		private lateinit var projectName: String
-		private val project: Project = mockk()
+		private val projectName: String = "don't matter"
 
 		fun callProduceXml() {
-			project.produceXml(results, xmlFile.absoluteFile, xslFile.absoluteFile)
+			produceXml(
+				results = results,
+				projectName = projectName,
+				xmlFile = xmlFile.absoluteFile,
+				xslFile = xslFile.absoluteFile,
+			)
 		}
 
 		fun stubResult(list: List<Violations>) {
@@ -64,13 +66,6 @@ class XmlProducerTest {
 		fun verifyXmlWritten() {
 			val xslPath = "${xslFile.parentFile.name}/${xslFile.name}"
 			verify { renderXml(to = any(), from = grouped, projectName = projectName, xslPath = xslPath) }
-		}
-
-		fun stubRootProjectName(name: String) {
-			this.projectName = name
-			every { project.rootProject } returns mockk rootProject@{
-				every { this@rootProject.name } returns name
-			}
 		}
 	}
 }

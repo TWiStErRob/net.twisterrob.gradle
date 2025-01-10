@@ -5,10 +5,11 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.TaskCollection
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
+import java.io.Serializable
 
 abstract class TaskReportGatherer<T>(
 	private val taskType: Class<T>
-) where T : Task {
+) : Serializable where T : Task {
 
 	abstract fun getParsableReportLocation(task: T): File
 
@@ -18,8 +19,7 @@ abstract class TaskReportGatherer<T>(
 
 	abstract fun getDisplayName(task: T): String
 
-	fun getViolations(task: T): List<Violation>? {
-		val report = getParsableReportLocation(task)
+	fun getViolations(report: File): List<Violation>? {
 		return if (report.exists()) {
 			findViolations(report)
 		} else {
@@ -32,4 +32,9 @@ abstract class TaskReportGatherer<T>(
 
 	open fun allTasksFrom(project: Project): TaskCollection<T> =
 		project.tasks.withType(taskType)
+
+	companion object {
+		@Suppress("ConstPropertyName", "UnusedPrivateProperty") // Java magic.
+		private const val serialVersionUID: Long = 1
+	}
 }
