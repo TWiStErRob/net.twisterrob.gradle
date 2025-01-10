@@ -56,7 +56,6 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		@Suppress("NestedScopeFunctions")
 		with(android) {
 			configureLint()
-			// TODO intentionally mismatching the versions to get latest features, but still have sources available for compiled version.
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
 
 			with(defaultConfig) {
