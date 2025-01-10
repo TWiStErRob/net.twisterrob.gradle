@@ -298,8 +298,8 @@ jobs:
           sdkmanager --install "build-tools;${CURRENT_BUILD_TOOLS_VERSION}"
 
           # compileSdk for almost all tests.
-          echo sdkmanager --install "platforms;android-34"
-          sdkmanager --install "platforms;android-34"
+          echo sdkmanager --install "platforms;android-35"
+          sdkmanager --install "platforms;android-35"
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
