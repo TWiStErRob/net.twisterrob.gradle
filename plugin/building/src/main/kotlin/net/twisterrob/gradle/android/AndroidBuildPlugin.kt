@@ -57,7 +57,6 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		with(android) {
 			configureLint()
 			// TODO intentionally mismatching the versions to get latest features, but still have sources available for compiled version.
-			buildToolsVersion = VERSION_BUILD_TOOLS
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
 
 			with(defaultConfig) {
