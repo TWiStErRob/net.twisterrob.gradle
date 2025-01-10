@@ -112,7 +112,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.defaultConfig.minSdkVersion = 10
+			android.defaultConfig.minSdkVersion = 19
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
@@ -120,7 +120,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug"),
-			minSdkVersion = 10
+			minSdkVersion = 19
 		)
 	}
 
@@ -130,7 +130,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.defaultConfig.minSdkVersion = 10
+			android.defaultConfig.minSdkVersion = 19
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -138,7 +138,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
-			minSdkVersion = 10
+			minSdkVersion = 19
 		)
 	}
 
@@ -148,7 +148,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.defaultConfig.targetSdk = 19
+			android.defaultConfig.targetSdk = 28
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
@@ -156,7 +156,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug"),
-			targetSdkVersion = 19
+			targetSdkVersion = 28
 		)
 	}
 
@@ -166,7 +166,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.defaultConfig.targetSdk = 19
+			android.defaultConfig.targetSdk = 28
 			android.lint.disable("ExpiredTargetSdkVersion")
 		""".trimIndent()
 
@@ -175,7 +175,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
-			targetSdkVersion = 19
+			targetSdkVersion = 28
 		)
 	}
 
