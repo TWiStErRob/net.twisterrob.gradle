@@ -38,7 +38,7 @@ internal val androidSdkDir: File
 	get() = File(System.getenv("ANDROID_HOME"))
 
 internal val buildToolsDir: File
-	get() = androidSdkDir.resolve("build-tools/${VERSION_BUILD_TOOLS}")
+	get() = androidSdkDir.resolve("build-tools").listFiles().sorted().last()
 
 internal val toolsDir: File
 	get() = androidSdkDir.resolve("tools")
