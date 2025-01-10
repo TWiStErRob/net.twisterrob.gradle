@@ -4,7 +4,6 @@ import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.report.html.model.build
 import net.twisterrob.gradle.quality.report.html.model.setField
-import net.twisterrob.gradle.test.ProjectBuilder
 import net.twisterrob.gradle.test.fqcn
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -65,7 +64,7 @@ class ViolationsRendererTest {
 	@Suppress("detekt.LongMethod")
 	@Test fun `renderXml renders a violation`(@TempDir temp: File) {
 		val fixtViolation: Violation = fixture.build {
-			location.setField("module", Violation.Module(":", "", temp, temp))
+			location.setField("module", rootModule(temp))
 			location.setField("file", temp.resolve(fixture.build<String>()))
 			location.setField("startLine", 3)
 			location.setField("endLine", 5)
@@ -150,7 +149,7 @@ class ViolationsRendererTest {
 	@Suppress("detekt.LongMethod")
 	@Test fun `renderXml renders a violation with external file`(@TempDir temp: File) {
 		val fixtViolation: Violation = fixture.build {
-			location.setField("module", Violation.Module(":", "", temp, temp))
+			location.setField("module", rootModule(temp))
 			location.setField("file", File("A:\\${fixture.build<String>()}\\${fixture.build<String>()}"))
 		}
 		val fixtCategory: Category = fixture.build()
@@ -238,6 +237,9 @@ class ViolationsRendererTest {
 		}
 	}
 }
+
+private fun rootModule(temp: File): Violation.Module =
+	Violation.Module(path = ":", name = "", projectDir = temp, rootDir = temp)
 
 private fun Violation.Location.generateTestContent() {
 	assertTrue(this.startLine < this.endLine)

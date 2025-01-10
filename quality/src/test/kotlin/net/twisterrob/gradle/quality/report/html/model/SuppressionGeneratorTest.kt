@@ -122,15 +122,15 @@ class SuppressionGeneratorTest {
 
 	companion object {
 
-		private fun createAndroidLintFixture(): JFixture {
-			return JFixture().apply {
-				customise().intercept(Violation::class.java) {
-					it.source.setField("reporter", "ANDROIDLINT")
-					it.location.module.apply {
+		@Suppress("detekt.NestedScopeFunctions")
+		private fun createAndroidLintFixture(): JFixture =
+			JFixture().apply {
+				customise().intercept(Violation::class.java) { violation ->
+					violation.source.setField("reporter", "ANDROIDLINT")
+					violation.location.module.apply {
 						setField("projectDir", rootDir.resolve(projectDir))
 					}
 				}
 			}
-		}
 	}
 }
