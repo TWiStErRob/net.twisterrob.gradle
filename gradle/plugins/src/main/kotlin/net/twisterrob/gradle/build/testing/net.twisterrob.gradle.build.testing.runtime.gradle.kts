@@ -32,7 +32,6 @@ tasks.withType<Test>().configureEach {
 		// for tests to decide dynamically
 		"net.twisterrob.test.gradle.javaVersion",
 		"net.twisterrob.test.android.pluginVersion",
-		"net.twisterrob.test.android.buildToolsVersion",
 		"net.twisterrob.test.kotlin.pluginVersion",
 		"net.twisterrob.test.android.compileSdkVersion",
 		// So that command line gradlew -P...=false works.
