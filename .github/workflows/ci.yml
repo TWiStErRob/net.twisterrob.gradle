@@ -383,6 +383,7 @@ jobs:
           MATRIX_KOTLIN: ${{ matrix.kotlin }}
           MATRIX_GRADLE: ${{ matrix.gradle }}
           MATRIX_JAVA: ${{ matrix.java }}
+          MATRIX_BUILD_TOOLS: ${{ matrix.build-tools }}
         # To run specific test, replace `${{ matrix.test-task }}` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
         run: >
           ./gradlew
@@ -398,6 +399,7 @@ jobs:
           -Pnet.twisterrob.test.kotlin.pluginVersion="${MATRIX_KOTLIN}"
           -Pnet.twisterrob.gradle.runner.gradleVersion="${MATRIX_GRADLE}"
           -Pnet.twisterrob.test.gradle.javaVersion="${MATRIX_JAVA}"
+          -Pnet.twisterrob.test.android.buildToolsVersion="${MATRIX_BUILD_TOOLS}"
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results XMLs' artifact."
         if: ${{ success() || failure() }}
