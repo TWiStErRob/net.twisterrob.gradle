@@ -467,7 +467,7 @@ jobs:
             gradle: '7.0.2'
             java: '11'
             agp: '7.0.4'
-            build-tools: '34.0.0'
+            build-tools: '30.0.2'
             kotlin: '1.4.32'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 7.0.x on Gradle 7.x"
@@ -481,7 +481,7 @@ jobs:
             gradle: '7.6.4'
             java: '11'
             agp: '7.0.4'
-            build-tools: '34.0.0'
+            build-tools: '30.0.2'
             kotlin: '1.4.32'
             test-task: 'testReport :plugin:tests'
 
@@ -496,7 +496,7 @@ jobs:
             gradle: '7.2'
             java: '11'
             agp: '7.1.3'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             kotlin: '1.4.32'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 7.1.x on Gradle 7.x"
@@ -510,7 +510,7 @@ jobs:
             gradle: '7.6.4'
             java: '11'
             agp: '7.1.3'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             kotlin: '1.4.32'
             test-task: 'testReport :plugin:tests'
 
@@ -525,7 +525,7 @@ jobs:
             gradle: '7.3.3'
             java: '11'
             agp: '7.2.2'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             kotlin: '1.4.32'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 7.2.x on Gradle 7.x"
@@ -539,7 +539,7 @@ jobs:
             gradle: '7.6.4'
             java: '11'
             agp: '7.2.2'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             kotlin: '1.4.32'
             test-task: 'testReport :plugin:tests'
 
@@ -564,7 +564,7 @@ jobs:
             java: '11'
             agp: '7.3.1'
             kotlin: '1.6.21'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 7.3.x on Gradle 7.x"
             gradle: '7.6.4'
@@ -578,7 +578,7 @@ jobs:
             java: '11'
             agp: '7.3.1'
             kotlin: '1.6.21'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             test-task: 'testReport :plugin:tests'
 
           - name: "AGP 7.4.x on Gradle 7.5+"
@@ -593,7 +593,7 @@ jobs:
             java: '11'
             agp: '7.4.2'
             kotlin: '1.6.21'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 7.4.x on Gradle 7.x"
             gradle: '7.6.4'
@@ -607,7 +607,7 @@ jobs:
             java: '11'
             agp: '7.4.2'
             kotlin: '1.6.21'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 7.4.x on Gradle 8.x"
             gradle: '8.11.1'
@@ -621,7 +621,7 @@ jobs:
             java: '17'
             agp: '7.4.2'
             kotlin: '1.6.21'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             test-task: 'testReport :plugin:tests'
 
           - name: "AGP 8.0.x on Gradle 8.0+"
@@ -636,7 +636,7 @@ jobs:
             java: '17'
             agp: '8.0.2'
             kotlin: '1.6.21'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 8.0.x on Gradle 8.x"
             gradle: '8.11.1'
@@ -650,7 +650,7 @@ jobs:
             java: '17'
             agp: '8.0.2'
             kotlin: '1.6.21'
-            build-tools: '34.0.0'
+            build-tools: '30.0.3'
             test-task: 'testReport :plugin:tests'
 
           - name: "AGP 8.1.x on Gradle 8.0+"
@@ -665,7 +665,7 @@ jobs:
             java: '17'
             agp: '8.1.4'
             kotlin: '1.6.21'
-            build-tools: '34.0.0'
+            build-tools: '33.0.1'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 8.1.x on Gradle 8.x"
             gradle: '8.11.1'
@@ -679,7 +679,7 @@ jobs:
             java: '17'
             agp: '8.1.4'
             kotlin: '1.6.21'
-            build-tools: '34.0.0'
+            build-tools: '33.0.1'
             test-task: 'testReport :plugin:tests'
 
           - name: "AGP 8.2.x on Gradle 8.2+"

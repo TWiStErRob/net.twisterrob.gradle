@@ -16,6 +16,8 @@ const val VERSION_SDK_TARGET: Int = 34
  * Latest SDK version available, useful for discovering deprecated methods and getting new features like `.findViewById<T>()`.
  *
  * @see com.android.sdklib.SdkVersionInfo.HIGHEST_SUPPORTED_API
+ * @see com.android.SdkConstants.MAX_SUPPORTED_ANDROID_PLATFORM_VERSION
+ * @see com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
  */
 const val VERSION_SDK_COMPILE: Int = 34
 
@@ -25,10 +27,3 @@ const val VERSION_SDK_COMPILE: Int = 34
  * @see https://apilevels.com/
  */
 const val VERSION_SDK_COMPILE_NAME: String = "14" // Android 14 (U)
-
-/**
- * Latest build tools version available, there's no reason to hold back.
- *
- * @see com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
- */
-const val VERSION_BUILD_TOOLS: String = "34.0.0"
