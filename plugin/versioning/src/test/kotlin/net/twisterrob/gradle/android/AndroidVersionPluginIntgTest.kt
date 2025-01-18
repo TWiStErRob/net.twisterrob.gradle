@@ -441,32 +441,32 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 				testBuildType = "staging"
 				buildTypes {
 					staging {
-						initWith debug
-						applicationIdSuffix ".staging"
-						versionNameSuffix "S"
+						initWith(debug)
+						applicationIdSuffix = ".staging"
+						versionNameSuffix = "S"
 					}
 				}
 				flavorDimensions = ["cost", "version"]
 				productFlavors {
 					demo {
-						dimension "version"
-						applicationIdSuffix ".demo"
-						versionNameSuffix "-demo"
+						dimension = "version"
+						applicationIdSuffix = ".demo"
+						versionNameSuffix = "-demo"
 					}
 					full {
-						dimension "version"
-						applicationIdSuffix ".full"
-						versionNameSuffix "-full"
+						dimension = "version"
+						applicationIdSuffix = ".full"
+						versionNameSuffix = "-full"
 					}
 					paid {
-						dimension "cost"
-						applicationIdSuffix ".paid"
-						versionNameSuffix "-paid"
+						dimension = "cost"
+						applicationIdSuffix = ".paid"
+						versionNameSuffix = "-paid"
 					}
 					free {
-						dimension "cost"
-						applicationIdSuffix ".free"
-						versionNameSuffix "-free"
+						dimension = "cost"
+						applicationIdSuffix = ".free"
+						versionNameSuffix = "-free"
 					}
 				}
 			}
