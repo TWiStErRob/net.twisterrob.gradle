@@ -446,7 +446,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 						versionNameSuffix "S"
 					}
 				}
-				flavorDimensions "cost", "version"
+				flavorDimensions = ["cost", "version"]
 				productFlavors {
 					demo {
 						dimension "version"
