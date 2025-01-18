@@ -438,7 +438,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			android {
-				testBuildType "staging"
+				testBuildType = "staging"
 				buildTypes {
 					staging {
 						initWith debug

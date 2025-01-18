@@ -76,8 +76,10 @@ fun assertDefaultDebugBadging(
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
 	versionName: String = "",
-	compileSdkVersion: Int = VERSION_SDK_COMPILE,
-	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	compileSdkVersion: Int = System.getProperty("net.twisterrob.test.android.compileSdkVersion")
+		.removePrefix("android-")
+		.toInt(),
+	compileSdkVersionName: String = (compileSdkVersion - 20).toString(),
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) {
@@ -100,8 +102,10 @@ fun assertDefaultReleaseBadging(
 	applicationId: String = packageName,
 	versionCode: String = "",
 	versionName: String = "",
-	compileSdkVersion: Int = VERSION_SDK_COMPILE,
-	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	compileSdkVersion: Int = System.getProperty("net.twisterrob.test.android.compileSdkVersion")
+		.removePrefix("android-")
+		.toInt(),
+	compileSdkVersionName: String = (compileSdkVersion - 20).toString(),
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) {
@@ -124,8 +128,10 @@ fun assertDefaultBadging(
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
 	versionName: String = "",
-	compileSdkVersion: Int = VERSION_SDK_COMPILE,
-	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	compileSdkVersion: Int = System.getProperty("net.twisterrob.test.android.compileSdkVersion")
+		.removePrefix("android-")
+		.toInt(),
+	compileSdkVersionName: String = (compileSdkVersion - 20).toString(),
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET,
 	isAndroidTestApk: Boolean = false,
