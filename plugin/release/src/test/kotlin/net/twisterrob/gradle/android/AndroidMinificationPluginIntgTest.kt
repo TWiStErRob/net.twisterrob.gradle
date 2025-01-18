@@ -270,6 +270,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 			}
 			android.namespace = "${packageName}.lib"
 			android.defaultConfig.consumerProguardFile 'proguard.pro'
+			android.compileSdkVersion = "${System.getProperty("net.twisterrob.test.android.compileSdkVersion")}"
 		""".trimIndent()
 		gradle.file(libGradle, "lib", "build.gradle")
 		val dummyProguardClass = "some.dummy.thing.SoItShowsUpInTheMergeConfiguration"
@@ -302,6 +303,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 				id("net.twisterrob.gradle.plugin.android-library")
 			}
 			android.namespace = "${packageName}.lib"
+			android.compileSdkVersion = "${System.getProperty("net.twisterrob.test.android.compileSdkVersion")}"
 		""".trimIndent()
 		gradle.file(libGradle, "lib", "build.gradle")
 
