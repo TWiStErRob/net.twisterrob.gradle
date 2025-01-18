@@ -209,7 +209,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 			}
 		""".trimIndent()
 
-		val result = gradle.run(script, "assembleRelease", "--info").build()
+		val result = gradle.run(script, "assembleRelease").build()
 
 		result.assertExtractMinificationRulesRunsSuccessfully()
 		result.assertAppliedProguardFile(minification, "release", "android.pro")
@@ -236,7 +236,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 			android.buildTypes.debug.minifyEnabled = true
 		""".trimIndent()
 
-		val result = gradle.run(script, "assembleDebug", "--info").build()
+		val result = gradle.run(script, "assembleDebug").build()
 
 		result.assertExtractMinificationRulesRunsSuccessfully()
 		result.assertAppliedProguardFile(minification, "debug", "android.pro")
@@ -282,7 +282,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		""".trimIndent()
 		gradle.file(libProguardFile, "lib", "proguard.pro")
 
-		val result = gradle.run(script, "assembleRelease", "--info").build()
+		val result = gradle.run(script, "assembleRelease").build()
 
 		result.assertAppliedProguardFile(minification, "release", "android.pro")
 		result.assertAppliedProguardFile(minification, "release", "twisterrob.pro")
