@@ -95,7 +95,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			dependencies {
-				testImplementation 'junit:junit:${Version.id()}'
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 
@@ -123,7 +123,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			dependencies {
-				testImplementation 'junit:junit:${Version.id()}'
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 
@@ -146,7 +146,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			dependencies {
-				testImplementation 'junit:junit:${Version.id()}'
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 
@@ -169,7 +169,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			dependencies {
-				testImplementation 'junit:junit:${Version.id()}'
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 
@@ -208,7 +208,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 				}
 				android.namespace = "project${modulePath.replace(":", ".")}"
 				dependencies {
-					testImplementation 'junit:junit:${Version.id()}'
+					testImplementation("junit:junit:${Version.id()}")
 				}
 			""".trimIndent()
 

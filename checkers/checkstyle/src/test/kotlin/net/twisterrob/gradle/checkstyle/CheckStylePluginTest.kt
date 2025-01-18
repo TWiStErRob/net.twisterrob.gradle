@@ -277,7 +277,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
 			}
-			android.sourceSets.main.java.srcDir 'custom'
+			android.sourceSets.main.java.srcDir("custom")
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -311,7 +311,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 			quality {
 				checkstyle { // this : ${CheckStyleExtension::class}
 					taskConfigurator { // this : ${TaskConfigurator::class}
-						excludeExcept '**/com/example', 'foo'
+						excludeExcept("**/com/example", "foo")
 					}
 				}
 			}

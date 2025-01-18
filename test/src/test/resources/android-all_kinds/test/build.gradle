@@ -5,5 +5,5 @@ plugins {
 android {
 	namespace = "test.project.test"
 	compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
-	targetProjectPath ':app'
+	targetProjectPath = ":app"
 }

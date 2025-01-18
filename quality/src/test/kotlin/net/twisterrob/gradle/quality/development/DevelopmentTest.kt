@@ -49,7 +49,7 @@ class DevelopmentTest : BaseIntgTest() {
 		gradle.file(lintResultsXml, "build", "reports", "lint-results.xml")
 		@Language("gradle")
 		val script = """
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -68,7 +68,7 @@ class DevelopmentTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			android.lint.checkOnly.add("SecureRandom")
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {

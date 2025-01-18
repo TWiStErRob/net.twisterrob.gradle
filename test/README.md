@@ -11,9 +11,9 @@ plugins {
 
 dependencies {
 	// Test framework (`GradleRunnerRule` is written for JUnit)
-	testImplementation "junit:junit:${VERSION_JUNIT}"
+	testImplementation("junit:junit:${VERSION_JUNIT}")
 	// Not necessary, but useful in IntelliJ IDEA (see `@Language`)
-	testImplementation "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
+	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
 }
 ```
 
@@ -21,19 +21,19 @@ or more explicitly:
 
 ```groovy
 plugins {
-	id("java-gradle-plugin")
+	id("org.gradle.java-gradle-plugin")
 }
 
 dependencies {
 	// assuming the plugin being tested is in this module
-	implementation gradleApi()
+	implementation(gradleApi())
 
-	testImplementation gradleTestKit()
-	testImplementation 'net.twisterrob.gradle:twister-gradle-test:+' // replace version as needed
+	testImplementation(gradleTestKit())
+	testImplementation("net.twisterrob.gradle:twister-gradle-test:+") // replace version as needed
 	// Test framework (`GradleRunnerRule` is written for JUnit)
-	testImplementation "junit:junit:${VERSION_JUNIT}"
+	testImplementation("junit:junit:${VERSION_JUNIT}")
 	// Not necessary, but useful in IntelliJ IDEA (see `@Language`)
-	testImplementation "org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}"
+	testImplementation("org.jetbrains:annotations:${VERSION_JETBRAINS_ANNOTATIONS}")
 }
 ```
 
@@ -42,23 +42,23 @@ dependencies {
 ```groovy
 class MyTest {
 	@Rule public final GradleRunnerRule gradle = new GradleRunnerRule()
-	
+
 	@Test void "gradle test"() {
 		given:
-		@Language('gradle')
+		@Language("gradle")
 		def script = """\
-		task test {
-			doLast {
-			    println 'Hello World'
+			tasks.register("test") {
+				doLast {
+					println("Hello World")
+				}
 			}
-		}
 		""".stripIndent()
-	
+
 		when:
-		def result = gradle.run(script, 'test').build()
-	
+		def result = gradle.run(script, "test").build()
+
 		then:
-		assert result.task(':test').outcome == TaskOutcome.SUCCESS
+		assert result.task(":test").outcome == TaskOutcome.SUCCESS
 		result.assertHasOutputLine(/Hello World/)
 	}
 }
@@ -104,7 +104,7 @@ Running a test in embedded mode allows us to put breakpoints inside the tasks an
 gradle.buildFile << """\
 	allprojects {
 		project.plugins.whenPluginAdded { Plugin plugin ->
-			println "${project.path} (${plugin.class.name}): ${plugin}"
+			println("${project.path} (${plugin.class.name}): ${plugin}")
 		}
 	}
 """.stripIndent()
