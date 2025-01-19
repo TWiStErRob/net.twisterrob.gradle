@@ -45,7 +45,7 @@ class TestPluginTest : BaseIntgTest() {
 					given:
 					//@Language("gradle")
 					def script = ${triplet}\
-						println 'Hello World'
+						println("Hello World")
 					${triplet}.stripIndent()
 			
 					when:
@@ -70,10 +70,10 @@ class TestPluginTest : BaseIntgTest() {
 			repositories {
 				ivy {
 					// make /test/build/libs/X-0.0.jar available as 'net.twisterrob.gradle:X:0.0'
-					url '${artifactPath.replace("\\", "\\\\")}'
+					url = "${artifactPath.replace("\\", "\\\\")}"
 					// patternLayout(Action) was introduced in 5.0, layout(String, Closure) was removed in 7.0.
 					patternLayout {
-						artifact '[artifact]-[revision].[ext]'
+						artifact("[artifact]-[revision].[ext]")
 						m2compatible = true
 					}
 					// https://docs.gradle.org/nightly/userguide/upgrading_version_5.html#maven_or_ivy_repositories_are_no_longer_queried_for_artifacts_without_metadata_by_default
@@ -84,7 +84,7 @@ class TestPluginTest : BaseIntgTest() {
 				mavenCentral()
 			}
 			dependencies {
-				testImplementation 'junit:junit:${Version.id()}'
+				testImplementation("junit:junit:${Version.id()}")
 			}
 			// Output test execution result, so we can verify it actually ran.
 			// This doesn't work with configuration cache: https://github.com/gradle/gradle/issues/25311

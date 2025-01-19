@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-	implementation project('nested')
+	implementation(project("nested"))
 }
 
 android {

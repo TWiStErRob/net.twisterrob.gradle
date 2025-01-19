@@ -30,9 +30,9 @@ class TestReportGeneratorIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			//noinspection GroovyAssignabilityCheck
-			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.java.name}) {
-				input = rootProject.layout.projectDirectory.dir('my_test_input')
-				output = project.layout.buildDirectory.dir('my_test_results')
+			tasks.register("generateHtmlReportFromXml", ${TestReportGenerator::class.java.name}) {
+				input = rootProject.layout.projectDirectory.dir("my_test_input")
+				output = project.layout.buildDirectory.dir("my_test_results")
 				//outputs.upToDateWhen { false }
 			}
 		""".trimIndent()
@@ -50,8 +50,8 @@ class TestReportGeneratorIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			//noinspection GroovyAssignabilityCheck
-			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.java.name}) {
-				input = rootProject.layout.projectDirectory.dir('subfolder')
+			tasks.register("generateHtmlReportFromXml", ${TestReportGenerator::class.java.name}) {
+				input = rootProject.layout.projectDirectory.dir("subfolder")
 			}
 		""".trimIndent()
 
@@ -68,8 +68,8 @@ class TestReportGeneratorIntgTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			//noinspection GroovyAssignabilityCheck
-			task generateHtmlReportFromXml(type: ${TestReportGenerator::class.java.name}) {
-				output = rootProject.layout.projectDirectory.dir('subfolder')
+			tasks.register("generateHtmlReportFromXml", ${TestReportGenerator::class.java.name}) {
+				output = rootProject.layout.projectDirectory.dir("subfolder")
 			}
 		""".trimIndent()
 

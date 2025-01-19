@@ -179,7 +179,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	@Issue("https://github.com/gradle/gradle/issues/25872")
 	@Test fun `stack traces are visible after many nags`() {
 		val script = """
-			apply plugin: 'java'
+			apply plugin: "org.gradle.java"
 			// Do something that triggers many deprecation nags.
 			for (int i in 1..1000) {
 				${nagManyTimes()}

@@ -20,7 +20,7 @@ class GradleRunnerRuleTest_usage : BaseIntgTest() {
 	@Test fun `gradle script test`() {
 		@Language("gradle")
 		val script = """
-			println 'Hello World'
+			println("Hello World")
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -33,9 +33,9 @@ class GradleRunnerRuleTest_usage : BaseIntgTest() {
 	@Test fun `gradle task test`() {
 		@Language("gradle")
 		val script = """
-			task test {
+			tasks.register("test") {
 				doLast {
-				    println 'Hello World'
+					println("Hello World")
 				}
 			}
 		""".trimIndent()
@@ -59,11 +59,11 @@ class GradleRunnerRuleTest_usage : BaseIntgTest() {
 
 		@Language("gradle")
 		val script = """
-			task printConfigFile {
+			tasks.register("printConfigFile") {
 				def configFile = rootProject.file('config/file.xml')
-				inputs.file configFile
+				inputs.file(configFile)
 				doLast {
-					println configFile.text
+					println(configFile.text)
 				}
 			}
 		""".trimIndent()

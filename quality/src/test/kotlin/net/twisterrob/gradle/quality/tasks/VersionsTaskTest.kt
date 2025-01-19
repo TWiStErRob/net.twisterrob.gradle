@@ -27,7 +27,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -46,7 +46,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 		gradle.file(script, gradle.buildFile.name)
 
@@ -61,7 +61,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.create('qualityVersions', ${VersionsTask::class.java.name}) // Intentionally eagerly creating.
+			tasks.create("qualityVersions", ${VersionsTask::class.java.name}) // Intentionally eagerly creating.
 			afterEvaluate {
 				apply plugin: "org.gradle.checkstyle"
 				apply plugin: "org.gradle.pmd"
@@ -87,7 +87,7 @@ class VersionsTaskTest : BaseIntgTest() {
 				id("org.gradle.checkstyle")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -108,7 +108,7 @@ class VersionsTaskTest : BaseIntgTest() {
 				id("org.gradle.pmd")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -141,7 +141,7 @@ class VersionsTaskTest : BaseIntgTest() {
 				id("org.gradle.checkstyle")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -174,7 +174,7 @@ class VersionsTaskTest : BaseIntgTest() {
 				id("org.gradle.pmd")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -196,7 +196,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			checkstyle {
 				toolVersion = '6.0'
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -217,7 +217,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			pmd {
 				toolVersion = '5.0.0'
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
