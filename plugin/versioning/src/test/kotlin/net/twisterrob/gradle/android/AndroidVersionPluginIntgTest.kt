@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -446,7 +447,11 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 						versionNameSuffix = "S"
 					}
 				}
-				flavorDimensions = ["cost", "version"]
+				${if (AGPVersions.UNDER_TEST < AGPVersions.v71x)
+					"""flavorDimensions("cost", "version")"""
+					else
+					"""flavorDimensions = ["cost", "version"]"""
+				}
 				productFlavors {
 					demo {
 						dimension = "version"
