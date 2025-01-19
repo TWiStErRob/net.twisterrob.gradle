@@ -432,6 +432,15 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 	@Suppress("detekt.LongMethod") // Variants are fun, aren't they.
 	@Test fun `variant versioning works`() {
+		fun flavorDimensions(vararg dimensions: String): String {
+			val params = dimensions.joinToString(", ") { "\"$it\"" }
+			return if (AGPVersions.UNDER_TEST < AGPVersions.v71x) {
+				"""flavorDimensions(${params})"""
+			} else {
+				"""flavorDimensions = [${params}]"""
+			}
+		}
+
 		@Language("gradle")
 		val script = """
 			plugins {
@@ -447,11 +456,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 						versionNameSuffix = "S"
 					}
 				}
-				${if (AGPVersions.UNDER_TEST < AGPVersions.v71x)
-					"""flavorDimensions("cost", "version")"""
-					else
-					"""flavorDimensions = ["cost", "version"]"""
-				}
+				${flavorDimensions("cost", "version")}
 				productFlavors {
 					demo {
 						dimension = "version"
