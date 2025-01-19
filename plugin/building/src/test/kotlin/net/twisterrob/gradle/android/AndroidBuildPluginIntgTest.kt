@@ -530,7 +530,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
 			dependencies {
-				implementation "com.google.auto.service:auto-service:1.0-rc6"
+				implementation("com.google.auto.service:auto-service:1.0-rc6")
 			}
 			// > Error while dexing. The dependency contains Java 8 bytecode.
 			// > Please enable desugaring by adding the following to build.gradle

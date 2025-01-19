@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -431,6 +432,15 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 	@Suppress("detekt.LongMethod") // Variants are fun, aren't they.
 	@Test fun `variant versioning works`() {
+		fun flavorDimensions(vararg dimensions: String): String {
+			val params = dimensions.joinToString(", ") { "\"$it\"" }
+			return if (AGPVersions.UNDER_TEST < AGPVersions.v71x) {
+				"""flavorDimensions(${params})"""
+			} else {
+				"""flavorDimensions = [${params}]"""
+			}
+		}
+
 		@Language("gradle")
 		val script = """
 			plugins {
@@ -441,32 +451,32 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 				testBuildType = "staging"
 				buildTypes {
 					staging {
-						initWith debug
-						applicationIdSuffix ".staging"
-						versionNameSuffix "S"
+						initWith(debug)
+						applicationIdSuffix = ".staging"
+						versionNameSuffix = "S"
 					}
 				}
-				flavorDimensions "cost", "version"
+				${flavorDimensions("cost", "version")}
 				productFlavors {
 					demo {
-						dimension "version"
-						applicationIdSuffix ".demo"
-						versionNameSuffix "-demo"
+						dimension = "version"
+						applicationIdSuffix = ".demo"
+						versionNameSuffix = "-demo"
 					}
 					full {
-						dimension "version"
-						applicationIdSuffix ".full"
-						versionNameSuffix "-full"
+						dimension = "version"
+						applicationIdSuffix = ".full"
+						versionNameSuffix = "-full"
 					}
 					paid {
-						dimension "cost"
-						applicationIdSuffix ".paid"
-						versionNameSuffix "-paid"
+						dimension = "cost"
+						applicationIdSuffix = ".paid"
+						versionNameSuffix = "-paid"
 					}
 					free {
-						dimension "cost"
-						applicationIdSuffix ".free"
-						versionNameSuffix "-free"
+						dimension = "cost"
+						applicationIdSuffix = ".free"
+						versionNameSuffix = "-free"
 					}
 				}
 			}
