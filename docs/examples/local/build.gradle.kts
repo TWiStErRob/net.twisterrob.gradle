@@ -6,7 +6,7 @@ plugins {
 android {
 	compileSdk = 35
 	defaultConfig {
-		minSdk = 14
+		minSdk = 21
 		targetSdk = 35
 
 		namespace = "net.twisterrob.quality.examples.local"

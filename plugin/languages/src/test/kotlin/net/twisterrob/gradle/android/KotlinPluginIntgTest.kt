@@ -86,6 +86,7 @@ class KotlinPluginIntgTest : BaseAndroidIntgTest() {
 			}
 			android.namespace = "${packageName}.test"
 			android.targetProjectPath = ':'
+			android.compileSdkVersion = "${System.getProperty("net.twisterrob.test.android.compileSdkVersion")}"
 		""".trimIndent()
 		gradle.file(appScript, "test", "build.gradle")
 

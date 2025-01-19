@@ -209,7 +209,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 			}
 		""".trimIndent()
 
-		val result = gradle.run(script, "assembleRelease", "--info").build()
+		val result = gradle.run(script, "assembleRelease").build()
 
 		result.assertExtractMinificationRulesRunsSuccessfully()
 		result.assertAppliedProguardFile(minification, "release", "android.pro")
@@ -236,7 +236,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 			android.buildTypes.debug.minifyEnabled = true
 		""".trimIndent()
 
-		val result = gradle.run(script, "assembleDebug", "--info").build()
+		val result = gradle.run(script, "assembleDebug").build()
 
 		result.assertExtractMinificationRulesRunsSuccessfully()
 		result.assertAppliedProguardFile(minification, "debug", "android.pro")
@@ -270,6 +270,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 			}
 			android.namespace = "${packageName}.lib"
 			android.defaultConfig.consumerProguardFile("proguard.pro")
+			android.compileSdkVersion = "${System.getProperty("net.twisterrob.test.android.compileSdkVersion")}"
 		""".trimIndent()
 		gradle.file(libGradle, "lib", "build.gradle")
 		val dummyProguardClass = "some.dummy.thing.SoItShowsUpInTheMergeConfiguration"
@@ -281,7 +282,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 		""".trimIndent()
 		gradle.file(libProguardFile, "lib", "proguard.pro")
 
-		val result = gradle.run(script, "assembleRelease", "--info").build()
+		val result = gradle.run(script, "assembleRelease").build()
 
 		result.assertAppliedProguardFile(minification, "release", "android.pro")
 		result.assertAppliedProguardFile(minification, "release", "twisterrob.pro")
@@ -302,6 +303,7 @@ class AndroidMinificationPluginIntgTest : BaseAndroidIntgTest() {
 				id("net.twisterrob.gradle.plugin.android-library")
 			}
 			android.namespace = "${packageName}.lib"
+			android.compileSdkVersion = "${System.getProperty("net.twisterrob.test.android.compileSdkVersion")}"
 		""".trimIndent()
 		gradle.file(libGradle, "lib", "build.gradle")
 

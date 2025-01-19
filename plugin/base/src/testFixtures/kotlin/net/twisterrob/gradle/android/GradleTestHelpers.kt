@@ -3,6 +3,7 @@ package net.twisterrob.gradle.android
 import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.jakewharton.dex.DexMethod
+import net.twisterrob.gradle.android.SdkVersions.asName
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.test.process.assertOutput
 import net.twisterrob.test.withRootCause
@@ -76,8 +77,8 @@ fun assertDefaultDebugBadging(
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
 	versionName: String = "",
-	compileSdkVersion: Int = VERSION_SDK_COMPILE,
-	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	compileSdkVersion: Int = SdkVersions.testCompileSdkVersion,
+	compileSdkVersionName: String = compileSdkVersion.asName(),
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) {
@@ -100,8 +101,8 @@ fun assertDefaultReleaseBadging(
 	applicationId: String = packageName,
 	versionCode: String = "",
 	versionName: String = "",
-	compileSdkVersion: Int = VERSION_SDK_COMPILE,
-	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	compileSdkVersion: Int = SdkVersions.testCompileSdkVersion,
+	compileSdkVersionName: String = compileSdkVersion.asName(),
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) {
@@ -124,8 +125,8 @@ fun assertDefaultBadging(
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
 	versionName: String = "",
-	compileSdkVersion: Int = VERSION_SDK_COMPILE,
-	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	compileSdkVersion: Int = SdkVersions.testCompileSdkVersion,
+	compileSdkVersionName: String = compileSdkVersion.asName(),
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET,
 	isAndroidTestApk: Boolean = false,
