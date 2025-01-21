@@ -631,7 +631,7 @@
     <issue
         id="SimilarGradleDependency"
         message="There are multiple dependencies org.jetbrains.kotlin:kotlin-stdlib-jre8 but with different version"
-        errorLine1="kotlin-stdlib-jdk7 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jre8&quot;, version.ref = &quot;kotlin-target&quot; }"
+        errorLine1="kotlin-stdlib-jdk7 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk7&quot;, version.ref = &quot;kotlin-target&quot; }"
         errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="../gradle/libs.versions.toml"
@@ -642,7 +642,7 @@
     <issue
         id="SimilarGradleDependency"
         message="There are multiple dependencies org.jetbrains.kotlin:kotlin-stdlib-jre8 but with different version"
-        errorLine1="kotlin-stdlib-jdk7 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jre8&quot;, version.ref = &quot;kotlin-target&quot; }"
+        errorLine1="kotlin-stdlib-jdk7 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk7&quot;, version.ref = &quot;kotlin-target&quot; }"
         errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="../gradle/libs.versions.toml"

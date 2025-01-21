@@ -112,7 +112,7 @@ kotlin-gradle-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin-target" }
 # @Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk7"))
 kotlin-stdlib-jre7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre7", version.ref = "kotlin-target" }
-kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre8", version.ref = "kotlin-target" }
+kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlin-target" }
 # @Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk8"))
 kotlin-stdlib-jre8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre8", version.ref = "kotlin-target" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-target" }
