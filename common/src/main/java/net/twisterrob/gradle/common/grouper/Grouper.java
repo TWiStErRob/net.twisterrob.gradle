@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -80,7 +81,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 
 	@Override
 	public String toString() {
-		return String.format("%d %s grouped on %s", this.list.size(), representative.getClass(), fields);
+		return String.format(Locale.ROOT, "%d %s grouped on %s", this.list.size(), representative.getClass(), fields);
 	}
 
 	private static Object findRepresentative(@Nonnull Collection<?> list) {

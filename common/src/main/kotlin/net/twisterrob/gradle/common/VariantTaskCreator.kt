@@ -17,6 +17,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.VerificationTask
 import org.gradle.kotlin.dsl.named
 import java.io.File
+import java.util.Locale
 
 @Suppress("DEPRECATION" /* AGP 7.0 */)
 private typealias BaseVariant = com.android.build.gradle.api.BaseVariant
@@ -78,7 +79,7 @@ T : VerificationTask {
 		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant,
 		eachTask: TaskProvider<*>,
 	) {
-		val taskName = "${baseName}${variant.name.capitalize()}"
+		val taskName = "${baseName}${variant.name.capitalize(Locale.ROOT)}"
 		val variantTask = project.tasks.register(taskName, taskClass, variantConfig(variant))
 		eachTask.configure { it.dependsOn(variantTask) }
 	}

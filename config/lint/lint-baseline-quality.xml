@@ -2,17 +2,6 @@
 <issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
 
     <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `capitalize(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="     (match.groups[1]?.value ?: &quot;misc&quot;).capitalize()"
-        errorLine2="                                        ~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/quality/violations/RuleCategoryParser.kt"
-            line="35"
-            column="41"/>
-    </issue>
-
-    <issue
         id="GradleProjectIsolation"
         message="Avoid using method getRootProject"
         errorLine1="  projectName.convention(project.provider { project.rootProject.name })"

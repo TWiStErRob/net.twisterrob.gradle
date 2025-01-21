@@ -2,17 +2,6 @@
 <issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
 
     <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `capitalize(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="   project.tasks.register&lt;AndroidInstallRunnerTask>(&quot;run${variant.name.capitalize()}&quot;) {"
-        errorLine2="                                                                       ~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/android/AndroidBuildPlugin.kt"
-            line="193"
-            column="72"/>
-    </issue>
-
-    <issue
         id="InternalAgpApiUsage"
         message="Avoid using internal Android Gradle Plugin APIs"
         errorLine1="import com.android.build.gradle.internal.component.ComponentCreationConfig"

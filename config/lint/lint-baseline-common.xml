@@ -2,28 +2,6 @@
 <issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
 
     <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="  return String.format(&quot;%d %s grouped on %s&quot;, this.list.size(), representative.getClass(), fields);"
-        errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/net/twisterrob/gradle/common/grouper/Grouper.java"
-            line="83"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `capitalize(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="  val taskName = &quot;${baseName}${variant.name.capitalize()}&quot;"
-        errorLine2="                                            ~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/common/VariantTaskCreator.kt"
-            line="81"
-            column="45"/>
-    </issue>
-
-    <issue
         id="InternalGradleApiUsage"
         message="Avoid using internal Gradle APIs"
         errorLine1="import org.gradle.api.internal.file.pattern.PatternMatcherFactory"
