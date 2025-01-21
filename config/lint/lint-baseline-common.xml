@@ -124,6 +124,28 @@
 
     <issue
         id="GradleDependency"
+        message="A newer version of org.jetbrains.kotlin:kotlin-stdlib-jdk7 than 1.4.32 is available: 2.1.0"
+        errorLine1="kotlin-target = &quot;1.4.32&quot;"
+        errorLine2="                ~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="37"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of org.jetbrains.kotlin:kotlin-stdlib-jdk7 than 1.4.32 is available: 2.1.0"
+        errorLine1="kotlin-target = &quot;1.4.32&quot;"
+        errorLine2="                ~~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="37"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
         message="A newer version of org.jetbrains.kotlin:kotlin-stdlib-jdk8 than 1.4.32 is available: 2.1.0"
         errorLine1="kotlin-target = &quot;1.4.32&quot;"
         errorLine2="                ~~~~~~~~">
@@ -626,50 +648,6 @@
             file="../gradle/libs.versions.toml"
             line="111"
             column="22"/>
-    </issue>
-
-    <issue
-        id="SimilarGradleDependency"
-        message="There are multiple dependencies org.jetbrains.kotlin:kotlin-stdlib-jre8 but with different version"
-        errorLine1="kotlin-stdlib-jdk7 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk7&quot;, version.ref = &quot;kotlin-target&quot; }"
-        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="115"
-            column="23"/>
-    </issue>
-
-    <issue
-        id="SimilarGradleDependency"
-        message="There are multiple dependencies org.jetbrains.kotlin:kotlin-stdlib-jre8 but with different version"
-        errorLine1="kotlin-stdlib-jdk7 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk7&quot;, version.ref = &quot;kotlin-target&quot; }"
-        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="115"
-            column="23"/>
-    </issue>
-
-    <issue
-        id="SimilarGradleDependency"
-        message="There are multiple dependencies org.jetbrains.kotlin:kotlin-stdlib-jre8 but with different version"
-        errorLine1="kotlin-stdlib-jre8 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jre8&quot;, version.ref = &quot;kotlin-target&quot; }"
-        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="117"
-            column="23"/>
-    </issue>
-
-    <issue
-        id="SimilarGradleDependency"
-        message="There are multiple dependencies org.jetbrains.kotlin:kotlin-stdlib-jre8 but with different version"
-        errorLine1="kotlin-stdlib-jre8 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jre8&quot;, version.ref = &quot;kotlin-target&quot; }"
-        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="117"
-            column="23"/>
     </issue>
 
     <issue
