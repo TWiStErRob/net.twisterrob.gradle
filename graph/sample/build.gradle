@@ -1,11 +1,9 @@
 if (!project.hasProperty("fast")) {
 	logger.warn("Adding an artificial random delay to every task!, use -Pfast to disable.")
 	allprojects { p ->
-		p.afterEvaluate {
-			p.tasks.all { Task task ->
-				task.doLast {
-					sleep((int)(Math.random() * 500))
-				}
+		p.tasks.configureEach { Task task ->
+			task.doLast {
+				sleep((int)(Math.random() * 500))
 			}
 		}
 	}
