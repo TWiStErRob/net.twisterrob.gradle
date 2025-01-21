@@ -31,7 +31,7 @@ abstract class ConsoleReportTask : BaseViolationsTask() {
 				val loc = violation.location
 				@Suppress("detekt.StringShouldBeRawString") // Not using raw string literals because of the new-line requirements.
 				return@map (""
-						+ "\n${loc.file.absolutePath}:${loc.startLine} in ${loc.module}/${loc.variant}"
+						+ "\n${loc.file.absolutePath}:${loc.startLine} in ${loc.module.path}/${loc.variant}"
 						+ "\n\t${violation.source.reporter}/${violation.rule}"
 						+ "\n${message.prependIndent("\t")}"
 						)
