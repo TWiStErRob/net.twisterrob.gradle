@@ -43,6 +43,7 @@ kotlin-build = "2.0.21"
 kotlin-dokka = "2.0.0"
 
 detekt = "1.23.7"
+androidx-lint = "1.0.0-alpha03"
 
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases
 # Artifacts: https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/
@@ -103,6 +104,7 @@ android-lint-main = { module = "com.android.tools.lint:lint", version.ref = "agp
 android-lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "agp-tools" }
 android-lint-gradle = { module = "com.android.tools.lint:lint-gradle", version.ref = "agp-tools" }
 android-lint-checks = { module = "com.android.tools.lint:lint-checks", version.ref = "agp-tools" }
+androidx-lint = { module = "androidx.lint:lint-gradle", version.ref = "androidx-lint" }
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin-target" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-build" }
@@ -147,6 +149,7 @@ dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = 
 [bundles]
 
 [plugins]
+lint = { id = "com.android.lint", version.ref = "agp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
 kotlin-dokkaJavadoc = { id = "org.jetbrains.dokka-javadoc", version.ref = "kotlin-dokka" }

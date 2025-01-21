@@ -11,8 +11,9 @@ pluginManagement {
 	includeBuild("gradle/plugins")
 	includeBuild("graph")
 	repositories {
-		// This is the default, but it helps Renovate to resolve some plugins.
+		mavenCentral()
 		gradlePluginPortal()
+		google()
 	}
 }
 
