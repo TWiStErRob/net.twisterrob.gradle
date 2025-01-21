@@ -308,7 +308,7 @@ private fun violations(
 	type: String,
 	vararg violations: Violation
 ): Violations {
-	val suffix = if (variant == ALL) "" else "-$variant"
+	val suffix = if (variant == ALL) "-debug" else "-$variant"
 	return Violations(
 		module = project.path,
 		parser = type,
@@ -338,8 +338,8 @@ private fun Violations.unknownReports(): Violations =
 		parser = this.parser,
 		module = this.module,
 		variant = this.variant,
-		result = File("."),
-		report = File("."),
+		result = this.result,
+		report = this.report,
 		violations = this.violations?.toList(),
 	)
 

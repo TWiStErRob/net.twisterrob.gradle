@@ -5,7 +5,6 @@ package net.twisterrob.gradle.quality.report.html
 import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
-import java.io.File
 
 private typealias Module = String
 private typealias Variant = String
@@ -103,8 +102,10 @@ private fun mergeIntersectionsForParser(violations: List<Violations>): List<Viol
 			parser = representative.parser.rewrite(),
 			module = representative.module,
 			variant = ALL_VARIANTS_NAME,
-			result = File("."),
-			report = File("."),
+			// Technically result and report may contain more than just intersection,
+			// but they definitely contain the intersection, so it's better than any fake value.
+			result = representative.result,
+			report = representative.report,
 			violations = intersection,
 		)
 		return listOf(newAll) + violations
