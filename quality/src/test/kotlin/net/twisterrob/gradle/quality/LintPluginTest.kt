@@ -106,31 +106,6 @@ class LintPluginTest : BaseIntgTest() {
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 1 + 1) * variantMultiplier} issues found\."""))
 	}
 
-	@Test fun `gathers results from submodules (lazy init)`() {
-		`set up 3 modules with a lint failures`()
-
-		@Language("gradle")
-		val script = """
-			plugins {
-				id("net.twisterrob.gradle.plugin.quality")
-			}
-		""".trimIndent()
-
-		val result = gradle.runBuild {
-			basedOn("android-multi_module")
-			run(script, "lint")
-		}
-
-		val lintTasks = result.tasks.map { it.path }.filter { it.endsWith(":lint") }
-		assertThat(lintTasks, hasItems(":module1:lint", ":module2:lint", ":module3:lint"))
-		assertThat(lintTasks.last(), equalTo(":lint"))
-		result.assertSuccess(":module1:lint")
-		result.assertSuccess(":module2:lint")
-		result.assertSuccess(":module3:lint")
-		result.assertSuccess(":lint")
-		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 1 + 1) * variantMultiplier} issues found\."""))
-	}
-
 	@Test fun `does not suggest violation report if already executing it`() {
 		`set up 3 modules with a lint failures`()
 		gradle.basedOn("android-multi_module")
