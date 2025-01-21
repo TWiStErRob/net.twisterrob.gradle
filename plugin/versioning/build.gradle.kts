@@ -55,11 +55,11 @@ dependencies {
 		versionConstraint.rejectedVersions.add("(,7.0)")
 	}
 
-	// This plugin is part of the net.twisterrob.gradle.plugin.android-app plugin, not designed to work on its own.
-	runtimeOnly(projects.plugin)
-
 	testImplementation(projects.test.internal)
 	testImplementation(testFixtures(projects.plugin.base))
+
+	// This plugin is part of the net.twisterrob.gradle.plugin.android-app plugin, not designed to work on its own.
+	testInjectedPluginClasspath(projects.plugin)
 	testInjectedPluginClasspath(libs.android.gradle) {
 		version { require(property("net.twisterrob.test.android.pluginVersion").toString()) }
 	}
