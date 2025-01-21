@@ -60,43 +60,16 @@ class ResultGeneratorTest {
 				report = File("path/to/v-report.html"),
 				result = File("path/to/v-result.xml"),
 				violations = listOf(
-					Violation(
-						rule = "rule",
-						message = "message",
-						category = "category",
-						severity = Violation.Severity.ERROR,
-						location = Violation.Location(
-							module = Violation.Module(
-								path = "path",
-								name = "name",
-								projectDir = File("projectDir"),
-								rootDir = File("rootDir")
-							),
-							task = "task",
-							variant = "variant",
-							startLine = 1,
-							endLine = 2,
-							column = 3,
-							file = File("path/to/file")
-						),
-						source = Violation.Source(
-							parser = "parser",
-							gatherer = "gatherer",
-							reporter = "reporter",
-							source = "source",
-							report = File("path/to/report.html"),
-							humanReport = File("path/to/humanReport.html")
-						)
-					),
+					violation(0),
 				),
 			),
 		)
 
 		val expected = """
 			
-			${ROOT}${PS}path${PS}to${PS}file:1 in path/variant
-				reporter/rule
-				message${EOL}
+			${ROOT}${PS}path0${PS}to0${PS}file0:1 in path0/variant0
+				reporter0/rule0
+				message0${EOL}
 			
 		""".trimIndent().fixLineEndings()
 		assertEquals(expected, result)
@@ -113,81 +86,26 @@ class ResultGeneratorTest {
 				report = File("path/to/v-report.html"),
 				result = File("path/to/v-result.xml"),
 				violations = listOf(
-					Violation(
-						rule = "rule1",
-						message = "message1",
-						category = "category1",
-						severity = Violation.Severity.ERROR,
-						location = Violation.Location(
-							module = Violation.Module(
-								path = "path1",
-								name = "name1",
-								projectDir = File("projectDir1"),
-								rootDir = File("rootDir1")
-							),
-							task = "task1",
-							variant = "variant1",
-							startLine = 1,
-							endLine = 2,
-							column = 3,
-							file = File("path1/to1/file1")
-						),
-						source = Violation.Source(
-							parser = "parser1",
-							gatherer = "gatherer1",
-							reporter = "reporter1",
-							source = "source1",
-							report = File("path1/to1/report1.html"),
-							humanReport = File("path1/to1/humanReport1.html")
-						)
-					),
-					Violation(
-						rule = "rule2",
-						message = "message2",
-						category = "category2",
-						severity = Violation.Severity.ERROR,
-						location = Violation.Location(
-							module = Violation.Module(
-								path = "path2",
-								name = "name2",
-								projectDir = File("projectDir2"),
-								rootDir = File("rootDir2")
-							),
-							task = "task2",
-							variant = "variant2",
-							startLine = 4,
-							endLine = 5,
-							column = 6,
-							file = File("path2/to2/file2")
-						),
-						source = Violation.Source(
-							parser = "parser2",
-							gatherer = "gatherer2",
-							reporter = "reporter2",
-							source = "source2",
-							report = File("path2/to2/report2.html"),
-							humanReport = File("path2/to2/humanReport2.html")
-						)
-					),
+					violation(1),
+					violation(2),
 				),
 			),
 		)
 
 		val expected = """
 			
-			${ROOT}${PS}path1${PS}to1${PS}file1:1 in path1/variant1
+			${ROOT}${PS}path1${PS}to1${PS}file1:4 in path1/variant1
 				reporter1/rule1
 				message1${EOL}
 			${EOL}
 			
-			${ROOT}${PS}path2${PS}to2${PS}file2:4 in path2/variant2
+			${ROOT}${PS}path2${PS}to2${PS}file2:7 in path2/variant2
 				reporter2/rule2
 				message2${EOL}
 			
 		""".trimIndent().fixLineEndings()
 		assertEquals(expected, result)
 	}
-
 
 	@Test fun multiline() {
 		val sut = ResultGenerator()
@@ -200,8 +118,8 @@ class ResultGeneratorTest {
 				report = File("path/to/v-report.html"),
 				result = File("path/to/v-result.xml"),
 				violations = listOf(
-					Violation(
-						rule = "rule",
+					violation(
+						0,
 						message = """
 							multi
 								line
@@ -210,39 +128,15 @@ class ResultGeneratorTest {
 							
 							separated
 						""".trimIndent(),
-						category = "category",
-						severity = Violation.Severity.ERROR,
-						location = Violation.Location(
-							module = Violation.Module(
-								path = "path",
-								name = "name",
-								projectDir = File("projectDir"),
-								rootDir = File("rootDir")
-							),
-							task = "task",
-							variant = "variant",
-							startLine = 1,
-							endLine = 2,
-							column = 3,
-							file = File("path/to/file")
-						),
-						source = Violation.Source(
-							parser = "parser",
-							gatherer = "gatherer",
-							reporter = "reporter",
-							source = "source",
-							report = File("path/to/report.html"),
-							humanReport = File("path/to/humanReport.html")
-						)
-					),
+					)
 				),
 			),
 		)
 
 		val expected = """
 			
-			${ROOT}${PS}path${PS}to${PS}file:1 in path/variant
-				reporter/rule
+			${ROOT}${PS}path0${PS}to0${PS}file0:1 in path0/variant0
+				reporter0/rule0
 				multi
 					line
 				message
@@ -273,4 +167,34 @@ private fun ResultGenerator.build(vararg list: Violations): String? =
 		mockk<Grouper.Start<Violations>> {
 			every { this@mockk.list } returns list.toList()
 		}
+	)
+
+private fun violation(i: Int, message: String = "message${i}"): Violation =
+	Violation(
+		rule = "rule${i}",
+		message = message,
+		category = "category${i}",
+		severity = Violation.Severity.ERROR,
+		location = Violation.Location(
+			module = Violation.Module(
+				path = "path${i}",
+				name = "name${i}",
+				projectDir = File("projectDir${i}"),
+				rootDir = File("rootDir${i}")
+			),
+			task = "task${i}",
+			variant = "variant${i}",
+			startLine = 3 * i + 1,
+			endLine = 3 * i + 2,
+			column = 3 * i + 3,
+			file = File("path${i}/to${i}/file${i}")
+		),
+		source = Violation.Source(
+			parser = "parser${i}",
+			gatherer = "gatherer${i}",
+			reporter = "reporter${i}",
+			source = "source${i}",
+			report = File("path${i}/to${i}/report${i}.html"),
+			humanReport = File("path${i}/to${i}/humanReport${i}.html")
+		)
 	)
