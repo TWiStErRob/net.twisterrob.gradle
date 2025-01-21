@@ -57,8 +57,6 @@ abstract class ConsoleReportTask : BaseViolationsTask() {
 				)
 			)
 		}
-		if (table.isNotBlank()) {
-			logger.quiet(table)
-		}
+		logger.quiet(table)
 	}
 }
