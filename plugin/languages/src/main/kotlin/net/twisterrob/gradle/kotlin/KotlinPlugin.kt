@@ -35,7 +35,7 @@ abstract class KotlinPlugin : BasePlugin() {
 				project.addTestDependencies(DependencyHandler::testImplementation)
 			}
 			val android: BaseExtension = project.extensions["android"] as BaseExtension
-			android.sourceSets.all {
+			android.sourceSets.configureEach {
 				it.java.srcDir("src/${it.name}/kotlin")
 			}
 		} else {
@@ -60,7 +60,7 @@ abstract class KotlinPlugin : BasePlugin() {
 		}
 
 		private fun Project.addKotlinJUnitIfNeeded(configuration: DependencyAdder) {
-			configurations[(configuration as KCallable<*>).name].dependencies.all { dep ->
+			configurations[(configuration as KCallable<*>).name].dependencies.configureEach { dep ->
 				if (dep.group == "junit" && dep.name == "junit"
 					&& dep.version.orEmpty().matches("""4\.\d+(\.\d+)?(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
 				) {
@@ -70,7 +70,7 @@ abstract class KotlinPlugin : BasePlugin() {
 		}
 
 		private fun Project.addKotlinTestNGIfNeeded(configuration: DependencyAdder) {
-			configurations[(configuration as KCallable<*>).name].dependencies.all { dep ->
+			configurations[(configuration as KCallable<*>).name].dependencies.configureEach { dep ->
 				if (dep.group == "org.testng" && dep.name == "testng") {
 					dependencies.configuration(kotlin("test-testng"))
 				}

@@ -48,7 +48,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 				release.setMinifyEnabled(true)
 			}
 
-			buildTypes.all { buildType ->
+			buildTypes.configureEach { buildType ->
 				if (buildType.isDebuggable) {
 					buildType.proguardFile(myDebugProguardRulesFile)
 				} else {

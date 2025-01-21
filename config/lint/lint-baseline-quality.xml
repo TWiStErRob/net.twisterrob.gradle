@@ -13,39 +13,6 @@
     </issue>
 
     <issue
-        id="EagerGradleConfiguration"
-        message="Avoid using method get"
-        errorLine1="  val sut = project.tasks.register(&quot;sut&quot;, HtmlReportTask::class.java).get()"
-        errorLine2="                                                                      ~~~">
-        <location
-            file="src/test/kotlin/net/twisterrob/gradle/quality/tasks/HtmlReportTaskUnitTest.kt"
-            line="18"
-            column="71"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Avoid using method matching"
-        errorLine1="   .matching { it.xmlReportOutputFile.isPresent }"
-        errorLine2="    ~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/quality/gather/LintReportGatherer.kt"
-            line="29"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Avoid using method get"
-        errorLine1="   fixtRoot.tasks.register(build(), DefaultTask::class.java).get()"
-        errorLine2="                                                             ~~~">
-        <location
-            file="src/test/kotlin/net/twisterrob/gradle/quality/report/html/ViolationsDeduplicatorKtTest.kt"
-            line="29"
-            column="62"/>
-    </issue>
-
-    <issue
         id="GradleProjectIsolation"
         message="Avoid using method getRootProject"
         errorLine1="  projectName.convention(project.provider { project.rootProject.name })"

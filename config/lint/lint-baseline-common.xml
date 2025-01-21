@@ -24,28 +24,6 @@
     </issue>
 
     <issue
-        id="EagerGradleConfiguration"
-        message="Avoid using method get"
-        errorLine1="  val task = provider.get()"
-        errorLine2="                      ~~~">
-        <location
-            file="src/test/kotlin/net/twisterrob/gradle/common/TaskCreationConfigurationTest.kt"
-            line="38"
-            column="23"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Use configureEach instead of all"
-        errorLine1="  variants.all { createTaskForVariant(it, eachTask) }"
-        errorLine2="           ~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/common/VariantTaskCreator.kt"
-            line="47"
-            column="12"/>
-    </issue>
-
-    <issue
         id="InternalGradleApiUsage"
         message="Avoid using internal Gradle APIs"
         errorLine1="import org.gradle.api.internal.file.pattern.PatternMatcherFactory"

@@ -44,7 +44,7 @@ T : VerificationTask {
 	) {
 		project.plugins.apply(pluginName)
 		val eachTask = createGlobalTask()
-		variants.all { createTaskForVariant(it, eachTask) }
+		variants.configureEach { createTaskForVariant(it, eachTask) }
 		project.afterEvaluate {
 			project.tasks.register("${baseName}All", taskClass, variantsConfig(variants))
 		}

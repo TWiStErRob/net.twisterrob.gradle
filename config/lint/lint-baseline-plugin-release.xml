@@ -24,17 +24,6 @@
     </issue>
 
     <issue
-        id="EagerGradleConfiguration"
-        message="Use configureEach instead of all"
-        errorLine1="   buildTypes.all { buildType ->"
-        errorLine2="              ~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/android/AndroidMinificationPlugin.kt"
-            line="51"
-            column="15"/>
-    </issue>
-
-    <issue
         id="InternalAgpApiUsage"
         message="Avoid using internal Android Gradle Plugin APIs"
         errorLine1="import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask"
