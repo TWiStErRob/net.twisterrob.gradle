@@ -23,6 +23,7 @@ class LintPlugin : Plugin<Project> {
 				listOf(
 					// Project is using renovate to manage dependencies.
 					"GradleDependency",
+					"NewerVersionAvailable",
 				)
 			)
 		}
