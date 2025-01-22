@@ -14,4 +14,13 @@
 
 	</issue>
 
+	<!-- There's a lot of these, ignore them to get a clear view of the rest of the issues. -->
+	<!--
+	<issue id="InternalGradleApiUsage" severity="ignore" />
+	<issue id="InternalAgpApiUsage" severity="ignore" />
+	<issue id="GradleProjectIsolation">
+		<ignore regexp="Avoid using method getRootProject" />
+	</issue>
+	-->
+
 </lint>
