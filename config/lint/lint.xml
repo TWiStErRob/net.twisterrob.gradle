@@ -1,3 +1,17 @@
 <lint>
 
+	<issue id="SimilarGradleDependency">
+
+		<ignore
+			path="**/gradle/agp.versions.toml"
+			regexp="There are multiple dependencies com.android.tools.build:gradle but with different version"
+		/>
+
+		<ignore
+			path="**/gradle/kotlin.versions.toml"
+			regexp="There are multiple dependencies org.jetbrains.kotlin:kotlin-gradle-plugin but with different version"
+		/>
+
+	</issue>
+
 </lint>

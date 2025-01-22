@@ -108,7 +108,6 @@ androidx-lint = { module = "androidx.lint:lint-gradle", version.ref = "androidx-
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin-target" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-build" }
-kotlin-gradle-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin-build" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin-target" }
 # @Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk7"))
 kotlin-stdlib-jre7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre7", version.ref = "kotlin-target" }
