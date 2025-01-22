@@ -2,17 +2,6 @@
 <issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
 
     <issue
-        id="DefaultEncoding"
-        message="This string will be decoded with the default system encoding instead of a specific charset which is usually a mistake; add `Charsets.UTF_8`?"
-        errorLine1="    return baos.toString()"
-        errorLine2="           ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/vcs/svn/SvnPluginExtension.kt"
-            line="83"
-            column="12"/>
-    </issue>
-
-    <issue
         id="GradleProjectIsolation"
         message="Avoid using method getRootProject"
         errorLine1="  val rootDir = project.rootProject.layout.projectDirectory"
