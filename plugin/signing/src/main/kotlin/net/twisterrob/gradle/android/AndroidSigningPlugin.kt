@@ -26,7 +26,7 @@ abstract class AndroidSigningPlugin : BasePlugin() {
 			// Use the oldest available overload that exists since AGP 3.1.4 through AGP 7.0.2:
 			// fun setSigningConfig(signingConfig: com.android.builder.model.SigningConfig?): com.android.builder.model.BuildType
 			android.buildTypes["release"].setSigningConfig(sign as com.android.builder.model.SigningConfig)
-		} else if (project.hasProperty(STORE_FILE)) {
+		} else if (project.providers.gradleProperty(STORE_FILE).isPresent) {
 			LOG.error("Keystore file (from {}) '{}' is not valid.", STORE_FILE, keyStoreFile.absolutePath)
 		}
 	}
@@ -34,7 +34,7 @@ abstract class AndroidSigningPlugin : BasePlugin() {
 	@Suppress("detekt.CastToNullableType") // Map<String, ?> -> it could be anything, it could be a null too.
 	@Throws(ClassCastException::class) // If property is not a String.
 	private fun optionalProp(name: String): String? =
-		project.properties[name] as String?
+		project.providers.gradleProperty(name).orNull
 
 	@Throws(ClassCastException::class) // If property is not a String.
 	private fun mandatoryProp(name: String): String =

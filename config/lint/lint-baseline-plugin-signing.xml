@@ -2,28 +2,6 @@
 <issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
 
     <issue
-        id="GradleProjectIsolation"
-        message="Use providers.gradleProperty instead of hasProperty"
-        errorLine1="  } else if (project.hasProperty(STORE_FILE)) {"
-        errorLine2="                     ~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/android/AndroidSigningPlugin.kt"
-            line="29"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="GradleProjectIsolation"
-        message="Use providers.gradleProperty instead of getProperties"
-        errorLine1="  project.properties[name] as String?"
-        errorLine2="          ~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/android/AndroidSigningPlugin.kt"
-            line="37"
-            column="11"/>
-    </issue>
-
-    <issue
         id="InternalAgpApiUsage"
         message="Avoid using internal Android Gradle Plugin APIs"
         errorLine1="import com.android.build.gradle.internal.dsl.SigningConfig"
