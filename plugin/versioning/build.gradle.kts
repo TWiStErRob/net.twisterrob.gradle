@@ -59,7 +59,17 @@ dependencies {
 	testImplementation(testFixtures(projects.plugin.base))
 
 	// This plugin is part of the net.twisterrob.gradle.plugin.android-app plugin, not designed to work on its own.
-	testInjectedPluginClasspath(projects.plugin)
+	testInjectedPluginClasspath(projects.plugin) {
+		// Hacky workaround for class-file-version problems at runtime.
+		// There's probably a variant-attribute based solution, but couldn't figure it out in time.
+		libs.jgit17.get().module.run { exclude(group, name) }
+	}
+	testInjectedPluginClasspath(
+		providers
+			.gradleProperty("net.twisterrob.test.gradle.javaVersion")
+			.flatMap { libs.create("jgit${it}") } // libs.jgit11 / libs.jgit17
+	)
+
 	testInjectedPluginClasspath(libs.android.gradle) {
 		version { require(property("net.twisterrob.test.android.pluginVersion").toString()) }
 	}
