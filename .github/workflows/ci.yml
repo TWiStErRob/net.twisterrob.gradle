@@ -136,7 +136,6 @@ jobs:
           --continue
           jar
           validatePlugins
-          lint
           detektMain
           detektTest
           detektTestFixtures
@@ -159,15 +158,6 @@ jobs:
         if: ${{ success() || failure() }}
         with:
           sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif
-
-      - name: "Upload 'Lint Results' artifact."
-        if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'Lint Results'
-          if-no-files-found: error
-          path: |
-            **/build/reports/lint-results.*
 
       - name: "Cancel other jobs on Build failure, no need to check / test it."
         if: ${{ failure() }}
