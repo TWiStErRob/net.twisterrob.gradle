@@ -60,21 +60,24 @@ abstract class KotlinPlugin : BasePlugin() {
 		}
 
 		private fun Project.addKotlinJUnitIfNeeded(configuration: DependencyAdder) {
-			configurations[(configuration as KCallable<*>).name].dependencies.configureEach { dep ->
-				if (dep.group == "junit" && dep.name == "junit"
-					&& dep.version.orEmpty().matches("""4\.\d+(\.\d+)?(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
-				) {
-					dependencies.configuration(kotlin("test-junit"))
-				}
-			}
+			addIfNeeded(configuration, Dependency::isJUnit4, kotlin("test-junit"))
 		}
 
 		private fun Project.addKotlinTestNGIfNeeded(configuration: DependencyAdder) {
-			configurations[(configuration as KCallable<*>).name].dependencies.configureEach { dep ->
-				if (dep.group == "org.testng" && dep.name == "testng") {
-					dependencies.configuration(kotlin("test-testng"))
+			addIfNeeded(configuration, Dependency::isTestNG, kotlin("test-testng"))
+		}
+
+		private fun Project.addIfNeeded(
+			configuration: DependencyAdder, existingDependency: Dependency.() -> Boolean, newDependency: String
+		) {
+			val realConfiguration = configurations[(configuration as KCallable<*>).name]
+			realConfiguration.dependencies.addLater(provider {
+				if (realConfiguration.dependencies.any(existingDependency)) {
+					dependencies.create(newDependency)
+				} else {
+					null
 				}
-			}
+			})
 		}
 	}
 }
@@ -84,3 +87,10 @@ private fun DependencyHandler.implementation(dependencyNotation: Any): Dependenc
 
 private fun DependencyHandler.testImplementation(dependencyNotation: Any): Dependency? =
 	add("testImplementation", dependencyNotation)
+
+private fun Dependency.isJUnit4(): Boolean =
+	this.group == "junit" && this.name == "junit"
+			&& this.version.orEmpty().matches("""4\.\d+(\.\d+)?(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
+
+private fun Dependency.isTestNG(): Boolean =
+	this.group == "org.testng" && this.name == "testng"
