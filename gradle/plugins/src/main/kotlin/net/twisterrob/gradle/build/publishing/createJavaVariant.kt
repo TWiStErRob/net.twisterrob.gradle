@@ -52,7 +52,7 @@ private fun HasAttributes.copyAttributesFrom(
 	}
 }
 
-private val ignore = Attribute.of("ignore", String::class.java)
+private val ignore = Attribute.of("net.twisterrob.ignore", String::class.java)
 
 private fun Project.skipConfiguration(configuration: NamedDomainObjectProvider<Configuration>) {
 	configuration.configure {

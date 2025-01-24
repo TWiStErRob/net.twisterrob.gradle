@@ -66,6 +66,6 @@ configurations {
 		isCanBeResolved = true
 	}
 	tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
-		this.pluginClasspath.from(testInjectedPluginClasspath)
+		pluginClasspath.from(testInjectedPluginClasspath)
 	}
 }
