@@ -70,14 +70,22 @@ abstract class KotlinPlugin : BasePlugin() {
 		private fun Project.addIfNeeded(
 			configuration: DependencyAdder, existingDependency: Dependency.() -> Boolean, newDependency: String
 		) {
-			val realConfiguration = configurations[(configuration as KCallable<*>).name]
-			realConfiguration.dependencies.addLater(provider {
-				if (realConfiguration.dependencies.any(existingDependency)) {
-					dependencies.create(newDependency)
-				} else {
-					null
+			val name = (configuration as KCallable<*>).name
+			val realConfiguration = configurations[name]
+			realConfiguration.allDependencies.configureEach { dep ->
+				if (dep.existingDependency()) {
+					realConfiguration.extendsFrom(
+						configurations.create("twisterrobKotlin${name.capitalize()}") { temp ->
+							temp.isCanBeConsumed = false
+							temp.isCanBeResolved = false
+							temp.defaultDependencies { dependencies ->
+								dependencies.add(project.dependencies.create(newDependency))
+							}
+						}
+					)
 				}
-			})
+
+			}
 		}
 	}
 }
