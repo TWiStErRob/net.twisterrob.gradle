@@ -133,7 +133,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		disabledReason = "https://docs.gradle.org/8.10.2/userguide/upgrading_version_8.html#minimum_daemon_jvm_version"
 	)
 	@Test fun `print checkstyle version (Gradle 8 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("8.12")
+		gradle.gradleVersion = GradleVersion.version("8.12.1")
 
 		@Language("gradle")
 		val script = """
@@ -149,7 +149,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 8.12""")
+		result.assertHasOutputLine("""Gradle version: 8.12.1""")
 		result.assertHasOutputLine("""Checkstyle version: 9.3""")
 	}
 
@@ -166,7 +166,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		disabledReason = "https://docs.gradle.org/8.10.2/userguide/upgrading_version_8.html#minimum_daemon_jvm_version"
 	)
 	@Test fun `print pmd version (Gradle 8 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("8.12")
+		gradle.gradleVersion = GradleVersion.version("8.12.1")
 
 		@Language("gradle")
 		val script = """
@@ -182,7 +182,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 8.12""")
+		result.assertHasOutputLine("""Gradle version: 8.12.1""")
 		result.assertHasOutputLine("""PMD version: 6.55.0""")
 	}
 
