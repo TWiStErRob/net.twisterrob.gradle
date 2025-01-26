@@ -26,6 +26,7 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import java.util.Locale
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidBuildPluginExtension {
@@ -190,7 +191,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		}
 
 		private fun registerRunTask(project: Project, variant: ApplicationVariant) {
-			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize()}") {
+			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize(Locale.ROOT)}") {
 				// Delay task retrieval until task graph calculation so AGP has a chance to set up the tasks.
 				this.dependsOn(project.provider {
 					variant.taskContainer.installTask

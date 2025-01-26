@@ -9,4 +9,5 @@ dependencies {
 	sourcesOnly(libs.android.lint.api)
 	sourcesOnly(libs.android.lint.gradle)
 	sourcesOnly(libs.android.lint.checks)
+	sourcesOnly(libs.androidx.lint)
 }

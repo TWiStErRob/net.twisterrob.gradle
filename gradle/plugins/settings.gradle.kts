@@ -7,6 +7,7 @@ dependencyResolutionManagement {
 		repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
 		mavenCentral()
 		gradlePluginPortal()
+		google()
 	}
 	versionCatalogs {
 		create(defaultLibrariesExtensionName.get()) {

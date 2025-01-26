@@ -80,7 +80,7 @@ abstract class SvnPluginExtension(
 			try {
 				block()
 				System.out.flush()
-				return baos.toString()
+				return baos.toString(Charsets.UTF_8)
 			} finally {
 				System.setOut(oldSystemOut)
 			}

@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import groovy.lang.GroovyObjectSupport;
 import groovy.lang.MissingPropertyException;
@@ -61,7 +63,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 
 	@SuppressWarnings("EmptyMethod") // Groovy needs this
 	@Override
-	public Object getProperty(String fieldName) {
+	public @Nullable Object getProperty(@Nonnull String fieldName) {
 		return super.getProperty(fieldName);
 	}
 
@@ -80,7 +82,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 
 	@Override
 	public String toString() {
-		return String.format("%d %s grouped on %s", this.list.size(), representative.getClass(), fields);
+		return String.format(Locale.ROOT, "%d %s grouped on %s", this.list.size(), representative.getClass(), fields);
 	}
 
 	private static Object findRepresentative(@Nonnull Collection<?> list) {
@@ -124,7 +126,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 
 		@SuppressWarnings("EmptyMethod") // Groovy needs this
 		@Override
-		public Object getProperty(String fieldName) {
+		public @Nullable Object getProperty(@Nonnull String fieldName) {
 			return super.getProperty(fieldName);
 		}
 	}
@@ -151,7 +153,7 @@ public class Grouper<K, V> extends AbstractGrouper {
 
 		@SuppressWarnings("EmptyMethod") // Groovy needs this
 		@Override
-		public Object getProperty(String fieldName) {
+		public @Nullable Object getProperty(@Nonnull String fieldName) {
 			return super.getProperty(fieldName);
 		}
 	}
@@ -189,7 +191,7 @@ abstract class AbstractGrouper extends GroovyObjectSupport {
 	 * for Groovy to have . operator, needs to be repeated in every type.
 	 */
 	@Override
-	public Object getProperty(String fieldName) {
+	public @Nullable Object getProperty(@Nonnull String fieldName) {
 		if ("by".equals(fieldName)) {
 			return this;
 		}

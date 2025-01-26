@@ -35,7 +35,7 @@ abstract class KotlinPlugin : BasePlugin() {
 				project.addTestDependencies(DependencyHandler::testImplementation)
 			}
 			val android: BaseExtension = project.extensions["android"] as BaseExtension
-			android.sourceSets.all {
+			android.sourceSets.configureEach {
 				it.java.srcDir("src/${it.name}/kotlin")
 			}
 		} else {
@@ -60,20 +60,31 @@ abstract class KotlinPlugin : BasePlugin() {
 		}
 
 		private fun Project.addKotlinJUnitIfNeeded(configuration: DependencyAdder) {
-			configurations[(configuration as KCallable<*>).name].dependencies.all { dep ->
-				if (dep.group == "junit" && dep.name == "junit"
-					&& dep.version.orEmpty().matches("""4\.\d+(\.\d+)?(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
-				) {
-					dependencies.configuration(kotlin("test-junit"))
-				}
-			}
+			addIfNeeded(configuration, Dependency::isJUnit4, kotlin("test-junit"))
 		}
 
 		private fun Project.addKotlinTestNGIfNeeded(configuration: DependencyAdder) {
-			configurations[(configuration as KCallable<*>).name].dependencies.all { dep ->
-				if (dep.group == "org.testng" && dep.name == "testng") {
-					dependencies.configuration(kotlin("test-testng"))
+			addIfNeeded(configuration, Dependency::isTestNG, kotlin("test-testng"))
+		}
+
+		private fun Project.addIfNeeded(
+			configuration: DependencyAdder, existingDependency: Dependency.() -> Boolean, newDependency: String
+		) {
+			val name = (configuration as KCallable<*>).name
+			val realConfiguration = configurations[name]
+			realConfiguration.allDependencies.configureEach { dep ->
+				if (dep.existingDependency()) {
+					realConfiguration.extendsFrom(
+						configurations.create("twisterrobKotlin${name.capitalize()}") { temp ->
+							temp.isCanBeConsumed = false
+							temp.isCanBeResolved = false
+							temp.defaultDependencies { dependencies ->
+								dependencies.add(project.dependencies.create(newDependency))
+							}
+						}
+					)
 				}
+
 			}
 		}
 	}
@@ -84,3 +95,10 @@ private fun DependencyHandler.implementation(dependencyNotation: Any): Dependenc
 
 private fun DependencyHandler.testImplementation(dependencyNotation: Any): Dependency? =
 	add("testImplementation", dependencyNotation)
+
+private fun Dependency.isJUnit4(): Boolean =
+	this.group == "junit" && this.name == "junit"
+			&& this.version.orEmpty().matches("""4\.\d+(\.\d+)?(-SNAPSHOT|-\d{8}\.\d{6}-\d+)?""".toRegex())
+
+private fun Dependency.isTestNG(): Boolean =
+	this.group == "org.testng" && this.name == "testng"

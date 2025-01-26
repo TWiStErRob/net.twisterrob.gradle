@@ -2,6 +2,7 @@ package net.twisterrob.gradle.quality.violations
 
 import se.bjurr.violations.lib.model.Violation
 import se.bjurr.violations.lib.reports.Parser
+import java.util.Locale
 
 class RuleCategoryParser {
 
@@ -32,7 +33,7 @@ class RuleCategoryParser {
 			Parser.CHECKSTYLE.name -> {
 				val match = CHECKSTYLE_BUILT_IN_CHECK.matchEntire(it.rule)
 				if (match != null) {
-					(match.groups[1]?.value ?: "misc").capitalize()
+					(match.groups[1]?.value ?: "misc").capitalize(Locale.ROOT)
 				} else {
 					"Custom"
 				}

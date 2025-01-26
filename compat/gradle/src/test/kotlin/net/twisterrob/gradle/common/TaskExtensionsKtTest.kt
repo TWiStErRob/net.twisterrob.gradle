@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@Suppress("EagerGradleConfiguration") // Tests need access to the task object to verify state.
 class TaskExtensionsKtTest {
 	private val project = Project()
 

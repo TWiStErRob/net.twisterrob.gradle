@@ -15,6 +15,7 @@ class HtmlReportTaskUnitTest {
 	@Test fun `transformation error displays affected file names`() {
 		val project = Project()
 		project.plugins.apply("reporting-base")
+		@Suppress("EagerGradleConfiguration") // Explicitly trigger configuration so task can be tested.
 		val sut = project.tasks.register("sut", HtmlReportTask::class.java).get()
 
 		val ex = assertThrows<Throwable> {

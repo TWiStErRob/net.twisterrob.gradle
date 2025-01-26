@@ -14,6 +14,7 @@ dependencies {
 	implementation(libs.plugins.kotlin.dokka.asDependency())
 	implementation(libs.plugins.kotlin.dokkaJavadoc.asDependency())
 	implementation(libs.plugins.detekt.asDependency())
+	implementation(libs.plugins.lint.asDependency())
 	implementation(libs.gradle.develocity)
 	implementation(libs.nexus)
 

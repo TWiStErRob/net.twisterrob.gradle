@@ -25,6 +25,7 @@ internal class LintReportGatherer : TaskReportGatherer<AndroidLintTask>(AndroidL
 		Parser.ANDROIDLINT.findViolations(NoOpLogger, listOf(report)).toList()
 
 	override fun allTasksFrom(project: Project): TaskCollection<AndroidLintTask> =
+		@Suppress("EagerGradleConfiguration") // This method is called eagerly immediately anyway.
 		super.allTasksFrom(project)
 			.matching { it.xmlReportOutputFile.isPresent }
 }
