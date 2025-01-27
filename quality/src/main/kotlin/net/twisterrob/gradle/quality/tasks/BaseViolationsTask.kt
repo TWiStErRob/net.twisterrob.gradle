@@ -104,6 +104,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 				result = result.parsableReportLocation,
 				report = result.humanReportLocation,
 				violations = result.gatherer.getViolations(result.parsableReportLocation)?.map { violation ->
+					val file = result.subproject.file(violation.file)
 					Violation(
 						rule = ruleCategoryParser.rule(violation),
 						category = ruleCategoryParser.category(violation),
@@ -115,15 +116,10 @@ abstract class BaseViolationsTask : DefaultTask() {
 						message = violation.message,
 						specifics = violation.specifics.orEmpty(),
 						location = Violation.Location(
-							module = Violation.Module(
-								path = result.subproject.path,
-								name = result.subproject.name,
-								projectDir = result.subproject.projectDir,
-								rootDir = result.subproject.rootDir,
-							),
+							module = module(result, file),
 							task = result.task,
 							variant = result.gathererName,
-							file = result.subproject.file(violation.file),
+							file = file,
 							startLine = violation.startLine,
 							endLine = violation.endLine,
 							column = violation.column
@@ -143,6 +139,29 @@ abstract class BaseViolationsTask : DefaultTask() {
 		val nullSafeSum = nullSafeSum { v: Violations? -> v?.violations?.size }
 		@Suppress("UNCHECKED_CAST")
 		processViolations(Grouper.create(deduplicate(results), nullSafeSum) as Grouper.Start<Violations>)
+	}
+
+	private fun module(result: Result, file: File): Violation.Module {
+		val lookup = project.rootProject.allprojects
+			.associateBy { it.projectDir }
+			.mapValues { 
+				Result.Project(
+					name = it.value.name,
+					path = it.value.path,
+					rootDir = it.value.rootDir,
+					projectDir = it.value.projectDir,
+				)
+			}
+		val module = generateSequence(file) { it.parentFile }
+			.mapNotNull { lookup[it] }
+			.firstOrNull()
+			?: result.subproject
+		return Violation.Module(
+			path = module.path,
+			name = module.name,
+			projectDir = module.projectDir,
+			rootDir = module.rootDir,
+		)
 	}
 
 	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
