@@ -342,7 +342,7 @@ class LintPluginTest : BaseIntgTest() {
 
 			gradle.file(subProject, module, "build.gradle")
 			gradle.settingsFile.appendText("""include(":${module}")${System.lineSeparator()}""")
-			gradle.file(lintViolation, module, "src", "main", "java", "fail1.java")
+			gradle.file(lintViolation, module, "src", "main", "java", "fail${module}.java")
 		}
 	}
 }
