@@ -10,6 +10,7 @@ import net.twisterrob.gradle.quality.gather.LintReportGatherer
 import net.twisterrob.gradle.quality.gather.QualityTaskReportGatherer
 import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.html.deduplicate
+import net.twisterrob.gradle.quality.violations.ModuleDeducer
 import net.twisterrob.gradle.quality.violations.RuleCategoryParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -30,6 +31,9 @@ abstract class BaseViolationsTask : DefaultTask() {
 
 	@get:Input
 	internal abstract val tasks: ListProperty<Result>
+
+	@get:Input
+	internal abstract val modules: ListProperty<Result.Project>
 
 	init {
 		this.group = JavaBasePlugin.VERIFICATION_GROUP
@@ -89,6 +93,16 @@ abstract class BaseViolationsTask : DefaultTask() {
 				}
 			}
 		})
+		modules.convention(project.provider {
+			project.allprojects.map {
+				Result.Project(
+					name = it.name,
+					path = it.path,
+					rootDir = it.rootDir,
+					projectDir = it.projectDir,
+				)
+			}
+		})
 	}
 
 	protected abstract fun processViolations(violations: Grouper.Start<Violations>)
@@ -96,6 +110,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 	@TaskAction
 	fun validateViolations() {
 		val ruleCategoryParser = RuleCategoryParser()
+		val moduleDeducer = ModuleDeducer(modules.get())
 		val results = tasks.get().map { result ->
 			Violations(
 				parser = result.displayName,
@@ -104,7 +119,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 				result = result.parsableReportLocation,
 				report = result.humanReportLocation,
 				violations = result.gatherer.getViolations(result.parsableReportLocation)?.map { violation ->
-					val file = result.subproject.file(violation.file)
+					val location = result.subproject.file(violation.file)
 					Violation(
 						rule = ruleCategoryParser.rule(violation),
 						category = ruleCategoryParser.category(violation),
@@ -116,10 +131,17 @@ abstract class BaseViolationsTask : DefaultTask() {
 						message = violation.message,
 						specifics = violation.specifics.orEmpty(),
 						location = Violation.Location(
-							module = module(result, file),
+							module = moduleDeducer.deduce(result.subproject, location).let { module ->
+								Violation.Module(
+									path = module.path,
+									name = module.name,
+									projectDir = module.projectDir,
+									rootDir = module.rootDir,
+								)
+							},
 							task = result.task,
 							variant = result.gathererName,
-							file = file,
+							file = location,
 							startLine = violation.startLine,
 							endLine = violation.endLine,
 							column = violation.column
@@ -139,29 +161,6 @@ abstract class BaseViolationsTask : DefaultTask() {
 		val nullSafeSum = nullSafeSum { v: Violations? -> v?.violations?.size }
 		@Suppress("UNCHECKED_CAST")
 		processViolations(Grouper.create(deduplicate(results), nullSafeSum) as Grouper.Start<Violations>)
-	}
-
-	private fun module(result: Result, file: File): Violation.Module {
-		val lookup = project.rootProject.allprojects
-			.associateBy { it.projectDir }
-			.mapValues { 
-				Result.Project(
-					name = it.value.name,
-					path = it.value.path,
-					rootDir = it.value.rootDir,
-					projectDir = it.value.projectDir,
-				)
-			}
-		val module = generateSequence(file) { it.parentFile }
-			.mapNotNull { lookup[it] }
-			.firstOrNull()
-			?: result.subproject
-		return Violation.Module(
-			path = module.path,
-			name = module.name,
-			projectDir = module.projectDir,
-			rootDir = module.rootDir,
-		)
 	}
 
 	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
