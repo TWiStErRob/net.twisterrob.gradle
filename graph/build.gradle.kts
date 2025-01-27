@@ -5,7 +5,7 @@ plugins {
 	id("org.gradle.java-gradle-plugin")
 	id("org.gradle.maven-publish")
 	id("org.openjfx.javafxplugin") version "0.0.14"
-	id("org.jetbrains.kotlin.jvm") version "2.0.21"
+	id("org.jetbrains.kotlin.jvm") version "2.1.10"
 	id("io.gitlab.arturbosch.detekt") version "1.23.7"
 	id("org.gradle.idea")
 	id("net.twisterrob.gradle.build.webjars")
