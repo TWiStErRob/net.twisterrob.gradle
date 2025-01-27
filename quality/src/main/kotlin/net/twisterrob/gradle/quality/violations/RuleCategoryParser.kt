@@ -3,7 +3,7 @@ package net.twisterrob.gradle.quality.violations
 import se.bjurr.violations.lib.model.Violation
 import se.bjurr.violations.lib.reports.Parser
 
-class RuleCategoryParser {
+internal class RuleCategoryParser {
 
 	fun rule(it: Violation): String =
 		@Suppress("detekt.UseIfInsteadOfWhen") // Preparing for future parsers.
