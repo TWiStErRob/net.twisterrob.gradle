@@ -42,7 +42,7 @@ kotlin-build = "2.0.21"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
 kotlin-dokka = "2.0.0"
 
-detekt = "1.23.7"
+detekt = "1.23.8"
 androidx-lint = "1.0.0-alpha03"
 
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases
