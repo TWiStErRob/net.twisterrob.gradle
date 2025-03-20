@@ -81,7 +81,7 @@ svnkit = "1.10.11"
 # Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
 # Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
 jgit11 = "6.10.0.202406032230-r"
-jgit17 = "7.1.0.202411261347-r"
+jgit17 = "7.2.0.202503040940-r"
 
 # Explicitly using an outdated version of diffuse, don't remember why.
 # Versions: https://github.com/JakeWharton/diffuse/tags
