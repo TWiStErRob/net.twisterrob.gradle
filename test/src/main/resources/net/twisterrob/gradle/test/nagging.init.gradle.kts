@@ -125,6 +125,29 @@ doNotNagAboutPatternForTest(
 			Regex.escape(" after it has been resolved or consumed. This behavior has been deprecated. This will fail with an error in Gradle 9.0. After a Configuration has been resolved, consumed as a variant, or used for generating published metadata, it should not be modified. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#mutate_configuration_after_locking") + ".*",
 	//"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:56)"
 )
+// https://github.com/gradle/gradle/issues/32422
+// https://issuetracker.google.com/issues/370546370
+doNotNagAboutForTest(
+	"8.13" to "8.14",
+	"8.9" to "8.10",
+	// > Configure project :
+	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
+	"Declaring an 'is-' property with a Boolean type has been deprecated. Starting with Gradle 9.0, this property will be ignored by Gradle. The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. Add a method named 'getCrunchPngs' with the same behavior and mark the old one with @Deprecated, or change the type of 'com.android.build.gradle.internal.dsl.BuildType\$AgpDecorated.isCrunchPngs' (and the setter) to 'boolean'. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties",
+)
+doNotNagAboutForTest(
+	"8.13" to "8.14",
+	"8.9" to "8.10",
+	// > Configure project :
+	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
+	"Declaring an 'is-' property with a Boolean type has been deprecated. Starting with Gradle 9.0, this property will be ignored by Gradle. The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. Add a method named 'getUseProguard' with the same behavior and mark the old one with @Deprecated, or change the type of 'com.android.build.gradle.internal.dsl.BuildType.isUseProguard' (and the setter) to 'boolean'. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties",
+)
+doNotNagAboutForTest(
+	"8.13" to "8.14",
+	"8.9" to "8.10",
+	// > Configure project :
+	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
+	"Declaring an 'is-' property with a Boolean type has been deprecated. Starting with Gradle 9.0, this property will be ignored by Gradle. The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. Add a method named 'getWearAppUnbundled' with the same behavior and mark the old one with @Deprecated, or change the type of 'com.android.build.api.variant.impl.ApplicationVariantImpl.isWearAppUnbundled' (and the setter) to 'boolean'. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties",
+)
 
 if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.6.0") {
 	// https://youtrack.jetbrains.com/issue/KT-47867 was fixed in 1.6.0,
