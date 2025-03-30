@@ -41,6 +41,7 @@
  3. Review tests
     * `VersionsTaskTest....(Gradle X latest)` might need updating.
     * `nagging.init.gradle.kts` might need bumping (both in Gradle version and doc URLs).
+      * Run `KotlinPluginIntgTest.can compile Kotlin` to fix trivial Kotlin issues.
     * `kotlin-plugin_app\build.gradle` might need bumping (both in Gradle version and doc URLs).
  4. Update CI.yml matrix
     * Update all Gradle `\d\.x` versions to the latest stable.

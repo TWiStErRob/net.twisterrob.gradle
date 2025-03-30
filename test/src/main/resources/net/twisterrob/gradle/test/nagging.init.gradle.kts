@@ -183,7 +183,7 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.0") {
 		"at org.jetbrains.kotlin.gradle.internal.KaptGenerateStubsTask.setupCompilerArgs"
 	)
 	doNotNagAboutStackForTest(
-		"8.9" to "8.13",
+		"8.9" to "8.14",
 		"0.0" to "100.0",
 		"The AbstractCompile.destinationDir property has been deprecated. This is scheduled to be removed in Gradle 9.0. Property was automatically upgraded to the lazy version. Please use the destinationDirectory property instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#compile_task_wiring",
 		"at org.jetbrains.kotlin.compilerRunner.GradleCompilerRunner\$Companion.buildModulesInfo\$kotlin_gradle_plugin"
@@ -200,9 +200,10 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.20") {
 	// https://youtrack.jetbrains.com/issue/KT-53882
 	// https://youtrack.jetbrains.com/issue/KT-57908
 	// > Configure project :
+	// Example test: KotlinPluginIntgTest.`can compile Kotlin`
 	// Example test: KotlinPluginIntgTest.`can test kotlin with JUnit in Android Test App`
 	doNotNagAboutStackForTest(
-		"8.0" to "8.13",
+		"8.0" to "8.14",
 		"0.0" to "100.0",
 		"The org.gradle.util.WrapUtil type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#org_gradle_util_reports_deprecations",
 		// "at org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinTarget.<init>(kotlinTargets.kt:266)" // 1.6.21
@@ -275,7 +276,7 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.20") {
 	// https://github.com/JetBrains/kotlin/commit/c495c07b1ae8df3ebc683ba925cecf26daaf9c1e
 	// Example test: KotlinPluginIntgTest.`can compile Kotlin`
 	doNotNagAboutPatternForTest(
-		"8.0" to "8.13",
+		"8.0" to "8.14",
 		"0.0" to "100.0",
 		""
 				+ "("
@@ -295,7 +296,7 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.20") {
 	)
 	// Example test: KotlinPluginIntgTest.`can compile Kotlin`
 	doNotNagAboutStackForTest(
-		"8.7" to "8.13",
+		"8.7" to "8.14",
 		"0.0" to "100.0",
 		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
 		"at org.jetbrains.kotlin.gradle.plugin.AbstractKotlinPlugin\$Companion\$setUpJavaSourceSets\$1.execute(KotlinPlugin.kt:1190)"
