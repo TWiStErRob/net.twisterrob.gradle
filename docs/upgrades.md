@@ -42,7 +42,7 @@
     * `VersionsTaskTest....(Gradle X latest)` might need updating.
     * `nagging.init.gradle.kts` might need bumping (both in Gradle version and doc URLs).
     * `kotlin-plugin_app\build.gradle` might need bumping (both in Gradle version and doc URLs).
- 4. Update CI.yml matrix and `publish-test-results` job
+ 4. Update CI.yml matrix
     * Update all Gradle `\d\.x` versions to the latest stable.
     * Keep all Gradle `\d\.\d\+` version on the latest patch.
     * Uncomment/add new AGP/Gradle combinations for .x versions.
