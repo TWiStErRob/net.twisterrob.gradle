@@ -43,6 +43,7 @@
     * `nagging.init.gradle.kts` might need bumping (both in Gradle version and doc URLs).
       * Run `KotlinPluginIntgTest.can compile Kotlin` to fix trivial Kotlin issues.
       * Run `AndroidBuildPluginIntgTest.can override compileSdk (debug)` to fix trivial Android issues.
+      * Run `AndroidBuildPluginIntgTest.can disable buildConfig decoration (debug)` to fix more Android/Kotlin issues.
     * `kotlin-plugin_app\build.gradle` might need bumping (both in Gradle version and doc URLs).
  4. Update CI.yml matrix
     * Update all Gradle `\d\.x` versions to the latest stable.

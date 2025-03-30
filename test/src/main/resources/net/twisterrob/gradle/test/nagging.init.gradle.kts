@@ -194,13 +194,13 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.0") {
 		"at org.jetbrains.kotlin.gradle.plugin.Android25ProjectHandler\$wireKotlinTasks\$preJavaKotlinOutput\$1.call"
 	)
 	doNotNagAboutStackForTest(
-		"8.9" to "8.13",
+		"8.9" to "8.14",
 		"0.0" to "100.0",
 		"The AbstractCompile.destinationDir property has been deprecated. This is scheduled to be removed in Gradle 9.0. Property was automatically upgraded to the lazy version. Please use the destinationDirectory property instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#compile_task_wiring",
 		"at org.jetbrains.kotlin.gradle.internal.KaptGenerateStubsTask.isSourceRootAllowed"
 	)
 	doNotNagAboutStackForTest(
-		"8.9" to "8.13",
+		"8.9" to "8.14",
 		"0.0" to "100.0",
 		"The AbstractCompile.destinationDir property has been deprecated. This is scheduled to be removed in Gradle 9.0. Property was automatically upgraded to the lazy version. Please use the destinationDirectory property instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#compile_task_wiring",
 		"at org.jetbrains.kotlin.gradle.internal.KaptGenerateStubsTask.setupCompilerArgs"
@@ -212,7 +212,7 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.0") {
 		"at org.jetbrains.kotlin.compilerRunner.GradleCompilerRunner\$Companion.buildModulesInfo\$kotlin_gradle_plugin"
 	)
 	doNotNagAboutStackForTest(
-		"8.9" to "8.13",
+		"8.9" to "8.14",
 		"0.0" to "100.0",
 		"The AbstractCompile.destinationDir property has been deprecated. This is scheduled to be removed in Gradle 9.0. Property was automatically upgraded to the lazy version. Please use the destinationDirectory property instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_7.html#compile_task_wiring",
 		"at org.jetbrains.kotlin.gradle.plugin.Android25ProjectHandler\$wireKotlinTasks\$preJavaKotlinOutput\$1.call"
@@ -239,20 +239,14 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.20") {
 	// https://youtrack.jetbrains.com/issue/KT-47047
 	// > Configure project :
 	doNotNagAboutStackForTest(
-		"8.0" to "8.13",
-		"0.0" to "100.0",
-		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
-		"at org.jetbrains.kotlin.gradle.plugin.GradleUtilsKt.getConvention(gradleUtils.kt:30)"
-	)
-	doNotNagAboutStackForTest(
-		"8.0" to "8.13",
+		"8.0" to "8.14",
 		"0.0" to "100.0",
 		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
 		"at org.jetbrains.kotlin.gradle.plugin.GradleUtilsKt.getConvention(gradleUtils.kt:30)"
 	)
 	// Example test: KotlinPluginIntgTest.`can test kotlin with JUnit in Android Test App`
 	doNotNagAboutStackForTest(
-		"8.7" to "8.13",
+		"8.7" to "8.14",
 		"0.0" to "100.0",
 		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
 		"at org.jetbrains.kotlin.gradle.plugin.mpp.SyncKotlinAndAndroidSourceSetsKt.setKotlinSourceSet(syncKotlinAndAndroidSourceSets.kt:145)"
@@ -270,19 +264,19 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.7.0") {
 		"at org.jetbrains.kotlin.gradle.plugin.mpp.KotlinCompilationsKt.ownModuleName(kotlinCompilations.kt:373)"
 	)
 	doNotNagAboutStackForTest(
-		"8.0" to "8.13",
+		"8.0" to "8.14",
 		"0.0" to "100.0",
 		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
 		"at org.jetbrains.kotlin.gradle.plugin.mpp.KotlinCompilationsKt.ownModuleName(kotlinCompilations.kt:373)"
 	)
 	doNotNagAboutStackForTest(
-		"8.0" to "8.13",
+		"8.0" to "8.14",
 		"0.0" to "100.0",
 		"The org.gradle.api.plugins.BasePluginConvention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#base_convention_deprecation",
 		"at org.jetbrains.kotlin.gradle.plugin.mpp.KotlinCompilationsKt.ownModuleName(kotlinCompilations.kt:373)"
 	)
 	doNotNagAboutStackForTest(
-		"8.5" to "8.13",
+		"8.5" to "8.14",
 		"0.0" to "100.0",
 		"The BasePluginExtension.archivesBaseName property has been deprecated. This is scheduled to be removed in Gradle 9.0. Please use the archivesName property instead. For more information, please refer to https://docs.gradle.org/${gradleVersion}/dsl/org.gradle.api.plugins.BasePluginExtension.html#org.gradle.api.plugins.BasePluginExtension:archivesName in the Gradle documentation.",
 		"at org.jetbrains.kotlin.gradle.plugin.mpp.KotlinCompilationsKt.ownModuleName(kotlinCompilations.kt:373)"
@@ -332,7 +326,7 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" in "1.5.20".."2.0.10") {
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
 	// Introduced in 1.5.20: https://github.com/JetBrains/kotlin/commit/34e0a3caa890246946ec5fc0153a0b3dc4271244
 	doNotNagAboutStackForTest(
-		"8.8" to "8.13",
+		"8.8" to "8.14",
 		"0.0" to "100.0",
 		"The Configuration.fileCollection(Spec) method has been deprecated. This is scheduled to be removed in Gradle 9.0. Use Configuration.getIncoming().artifactView(Action) with a componentFilter instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecate_filtered_configuration_file_and_filecollection_methods",
 		when ("@net.twisterrob.test.kotlin.pluginVersion@") {
