@@ -183,7 +183,6 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		result.assertSuccess(":qualityVersions")
 		result.assertHasOutputLine("""Gradle version: 8.13""")
-		result.assertHasOutputLine("""Gradle version: 8.13""")
 		result.assertHasOutputLine("""PMD version: 6.55.0""")
 	}
 
