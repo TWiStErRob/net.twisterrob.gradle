@@ -62,7 +62,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.tasks.factory.AndroidUnitTest\$CreationAction.configure"
 )
 doNotNagAboutStackForTest(
-	"8.0" to "8.13",
+	"8.0" to "8.14",
 	"7.4" to "8.2",
 	// > Task :checkDebugUnitTestAarMetadata, :mergeDebugUnitTestResources, :processDebugUnitTestManifest, :mergeDebugUnitTestAssets
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
@@ -71,7 +71,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.ide.dependencies.BuildMappingUtils.getIdString(BuildMapping.kt:48)"
 )
 doNotNagAboutStackForTest(
-	"8.0" to "8.13",
+	"8.0" to "8.14",
 	"7.4" to "8.2",
 	// > Task :generateDebugLintModel. :lintAnalyzeDebug, :lintReportDebug
 	// > Task :lintAnalyzeDebug
@@ -81,7 +81,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.ide.dependencies.BuildMappingUtils.getBuildId(BuildMapping.kt:40)"
 )
 doNotNagAboutStackForTest(
-	"8.0" to "8.13",
+	"8.0" to "8.14",
 	"7.4" to "8.0",
 	// > Task :lintAnalyzeDebug
 	// Example test: HtmlReportTaskTest.`task is re-executed when lint results are changed`
@@ -89,7 +89,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:68)"
 )
 doNotNagAboutStackForTest(
-	"8.2" to "8.13",
+	"8.2" to "8.14",
 	"7.4" to "8.0",
 	// > Configure project : when using android.testOptions.unitTests.all { }
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
@@ -97,7 +97,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.dsl.TestOptions\$UnitTestOptions\$all\$1.execute(TestOptions.kt:115)"
 )
 doNotNagAboutStackForTest(
-	"8.3" to "8.13",
+	"8.3" to "8.14",
 	"7.4" to "8.0",
 	// > Configure project :
 	// Example test: TestReportGeneratorIntgTest
@@ -106,7 +106,7 @@ doNotNagAboutStackForTest(
 	"at com.android.build.gradle.internal.api.DefaultAndroidSourceSet.<init>(DefaultAndroidSourceSet.kt:68)"
 )
 doNotNagAboutStackForTest(
-	"8.7" to "8.13",
+	"8.7" to "8.14",
 	"7.4" to "8.2",
 	// > Configure project : in all Android tests
 	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
@@ -125,25 +125,35 @@ doNotNagAboutPatternForTest(
 			Regex.escape(" after it has been resolved or consumed. This behavior has been deprecated. This will fail with an error in Gradle 9.0. After a Configuration has been resolved, consumed as a variant, or used for generating published metadata, it should not be modified. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#mutate_configuration_after_locking") + ".*",
 	//"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:56)"
 )
+doNotNagAboutPatternForTest(
+	"8.13" to "8.14",
+	"7.4" to "8.3",
+	// > Task :generateDebugRFile
+	// > Task :generateReleaseRFile
+	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
+	// Example test: KotlinPluginIntgTest.`can test kotlin with JUnit in Android Test App`
+	Regex.escape("Mutating a configuration after it has been resolved, consumed as a variant, or used for generating published metadata. This behavior has been deprecated. This will fail with an error in Gradle 9.0. The dependencies of configuration '") + "(:.+)*:(release|debug)CompileClasspath" + Regex.escape("' were mutated after the configuration was resolved. After a configuration has been observed, it should not be modified. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#mutate_configuration_after_locking") + ".*",
+	//"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:56)"
+)
 // https://github.com/gradle/gradle/issues/32422
 // https://issuetracker.google.com/issues/370546370
 doNotNagAboutForTest(
 	"8.13" to "8.14",
-	"8.9" to "8.10",
+	"7.4" to "8.10",
 	// > Configure project :
 	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
 	"Declaring an 'is-' property with a Boolean type has been deprecated. Starting with Gradle 9.0, this property will be ignored by Gradle. The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. Add a method named 'getCrunchPngs' with the same behavior and mark the old one with @Deprecated, or change the type of 'com.android.build.gradle.internal.dsl.BuildType\$AgpDecorated.isCrunchPngs' (and the setter) to 'boolean'. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties",
 )
 doNotNagAboutForTest(
 	"8.13" to "8.14",
-	"8.9" to "8.10",
+	"7.4" to "8.10",
 	// > Configure project :
 	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
 	"Declaring an 'is-' property with a Boolean type has been deprecated. Starting with Gradle 9.0, this property will be ignored by Gradle. The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. Add a method named 'getUseProguard' with the same behavior and mark the old one with @Deprecated, or change the type of 'com.android.build.gradle.internal.dsl.BuildType.isUseProguard' (and the setter) to 'boolean'. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties",
 )
 doNotNagAboutForTest(
 	"8.13" to "8.14",
-	"8.9" to "8.10",
+	"7.4" to "8.10",
 	// > Configure project :
 	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
 	"Declaring an 'is-' property with a Boolean type has been deprecated. Starting with Gradle 9.0, this property will be ignored by Gradle. The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. Add a method named 'getWearAppUnbundled' with the same behavior and mark the old one with @Deprecated, or change the type of 'com.android.build.api.variant.impl.ApplicationVariantImpl.isWearAppUnbundled' (and the setter) to 'boolean'. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties",
