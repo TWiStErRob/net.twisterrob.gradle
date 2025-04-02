@@ -1,4 +1,4 @@
-set version=8.12
+set version=8.13
 call gradlew wrapper --distribution-type=all --gradle-version=%version%
 call gradlew -p gradle/plugins wrapper --distribution-type=all --gradle-version=%version%
 call gradlew -p graph wrapper --distribution-type=all --gradle-version=%version%
