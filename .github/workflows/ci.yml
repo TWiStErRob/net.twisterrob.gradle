@@ -929,7 +929,6 @@ jobs:
             android: '35'
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
-
           - name: "AGP 8.8.x on Gradle 8.x"
             gradle: '8.13'
             java: '17'
@@ -942,6 +941,39 @@ jobs:
             gradle: '8.13'
             java: '17'
             agp: '8.8.0'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.9.x on Gradle 8.11+"
+            gradle: '8.11.1'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.9.x on Gradle 8.11+ - plugin"
+            gradle: '8.11.1'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.9.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.9.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.9.1'
             kotlin: '1.6.21'
             android: '35'
             build-tools: '34.0.0'
