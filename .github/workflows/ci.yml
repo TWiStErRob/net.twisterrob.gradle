@@ -913,23 +913,22 @@ jobs:
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
 
-          - name: "AGP 8.8.x on Gradle 8.12+"
-            gradle: '8.12.1'
+          - name: "AGP 8.8.x on Gradle 8.10+"
+            gradle: '8.10.2'
             java: '17'
             agp: '8.8.0'
             kotlin: '1.6.21'
             android: '35'
             build-tools: '34.0.0'
             test-task: 'testReport :quality:tests'
-          - name: "AGP 8.8.x on Gradle 8.12+ - plugin"
-            gradle: '8.12.1'
+          - name: "AGP 8.8.x on Gradle 8.10+ - plugin"
+            gradle: '8.10.2'
             java: '17'
             agp: '8.8.0'
             kotlin: '1.6.21'
             android: '35'
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
-
           - name: "AGP 8.8.x on Gradle 8.x"
             gradle: '8.13'
             java: '17'
@@ -947,10 +946,43 @@ jobs:
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
 
+          - name: "AGP 8.9.x on Gradle 8.11+"
+            gradle: '8.11.1'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.9.x on Gradle 8.11+ - plugin"
+            gradle: '8.11.1'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.9.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.9.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
           - name: "AGP stable on Gradle stable"
             gradle: '8.13' # https://gradle.org/releases/
             java: '17'
-            agp: '8.7.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            agp: '8.9.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '1.9.25' # https://kotlinlang.org/docs/releases.html#release-details
             android: '35'
             build-tools: '34.0.0'
@@ -958,7 +990,7 @@ jobs:
           - name: "AGP stable on Gradle stable - plugin"
             gradle: '8.13' # https://gradle.org/releases/
             java: '17'
-            agp: '8.7.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            agp: '8.9.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '1.9.25' # https://kotlinlang.org/docs/releases.html#release-details
             android: '35'
             build-tools: '34.0.0'
@@ -966,7 +998,7 @@ jobs:
           - name: "AGP preview on Gradle preview"
             gradle: '8.13' # https://services.gradle.org/distributions/
             java: '17'
-            agp: '8.7.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            agp: '8.9.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.0.0' # https://kotlinlang.org/docs/eap.html#build-details
             android: '35'
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
@@ -974,7 +1006,7 @@ jobs:
           - name: "AGP preview on Gradle preview - plugin"
             gradle: '8.13' # https://services.gradle.org/distributions/
             java: '17'
-            agp: '8.7.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            agp: '8.9.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.0.0' # https://kotlinlang.org/docs/eap.html#build-details
             android: '35'
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
