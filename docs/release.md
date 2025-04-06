@@ -8,6 +8,7 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       Double-check that version is `x.y`
     * `README.md`: review compatibility table
     * Label the `Release x.y` PR `a:feature`, `in:meta` and put it in the milestone.
+    * Assign drafted issues/PRs against the milestone (`gh issue edit ### --milestone x.y`)
  1. Upload
     * Set up credentials
         * `sonatypeUsername` is the account name of https://s01.oss.sonatype.org/
