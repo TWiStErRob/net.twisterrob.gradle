@@ -44,12 +44,10 @@ dependencies {
 	implementation(libs.svnkit.cli)
 	compileOnly(libs.android.gradle)
 	compileOnly(libs.jgit17)
-	@Suppress("UnstableApiUsage")
 	runtimeOnlyJava11(libs.jgit11) {
 		because("JGit 6.10.0 is the last version to support Java 11. JGit 7.x requires Java 17.")
 		versionConstraint.rejectedVersions.add("[7.0,)")
 	}
-	@Suppress("UnstableApiUsage")
 	runtimeOnlyJava17(libs.jgit17) {
 		because("JGit 7.x is the first version to require Java 17.")
 		versionConstraint.rejectedVersions.add("(,7.0)")
