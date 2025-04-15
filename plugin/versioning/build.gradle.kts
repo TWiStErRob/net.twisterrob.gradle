@@ -31,8 +31,36 @@ gradlePlugin {
 	}
 }
 
-val runtimeOnlyJava11: Configuration = createJavaVariant(configurations.runtimeElements, JavaLanguageVersion.of(11))
-val runtimeOnlyJava17: Configuration = createJavaVariant(configurations.runtimeElements, JavaLanguageVersion.of(17))
+val java17 by sourceSets.creating
+
+java {
+	registerFeature("java17") {
+		usingSourceSet(java17)
+		capability(group.toString(), project.name, version.toString())
+	}
+}
+
+val java17RuntimeElements by configurations.existing {
+	attributes {
+		attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
+	}
+}
+
+val java17ApiElements by configurations.existing {
+	attributes {
+		attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
+	}
+}
+val java17RuntimeOnly by configurations
+
+publishing {
+	publications {
+		named<MavenPublication>("pluginMaven") {
+			suppressPomMetadataWarningsFor("java17ApiElements")
+			suppressPomMetadataWarningsFor("java17RuntimeElements")
+		}
+	}
+}
 
 dependencies {
 	implementation(gradleApi())
@@ -43,14 +71,11 @@ dependencies {
 	implementation(libs.svnkit)
 	implementation(libs.svnkit.cli)
 	compileOnly(libs.android.gradle)
-	compileOnly(libs.jgit17)
-	@Suppress("UnstableApiUsage")
-	runtimeOnlyJava11(libs.jgit11) {
+	implementation(libs.jgit11) {
 		because("JGit 6.10.0 is the last version to support Java 11. JGit 7.x requires Java 17.")
 		versionConstraint.rejectedVersions.add("[7.0,)")
 	}
-	@Suppress("UnstableApiUsage")
-	runtimeOnlyJava17(libs.jgit17) {
+	java17RuntimeOnly(libs.jgit17) {
 		because("JGit 7.x is the first version to require Java 17.")
 		versionConstraint.rejectedVersions.add("(,7.0)")
 	}
@@ -65,5 +90,4 @@ dependencies {
 	}
 
 	testFixturesApi(libs.svnkit)
-	testFixturesCompileOnlyApi(libs.jgit17)
 }
