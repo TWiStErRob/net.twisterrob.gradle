@@ -8,6 +8,7 @@ import org.gradle.api.attributes.HasAttributes
 import org.gradle.api.attributes.java.TargetJvmVersion
 import org.gradle.api.component.AdhocComponentWithVariants
 import org.gradle.api.provider.ProviderFactory
+import org.gradle.jvm.component.internal.JvmSoftwareComponentInternal
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.named
@@ -23,6 +24,9 @@ fun Project.createJavaVariant(
 		extendsFrom(base)
 		copyAttributesFrom(providers, base, base.attributes.keySet() - ignore)
 		attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, javaVersion)
+		components.named<JvmSoftwareComponentInternal>("java").configure {
+			mainFeature.apiElementsConfiguration.artifacts.forEach(outgoing.artifacts::add)
+		}
 	}
 
 	components.named<AdhocComponentWithVariants>("java").configure {
