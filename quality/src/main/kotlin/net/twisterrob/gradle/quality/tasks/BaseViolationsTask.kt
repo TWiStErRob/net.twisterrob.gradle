@@ -58,24 +58,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 			}
 			reports
 		})
-		val addInputTask = this.project.tasks.register(addInputTaskName) {
-			it.inputs.files(reports)
-			doLast {
-				reports.files.forEach { report ->
-					if (!report.exists()) {
-						logger.info(
-							"Missing report for {} (probably wasn't executed yet after clean): {}",
-							"reportTask",
-							report
-						)
-					}
-				}
-			}
-		}
-		this.dependsOn(addInputTask)
 		forAllReportTasks { _, reportTask ->
-			// make sure inputs are collected after the report task executed
-			addInputTask.configure { it.mustRunAfter(reportTask) }
 			// make sure inputs are available when running validation, but don't execute (depend on) reports
 			this.mustRunAfter(reportTask)
 		}
@@ -108,6 +91,15 @@ abstract class BaseViolationsTask : DefaultTask() {
 
 	@TaskAction
 	fun validateViolations() {
+		reports.files.forEach { report ->
+			if (!report.exists()) {
+				logger.info(
+					"Missing report for {} (probably wasn't executed yet after clean): {}",
+					"reportTask",
+					report
+				)
+			}
+		}
 		val ruleCategoryParser = RuleCategoryParser()
 		val results = tasks.get().map { result ->
 			Violations(
