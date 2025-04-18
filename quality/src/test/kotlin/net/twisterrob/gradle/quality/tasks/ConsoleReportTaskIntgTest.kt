@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see ConsoleReportTask
+ * @see BaseViolationsTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class ConsoleReportTaskIntgTest : BaseIntgTest() {

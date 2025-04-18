@@ -28,6 +28,7 @@ import java.time.Duration.ofMinutes
 
 /**
  * @see HtmlReportTask
+ * @see BaseViolationsTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class HtmlReportTaskTest : BaseIntgTest() {

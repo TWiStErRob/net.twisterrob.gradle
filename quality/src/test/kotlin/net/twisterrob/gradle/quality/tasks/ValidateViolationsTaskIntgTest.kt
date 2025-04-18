@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see ValidateViolationsTask
+ * @see BaseViolationsTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class ValidateViolationsTaskIntgTest : BaseIntgTest() {

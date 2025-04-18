@@ -12,12 +12,15 @@ import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.html.deduplicate
 import net.twisterrob.gradle.quality.violations.RuleCategoryParser
 import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.UntrackedTask
 import se.bjurr.violations.lib.model.SEVERITY
@@ -31,42 +34,35 @@ abstract class BaseViolationsTask : DefaultTask() {
 	@get:Input
 	internal abstract val tasks: ListProperty<Result>
 
+	@get:InputFiles
+	@get:PathSensitive(PathSensitivity.ABSOLUTE)
+	internal abstract val reports: ConfigurableFileCollection
+
 	init {
 		this.group = JavaBasePlugin.VERIFICATION_GROUP
-		// REPORT this extra task is needed because configureEach runs before
-		// the tasks own configuration block from `tasks.create(..., configuration: Action)`.
-		// `afterEvaluate` is not enough either because it breaks submodules the same way
-		// same-module configuration breaks without `doFirst`.
-		// `doFirst` doesn't work here, because reportTask may be UP-TO-DATE
-		// `finalizedBy` doesn't work, because reportTask may be UP-TO-DATE
-		// Last debugged in AGP 3.2.1 / Gradle 4.9
-		val addInputTaskName = "${this.name}LateConfiguration"
-		val addInputTask = this.project.tasks.register(addInputTaskName) { task ->
-			task.doLast {
-				forAllReportTasks { gatherer, reportTask ->
-					// make sure external reports are involved in UP-TO-DATE checks
-					val report = gatherer.getParsableReportLocation(reportTask)
-					// Using files instead of file, because the report might not exist,
-					// see https://github.com/gradle/gradle/issues/2919#issuecomment-981097984.
-					this.inputs.files(report)
-					if (!report.exists()) {
-						logger.info(
-							"Missing report for {} (probably wasn't executed yet after clean): {}",
-							reportTask,
-							report
-						)
+		reports.from(project.provider {
+			// Make sure external reports are involved in UP-TO-DATE checks.
+			project.files(
+				project.allprojects.flatMap { subproject ->
+					GATHERERS.flatMap { gatherer ->
+						gatherer.allTasksFrom(subproject).map { task ->
+							gatherer.getParsableReportLocation(task)
+						}
 					}
+				}
+			)
+		})
+
+		// Make sure inputs are available when running validation, but don't execute (depend on) reports.
+		project.allprojects.forEach { subproject: Project ->
+			GATHERERS.forEach { gatherer ->
+				gatherer.allTasksFrom(subproject).configureEach { reportTask ->
+					mustRunAfter(reportTask)
 				}
 			}
 		}
-		this.dependsOn(addInputTask)
-		forAllReportTasks { _, reportTask ->
-			// make sure inputs are collected after the report task executed
-			addInputTask.configure { it.mustRunAfter(reportTask) }
-			// make sure inputs are available when running validation, but don't execute (depend on) reports
-			this.mustRunAfter(reportTask)
-		}
 
+		// Make all information available to the task.
 		tasks.convention(project.provider {
 			project.allprojects.flatMap { subproject ->
 				GATHERERS.flatMap { gatherer ->
@@ -97,6 +93,13 @@ abstract class BaseViolationsTask : DefaultTask() {
 	fun validateViolations() {
 		val ruleCategoryParser = RuleCategoryParser()
 		val results = tasks.get().map { result ->
+			if (!result.parsableReportLocation.exists()) {
+				logger.info(
+					"Missing report for task '{}' (probably wasn't executed yet after clean): {}",
+					result.task,
+					result.parsableReportLocation,
+				)
+			}
 			Violations(
 				parser = result.displayName,
 				module = result.subproject.path,
@@ -143,22 +146,6 @@ abstract class BaseViolationsTask : DefaultTask() {
 		val nullSafeSum = nullSafeSum { v: Violations? -> v?.violations?.size }
 		@Suppress("UNCHECKED_CAST")
 		processViolations(Grouper.create(deduplicate(results), nullSafeSum) as Grouper.Start<Violations>)
-	}
-
-	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
-		project.allprojects { subproject: Project ->
-			GATHERERS.forEach { gatherer ->
-				// TODO this should be configureEach or other lazy approach, but doesn't work on AGP 3.3 then
-				gatherer.allTasksFrom(subproject).forEach { reportTask ->
-					try {
-						action(gatherer, reportTask)
-					} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: RuntimeException) {
-						// Slap on more information to the exception.
-						throw GradleException("Cannot configure $reportTask from $gatherer gatherer in $subproject", ex)
-					}
-				}
-			}
-		}
 	}
 
 	internal data class Result(
