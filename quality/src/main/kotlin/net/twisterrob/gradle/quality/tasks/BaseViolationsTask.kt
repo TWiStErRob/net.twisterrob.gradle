@@ -40,7 +40,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 
 	init {
 		this.group = JavaBasePlugin.VERIFICATION_GROUP
-		reports.convention(project.provider {
+		reports.from(project.provider {
 			// Make sure external reports are involved in UP-TO-DATE checks.
 			project.files(
 				project.allprojects.flatMap { subproject ->
