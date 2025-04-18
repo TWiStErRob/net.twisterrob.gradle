@@ -95,7 +95,7 @@ abstract class BaseViolationsTask : DefaultTask() {
 		val results = tasks.get().map { result ->
 			if (!result.parsableReportLocation.exists()) {
 				logger.info(
-					"Missing report for {} (probably wasn't executed yet after clean): {}",
+					"Missing report for task '{}' (probably wasn't executed yet after clean): {}",
 					result.task,
 					result.parsableReportLocation,
 				)

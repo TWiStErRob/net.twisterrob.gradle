@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see FileCountReportTask
+ * @see BaseViolationsTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class FileCountReportTaskIntgTest : BaseIntgTest() {
