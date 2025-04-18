@@ -15,9 +15,13 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.UntrackedTask
 import se.bjurr.violations.lib.model.SEVERITY
@@ -30,6 +34,10 @@ abstract class BaseViolationsTask : DefaultTask() {
 
 	@get:Input
 	internal abstract val tasks: ListProperty<Result>
+	
+	@get:InputFiles
+	@get:PathSensitive(PathSensitivity.ABSOLUTE)
+	abstract val reports: ConfigurableFileCollection
 
 	init {
 		this.group = JavaBasePlugin.VERIFICATION_GROUP
@@ -41,18 +49,23 @@ abstract class BaseViolationsTask : DefaultTask() {
 		// `finalizedBy` doesn't work, because reportTask may be UP-TO-DATE
 		// Last debugged in AGP 3.2.1 / Gradle 4.9
 		val addInputTaskName = "${this.name}LateConfiguration"
-		val addInputTask = this.project.tasks.register(addInputTaskName) { task ->
-			task.doLast {
-				forAllReportTasks { gatherer, reportTask ->
-					// make sure external reports are involved in UP-TO-DATE checks
-					val report = gatherer.getParsableReportLocation(reportTask)
-					// Using files instead of file, because the report might not exist,
-					// see https://github.com/gradle/gradle/issues/2919#issuecomment-981097984.
-					this.inputs.files(report)
+		reports.convention(project.provider {
+			// make sure external reports are involved in UP-TO-DATE checks
+			val reports = this.project.files()
+			forAllReportTasks { gatherer, reportTask ->
+				val report = gatherer.getParsableReportLocation(reportTask)
+				reports.from(report)
+			}
+			reports
+		})
+		val addInputTask = this.project.tasks.register(addInputTaskName) {
+			it.inputs.files(reports)
+			doLast {
+				reports.files.forEach { report ->
 					if (!report.exists()) {
 						logger.info(
 							"Missing report for {} (probably wasn't executed yet after clean): {}",
-							reportTask,
+							"reportTask",
 							report
 						)
 					}
