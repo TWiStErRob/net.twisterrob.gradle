@@ -12,7 +12,6 @@ import net.twisterrob.gradle.quality.gather.TaskReportGatherer
 import net.twisterrob.gradle.quality.report.html.deduplicate
 import net.twisterrob.gradle.quality.violations.RuleCategoryParser
 import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.ConfigurableFileCollection
@@ -34,35 +33,36 @@ abstract class BaseViolationsTask : DefaultTask() {
 
 	@get:Input
 	internal abstract val tasks: ListProperty<Result>
-	
+
 	@get:InputFiles
 	@get:PathSensitive(PathSensitivity.ABSOLUTE)
-	abstract val reports: ConfigurableFileCollection
+	internal abstract val reports: ConfigurableFileCollection
 
 	init {
 		this.group = JavaBasePlugin.VERIFICATION_GROUP
-		// REPORT this extra task is needed because configureEach runs before
-		// the tasks own configuration block from `tasks.create(..., configuration: Action)`.
-		// `afterEvaluate` is not enough either because it breaks submodules the same way
-		// same-module configuration breaks without `doFirst`.
-		// `doFirst` doesn't work here, because reportTask may be UP-TO-DATE
-		// `finalizedBy` doesn't work, because reportTask may be UP-TO-DATE
-		// Last debugged in AGP 3.2.1 / Gradle 4.9
-		val addInputTaskName = "${this.name}LateConfiguration"
 		reports.convention(project.provider {
-			// make sure external reports are involved in UP-TO-DATE checks
-			val reports = this.project.files()
-			forAllReportTasks { gatherer, reportTask ->
-				val report = gatherer.getParsableReportLocation(reportTask)
-				reports.from(report)
-			}
-			reports
+			// Make sure external reports are involved in UP-TO-DATE checks.
+			project.files(
+				project.allprojects.flatMap { subproject ->
+					GATHERERS.flatMap { gatherer ->
+						gatherer.allTasksFrom(subproject).map { task ->
+							gatherer.getParsableReportLocation(task)
+						}
+					}
+				}
+			)
 		})
-		forAllReportTasks { _, reportTask ->
-			// make sure inputs are available when running validation, but don't execute (depend on) reports
-			this.mustRunAfter(reportTask)
+
+		// Make sure inputs are available when running validation, but don't execute (depend on) reports.
+		project.allprojects.forEach { subproject: Project ->
+			GATHERERS.forEach { gatherer ->
+				gatherer.allTasksFrom(subproject).configureEach { reportTask ->
+					mustRunAfter(reportTask)
+				}
+			}
 		}
 
+		// Make all information available to the task.
 		tasks.convention(project.provider {
 			project.allprojects.flatMap { subproject ->
 				GATHERERS.flatMap { gatherer ->
@@ -91,17 +91,15 @@ abstract class BaseViolationsTask : DefaultTask() {
 
 	@TaskAction
 	fun validateViolations() {
-		reports.files.forEach { report ->
-			if (!report.exists()) {
-				logger.info(
-					"Missing report for {} (probably wasn't executed yet after clean): {}",
-					"reportTask",
-					report
-				)
-			}
-		}
 		val ruleCategoryParser = RuleCategoryParser()
 		val results = tasks.get().map { result ->
+			if (!result.parsableReportLocation.exists()) {
+				logger.info(
+					"Missing report for {} (probably wasn't executed yet after clean): {}",
+					result.task,
+					result.parsableReportLocation,
+				)
+			}
 			Violations(
 				parser = result.displayName,
 				module = result.subproject.path,
@@ -148,22 +146,6 @@ abstract class BaseViolationsTask : DefaultTask() {
 		val nullSafeSum = nullSafeSum { v: Violations? -> v?.violations?.size }
 		@Suppress("UNCHECKED_CAST")
 		processViolations(Grouper.create(deduplicate(results), nullSafeSum) as Grouper.Start<Violations>)
-	}
-
-	private fun forAllReportTasks(action: (gatherer: TaskReportGatherer<Task>, reportTask: Task) -> Unit) {
-		project.allprojects { subproject: Project ->
-			GATHERERS.forEach { gatherer ->
-				// TODO this should be configureEach or other lazy approach, but doesn't work on AGP 3.3 then
-				gatherer.allTasksFrom(subproject).forEach { reportTask ->
-					try {
-						action(gatherer, reportTask)
-					} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: RuntimeException) {
-						// Slap on more information to the exception.
-						throw GradleException("Cannot configure $reportTask from $gatherer gatherer in $subproject", ex)
-					}
-				}
-			}
-		}
 	}
 
 	internal data class Result(
