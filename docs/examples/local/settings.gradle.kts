@@ -28,8 +28,8 @@ pluginManagement {
 }
 
 plugins {
-	id("net.twisterrob.gradle.plugin.settings") version "0.18-SNAPSHOT"
-	id("net.twisterrob.gradle.plugin.nagging") version "0.18-SNAPSHOT"
+	id("net.twisterrob.gradle.plugin.settings") version "0.19-SNAPSHOT"
+	id("net.twisterrob.gradle.plugin.nagging") version "0.19-SNAPSHOT"
 }
 
 dependencyResolutionManagement {
