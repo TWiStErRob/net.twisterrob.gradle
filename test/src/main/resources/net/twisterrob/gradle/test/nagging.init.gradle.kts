@@ -96,7 +96,12 @@ doNotNagAboutForTest(
 
 if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.9.0") {
 	// https://youtrack.jetbrains.com/issue/KT-52976
-	//"at org.jetbrains.kotlin.gradle.plugin.GradleUtilsKt.addConvention(gradleUtils.kt:37)
+	doNotNagAboutStackForTest(
+		"8.2" to "8.14",
+		"0.0" to "100.0",
+		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
+		"at org.jetbrains.kotlin.gradle.plugin.sources.android.configurator.GradleConventionAddKotlinSourcesToAndroidSourceSetConfigurator.configure(GradleConventionAddKotlinSourcesToAndroidSourceSetConfigurator.kt:30)",
+	)
 }
 
 if ("@net.twisterrob.test.kotlin.pluginVersion@" in "1.5.20".."2.0.10") {
@@ -104,16 +109,18 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" in "1.5.20".."2.0.10") {
 	// > Configure project :
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
 	// Introduced in 1.5.20: https://github.com/JetBrains/kotlin/commit/34e0a3caa890246946ec5fc0153a0b3dc4271244
+	val lineNumber = when ("@net.twisterrob.test.kotlin.pluginVersion@") {
+		in "1.8.0".."1.8.22" -> 406
+		in "1.9.0".."1.9.10" -> 417
+		in "1.9.20".."1.9.20" -> 418
+		in "1.9.21".."1.9.25" -> 422
+		in "2.0.0".."2.0.10" -> 405
+		else -> error("Don't know the line number yet for @net.twisterrob.test.kotlin.pluginVersion@.")
+	}
 	doNotNagAboutStackForTest(
 		"8.8" to "8.14",
 		"0.0" to "100.0",
 		"The Configuration.fileCollection(Spec) method has been deprecated. This is scheduled to be removed in Gradle 9.0. Use Configuration.getIncoming().artifactView(Action) with a componentFilter instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecate_filtered_configuration_file_and_filecollection_methods",
-		when ("@net.twisterrob.test.kotlin.pluginVersion@") {
-			in "1.7.20".."1.9.25" ->
-				"at org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin\$createKaptKotlinTask\$2.invoke(Kapt3KotlinGradleSubplugin.kt:422)"
-			in "2.0.0".."2.0.10" ->
-				"at org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin\$createKaptKotlinTask\$2.invoke(Kapt3KotlinGradleSubplugin.kt:405)"
-			else -> error("Don't know the line number yet for @net.twisterrob.test.kotlin.pluginVersion@.")
-		}
+		"at org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin\$createKaptKotlinTask\$2.invoke(Kapt3KotlinGradleSubplugin.kt:${lineNumber})",
 	)
 }
