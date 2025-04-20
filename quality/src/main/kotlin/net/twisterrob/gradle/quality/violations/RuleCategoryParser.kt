@@ -33,7 +33,7 @@ class RuleCategoryParser {
 			Parser.CHECKSTYLE.name -> {
 				val match = CHECKSTYLE_BUILT_IN_CHECK.matchEntire(it.rule)
 				if (match != null) {
-					(match.groups[1]?.value ?: "misc").capitalize(Locale.ROOT)
+					(match.groups[1]?.value ?: "misc").replaceFirstChar { it.uppercase(Locale.ROOT) }
 				} else {
 					"Custom"
 				}

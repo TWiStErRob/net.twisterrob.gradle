@@ -193,7 +193,8 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		}
 
 		private fun registerRunTask(project: Project, variant: ApplicationVariant) {
-			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize(Locale.ROOT)}") {
+			val variantName = variant.name.replaceFirstChar { it.uppercase(Locale.ROOT) }
+			project.tasks.register<AndroidInstallRunnerTask>("run${variantName}") {
 				// Delay task retrieval until task graph calculation so AGP has a chance to set up the tasks.
 				this.dependsOn(project.provider {
 					variant.taskContainer.installTask

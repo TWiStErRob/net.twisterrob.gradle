@@ -72,7 +72,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			.map { it.asFile }
 			.filter(File::exists)
 			.associateBy({ it }) { gatherer.findViolations(it) }
-		val totalCount = violationsByFile.values.sumBy { violations: List<Violation> -> violations.size }
+		val totalCount = violationsByFile.values.sumOf { violations: List<Violation> -> violations.size }
 		if (totalCount > 0) {
 			val projectReports = violationsByFile.entries
 				.map { (report, violations) ->
