@@ -17,7 +17,23 @@ class KotlinVersionsTest {
 		@JvmStatic
 		fun mavenCentral(): List<Arguments> =
 			listOf(
+				Arguments.of("2.1.21", KotlinVersion(major = 2, minor = 1, patch = 21)),
+				Arguments.of("2.1.20", KotlinVersion(major = 2, minor = 1, patch = 20)),
+				Arguments.of("2.1.10", KotlinVersion(major = 2, minor = 1, patch = 10)),
+				Arguments.of("2.1.0", KotlinVersion(major = 2, minor = 1, patch = 0)),
+				Arguments.of("2.0.21", KotlinVersion(major = 2, minor = 0, patch = 21)),
+				Arguments.of("2.0.20", KotlinVersion(major = 2, minor = 0, patch = 20)),
+				Arguments.of("2.0.10", KotlinVersion(major = 2, minor = 0, patch = 10)),
+				Arguments.of("2.0.0", KotlinVersion(major = 2, minor = 0, patch = 0)),
+				Arguments.of("1.9.24", KotlinVersion(major = 1, minor = 9, patch = 24)),
+				Arguments.of("1.9.23", KotlinVersion(major = 1, minor = 9, patch = 23)),
+				Arguments.of("1.9.22", KotlinVersion(major = 1, minor = 9, patch = 22)),
+				Arguments.of("1.9.21", KotlinVersion(major = 1, minor = 9, patch = 21)),
+				Arguments.of("1.9.20", KotlinVersion(major = 1, minor = 9, patch = 20)),
+				Arguments.of("1.9.10", KotlinVersion(major = 1, minor = 9, patch = 10)),
+				Arguments.of("1.9.0", KotlinVersion(major = 1, minor = 9, patch = 0)),
 				Arguments.of("1.9.0-Beta", KotlinVersion(major = 1, minor = 9, patch = 0)),
+				Arguments.of("1.8.22", KotlinVersion(major = 1, minor = 8, patch = 22)),
 				Arguments.of("1.8.21", KotlinVersion(major = 1, minor = 8, patch = 21)),
 				Arguments.of("1.8.20", KotlinVersion(major = 1, minor = 8, patch = 20)),
 				Arguments.of("1.8.20-RC2", KotlinVersion(major = 1, minor = 8, patch = 20)),

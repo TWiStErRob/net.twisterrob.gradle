@@ -373,7 +373,6 @@ class PluginIntegrationTest : BaseIntgTest() {
 			if (KotlinVersions.UNDER_TEST.inRange(KotlinVersions.v1720, KotlinVersions.v190)) {
 				// https://youtrack.jetbrains.com/issue/KT-54468
 				// Known bad tasks on Kotlin 1.7.20-1.8.21 (fixed in 1.9.0):
-				// with K2 ongoing, situation unlikely to change.
 				listOf(
 					":compileDebugKotlin",
 					":compileReleaseKotlin",

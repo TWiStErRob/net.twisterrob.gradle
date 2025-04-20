@@ -379,11 +379,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			dependencies {
 				testImplementation("junit:junit:${Version.id()}")
 				testImplementation("org.robolectric:robolectric:4.12.2")
-				// Can't use the latest version, 1.4.1-alpha01 is the last version that's compatible with Kotlin 1.4.32.
-				// > e: .../transformed/core-1.5.0-api.jar!/META-INF/androidx.test.core.kotlin_module:
-				// > Module was compiled with an incompatible version of Kotlin.
-				// > The binary version of its metadata is 1.7.1, expected version is 1.4.2.
-				testImplementation("androidx.test:core:1.4.1-alpha01")
+				testImplementation("androidx.test:core:1.6.1")
 			}
 			android.testOptions.unitTests.includeAndroidResources = true
 			android.testOptions.unitTests.all {
