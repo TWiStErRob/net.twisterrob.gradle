@@ -34,15 +34,7 @@ object AGPVersions {
 					?: error("Property 'net.twisterrob.test.android.pluginVersion' is not set.")
 			)
 
-	val v7xx: AGPVersion = AGPVersion(major = 7, minor = null, type = null, patch = null)
-	val v70x: AGPVersion = AGPVersion(major = 7, minor = 0, type = null, patch = null)
-	val v71x: AGPVersion = AGPVersion(major = 7, minor = 1, type = null, patch = null)
-	val v72x: AGPVersion = AGPVersion(major = 7, minor = 2, type = null, patch = null)
-	val v73x: AGPVersion = AGPVersion(major = 7, minor = 3, type = null, patch = null)
-	val v74x: AGPVersion = AGPVersion(major = 7, minor = 4, type = null, patch = null)
-	val v80x: AGPVersion = AGPVersion(major = 8, minor = 0, type = null, patch = null)
 	val v81x: AGPVersion = AGPVersion(major = 8, minor = 1, type = null, patch = null)
-	val v83x: AGPVersion = AGPVersion(major = 8, minor = 3, type = null, patch = null)
 	val v84x: AGPVersion = AGPVersion(major = 8, minor = 4, type = null, patch = null)
 	// Note: adding a version here requires updating the test in AGPVersionsTest.kt.
 
@@ -63,8 +55,8 @@ object AGPVersions {
 			}
 
 	@Throws(IllegalStateException::class)
-	fun olderThan7NotSupported(version: AGPVersion): Nothing {
-		error("AGP ${version} is not supported, because it's older than ${v7xx}")
+	fun olderThan81NotSupported(version: AGPVersion): Nothing {
+		error("AGP ${version} is not supported, because it's older than ${v81x}")
 	}
 }
 

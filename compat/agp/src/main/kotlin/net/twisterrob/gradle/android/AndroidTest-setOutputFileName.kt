@@ -11,6 +11,6 @@ fun AndroidTest.setOutputFileName(apkName: Provider<String>, project: Project, v
 	when {
 		AGPVersions.v84x <= AGPVersions.CLASSPATH -> this.setOutputFileName84x(apkName, project, variant)
 		AGPVersions.v81x <= AGPVersions.CLASSPATH -> this.setOutputFileName81x(apkName, project, variant)
-		else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
+		else -> AGPVersions.olderThan81NotSupported(AGPVersions.CLASSPATH)
 	}
 }
