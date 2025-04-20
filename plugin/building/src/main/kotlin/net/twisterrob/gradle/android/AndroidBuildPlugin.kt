@@ -69,18 +69,20 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				configureBuildResValues()
 			}
 			with(packagingOptions) {
-				resourcesCompat.excludes.addAll(knownUnneededFiles())
+				resources.excludes.addAll(knownUnneededFiles())
 			}
 			decorateBuildConfig(project, twisterrob)
 		}
 
 		project.plugins.withType<AppPlugin> {
 			if (twisterrob.isDecorateBuildConfig) {
-				project.androidComponentsApplication.onVariantsCompat(::addPackageName)
+				project.androidComponentsApplication.onVariants { variant ->
+					addPackageName(variant)
+				}
 			}
 		}
 		project.plugins.withType<BasePlugin> {
-			project.androidComponents.onVariantsCompat { variant ->
+			project.androidComponents.onVariants { variant ->
 				// This needs to be inside onVariants,
 				// because it's not possible to register onVariants callback in afterEvaluate.
 				project.afterEvaluate {
@@ -91,7 +93,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			}
 		}
 		project.plugins.withType<AppPlugin> {
-			project.androidComponentsApplication.onVariantsCompat { variant ->
+			project.androidComponentsApplication.onVariants { variant ->
 				registerRunTask(project, variant)
 			}
 		}
@@ -102,11 +104,11 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		private fun BaseExtension.configureLint() {
 			(this as CommonExtension<*, *, *, *, *, *>).lint {
 				xmlReport = false
-				checkAllWarningsCompat = true
-				abortOnErrorCompat = true
+				checkAllWarnings = true
+				abortOnError = true
 				disable.add("Assert")
 				disable.add("GoogleAppIndexingWarning")
-				fatalCompat("StopShip") // http://stackoverflow.com/q/33504186/253468
+				fatal.add("StopShip") // http://stackoverflow.com/q/33504186/253468
 			}
 		}
 
@@ -171,7 +173,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			val vcsTaskProvider =
 				project.tasks.register<CalculateVCSRevisionInfoTask>("calculateBuildConfigVCSRevisionInfo")
 			project.androidComponents.finalizeDsl {
-				if (twisterrob.isDecorateBuildConfig && buildFeatures.isBuildConfigEnabled) {
+				if (twisterrob.isDecorateBuildConfig && buildFeatures.buildConfig == true) {
 					project.decorateBuildConfig(buildTimeTaskProvider, vcsTaskProvider)
 				}
 			}
@@ -215,7 +217,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 					task.description = "Compiles Java sources for ${variant.description}."
 				}
 			}
-			variant.componentsCompat
+			variant.components
 				.filterIsInstance<ComponentCreationConfig>()
 				.forEach(ComponentCreationConfig::fixMetadata)
 		}

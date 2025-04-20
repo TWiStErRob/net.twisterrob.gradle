@@ -2,7 +2,6 @@ package net.twisterrob.gradle.android
 
 import com.android.build.api.variant.AndroidTest
 import net.twisterrob.gradle.common.AGPVersions
-import net.twisterrob.gradle.internal.android.setOutputFileName70x
 import net.twisterrob.gradle.internal.android.setOutputFileName81x
 import net.twisterrob.gradle.internal.android.setOutputFileName84x
 import org.gradle.api.Project
@@ -12,7 +11,6 @@ fun AndroidTest.setOutputFileName(apkName: Provider<String>, project: Project, v
 	when {
 		AGPVersions.v84x <= AGPVersions.CLASSPATH -> this.setOutputFileName84x(apkName, project, variant)
 		AGPVersions.v81x <= AGPVersions.CLASSPATH -> this.setOutputFileName81x(apkName, project, variant)
-		AGPVersions.v70x <= AGPVersions.CLASSPATH -> this.setOutputFileName70x(apkName)
 		else -> AGPVersions.olderThan7NotSupported(AGPVersions.CLASSPATH)
 	}
 }
