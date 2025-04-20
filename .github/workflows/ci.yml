@@ -528,7 +528,7 @@ jobs:
           - name: "AGP 8.3.x on Gradle 8.4+"
             gradle: '8.4'
             java: '17'
-            agp: '8.3.1'
+            agp: '8.3.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -536,7 +536,7 @@ jobs:
           - name: "AGP 8.3.x on Gradle 8.4+ - plugin"
             gradle: '8.4'
             java: '17'
-            agp: '8.3.1'
+            agp: '8.3.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -544,7 +544,7 @@ jobs:
           - name: "AGP 8.3.x on Gradle 8.x"
             gradle: '8.13'
             java: '17'
-            agp: '8.3.1'
+            agp: '8.3.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -552,7 +552,7 @@ jobs:
           - name: "AGP 8.3.x on Gradle 8.x - plugin"
             gradle: '8.13'
             java: '17'
-            agp: '8.3.1'
+            agp: '8.3.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -561,7 +561,7 @@ jobs:
           - name: "AGP 8.4.x on Gradle 8.6+"
             gradle: '8.6'
             java: '17'
-            agp: '8.4.0'
+            agp: '8.4.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -569,7 +569,7 @@ jobs:
           - name: "AGP 8.4.x on Gradle 8.6+ - plugin"
             gradle: '8.6'
             java: '17'
-            agp: '8.4.0'
+            agp: '8.4.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -577,7 +577,7 @@ jobs:
           - name: "AGP 8.4.x on Gradle 8.x"
             gradle: '8.13'
             java: '17'
-            agp: '8.4.0'
+            agp: '8.4.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -585,7 +585,7 @@ jobs:
           - name: "AGP 8.4.x on Gradle 8.x - plugin"
             gradle: '8.13'
             java: '17'
-            agp: '8.4.0'
+            agp: '8.4.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -693,7 +693,7 @@ jobs:
           - name: "AGP 8.8.x on Gradle 8.10+"
             gradle: '8.10.2'
             java: '17'
-            agp: '8.8.0'
+            agp: '8.8.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -701,7 +701,7 @@ jobs:
           - name: "AGP 8.8.x on Gradle 8.10+ - plugin"
             gradle: '8.10.2'
             java: '17'
-            agp: '8.8.0'
+            agp: '8.8.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -709,7 +709,7 @@ jobs:
           - name: "AGP 8.8.x on Gradle 8.x"
             gradle: '8.13'
             java: '17'
-            agp: '8.8.0'
+            agp: '8.8.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -717,7 +717,7 @@ jobs:
           - name: "AGP 8.8.x on Gradle 8.x - plugin"
             gradle: '8.13'
             java: '17'
-            agp: '8.8.0'
+            agp: '8.8.2'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
