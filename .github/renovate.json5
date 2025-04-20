@@ -146,7 +146,7 @@
 			"matchFileNames": [
 				"gradle/libs.versions.toml"
 			],
-			"matchCurrentVersion": "1.4.32",
+			"matchCurrentVersion": "1.8.22",
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
 		},

@@ -31,12 +31,13 @@ agp = "8.9.1"
 # Versions: https://maven.google.com/web/index.html#com.android.tools.lint:lint
 agp-tools = "31.9.1"
 
-# Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
-# Actual Kotlin version for dependencies. It has to be older to make sure a Gradle-compatible version is used.
+# Things have to be older to make sure a Gradle-compatible version is used.
 # https://docs.gradle.org/current/userguide/compatibility.html
-kotlin-target = "1.4.32"
+
+# Actual Kotlin version for dependencies.
+kotlin-target = "1.8.22"
 # Actual Kotlin language and API version for compilation, it restricts language features and metadata.
-kotlin-language = "1.4"
+kotlin-language = "1.8"
 # Version of Kotlin Gradle Plugin used for compilation.
 kotlin-build = "2.0.21"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.

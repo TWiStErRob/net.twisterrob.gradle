@@ -1,4 +1,3 @@
 [libraries]
-kotlin-gradle-v14x = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "1.4.32" }
-kotlin-gradle-v16x = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "1.6.21" }
+kotlin-gradle-v18x = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "1.8.22" }
 kotlin-gradle-v19x = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "1.9.25" }

@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-	sourcesOnly(libs.kotlin.gradle.v16x)
+	sourcesOnly(libs.kotlin.gradle.v18x)
 }
