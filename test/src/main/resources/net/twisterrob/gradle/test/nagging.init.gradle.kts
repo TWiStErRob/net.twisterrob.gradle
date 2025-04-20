@@ -50,6 +50,12 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" < "1.9.0") {
 		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
 		"at org.jetbrains.kotlin.gradle.plugin.sources.android.configurator.GradleConventionAddKotlinSourcesToAndroidSourceSetConfigurator.configure(GradleConventionAddKotlinSourcesToAndroidSourceSetConfigurator.kt:30)",
 	)
+	doNotNagAboutStackForTest(
+		"8.2" to "8.14",
+		"0.0" to "100.0",
+		"The org.gradle.api.plugins.Convention type has been deprecated. This is scheduled to be removed in Gradle 9.0. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
+		"at org.jetbrains.kotlin.gradle.plugin.AbstractKotlinPlugin\$Companion\$setUpJavaSourceSets\$1.invoke(AbstractKotlinPlugin.kt:257)",
+	)
 }
 
 doNotNagAboutStackForTest(
@@ -102,7 +108,9 @@ doNotNagAboutPatternForTest(
 	// > Task :generateReleaseRFile
 	// Example test: AndroidBuildPluginIntgTest.`can disable buildConfig decoration (debug)`
 	// Example test: KotlinPluginIntgTest.`can test kotlin with JUnit in Android Test App`
-	Regex.escape("Mutating a configuration after it has been resolved, consumed as a variant, or used for generating published metadata. This behavior has been deprecated. This will fail with an error in Gradle 9.0. The dependencies of configuration '") + "(:.+)*:(release|debug)CompileClasspath" + Regex.escape("' were mutated after the configuration was resolved. After a configuration has been observed, it should not be modified. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#mutate_configuration_after_locking") + ".*",
+	Regex.escape("Mutating a configuration after it has been resolved, consumed as a variant, or used for generating published metadata. This behavior has been deprecated. This will fail with an error in Gradle 9.0. The dependencies of configuration '") + "(:.+)*:(release|debug)CompileClasspath" + Regex.escape(
+		"' were mutated after the configuration was resolved. After a configuration has been observed, it should not be modified. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#mutate_configuration_after_locking"
+	) + ".*",
 	//"at com.android.build.gradle.internal.dependency.ConstraintHandler\$alignWith\$1\$1.execute(ConstraintHandler.kt:56)"
 )
 
