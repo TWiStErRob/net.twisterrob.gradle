@@ -1,5 +1,5 @@
 [versions]
-java = "11"
+java = "17"
 
 # Changelog: https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md
 # GitHub Releases: https://github.com/tomasbjerre/violations-lib/tags
