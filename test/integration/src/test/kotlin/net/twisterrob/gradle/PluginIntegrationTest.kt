@@ -234,10 +234,11 @@ class PluginIntegrationTest : BaseIntgTest() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
-		val kotlinPluginApply = conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app")
 		@Language("gradle")
-		val script = kotlinPluginApply + """
+		val script = """
 			plugins {
+				id("org.jetbrains.kotlin.android")
+				id("net.twisterrob.gradle.plugin.android-app")
 				id("${pluginId}")
 			}
 		""".trimIndent()
@@ -269,10 +270,11 @@ class PluginIntegrationTest : BaseIntgTest() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
-		val kotlinPluginApply = conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-library")
 		@Language("gradle")
-		val script = kotlinPluginApply + """
+		val script = """
 			plugins {
+				id("org.jetbrains.kotlin.android")
+				id("net.twisterrob.gradle.plugin.android-library")
 				id("${pluginId}")
 			}
 		""".trimIndent()
@@ -288,10 +290,11 @@ class PluginIntegrationTest : BaseIntgTest() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
 		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
 
-		val kotlinPluginApply = conditionalApplyKotlin("net.twisterrob.gradle.plugin.android-app") // :plugin
 		@Language("gradle")
-		val script = kotlinPluginApply + """
+		val script = """
 			plugins {
+				id("org.jetbrains.kotlin.android")
+				id("net.twisterrob.gradle.plugin.android-app") // :plugin
 				// Android: id("net.twisterrob.gradle.plugin.android-library") // :plugin
 				id("net.twisterrob.gradle.plugin.root") // :plugin:base
 				id("net.twisterrob.gradle.plugin.java") // :plugin:languages
@@ -401,32 +404,6 @@ class PluginIntegrationTest : BaseIntgTest() {
 			}
 		return generalTasks + kgpTasks + gradleTasks
 	}
-
-	/**
-	 * Kotlin plugin had a dependency on what order it's applied in.
-	 * The issue has been [nicely summarized](https://youtrack.jetbrains.com/issue/KT-44279)
-	 * and [fixed](https://youtrack.jetbrains.com/issue/KT-46626) in Kotlin 1.5.30.
-	 */
-	private fun conditionalApplyKotlin(androidPluginId: String): String =
-		if (KotlinVersion(1, 5, 30) <= KotlinVersions.UNDER_TEST) {
-			// Location is not relevant since Kotlin 1.5.30, we can put this plugin in any location.
-			"""
-				plugins {
-					id("org.jetbrains.kotlin.android")
-					id("${androidPluginId}")
-				}
-				
-			""".trimIndent() // Newline at end is important so that it can be prepended to other scripts.
-		} else {
-			// Location is relevant before Kotlin 1.5.30, we have to put this after the Android plugin.
-			"""
-				plugins {
-					id("${androidPluginId}")
-					id("org.jetbrains.kotlin.android")
-				}
-				
-			""".trimIndent() // Newline at end is important so that it can be prepended to other scripts.
-		}
 }
 
 @Suppress("UnusedReceiverParameter") // To make it only available through the object.
