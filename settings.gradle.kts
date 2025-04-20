@@ -83,6 +83,8 @@ include(":browser:agp-88x")
 include(":browser:agp-89x")
 include(":browser:kotlin-18x")
 include(":browser:kotlin-19x")
+include(":browser:kotlin-20x")
+include(":browser:kotlin-21x")
 
 include(":plugin")
 include(":plugin:base")
