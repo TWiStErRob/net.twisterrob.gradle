@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.android
 
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -95,19 +94,11 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 
 		verifyWithApkSigner(gradle.root.apk("release").absolutePath).also { apkSignerOutput ->
-			val expectedWarnings = listOfNotNull(
-				if (AGPVersions.v70x <= AGPVersions.UNDER_TEST) {
-					// REPORT this should be empty, AGP 4.2.0 introduced this file.
-					unprotectedJarEntry("com/android/build/gradle/app-metadata.properties")
-				} else {
-					null
-				},
-				if (AGPVersions.v83x <= AGPVersions.UNDER_TEST) {
-					// REPORT this should be empty, AGP 8.3.0 introduced this file.
-					unprotectedJarEntry("version-control-info.textproto")
-				} else {
-					null
-				},
+			val expectedWarnings = listOf(
+				// REPORT this should be empty, AGP 4.2.0 introduced this file.
+				unprotectedJarEntry("com/android/build/gradle/app-metadata.properties"),
+				// REPORT this should be empty, AGP 8.3.0 introduced this file.
+				unprotectedJarEntry("version-control-info.textproto"),
 			)
 			assertEquals(
 				expectedWarnings.joinToString(separator = ""),

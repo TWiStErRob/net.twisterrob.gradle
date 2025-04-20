@@ -4,7 +4,6 @@ import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.jakewharton.dex.DexMethod
 import net.twisterrob.gradle.android.SdkVersions.asName
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.test.process.assertOutput
 import net.twisterrob.test.withRootCause
 import org.hamcrest.Description
@@ -143,12 +142,7 @@ fun assertDefaultBadging(
 			.joinToString(prefix = "'${apk.parentFile}' contents:\n", separator = "\n")
 		throw ex.withRootCause(IOException(contents))
 	}
-	val applicationDebuggable =
-		if (AGPVersions.v81x <= AGPVersions.UNDER_TEST && isDebuggable) {
-			"application-debuggable"
-		} else {
-			null
-		}
+	val applicationDebuggable = if (isDebuggable) "application-debuggable" else null
 	val (expectation: String, expectedOutput: String) =
 		if (compileSdkVersion < @Suppress("detekt.MagicNumber") 28) {
 			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2

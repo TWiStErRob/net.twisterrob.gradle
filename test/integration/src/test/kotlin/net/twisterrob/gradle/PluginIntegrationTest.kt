@@ -1,6 +1,5 @@
 package net.twisterrob.gradle
 
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.KotlinVersions
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
@@ -367,16 +366,6 @@ class PluginIntegrationTest : BaseIntgTest() {
 		val generalTasks: List<String> = listOf(
 			":help",
 		)
-		val agpTasks: List<String> =
-			if (AGPVersions.UNDER_TEST compatible AGPVersions.v72x) {
-				// Known bad tasks on AGP 7.2: old version, situation unlikely to change.
-				listOf(
-					":compileDebugRenderscript",
-					":compileReleaseRenderscript",
-				)
-			} else {
-				emptyList()
-			}
 		val kgpTasks: List<String> =
 			if (KotlinVersions.UNDER_TEST.inRange(KotlinVersions.v1720, KotlinVersions.v190)) {
 				// https://youtrack.jetbrains.com/issue/KT-54468
@@ -410,7 +399,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 			} else {
 				emptyList()
 			}
-		return generalTasks + agpTasks + kgpTasks + gradleTasks
+		return generalTasks + kgpTasks + gradleTasks
 	}
 
 	/**

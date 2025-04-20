@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.android
 
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -432,15 +431,6 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 	@Suppress("detekt.LongMethod") // Variants are fun, aren't they.
 	@Test fun `variant versioning works`() {
-		fun flavorDimensions(vararg dimensions: String): String {
-			val params = dimensions.joinToString(", ") { "\"$it\"" }
-			return if (AGPVersions.UNDER_TEST < AGPVersions.v71x) {
-				"""flavorDimensions(${params})"""
-			} else {
-				"""flavorDimensions = [${params}]"""
-			}
-		}
-
 		@Language("gradle")
 		val script = """
 			plugins {
@@ -456,7 +446,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 						versionNameSuffix = "S"
 					}
 				}
-				${flavorDimensions("cost", "version")}
+				flavorDimensions = ["cost", "version"]
 				productFlavors {
 					demo {
 						dimension = "version"
