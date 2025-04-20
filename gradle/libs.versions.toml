@@ -81,8 +81,7 @@ svnkit = "1.10.11"
 # Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
 # Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
 # Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
-jgit11 = "6.10.0.202406032230-r"
-jgit17 = "7.2.0.202503040940-r"
+jgit = "7.2.0.202503040940-r"
 
 # Explicitly using an outdated version of diffuse, don't remember why.
 # Versions: https://github.com/JakeWharton/diffuse/tags
@@ -141,8 +140,7 @@ jfixture-kotlin = { module = "com.flextrade.jfixture:kfixture", version.ref = "j
 
 svnkit = { module = "org.tmatesoft.svnkit:svnkit", version.ref = "svnkit" }
 svnkit-cli = { module = "org.tmatesoft.svnkit:svnkit-cli", version.ref = "svnkit" }
-jgit11 = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit11" }
-jgit17 = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit17" }
+jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
 violations = { module = "se.bjurr.violations:violations-lib", version.ref = "violations" }
 dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = "diffuse" }
 

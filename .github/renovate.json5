@@ -159,16 +159,6 @@
 			"matchUpdateTypes": ["major"],
 			"dependencyDashboardApproval": true,
 		},
-		{
-			// See https://github.com/TWiStErRob/net.twisterrob.gradle/pull/809
-			description: "Keep JGit 6 major version as is, because of Java 11/17 incompatibility.",
-			matchPackageNames: [
-				"org.eclipse.jgit:org.eclipse.jgit",
-			],
-			matchCurrentVersion: "/^6\\./",
-			matchUpdateTypes: ["major"],
-			enabled: false,
-		},
 	],
 	"customManagers": [
 		{
