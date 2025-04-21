@@ -65,6 +65,7 @@ class AGPVersionsTest {
 
 	@CsvSource(
 		"8, 1",
+		"8, 3",
 		"8, 4",
 	)
 	@ParameterizedTest(name = "[$INDEX_PLACEHOLDER] v{0}.{1}.x")
