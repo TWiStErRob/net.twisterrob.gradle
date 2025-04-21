@@ -6,9 +6,7 @@ import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
-import net.twisterrob.gradle.android.abortOnErrorCompat
 import net.twisterrob.gradle.android.androidComponents
-import net.twisterrob.gradle.android.onVariantsCompat
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.internal.android.unwrapCast
@@ -74,7 +72,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			.map { it.asFile }
 			.filter(File::exists)
 			.associateBy({ it }) { gatherer.findViolations(it) }
-		val totalCount = violationsByFile.values.sumBy { violations: List<Violation> -> violations.size }
+		val totalCount = violationsByFile.values.sumOf { violations: List<Violation> -> violations.size }
 		if (totalCount > 0) {
 			val projectReports = violationsByFile.entries
 				.map { (report, violations) ->
@@ -116,10 +114,10 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
 				// `android { lint { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
-				android.lint.abortOnErrorCompat = false
+				android.lint.abortOnError = false
 				android.lint.xmlReport = true
 			}
-			androidComponents.onVariantsCompat { variant ->
+			androidComponents.onVariants { variant ->
 				if (variant !is TestVariant && variant !is DynamicFeatureVariant) {
 					taskProvider.configure { task ->
 						val artifacts = variant.artifacts.unwrapCast<ArtifactsImpl>()

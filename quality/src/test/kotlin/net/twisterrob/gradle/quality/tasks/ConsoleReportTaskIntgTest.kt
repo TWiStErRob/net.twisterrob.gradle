@@ -2,7 +2,6 @@ package net.twisterrob.gradle.quality.tasks
 
 import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.checkstyle.test.CheckstyleTestResources
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.pmd.test.PmdTestResources
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
@@ -221,26 +220,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		)
 		result.assertNoOutputLine(Regex(""" - File '(.*)' specified for property '.*' does not exist\."""))
 		result.assertHasOutputLine("Summary\t(total: 0)")
-		when {
-			AGPVersions.v71x <= AGPVersions.UNDER_TEST -> {
-				result.assertHasOutputLine(
-					"""
-						Missing report for task ':lintReportDebug'.*: .*\blint-results-debug.xml
-					""".trimIndent().toRegex()
-				)
-				result.assertHasOutputLine(
-					"""
-						Missing report for task ':lintReportRelease'.*: .*\blint-results-release.xml
-					""".trimIndent().toRegex()
-				)
-			}
-			AGPVersions.v70x <= AGPVersions.UNDER_TEST -> {
-				result.assertHasOutputLine(Regex("""Missing report for task ':lintDebug'.*: .*\blint-results-debug.xml"""))
-				result.assertHasOutputLine(Regex("""Missing report for task ':lintRelease'.*: .*\blint-results-release.xml"""))
-			}
-			else -> {
-				AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
-			}
-		}
+		result.assertHasOutputLine(Regex("""Missing report for task ':lintReportDebug'.*: .*\blint-results-debug.xml"""))
+		result.assertHasOutputLine(Regex("""Missing report for task ':lintReportRelease'.*: .*\blint-results-release.xml"""))
 	}
 }

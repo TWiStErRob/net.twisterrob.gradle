@@ -59,19 +59,4 @@ tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions.jvmTarget = libs.versions.java.map(JvmTarget::fromTarget)
 	compilerOptions.suppressWarnings = false
 	compilerOptions.allWarningsAsErrors = true
-	compilerOptions.freeCompilerArgs.addAll(
-		// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
-		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)
-		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:24)
-		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1.execute(BaseQualityPlugin.kt:8)
-		// https://youtrack.jetbrains.com/issue/KT-41852#focus=Comments-27-4604992.0-0
-		"-Xno-optimized-callable-references",
-		"-opt-in=kotlin.RequiresOptIn",
-	)
-	if (compilerOptions.languageVersion.get() == @Suppress("DEPRECATION") KotlinVersion.KOTLIN_1_4) {
-		// Suppress "Language version 1.4 is deprecated and its support will be removed in a future version of Kotlin".
-		compilerOptions.freeCompilerArgs.add("-Xsuppress-version-warnings")
-	} else {
-		TODO("Remove -Xsuppress-version-warnings")
-	}
 }

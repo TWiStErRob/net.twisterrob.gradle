@@ -86,9 +86,7 @@ class KotlinPluginIntgTest : BaseIntgTest() {
 
 	@Test fun `does not add repositories when it would fail`() {
 		gradle.basedOn(GradleBuildTestResources.kotlin)
-		// Somewhere after Kotlin 1.4.32 and before 1.5.32 there was a behavior change:
-		// Not having a source code would trigger compileKotlin to be NO-SOURCE.
-		// This means it doesn't try to resolve classpath, so th expected failure would never come.
+		// Need "some" source code to force resolving dependencies.
 		gradle.file("", "src", "main", "java", "triggerCompilation.kt")
 
 		@Language("gradle")

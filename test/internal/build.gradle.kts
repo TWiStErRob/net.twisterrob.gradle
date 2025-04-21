@@ -30,11 +30,3 @@ dependencies {
 
 	api(libs.jfixture.java)
 }
-
-tasks.named<Test>("test") {
-	if (javaVersion.isJava9Compatible) {
-		// TODEL Java 16 vs AssertionFailedError https://github.com/ota4j-team/opentest4j/issues/70
-		// Example test: WithRootCauseKtTest.`registering a task preConfigures, but does not create it`
-		jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
-	}
-}

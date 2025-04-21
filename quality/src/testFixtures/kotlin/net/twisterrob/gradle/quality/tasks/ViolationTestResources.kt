@@ -20,7 +20,7 @@ class ViolationTestResources(
 	 *  1. Replace the project name (junit...) in this file with the new name.
 	 *  1. Run the test again to validate.
 	 *  1. Amend the commit to include changes in this file.
-	 *  1. Run the test with Java 11 set in `Settings | Build, Execution, Deployment | Build Tools | Gradle`.
+	 *  1. Run the test in `Settings | Build, Execution, Deployment | Build Tools | Gradle`.
 	 */
 	@Suppress("detekt.StringLiteralDuplication")
 	inner class Everything {

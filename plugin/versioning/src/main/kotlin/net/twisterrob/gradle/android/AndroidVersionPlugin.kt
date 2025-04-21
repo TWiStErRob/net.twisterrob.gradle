@@ -186,7 +186,7 @@ abstract class AndroidVersionPlugin : BasePlugin() {
 	private fun init() {
 		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
 		version.versionByProperties(readVersion(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME)))
-		project.androidComponents.onVariantsCompat { variant ->
+		project.androidComponents.onVariants { variant ->
 			if (version.isRenameAPK) {
 				renameAPK(variant as ApplicationVariant)
 			}
@@ -221,7 +221,7 @@ abstract class AndroidVersionPlugin : BasePlugin() {
 			variant.replacementApkNameProvider(versionCode, versionName)
 		)
 
-		variant.androidTestCompat?.let { androidTest ->
+		variant.androidTest?.let { androidTest ->
 			androidTest.unwrapCast().setOutputFileName(
 				apkName = androidTest.replacementApkNameProvider(versionCode, versionName),
 				project = project,

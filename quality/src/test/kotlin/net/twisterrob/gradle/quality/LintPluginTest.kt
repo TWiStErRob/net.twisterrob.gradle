@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.quality
 
 import net.twisterrob.gradle.BaseIntgTest
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertFailed
@@ -136,16 +135,9 @@ class LintPluginTest : BaseIntgTest() {
 	}
 
 	@Test fun `ignores disabled submodule lint tasks (rootProject setup)`() {
-		val disabledTasks = when {
-			AGPVersions.v71x <= AGPVersions.UNDER_TEST ->
-				// REPORT "lintRelease" seems to be not executed when calling lint.
-				// lintReportRelease executes because of :lint depending on the artifact.
-				listOf("lintDebug", "lintReportDebug", "lintReportRelease")
-			AGPVersions.v70x <= AGPVersions.UNDER_TEST ->
-				listOf("lintDebug", "lintRelease")
-			else ->
-				AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
-		}
+		// REPORT Since AGP 7.1 "lintRelease" seems to be not executed when calling lint.
+		// lintReportRelease executes because of :lint depending on the artifact.
+		val disabledTasks = listOf("lintDebug", "lintReportDebug", "lintReportRelease")
 		val result = `ignores disabled submodule lint tasks` { buildScript ->
 			buildScript + System.lineSeparator() + disabledTasks.joinToString(separator = System.lineSeparator()) { taskName ->
 				"evaluationDependsOn(':module2').tasks.getByName('${taskName}').enabled = false"
@@ -162,49 +154,21 @@ class LintPluginTest : BaseIntgTest() {
 			val build2 = gradle.buildFile.parentFile.resolve("module2/build.gradle")
 			build2.appendText(System.lineSeparator())
 			build2.appendText(
-				when {
-					AGPVersions.v71x <= AGPVersions.UNDER_TEST -> {
-						"""
-							afterEvaluate {
-								// Tasks are created after on androidComponents.onVariants { }
-								tasks.lintDebug.enabled = false
-								tasks.lintReportDebug.enabled = false
-								tasks.lintRelease.enabled = false
-								tasks.lintReportRelease.enabled = false
-							}
-						""".trimIndent()
+				"""
+					afterEvaluate {
+						// Tasks are created after on androidComponents.onVariants { }
+						tasks.lintDebug.enabled = false
+						tasks.lintReportDebug.enabled = false
+						tasks.lintRelease.enabled = false
+						tasks.lintReportRelease.enabled = false
 					}
-					AGPVersions.v70x <= AGPVersions.UNDER_TEST -> {
-						"""
-							afterEvaluate {
-								// Tasks are created after on androidComponents.onVariants { }
-								tasks.lintDebug.enabled = false
-								tasks.lintRelease.enabled = false
-							}
-						""".trimIndent()
-					}
-					else -> {
-						AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
-					}
-				}
+				""".trimIndent()
 			)
 			buildScript
 		}
-		when {
-			AGPVersions.v71x <= AGPVersions.UNDER_TEST -> {
-				result.assertUpToDate(":module2:lint")
-				result.assertSkipped(":module2:lintDebug")
-				result.assertNoTask(":module2:lintRelease")
-			}
-			AGPVersions.v70x <= AGPVersions.UNDER_TEST -> {
-				result.assertUpToDate(":module2:lint")
-				result.assertSkipped(":module2:lintDebug")
-				result.assertSkipped(":module2:lintRelease")
-			}
-			else -> {
-				AGPVersions.olderThan7NotSupported(AGPVersions.UNDER_TEST)
-			}
-		}
+		result.assertUpToDate(":module2:lint")
+		result.assertSkipped(":module2:lintDebug")
+		result.assertNoTask(":module2:lintRelease")
 		result.assertHasOutputLine(Regex("""Ran lint on subprojects: ${(1 + 0 + 1) * variantMultiplier} issues found\."""))
 	}
 
