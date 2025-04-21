@@ -15,15 +15,15 @@ import kotlin.reflect.full.declaredMembers
 
 class AGPVersionsTest {
 
-	@Test fun `olderThan7NotSupported returns the right message`() {
+	@Test fun `olderThan81NotSupported returns the right message`() {
 		@Suppress("detekt.NamedArguments")
 		val version = AGPVersion(1, 2, AGPVersion.ReleaseType.Stable, 4)
 
 		val ex = assertThrows<IllegalStateException> {
-			AGPVersions.olderThan7NotSupported(version)
+			AGPVersions.olderThan81NotSupported(version)
 		}
 
-		assertEquals("AGP 1.2.Stable.4 is not supported, because it's older than 7.*.*.*", ex.message)
+		assertEquals("AGP 1.2.Stable.4 is not supported, because it's older than 8.1.*.*", ex.message)
 	}
 
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
@@ -64,13 +64,6 @@ class AGPVersionsTest {
 	}
 
 	@CsvSource(
-		"7, ",
-		"7, 0",
-		"7, 1",
-		"7, 2",
-		"7, 3",
-		"7, 4",
-		"8, 0",
 		"8, 1",
 		"8, 3",
 		"8, 4",

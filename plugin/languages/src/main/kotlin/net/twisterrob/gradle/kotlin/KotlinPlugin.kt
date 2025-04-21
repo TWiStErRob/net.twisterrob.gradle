@@ -9,6 +9,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.get
+import java.util.Locale
 import kotlin.reflect.KCallable
 
 private typealias DependencyAdder = DependencyHandler.(Any) -> Dependency?
@@ -75,7 +76,7 @@ abstract class KotlinPlugin : BasePlugin() {
 			realConfiguration.allDependencies.configureEach { dep ->
 				if (dep.existingDependency()) {
 					realConfiguration.extendsFrom(
-						configurations.create("twisterrobKotlin${name.capitalize()}") { temp ->
+						configurations.create("twisterrobKotlin${name.replaceFirstChar { it.uppercase(Locale.ROOT) }}") { temp ->
 							temp.isCanBeConsumed = false
 							temp.isCanBeResolved = false
 							temp.defaultDependencies { dependencies ->

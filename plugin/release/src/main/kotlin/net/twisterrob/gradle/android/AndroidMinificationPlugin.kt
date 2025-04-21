@@ -79,7 +79,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 		}
 
 		lintDependsOnGenerateRulesTask(extractMinificationRules)
-		project.androidComponents.onVariantsCompat { variant ->
+		project.androidComponents.onVariants { variant ->
 			generateVariantRules(variant, extractMinificationRules)
 		}
 	}

@@ -34,8 +34,6 @@ dependencies {
 	compileOnly(libs.annotations.jetbrains)
 	implementation(projects.compat.gradle)
 	implementation(projects.compat.agpBase)
-	implementation(projects.compat.agp70x)
-	implementation(projects.compat.agp74x)
 	api(projects.compat.agp)
 
 	testImplementation(projects.test.internal)

@@ -59,7 +59,7 @@ fun Project.intermediateRegularFile(relativePath: String): Provider<RegularFile>
 fun Project.addBuildConfigField(name: String, type: String, value: Provider<out Serializable>) {
 	val androidComponents: AndroidComponentsExtension<*, *, *> =
 		this.extensions.getByName<AndroidComponentsExtension<*, *, *>>("androidComponents")
-	androidComponents.onVariantsCompat { variant ->
+	androidComponents.onVariants { variant ->
 		variant.buildConfigFields.put(name, value.map { BuildConfigField(type = type, value = it, comment = null) })
 	}
 }

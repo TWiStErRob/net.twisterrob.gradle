@@ -1,5 +1,5 @@
 [versions]
-java = "11"
+java = "17"
 
 # Changelog: https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md
 # GitHub Releases: https://github.com/tomasbjerre/violations-lib/tags
@@ -31,12 +31,13 @@ agp = "8.9.1"
 # Versions: https://maven.google.com/web/index.html#com.android.tools.lint:lint
 agp-tools = "31.9.1"
 
-# Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
-# Actual Kotlin version for dependencies. It has to be older to make sure a Gradle-compatible version is used.
+# Things have to be older to make sure a Gradle-compatible version is used.
 # https://docs.gradle.org/current/userguide/compatibility.html
-kotlin-target = "1.4.32"
+
+# Actual Kotlin version for dependencies.
+kotlin-target = "1.8.22"
 # Actual Kotlin language and API version for compilation, it restricts language features and metadata.
-kotlin-language = "1.4"
+kotlin-language = "1.8"
 # Version of Kotlin Gradle Plugin used for compilation.
 kotlin-build = "2.0.21"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
@@ -80,8 +81,7 @@ svnkit = "1.10.11"
 # Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
 # Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
 # Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
-jgit11 = "6.10.0.202406032230-r"
-jgit17 = "7.2.0.202503040940-r"
+jgit = "7.2.0.202503040940-r"
 
 # Explicitly using an outdated version of diffuse, don't remember why.
 # Versions: https://github.com/JakeWharton/diffuse/tags
@@ -140,8 +140,7 @@ jfixture-kotlin = { module = "com.flextrade.jfixture:kfixture", version.ref = "j
 
 svnkit = { module = "org.tmatesoft.svnkit:svnkit", version.ref = "svnkit" }
 svnkit-cli = { module = "org.tmatesoft.svnkit:svnkit-cli", version.ref = "svnkit" }
-jgit11 = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit11" }
-jgit17 = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit17" }
+jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
 violations = { module = "se.bjurr.violations:violations-lib", version.ref = "violations" }
 dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = "diffuse" }
 

@@ -51,7 +51,8 @@ abstract class AndroidReleasePlugin : BasePlugin() {
 		}
 
 	private fun registerReleaseTasks(android: BaseExtension, buildType: BuildType): TaskProvider<Task> {
-		val releaseBuildTypeTask = project.tasks.register<Task>("releaseAll${buildType.name.capitalize(Locale.ROOT)}") {
+		val buildTypeName = buildType.name.replaceFirstChar { it.uppercase(Locale.ROOT) }
+		val releaseBuildTypeTask = project.tasks.register<Task>("releaseAll${buildTypeName}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives all ${buildType.name} builds"
 		}
@@ -73,7 +74,7 @@ abstract class AndroidReleasePlugin : BasePlugin() {
 		release: AndroidReleaseExtension,
 		variant: ApplicationVariant
 	): TaskProvider<Zip> =
-		project.tasks.register<Zip>("release${variant.name.capitalize(Locale.ROOT)}") {
+		project.tasks.register<Zip>("release${variant.name.replaceFirstChar { it.uppercase(Locale.ROOT) }}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.name} build"
 			destinationDirectory.convention(release.directory)
@@ -94,12 +95,12 @@ abstract class AndroidReleasePlugin : BasePlugin() {
 				copy.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 			}
 
-			if (variant.isMinifyEnabledCompat) {
+			if (variant.isMinifyEnabled) {
 				val mappingFileProvider = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
 				archiveMappingFile(mappingFileProvider.map { it.asFile })
 			}
 
-			variant.androidTestCompat?.let { androidTest ->
+			variant.androidTest?.let { androidTest ->
 				from(androidTest.artifacts.get(SingleArtifact.APK)) { copy ->
 					copy.exclude(BuiltArtifactsImpl.METADATA_FILE_NAME)
 				}

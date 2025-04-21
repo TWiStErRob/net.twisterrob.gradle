@@ -1,13 +1,4 @@
 [libraries]
-android-gradle-v40x = { module = "com.android.tools.build:gradle", version = "4.0.2" }
-android-gradle-v41x = { module = "com.android.tools.build:gradle", version = "4.1.3" }
-android-gradle-v42x = { module = "com.android.tools.build:gradle", version = "4.2.2" }
-android-gradle-v70x = { module = "com.android.tools.build:gradle", version = "7.0.4" }
-android-gradle-v71x = { module = "com.android.tools.build:gradle", version = "7.1.3" }
-android-gradle-v72x = { module = "com.android.tools.build:gradle", version = "7.2.2" }
-android-gradle-v73x = { module = "com.android.tools.build:gradle", version = "7.3.1" }
-android-gradle-v74x = { module = "com.android.tools.build:gradle", version = "7.4.2" }
-android-gradle-v80x = { module = "com.android.tools.build:gradle", version = "8.0.2" }
 android-gradle-v81x = { module = "com.android.tools.build:gradle", version = "8.1.4" }
 android-gradle-v82x = { module = "com.android.tools.build:gradle", version = "8.2.2" }
 android-gradle-v83x = { module = "com.android.tools.build:gradle", version = "8.3.2" }

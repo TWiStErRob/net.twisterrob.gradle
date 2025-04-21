@@ -79,7 +79,7 @@ T : VerificationTask {
 		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant,
 		eachTask: TaskProvider<*>,
 	) {
-		val taskName = "${baseName}${variant.name.capitalize(Locale.ROOT)}"
+		val taskName = "${baseName}${variant.name.replaceFirstChar { it.uppercase(Locale.ROOT) }}"
 		val variantTask = project.tasks.register(taskName, taskClass, variantConfig(variant))
 		eachTask.configure { it.dependsOn(variantTask) }
 	}
