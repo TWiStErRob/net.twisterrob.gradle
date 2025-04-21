@@ -41,13 +41,13 @@ class LintMessageDetailsSplitter {
 										Stack: `(.*?):(.*)`\n\nYou can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout\.
 									""".trimIndent()
 								)
-							) {
+							) { match ->
 								"""
-									Unexpected failure during lint analysis of `${it.groupValues[1]}`.
+									Unexpected failure during lint analysis of `${match.groupValues[1]}`.
 									
 									```
-									Exception in thread "lint" ${it.groupValues[2]}:${
-										it.groupValues[@Suppress("MagicNumber") 3]
+									Exception in thread "lint" ${match.groupValues[2]}:${
+										match.groupValues[@Suppress("MagicNumber") 3]
 											.replace("←", "\n\tat ")
 											.prependIndent("\t\t\t\t\t\t\t\t\t")
 											.trimStart('\t')
@@ -65,9 +65,9 @@ class LintMessageDetailsSplitter {
 										Stack: `(.*?):`\n\nYou can set environment variable `LINT_PRINT_STACKTRACE=true` to dump a full stacktrace to stdout\.
 									""".trimIndent()
 								)
-							) {
+							) { match ->
 								"""
-									`${it.groupValues[2]}` during lint analysis of `${it.groupValues[1]}`.
+									`${match.groupValues[2]}` during lint analysis of `${match.groupValues[1]}`.
 								""".trimIndent()
 							}
 					}

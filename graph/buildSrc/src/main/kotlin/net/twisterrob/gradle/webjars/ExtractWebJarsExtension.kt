@@ -5,10 +5,11 @@ import org.gradle.api.file.Directory
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.named
 
-open class ExtractWebJarsExtension(
+abstract class ExtractWebJarsExtension(
 	private val project: Project,
 ) {
 	fun extractInto(target: SourceDirectorySet) {
@@ -24,8 +25,8 @@ open class ExtractWebJarsExtension(
 	fun extractIntoExistingFolder(folder: Provider<Directory>) {
 		val extractWebJars = project.tasks.named<ExtractWebJarsTask>("extractWebJars") {
 			doNotTrackState("The output directory overlaps with an existing source folder.")
-			cleanFirst.set(false)
-			outputDirectory.set(folder)
+			cleanFirst = false
+			outputDirectory = folder
 		}
 		project.tasks.named("processResources").configure { dependsOn(extractWebJars) }
 	}

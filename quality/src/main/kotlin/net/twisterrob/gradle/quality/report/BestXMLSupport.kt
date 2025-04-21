@@ -50,11 +50,11 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 		// configurations.compileOnly { exclude("xml-apis", "xml-apis") }
 		// So stuck with reflection.
 		val newFactory = XMLOutputFactory::class.staticFunctions
-			.firstOrNull {
-				it.name == "newFactory"
-						&& it.parameters.size == 2
-						&& it.parameters[0].type.javaType == String::class.java
-						&& it.parameters[1].type.javaType == ClassLoader::class.java
+			.firstOrNull { staticFun ->
+				staticFun.name == "newFactory"
+						&& staticFun.parameters.size == 2
+						&& staticFun.parameters[0].type.javaType == String::class.java
+						&& staticFun.parameters[1].type.javaType == ClassLoader::class.java
 			}
 		if (newFactory != null) {
 			/**

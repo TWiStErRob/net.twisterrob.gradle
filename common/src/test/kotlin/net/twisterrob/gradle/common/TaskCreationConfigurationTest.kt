@@ -35,6 +35,7 @@ class TaskCreationConfigurationTest {
 		val createdTasks: Map<String, Task> = fixtProject.collectCreatedTasks()
 
 		val provider = fixtProject.registerTask("testTask", mockConfiguration)
+		@Suppress("EagerGradleConfiguration") // Explicitly trigger configuration.
 		val task = provider.get()
 
 		assertThat(fixtProject.tasks.names, hasItem("testTask"))
@@ -46,7 +47,7 @@ class TaskCreationConfigurationTest {
 		verifyNoMoreInteractions(mockConfiguration)
 	}
 
-	@Suppress("UnnecessaryAbstractClass") // Gradle convention.
+	@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 	internal abstract class TestTask : DefaultTask()
 }
 

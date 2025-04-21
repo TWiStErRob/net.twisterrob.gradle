@@ -13,7 +13,7 @@ package net.twisterrob.gradle.checkstyle.test
  * }
  * ```
  */
-@Suppress("UseDataClass") // https://github.com/detekt/detekt/issues/5339
+@Suppress("detekt.UseDataClass") // https://github.com/detekt/detekt/issues/5339
 class CheckstyleTestResources {
 
 	val empty: EmptyConfiguration = object : EmptyConfiguration {}

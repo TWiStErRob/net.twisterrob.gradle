@@ -33,11 +33,26 @@ The two main entry points are:
 To use the `-SNAPSHOT` builds it's necessary to declare the Sonatype repository:
 ```gradle
 // `repositories { }` in build.gradle > buildscript, or settings.gradle > pluginManagement, or buildSrc > build.gradle
+maven {
+   name = "Sonatype 01: SNAPSHOTs"
+   url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+   content {
+       includeGroup("net.twisterrob.gradle")
+       includeGroupByRegex("net\\.twisterrob\\.gradle\\.plugin\\..*")
+   }
+   mavenContent {
+       snapshotsOnly()
+   }
+}
+```
+or
+```gradle.kts
+// `repositories { }` in build.gradle.kts > buildscript, or settings.gradle.kts > pluginManagement, or buildSrc > build.gradle.kts
 maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
    name = "Sonatype 01: SNAPSHOTs"
    content {
        includeGroup("net.twisterrob.gradle")
-       includeGroupByRegex("net\.twisterrob\.gradle\.plugin\..*")
+       includeGroupByRegex("""net\.twisterrob\.gradle\.plugin\..*""")
    }
    mavenContent {
        snapshotsOnly()
@@ -83,24 +98,24 @@ buildscript {
 		ivy {
 			url = repoRoot
 			patternLayout {
-				artifact '[artifact]/build/libs/[artifact]-[revision](-[classifier]).[ext]'
+				artifact("[artifact]/build/libs/[artifact]-[revision](-[classifier]).[ext]")
 			}
 		}
 		ivy {
 			url = repoRoot
 			patternLayout {
-				artifact 'checkers/[artifact]/build/libs/[artifact]-[revision](-[classifier]).[ext]'
+				artifact("checkers/[artifact]/build/libs/[artifact]-[revision](-[classifier]).[ext]")
 			}
 		}
 	}
 	dependencies {
-		configurations.classpath.resolutionStrategy.cacheChangingModulesFor 0, 'seconds' // -SNAPSHOT
-		def VERSION_QUALITY='0.2-SNAPSHOT'
-		classpath "net.twisterrob.gradle:twister-quality:${VERSION_QUALITY}"
-		classpath "net.twisterrob.gradle:twister-quality-common:${VERSION_QUALITY}"
-		classpath "net.twisterrob.gradle:twister-quality-checkstyle:${VERSION_QUALITY}"
-		classpath "net.twisterrob.gradle:twister-quality-pmd:${VERSION_QUALITY}"
-		classpath "se.bjurr.violations:violations-lib:1.50"
+		configurations.classpath.resolutionStrategy.cacheChangingModulesFor(0, "seconds") // -SNAPSHOT
+		def VERSION_QUALITY = "0.2-SNAPSHOT"
+		classpath("net.twisterrob.gradle:twister-quality:${VERSION_QUALITY}")
+		classpath("net.twisterrob.gradle:twister-quality-common:${VERSION_QUALITY}")
+		classpath("net.twisterrob.gradle:twister-quality-checkstyle:${VERSION_QUALITY}")
+		classpath("net.twisterrob.gradle:twister-quality-pmd:${VERSION_QUALITY}")
+		classpath("se.bjurr.violations:violations-lib:1.50")
 		// ... maybe more transitive dependencies
 	}
 }
@@ -118,12 +133,12 @@ The project is using a modular architecture to reduce coupling and so it's possi
 
 | Module (location): summary | Distributed Artifact,<br>Gradle Plugin ID,<br>JVM Package |
 | --- | --- |
-| **quality** ([`/quality`](../quality)):<br>All quality plugins bundled in one.<br> | `classpath 'net.twisterrob.gradle:twister-quality:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.quality'`<br>`import net.twisterrob.gradle.quality;` |
-| **common** ([`/common`](../common)):<br>Shared classes between checkers.<br>_Not to be consumed directly._ | `classpath 'net.twisterrob.gradle:twister-quality-common:+'`<br>`// apply plugin: N/A`<br>`import net.twisterrob.gradle.common;` |
-| **checkstyle** ([`/checkers/checkstyle`](../checkers/checkstyle)):<br>Checkstyle setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-checkstyle:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.checkstyle'`<br>`import net.twisterrob.gradle.checkstyle;` |
-| **pmd** ([`/checkers/pmd`](../checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath 'net.twisterrob.gradle:twister-quality-pmd:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.pmd'`<br>`import net.twisterrob.gradle.pmd;` |
-| **test** ([`/test`](../test)):<br>[Gradle test plugin and resources.](../test/README.md) | `classpath 'net.twisterrob.gradle:twister-gradle-test:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.gradle.test'`<br>`import net.twisterrob.gradle.test;` |
-| **plugin** ([`/plugin`](../plugin)):<br>[Gradle Android plugin conventions.](../plugin/README.md) | `classpath 'net.twisterrob.gradle:twister-convention-plugins:+'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.android-app'`<br>`apply plugin: 'net.twisterrob.gradle.plugin.root'`<br>`import net.twisterrob.gradle.android;` |
+| **quality** ([`/quality`](../quality)):<br>All quality plugins bundled in one.<br> | `classpath 'net.twisterrob.gradle:twister-quality:+'`<br>`apply plugin: "net.twisterrob.gradle.plugin.quality"`<br>`import net.twisterrob.gradle.quality;` |
+| **common** ([`/common`](../common)):<br>Shared classes between checkers.<br>_Not to be consumed directly._ | `classpath "net.twisterrob.gradle:twister-quality-common:+"`<br>`// apply plugin: N/A`<br>`import net.twisterrob.gradle.common;` |
+| **checkstyle** ([`/checkers/checkstyle`](../checkers/checkstyle)):<br>Checkstyle setup plugin for Gradle. | `classpath "net.twisterrob.gradle:twister-quality-checkstyle:+"`<br>`apply plugin: "net.twisterrob.gradle.plugin.checkstyle"`<br>`import net.twisterrob.gradle.checkstyle;` |
+| **pmd** ([`/checkers/pmd`](../checkers/pmd)):<br>PMD setup plugin for Gradle. | `classpath "net.twisterrob.gradle:twister-quality-pmd:+"`<br>`apply plugin: "net.twisterrob.gradle.plugin.pmd"`<br>`import net.twisterrob.gradle.pmd;` |
+| **test** ([`/test`](../test)):<br>[Gradle test plugin and resources.](../test/README.md) | `classpath "net.twisterrob.gradle:twister-gradle-test:+"`<br>`apply plugin: "net.twisterrob.gradle.plugin.gradle.test"`<br>`import net.twisterrob.gradle.test;` |
+| **plugin** ([`/plugin`](../plugin)):<br>[Gradle Android plugin conventions.](../plugin/README.md) | `classpath "net.twisterrob.gradle:twister-convention-plugins:+"`<br>`apply plugin: "net.twisterrob.gradle.plugin.android-app"`<br>`apply plugin: "net.twisterrob.gradle.plugin.root"`<br>`import net.twisterrob.gradle.android;` |
 
 
 ## Used languages

@@ -42,7 +42,7 @@ import com.android.build.api.variant.VariantBuilder
  *
  * This method is essentially what @JvmOverloads would generate.
  */
-fun <DslExtensionT : CommonExtension<*, *, *, *, *>, VariantBuilderT : VariantBuilder, VariantT : Variant>
+fun <DslExtensionT : CommonExtension<*, *, *, *, *, *>, VariantBuilderT : VariantBuilder, VariantT : Variant>
 		AndroidComponentsExtension<DslExtensionT, VariantBuilderT, VariantT>.onVariantsCompat(
 	callback: (VariantT) -> Unit
 ) {

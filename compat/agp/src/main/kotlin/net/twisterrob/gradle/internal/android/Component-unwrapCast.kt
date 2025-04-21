@@ -20,7 +20,7 @@ import com.android.build.api.variant.Component
  */
 @Suppress("UNCHECKED_CAST")
 fun <C : Component, T : C> C.unwrapCast(): T =
-	@Suppress("UseIfInsteadOfWhen") // Preferred for instanceof type checks.
+	@Suppress("detekt.UseIfInsteadOfWhen") // Preferred for instanceof type checks.
 	when (this) {
 		is AnalyticsEnabledComponent -> this.delegate.unwrapCast()
 		else -> this as T

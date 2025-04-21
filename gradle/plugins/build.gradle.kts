@@ -11,9 +11,11 @@ plugins {
 // Declaring all the dependencies in this project resolves this issue.
 dependencies {
 	implementation(libs.kotlin.gradle)
-	implementation(libs.kotlin.dokka)
-	implementation(libs.detekt)
-	implementation(libs.gradle.enterprise)
+	implementation(libs.plugins.kotlin.dokka.asDependency())
+	implementation(libs.plugins.kotlin.dokkaJavadoc.asDependency())
+	implementation(libs.plugins.detekt.asDependency())
+	implementation(libs.plugins.lint.asDependency())
+	implementation(libs.gradle.develocity)
 	implementation(libs.nexus)
 
 	// TODEL https://github.com/gradle/gradle/issues/15383
@@ -43,8 +45,8 @@ run {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	compilerOptions.verbose.set(true)
-	compilerOptions.allWarningsAsErrors.set(true)
+	compilerOptions.verbose = true
+	compilerOptions.allWarningsAsErrors = true
 }
 
 // Note: duplicated from DetektPlugin because can't apply project this build.gradle.kts is defining.
@@ -54,7 +56,10 @@ detekt {
 	allRules = true
 	ignoreFailures = true
 	//debug = true
-	config.setFrom(project.rootProject.file("../../config/detekt/detekt.yml"))
+	config.setFrom(
+		project.rootProject.file("../../config/detekt/detekt.yml"),
+		project.rootProject.file("../../config/detekt/detekt-kotlin-dsl.yml"),
+	)
 	baseline = project.rootProject.file("../../config/detekt/detekt-baseline-gradle-plugins.xml")
 	basePath = project.rootProject.projectDir.resolve("../..").absolutePath
 
@@ -62,8 +67,22 @@ detekt {
 
 	project.tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 		reports {
-			html.required.set(true) // human
-			txt.required.set(true) // console
+			html.required = true // human
+			txt.required = true // console
+		}
+		if (this.name == "detektMain") {
+			// Detekt fails on these files with an internal compile error, so exclude for now.
+			exclude("**/net.twisterrob.gradle.build.*.gradle.kts")
+			// Cannot do much about the violations in Gradle generated code; also causes OOM.
+			// build/generated-sources/kotlin-dsl-accessors/kotlin/gradle/kotlin/dsl/accessors/
+			exclude("gradle/kotlin/dsl/accessors/")
+			// build/generated-sources/kotlin-dsl-external-plugin-spec-builders/kotlin/gradle/kotlin/dsl/plugins/
+			exclude("gradle/kotlin/dsl/plugins/")
+			// build/generated-sources/kotlin-dsl-plugins/kotlin/Net_twisterrob_gradle_build_*Plugin
+			exclude("Net_twisterrob_gradle_build_*Plugin.kt")
 		}
 	}
 }
+
+fun Provider<PluginDependency>.asDependency(): Provider<String> =
+	this.map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" }

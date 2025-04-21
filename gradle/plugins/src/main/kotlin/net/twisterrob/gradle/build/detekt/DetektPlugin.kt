@@ -7,9 +7,11 @@ import net.twisterrob.gradle.build.dsl.libs
 import net.twisterrob.gradle.slug
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.withType
 
-internal class DetektPlugin : Plugin<Project> {
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+internal abstract class DetektPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
 		project.plugins.apply("io.gitlab.arturbosch.detekt")
@@ -26,11 +28,14 @@ internal class DetektPlugin : Plugin<Project> {
 			parallel = true
 
 			project.tasks.withType<Detekt>().configureEach {
+				@Suppress("detekt.MaxChainedCallsOnSameLine")
 				languageVersion = project.libs.versions.kotlin.language.get()
 				jvmTarget = project.libs.versions.java.get()
+				// Detekt falsely resolves this to DetektExtension.report because of Kotlin DSL.
+				@Suppress("detekt.Deprecation")
 				reports {
-					html.required.set(true) // human
-					txt.required.set(true) // console
+					html.required = true // human
+					txt.required = true // console
 				}
 			}
 		}

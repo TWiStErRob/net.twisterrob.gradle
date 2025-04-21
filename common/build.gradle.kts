@@ -4,7 +4,7 @@ plugins {
 	id("org.gradle.groovy")
 }
 
-base.archivesName.set("twister-quality-common")
+base.archivesName = "twister-quality-common"
 description = "Common: Shared classes between checkers (not to be consumed directly)."
 
 dependencies {
@@ -29,7 +29,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 // don't double-compile Java classes
-java.sourceSets.all { kotlin.srcDirs -= java.srcDirs }
+java.sourceSets.configureEach { kotlin.srcDirs -= java.srcDirs }
 
 // make TFO visible to Groovy
 tasks.named<GroovyCompile>("compileTestGroovy") {

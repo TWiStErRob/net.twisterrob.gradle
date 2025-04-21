@@ -12,4 +12,4 @@ fun File.createTestFileToCommit(message: String): File {
 }
 
 private fun Int.toHexString(): String =
-	this.absoluteValue.toString(@Suppress("MagicNumber") 16).padStart(@Suppress("MagicNumber") 8, '0')
+	this.absoluteValue.toString(@Suppress("detekt.MagicNumber") 16).padStart(@Suppress("detekt.MagicNumber") 8, '0')

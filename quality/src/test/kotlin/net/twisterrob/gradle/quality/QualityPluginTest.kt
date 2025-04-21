@@ -7,6 +7,7 @@ import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
 import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.fqcn
 import net.twisterrob.gradle.test.runBuild
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasItems
@@ -31,9 +32,9 @@ class QualityPluginTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.quality'
+				apply plugin: "net.twisterrob.gradle.plugin.quality"
 			}
-			tasks.named('violationReportConsole').configure { println("Configuring " + it) }
+			tasks.named("violationReportConsole").configure { println("Configuring " + it) }
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -57,9 +58,9 @@ class QualityPluginTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.quality'
+				apply plugin: "net.twisterrob.gradle.plugin.quality"
 			}
-			tasks.named('violationReportHtml').configure { println("Configuring " + it) }
+			tasks.named("violationReportHtml").configure { println("Configuring " + it) }
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -83,8 +84,8 @@ class QualityPluginTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.quality'
-				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}).configureEach {
+				apply plugin: "net.twisterrob.gradle.plugin.quality"
+				tasks.withType(${GlobalLintGlobalFinalizerTask::class.fqcn}).configureEach {
 					println("Added " + it)
 				}
 			}
@@ -107,8 +108,8 @@ class QualityPluginTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			allprojects {
-				apply plugin: 'net.twisterrob.gradle.plugin.quality'
-				tasks.withType(${GlobalLintGlobalFinalizerTask::class.qualifiedName}).configureEach {
+				apply plugin: "net.twisterrob.gradle.plugin.quality"
+				tasks.withType(${GlobalLintGlobalFinalizerTask::class.fqcn}).configureEach {
 					println("Added " + it)
 				}
 			}

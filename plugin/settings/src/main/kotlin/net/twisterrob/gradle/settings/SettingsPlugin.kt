@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.settings
 
-import net.twisterrob.gradle.internal.nagging.reviewIfNaggingCausesFailure
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
 
@@ -12,8 +11,9 @@ import org.gradle.api.initialization.Settings
  * }
  * ```
  */
-class SettingsPlugin : Plugin<Settings> {
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+abstract class SettingsPlugin : Plugin<Settings> {
 	override fun apply(settings: Settings) {
-		reviewIfNaggingCausesFailure(settings.gradle)
+		// Nothing to do, yet.
 	}
 }

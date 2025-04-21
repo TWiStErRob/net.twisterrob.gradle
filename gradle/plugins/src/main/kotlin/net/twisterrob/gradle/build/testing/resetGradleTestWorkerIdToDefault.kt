@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicLong
  * It is recommended to call this once at the beginning of the configuration phase.
  * The best place for this is the rootProject's build.gradle file.
  */
+@Suppress("detekt.FunctionMaxLength") // Rather be explicit about what it does.
 fun Gradle.resetGradleTestWorkerIdToDefault() {
 	// This factory is "static" and it holds the state we need to mutate in order to make the workers reuse IDs.
 	val factory: DefaultWorkerProcessFactory = serviceOf<WorkerProcessFactory>() as DefaultWorkerProcessFactory

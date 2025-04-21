@@ -7,9 +7,7 @@ import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.html.model.build
 import net.twisterrob.gradle.test.RootProject
 import net.twisterrob.gradle.test.createSubProject
-import org.gradle.api.DefaultTask
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -23,12 +21,7 @@ private const val ALL = "*"
 @Suppress("UnnecessaryVariable")
 class ViolationsDeduplicatorKtTest {
 	private val fixtRoot = RootProject()
-	private val fixture = JFixture().apply {
-		customise().sameInstance(Project::class.java, fixtRoot)
-		customise().lazyInstance(Task::class.java) {
-			fixtRoot.tasks.create(build(), DefaultTask::class.java)
-		}
-	}
+	private val fixture = JFixture()
 
 	@Test fun `AGP7 lint vs checkstyle in module`() {
 		val fixtModule = fixtRoot.createSubProject("module")
@@ -308,7 +301,7 @@ private fun violations(
 	type: String,
 	vararg violations: Violation
 ): Violations {
-	val suffix = if (variant == ALL) "" else "-$variant"
+	val suffix = if (variant == ALL) "-debug" else "-$variant"
 	return Violations(
 		module = project.path,
 		parser = type,
@@ -320,7 +313,7 @@ private fun violations(
 }
 
 private fun Project.buildFile(path: String): File =
-	@Suppress("MaxChainedCallsOnSameLine")
+	@Suppress("detekt.MaxChainedCallsOnSameLine")
 	this.layout.buildDirectory.file(path).get().asFile
 
 private fun Violations.noViolations(): Violations =
@@ -338,8 +331,8 @@ private fun Violations.unknownReports(): Violations =
 		parser = this.parser,
 		module = this.module,
 		variant = this.variant,
-		result = File("."),
-		report = File("."),
+		result = this.result,
+		report = this.report,
 		violations = this.violations?.toList(),
 	)
 

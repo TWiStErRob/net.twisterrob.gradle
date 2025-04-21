@@ -5,7 +5,7 @@ import org.jetbrains.annotations.TestOnly
 /**
  * Version constants for the Android Gradle Plugin.
  */
-@Suppress("MagicNumber") // Meant for hardcoding version numbers.
+@Suppress("detekt.MagicNumber") // Meant for hardcoding version numbers.
 object AGPVersions {
 
 	/**
@@ -42,6 +42,9 @@ object AGPVersions {
 	val v74x: AGPVersion = AGPVersion(major = 7, minor = 4, type = null, patch = null)
 	val v80x: AGPVersion = AGPVersion(major = 8, minor = 0, type = null, patch = null)
 	val v81x: AGPVersion = AGPVersion(major = 8, minor = 1, type = null, patch = null)
+	val v83x: AGPVersion = AGPVersion(major = 8, minor = 3, type = null, patch = null)
+	val v84x: AGPVersion = AGPVersion(major = 8, minor = 4, type = null, patch = null)
+	// Note: adding a version here requires updating the test in AGPVersionsTest.kt.
 
 	/**
 	 * Is there an Android Gradle Plugin on the classpath?

@@ -10,7 +10,7 @@ import com.android.build.api.component.analytics.AnalyticsEnabledArtifacts
  */
 @Suppress("UNCHECKED_CAST")
 fun <T : Artifacts> Artifacts.unwrapCast(): T =
-	@Suppress("UseIfInsteadOfWhen") // Preferred for instanceof type checks.
+	@Suppress("detekt.UseIfInsteadOfWhen") // Preferred for instanceof type checks.
 	when (this) {
 		is AnalyticsEnabledArtifacts -> this.delegate.unwrapCast()
 		else -> this as T

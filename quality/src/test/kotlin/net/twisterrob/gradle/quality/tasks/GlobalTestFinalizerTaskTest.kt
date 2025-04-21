@@ -36,7 +36,6 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 	companion object {
 
-		@Suppress("")
 		@Language("java")
 		private val testFile: String = """
 			import org.junit.*;
@@ -96,7 +95,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			dependencies {
-				testImplementation 'junit:junit:${Version.id()}'
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 
@@ -124,7 +123,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			dependencies {
-				testImplementation 'junit:junit:${Version.id()}'
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 
@@ -147,7 +146,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			dependencies {
-				testImplementation 'junit:junit:${Version.id()}'
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 
@@ -170,7 +169,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.quality")
 			}
 			dependencies {
-				testImplementation 'junit:junit:${Version.id()}'
+				testImplementation("junit:junit:${Version.id()}")
 			}
 		""".trimIndent()
 
@@ -209,7 +208,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 				}
 				android.namespace = "project${modulePath.replace(":", ".")}"
 				dependencies {
-					testImplementation 'junit:junit:${Version.id()}'
+					testImplementation("junit:junit:${Version.id()}")
 				}
 			""".trimIndent()
 

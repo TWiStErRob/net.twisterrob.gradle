@@ -3,7 +3,7 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-convention-building")
+base.archivesName = "twister-convention-building"
 description = "Build Convention Plugin: Gradle Plugin to handle conventional builds."
 
 gradlePlugin {

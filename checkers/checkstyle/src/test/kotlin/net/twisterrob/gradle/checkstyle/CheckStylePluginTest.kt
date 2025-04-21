@@ -194,7 +194,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		modules.forEach { module ->
 			gradle.settingsFile.appendText("""include("${module}")${System.lineSeparator()}""")
 
-			@Suppress("BracesOnIfStatements") // Language annotation doesn't work on implicit block return.
+			@Suppress("detekt.BracesOnIfStatements") // Language annotation doesn't work on implicit block return.
 			@Language("gradle")
 			val subProject = if (module in applyTo)
 				"""
@@ -277,7 +277,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 				// output all violations to the console so that we can parse the results
 				showViolations = true
 			}
-			android.sourceSets.main.java.srcDir 'custom'
+			android.sourceSets.main.java.srcDir("custom")
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -311,7 +311,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 			quality {
 				checkstyle { // this : ${CheckStyleExtension::class}
 					taskConfigurator { // this : ${TaskConfigurator::class}
-						excludeExcept '**/com/example', 'foo'
+						excludeExcept("**/com/example", "foo")
 					}
 				}
 			}

@@ -3,8 +3,8 @@
 
 package net.twisterrob.gradle
 
-import net.twisterrob.gradle.internal.nagging.GradleNaggingReflection
-import net.twisterrob.gradle.internal.nagging.IgnoringSet
+import net.twisterrob.gradle.nagging.internal.GradleNaggingReflection
+import net.twisterrob.gradle.nagging.internal.IgnoringSet
 import org.gradle.internal.featurelifecycle.LoggingDeprecatedFeatureHandler
 import org.gradle.util.GradleVersion
 import java.util.regex.Pattern
@@ -111,7 +111,7 @@ fun doNotNagAbout(message: Regex) {
  * @see doNotNagAbout for more details
  */
 fun doNotNagAbout(message: String) {
-	@Suppress("UseIfInsteadOfWhen") // Preparing for future new version ranges.
+	@Suppress("detekt.UseIfInsteadOfWhen") // Preparing for future new version ranges.
 	when {
 		GradleVersion.version("8.0") <= GradleVersion.current().baseVersion -> {
 			// Ignoring with "startsWith" to disregard the stack trace. It's not ideal, but it's

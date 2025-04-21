@@ -1,15 +1,13 @@
 package net.twisterrob.gradle.quality.report.html.model
 
 import net.twisterrob.gradle.quality.Violation
-import net.twisterrob.gradle.quality.Violation.Location
-import org.gradle.api.Project
 import java.io.File
 import java.net.URI
 
-@Suppress("UseDataClass") // TODEL https://github.com/detekt/detekt/issues/5339
+@Suppress("detekt.UseDataClass") // TODEL https://github.com/detekt/detekt/issues/5339
 class LocationViewModel(violation: Violation) {
-	private val loc: Location = violation.location
-	private val module: Project = loc.module
+	private val loc: Violation.Location = violation.location
+	private val module: Violation.Module = loc.module
 
 	/**
 	 * The full path of the module.

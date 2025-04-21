@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see ValidateViolationsTask
+ * @see BaseViolationsTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class ValidateViolationsTaskIntgTest : BaseIntgTest() {
@@ -43,7 +44,7 @@ class ValidateViolationsTaskIntgTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.pmd")
 			}
 
-			tasks.register('validateViolations', ${ValidateViolationsTask::class.java.name})
+			tasks.register("validateViolations", ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runFailingBuild {
@@ -57,7 +58,7 @@ class ValidateViolationsTaskIntgTest : BaseIntgTest() {
 	@Test fun `passes when no violations`() {
 		@Language("gradle")
 		val script = """
-			tasks.register('validateViolations', ${ValidateViolationsTask::class.java.name})
+			tasks.register("validateViolations", ${ValidateViolationsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {

@@ -19,7 +19,8 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
-class AndroidMinificationPlugin : BasePlugin() {
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+abstract class AndroidMinificationPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -47,7 +48,7 @@ class AndroidMinificationPlugin : BasePlugin() {
 				release.setMinifyEnabled(true)
 			}
 
-			buildTypes.all { buildType ->
+			buildTypes.configureEach { buildType ->
 				if (buildType.isDebuggable) {
 					buildType.proguardFile(myDebugProguardRulesFile)
 				} else {

@@ -5,8 +5,9 @@ import net.twisterrob.gradle.build.dsl.publishing
 import net.twisterrob.gradle.build.publishing.GradlePluginValidationPlugin
 import net.twisterrob.gradle.build.publishing.getChild
 import net.twisterrob.gradle.build.publishing.withDokkaJar
-import org.gradle.configurationcache.extensions.capitalized
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.DokkaExtension
+import org.jetbrains.dokka.gradle.internal.InternalDokkaGradlePluginApi
+import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
@@ -14,6 +15,7 @@ plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
 	id("org.jetbrains.dokka")
+	id("org.jetbrains.dokka-javadoc")
 }
 plugins.apply(GradlePluginValidationPlugin::class)
 
@@ -31,7 +33,7 @@ plugins.withId("org.gradle.java") {
 						"Implementation-Vendor" to project.group,
 						"Implementation-Title" to project.base.archivesName.get(),
 						"Implementation-Version" to project.version,
-						"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+						"Built-Date" to DateTimeFormatter.ISO_INSTANT.format(Instant.now()),
 					)
 				)
 			}
@@ -50,58 +52,50 @@ normalization {
 /**
  * @see org.jetbrains.dokka.gradle.DokkaPlugin
  */
-val DOKKA_TASK_NAME: String = "dokkaJavadoc"
+@Suppress("PropertyName", "VariableNaming")
+val DOKKA_TASK_NAME: String = "dokkaGeneratePublicationJavadoc"
 
-		// Note: org.gradle.api.publish.plugins.PublishingPlugin.apply calls publications.all,
-		// so most code here is eagerly executed, even inside register { }!
+// Note: org.gradle.api.publish.plugins.PublishingPlugin.apply calls publications.all,
+// so most code here is eagerly executed, even inside register { }!
 
-		project.java.withDokkaJar(project, project.tasks.named(DOKKA_TASK_NAME))
-		project.java.withSourcesJar()
-		setupDoc(project)
-		setupSigning(project)
-		project.plugins.withId("net.twisterrob.gradle.build.module.library") {
-			project.publishing.apply {
-				publications {
-					register<MavenPublication>("library") {
-						setupModuleIdentity(project)
-						setupPublication(project)
-						// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
-						from(project.components["java"])
-					}
-				}
+project.java.withDokkaJar(project, project.tasks.named(DOKKA_TASK_NAME))
+project.java.withSourcesJar()
+setupDoc(project)
+setupSigning(project)
+project.plugins.withId("net.twisterrob.gradle.build.module.library") {
+	project.publishing.apply {
+		publications {
+			register<MavenPublication>("library") {
+				setupModuleIdentity(project)
+				setupPublication(project)
+				// compiled files: artifact(tasks["jar"])) { classifier = null } + dependencies
+				from(project.components["java"])
 			}
 		}
-		project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
-			registerPublicationsTasks(project)
-			@Suppress("UnstableApiUsage")
-			project.gradlePlugin.apply {
-				website.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
-				vcsUrl.set("https://github.com/TWiStErRob/net.twisterrob.gradle.git")
-			}
-			// Configure built-in pluginMaven publication created by java-gradle-plugin.
-			// Have to do it in afterEvaluate, because it's delayed in MavenPluginPublishPlugin.
-			// Cannot be relying on the `maybeCreate` usage in MavenPluginPublishPlugin.addMainPublication,
-			// because the module name is set in afterEvaluate in setupModuleIdentity and MPPP already read it.
-			// This is described in https://github.com/gradle/gradle/issues/23551.
-			project.afterEvaluate {
-				project.publishing.apply {
-					publications {
-						named<MavenPublication>("pluginMaven").configure pluginMaven@{
-							setupModuleIdentity(project)
-							setupPublication(project)
-							handleTestFixtures()
-							// TODEL work around https://github.com/gradle/gradle/issues/23551
-							fixMarkers(project)
-						}
-						withType<MavenPublication>()
-							.matching { it.name.endsWith("PluginMarkerMaven") }
-							.configureEach pluginMarkerMaven@{
-								setupPublication(project)
-							}
-					}
-				}
-			}
+	}
+}
+project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
+	registerPublicationsTasks(project)
+	project.gradlePlugin.apply {
+		@Suppress("UnstableApiUsage")
+		website = "https://github.com/TWiStErRob/net.twisterrob.gradle"
+		@Suppress("UnstableApiUsage")
+		vcsUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle.git"
+	}
+	project.publishing.publications.apply {
+		// Pre-configure pluginMaven for MavenPluginPublishPlugin, it'll set up other things.
+		create<MavenPublication>("pluginMaven") {
+			setupModuleIdentity(project)
+			setupPublication(project)
+			handleTestFixtures()
 		}
+		withType<MavenPublication>()
+			.matching { it.name.endsWith("PluginMarkerMaven") }
+			.configureEach {
+				setupPublication(project)
+			}
+	}
+}
 
 fun MavenPublication.setupPublication(project: Project) {
 	project.configure<SigningExtension> {
@@ -109,21 +103,6 @@ fun MavenPublication.setupPublication(project: Project) {
 	}
 	setupLinks(project)
 	reorderNodes(project)
-}
-
-fun MavenPublication.fixMarkers(project: Project) {
-	project.gradlePlugin.plugins.forEach { plugin ->
-		// Needs to be eager getByName rather than named because we're already inside a named block at call-site.
-		project.publishing.publications.getByName<MavenPublication>("${plugin.name}PluginMarkerMaven") {
-			pom.withXml {
-				asNode()
-					.getChild("dependencies")
-					.getChild("dependency")
-					.getChild("artifactId")
-					.setValue(this@fixMarkers.artifactId)
-			}
-		}
-	}
 }
 
 @Suppress("UnusedReceiverParameter")
@@ -138,13 +117,25 @@ fun MavenPublication.handleTestFixtures() {
 }
 
 fun setupDoc(project: Project) {
-	project.tasks.named<DokkaTask>(DOKKA_TASK_NAME) {
-		// TODO https://github.com/Kotlin/dokka/issues/1894
-		moduleName.set(this.project.base.archivesName)
-		dokkaSourceSets.configureEach {
-			reportUndocumented.set(false)
+	project.extensions.configure<DokkaExtension> {
+		moduleName = project.base.archivesName
+		dokkaPublications.named("html").configure {
+			enabled = false
 		}
-		notCompatibleWithConfigurationCache("https://github.com/Kotlin/dokka/issues/1217")
+		dokkaPublications.configureEach {
+			failOnWarning = true
+		}
+		dokkaSourceSets.configureEach {
+			reportUndocumented = false
+		}
+		dokkaGeneratorIsolation = ProcessIsolation {
+			maxHeapSize = "512M"
+		}
+	}
+	project.tasks.withType<DokkaGenerateTask>().configureEach {
+		// TODEL https://github.com/Kotlin/dokka/issues/3958
+		@OptIn(InternalDokkaGradlePluginApi::class)
+		dokkaConfigurationJsonFile.unsetConvention()
 	}
 }
 
@@ -164,6 +155,7 @@ fun setupSigning(project: Project) {
 }
 
 fun MavenPublication.setupModuleIdentity(project: Project) {
+	// Delayed configuration, so that project.* is set up properly in corresponding modules' build.gradle.kts.
 	project.afterEvaluate {
 		artifactId = project.base.archivesName.get()
 		version = project.version as String
@@ -174,31 +166,31 @@ fun MavenPublication.setupModuleIdentity(project: Project) {
 					"${project} must have a description with format: \"Module Display Name: Module description.\""
 							+ ", found ${project.description}"
 				)
-			name.set(projectDescription.substringBefore(": ").also { check(it.isNotBlank()) })
-			description.set(projectDescription.substringAfter(": ").also { check(it.isNotBlank()) })
+			name = projectDescription.substringBefore(": ").also { check(it.isNotBlank()) }
+			description = projectDescription.substringAfter(": ").also { check(it.isNotBlank()) }
 		}
 	}
 }
 
 fun MavenPublication.setupLinks(project: Project) {
 	pom {
-		url.set("https://github.com/TWiStErRob/net.twisterrob.gradle")
+		url = "https://github.com/TWiStErRob/net.twisterrob.gradle"
 		scm {
-			connection.set("scm:git:github.com/TWiStErRob/net.twisterrob.gradle.git")
-			developerConnection.set("scm:git:ssh://github.com/TWiStErRob/net.twisterrob.gradle.git")
-			url.set("https://github.com/TWiStErRob/net.twisterrob.gradle/tree/main")
+			connection = "scm:git:github.com/TWiStErRob/net.twisterrob.gradle.git"
+			developerConnection = "scm:git:ssh://github.com/TWiStErRob/net.twisterrob.gradle.git"
+			url = "https://github.com/TWiStErRob/net.twisterrob.gradle/tree/main"
 		}
 		licenses {
 			license {
-				name.set("Unlicense")
-				url.set("https://github.com/TWiStErRob/net.twisterrob.gradle/blob/v${project.version}/LICENCE")
+				name = "Unlicense"
+				url = "https://github.com/TWiStErRob/net.twisterrob.gradle/blob/v${project.version}/LICENCE"
 			}
 		}
 		developers {
 			developer {
-				id.set("TWiStErRob")
-				name.set("Robert Papp")
-				email.set("papp.robert.s@gmail.com")
+				id = "TWiStErRob"
+				name = "Robert Papp"
+				email = "papp.robert.s@gmail.com"
 			}
 		}
 	}
@@ -235,29 +227,30 @@ fun MavenPublication.reorderNodes(project: Project) {
  * @see org.gradle.api.publish.maven.plugins.MavenPublishPlugin.createPublishTasksForEachMavenRepo
  */
 fun registerPublicationsTasks(project: Project) {
-	val markersName = "allPluginMarkerMavenPublications"
+	val markersFragment = "AllPluginMarkerMavenPublications"
 	val markersDescription = "all Gradle Plugin Marker publications"
 	val markerPublications = project.the<PublishingExtension>()
 		.publications
 		.matching {
 			it is MavenPublication && it.name.endsWith("PluginMarkerMaven")
 		}
-	project.tasks.register("publish${markersName.capitalized()}ToMavenLocal") task@{
+	project.tasks.register("publish${markersFragment}ToMavenLocal") task@{
 		group = PublishingPlugin.PUBLISH_TASK_GROUP
 		description = "Publishes ${markersDescription} produced by this project to the local Maven cache."
 		markerPublications.all publication@{
 			val publication = this@publication.name
-			this@task.dependsOn("publish${publication.capitalized()}PublicationToMavenLocal")
+			this@task.dependsOn("publish${publication.replaceFirstChar(Char::uppercase)}PublicationToMavenLocal")
 		}
 	}
 	project.the<PublishingExtension>().repositories.all repository@{
 		val repository = this@repository.name
-		project.tasks.register("publish${markersName.capitalized()}To${repository.capitalized()}Repository") task@{
+		val repositoryFragment = repository.replaceFirstChar(Char::uppercase)
+		project.tasks.register("publish${markersFragment}To${repositoryFragment}Repository") task@{
 			group = PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Publishes ${markersDescription} produced by this project to the ${repository} repository."
 			markerPublications.all publication@{
-				val publication = this@publication.name
-				this@task.dependsOn("publish${publication.capitalized()}PublicationTo${repository.capitalized()}Repository")
+				val publicationFragment = this@publication.name.replaceFirstChar(Char::uppercase)
+				this@task.dependsOn("publish${publicationFragment}PublicationTo${repositoryFragment}Repository")
 			}
 		}
 	}

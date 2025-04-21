@@ -2,11 +2,8 @@ package net.twisterrob.gradle.quality.report.html.model
 
 import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
-import org.gradle.api.Project
-import org.gradle.api.Task
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.mock
 
 class LintMessageDetailsSplitterTest {
 
@@ -30,7 +27,7 @@ class LintMessageDetailsSplitterTest {
 		assertEquals("""Missing density variation folders in `src\main\res`: drawable-hdpi""", output.message)
 	}
 
-	@Suppress("LongMethod") // Stack traces are long.
+	@Suppress("detekt.LongMethod") // Stack traces are long.
 	@Test
 	fun `LintError specific message gets formatted`() {
 		val input = fixture.build<Violation>().apply {
@@ -193,10 +190,6 @@ class LintMessageDetailsSplitterTest {
 
 		private fun createAndroidLintFixture(): JFixture {
 			return JFixture().apply {
-				customise().lazyInstance(Project::class.java) {
-					mockProject(buildProjectPath())
-				}
-				customise().lazyInstance(Task::class.java) { mock() }
 				customise().intercept(Violation::class.java) {
 					it.source.setField("reporter", "ANDROIDLINT")
 				}

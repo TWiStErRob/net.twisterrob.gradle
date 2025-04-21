@@ -2,18 +2,26 @@ import net.twisterrob.gradle.build.dsl.isCI
 import net.twisterrob.gradle.build.settings.enableFeaturePreviewQuietly
 import net.twisterrob.gradle.doNotNagAbout
 
+//net.twisterrob.gradle.isDoNotNagAboutDiagnosticsEnabled = true
+
 // TODEL https://github.com/gradle/gradle/issues/18971
 rootProject.name = "net-twisterrob-gradle"
 
 pluginManagement {
 	includeBuild("gradle/plugins")
 	includeBuild("graph")
+	repositories {
+		mavenCentral()
+		gradlePluginPortal()
+		google()
+	}
 }
 
 plugins {
 	// Allows using classes / functions from gradle/plugins project.
 	id("net.twisterrob.gradle.build.settings")
-	id("net.twisterrob.gradle.build.enterprise")
+	id("net.twisterrob.gradle.build.develocity")
+	id("org.gradle.toolchains.foojay-resolver-convention") version("0.10.0")
 	//id("net.twisterrob.graph")
 }
 
@@ -43,6 +51,13 @@ include(":compat:agp-74x")
 include(":compat:agp-80x")
 include(":compat:agp-81x")
 include(":compat:agp-82x")
+include(":compat:agp-83x")
+include(":compat:agp-84x")
+include(":compat:agp-85x")
+include(":compat:agp-86x")
+include(":compat:agp-87x")
+include(":compat:agp-88x")
+include(":compat:agp-89x")
 include(":compat:gradle")
 include(":compat:kotlin-base")
 
@@ -60,6 +75,16 @@ include(":browser:agp-74x")
 include(":browser:agp-80x")
 include(":browser:agp-81x")
 include(":browser:agp-82x")
+include(":browser:agp-83x")
+include(":browser:agp-84x")
+include(":browser:agp-85x")
+include(":browser:agp-86x")
+include(":browser:agp-87x")
+include(":browser:agp-88x")
+include(":browser:agp-89x")
+include(":browser:kotlin-14x")
+include(":browser:kotlin-16x")
+include(":browser:kotlin-19x")
 
 include(":plugin")
 include(":plugin:base")
@@ -79,7 +104,7 @@ if (settings.extra["net.twisterrob.gradle.build.includeExamples"].toString().toB
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-	repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+	repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
 	repositories {
 		google()
 		mavenCentral()
@@ -91,6 +116,7 @@ dependencyResolutionManagement {
 			// Implicit behavior: from(files("gradle/libs.versions.toml"))
 			// Load additional libraries from other files:
 			load(file("gradle/agp.versions.toml"))
+			load(file("gradle/kotlin.versions.toml"))
 		}
 	}
 }
@@ -99,8 +125,8 @@ dependencyResolutionManagement {
 val gradleVersion: String = GradleVersion.current().version
 
 // TODEL Gradle 8.2 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320266.
-@Suppress("MaxLineLength", "StringLiteralDuplication")
-if ((System.getProperty("idea.version") ?: "") < "2023.2") {
+@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
+if ((System.getProperty("idea.version") ?: "") < "2023.3") {
 	// There are ton of warnings, ignoring them all by their class names in one suppression.
 	doNotNagAbout(
 		Regex(
@@ -134,9 +160,9 @@ if ((System.getProperty("idea.version") ?: "") < "2023.2") {
 }
 
 // TODEL Gradle 8.2 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320307.
-@Suppress("MaxLineLength", "StringLiteralDuplication")
-if ((System.getProperty("idea.version") ?: "") < "2023.2") {
-	@Suppress("MaxLineLength", "StringLiteralDuplication")
+@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
+if ((System.getProperty("idea.version") ?: "") < "2023.3") {
+	@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
 	doNotNagAbout(
 		"The BuildIdentifier.getName() method has been deprecated. " +
 				"This is scheduled to be removed in Gradle 9.0. " +

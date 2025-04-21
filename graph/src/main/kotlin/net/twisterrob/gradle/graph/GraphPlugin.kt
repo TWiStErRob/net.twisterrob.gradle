@@ -12,19 +12,22 @@ import org.gradle.api.Plugin
 import org.gradle.api.Task
 import org.gradle.api.initialization.Settings
 import org.gradle.api.tasks.TaskState
+import org.gradle.cache.CacheBuilder
 import org.gradle.cache.FileLockManager
+import org.gradle.cache.LockOptions
 import org.gradle.cache.PersistentCache
-import org.gradle.cache.internal.filelock.LockOptionsBuilder.mode
 import org.gradle.cache.scopes.ScopedCacheBuilderFactory
+import org.gradle.util.GradleVersion
 import javax.inject.Inject
 
 private val LOG = logger<GraphPlugin>()
 
-class GraphPlugin @Inject constructor(
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+abstract class GraphPlugin @Inject constructor(
 	private val cacheRepository: ScopedCacheBuilderFactory,
 ) : Plugin<Settings> {
 
-	@Suppress("LateinitUsage") // TODO refactor to object.
+	@Suppress("detekt.LateinitUsage") // TODO refactor to object.
 	private lateinit var vis: TaskVisualizer
 
 	/** See [SO](http://stackoverflow.com/a/11237184/253468). */
@@ -69,7 +72,7 @@ class GraphPlugin @Inject constructor(
 		val cache = cacheRepository
 			.createCacheBuilder("graphSettings")
 			.withDisplayName("graph visualization settings")
-			.withLockOptions(mode(FileLockManager.LockMode.None)) // Lock on demand
+			.withInitialLockModeCompat(FileLockManager.LockMode.None) // Lock on demand
 			.open()
 
 		return newVisualizer(visualizer, cache)
@@ -108,15 +111,15 @@ class GraphPlugin @Inject constructor(
 								Executed: ${state.executed}
 								Did work: ${state.didWork}
 								Skipped: ${state.skipped}
-								Skip message: ${state.skipMessage}
-								Failure: ${state.failure}
+								Skip message: ${state.skipMessage ?: "null"}
+								Failure: ${state.failure ?: "null"}
 						""".trimIndent()
 					)
 			}
 	}
 }
 
-@Suppress("UnnecessaryAbstractClass") // Gradle extensions must be abstract.
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class GraphSettingsExtension {
 
 	var isKeepOpen: Boolean = false
@@ -178,3 +181,23 @@ private fun newVisualizer(visualizerClass: Class<out TaskVisualizer>?, cache: Pe
 	}
 	return graph
 }
+
+private fun CacheBuilder.withInitialLockModeCompat(mode: FileLockManager.LockMode): CacheBuilder =
+	run {
+		if (GradleVersion.version("8.7") <= GradleVersion.current().baseVersion) {
+			withInitialLockMode(mode)
+		} else {
+			//@formatter:off
+			@Suppress("detekt.DataClassContainsFunctions") // Gradle API compatibility, needs hashCode/equals.
+			data class SimpleLockOptions(private val mode: FileLockManager.LockMode) : LockOptions {
+				override fun getMode(): FileLockManager.LockMode = this.mode
+				override fun isUseCrossVersionImplementation(): Boolean = false
+				override fun copyWithMode(mode: FileLockManager.LockMode): LockOptions = SimpleLockOptions(mode)
+				@Override @Suppress("unused") // Hopefully "overrides" the Gradle <8.7 method.
+				fun withMode(mode: FileLockManager.LockMode): LockOptions = SimpleLockOptions(mode)
+			}
+			//@formatter:on
+			val withLockOptions = CacheBuilder::class.java.getMethod("withLockOptions", LockOptions::class.java)
+			withLockOptions.invoke(this, SimpleLockOptions(mode)) as CacheBuilder
+		}
+	}

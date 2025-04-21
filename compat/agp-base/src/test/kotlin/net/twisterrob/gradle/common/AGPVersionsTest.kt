@@ -16,7 +16,7 @@ import kotlin.reflect.full.declaredMembers
 class AGPVersionsTest {
 
 	@Test fun `olderThan7NotSupported returns the right message`() {
-		@Suppress("NamedArguments")
+		@Suppress("detekt.NamedArguments")
 		val version = AGPVersion(1, 2, AGPVersion.ReleaseType.Stable, 4)
 
 		val ex = assertThrows<IllegalStateException> {
@@ -28,7 +28,7 @@ class AGPVersionsTest {
 
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
 		// This is not using AGPVersion() because Renovate needs to update this one. See "Update AGP version test.".
-		val expected = AGPVersion.parse("8.2.0-alpha13")
+		val expected = AGPVersion.parse("8.9.1")
 
 		val actual = AGPVersions.CLASSPATH
 
@@ -37,7 +37,7 @@ class AGPVersionsTest {
 
 	@SetSystemProperty(key = "net.twisterrob.test.android.pluginVersion", value = "1.2.3")
 	@Test fun `UNDER_TEST reads system property`() {
-		@Suppress("NamedArguments")
+		@Suppress("detekt.NamedArguments")
 		val expected = AGPVersion(1, 2, AGPVersion.ReleaseType.Stable, 3)
 
 		val actual = AGPVersions.UNDER_TEST
@@ -72,6 +72,8 @@ class AGPVersionsTest {
 		"7, 4",
 		"8, 0",
 		"8, 1",
+		"8, 3",
+		"8, 4",
 	)
 	@ParameterizedTest(name = "[$INDEX_PLACEHOLDER] v{0}.{1}.x")
 	fun `vXXX constants have the right version`(major: Int, minor: Int?) {
@@ -81,7 +83,7 @@ class AGPVersionsTest {
 
 		val actual = member.call(AGPVersions)
 
-		@Suppress("NamedArguments")
+		@Suppress("detekt.NamedArguments")
 		val expected = AGPVersion(major, minor, null, null)
 		assertEquals(expected, actual)
 	}

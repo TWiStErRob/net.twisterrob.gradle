@@ -19,31 +19,52 @@ pluginManagement {
 }
 
 plugins {
-	id("net.twisterrob.gradle.plugin.settings") version "0.15.1"
+	id("net.twisterrob.gradle.plugin.settings") version "0.18"
+	id("net.twisterrob.gradle.plugin.nagging") version "0.18"
 }
 
 dependencyResolutionManagement {
-	repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+	repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
 	repositories {
 		google()
 		mavenCentral()
 	}
 }
 
-if (!JavaVersion.current().isJava11Compatible) {
-	error("Java 11+ is required to build this project, found: ${JavaVersion.current()}.")
+if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
+	error("Java 17+ is required to build this project, found: ${JavaVersion.current()}.")
 }
 
 val gradleVersion: String = GradleVersion.current().version
 
-// TODEL Gradle 8.2 vs AGP 8.0.2 https://issuetracker.google.com/issues/279306626
-// Gradle 8.2 M1 added nagging for BuildIdentifier.*, which was not replaced in AGP 8.0.x yet.
-@Suppress("MaxLineLength")
+// TODEL Gradle 8.13 vs AGP 8.0-8.9 https://issuetracker.google.com/issues/370546370
+@Suppress("detekt.MaxLineLength")
 doNotNagAbout(
-	"The BuildIdentifier.isCurrentBuild() method has been deprecated. " +
-			"This is scheduled to be removed in Gradle 9.0. " +
-			"Use getBuildPath() to get a unique identifier for the build. " +
+	"Declaring an 'is-' property with a Boolean type has been deprecated. " +
+			"Starting with Gradle 9.0, this property will be ignored by Gradle. " +
+			"The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. " +
+			"Add a method named 'getCrunchPngs' with the same behavior and mark the old one with @Deprecated, " +
+			"or change the type of 'com.android.build.gradle.internal.dsl.BuildType\$AgpDecorated.isCrunchPngs' (and the setter) to 'boolean'. " +
 			"Consult the upgrading guide for further information: " +
-			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#build_identifier_name_and_current_deprecation",
-	"at com.android.build.gradle.internal.ide.dependencies.BuildMappingUtils.getBuildId(BuildMapping.kt:40)"
+			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties"
+)
+@Suppress("detekt.MaxLineLength")
+doNotNagAbout(
+	"Declaring an 'is-' property with a Boolean type has been deprecated. " +
+			"Starting with Gradle 9.0, this property will be ignored by Gradle. " +
+			"The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. " +
+			"Add a method named 'getUseProguard' with the same behavior and mark the old one with @Deprecated, " +
+			"or change the type of 'com.android.build.gradle.internal.dsl.BuildType.isUseProguard' (and the setter) to 'boolean'. " +
+			"Consult the upgrading guide for further information: " +
+			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties"
+)
+@Suppress("detekt.MaxLineLength")
+doNotNagAbout(
+	"Declaring an 'is-' property with a Boolean type has been deprecated. " +
+			"Starting with Gradle 9.0, this property will be ignored by Gradle. " +
+			"The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. " +
+			"Add a method named 'getWearAppUnbundled' with the same behavior and mark the old one with @Deprecated, " +
+			"or change the type of 'com.android.build.api.variant.impl.ApplicationVariantImpl.isWearAppUnbundled' (and the setter) to 'boolean'. " +
+			"Consult the upgrading guide for further information: " +
+			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties"
 )

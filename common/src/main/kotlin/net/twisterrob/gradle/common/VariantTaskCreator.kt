@@ -17,6 +17,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.VerificationTask
 import org.gradle.kotlin.dsl.named
 import java.io.File
+import java.util.Locale
 
 @Suppress("DEPRECATION" /* AGP 7.0 */)
 private typealias BaseVariant = com.android.build.gradle.api.BaseVariant
@@ -44,7 +45,7 @@ T : VerificationTask {
 	) {
 		project.plugins.apply(pluginName)
 		val eachTask = createGlobalTask()
-		variants.all { createTaskForVariant(it, eachTask) }
+		variants.configureEach { createTaskForVariant(it, eachTask) }
 		project.afterEvaluate {
 			project.tasks.register("${baseName}All", taskClass, variantsConfig(variants))
 		}
@@ -78,7 +79,7 @@ T : VerificationTask {
 		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant,
 		eachTask: TaskProvider<*>,
 	) {
-		val taskName = "${baseName}${variant.name.capitalize()}"
+		val taskName = "${baseName}${variant.name.capitalize(Locale.ROOT)}"
 		val variantTask = project.tasks.register(taskName, taskClass, variantConfig(variant))
 		eachTask.configure { it.dependsOn(variantTask) }
 	}
@@ -132,9 +133,9 @@ T : VerificationTask {
 			variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
 		) {
 			// TODO classpath
-			@Suppress("MaxChainedCallsOnSameLine")
+			@Suppress("detekt.MaxChainedCallsOnSameLine")
 			val buildPath = task.project.layout.buildDirectory.get().asFile.toPath()
-			@Suppress("MaxChainedCallsOnSameLine")
+			@Suppress("detekt.MaxChainedCallsOnSameLine")
 			val projectPath = task.project.layout.projectDirectory.asFile.toPath()
 			if (!buildPath.startsWith(projectPath)) {
 				task.logger.warn(

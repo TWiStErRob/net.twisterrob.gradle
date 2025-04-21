@@ -5,4 +5,5 @@ plugins {
 android {
 	namespace = "test.project.app"
 	compileSdkVersion = "@net.twisterrob.test.android.compileSdkVersion@"
+	dynamicFeatures = [ ":dynamic_feature" ]
 }

@@ -1,6 +1,6 @@
 include(":library")
 include(":library:nested")
-include(":dynamic-feature")
+include(":dynamic_feature")
 include(":app")
 include(":test")
 

@@ -1,8 +1,10 @@
+@file:Suppress("MissingPackageDeclaration") // In default package so it "just works" in build.gradle.kts files.
+
 import net.twisterrob.gradle.build.deprecation.DeprecatedPluginGradleDescriptorGeneratingTask
 import net.twisterrob.gradle.build.deprecation.DeprecatedPluginKotlinGeneratingTask
 import net.twisterrob.gradle.build.dsl.java
 import org.gradle.api.Project
-import org.gradle.configurationcache.extensions.capitalized
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.register
 import org.gradle.plugin.devel.PluginDeclaration
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
@@ -12,23 +14,25 @@ import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
  */
 fun PluginDeclaration.deprecateId(project: Project, oldId: String) {
 	val plugin = this
-	val taskName = "generate${oldId.capitalized()}To${id.capitalized()}DeprecationPlugin"
+	val oldFragment = oldId.replaceFirstChar(Char::uppercase)
+	val newFragment = plugin.id.replaceFirstChar(Char::uppercase)
+	val taskName = "generate${oldFragment}To${newFragment}DeprecationPlugin"
 	project.kotlinExtension.sourceSets.named("main").configure {
 		kotlin.srcDir(
 			project.tasks.register<DeprecatedPluginKotlinGeneratingTask>(taskName + "Sources") {
-				oldName.set(oldId)
-				newName.set(plugin.id)
-				implementationClass.set(plugin.implementationClass)
-				output.set(project.layout.buildDirectory.dir("plugin-deprecations/${oldId}/kotlin"))
+				oldName = oldId
+				newName = plugin.id
+				implementationClass = plugin.implementationClass
+				output = project.layout.buildDirectory.dir("plugin-deprecations/${oldId}/kotlin")
 			}
 		)
 	}
 	project.java.sourceSets.named("main").configure {
 		resources.srcDir(
 			project.tasks.register<DeprecatedPluginGradleDescriptorGeneratingTask>(taskName + "Resources") {
-				oldName.set(oldId)
-				implementationClass.set(plugin.implementationClass)
-				output.set(project.layout.buildDirectory.dir("plugin-deprecations/${oldId}/resources"))
+				oldName = oldId
+				implementationClass = plugin.implementationClass
+				output = project.layout.buildDirectory.dir("plugin-deprecations/${oldId}/resources")
 			}
 		)
 	}

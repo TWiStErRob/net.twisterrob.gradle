@@ -1,4 +1,4 @@
-// In default package so it "just works" in build.gradle.kts files.
+@file:Suppress("MissingPackageDeclaration") // In default package so it "just works" in build.gradle.kts files.
 
 import org.gradle.api.Action
 import org.gradle.api.artifacts.ExternalModuleDependency

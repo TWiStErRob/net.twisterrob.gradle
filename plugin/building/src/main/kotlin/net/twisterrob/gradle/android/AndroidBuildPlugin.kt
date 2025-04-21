@@ -26,8 +26,10 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import java.util.Locale
 
-open class AndroidBuildPluginExtension {
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+abstract class AndroidBuildPluginExtension {
 
 	var isDecorateBuildConfig: Boolean = true
 
@@ -37,7 +39,8 @@ open class AndroidBuildPluginExtension {
 	}
 }
 
-class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
@@ -54,8 +57,6 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		@Suppress("NestedScopeFunctions")
 		with(android) {
 			configureLint()
-			// TODO intentionally mismatching the versions to get latest features, but still have sources available for compiled version.
-			buildToolsVersion = VERSION_BUILD_TOOLS
 			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
 
 			with(defaultConfig) {
@@ -99,7 +100,7 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 	companion object {
 
 		private fun BaseExtension.configureLint() {
-			(this as CommonExtension<*, *, *, *, *>).lint {
+			(this as CommonExtension<*, *, *, *, *, *>).lint {
 				xmlReport = false
 				checkAllWarningsCompat = true
 				abortOnErrorCompat = true
@@ -190,7 +191,7 @@ class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		}
 
 		private fun registerRunTask(project: Project, variant: ApplicationVariant) {
-			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize()}") {
+			project.tasks.register<AndroidInstallRunnerTask>("run${variant.name.capitalize(Locale.ROOT)}") {
 				// Delay task retrieval until task graph calculation so AGP has a chance to set up the tasks.
 				this.dependsOn(project.provider {
 					variant.taskContainer.installTask

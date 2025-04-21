@@ -14,7 +14,7 @@ import javax.xml.stream.XMLStreamWriter
 
 internal fun renderXml(
 	to: XMLStreamWriter,
-	from: Map<Category, Map<Reporter, List<Violation>>>,
+	from: Map<Category?, Map<Reporter, List<Violation>>>,
 	projectName: String,
 	xslPath: String? = null
 ) {
@@ -33,7 +33,7 @@ internal fun renderXml(
 							reporterViolations.forEach { violation ->
 								try {
 									renderViolation(to, ViolationViewModel.create(violation))
-								} catch (@Suppress("TooGenericExceptionCaught") ex: Throwable) {
+								} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Throwable) {
 									// Intentionally catch all exceptions,
 									// because we want to crash the whole report, but with more information.
 									throw IllegalArgumentException(violation.toString(), ex)
@@ -90,7 +90,7 @@ internal fun renderViolation(to: XMLStreamWriter, vm: ViolationViewModel) {
 						// This is a peculiarity of streaming XML rendering,
 						// because there's no backtrack once the element started outputting.
 						context.resolve()
-					} catch (@Suppress("TooGenericExceptionCaught") ex: Throwable) {
+					} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Throwable) {
 						// Intentionally catch all exceptions, because we don't want to crash the whole report.
 						render(to, ErrorContext(context, ex))
 						return@renderContext

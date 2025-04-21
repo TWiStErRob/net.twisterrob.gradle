@@ -1,11 +1,10 @@
-@file:Suppress("TooManyFunctions") // This defines a whole module in one file.
+@file:Suppress("detekt.TooManyFunctions") // This defines a whole module in one file.
 
 package net.twisterrob.gradle.quality.report.html
 
 import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
-import java.io.File
 
 private typealias Module = String
 private typealias Variant = String
@@ -71,7 +70,7 @@ private fun mergeIntersections(violations: List<Violations>): List<Violations> =
 		.groupBy { it.parser.rewrite() }
 		.flatMap { (_, list) -> mergeIntersectionsForParser(list) }
 
-@Suppress("ReturnCount") // Open to suggestions.
+@Suppress("detekt.ReturnCount") // Open to suggestions.
 private fun mergeIntersectionsForParser(violations: List<Violations>): List<Violations> {
 	@Suppress("USELESS_CAST") // Make sure chains use the typealiases.
 	val byVariant = violations.groupBy { it.variant as Variant }
@@ -103,8 +102,10 @@ private fun mergeIntersectionsForParser(violations: List<Violations>): List<Viol
 			parser = representative.parser.rewrite(),
 			module = representative.module,
 			variant = ALL_VARIANTS_NAME,
-			result = File("."),
-			report = File("."),
+			// Technically result and report may contain more than just intersection,
+			// but they definitely contain the intersection, so it's better than any fake value.
+			result = representative.result,
+			report = representative.report,
 			violations = intersection,
 		)
 		return listOf(newAll) + violations
@@ -125,7 +126,7 @@ private fun intersect(list1: List<Violation>, list2: List<Violation>): List<Viol
 	return intersection.map { it.violation }
 }
 
-@Suppress("UseDataClass") // External equals/hashCode for deduplication.
+@Suppress("detekt.UseDataClass") // External equals/hashCode for deduplication.
 private class Deduper(val violation: Violation) {
 
 	override fun equals(other: Any?): Boolean {
@@ -135,7 +136,7 @@ private class Deduper(val violation: Violation) {
 		if (violation.rule != other.violation.rule) return false
 		if (violation.category != other.violation.category) return false
 		if (violation.message != other.violation.message) return false
-		if (violation.location.module != other.violation.location.module) return false
+		if (violation.location.module.path != other.violation.location.module.path) return false
 		if (violation.location.file != other.violation.location.file) return false
 		if (violation.location.startLine != other.violation.location.startLine) return false
 		if (violation.location.endLine != other.violation.location.endLine) return false
@@ -148,7 +149,7 @@ private class Deduper(val violation: Violation) {
 		var result = violation.rule.hashCode()
 		result = 31 * result + violation.message.hashCode()
 		result = 31 * result + (violation.category?.hashCode() ?: 0)
-		result = 31 * result + violation.location.module.hashCode()
+		result = 31 * result + violation.location.module.path.hashCode()
 		result = 31 * result + violation.location.file.hashCode()
 		result = 31 * result + violation.location.startLine.hashCode()
 		result = 31 * result + violation.location.endLine.hashCode()

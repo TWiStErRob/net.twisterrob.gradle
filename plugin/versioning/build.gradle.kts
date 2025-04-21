@@ -1,13 +1,15 @@
+import net.twisterrob.gradle.build.publishing.createJavaVariant
+
 plugins {
 	id("net.twisterrob.gradle.build.module.gradle-plugin")
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-convention-versioning")
+base.archivesName = "twister-convention-versioning"
 description = "Versioning Convention Plugin: Gradle Plugin to set up versioning through properties and DSL."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
+	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
 	plugins {
 		create("vcs") {
 			id = "net.twisterrob.gradle.plugin.vcs"
@@ -22,12 +24,15 @@ gradlePlugin {
 				 * Rename Android APK to contain more information:
 				   `{applicationId}@{versionCode}-v{versionName}+{variant}.apk`
 			""".trimIndent()
-			tags.set(setOf("conventions", "android", "versioning", "git", "svn", "vcs"))
+			tags = setOf("conventions", "android", "versioning", "git", "svn", "vcs")
 			implementationClass = "net.twisterrob.gradle.vcs.VCSPlugin"
 			deprecateId(project, "net.twisterrob.vcs")
 		}
 	}
 }
+
+val runtimeOnlyJava11: Configuration = createJavaVariant(configurations.runtimeElements, JavaLanguageVersion.of(11))
+val runtimeOnlyJava17: Configuration = createJavaVariant(configurations.runtimeElements, JavaLanguageVersion.of(17))
 
 dependencies {
 	implementation(gradleApi())
@@ -37,8 +42,16 @@ dependencies {
 	implementation(projects.compat.agp)
 	implementation(libs.svnkit)
 	implementation(libs.svnkit.cli)
-	implementation(libs.jgit)
 	compileOnly(libs.android.gradle)
+	compileOnly(libs.jgit17)
+	runtimeOnlyJava11(libs.jgit11) {
+		because("JGit 6.10.0 is the last version to support Java 11. JGit 7.x requires Java 17.")
+		versionConstraint.rejectedVersions.add("[7.0,)")
+	}
+	runtimeOnlyJava17(libs.jgit17) {
+		because("JGit 7.x is the first version to require Java 17.")
+		versionConstraint.rejectedVersions.add("(,7.0)")
+	}
 
 	// This plugin is part of the net.twisterrob.gradle.plugin.android-app plugin, not designed to work on its own.
 	runtimeOnly(projects.plugin)
@@ -50,5 +63,5 @@ dependencies {
 	}
 
 	testFixturesApi(libs.svnkit)
-	testFixturesApi(libs.jgit)
+	testFixturesCompileOnlyApi(libs.jgit17)
 }

@@ -1,5 +1,5 @@
 @file:JvmName("GraphExtensions")
-@file:Suppress("StringLiteralDuplication")
+@file:Suppress("detekt.StringLiteralDuplication")
 
 package net.twisterrob.gradle.graph.vis.graphstream
 
@@ -22,7 +22,7 @@ var Element.classes: List<String>
 		if (value.isEmpty()) {
 			this.removeAttribute("ui.class")
 		} else {
-			@Suppress("SpreadOperator")
+			@Suppress("detekt.SpreadOperator")
 			this.setAttribute("ui.class", *value.toTypedArray())
 		}
 	}

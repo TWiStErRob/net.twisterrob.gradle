@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * @see FileCountReportTask
+ * @see BaseViolationsTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class FileCountReportTaskIntgTest : BaseIntgTest() {
@@ -45,7 +46,7 @@ class FileCountReportTaskIntgTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.pmd")
 			}
 
-			tasks.register('printViolationCount', ${FileCountReportTask::class.java.name})
+			tasks.register("printViolationCount", ${FileCountReportTask::class.java.name})
 		""".trimIndent()
 
 		gradle.runBuild {
@@ -71,7 +72,7 @@ class FileCountReportTaskIntgTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.pmd")
 			}
 
-			tasks.register('printViolationCount', ${FileCountReportTask::class.java.name}) {
+			tasks.register("printViolationCount", ${FileCountReportTask::class.java.name}) {
 				output.set(file("problems.txt"))
 			}
 		""".trimIndent()

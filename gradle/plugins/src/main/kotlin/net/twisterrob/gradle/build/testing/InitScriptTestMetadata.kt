@@ -19,26 +19,28 @@ import java.util.Properties
 @DisableCachingByDefault(because = "Not worth caching.")
 abstract class InitScriptTestMetadata : DefaultTask() {
 
-	init {
-		group = "Plugin development" // JavaGradlePluginPlugin.PLUGIN_DEVELOPMENT_GROUP
-		description = "Generates the metadata for init script used in plugin integration tests."
-		@Suppress("LeakingThis")
-		output.convention(project.layout.buildDirectory.file("initscript-test-metadata.properties"))
-	}
+	@get:Classpath
+	abstract val initScriptClasspath: ConfigurableFileCollection
 
-	// Covered by #initscriptClasspath, but has to be declared explicitly as input,
-	// so that it doesn't cross-pollinate executions in different checkout locations.
+	/**
+	 * Covered by [initScriptClasspath], but has to be declared explicitly as input,
+	 * so that it doesn't cross-pollinate executions in different checkout locations.
+	 */
 	@get:Input
 	val paths: List<String>
 		get() = initScriptClasspath.files.map { file: File ->
 			file.absolutePath.replace(Regex("""\\"""), "/")
 		}
 
-	@get:Classpath
-	abstract val initScriptClasspath: ConfigurableFileCollection
-
 	@get:OutputFile
 	abstract val output: RegularFileProperty
+
+	init {
+		group = "Plugin development" // JavaGradlePluginPlugin.PLUGIN_DEVELOPMENT_GROUP
+		description = "Generates the metadata for init script used in plugin integration tests."
+		@Suppress("LeakingThis")
+		output.convention(project.layout.buildDirectory.file("initscript-test-metadata.properties"))
+	}
 
 	@TaskAction
 	fun generate() {

@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -53,6 +54,7 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 		}
 	}
 
+	@Suppress("detekt.LongMethod")
 	@Test fun `applies signing config from properties (release)`(@TempDir temp: File) {
 		val generationParams = mapOf(
 			"-alias" to "gradle.plugin.test",
@@ -86,29 +88,30 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			// Increase minimum version to avoid ignoring the signature:
-			// > jarsigner WARNING: The jar will be treated as unsigned,
-			// > because it is signed with a weak algorithm that is now disabled by the security property
-			// This happens on GitHub Actions ubuntu-2204 runners because java.security file contains:
-			// jdk.jar.disabledAlgorithms=SHA1 denyAfter 2019-01-01
-			android.defaultConfig.minSdkVersion = 21
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
 
 		result.assertSuccess(":assembleRelease")
 
-		verifyWithApkSigner(gradle.root.apk("release").absolutePath).also {
-			// REPORT this should be empty, AGP 4.2.0 introduced this file.
+		verifyWithApkSigner(gradle.root.apk("release").absolutePath).also { apkSignerOutput ->
+			val expectedWarnings = listOfNotNull(
+				if (AGPVersions.v70x <= AGPVersions.UNDER_TEST) {
+					// REPORT this should be empty, AGP 4.2.0 introduced this file.
+					unprotectedJarEntry("com/android/build/gradle/app-metadata.properties")
+				} else {
+					null
+				},
+				if (AGPVersions.v83x <= AGPVersions.UNDER_TEST) {
+					// REPORT this should be empty, AGP 8.3.0 introduced this file.
+					unprotectedJarEntry("version-control-info.textproto")
+				} else {
+					null
+				},
+			)
 			assertEquals(
-				"WARNING: "
-						+ "META-INF/com/android/build/gradle/app-metadata.properties not protected by signature."
-						+ " "
-						+ "Unauthorized modifications to this JAR entry will not be detected."
-						+ " "
-						+ "Delete or move the entry outside of META-INF/."
-						+ System.lineSeparator(),
-				it
+				expectedWarnings.joinToString(separator = ""),
+				apkSignerOutput
 			)
 		}
 		verifyWithJarSigner(gradle.root.apk("release").absolutePath).also {
@@ -144,4 +147,11 @@ class AndroidSigningPluginIntgTest : BaseAndroidIntgTest() {
 
 			apk
 		).runCommand()
+
+	private fun unprotectedJarEntry(path: String): String =
+		"WARNING: " +
+				"META-INF/${path} not protected by signature. " +
+				"Unauthorized modifications to this JAR entry will not be detected. " +
+				"Delete or move the entry outside of META-INF/." +
+				System.lineSeparator()
 }

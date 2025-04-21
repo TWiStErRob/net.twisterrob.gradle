@@ -86,7 +86,7 @@ class JavaFXApplication : Application() {
 
 	companion object {
 
-		@Suppress("LateinitUsage") // TODO convert to a proper object/singleton/etc.
+		@Suppress("detekt.LateinitUsage") // TODO convert to a proper object/singleton/etc.
 		@Volatile
 		private lateinit var app: JavaFXApplication
 
@@ -105,7 +105,7 @@ class JavaFXApplication : Application() {
 					try {
 						Platform.setImplicitExit(false) // Keep JavaFX alive.
 						launch(JavaFXApplication::class.java)
-					} catch (@Suppress("TooGenericExceptionCaught") ex: RuntimeException) {
+					} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: RuntimeException) {
 						// TooGenericExceptionCaught: that's what JavaFX declares.
 						// TooGenericExceptionCaught: want to catch everything, because JavaFX problems should not crash Gradle.
 						if (ex.cause is UnsatisfiedLinkError) {

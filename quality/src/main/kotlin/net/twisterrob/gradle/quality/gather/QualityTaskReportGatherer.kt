@@ -19,11 +19,11 @@ T : TargetChecker,
 T : Reporting<out ReportContainer<out SingleFileReport>> {
 
 	override fun getParsableReportLocation(task: T): File =
-		@Suppress("MaxChainedCallsOnSameLine") // Simple enough.
+		@Suppress("detekt.MaxChainedCallsOnSameLine") // Simple enough.
 		task.reports.getByName("xml").outputLocation.get().asFile
 
 	override fun getHumanReportLocation(task: T): File =
-		@Suppress("MaxChainedCallsOnSameLine") // Simple enough.
+		@Suppress("detekt.MaxChainedCallsOnSameLine") // Simple enough.
 		task.reports.getByName("html").outputLocation.get().asFile
 
 	override fun getName(task: T): String =

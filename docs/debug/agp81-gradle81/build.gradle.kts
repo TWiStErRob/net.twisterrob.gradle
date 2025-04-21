@@ -1,8 +1,8 @@
 plugins {
-	id("com.android.application") version "8.1.0-rc01"
+	id("com.android.application") version "8.1.4"
 }
 
 android {
 	namespace = "test.project"
-	compileSdk = 33
+	compileSdk = 34
 }

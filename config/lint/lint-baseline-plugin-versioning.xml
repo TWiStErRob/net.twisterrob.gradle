@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
+
+    <issue
+        id="GradleProjectIsolation"
+        message="Avoid using method getRootProject"
+        errorLine1="  val rootDir = project.rootProject.layout.projectDirectory"
+        errorLine2="                        ~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/vcs/git/GitPlugin.kt"
+            line="14"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="GradleProjectIsolation"
+        message="Avoid using method getRootProject"
+        errorLine1="  val rootDir = project.rootProject.layout.projectDirectory"
+        errorLine2="                        ~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/vcs/svn/SvnPlugin.kt"
+            line="14"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs"
+        errorLine1="import com.android.build.gradle.internal.dsl.DefaultConfig"
+        errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/android/AndroidVersionPlugin.kt"
+            line="10"
+            column="1"/>
+    </issue>
+
+</issues>

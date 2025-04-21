@@ -3,7 +3,7 @@ java = "11"
 
 # Changelog: https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md
 # GitHub Releases: https://github.com/tomasbjerre/violations-lib/tags
-violations = "1.156.5"
+violations = "1.158.0"
 
 # JSR 305: Annotations for Software Defect Detection
 # Documentation: https://jcp.org/en/jsr/detail?id=305
@@ -12,24 +12,24 @@ jsr305 = "3.0.2"
 # Documentation: https://www.jetbrains.com/help/idea/annotating-source-code.html
 # Repository: https://github.com/JetBrains/java-annotations
 # Artifacts: https://repo1.maven.org/maven2/org/jetbrains/annotations/
-jetbrains = "24.0.1"
+jetbrains = "26.0.2"
 
 # https://github.com/gradle-nexus/publish-plugin/releases
-nexus = "1.3.0"
+nexus = "2.0.0"
 
 # https://docs.gradle.com/enterprise/gradle-plugin/#release_history
-gradle-enterprise = "3.14"
-gradle-publish = "1.2.0"
+gradle-develocity = "4.0"
+gradle-publish = "1.3.1"
 
 # See [lint] which is affected by this.
 # Versions: https://maven.google.com/web/index.html#com.android.tools.build:gradle
-agp = "8.2.0-alpha13"
+agp = "8.9.1"
 
 # = 23.0.0 + [agp].
 # @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
 # @see builder-model//version.properties
 # Versions: https://maven.google.com/web/index.html#com.android.tools.lint:lint
-agp-tools = "31.2.0-alpha13"
+agp-tools = "31.9.1"
 
 # Changelog: https://github.com/JetBrains/kotlin/blob/master/ChangeLog.md
 # Actual Kotlin version for dependencies. It has to be older to make sure a Gradle-compatible version is used.
@@ -38,11 +38,12 @@ kotlin-target = "1.4.32"
 # Actual Kotlin language and API version for compilation, it restricts language features and metadata.
 kotlin-language = "1.4"
 # Version of Kotlin Gradle Plugin used for compilation.
-kotlin-build = "1.9.0"
+kotlin-build = "2.0.21"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
-kotlin-dokka = "1.8.20"
+kotlin-dokka = "2.0.0"
 
-detekt = "1.23.0"
+detekt = "1.23.8"
+androidx-lint = "1.0.0-alpha03"
 
 # GitHub Releases: https://github.com/gradle/kotlin-dsl/releases
 # Artifacts: https://repo.gradle.org/gradle/libs-releases-local/org/gradle/gradle-kotlin-dsl/
@@ -54,20 +55,20 @@ kotlin-dsl = "6.1.1"
 junit4 = "4.13.2"
 # JUnit 5 = JUnit Platform ([junit-api]) + JUnit Jupiter ([junit-engine]) + JUnit Vintage ([junit-vintage])
 # Changelog: https://junit.org/junit5/docs/current/release-notes/index.html
-junit5 = "5.9.3"
+junit5 = "5.12.2"
 # GitHub Releases: https://github.com/junit-pioneer/junit-pioneer/releases
-junit5-pioneer = "2.0.1"
+junit5-pioneer = "2.3.0"
 
 # Artifacts: https://mvnrepository.com/artifact/org.mockito/mockito-core
 # Changelog (1.x, 2.x and 3.x): https://github.com/mockito/mockito/blob/main/doc/release-notes/official.md
 # Changelog (4.x): https://github.com/mockito/mockito/releases
-mockito = "5.4.0"
+mockito = "5.17.0"
 # GitHub releases: https://github.com/nhaarman/mockito-kotlin/releases
-mockito-kotlin = "5.0.0"
+mockito-kotlin = "5.4.0"
 # GitHub releases: https://github.com/mockk/mockk/releases
-mockk = "1.13.5"
+mockk = "1.14.0"
 
-hamcrest = "2.2"
+hamcrest = "3.0"
 
 # GitHub releases: https://github.com/FlexTradeUKLtd/jfixture/tags
 jfixture = "2.7.2"
@@ -79,7 +80,8 @@ svnkit = "1.10.11"
 # Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
 # Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
 # Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
-jgit = "6.6.0.202305301015-r"
+jgit11 = "6.10.0.202406032230-r"
+jgit17 = "7.2.0.202503040940-r"
 
 # Explicitly using an outdated version of diffuse, don't remember why.
 # Versions: https://github.com/JakeWharton/diffuse/tags
@@ -90,7 +92,7 @@ annotations-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref =
 annotations-jetbrains = { module = "org.jetbrains:annotations", version.ref = "jetbrains" }
 
 nexus = { module = "io.github.gradle-nexus.publish-plugin:io.github.gradle-nexus.publish-plugin.gradle.plugin", version.ref = "nexus" }
-gradle-enterprise = { module = "com.gradle.enterprise:com.gradle.enterprise.gradle.plugin", version.ref = "gradle-enterprise" }
+gradle-develocity = { module = "com.gradle.develocity:com.gradle.develocity.gradle.plugin", version.ref = "gradle-develocity" }
 gradle-publish = { module = "com.gradle.plugin-publish:com.gradle.plugin-publish.gradle.plugin", version.ref = "gradle-publish" }
 
 # Compatibility: https://developer.android.com/studio/releases/gradle-plugin#updating-gradle
@@ -102,21 +104,19 @@ android-lint-main = { module = "com.android.tools.lint:lint", version.ref = "agp
 android-lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "agp-tools" }
 android-lint-gradle = { module = "com.android.tools.lint:lint-gradle", version.ref = "agp-tools" }
 android-lint-checks = { module = "com.android.tools.lint:lint-checks", version.ref = "agp-tools" }
+androidx-lint = { module = "androidx.lint:lint-gradle", version.ref = "androidx-lint" }
 
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin-target" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-build" }
-kotlin-gradle-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin-build" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin-target" }
 # @Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk7"))
 kotlin-stdlib-jre7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre7", version.ref = "kotlin-target" }
-kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre8", version.ref = "kotlin-target" }
+kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlin-target" }
 # @Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk8"))
 kotlin-stdlib-jre8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre8", version.ref = "kotlin-target" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-target" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-target" }
-kotlin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "kotlin-dokka" }
 kotlin-dsl = { module = "org.gradle:gradle-kotlin-dsl", version.ref = "kotlin-dsl" }
-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 
 junit-legacy = { module = "junit:junit", version.ref = "junit4" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
@@ -140,12 +140,16 @@ jfixture-kotlin = { module = "com.flextrade.jfixture:kfixture", version.ref = "j
 
 svnkit = { module = "org.tmatesoft.svnkit:svnkit", version.ref = "svnkit" }
 svnkit-cli = { module = "org.tmatesoft.svnkit:svnkit-cli", version.ref = "svnkit" }
-jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
+jgit11 = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit11" }
+jgit17 = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit17" }
 violations = { module = "se.bjurr.violations:violations-lib", version.ref = "violations" }
 dexMemberList = { module = "com.jakewharton.dex:dex-member-list", version.ref = "diffuse" }
 
 [bundles]
 
 [plugins]
+lint = { id = "com.android.lint", version.ref = "agp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
+kotlin-dokkaJavadoc = { id = "org.jetbrains.dokka-javadoc", version.ref = "kotlin-dokka" }
 # Note: internal plugins cannot be used with `alias(libs.plugins....)`, because they don't have version.

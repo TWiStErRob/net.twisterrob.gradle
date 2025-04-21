@@ -9,7 +9,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 
-open class BasePlugin : Plugin<Project> {
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+abstract class BasePlugin : Plugin<Project> {
 
 	@Suppress(
 		"PropertyName", // Keep it consistent with external loggers.
@@ -18,7 +19,8 @@ open class BasePlugin : Plugin<Project> {
 	)
 	protected val LOG: Logger = LoggerFactory.getLogger(this::class.java)
 
-	@Suppress("LateinitUsage") // Too many usages to fix right now. TODO consider removing this field, make dep explicit.
+	// TODO consider removing this field, make dep explicit.
+	@Suppress("detekt.LateinitUsage") // Too many usages to fix right now.
 	protected lateinit var project: Project
 		private set
 

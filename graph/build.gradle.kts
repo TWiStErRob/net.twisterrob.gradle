@@ -2,22 +2,23 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("java-gradle-plugin")
+	id("org.gradle.java-gradle-plugin")
+	id("org.gradle.maven-publish")
 	id("org.openjfx.javafxplugin") version "0.0.14"
-	id("org.jetbrains.kotlin.jvm") version "1.8.22"
-	id("io.gitlab.arturbosch.detekt") version "1.23.0"
+	id("org.jetbrains.kotlin.jvm") version "2.0.21"
+	id("io.gitlab.arturbosch.detekt") version "1.23.8"
 	id("org.gradle.idea")
 	id("net.twisterrob.gradle.build.webjars")
-	id("org.jetbrains.kotlinx.kover") version "0.7.1"
+	id("org.jetbrains.kotlinx.kover") version "0.9.1"
 }
 
 group = "net.twisterrob.gradle"
-version = "0.1"
+version = "0.1-SNAPSHOT"
 
 gradlePlugin {
 	plugins {
 		register("graph") {
-			id = "net.twisterrob.graph"
+			id = "net.twisterrob.gradle.graph"
 			implementationClass = "net.twisterrob.gradle.graph.GraphPlugin"
 		}
 	}
@@ -31,23 +32,25 @@ dependencies {
 	api(gradleApi()) // java-gradle-plugin
 	implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 	implementation("org.jetbrains.kotlin:kotlin-stdlib")
-	implementation("org.graphstream:gs-core:1.3")
-	implementation("org.slf4j:slf4j-api:2.0.7")
+	implementation("org.graphstream:gs-core:1.3") {
+		exclude(group = "junit", module = "junit")
+	}
+	implementation("org.slf4j:slf4j-api:2.0.17")
 //	implementation("org.graphstream:gs-core:2.0")
 //	implementation("org.graphstream:gs-ui-swing:2.0")
-	implementation("com.google.code.gson:gson:2.10.1")
-	implementation("org.jetbrains:annotations:24.0.1")
+	implementation("com.google.code.gson:gson:2.13.0")
+	implementation("org.jetbrains:annotations:26.0.2")
 
-	"webjars"("org.webjars.npm:d3:7.8.4") {
+	"webjars"("org.webjars.npm:d3:7.9.0") {
 		// Avoid pulling in all small modules, using the merged .js file instead.
 		isTransitive = false
 	}
 
-	testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
-	testImplementation("org.junit.platform:junit-platform-launcher:1.9.3")
-	testImplementation("org.mockito:mockito-core:5.3.1")
-	testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
-	testImplementation("org.hamcrest:hamcrest:2.2")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
+	testImplementation("org.junit.platform:junit-platform-launcher:1.12.2")
+	testImplementation("org.mockito:mockito-core:5.17.0")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+	testImplementation("org.hamcrest:hamcrest:3.0")
 }
 
 javafx {
@@ -71,8 +74,8 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-	compilerOptions.jvmTarget.set(JvmTarget.fromTarget("11"))
-	compilerOptions.allWarningsAsErrors.set(true)
+	compilerOptions.jvmTarget = JvmTarget.fromTarget("11")
+	compilerOptions.allWarningsAsErrors = true
 }
 
 webjars {
@@ -94,10 +97,12 @@ tasks.test.configure {
 	useJUnitPlatform()
 }
 
-koverReport {
-	defaults {
-		verify {
-			onCheck = false
+kover {
+	reports {
+		total {
+			verify {
+				onCheck = false
+			}
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality.tasks
 
 import com.android.build.api.artifact.impl.ArtifactsImpl
+import com.android.build.api.variant.DynamicFeatureVariant
 import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
@@ -23,6 +24,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
@@ -42,6 +44,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	 * otherwise it'll spam the logs with [java.io.FileNotFoundException]s.
 	 */
 	@get:InputFiles
+	@get:Optional
 	@get:PathSensitive(PathSensitivity.NONE)
 	abstract val xmlReports: ListProperty<RegularFile>
 
@@ -67,7 +70,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	fun failOnFailures() {
 		val gatherer = LintReportGatherer()
 		val violationsByFile = xmlReports
-			.get()
+			.getOrElse(emptyList())
 			.map { it.asFile }
 			.filter(File::exists)
 			.associateBy({ it }) { gatherer.findViolations(it) }
@@ -77,7 +80,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				.map { (report, violations) ->
 					"${report} (${violations.size})"
 				}
-			@Suppress("SpreadOperator")
+			@Suppress("detekt.SpreadOperator")
 			val lines = listOfNotNull(
 				"Ran lint on subprojects: ${totalCount} issues found.",
 				"See reports in subprojects:",
@@ -117,10 +120,15 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				android.lint.xmlReport = true
 			}
 			androidComponents.onVariantsCompat { variant ->
-				if (variant !is TestVariant) {
+				if (variant !is TestVariant && variant !is DynamicFeatureVariant) {
 					taskProvider.configure { task ->
 						val artifacts = variant.artifacts.unwrapCast<ArtifactsImpl>()
-						task.xmlReports.add(artifacts.get(InternalArtifactType.LINT_XML_REPORT))
+						task.xmlReports.add(
+							artifacts.get(InternalArtifactType.LINT_XML_REPORT)
+								// TODO call append in Gradle 8.7, see "Empty provider values are ignored" section at
+								//  https://docs.gradle.org/8.7-rc-1/release-notes.html#convenient-api-for-updating-collection-properties
+								.orElse(layout.projectDirectory.file("definitely-non-existent-file"))
+						)
 					}
 				}
 			}

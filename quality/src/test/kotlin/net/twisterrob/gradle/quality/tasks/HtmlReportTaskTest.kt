@@ -28,6 +28,7 @@ import java.time.Duration.ofMinutes
 
 /**
  * @see HtmlReportTask
+ * @see BaseViolationsTask
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class HtmlReportTaskTest : BaseIntgTest() {
@@ -41,7 +42,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -61,7 +62,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 			    html.set(project.file("my_report/htmldir/htmlname.htmlext"))
 			    xsl.set(project.file("my_report/xsldir/xslname.xslext"))
@@ -85,7 +86,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 			}
 		""".trimIndent()
@@ -108,7 +109,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 			    xsl.set(project.file("my_report/xsldir/xslname.xslext"))
 				xslTemplate.set(project.file("src/input.xsl"))
@@ -139,7 +140,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name}) {
 			    xml.set(project.file("my_report/xmldir/xmlname.xmlext"))
 				xslTemplate.set(project.file("src/input.xsl"))
 			}
@@ -175,7 +176,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name})
 
 			android.defaultConfig.targetSdk = 28 // to trigger Autofill
 			android.lint {
@@ -203,7 +204,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name})
 
 			android.lint {
 				checkOnly.add("UnusedIds")
@@ -227,7 +228,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name})
 
 			android.lint {
 				checkOnly.add("IconMissingDensityFolder")
@@ -252,7 +253,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name})
 
 			android.lint {
 				checkOnly.add("UnusedResources")
@@ -276,7 +277,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name})
 
 			android.lint {
 				checkOnly.add("UnusedResources")
@@ -304,7 +305,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 			}
 			dumpMemory("starting build")
 			File xml = project.file("build/reports/lint-results-debug.xml")
-			def generate = tasks.register('generateBigReport') {
+			def generate = tasks.register("generateBigReport") {
 				outputs.file(xml)
 				doFirst {
 					dumpMemory("starting generation")
@@ -329,7 +330,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 					dumpMemory("finished generation")
 				}
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name}) {
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name}) {
 				dependsOn(generate)
 				doFirst { dumpMemory("starting report") }
 				doLast { dumpMemory("finished report") }
@@ -386,7 +387,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 				id("net.twisterrob.gradle.plugin.checkstyle")
 				id("net.twisterrob.gradle.plugin.pmd")
 			}
-			tasks.register('htmlReport', ${HtmlReportTask::class.java.name})
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {

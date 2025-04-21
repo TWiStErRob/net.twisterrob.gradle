@@ -5,11 +5,11 @@ plugins {
 	id("net.twisterrob.gradle.build.publish")
 }
 
-base.archivesName.set("twister-quality")
+base.archivesName = "twister-quality"
 description = "Quality: All quality plugins bundled in one."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "StringLiteralDuplication")
+	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
 	plugins {
 		create("quality") {
 			id = "net.twisterrob.gradle.plugin.quality"
@@ -17,7 +17,7 @@ gradlePlugin {
 			description = """
 				Sane defaults for Checkstyle, PMD, Lint, Test reports which make multi-module Gradle project CI easier.
 			""".trimIndent()
-			tags.set(setOf("multi-module", "android", "reporting", "quality", "static-checks", "CI", "checkstyle", "pmd"))
+			tags = setOf("multi-module", "android", "reporting", "quality", "static-checks", "CI", "checkstyle", "pmd")
 			implementationClass = "net.twisterrob.gradle.quality.QualityPlugin"
 			deprecateId(project, "net.twisterrob.quality")
 		}
@@ -62,9 +62,12 @@ tasks.register("tests") {
 		projects.test.internal.runtime,
 		projects.test.integration,
 	).forEach { project ->
-		dependsOn(project.dependencyProject.tasks.named("test"))
+		dependsOn(project.task("test"))
 	}
-	dependsOn(projects.compat.dependencyProject.tasks.named("tests"))
+	dependsOn(projects.compat.task("tests"))
 }
 
 pullTestResourcesFrom(projects.test)
+
+private fun ProjectDependency.task(name: String): String =
+	"${this.path}:${name}"

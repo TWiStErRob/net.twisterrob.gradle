@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -7,11 +8,12 @@ import net.twisterrob.gradle.test.assertNoOutputLine
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.root
 import net.twisterrob.gradle.vcs.createTestFileToCommit
-import net.twisterrob.gradle.vcs.doCheckout
-import net.twisterrob.gradle.vcs.doCommitSingleFile
-import net.twisterrob.gradle.vcs.doCreateRepository
-import net.twisterrob.gradle.vcs.git
-import net.twisterrob.gradle.vcs.svn
+import net.twisterrob.gradle.vcs.git.doCommitSingleFile
+import net.twisterrob.gradle.vcs.git.git
+import net.twisterrob.gradle.vcs.svn.doCheckout
+import net.twisterrob.gradle.vcs.svn.doCommitSingleFile
+import net.twisterrob.gradle.vcs.svn.doCreateRepository
+import net.twisterrob.gradle.vcs.svn.svn
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -59,7 +61,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
-			apk = gradle.root.apk("debug", "${packageName}.debug@1234-vnull+debug.apk"),
+			apk = gradle.root.apk("debug", "${packageName}.debug@1234-v+debug.apk"),
 			versionCode = "1234",
 			versionName = ""
 		)
@@ -78,7 +80,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
-			apk = gradle.root.apk("release", "${packageName}@1234-vnull+release.apk"),
+			apk = gradle.root.apk("release", "${packageName}@1234-v+release.apk"),
 			versionCode = "1234"
 		)
 	}
@@ -97,7 +99,7 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebugAndroidTest")
 		assertDefaultBadging(
 			applicationId = "${packageName}.debug.test",
-			apk = gradle.root.apk("androidTest/debug", "${packageName}.debug.test@1234-vnull+debug-androidTest.apk"),
+			apk = gradle.root.apk("androidTest/debug", "${packageName}.debug.test@1234-v+debug-androidTest.apk"),
 			versionCode = "1234",
 			versionName = "",
 			isAndroidTestApk = true
@@ -428,8 +430,17 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 		)
 	}
 
-	@Suppress("LongMethod") // Variants are fun, aren't they.
+	@Suppress("detekt.LongMethod") // Variants are fun, aren't they.
 	@Test fun `variant versioning works`() {
+		fun flavorDimensions(vararg dimensions: String): String {
+			val params = dimensions.joinToString(", ") { "\"$it\"" }
+			return if (AGPVersions.UNDER_TEST < AGPVersions.v71x) {
+				"""flavorDimensions(${params})"""
+			} else {
+				"""flavorDimensions = [${params}]"""
+			}
+		}
+
 		@Language("gradle")
 		val script = """
 			plugins {
@@ -437,35 +448,35 @@ class AndroidVersionPluginIntgTest : BaseAndroidIntgTest() {
 			}
 			android.defaultConfig.version { major = 1; minor = 2; patch = 3; build = 4 }
 			android {
-				testBuildType "staging"
+				testBuildType = "staging"
 				buildTypes {
 					staging {
-						initWith debug
-						applicationIdSuffix ".staging"
-						versionNameSuffix "S"
+						initWith(debug)
+						applicationIdSuffix = ".staging"
+						versionNameSuffix = "S"
 					}
 				}
-				flavorDimensions "cost", "version"
+				${flavorDimensions("cost", "version")}
 				productFlavors {
 					demo {
-						dimension "version"
-						applicationIdSuffix ".demo"
-						versionNameSuffix "-demo"
+						dimension = "version"
+						applicationIdSuffix = ".demo"
+						versionNameSuffix = "-demo"
 					}
 					full {
-						dimension "version"
-						applicationIdSuffix ".full"
-						versionNameSuffix "-full"
+						dimension = "version"
+						applicationIdSuffix = ".full"
+						versionNameSuffix = "-full"
 					}
 					paid {
-						dimension "cost"
-						applicationIdSuffix ".paid"
-						versionNameSuffix "-paid"
+						dimension = "cost"
+						applicationIdSuffix = ".paid"
+						versionNameSuffix = "-paid"
 					}
 					free {
-						dimension "cost"
-						applicationIdSuffix ".free"
-						versionNameSuffix "-free"
+						dimension = "cost"
+						applicationIdSuffix = ".free"
+						versionNameSuffix = "-free"
 					}
 				}
 			}

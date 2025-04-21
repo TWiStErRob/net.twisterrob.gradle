@@ -1,0 +1,1048 @@
+name: CI # Check Gradle and AGP combinations
+
+on:
+  push:
+    branches-ignore:
+      - renovate/configure
+
+concurrency:
+  # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
+  # On main, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
+  # More info: https://stackoverflow.com/a/68422069/253468:
+  group: ${{ github.ref == 'refs/heads/main' && format('ci-main-{0}', github.sha) || format('ci-{0}', github.ref) }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: "0 🦺 Validation"
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@1851e9c09214df39596b289eef626688ba3a0269 # v3
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+
+  graph:
+    name: "1 🔨 Graph"
+    needs: validate
+    timeout-minutes: 10
+
+    permissions:
+      # actions/checkout
+      contents: read
+
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: "Set up JDK for Android SDK."
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: zulu
+
+      - name: "Set up Android SDK."
+        uses: android-actions/setup-android@v3
+        with:
+          log-accepted-android-sdk-licenses: false
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: zulu
+
+      - name: "Build the Graph plugin."
+        working-directory: graph
+        run: >
+          ./gradlew
+          build
+          detekt
+          detektMain
+          detektTest
+
+      - name: "Integration test for the Graph plugin."
+        working-directory: graph/sample
+        run: >
+          ../gradlew
+          -p .
+          --continue
+          --no-daemon
+          -x lint
+          :app:testR
+          :a:aR
+          --exclude-task compileRShaders
+          -Pfast
+
+
+  build:
+    name: "1 🔨 Build"
+    needs: validate
+    timeout-minutes: 30
+
+    permissions:
+      # actions/checkout
+      contents: read
+      # github/codeql-action/upload-sarif
+      security-events: write
+      # andymckay/cancel-action
+      actions: write
+
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: "Set up JDK for Android SDK."
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: zulu
+
+      - name: "Set up Android SDK."
+        uses: android-actions/setup-android@v3
+        with:
+          log-accepted-android-sdk-licenses: false
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: zulu
+
+      # Check publicly available release version first, this should be independent of repository state.
+      - name: "Verify docs/examples/release."
+        working-directory: docs/examples/release
+        if: ${{ success() || failure() }}
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+
+      - name: "Build Gradle plugins."
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --no-configuration-cache
+          --no-watch-fs
+          --stacktrace
+          --continue
+          jar
+          validatePlugins
+          detektMain
+          detektTest
+          detektTestFixtures
+          detektReportMergeSarif
+          detektReportMergeXml
+          -Pnet.twisterrob.gradle.build.detektReportMergeIncludedBuilds=true
+
+      - name: "Upload 'Detekt Results' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Detekt Results'
+          if-no-files-found: error
+          path: |
+            **/build/reports/detekt/
+            build/reports/detekt/merge.*
+
+      - name: "Publish 'Code scanning results / detekt' GitHub Code Scanning analysis."
+        uses: github/codeql-action/upload-sarif@v3
+        if: ${{ success() || failure() }}
+        with:
+          sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif
+
+      - name: "Cancel other jobs on Build failure, no need to check / test it."
+        if: ${{ failure() }}
+        uses: andymckay/cancel-action@0.5
+
+      - name: "Publish Gradle plugins to mavenLocal()."
+        # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
+        run: ./gradlew --no-daemon --no-build-cache --no-configuration-cache --stacktrace publishToMavenLocal
+
+      - name: "Upload 'Gradle Plugin Validation Report' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Gradle Plugin Validation Report'
+          if-no-files-found: error
+          path: |
+            **/build/reports/plugin-development/validation-report.json
+
+      - name: "Upload JARs, Maven and Gradle metadata as 'Intermediate Artifacts' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Intermediate Artifacts'
+          if-no-files-found: error
+          path: |
+            **/build/libs/*.jar
+            **/build/publications/release/module.json
+            **/build/publications/release/pom-default.xml
+
+      - name: "Upload 'mavenLocal()' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'mavenLocal'
+          if-no-files-found: error
+          path: |
+            ~/.m2/repository/**
+
+      - name: "Parse env.PROJECT_VERSION."
+        run: echo "PROJECT_VERSION=$(grep --color=never --perl-regexp --only-matching '(?<=^projectVersion=)(.*)$' gradle.properties)" | tee --append "${GITHUB_ENV}"
+
+      - name: "Calculate env.SNAPSHOT_VERSION for branches."
+        # ${{ github.event.pull_request.number }} is not available for push.
+        if: ${{ endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref != 'refs/heads/main' }}
+        run: echo "SNAPSHOT_VERSION=$(echo "${PROJECT_VERSION}" | sed -re "s/^(.*)(-SNAPSHOT)$/\1.$(echo "${GITHUB_REF_NAME}" | tr / -)\2/")" | tee --append "${GITHUB_ENV}"
+
+      - name: "Calculate env.SNAPSHOT_VERSION for main."
+        if: ${{ endsWith(env.PROJECT_VERSION, '-SNAPSHOT') && github.ref == 'refs/heads/main' }}
+        run: echo "SNAPSHOT_VERSION=$(echo $PROJECT_VERSION)" | tee --append "${GITHUB_ENV}"
+
+      - name: "Verify docs/examples/local for release."
+        working-directory: docs/examples/local
+        if: ${{ env.SNAPSHOT_VERSION == '' }}
+        run: |
+          sed -i.bak -re "s/version \"${PROJECT_VERSION}-SNAPSHOT\"/version \"${PROJECT_VERSION}\"/g" build.gradle.kts
+          sed -i.bak -re "s/version \"${PROJECT_VERSION}-SNAPSHOT\"/version \"${PROJECT_VERSION}\"/g" settings.gradle.kts
+          ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+
+      - name: "Verify docs/examples/local for snapshot."
+        working-directory: docs/examples/local
+        if: ${{ env.SNAPSHOT_VERSION != '' }}
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+
+      - name: "Publish Gradle plugins to Sonatype Snapshot with version ${{ env.SNAPSHOT_VERSION }}."
+        if: ${{ env.SNAPSHOT_VERSION != '' }}
+        env:
+          # Implicit: -PsonatypeUsername=...
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
+          # Implicit: -PsonatypePassword=...
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
+        # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --no-configuration-cache
+          --no-watch-fs
+          --stacktrace
+          publishLibraryPublicationToSonatypeRepository
+          publishPluginMavenPublicationToSonatypeRepository
+          publishAllPluginMarkerMavenPublicationsToSonatypeRepository
+          -PprojectVersion="${SNAPSHOT_VERSION}"
+
+      - name: "Verify docs/examples/snapshot with version ${{ env.SNAPSHOT_VERSION }}."
+        working-directory: docs/examples/snapshot
+        if: ${{ env.SNAPSHOT_VERSION != '' }}
+        run: |
+          sed -i.bak -re "s/version \"${PROJECT_VERSION}\"/version \"${SNAPSHOT_VERSION}\"/g" build.gradle.kts
+          sed -i.bak -re "s/version \"${PROJECT_VERSION}\"/version \"${SNAPSHOT_VERSION}\"/g" settings.gradle.kts
+          ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
+
+  check:
+    name: "2 🛠️ ${{ matrix.name }}"
+    needs: validate
+    timeout-minutes: 45
+    
+    permissions:
+      # actions/checkout
+      contents: read
+      # github/codeql-action/upload-sarif
+      security-events: write
+
+    env:
+      JOB_NAME: '${{ matrix.name }} (${{ matrix.agp }} on ${{ matrix.gradle }})'
+      # Capture which Gradle version is running the build to use in some steps.
+      # Value will be written in a later step using `>> "${GITHUB_ENV}"`.
+      GRADLE_VERSION: '0.0.0'
+
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+
+      - name: "Trigger details."
+        env:
+          COMPARE_URL: ${{ github.event.compare }}
+        run: echo "Running in response to a ${GITHUB_EVENT_NAME} event, building ${COMPARE_URL} changes."
+
+      - name: "Set up JDK for Android SDK."
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: zulu
+
+      - name: "Set up Android SDK."
+        uses: android-actions/setup-android@v3
+        with:
+          log-accepted-android-sdk-licenses: false
+
+      - name: "Install Android SDK components."
+        env:
+          CURRENT_BUILD_TOOLS_VERSION: ${{ matrix.build-tools }}
+          CURRENT_ANDROID_VERSION: ${{ matrix.android }}
+        run: |
+          # AGP's com.android.SdkConstants.CURRENT_BUILD_TOOLS_VERSION
+          echo sdkmanager --install "build-tools;${CURRENT_BUILD_TOOLS_VERSION}"
+          sdkmanager --install "build-tools;${CURRENT_BUILD_TOOLS_VERSION}"
+
+          # compileSdk for almost all tests.
+          echo sdkmanager --install "platforms;android-${CURRENT_ANDROID_VERSION}"
+          sdkmanager --install "platforms;android-${CURRENT_ANDROID_VERSION}"
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: zulu
+
+      # TODEL https://github.com/gradle/wrapper-validation-action/issues/69
+      # Commented out, because action is not stable enough for parallel workflows ^.
+      # jobs.build would validate it anyway, although with that, the matrix will still execute the bad code.
+      # To be sure, lifted as "needs" prerequisite at least until there's some response on the issue.
+      #- name: Validate Gradle Wrapper JARs.
+      #  uses: gradle/wrapper-validation-action@v1
+
+      # To prevent "Welcome to Gradle <version>! Here are the highlights of this release:" in build log, use:
+      #- run: touch ~/.gradle/notifications/5.6.4/release-features.rendered
+
+      - name: "Download Gradle running the build."
+        run: |
+          # Run a no-op gradlew command in workspace.
+          ./gradlew --no-daemon --version | tee gradle.version.log
+          # Capture version for later usage.
+          # Note: the $ is very important no prevent matching the "Welcome to Gradle x.y.z!" line.
+          grep --color=never --only-matching --perl-regexp '(?<=Gradle )(\d+\.\d+(?:\.\d+)?(?:-(?:rc|milestone)-\d+)?)$' gradle.version.log > gradle.version
+          echo "GRADLE_VERSION=$(<gradle.version)" | tee --append "${GITHUB_ENV}"
+
+      - name: "Download Gradle ${{ env.GRADLE_VERSION }} running the tests."
+        env:
+          GRADLE_VERSION: ${{ matrix.gradle }}
+        run: |
+          # Create an empty project with wrapper using ${GRADLE_VERSION}.
+          mkdir "${HOME}/gradle-${GRADLE_VERSION}"
+          cd "${HOME}/gradle-${GRADLE_VERSION}"
+          touch settings.gradle
+          "${GITHUB_WORKSPACE}/gradlew" wrapper --gradle-version "${GRADLE_VERSION}" --distribution-type all --quiet
+          # Run a no-op gradlew command in an empty project with a specific wrapper version.
+          ./gradlew --no-daemon --version
+
+      - name: "Cache Gradle ${{ env.GRADLE_VERSION }} files."
+        uses: actions/cache@v4
+        with:
+          path: |
+            # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ env.GRADLE_VERSION }}-all.zip"
+            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/${ gradle-dist-hash }/gradle-${{ env.GRADLE_VERSION }}-all.zip"
+            # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
+            #~/.gradle/wrapper/dists/gradle-${{ env.GRADLE_VERSION }}-all/
+
+            # Prevent "Download https://repo1.maven.org/maven2/" during build
+            ~/.gradle/caches/modules-2/
+
+            # Prevent "Generating JAR file 'gradle-api-${{ env.GRADLE_VERSION }}.jar'" during build.
+            ~/.gradle/caches/${{ env.GRADLE_VERSION }}/generated-gradle-jars/
+          key: |
+            ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', 'buildSrc/src/**') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
+
+      - name: "Cache Gradle Test Kit ${{ matrix.gradle }} files."
+        uses: actions/cache@v4
+        with:
+          path: |
+            # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ matrix.gradle }}-all.zip"
+            # Prevent "Unzipping /home/${{ env.USER }}/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/${ gradle-dist-hash }/gradle-${{ matrix.gradle }}-all.zip"
+            # No need to cache this, as it's cached by default, it takes 4-11 seconds only to do it fresh.
+            #~/.gradle/wrapper/dists/gradle-${{ matrix.gradle }}-all/
+
+            # Prevent "Download https://repo1.maven.org/maven2/" during test runs.
+            /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/modules-2/
+
+            # Prevent "Generating JAR file 'gradle-api-${{ matrix.gradle }}.jar'" during test runs.
+            /tmp/.gradle-test-kit-${{ env.USER }}-*/caches/${{ matrix.gradle }}/generated-gradle-jars/
+          key: |
+            ${{ runner.os }}-gradle-test-kit-${{ matrix.gradle }}-${{ matrix.agp }}
+
+      - name: "Check ${{ env.JOB_NAME }}."
+        env:
+          MATRIX_AGP: ${{ matrix.agp }}
+          MATRIX_ANDROID: ${{ matrix.android }}
+          MATRIX_KOTLIN: ${{ matrix.kotlin }}
+          MATRIX_GRADLE: ${{ matrix.gradle }}
+          MATRIX_JAVA: ${{ matrix.java }}
+        # To run specific test, replace `${{ matrix.test-task }}` with `:quality:test --tests '*.HtmlReportTaskTest.runs on lints'`
+        run: >
+          ./gradlew
+          --no-daemon
+          --no-build-cache
+          --no-configuration-cache
+          --no-watch-fs
+          --stacktrace
+          --continue
+          ${{ matrix.test-task }}
+          -Pnet.twisterrob.gradle.build.verboseReports=true
+          -Pnet.twisterrob.test.android.pluginVersion="${MATRIX_AGP}"
+          -Pnet.twisterrob.test.kotlin.pluginVersion="${MATRIX_KOTLIN}"
+          -Pnet.twisterrob.gradle.runner.gradleVersion="${MATRIX_GRADLE}"
+          -Pnet.twisterrob.test.gradle.javaVersion="${MATRIX_JAVA}"
+          -Pnet.twisterrob.test.android.compileSdkVersion="android-${MATRIX_ANDROID}"
+
+      - name: "Upload '${{ env.JOB_NAME }} Test Results XMLs' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: '${{ env.JOB_NAME }} Test Results XMLs'
+          if-no-files-found: error
+          path: |
+            **/build/test-results/test/TEST-*.xml
+
+      - name: "Upload '${{ env.JOB_NAME }} Test Results HTML' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: '${{ env.JOB_NAME }} Test Results HTML'
+          if-no-files-found: error
+          path: |
+            build/reports/tests/all/
+
+      - name: "Upload '${{ env.JOB_NAME }} Test Results HTMLs' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: '${{ env.JOB_NAME }} Test Results HTMLs'
+          if-no-files-found: error
+          path: |
+            **/build/reports/tests/test/
+
+      - name: "Cleanup Gradle files before caching."
+        run: |
+          # Don't cache lock files to prevent breaking future builds
+          rm -f  ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f  ~/.gradle/caches/modules-2/gc.properties
+          rm -fr ~/.gradle/caches/*/plugin-resolution/
+
+      - name: "Cleanup Gradle Test Kit files before caching."
+        run: |
+          # Don't cache lock files to prevent breaking future builds
+          rm -f  /tmp/.gradle-test-kit-${USER}-*/caches/modules-2/modules-2.lock
+          rm -f  /tmp/.gradle-test-kit-${USER}-*/caches/modules-2/gc.properties
+          rm -fr /tmp/.gradle-test-kit-${USER}-*/caches/*/plugin-resolution/
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # See https://docs.gradle.org/current/userguide/compatibility.html#kotlin.
+        # See https://developer.android.com/studio/releases/gradle-plugin#updating-gradle.
+        #gradle: []
+        # See https://developer.android.com/studio/releases/gradle-plugin.
+        #agp: []
+        # See https://developer.android.com/studio/releases/build-tools#notes.
+        #build-tools: []
+        # See https://kotlinlang.org/docs/releases.html.
+        #kotlin: []
+        # Potential to run specific test tasks, e.g. :plugin can be run separately.
+        #test-task: []
+        include:
+
+          - name: "AGP 7.0.x on Gradle 7.0+"
+            gradle: '7.0.2'
+            java: '11'
+            agp: '7.0.4'
+            build-tools: '30.0.2'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.0.x on Gradle 7.0+ - plugin"
+            gradle: '7.0.2'
+            java: '11'
+            agp: '7.0.4'
+            build-tools: '30.0.2'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 7.0.x on Gradle 7.x"
+            gradle: '7.6.4'
+            java: '11'
+            agp: '7.0.4'
+            build-tools: '30.0.2'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.0.x on Gradle 7.x - plugin"
+            gradle: '7.6.4'
+            java: '11'
+            agp: '7.0.4'
+            build-tools: '30.0.2'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 7.1.x on Gradle 7.2+"
+            gradle: '7.2'
+            java: '11'
+            agp: '7.1.3'
+            build-tools: '30.0.3'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.1.x on Gradle 7.2+ - plugin"
+            gradle: '7.2'
+            java: '11'
+            agp: '7.1.3'
+            build-tools: '30.0.3'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 7.1.x on Gradle 7.x"
+            gradle: '7.6.4'
+            java: '11'
+            agp: '7.1.3'
+            build-tools: '30.0.3'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.1.x on Gradle 7.x - plugin"
+            gradle: '7.6.4'
+            java: '11'
+            agp: '7.1.3'
+            build-tools: '30.0.3'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 7.2.x on Gradle 7.3+"
+            gradle: '7.3.3'
+            java: '11'
+            agp: '7.2.2'
+            build-tools: '30.0.3'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.2.x on Gradle 7.3+ - plugin"
+            gradle: '7.3.3'
+            java: '11'
+            agp: '7.2.2'
+            build-tools: '30.0.3'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 7.2.x on Gradle 7.x"
+            gradle: '7.6.4'
+            java: '11'
+            agp: '7.2.2'
+            build-tools: '30.0.3'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.2.x on Gradle 7.x - plugin"
+            gradle: '7.6.4'
+            java: '11'
+            agp: '7.2.2'
+            build-tools: '30.0.3'
+            android: '34'
+            kotlin: '1.4.32'
+            test-task: 'testReport :plugin:tests'
+
+            # See GradlePluginUtils.kt > pluginList: AGP 7.3 requires Kotlin 1.5.20+.
+            # 1.5.32 would be enough, but have to jump further forward because:
+            # org.jetbrains.kotlin.gradle.internal.kapt.KaptWithoutKotlincTask.kotlinStdlibClasspath is eagerly initialized.
+            # jarSearchingUtil.kt > findPotentialModuleJars uses a HashSet
+            # Sometimes (e.g. always on CI, not on Window locally) the hash ordering prefers
+            # classpath files('.../plugin/languages/build/classes/java/main')
+            # over
+            # classpath files('.../kotlin-stdlib-1.5.32.jar')
+            # and jarSearchingUtil.kt > hasEntry assumes that all "files" are .jar.
+          - name: "AGP 7.3.x on Gradle 7.4+"
+            gradle: '7.4.2'
+            java: '11'
+            agp: '7.3.1'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.3.x on Gradle 7.4+ - plugin"
+            gradle: '7.4.2'
+            java: '11'
+            agp: '7.3.1'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 7.3.x on Gradle 7.x"
+            gradle: '7.6.4'
+            java: '11'
+            agp: '7.3.1'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.3.x on Gradle 7.x - plugin"
+            gradle: '7.6.4'
+            java: '11'
+            agp: '7.3.1'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 7.4.x on Gradle 7.5+"
+            gradle: '7.5.1'
+            java: '11'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.4.x on Gradle 7.5+ - plugin"
+            gradle: '7.5.1'
+            java: '11'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 7.4.x on Gradle 7.x"
+            gradle: '7.6.4'
+            java: '11'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.4.x on Gradle 7.x - plugin"
+            gradle: '7.6.4'
+            java: '11'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 7.4.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 7.4.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '7.4.2'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.0.x on Gradle 8.0+"
+            gradle: '8.0.2'
+            java: '17'
+            agp: '8.0.2'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.0.x on Gradle 8.0+ - plugin"
+            gradle: '8.0.2'
+            java: '17'
+            agp: '8.0.2'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.0.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.0.2'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.0.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.0.2'
+            kotlin: '1.6.21'
+            android: '34'
+            build-tools: '30.0.3'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.1.x on Gradle 8.0+"
+            gradle: '8.0.2'
+            java: '17'
+            agp: '8.1.4'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '33.0.1'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.1.x on Gradle 8.0+ - plugin"
+            gradle: '8.0.2'
+            java: '17'
+            agp: '8.1.4'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '33.0.1'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.1.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.1.4'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '33.0.1'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.1.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.1.4'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '33.0.1'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.2.x on Gradle 8.2+"
+            gradle: '8.2.1'
+            java: '17'
+            agp: '8.2.2'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.2.x on Gradle 8.2+ - plugin"
+            gradle: '8.2.1'
+            java: '17'
+            agp: '8.2.2'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.2.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.2.2'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.2.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.2.2'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.3.x on Gradle 8.4+"
+            gradle: '8.4'
+            java: '17'
+            agp: '8.3.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.3.x on Gradle 8.4+ - plugin"
+            gradle: '8.4'
+            java: '17'
+            agp: '8.3.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.3.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.3.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.3.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.3.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.4.x on Gradle 8.6+"
+            gradle: '8.6'
+            java: '17'
+            agp: '8.4.0'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.4.x on Gradle 8.6+ - plugin"
+            gradle: '8.6'
+            java: '17'
+            agp: '8.4.0'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.4.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.4.0'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.4.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.4.0'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.5.x on Gradle 8.7+"
+            gradle: '8.7'
+            java: '17'
+            agp: '8.5.2'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.5.x on Gradle 8.7+ - plugin"
+            gradle: '8.7'
+            java: '17'
+            agp: '8.5.2'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.5.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.5.2'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.5.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.5.2'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.6.x on Gradle 8.7+"
+            gradle: '8.7'
+            java: '17'
+            agp: '8.6.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.6.x on Gradle 8.7+ - plugin"
+            gradle: '8.7'
+            java: '17'
+            agp: '8.6.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.6.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.6.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.6.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.6.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.7.x on Gradle 8.9+"
+            gradle: '8.9'
+            java: '17'
+            agp: '8.7.3'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.7.x on Gradle 8.7+ - plugin"
+            gradle: '8.9'
+            java: '17'
+            agp: '8.7.3'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.7.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.7.3'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.7.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.7.3'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.8.x on Gradle 8.10+"
+            gradle: '8.10.2'
+            java: '17'
+            agp: '8.8.0'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.8.x on Gradle 8.10+ - plugin"
+            gradle: '8.10.2'
+            java: '17'
+            agp: '8.8.0'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.8.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.8.0'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.8.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.8.0'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.9.x on Gradle 8.11+"
+            gradle: '8.11.1'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.9.x on Gradle 8.11+ - plugin"
+            gradle: '8.11.1'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.9.x on Gradle 8.x"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.9.x on Gradle 8.x - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.9.1'
+            kotlin: '1.6.21'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP stable on Gradle stable"
+            gradle: '8.13' # https://gradle.org/releases/
+            java: '17'
+            agp: '8.9.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '1.9.25' # https://kotlinlang.org/docs/releases.html#release-details
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP stable on Gradle stable - plugin"
+            gradle: '8.13' # https://gradle.org/releases/
+            java: '17'
+            agp: '8.9.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '1.9.25' # https://kotlinlang.org/docs/releases.html#release-details
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP preview on Gradle preview"
+            gradle: '8.13' # https://services.gradle.org/distributions/
+            java: '17'
+            agp: '8.9.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '2.0.0' # https://kotlinlang.org/docs/eap.html#build-details
+            android: '35'
+            build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
+            test-task: 'testReport :quality:tests'
+          - name: "AGP preview on Gradle preview - plugin"
+            gradle: '8.13' # https://services.gradle.org/distributions/
+            java: '17'
+            agp: '8.9.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '2.0.0' # https://kotlinlang.org/docs/eap.html#build-details
+            android: '35'
+            build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
+            test-task: 'testReport :plugin:tests'
+
+
+  # Separate job for parsing the XML output, since the matrix runs on multiple machines.
+  publish-test-results:
+    name: "3 📢 Publish Tests Results"
+    needs: check
+    # The dependency job might be skipped, we don't need to run this job then.
+    if: ${{ success() || failure() }}
+    # Should finish under 2 minutes on success, so give it a big buffer in case failures take more time.
+    # It often runs out of time, because 1 of the many artifact downloads takes many minutes.
+    timeout-minutes: 10
+
+    permissions:
+      # EnricoMi/publish-unit-test-result-action
+      checks: write
+
+    runs-on: ubuntu-24.04
+    steps:
+      - name: "Download '... Test Results XMLs' Artifacts."
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '* Test Results XMLs'
+          path: artifacts
+
+      - name: "Publish 'Test Results' check suite."
+        # Publish as much as possible even if some artifacts are missing (hopefully those jobs have failed separately).
+        if: ${{ success() || failure() }}
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          check_name: '0 🔔 Test Results'
+          comment_mode: off
+          report_individual_runs: true
+          action_fail_on_inconclusive: true
+          test_changes_limit: 0
+          junit_files: 'artifacts/* Test Results XMLs/**/*.xml'

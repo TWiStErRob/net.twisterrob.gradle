@@ -2,9 +2,6 @@ package net.twisterrob.gradle.quality.report.html.model
 
 import com.flextrade.jfixture.JFixture
 import net.twisterrob.gradle.quality.Violation
-import net.twisterrob.gradle.test.RootProject
-import net.twisterrob.gradle.test.createSubProject
-import org.gradle.api.Project
 import org.gradle.api.Task
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -18,14 +15,35 @@ import org.mockito.kotlin.mock
 import java.io.File
 
 class LocationViewModelTest {
+
+	private val rootProject
+		get() = Violation.Module(
+			path = ":",
+			name = "",
+			projectDir = File("."),
+			rootDir = File("."),
+		)
+
+	private val parentProject
+		get() = Violation.Module(
+			path = ":sub1",
+			name = "sub1",
+			projectDir = File("./sub1"),
+			rootDir = File("."),
+		)
+
+	private val innerProject
+		get() = Violation.Module(
+			path = ":sub1:sub2",
+			name = "sub2",
+			projectDir = File("./sub1/sub2"),
+			rootDir = File("."),
+		)
+
 	private val fixture = JFixture().apply {
-		customise().lazyInstance(Project::class.java, ::RootProject)
+		customise().lazyInstance(Violation.Module::class.java, ::rootProject)
 		customise().lazyInstance(Task::class.java, ::mock)
 	}
-
-	private val rootProject = RootProject()
-	private val parentProject = rootProject.createSubProject("sub1")
-	private val innerProject = parentProject.createSubProject("sub2")
 
 	@Nested
 	inner class `location in file` {
@@ -199,7 +217,7 @@ class LocationViewModelTest {
 
 			@Test fun `file inside the module is internal`() {
 				val fixtViolation: Violation = fixture.build {
-					location.setField("file", location.module.file("src/main/java/MyClass.java"))
+					location.setField("file", location.module.projectDir.resolve("src/main/java/MyClass.java"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -209,7 +227,7 @@ class LocationViewModelTest {
 
 			@Test fun `file at the module root is internal`() {
 				val fixtViolation: Violation = fixture.build {
-					location.setField("file", location.module.file("build.gradle"))
+					location.setField("file", location.module.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -220,7 +238,7 @@ class LocationViewModelTest {
 			@Test fun `file in the root module is internal`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", innerProject)
-					location.setField("file", rootProject.file("build.gradle"))
+					location.setField("file", rootProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -231,7 +249,7 @@ class LocationViewModelTest {
 			@Test fun `file in the parent module is internal`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", innerProject)
-					location.setField("file", parentProject.file("build.gradle"))
+					location.setField("file", parentProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -277,7 +295,7 @@ class LocationViewModelTest {
 			@Test fun `file on a different drive is external the project`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", rootProject)
-					val fileInProject = rootProject.file("folder/some.file").absolutePath
+					val fileInProject = rootProject.projectDir.resolve("folder/some.file").absolutePath
 					assumeFalse(fileInProject.startsWith("A:") || fileInProject.startsWith("a:")) {
 						"The file ${fileInProject} is located on a drive different than A:"
 					}
@@ -296,7 +314,7 @@ class LocationViewModelTest {
 			@Test fun `file in the root module from root module`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", rootProject)
-					location.setField("file", rootProject.file("build.gradle"))
+					location.setField("file", rootProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -308,7 +326,7 @@ class LocationViewModelTest {
 			@Test fun `file in the root module from parent module`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", parentProject)
-					location.setField("file", rootProject.file("build.gradle"))
+					location.setField("file", rootProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -320,7 +338,7 @@ class LocationViewModelTest {
 			@Test fun `file in the root module from inner module`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", innerProject)
-					location.setField("file", rootProject.file("build.gradle"))
+					location.setField("file", rootProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -332,7 +350,7 @@ class LocationViewModelTest {
 			@Test fun `file in the parent module from root module`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", rootProject)
-					location.setField("file", parentProject.file("build.gradle"))
+					location.setField("file", parentProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -344,7 +362,7 @@ class LocationViewModelTest {
 			@Test fun `file in the parent module from parent module`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", parentProject)
-					location.setField("file", parentProject.file("build.gradle"))
+					location.setField("file", parentProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -356,7 +374,7 @@ class LocationViewModelTest {
 			@Test fun `file in the parent module from inner module`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", innerProject)
-					location.setField("file", parentProject.file("build.gradle"))
+					location.setField("file", parentProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -368,7 +386,7 @@ class LocationViewModelTest {
 			@Test fun `file in the module from root module`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", rootProject)
-					location.setField("file", innerProject.file("build.gradle"))
+					location.setField("file", innerProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -380,7 +398,7 @@ class LocationViewModelTest {
 			@Test fun `file in the module from parent module`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", parentProject)
-					location.setField("file", innerProject.file("build.gradle"))
+					location.setField("file", innerProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -392,7 +410,7 @@ class LocationViewModelTest {
 			@Test fun `file in the module from inner module`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", innerProject)
-					location.setField("file", innerProject.file("build.gradle"))
+					location.setField("file", innerProject.projectDir.resolve("build.gradle"))
 				}
 
 				val sut = LocationViewModel(fixtViolation)
@@ -445,7 +463,7 @@ class LocationViewModelTest {
 			@Test fun `file on a different drive`() {
 				val fixtViolation: Violation = fixture.build {
 					location.setField("module", rootProject)
-					val fileInProject = rootProject.file("folder/some.file").absolutePath
+					val fileInProject = rootProject.projectDir.resolve("folder/some.file").absolutePath
 					assumeFalse(fileInProject.startsWith("A:") || fileInProject.startsWith("a:")) {
 						"The file ${fileInProject} is located on a drive different than A:"
 					}

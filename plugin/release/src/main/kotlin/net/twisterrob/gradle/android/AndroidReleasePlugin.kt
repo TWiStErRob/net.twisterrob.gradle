@@ -23,14 +23,16 @@ import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import java.io.File
 import java.io.IOException
+import java.util.Locale
 import java.util.zip.ZipFile
 
-class AndroidReleasePlugin : BasePlugin() {
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+abstract class AndroidReleasePlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
 		val android = project.extensions.getByName<BaseExtension>("android")
-		@Suppress("UnnecessaryApply") // Conventional Gradle pattern.
+		@Suppress("detekt.UnnecessaryApply") // Conventional Gradle pattern.
 		android.extensions.create<AndroidReleaseExtension>(AndroidReleaseExtension.NAME).apply {
 			directory.convention(project.releaseDirectory())
 		}
@@ -49,7 +51,7 @@ class AndroidReleasePlugin : BasePlugin() {
 		}
 
 	private fun registerReleaseTasks(android: BaseExtension, buildType: BuildType): TaskProvider<Task> {
-		val releaseBuildTypeTask = project.tasks.register<Task>("releaseAll${buildType.name.capitalize()}") {
+		val releaseBuildTypeTask = project.tasks.register<Task>("releaseAll${buildType.name.capitalize(Locale.ROOT)}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives all ${buildType.name} builds"
 		}
@@ -71,7 +73,7 @@ class AndroidReleasePlugin : BasePlugin() {
 		release: AndroidReleaseExtension,
 		variant: ApplicationVariant
 	): TaskProvider<Zip> =
-		project.tasks.register<Zip>("release${variant.name.capitalize()}") {
+		project.tasks.register<Zip>("release${variant.name.capitalize(Locale.ROOT)}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.name} build"
 			destinationDirectory.convention(release.directory)

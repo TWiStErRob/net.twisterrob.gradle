@@ -3,6 +3,7 @@ package net.twisterrob.gradle.android
 import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.jakewharton.dex.DexMethod
+import net.twisterrob.gradle.android.SdkVersions.asName
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.test.process.assertOutput
 import net.twisterrob.test.withRootCause
@@ -29,7 +30,7 @@ fun File.apk(
 	variant: String,
 	fileName: String = run {
 		val variantSuffix = if (variant != "release") ".${variant}" else ""
-		"${packageName}${variantSuffix}@-1-vnull+${variant}.apk"
+		"${packageName}${variantSuffix}@-1-v+${variant}.apk"
 	}
 ): File =
 	this.resolve("build/outputs/apk").resolve(variant).resolve(fileName)
@@ -38,7 +39,7 @@ internal val androidSdkDir: File
 	get() = File(System.getenv("ANDROID_HOME"))
 
 internal val buildToolsDir: File
-	get() = androidSdkDir.resolve("build-tools/${VERSION_BUILD_TOOLS}")
+	get() = androidSdkDir.resolve("build-tools").listFiles().sorted().last()
 
 internal val toolsDir: File
 	get() = androidSdkDir.resolve("tools")
@@ -58,7 +59,7 @@ fun resolveFromJDK(command: String): File {
 		jre.resolve("bin"),
 		jre.parentFile.resolve("bin")
 	)
-	@Suppress("SpreadOperator")
+	@Suppress("detekt.SpreadOperator")
 	return resolveFromFolders(command, *dirs)
 }
 
@@ -70,14 +71,14 @@ private fun resolveFromFolders(command: String, vararg dirs: File): File {
 		?: error("Cannot find any of ${variants} in any of these folders:\n${dirs.joinToString("\n")}")
 }
 
-@Suppress("LongParameterList") // Simply these many things contribute to APK metadata.
+@Suppress("detekt.LongParameterList") // Simply these many things contribute to APK metadata.
 fun assertDefaultDebugBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
 	versionName: String = "",
-	compileSdkVersion: Int = VERSION_SDK_COMPILE,
-	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	compileSdkVersion: Int = SdkVersions.testCompileSdkVersion,
+	compileSdkVersionName: String = compileSdkVersion.asName(),
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) {
@@ -94,14 +95,14 @@ fun assertDefaultDebugBadging(
 	)
 }
 
-@Suppress("LongParameterList") // Simply these many things contribute to APK metadata.
+@Suppress("detekt.LongParameterList") // Simply these many things contribute to APK metadata.
 fun assertDefaultReleaseBadging(
 	apk: File,
 	applicationId: String = packageName,
 	versionCode: String = "",
 	versionName: String = "",
-	compileSdkVersion: Int = VERSION_SDK_COMPILE,
-	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	compileSdkVersion: Int = SdkVersions.testCompileSdkVersion,
+	compileSdkVersionName: String = compileSdkVersion.asName(),
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET
 ) {
@@ -118,14 +119,14 @@ fun assertDefaultReleaseBadging(
 	)
 }
 
-@Suppress("LongParameterList", "LongMethod") // Simply these many things contribute to APK metadata.
+@Suppress("detekt.LongParameterList", "detekt.LongMethod") // Simply these many things contribute to APK metadata.
 fun assertDefaultBadging(
 	apk: File,
 	applicationId: String = "${packageName}.debug",
 	versionCode: String = "",
 	versionName: String = "",
-	compileSdkVersion: Int = VERSION_SDK_COMPILE,
-	compileSdkVersionName: String = VERSION_SDK_COMPILE_NAME,
+	compileSdkVersion: Int = SdkVersions.testCompileSdkVersion,
+	compileSdkVersionName: String = compileSdkVersion.asName(),
 	minSdkVersion: Int = VERSION_SDK_MINIMUM,
 	targetSdkVersion: Int = VERSION_SDK_TARGET,
 	isAndroidTestApk: Boolean = false,
@@ -133,7 +134,7 @@ fun assertDefaultBadging(
 ) {
 	try {
 		assertThat(apk.absolutePath, apk, anExistingFile())
-	} catch (@Suppress("SwallowedException", "TooGenericExceptionCaught") ex: Throwable) {
+	} catch (@Suppress("detekt.SwallowedException", "detekt.TooGenericExceptionCaught") ex: Throwable) {
 		// Detekt doesn't see into the extension fun.
 		val contents = apk
 			.parentFile
@@ -149,7 +150,7 @@ fun assertDefaultBadging(
 			null
 		}
 	val (expectation: String, expectedOutput: String) =
-		if (compileSdkVersion < @Suppress("MagicNumber") 28) {
+		if (compileSdkVersion < @Suppress("detekt.MagicNumber") 28) {
 			// platformBuildVersionName='$compileSdkVersionName' disappeared in AGP 3.3 and/or AAPT 2
 			"compileSdkVersion < 28" to """
 				package: name='$applicationId' versionCode='$versionCode' versionName='$versionName'
@@ -221,10 +222,10 @@ fun devices(): List<IDevice> {
 	val bridge = AndroidDebugBridge.createBridge(
 		resolveFromAndroidSDK("adb").absolutePath,
 		false,
-		@Suppress("MagicNumber") 10,
+		@Suppress("detekt.MagicNumber") 10,
 		TimeUnit.SECONDS
 	)
-	@Suppress("MagicNumber")
+	@Suppress("detekt.MagicNumber")
 	ensuredWait(5000L, 1000L, "Cannot get device list") {
 		bridge.hasInitialDeviceList()
 	}

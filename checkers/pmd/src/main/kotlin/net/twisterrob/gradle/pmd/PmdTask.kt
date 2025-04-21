@@ -8,7 +8,8 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 
 @CacheableTask
-open class PmdTask : Pmd(), TargetChecker {
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+abstract class PmdTask : Pmd(), TargetChecker {
 
 	@Input
 	override var checkTargetName: String = ALL_VARIANTS_NAME

@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.nagging
 
-import net.twisterrob.gradle.settings.SettingsPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.plugins.ExtensionAware
@@ -8,13 +7,16 @@ import org.gradle.api.plugins.ExtensionAware
 /**
  * Used from `init.gradle.kts` in test resources.
  */
-@Suppress("unused") // Used from nagging.init.gradle.kts
-class NaggingPluginForTest : Plugin<Gradle> {
+@Suppress(
+	"unused", // Used from nagging.init.gradle.kts
+	"detekt.UnnecessaryAbstractClass",  // Gradle convention.
+)
+abstract class NaggingPluginForTest : Plugin<Gradle> {
 	override fun apply(gradle: Gradle) {
 		gradle.rootProject(::exposeDoNotNagAboutExtras)
 		gradle.beforeSettings(::exposeDoNotNagAboutExtras)
 		gradle.settingsEvaluated {
-			it.plugins.apply(SettingsPlugin::class.java)
+			it.plugins.apply(NaggingPlugin::class.java) // net.twisterrob.gradle.plugin.nagging
 		}
 	}
 

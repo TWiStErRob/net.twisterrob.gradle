@@ -7,7 +7,8 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
     * `gradle.properties`: remove `-SNAPSHOT` suffix
       Double-check that version is `x.y`
     * `README.md`: review compatibility table
-    * Label the PR `a:feature`, `in:meta`.
+    * Label the `Release x.y` PR `a:feature`, `in:meta` and put it in the milestone.
+    * Assign drafted issues/PRs against the milestone (`gh issue edit ### --milestone x.y`)
  1. Upload
     * Set up credentials
         * `sonatypeUsername` is the account name of https://s01.oss.sonatype.org/
@@ -26,14 +27,13 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       gradlew publishLibraryPublicationToSonatypeRepository publishPluginMavenPublicationToSonatypeRepository publishAllPluginMarkerMavenPublicationsToSonatypeRepository
       ```  
       (Note: all tasks have to be executed at once, otherwise it creates multiple staging repositories.)
-      * _If this fails, fix and amend last commit._
+      * _If this fails, fix and push to Release PR._
       * > Failed to load staging profiles, server at https://s01.oss.sonatype.org/service/local/ responded with status code 401, body:
 
         Means the username or password is wrong.
     * Open [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories), log in and **close staging repository**; check output at console to validate.
  1. Archive and final integration test.
     * Run `p:\repos\release\net.twisterrob.gradle\download-repo.bat`  
-      Need to change mvn2get.json's `remote_repo_urls`.
     * Use it in a real project from staging repository (update URL and version number!):
       ```kotlin
       repositories {
@@ -51,7 +51,7 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       }
       ```
  1. Repeat previous steps as necessary.
- 1. Merge the PR to `main`.
+ 1. Merge the Release PR to `main`.
  1. Release staging repository at [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories)
  1. Watch [Maven Central](https://repo1.maven.org/maven2/net/twisterrob/gradle/twister-quality/) for the artifact to appear. May take a few minutes.
 

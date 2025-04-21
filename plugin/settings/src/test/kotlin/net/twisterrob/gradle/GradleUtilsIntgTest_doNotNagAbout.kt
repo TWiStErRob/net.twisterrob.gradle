@@ -19,19 +19,21 @@ import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junitpioneer.jupiter.Issue
 
 /**
+ * @see net.twisterrob.gradle.nagging.NaggingPlugin
  * @see doNotNagAbout
  */
 @ExtendWith(GradleRunnerRuleExtension::class)
 class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
-	@BeforeEach fun applySettingsPlugin() {
+	@BeforeEach fun applyPlugin() {
 		@Language("gradle")
 		val settings = """
 			plugins {
-				id("net.twisterrob.gradle.plugin.settings")
+				id("net.twisterrob.gradle.plugin.nagging")
 			}
 		""".trimIndent()
 		gradle.file(settings, ContentMergeMode.MERGE_GRADLE, "settings.gradle.kts")
@@ -169,6 +171,134 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		result.assertNoOutputLine("Build file '${gradle.buildFile.absolutePath}': line 12")
 		result.assertHasOutputLine("Build file '${gradle.buildFile.absolutePath}': line 20")
 		result.verifyNagging("Fake nagging for test", 20)
+	}
+
+	/**
+	 * This test is meant to show deprecation nagging in their full glory.
+	 */
+	@Issue("https://github.com/gradle/gradle/issues/25872")
+	@Test fun `stack traces are visible after many nags`() {
+		val script = """
+			apply plugin: "org.gradle.java"
+			// Do something that triggers many deprecation nags.
+			for (int i in 1..1000) {
+				${nagManyTimes()}
+			}
+			${nagOnce()}
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "--warning-mode=all")
+		}
+
+		result.verifyNagManyTimes()
+		result.verifyNagOnce()
+	}
+
+	private fun nagManyTimes(): String =
+		@Suppress("detekt.UseIfInsteadOfWhen")
+		when {
+			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
+				"""
+					repositories.jcenter()
+				""".trimIndent()
+			}
+			else -> {
+				error("Cannot nag many times for ${gradle.gradleVersion}")
+			}
+		}
+
+	private fun BuildResult.verifyNagManyTimes() {
+		when {
+			GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"The RepositoryHandler.jcenter() method has been deprecated. " +
+							"This is scheduled to be removed in Gradle 9.0. " +
+							"JFrog announced JCenter's sunset in February 2021. " +
+							"Use mavenCentral() instead. " +
+							"Consult the upgrading guide for further information: " +
+							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_6.html" +
+							"#jcenter_deprecation"
+				)
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:4\)"""))
+			}
+			GradleVersion.version("7.2") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"The RepositoryHandler.jcenter() method has been deprecated. " +
+							"This is scheduled to be removed in Gradle 8.0. " +
+							"JFrog announced JCenter's sunset in February 2021. " +
+							"Use mavenCentral() instead. " +
+							"Consult the upgrading guide for further information: " +
+							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_6.html" +
+							"#jcenter_deprecation"
+				)
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:4\)"""))
+			}
+			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"The RepositoryHandler.jcenter() method has been deprecated. " +
+							"This is scheduled to be removed in Gradle 8.0. " +
+							"JFrog announced JCenter's shutdown in February 2021. " +
+							"Use mavenCentral() instead. " +
+							"Consult the upgrading guide for further information: " +
+							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_6.html" +
+							"#jcenter_deprecation"
+				)
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:4\)"""))
+			}
+			else -> {
+				error("Cannot nag many times for ${gradle.gradleVersion}")
+			}
+		}
+	}
+
+	private fun nagOnce(): String =
+		when {
+			GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion -> {
+				"""
+					// ClosureBackedAction type is deprecated, nagging is in the class initializer.
+					//noinspection GrDeprecatedAPIUsage,UnnecessaryQualifiedReference
+					org.gradle.util.ClosureBackedAction.of {}
+				""".trimIndent()
+			}
+			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
+				"""
+					// DefaultDomainObjectSet constructor taking a class is deprecated, nagging is in the constructor.
+					//noinspection GrDeprecatedAPIUsage,UnnecessaryQualifiedReference
+					new org.gradle.api.internal.DefaultDomainObjectSet(String.class)
+				""".trimIndent()
+			}
+			else -> {
+				error("Cannot nag once for ${gradle.gradleVersion}")
+			}
+		}
+
+	private fun BuildResult.verifyNagOnce() {
+		when {
+			GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"The org.gradle.util.ClosureBackedAction type has been deprecated. " +
+							"This is scheduled to be removed in Gradle 9.0. " +
+							"Consult the upgrading guide for further information: " +
+							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_7.html" +
+							"#org_gradle_util_reports_deprecations"
+				)
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:8\)"""))
+			}
+			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"Internal API constructor DefaultDomainObjectSet(Class<T>) has been deprecated. " +
+							"This is scheduled to be removed in Gradle 8.0. " +
+							"Please use ObjectFactory.domainObjectSet(Class<T>) instead. " +
+							"See https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/custom_gradle_types.html" +
+							"#domainobjectset for more details."
+				)
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:8\)"""))
+			}
+			else -> {
+				error("Cannot nag once for ${gradle.gradleVersion}")
+			}
+		}
 	}
 
 	private fun BuildResult.verifyNagging(feature: String, line: Int) {

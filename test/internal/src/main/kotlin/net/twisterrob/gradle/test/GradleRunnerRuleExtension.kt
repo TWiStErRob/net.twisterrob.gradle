@@ -7,14 +7,14 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstancePostProcessor
 
-open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback {
+class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback {
 
 	private val rule = object : GradleRunnerRule() {
 
 		override val extraArgs: Array<String>
 			get() = super.extraArgs + arrayOf(
 				// https://docs.gradle.org/5.6/release-notes.html#fail-the-build-on-deprecation-warnings
-				"--warning-mode=fail",
+				"-Dorg.gradle.warning.mode=fail", // Allowing individual tests to override with --warning-mode.
 				"--init-script=runtime.init.gradle.kts",
 				"--init-script=nagging.init.gradle.kts",
 			)
@@ -24,7 +24,6 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 			file(readResource("nagging.init.gradle.kts"), "nagging.init.gradle.kts")
 			file(readResource("runtime.init.gradle.kts"), "runtime.init.gradle.kts")
 			configureMemory()
-			//javaHome = File(System.getenv(System.getProperty("net.twisterrob.test.gradle.javaHomeEnv")))
 		}
 
 		/**
@@ -43,7 +42,7 @@ open class GradleRunnerRuleExtension : TestInstancePostProcessor, BeforeEachCall
 		 * Abusing how [`org.gradle.jvmargs` is not merged](https://github.com/gradle/gradle/issues/19750),
 		 * so not setting Metaspace will make it unlimited.
 		 *
-		 * The heap size set here is following the default in [DaemonParameters.DEFAULT_JVM_8_ARGS] as of Gradle 8.0.
+		 * The heap size set here is following the default in [DaemonParameters.DEFAULT_JVM_ARGS] as of Gradle 8.0.
 		 */
 		private fun configureMemory() {
 			runner.withJvmArguments("-Xmx512M")

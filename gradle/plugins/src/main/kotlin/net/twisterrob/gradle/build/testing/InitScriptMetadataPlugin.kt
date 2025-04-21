@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.build.testing
 
-import net.twisterrob.gradle.build.dependencies.StaticComponentIdentifier
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -20,7 +19,8 @@ import org.gradle.kotlin.dsl.register
 /**
  * @see org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
  */
-class InitScriptMetadataPlugin : Plugin<Project> {
+@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+abstract class InitScriptMetadataPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
 		val initScriptConfiguration = project.createClasspath()
@@ -49,7 +49,7 @@ class InitScriptMetadataPlugin : Plugin<Project> {
 				configuration
 					.incoming
 					.artifactView {
-						componentFilter(SerializableLambdas.spec { excludeGradleApi(it) })
+						componentFilter(SerializableLambdas.spec { id -> excludeGradleApi(id) })
 					}
 					.files
 			})
@@ -78,8 +78,6 @@ private fun excludeGradleApi(componentId: ComponentIdentifier): Boolean =
 	when (componentId) {
 		// Gradle built-in internal DependencyFactoryInternal.ClassPathNotation
 		is OpaqueComponentIdentifier -> false
-		// My override of DependencyFactoryInternal.ClassPathNotation, needs to be ignored the same as above.
-		is StaticComponentIdentifier -> false
 		// Ignore Kotlin stdlib and related libraries, Gradle will provide the right version for those.
 		is ModuleComponentIdentifier -> !componentId.group.startsWith("org.jetbrains")
 		// Internal project(":...") dependencies are fine, that's why this whole hack exists.

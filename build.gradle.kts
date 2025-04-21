@@ -10,7 +10,7 @@ description = "Plugins for Gradle that support Android flavors."
 project.tasks.register<TestReport>("testReport") {
 	group = LifecycleBasePlugin.VERIFICATION_GROUP
 	description = "Run and report on all tests in the project. Add `-x test` to just generate report."
-	destinationDirectory.set(project.layout.buildDirectory.dir("reports/tests/all"))
+	destinationDirectory = project.layout.buildDirectory.dir("reports/tests/all")
 
 	val tests = subprojects
 		.flatMap { it.tasks.withType(Test::class) } // Forces to create the tasks.
@@ -39,18 +39,21 @@ project.tasks.register<TestReport>("testReport") {
 
 val gradleVersion: String = GradleVersion.current().version
 
-// TODEL https://github.com/gradle/gradle/issues/25206
-if (libs.nexus.get().version == "1.3.0") {
+// TODEL KGP 2.2.0 https://youtrack.jetbrains.com/issue/KT-72707
+@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
+if (libs.versions.kotlin.build.get() < "2.2.0") {
+	// > Task :common:generatePomFileForLibraryPublication
+	@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
 	doNotNagAbout(
-		"The Project.getConvention() method has been deprecated. " +
+		"The ProjectDependency.getDependencyProject() method has been deprecated. " +
 				"This is scheduled to be removed in Gradle 9.0. " +
 				"Consult the upgrading guide for further information: " +
-				"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_access_to_conventions",
-		"at io.github.gradlenexus.publishplugin.NexusPublishPlugin.",
+				"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecate_get_dependency_project",
+		"at org.jetbrains.kotlin.gradle.plugin.mpp.MppDependencyRewritingUtilsKt.associateDependenciesWithActualModuleDependencies(mppDependencyRewritingUtils.kt:146)"
 	)
 } else {
 	val error: (String) -> Unit = if (isCI) ::error else logger::warn
-	error("Gradle Nexus Plugin Version changed, please review suppression.")
+	error("KGP version changed, please review hack.")
 }
 
 /*

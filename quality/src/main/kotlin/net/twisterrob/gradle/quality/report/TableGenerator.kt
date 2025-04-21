@@ -8,7 +8,7 @@ private typealias Variant = String
 private typealias Parser = String
 private typealias MaybeCount = Int?
 
-@Suppress("LongParameterList") // These are also the constants that would be otherwise in companion, but overridable.
+@Suppress("detekt.LongParameterList") // These are also the constants that would be in companion, but overridable.
 class TableGenerator(
 	private val columnSeparator: String = "\t",
 	private val missingCount: String = "N/A",
@@ -20,8 +20,8 @@ class TableGenerator(
 ) {
 
 	@Suppress(
-		"SpreadOperator", // Open to suggestions.
-		"CognitiveComplexMethod", // Wholeheartedly agree, open to suggestions.
+		"detekt.SpreadOperator", // Open to suggestions.
+		"detekt.CognitiveComplexMethod", // Wholeheartedly agree, open to suggestions.
 	)
 	fun build(byModuleByVariantByParserCounts: Map<Module, Map<Variant, Map<Parser, MaybeCount>>>): String {
 		val modules = byModuleByVariantByParserCounts.keys
@@ -55,11 +55,11 @@ class TableGenerator(
 				if (!isPrintEmptyRows && byParserCounts.values.count { it != null } == 0) {
 					return@row emptyList<String>()
 				}
-				val cells = parsers.map cell@{
-					when (byParserCounts[it]) {
+				val cells = parsers.map cell@{ parser ->
+					when (val count = byParserCounts[parser]) {
 						0 -> zeroCount
 						null -> missingCount
-						else -> byParserCounts[it].toString()
+						else -> count.toString()
 					}
 				}
 				val row = String.format(rowFormat, *(listOf(byModule.key, byVariant.key) + cells).toTypedArray())

@@ -35,16 +35,21 @@
 # How to upgrade Gradle in the project?
 
  1. Update the gradle wrapper:
-    * Run `gradlew wrapper --distribution-type=all --gradle-version=...`.
-      * in root
-      * in `/docs/examples/*/`
+    * Run `gradlew wrapper --distribution-type=all --gradle-version=...` in all projects (see `wrappers.bat`)
     * Test each with `gradlew build`.
  2. Update `net.twisterrob.gradle.runner.gradleVersion` to the same as `gradle-wrapper.properties`.
  3. Review tests
-    * `VersionsTaskTest....(Gradle X latest)` might need updating.
+    * `VersionsTaskTest....(Gradle X latest)`
+    * `PluginIntegrationTest.Companion.gradleTasks`
     * `nagging.init.gradle.kts` might need bumping (both in Gradle version and doc URLs).
+      * Run `KotlinPluginIntgTest.can compile Kotlin` to fix trivial Kotlin issues.
+      * Run `AndroidBuildPluginIntgTest.can override compileSdk (debug)` to fix trivial Android issues.
+      * Run `AndroidBuildPluginIntgTest.can disable buildConfig decoration (debug)` to fix more Android/Kotlin issues.
+      * Run `gradlew test --continue testReport` to find outliers.
+      * Repeat the same for other non-default matrix combinations in gradle.properties (e.g. oldest)
+      * Let the CI run all tests and fix as necessary.
     * `kotlin-plugin_app\build.gradle` might need bumping (both in Gradle version and doc URLs).
- 4. Update CI.yml matrix and `publish-test-results` job
+ 4. Update CI.yml matrix
     * Update all Gradle `\d\.x` versions to the latest stable.
     * Keep all Gradle `\d\.\d\+` version on the latest patch.
     * Uncomment/add new AGP/Gradle combinations for .x versions.

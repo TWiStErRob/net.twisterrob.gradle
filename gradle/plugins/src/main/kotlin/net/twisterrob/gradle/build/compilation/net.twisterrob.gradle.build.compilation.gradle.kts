@@ -15,9 +15,9 @@ dependencies {
 		isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
 	}
 	// Make sure we don't have many versions of Kotlin lying around.
-	compileOnly(enforcedPlatform(libs.kotlin.bom))
+	compileOnly(platform(libs.kotlin.bom))
 	// Allow tests to use latest.
-	testImplementation(enforcedPlatform(libs.kotlin.bom)) {
+	testImplementation(platform(libs.kotlin.bom)) {
 		version { require(libs.versions.kotlin.build.get()) }
 	}
 }
@@ -53,12 +53,12 @@ tasks.withType<GroovyCompile>().configureEach {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-	compilerOptions.verbose.set(true)
-	compilerOptions.languageVersion.set(libs.versions.kotlin.language.map(KotlinVersion::fromVersion))
-	compilerOptions.apiVersion.set(libs.versions.kotlin.language.map(KotlinVersion::fromVersion))
-	compilerOptions.jvmTarget.set(libs.versions.java.map(JvmTarget::fromTarget))
-	compilerOptions.suppressWarnings.set(false)
-	compilerOptions.allWarningsAsErrors.set(true)
+	compilerOptions.verbose = true
+	compilerOptions.languageVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
+	compilerOptions.apiVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
+	compilerOptions.jvmTarget = libs.versions.java.map(JvmTarget::fromTarget)
+	compilerOptions.suppressWarnings = false
+	compilerOptions.allWarningsAsErrors = true
 	compilerOptions.freeCompilerArgs.addAll(
 		// Caused by: java.lang.NoSuchMethodError: kotlin.jvm.internal.FunctionReferenceImpl.<init>(ILjava/lang/Object;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;I)V
 		//	at net.twisterrob.gradle.common.BaseQualityPlugin$apply$1$1.<init>(BaseQualityPlugin.kt)

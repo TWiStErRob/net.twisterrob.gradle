@@ -9,6 +9,8 @@ import net.twisterrob.gradle.test.runBuild
 import org.gradle.util.GradleVersion
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledOnJre
+import org.junit.jupiter.api.condition.JRE
 import org.junit.jupiter.api.extension.ExtendWith
 
 /**
@@ -25,7 +27,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -44,7 +46,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 		gradle.file(script, gradle.buildFile.name)
 
@@ -59,7 +61,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.create('qualityVersions', ${VersionsTask::class.java.name}) // Intentionally eagerly creating.
+			tasks.create("qualityVersions", ${VersionsTask::class.java.name}) // Intentionally eagerly creating.
 			afterEvaluate {
 				apply plugin: "org.gradle.checkstyle"
 				apply plugin: "org.gradle.pmd"
@@ -77,7 +79,7 @@ class VersionsTaskTest : BaseIntgTest() {
 	}
 
 	@Test fun `print checkstyle version (Gradle 7 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("7.6.2")
+		gradle.gradleVersion = GradleVersion.version("7.6.4")
 
 		@Language("gradle")
 		val script = """
@@ -85,7 +87,7 @@ class VersionsTaskTest : BaseIntgTest() {
 				id("org.gradle.checkstyle")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -93,12 +95,12 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 7.6.2""")
+		result.assertHasOutputLine("""Gradle version: 7.6.4""")
 		result.assertHasOutputLine("""Checkstyle version: 8.45.1""")
 	}
 
 	@Test fun `print pmd version (Gradle 7 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("7.6.2")
+		gradle.gradleVersion = GradleVersion.version("7.6.4")
 
 		@Language("gradle")
 		val script = """
@@ -106,7 +108,7 @@ class VersionsTaskTest : BaseIntgTest() {
 				id("org.gradle.pmd")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -114,12 +116,24 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 7.6.2""")
+		result.assertHasOutputLine("""Gradle version: 7.6.4""")
 		result.assertHasOutputLine("""PMD version: 6.48.0""")
 	}
 
+	@DisabledOnJre(
+		JRE.JAVA_8,
+		JRE.JAVA_9,
+		JRE.JAVA_10,
+		JRE.JAVA_11,
+		JRE.JAVA_12,
+		JRE.JAVA_13,
+		JRE.JAVA_14,
+		JRE.JAVA_15,
+		JRE.JAVA_16,
+		disabledReason = "https://docs.gradle.org/8.10.2/userguide/upgrading_version_8.html#minimum_daemon_jvm_version"
+	)
 	@Test fun `print checkstyle version (Gradle 8 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("8.2.1")
+		gradle.gradleVersion = GradleVersion.version("8.13")
 
 		@Language("gradle")
 		val script = """
@@ -127,7 +141,7 @@ class VersionsTaskTest : BaseIntgTest() {
 				id("org.gradle.checkstyle")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -135,12 +149,24 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 8.2.1""")
+		result.assertHasOutputLine("""Gradle version: 8.13""")
 		result.assertHasOutputLine("""Checkstyle version: 9.3""")
 	}
 
+	@DisabledOnJre(
+		JRE.JAVA_8,
+		JRE.JAVA_9,
+		JRE.JAVA_10,
+		JRE.JAVA_11,
+		JRE.JAVA_12,
+		JRE.JAVA_13,
+		JRE.JAVA_14,
+		JRE.JAVA_15,
+		JRE.JAVA_16,
+		disabledReason = "https://docs.gradle.org/8.10.2/userguide/upgrading_version_8.html#minimum_daemon_jvm_version"
+	)
 	@Test fun `print pmd version (Gradle 8 latest)`() {
-		gradle.gradleVersion = GradleVersion.version("8.2.1")
+		gradle.gradleVersion = GradleVersion.version("8.13")
 
 		@Language("gradle")
 		val script = """
@@ -148,7 +174,7 @@ class VersionsTaskTest : BaseIntgTest() {
 				id("org.gradle.pmd")
 				id("net.twisterrob.gradle.plugin.quality") apply false
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -156,7 +182,7 @@ class VersionsTaskTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":qualityVersions")
-		result.assertHasOutputLine("""Gradle version: 8.2.1""")
+		result.assertHasOutputLine("""Gradle version: 8.13""")
 		result.assertHasOutputLine("""PMD version: 6.55.0""")
 	}
 
@@ -170,7 +196,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			checkstyle {
 				toolVersion = '6.0'
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -191,7 +217,7 @@ class VersionsTaskTest : BaseIntgTest() {
 			pmd {
 				toolVersion = '5.0.0'
 			}
-			tasks.register('qualityVersions', ${VersionsTask::class.java.name})
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
