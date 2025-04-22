@@ -45,8 +45,9 @@ run {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	compilerOptions.verbose = true
 	compilerOptions.allWarningsAsErrors = true
+	// TODO enable together with explicitApi()
+	//compilerOptions.extraWarnings = true
 }
 
 // Note: duplicated from DetektPlugin because can't apply project this build.gradle.kts is defining.

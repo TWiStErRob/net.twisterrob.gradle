@@ -54,12 +54,11 @@ tasks.withType<GroovyCompile>().configureEach {
 
 tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions {
-		verbose = true
 		languageVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
 		apiVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
 		jvmTarget = libs.versions.java.map(JvmTarget::fromTarget)
-		suppressWarnings = false
-		allWarningsAsErrors = true
+		allWarningsAsErrors = true // fail on warnings
+		extraWarnings = true // enable all possible checks
 		freeCompilerArgs.addAll(
 			// Opt in to https://youtrack.jetbrains.com/issue/KT-59109 for now to see how to suppress warnings/errors.
 			"-Xrender-internal-diagnostic-names",
