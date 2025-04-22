@@ -1,12 +1,10 @@
 package net.twisterrob.gradle.test.testkit
 
-import org.gradle.internal.Factory
-import org.gradle.internal.service.DefaultServiceRegistry
 import org.gradle.tooling.BuildLauncher
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
 import org.gradle.tooling.internal.consumer.ConnectorServices
-import org.gradle.tooling.internal.consumer.DefaultGradleConnector
+import org.gradle.tooling.internal.consumer.GradleConnectorFactory
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.whenever
@@ -38,22 +36,14 @@ private class BuildLauncherInterceptor(private val configuration: BuildLauncher.
 		// - gradleConnector is created by GradleConnector.newConnector() delegate to ConnectorServices.createConnector()
 		// - createConnector uses ConnectorServiceRegistry for dependency injection
 		// This last one is static, so we can intercept the registry to intercept the launcher.
-		singletonRegistry = intercept(singletonRegistry)
+		sharedConnectorFactory = intercept(sharedConnectorFactory)
 	}
 
-	private fun intercept(registry: DefaultServiceRegistry): DefaultServiceRegistry =
-		// Tried spying on ConnectorServices\$ConnectorServiceRegistry.createConnectorFactory directly, but it didn't work.
-		spy(registry).apply {
-			doAnswer { @Suppress("UNCHECKED_CAST") intercept(it.callRealMethod() as Factory<GradleConnector>) }
-				.whenever(this)
-				.getFactory(DefaultGradleConnector::class.java)
-		}
-
-	private fun intercept(factory: Factory<GradleConnector>): Factory<GradleConnector> =
+	private fun intercept(factory: GradleConnectorFactory): GradleConnectorFactory =
 		spy(factory).apply {
 			doAnswer { intercept(it.callRealMethod() as GradleConnector) }
 				.whenever(this)
-				.create()
+				.createConnector()
 		}
 
 	private fun intercept(connector: GradleConnector): GradleConnector =
@@ -74,14 +64,14 @@ private class BuildLauncherInterceptor(private val configuration: BuildLauncher.
 		launcher.run(configuration)
 }
 
-private var singletonRegistry: DefaultServiceRegistry
+private var sharedConnectorFactory: GradleConnectorFactory
 	get() = ConnectorServices::class.java
-		.getDeclaredField("singletonRegistry")
+		.getDeclaredField("sharedConnectorFactory") // Gradle 9: sharedConnectorFactory
 		.apply { isAccessible = true }
-		.get(null) as DefaultServiceRegistry
+		.get(null) as GradleConnectorFactory
 	set(value) {
 		ConnectorServices::class.java
-			.getDeclaredField("singletonRegistry")
+			.getDeclaredField("sharedConnectorFactory")
 			.apply { isAccessible = true }
 			.set(null, value)
 	}
