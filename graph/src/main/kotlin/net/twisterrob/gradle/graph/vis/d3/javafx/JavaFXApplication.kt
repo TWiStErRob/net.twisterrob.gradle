@@ -12,6 +12,7 @@ import kotlin.concurrent.thread
 
 private val LOG = logger<JavaFXApplication>()
 
+@Suppress("UnsafeCallOnNullableType") // TODO rewrite this class without static/nullable/lateinit state.
 class JavaFXApplication : Application() {
 
 	private val fixer: GradleJULFixer = GradleJULFixer()
