@@ -38,3 +38,13 @@ fun <T : Any> Provider<T>.forUseAtConfigurationTimeCompat(): Provider<T> =
 		// Gradle >= 7.4 deprecated this function in favor of not calling it (became no-op, and will eventually nag).
 		this
 	}
+
+/**
+ * Polyfill for deprecated method that was removed in Gradle 9.0.
+ * @deprecated remove call or use [forUseAtConfigurationTimeCompat].
+ */
+@Deprecated(message = "Gradle 9.0 removed this method, remove call or use a Gradle-version-agnostic forUseAtConfigurationTimeCompat() instead.")
+private fun <T : Any> Provider<T>.forUseAtConfigurationTime(): Provider<T> =
+	Provider::class.java.getDeclaredMethod("forUseAtConfigurationTime")
+		.invoke(this)
+		.let { @Suppress("UNCHECKED_CAST") (it as Provider<T>) }
