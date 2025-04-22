@@ -3,7 +3,7 @@ package net.twisterrob.gradle.checkstyle
 import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.Project
 
-class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTask>(
+open class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTask>(
 	project,
 	"checkstyle",
 	"checkstyle",
