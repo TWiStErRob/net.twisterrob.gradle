@@ -1,8 +1,8 @@
 package net.twisterrob.gradle.common
 
-import com.android.SdkConstants.FD_GENERATED
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.Variant
 import org.gradle.api.Action
-import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionAware
@@ -18,11 +18,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.VerificationTask
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.named
-import java.io.File
 import java.util.Locale
-
-@Suppress("DEPRECATION" /* AGP 7.0 */)
-private typealias BaseVariant = com.android.build.gradle.api.BaseVariant
 
 open class VariantTaskCreator<T>(
 	private val project: Project,
@@ -51,23 +47,19 @@ T : VerificationTask {
 		}
 	}
 
-	fun applyTo(
-		variants: DomainObjectSet<out @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
-	) {
+	fun applyTo(androidComponents: AndroidComponentsExtension<*, *, *>) {
 		project.plugins.apply(pluginName)
 		val eachTask = createGlobalTask()
 		// Probably false positive:
 		// > Unsafe use of a nullable receiver of type DomainObjectSet<CapturedType(out [Suppress] BaseVariant)>
 		@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-		variants.configureEach { variant ->
+		androidComponents.onVariants { variant ->
 			val variantTask = createTaskForVariant(variant)
 			eachTask.configure { it.dependsOn(variantTask) }
 		}
 	}
 
-	open fun variantConfig(
-		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant
-	): VariantTaskCreator<T>.DefaultVariantTaskConfig =
+	open fun variantConfig(variant: Variant): VariantTaskCreator<T>.DefaultVariantTaskConfig =
 		DefaultVariantTaskConfig(taskConfigurator(), variant)
 
 	open fun taskConfigurator(): VariantTaskCreator<T>.DefaultTaskConfig =
@@ -84,16 +76,14 @@ T : VerificationTask {
 		}
 	}
 
-	private fun createTaskForVariant(
-		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant,
-	): TaskProvider<T> {
+	private fun createTaskForVariant(variant: Variant): TaskProvider<T> {
 		val taskName = "${baseName}${variant.name.replaceFirstChar { it.uppercase(Locale.ROOT) }}"
 		return project.tasks.register(taskName, taskClass, variantConfig(variant))
 	}
 
 	open inner class DefaultVariantTaskConfig(
 		private val configurator: DefaultTaskConfig,
-		private val variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant
+		private val variant: Variant,
 	) : Action<T> {
 
 		override fun execute(task: T) {
@@ -119,10 +109,7 @@ T : VerificationTask {
 		 *
 		 * @see <a href="https://github.com/gradle/gradle/issues/3994">gradle/gradle#3994</a>
 		 */
-		open fun setupSources(
-			task: T,
-			variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant,
-		) {
+		open fun setupSources(task: T, variant: Variant) {
 			// TODO classpath
 			@Suppress("detekt.MaxChainedCallsOnSameLine")
 			val buildPath = task.project.layout.buildDirectory.get().asFile.toPath()
@@ -138,29 +125,8 @@ T : VerificationTask {
 				)
 				return
 			}
-			val relativeBuildPath = projectPath.relativize(buildPath)
 
-			// start with the whole project
-			task.source(projectPath)
-
-			// include whatever needs to be included
-			@Suppress("DEPRECATION" /* AGP 7.0 */)
-			val java = com.android.build.gradle.api.SourceKind.JAVA
-			val javaFolders =
-				variant
-					.getSourceFolders(java)
-					.map { tree ->
-						// build relative path (e.g. src/main/java) and
-						// append a trailing "/" for include to treat it as recursive
-						projectPath.relativize(tree.dir.toPath()).toString() + File.separator
-					}
-			task.include(javaFolders)
-
-			// exclude generated code
-			// "source" is hard-coded in VariantScopeImpl, e.g. getAidlSourceOutputDir
-			// single-star represents r|buildConfig|aidl|rs|etc.
-			// double-star is the package name
-			task.exclude("${relativeBuildPath}/${FD_GENERATED}/source/*/${variant.name}/**/*.java")
+			task.source( variant.sources.java?.static)
 		}
 
 		open fun setupReports(task: T, suffix: String? = null) {
