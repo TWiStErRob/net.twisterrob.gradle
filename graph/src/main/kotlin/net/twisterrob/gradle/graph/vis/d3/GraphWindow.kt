@@ -90,7 +90,7 @@ abstract class GraphWindow : TaskVisualizer {
 			val d3Resource = javaClass.getResource("/d3-graph.html") ?: error("Cannot find d3-graph.html.")
 			var text: String = d3Resource.openStream().bufferedReader().readText()
 			val base: String = d3Resource.toExternalForm().replaceFirst("""[^/]*$""".toRegex(), """""")
-			@Suppress("UNUSED_VALUE") // TODO why is this unused?
+			@Suppress("ASSIGNED_VALUE_IS_NEVER_READ") // TODO why is this unused?
 			text = text.replaceFirst("""<head>""".toRegex(), """<head><base href="${base}" />""")
 			// TODO is load and loadContent faster?
 			webEngine.load(d3Resource.toExternalForm())
