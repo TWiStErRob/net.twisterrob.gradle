@@ -50,7 +50,7 @@ abstract class GitPluginExtension(
 			}
 		)
 
-	private inline fun <reified T : ValueSource<R, GitOperationParams>, R> read(): R =
+	private inline fun <reified T : ValueSource<R, GitOperationParams>, R : Any> read(): R =
 		providers
 			.of(T::class.java) { it.parameters.gitDir.set(rootDir) }
 			.forUseAtConfigurationTimeCompat()

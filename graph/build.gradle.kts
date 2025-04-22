@@ -1,11 +1,10 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	id("org.gradle.java-gradle-plugin")
 	id("org.gradle.maven-publish")
 	id("org.openjfx.javafxplugin") version "0.0.14"
-	id("org.jetbrains.kotlin.jvm") version "2.0.21"
+	id("org.jetbrains.kotlin.jvm") version "2.1.20"
 	id("io.gitlab.arturbosch.detekt") version "1.23.8"
 	id("org.gradle.idea")
 	id("net.twisterrob.gradle.build.webjars")
@@ -73,9 +72,16 @@ tasks.withType<JavaCompile>().configureEach {
 	)
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-	compilerOptions.jvmTarget = JvmTarget.fromTarget("11")
-	compilerOptions.allWarningsAsErrors = true
+kotlin {
+	compilerOptions {
+		jvmTarget = JvmTarget.fromTarget("11")
+		allWarningsAsErrors = true
+		extraWarnings = true
+		freeCompilerArgs.addAll(
+			// Opt in to https://youtrack.jetbrains.com/issue/KT-59109 for now to see how to suppress warnings/errors.
+			"-Xrender-internal-diagnostic-names",
+		)
+	}
 }
 
 webjars {

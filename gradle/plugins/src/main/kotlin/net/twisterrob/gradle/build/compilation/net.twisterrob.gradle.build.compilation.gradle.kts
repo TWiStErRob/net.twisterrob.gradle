@@ -1,7 +1,6 @@
 import net.twisterrob.gradle.build.dsl.libs
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	id("org.jetbrains.kotlin.jvm")
@@ -52,11 +51,16 @@ tasks.withType<GroovyCompile>().configureEach {
 	groovyOptions.optimizationOptions!!["indy"] = true
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-	compilerOptions.verbose = true
-	compilerOptions.languageVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
-	compilerOptions.apiVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
-	compilerOptions.jvmTarget = libs.versions.java.map(JvmTarget::fromTarget)
-	compilerOptions.suppressWarnings = false
-	compilerOptions.allWarningsAsErrors = true
+kotlin {
+	compilerOptions {
+		languageVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
+		apiVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
+		jvmTarget = libs.versions.java.map(JvmTarget::fromTarget)
+		allWarningsAsErrors = true // fail on warnings
+		extraWarnings = true // enable all possible checks
+		freeCompilerArgs.addAll(
+			// Opt in to https://youtrack.jetbrains.com/issue/KT-59109 for now to see how to suppress warnings/errors.
+			"-Xrender-internal-diagnostic-names",
+		)
+	}
 }

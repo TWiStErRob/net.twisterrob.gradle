@@ -3,7 +3,7 @@ package net.twisterrob.gradle.ext
 import org.gradle.api.provider.Provider
 import org.gradle.util.GradleVersion
 
-fun <T, U, V, R> Provider<T>.zip(
+fun <T : Any, U : Any, V : Any, R : Any> Provider<T>.zip(
 	other1: Provider<U>,
 	other2: Provider<V>,
 	combiner: (value1: T, value2: U, value3: V) -> R
@@ -26,7 +26,7 @@ fun <T, U, V, R> Provider<T>.zip(
  * @see Provider.forUseAtConfigurationTime
  */
 @Suppress("detekt.FunctionMaxLength") // Gradle's function name.
-fun <T> Provider<T>.forUseAtConfigurationTimeCompat(): Provider<T> =
+fun <T : Any> Provider<T>.forUseAtConfigurationTimeCompat(): Provider<T> =
 	if (GradleVersion.current() < GradleVersion.version("6.5")) {
 		// Gradle < 6.5 doesn't have this function.
 		this

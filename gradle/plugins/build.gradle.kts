@@ -44,9 +44,16 @@ run {
 	tasks.named("detekt").configure { dependsOn(copyReusableSources) }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	compilerOptions.verbose = true
-	compilerOptions.allWarningsAsErrors = true
+kotlin {
+	compilerOptions {
+		allWarningsAsErrors = true
+		// TODO enable together with explicitApi()
+		//extraWarnings = true
+		freeCompilerArgs.addAll(
+			// Opt in to https://youtrack.jetbrains.com/issue/KT-59109 for now to see how to suppress warnings/errors.
+			"-Xrender-internal-diagnostic-names",
+		)
+	}
 }
 
 // Note: duplicated from DetektPlugin because can't apply project this build.gradle.kts is defining.
