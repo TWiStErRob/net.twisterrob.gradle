@@ -1,7 +1,6 @@
 import net.twisterrob.gradle.build.dsl.libs
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	id("org.jetbrains.kotlin.jvm")
@@ -52,7 +51,7 @@ tasks.withType<GroovyCompile>().configureEach {
 	groovyOptions.optimizationOptions!!["indy"] = true
 }
 
-tasks.withType<KotlinCompile>().configureEach {
+kotlin {
 	compilerOptions {
 		languageVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
 		apiVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
