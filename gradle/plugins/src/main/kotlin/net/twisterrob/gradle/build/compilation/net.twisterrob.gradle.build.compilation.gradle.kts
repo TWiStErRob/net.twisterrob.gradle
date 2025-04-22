@@ -53,10 +53,16 @@ tasks.withType<GroovyCompile>().configureEach {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-	compilerOptions.verbose = true
-	compilerOptions.languageVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
-	compilerOptions.apiVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
-	compilerOptions.jvmTarget = libs.versions.java.map(JvmTarget::fromTarget)
-	compilerOptions.suppressWarnings = false
-	compilerOptions.allWarningsAsErrors = true
+	compilerOptions {
+		verbose = true
+		languageVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
+		apiVersion = libs.versions.kotlin.language.map(KotlinVersion::fromVersion)
+		jvmTarget = libs.versions.java.map(JvmTarget::fromTarget)
+		suppressWarnings = false
+		allWarningsAsErrors = true
+		freeCompilerArgs.addAll(
+			// Opt in to https://youtrack.jetbrains.com/issue/KT-59109 for now to see how to suppress warnings/errors.
+			"-Xrender-internal-diagnostic-names",
+		)
+	}
 }
