@@ -73,40 +73,6 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 	}
 	// Useful link: https://stackoverflow.com/questions/11314604/how-to-set-saxon-as-the-xslt-processor-in-java
 	return XMLOutputFactory.newInstance()
-		.apply @Suppress("KDocUnresolvedReference") {
-			// AGP 7.1.1 pulls in Dokka which pulls in woodstox, so let's configure it to match test style.
-			// https://github.com/FasterXML/woodstox#configuration
-			/**
-			 * Enable to consistently use double quotes for all attributes.
-			 * @see com.ctc.wstx.api.WstxOutputProperties.P_USE_DOUBLE_QUOTES_IN_XML_DECL
-			 * @since Discovered via ViolationsRendererTest.
-			 */
-			safeSetProperty("com.ctc.wstx.useDoubleQuotesInXmlDecl", true)
-			/**
-			 * Enable to make the output nicer looking.
-			 * @see com.ctc.wstx.api.WstxOutputProperties.P_ADD_SPACE_AFTER_EMPTY_ELEM
-			 * @since Discovered via ViolationsRendererTest.
-			 */
-			safeSetProperty("com.ctc.wstx.addSpaceAfterEmptyElem", true)
-			/**
-			 * Disable to do writeStartElement/writeEndElement as called, no implicit writeEmptyElement.
-			 * @see org.codehaus.stax2.XMLOutputFactory2.P_AUTOMATIC_EMPTY_ELEMENTS
-			 * @since Discovered via ViolationsRendererTest.
-			 */
-			safeSetProperty("org.codehaus.stax2.automaticEmptyElements", false)
-			/**
-			 * Disable to allow writing hand-split <![CDATA[ ... ]]> blocks. See [escapeForCData].
-			 * @see com.ctc.wstx.api.WstxOutputProperties.P_OUTPUT_VALIDATE_CONTENT
-			 * @since Discovered via HtmlReportTaskTest.
-			 */
-			safeSetProperty("com.ctc.wstx.outputValidateContent", false)
-		}
-}
-
-private fun XMLOutputFactory.safeSetProperty(name: String, value: Any?) {
-	if (this.isPropertySupported(name)) {
-		this.setProperty(name, value)
-	}
 }
 
 /**
