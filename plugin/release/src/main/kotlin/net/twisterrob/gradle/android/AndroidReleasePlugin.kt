@@ -85,8 +85,7 @@ abstract class AndroidReleasePlugin : BasePlugin() {
 
 			archiveFileName.convention(
 				variant.applicationId.zip(out.versionCode, out.versionName) { applicationId, versionCode, versionName ->
-					@Suppress("UnsafeCallOnNullableType") // Strange API, an output without code/name is unlikely here.
-					val versionCodeL = versionCode!!.toLong()
+					val versionCodeL = versionCode.toLong()
 					version.formatArtifactName(project, "archive", applicationId, versionCodeL, versionName) + ".zip"
 				}
 			)
