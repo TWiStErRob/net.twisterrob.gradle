@@ -3,8 +3,11 @@ package net.twisterrob.gradle.pmd
 import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.Project
 import java.io.File
+import javax.inject.Inject
 
-open class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
+open class PmdTaskCreator @Inject constructor(
+	project: Project
+) : VariantTaskCreator<PmdTask>(
 	project,
 	"pmd",
 	"pmd",
