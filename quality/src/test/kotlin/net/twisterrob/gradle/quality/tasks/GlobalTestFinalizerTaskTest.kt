@@ -77,11 +77,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 		}
 
 		result.assertUpToDate(":test")
-		if (GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion) {
-			result.assertNoSource(":testReport")
-		} else {
-			result.assertSuccess(":testReport")
-		}
+		result.assertNoSource(":testReport")
 		result.assertNoOutputLine(Regex(""".*failing tests.*"""))
 		result.assertNoOutputLine(Regex(""".*See the report at.*"""))
 	}
@@ -104,11 +100,7 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 			run(script, "testReport")
 		}
 
-		if (GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion) {
-			result.assertNoSource(":testReport")
-		} else {
-			result.assertSuccess(":testReport")
-		}
+		result.assertNoSource(":testReport")
 		assertThat(result.tasks, hasSize(1))
 		result.assertNoOutputLine(Regex(""".*failing tests.*"""))
 		result.assertNoOutputLine(Regex(""".*See the report at.*"""))

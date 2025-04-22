@@ -4,11 +4,9 @@ import net.twisterrob.gradle.BaseIntgTest
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertNoSource
-import net.twisterrob.gradle.test.assertSkipped
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.assertUpToDate
 import net.twisterrob.gradle.test.root
-import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
 import org.hamcrest.io.FileMatchers.anExistingFile
@@ -35,11 +33,7 @@ class GradlePluginIntgTest : BaseIntgTest() {
 
 		val result = gradle.run(script, "debugWrapper").build()
 
-		if (GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion) {
-			result.assertNoSource(":debugWrapper")
-		} else {
-			result.assertSkipped(":debugWrapper")
-		}
+		result.assertNoSource(":debugWrapper")
 	}
 
 	@Test fun `generates gradled if gradlew exists`() {

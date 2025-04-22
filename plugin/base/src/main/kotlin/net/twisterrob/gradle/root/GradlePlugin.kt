@@ -4,7 +4,6 @@ import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.register
-import org.gradle.util.GradleVersion
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class GradlePlugin : BasePlugin() {
@@ -17,11 +16,7 @@ abstract class GradlePlugin : BasePlugin() {
 			val wrapperFile = project.file("gradlew.bat")
 			description = "Generates a ${debugFile.name} script to start a Gradle task in debug mode."
 			group = "Build Setup"
-			if (GradleVersion.version("8.0") <= GradleVersion.current().baseVersion) {
-				inputs.file(wrapperFile).skipWhenEmpty()
-			} else {
-				onlyIf { wrapperFile.exists() }
-			}
+			inputs.file(wrapperFile).skipWhenEmpty()
 			outputs.file(debugFile)
 			doLast {
 				debugFile.outputStream().use { out ->
