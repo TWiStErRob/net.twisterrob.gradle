@@ -45,6 +45,9 @@ T : VerificationTask {
 	) {
 		project.plugins.apply(pluginName)
 		val eachTask = createGlobalTask()
+		// Probably false positive:
+		// > Unsafe use of a nullable receiver of type DomainObjectSet<CapturedType(out [Suppress] BaseVariant)>
+		@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 		variants.configureEach { createTaskForVariant(it, eachTask) }
 		project.afterEvaluate {
 			project.tasks.register("${baseName}All", taskClass, variantsConfig(variants))
