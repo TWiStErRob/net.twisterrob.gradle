@@ -1,0 +1,5 @@
+{
+  "gradle": { "state": "success", "deps": [ ] },
+  "task": { "state": "fromcache", "deps": ["gradle" ] },
+  "graph": { "state": "uptodate", "deps": [ "task", "gradle" ] }
+}

@@ -55,3 +55,15 @@ if (libs.versions.kotlin.build.get() < "2.2.0") {
 	val error: (String) -> Unit = if (isCI) ::error else logger::warn
 	error("KGP version changed, please review hack.")
 }
+
+/*
+allprojects {
+	afterEvaluate {
+		tasks.configureEach {
+			doLast {
+				Thread.sleep((Math.random() * 1500).toLong())
+			}
+		}
+	}
+}
+*/
