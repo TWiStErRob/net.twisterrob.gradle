@@ -17,6 +17,7 @@ import org.gradle.kotlin.dsl.withType
 import org.gradle.util.GradleVersion
 import org.gradle.work.DisableCachingByDefault
 import se.bjurr.violations.lib.model.SEVERITY
+import java.io.File
 
 @DisableCachingByDefault(because = "Base class is not cacheable yet. (Gradle 8.0)")
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
@@ -155,3 +156,38 @@ private val TestReport.testResultDirs: FileCollection
 		val method = TestReport::class.java.getDeclaredMethod("getTestResultDirs")
 		return method(this) as FileCollection
 	}
+
+/**
+ * Polyfill as reflective call, as this method was...
+ *  * TODO fill in if method stays after AGP 7/Gradle 7 culling.
+ *
+ * @see TestReport.getDestinationDirectory
+ */
+private var TestReport.destinationDir: File
+	@Deprecated(
+		message = "Replaced with TestReport.destinationDir.",
+		replaceWith = ReplaceWith("this.destinationDirectory.get().asFile"),
+	)
+	get() {
+		val method = TestReport::class.java.getDeclaredMethod("getDestinationDir")
+		return method(this) as File
+	}
+	@Deprecated(
+		message = "Replaced with TestReport.destinationDir.",
+		replaceWith = ReplaceWith("this.destinationDirectory.fileValue(value)"),
+	)
+	set(value) {
+		val method = TestReport::class.java.getDeclaredMethod("setDestinationDir", File::class.java)
+		method(this, value)
+	}
+
+/**
+ * Polyfill as reflective call, as this method was...
+ *  * TODO fill in if method stays after AGP 7/Gradle 7 culling.
+ *
+ * @see TestReport.getTestResults
+ */
+private fun TestReport.reportOn(vararg results: Any?) {
+	val method = TestReport::class.java.getDeclaredMethod("reportOn", Array<Any?>::class.java)
+	method(this, results)
+}
