@@ -16,7 +16,6 @@ import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.VerificationTask
 import org.gradle.kotlin.dsl.named
-import java.io.File
 import java.util.Locale
 
 open class VariantTaskCreator<T>(
@@ -45,15 +44,7 @@ T : VerificationTask {
 		androidComponents.onVariants { variant ->
 				createTaskForVariant(variant, eachTask)
 		}
-//		project.afterEvaluate {
-//			project.tasks.register("${baseName}All", taskClass, variantsConfig(variants))
-//		}
 	}
-
-//	open fun variantsConfig(
-//		variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
-//	): VariantTaskCreator<T>.DefaultVariantsTaskConfig =
-//		DefaultVariantsTaskConfig(taskConfigurator(), variants)
 
 	open fun variantConfig(
 		variant: Variant,
@@ -82,22 +73,6 @@ T : VerificationTask {
 		val variantTask = project.tasks.register(taskName, taskClass, variantConfig(variant))
 		eachTask.configure { it.dependsOn(variantTask) }
 	}
-
-//	open inner class DefaultVariantsTaskConfig(
-//		private val configurator: DefaultTaskConfig,
-//		private val variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
-//	) : Action<T> {
-//
-//		override fun execute(task: T) {
-//			val variantNames = variants.joinToString(", ") { it.name }
-//			task.description = "Run ${baseName} batched on variants: ${variantNames}"
-//			task.checkTargetName = ALL_VARIANTS_NAME
-//			configurator.setupConfigLocations(task)
-//			configurator.setupSources(task, variants)
-//			configurator.setupReports(task)
-//			checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
-//		}
-//	}
 
 	open inner class DefaultVariantTaskConfig(
 		private val configurator: DefaultTaskConfig,
