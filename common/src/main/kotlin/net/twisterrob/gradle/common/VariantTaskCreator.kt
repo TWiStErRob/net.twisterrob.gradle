@@ -42,7 +42,7 @@ T : VerificationTask {
 		project.plugins.apply(pluginName)
 		val eachTask = createGlobalTask()
 		androidComponents.onVariants { variant ->
-				createTaskForVariant(variant, eachTask)
+			createTaskForVariant(variant, eachTask)
 		}
 	}
 
