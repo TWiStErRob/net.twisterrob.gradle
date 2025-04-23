@@ -34,7 +34,7 @@ abstract class BasePlugin : Plugin<Project> {
 	companion object {
 		@VisibleForTesting
 		internal fun checkGradleVersion(current: GradleVersion) {
-			val required = GradleVersion.version("8.2.1")
+			val required = GradleVersion.version("8.2")
 			if (current.baseVersion < required) {
 				val file = File("gradle/wrapper/gradle-wrapper.properties")
 				throw BuildException(
