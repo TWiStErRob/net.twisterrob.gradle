@@ -45,6 +45,7 @@
       * Run `KotlinPluginIntgTest.can compile Kotlin` to fix trivial Kotlin issues.
       * Run `AndroidBuildPluginIntgTest.can override compileSdk (debug)` to fix trivial Android issues.
       * Run `AndroidBuildPluginIntgTest.can disable buildConfig decoration (debug)` to fix more Android/Kotlin issues.
+      * Run `HtmlReportTaskTest.task is re-executed when lint results are changed` to fix Lint issues.
       * Run `gradlew test --continue testReport` to find outliers.
       * Repeat the same for other non-default matrix combinations in gradle.properties (e.g. oldest)
       * Let the CI run all tests and fix as necessary.
