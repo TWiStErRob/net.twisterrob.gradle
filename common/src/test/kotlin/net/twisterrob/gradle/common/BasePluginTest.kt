@@ -42,7 +42,6 @@ class BasePluginTest {
 		verifyVersionAllowed("8.3")
 		verifyVersionAllowed("8.10")
 		verifyVersionAllowed("8.10.2")
-		verifyVersionAllowed("9.0-milestone-2")
 	}
 
 	@Test fun `passes compatible version`() {

@@ -11,7 +11,6 @@ fun nextMajorVersion(current: GradleVersion): GradleVersion =
 fun nextMajorVersionNumber(current: GradleVersion): Int {
 	@Suppress("detekt.MagicNumber")
 	val nextMajor = when {
-		current.baseVersion >= GradleVersion.version("9.0") -> 10
 		current.baseVersion >= GradleVersion.version("8.0") -> 9
 		current.baseVersion >= GradleVersion.version("7.0") -> 8
 		current.baseVersion >= GradleVersion.version("6.3") -> 7
