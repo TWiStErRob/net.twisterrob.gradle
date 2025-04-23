@@ -459,39 +459,6 @@ jobs:
         #test-task: []
         include:
 
-          - name: "AGP 8.1.x on Gradle 8.0+"
-            gradle: '8.0.2'
-            java: '17'
-            agp: '8.1.4'
-            kotlin: '1.8.22'
-            android: '35'
-            build-tools: '33.0.1'
-            test-task: 'testReport :quality:tests'
-          - name: "AGP 8.1.x on Gradle 8.0+ - plugin"
-            gradle: '8.0.2'
-            java: '17'
-            agp: '8.1.4'
-            kotlin: '1.8.22'
-            android: '35'
-            build-tools: '33.0.1'
-            test-task: 'testReport :plugin:tests'
-          - name: "AGP 8.1.x on Gradle 8.x"
-            gradle: '8.14-rc-2'
-            java: '17'
-            agp: '8.1.4'
-            kotlin: '1.8.22'
-            android: '35'
-            build-tools: '33.0.1'
-            test-task: 'testReport :quality:tests'
-          - name: "AGP 8.1.x on Gradle 8.x - plugin"
-            gradle: '8.14-rc-2'
-            java: '17'
-            agp: '8.1.4'
-            kotlin: '1.8.22'
-            android: '35'
-            build-tools: '33.0.1'
-            test-task: 'testReport :plugin:tests'
-
           - name: "AGP 8.2.x on Gradle 8.2+"
             gradle: '8.2.1'
             java: '17'
