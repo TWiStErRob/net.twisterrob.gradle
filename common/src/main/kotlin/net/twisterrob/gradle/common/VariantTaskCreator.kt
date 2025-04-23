@@ -121,27 +121,8 @@ T : VerificationTask {
 				)
 				return
 			}
-//			val relativeBuildPath = projectPath.relativize(buildPath)
 
-			// start with the whole project
-			task.source(projectPath)
-
-			// include whatever needs to be included
-			val javaFolders =
-				variant.sources.java!!.all.get().map { dir ->
-						// build relative path (e.g. src/main/java) and
-						// append a trailing "/" for include to treat it as recursive
-						projectPath.relativize(dir.asFile.toPath()).toString() + File.separator
-				}
-			task.include(javaFolders)
-
-//			variants.forEach { variant ->
-//				// exclude generated code
-//				// "source" is hard-coded in VariantScopeImpl, e.g. getAidlSourceOutputDir
-//				// single-star represents r|buildConfig|aidl|rs|etc.
-//				// double-star is the package name
-//				task.exclude("${relativeBuildPath}/${FD_GENERATED}/source/*/${variant.name}/**/*.java")
-//			}
+			task.source( variant.sources.java?.all)
 		}
 
 		open fun setupReports(task: T, suffix: String? = null) {

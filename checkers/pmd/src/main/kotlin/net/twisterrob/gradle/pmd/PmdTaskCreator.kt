@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.pmd
 
+import com.android.build.api.variant.Variant
 import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.Project
 import java.io.File
@@ -44,49 +45,29 @@ open class PmdTaskCreator @Inject constructor(
 						task.project.files(task.ruleSetFiles.map { it.parentFile })
 			}
 
-//			override fun setupSources(
-//				task: PmdTask,
-//				variants: Collection<@Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant>
-//			) {
-//				super.setupSources(task, variants)
-//
-//				@Suppress("detekt.MaxChainedCallsOnSameLine")
-//				val buildPath = task.project.layout.buildDirectory.get().asFile.toPath()
-//				@Suppress("detekt.MaxChainedCallsOnSameLine")
-//				val projectPath = task.project.layout.projectDirectory.asFile.toPath()
-//				if (!buildPath.startsWith(projectPath)) {
-//					task.logger.warn(
-//						"""
-//							|Cannot set up ${task} source folders,
-//							|	because the build directory ${buildPath}
-//							|	needs to be inside the project directory ${projectPath}.
-//						""".trimMargin().replace("""\r?\n\t*""".toRegex(), " ")
-//					)
-//					return
-//				}
-//
-//				task.include(variants
-//					.asSequence()
-//					.flatMap { it.sourceSets }
-//					.flatMap { it.resDirectories }
-//					.map { dir ->
-//						// build relative path (e.g. src/main/res) and
-//						// append a trailing "/" for include to treat it as recursive
-//						projectPath.relativize(dir.toPath()).toString() + File.separator
-//					}
-//					.toList()
-//				)
-//
-//				task.include(variants
-//					.asSequence()
-//					.flatMap { it.sourceSets }
-//					.map { it.manifestFile }
-//					.map { file ->
-//						// build relative path (e.g. src/main/AndroidManifest.xml)
-//						projectPath.relativize(file.toPath()).toString()
-//					}
-//					.toList()
-//				)
-//			}
+			override fun setupSources(
+				task: PmdTask,
+				variant: Variant
+			) {
+				super.setupSources(task, variant)
+
+				@Suppress("detekt.MaxChainedCallsOnSameLine")
+				val buildPath = task.project.layout.buildDirectory.get().asFile.toPath()
+				@Suppress("detekt.MaxChainedCallsOnSameLine")
+				val projectPath = task.project.layout.projectDirectory.asFile.toPath()
+				if (!buildPath.startsWith(projectPath)) {
+					task.logger.warn(
+						"""
+							|Cannot set up ${task} source folders,
+							|	because the build directory ${buildPath}
+							|	needs to be inside the project directory ${projectPath}.
+						""".trimMargin().replace("""\r?\n\t*""".toRegex(), " ")
+					)
+					return
+				}
+
+				task.source(variant.sources.res?.all)
+				task.source(variant.sources.manifests.all)
+			}
 		}
 }
