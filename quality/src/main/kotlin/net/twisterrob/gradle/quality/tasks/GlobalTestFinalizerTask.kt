@@ -7,6 +7,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.testing.Test
@@ -19,8 +20,16 @@ import se.bjurr.violations.lib.model.SEVERITY
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class GlobalTestFinalizerTask : TestReport() {
 
+	/**
+	 * Need to save the value to a field, so that we can query the provider in @TaskAction.
+	 * Without this, usages (`.get()`) fail with the following exception:
+	 * > Querying the mapped value of task ':testReport' property 'destinationDirectory' before task ':testReport' has completed is not supported
+	 */
+	@get:Internal
+	internal val output: Provider<Directory> = project.layout.buildDirectory.dir("reports/tests/allTests")
+
 	init {
-		destinationDirectory.convention(project.layout.buildDirectory.dir("reports/tests/allTests"))
+		destinationDirectory.convention(output)
 	}
 
 	@TaskAction
@@ -39,7 +48,7 @@ abstract class GlobalTestFinalizerTask : TestReport() {
 		}
 		val errors = violations.filter { it.severity == SEVERITY.ERROR }
 		if (errors.isNotEmpty()) {
-			val report = destinationDirectory.map { it.file("index.html") }.get().asFile.toURI()
+			val report = output.map { it.file("index.html") }.get().asFile.toURI()
 			throw GradleException("There were ${errors.size} failing tests. See the report at: ${report}")
 		}
 	}
