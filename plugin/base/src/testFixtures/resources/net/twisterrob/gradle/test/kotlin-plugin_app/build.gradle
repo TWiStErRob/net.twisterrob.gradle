@@ -9,20 +9,10 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" >= "1.8.20") {
 	// 'kaptGenerateStubsDebugKotlin' task (current target is 17)
 	// jvm target compatibility should be set to the same Java version.
 	// The problem is that Android hardcodes Java 8, while Gradle chooses current, so we need to equalize things.
-	def version = JavaVersion.current()
 
 	allprojects {
 		project.plugins.withId("org.gradle.java-base") {
-			java.toolchain.languageVersion.set(JavaLanguageVersion.of(version.toString()))
-		}
-
-		def agp = "@net.twisterrob.test.android.pluginVersion@"
-		if (agp < "8.1.0" || ("8.1.0" <= agp && agp < "8.1.0-alpha09")) {
-			// if above: Lexicographic version of equivalent semantic comparison: agp < 8.1.0-alpha09.
-			project.plugins.withType(com.android.build.gradle.internal.plugins.BasePlugin).configureEach {
-				android.compileOptions.sourceCompatibility = version
-				android.compileOptions.targetCompatibility = version
-			}
+			java.toolchain.languageVersion.set(JavaLanguageVersion.of(JavaVersion.current().toString()))
 		}
 	}
 }
