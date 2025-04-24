@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
+<issues format="6" by="lint 8.9.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.9.2)" variant="all" version="8.9.2">
 
     <issue
         id="InternalGradleApiUsage"
@@ -10,6 +10,28 @@
             file="src/main/kotlin/net/twisterrob/gradle/common/BaseQualityExtension.kt"
             line="4"
             column="1"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs (method compile from org.gradle.api.internal.file.pattern.PatternMatcherFactory)"
+        errorLine1="  val exactException = PatternMatcherFactory.compile(true, &quot;${basePrefix}/*&quot;)"
+        errorLine2="                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/common/BaseQualityExtension.kt"
+            line="24"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs (method matches from org.gradle.api.internal.file.pattern.PathMatcher)"
+        errorLine1="   if (file.isDirectory &amp;&amp; exactException.matches(file.relativePath.segments, 0)) {"
+        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/common/BaseQualityExtension.kt"
+            line="29"
+            column="28"/>
     </issue>
 
 </issues>

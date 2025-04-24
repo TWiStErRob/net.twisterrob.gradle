@@ -43,7 +43,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 			defaultConfig.proguardFile(defaultAndroidRulesFile)
 			defaultConfig.proguardFile(myProguardRulesFile)
 
-			project.plugins.withType<AppPlugin> {
+			project.plugins.withType<AppPlugin>().configureEach {
 				val release = buildTypes["release"]
 				release.setMinifyEnabled(true)
 			}
@@ -93,7 +93,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 		if (autoDexMainFile.exists() && autoDexMainFile.isFile) {
 			defaultConfig.multiDexKeepProguard = autoDexMainFile
 		}
-		project.plugins.withType<LibraryPlugin> {
+		project.plugins.withType<LibraryPlugin>().configureEach {
 			val autoConsumerFile = project.file("src/main/consumer.pro")
 			if (autoConsumerFile.exists() && autoConsumerFile.isFile) {
 				defaultConfig.consumerProguardFiles(autoConsumerFile)

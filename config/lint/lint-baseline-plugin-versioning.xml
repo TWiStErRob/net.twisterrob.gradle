@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
+<issues format="6" by="lint 8.9.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.9.2)" variant="all" version="8.9.2">
 
     <issue
         id="GradleProjectIsolation"
-        message="Avoid using method getRootProject"
+        message="Use isolated.rootProject instead of getRootProject"
         errorLine1="  val rootDir = project.rootProject.layout.projectDirectory"
         errorLine2="                        ~~~~~~~~~~~">
         <location
@@ -14,7 +14,7 @@
 
     <issue
         id="GradleProjectIsolation"
-        message="Avoid using method getRootProject"
+        message="Use isolated.rootProject instead of getRootProject"
         errorLine1="  val rootDir = project.rootProject.layout.projectDirectory"
         errorLine2="                        ~~~~~~~~~~~">
         <location
