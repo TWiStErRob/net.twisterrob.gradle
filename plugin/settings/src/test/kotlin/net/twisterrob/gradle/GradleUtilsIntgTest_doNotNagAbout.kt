@@ -182,9 +182,9 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 			apply plugin: "org.gradle.java"
 			// Do something that triggers many deprecation nags.
 			for (int i in 1..1000) {
-				${nagManyTimes()}
+				${nagManyTimes().prependIndent("\t\t\t\t").trimStart()}
 			}
-			${nagOnce()}
+			${nagOnce().prependIndent("\t\t\t").trimStart()}
 		""".trimIndent()
 
 		val result = gradle.runBuild {
@@ -198,8 +198,16 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	private fun nagManyTimes(): String =
 		@Suppress("detekt.UseIfInsteadOfWhen")
 		when {
-			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
+			GradleVersion.version("8.14") <= gradle.gradleVersion.baseVersion -> {
 				"""
+					//noinspection GrDeprecatedAPIUsage
+					gradle.startParameter.configurationCacheRequested
+				""".trimIndent()
+			}
+			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
+				// Removed in 9.0
+				"""
+					//noinspection GrDeprecatedAPIUsage
 					repositories.jcenter()
 				""".trimIndent()
 			}
@@ -210,6 +218,16 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 
 	private fun BuildResult.verifyNagManyTimes() {
 		when {
+			GradleVersion.version("8.14") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"The StartParameter.isConfigurationCacheRequested property has been deprecated. " +
+							"This is scheduled to be removed in Gradle 10.0. " +
+							"Please use 'configurationCache.requested' property on 'BuildFeatures' service instead. " +
+							"Consult the upgrading guide for further information: " +
+							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_8.html#deprecated_startparameter_is_configuration_cache_requested"
+				)
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:5\)"""))
+			}
 			GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion -> {
 				assertHasOutputLine(
 					"The RepositoryHandler.jcenter() method has been deprecated. " +
@@ -220,7 +238,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_6.html" +
 							"#jcenter_deprecation"
 				)
-				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:4\)"""))
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:5\)"""))
 			}
 			GradleVersion.version("7.2") <= gradle.gradleVersion.baseVersion -> {
 				assertHasOutputLine(
@@ -232,7 +250,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_6.html" +
 							"#jcenter_deprecation"
 				)
-				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:4\)"""))
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:5\)"""))
 			}
 			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
 				assertHasOutputLine(
@@ -244,7 +262,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_6.html" +
 							"#jcenter_deprecation"
 				)
-				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:4\)"""))
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:5\)"""))
 			}
 			else -> {
 				error("Cannot nag many times for ${gradle.gradleVersion}")
@@ -283,7 +301,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_7.html" +
 							"#org_gradle_util_reports_deprecations"
 				)
-				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:8\)"""))
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:9\)"""))
 			}
 			GradleVersion.version("7.0") <= gradle.gradleVersion.baseVersion -> {
 				assertHasOutputLine(
@@ -293,7 +311,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 							"See https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/custom_gradle_types.html" +
 							"#domainobjectset for more details."
 				)
-				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:8\)"""))
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:9\)"""))
 			}
 			else -> {
 				error("Cannot nag once for ${gradle.gradleVersion}")
