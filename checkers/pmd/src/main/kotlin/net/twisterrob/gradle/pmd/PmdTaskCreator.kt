@@ -45,10 +45,7 @@ open class PmdTaskCreator @Inject constructor(
 						task.project.files(task.ruleSetFiles.map { it.parentFile })
 			}
 
-			override fun setupSources(
-				task: PmdTask,
-				variant: Variant
-			) {
+			override fun setupSources(task: PmdTask, variant: Variant) {
 				super.setupSources(task, variant)
 
 				@Suppress("detekt.MaxChainedCallsOnSameLine")

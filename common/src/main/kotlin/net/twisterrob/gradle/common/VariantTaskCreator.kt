@@ -36,9 +36,7 @@ T : VerificationTask {
 			return quality.extensions.getByType(extensionClass)
 		}
 
-	fun applyTo(
-		androidComponents: AndroidComponentsExtension<*, *, *>
-	) {
+	fun applyTo(androidComponents: AndroidComponentsExtension<*, *, *>) {
 		project.plugins.apply(pluginName)
 		val eachTask = createGlobalTask()
 		androidComponents.onVariants { variant ->
@@ -46,9 +44,7 @@ T : VerificationTask {
 		}
 	}
 
-	open fun variantConfig(
-		variant: Variant,
-	): VariantTaskCreator<T>.DefaultVariantTaskConfig =
+	open fun variantConfig(variant: Variant): VariantTaskCreator<T>.DefaultVariantTaskConfig =
 		DefaultVariantTaskConfig(taskConfigurator(), variant)
 
 	open fun taskConfigurator(): VariantTaskCreator<T>.DefaultTaskConfig =
@@ -102,10 +98,7 @@ T : VerificationTask {
 		 *
 		 * @see <a href="https://github.com/gradle/gradle/issues/3994">gradle/gradle#3994</a>
 		 */
-		open fun setupSources(
-			task: T,
-			variant: Variant
-		) {
+		open fun setupSources(task: T, variant: Variant) {
 			// TODO classpath
 			@Suppress("detekt.MaxChainedCallsOnSameLine")
 			val buildPath = task.project.layout.buildDirectory.get().asFile.toPath()

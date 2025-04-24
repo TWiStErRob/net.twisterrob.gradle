@@ -23,9 +23,7 @@ abstract class BaseQualityPlugin(
 		// level of indirection with base is to prevent loading classes in project not having Android
 		project.plugins.withId("com.android.base") {
 			val taskCreator = project.objects.newInstance(taskCreatorType)
-			project.androidComponents {
-				taskCreator.applyTo(it)
-			}
+			project.androidComponents(taskCreator::applyTo)
 		}
 	}
 }
