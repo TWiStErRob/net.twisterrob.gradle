@@ -74,14 +74,14 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			decorateBuildConfig(project, twisterrob)
 		}
 
-		project.plugins.withType<AppPlugin> {
+		project.plugins.withType<AppPlugin>().configureEach {
 			if (twisterrob.isDecorateBuildConfig) {
 				project.androidComponentsApplication.onVariants { variant ->
 					addPackageName(variant)
 				}
 			}
 		}
-		project.plugins.withType<BasePlugin> {
+		project.plugins.withType<BasePlugin>().configureEach {
 			project.androidComponents.onVariants { variant ->
 				// This needs to be inside onVariants,
 				// because it's not possible to register onVariants callback in afterEvaluate.
@@ -92,7 +92,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				}
 			}
 		}
-		project.plugins.withType<AppPlugin> {
+		project.plugins.withType<AppPlugin>().configureEach {
 			project.androidComponentsApplication.onVariants { variant ->
 				registerRunTask(project, variant)
 			}
@@ -114,7 +114,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 		private fun NamedDomainObjectContainer<BuildType>.configureSuffixes(project: Project) {
 			configure("debug") { debug ->
-				project.plugins.withType<AppPlugin> {
+				project.plugins.withType<AppPlugin>().configureEach {
 					// TODO make debug buildTypes configurable, use name of buildType as suffix
 					debug.setApplicationIdSuffix(".${debug.name}")
 				}

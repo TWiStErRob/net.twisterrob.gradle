@@ -1,5 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
+<issues format="6" by="lint 8.9.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.9.2)" variant="all" version="8.9.2">
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs"
+        errorLine1=") : TestReport(reportType, resultDir, reportDir) {"
+        errorLine2="    ~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="12"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method getClasses from com.android.build.gradle.internal.test.report.PackageTestResults)"
+        errorLine1="  val allClassResults = model.packages.flatMap { it.classes }"
+        errorLine2="                                                 ~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="16"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method getPackages from com.android.build.gradle.internal.test.report.AllTestResults)"
+        errorLine1="  val allClassResults = model.packages.flatMap { it.classes }"
+        errorLine2="                        ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="16"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method getTestResultsMap from com.android.build.gradle.internal.test.report.ClassTestResults)"
+        errorLine1="  val results = classResults.testResultsMap"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="23"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method addTest from com.android.build.gradle.internal.test.report.ClassTestResults)"
+        errorLine1="     val test = classResults.addTest("
+        errorLine2="                ^">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="28"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method getFlavor from com.android.build.gradle.internal.test.report.TestResult)"
+        errorLine1="      testName, 0, device, template.project, template.flavor"
+        errorLine2="                                             ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="29"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method getProject from com.android.build.gradle.internal.test.report.TestResult)"
+        errorLine1="      testName, 0, device, template.project, template.flavor"
+        errorLine2="                           ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="29"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method getFlavor from com.android.build.gradle.internal.test.report.TestResult)"
+        errorLine1="     test.ignored(device, template.project, template.flavor)"
+        errorLine2="                                            ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="31"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method getProject from com.android.build.gradle.internal.test.report.TestResult)"
+        errorLine1="     test.ignored(device, template.project, template.flavor)"
+        errorLine2="                          ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="31"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (method ignored from com.android.build.gradle.internal.test.report.TestResult)"
+        errorLine1="     test.ignored(device, template.project, template.flavor)"
+        errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="31"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs"
+        errorLine1="    .invoke(this) as AllTestResults"
+        errorLine2="                     ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/com/android/build/gradle/internal/test/report/ResilientTestReport.kt"
+            line="49"
+            column="22"/>
+    </issue>
 
     <issue
         id="InternalAgpApiUsage"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
+<issues format="6" by="lint 8.9.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.9.2)" variant="all" version="8.9.2">
 
     <issue
         id="InternalAgpApiUsage"
@@ -43,6 +43,17 @@
             file="src/main/kotlin/net/twisterrob/gradle/android/AndroidMinificationPlugin.kt"
             line="11"
             column="1"/>
+    </issue>
+
+    <issue
+        id="InternalAgpApiUsage"
+        message="Avoid using internal Android Gradle Plugin APIs (field variantName from com.android.build.gradle.internal.tasks.AndroidVariantTask)"
+        errorLine1="    if (obfuscationTask.variantName == variant.name) {"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/android/AndroidMinificationPlugin.kt"
+            line="107"
+            column="9"/>
     </issue>
 
 </issues>
