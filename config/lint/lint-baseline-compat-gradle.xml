@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
+<issues format="6" by="lint 8.9.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.9.2)" variant="all" version="8.9.2">
 
     <issue
         id="InternalGradleApiUsage"
@@ -25,6 +25,28 @@
 
     <issue
         id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs (method deprecatePlugin from org.gradle.internal.deprecation.DeprecationLogger)"
+        errorLine1=" val builder: DeprecationMessageBuilder&lt;*> = DeprecationLogger"
+        errorLine2="                                             ^">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/internal/deprecation/DeprecatedPlugin.kt"
+            line="48"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs (method replaceWith from org.gradle.internal.deprecation.DeprecationMessageBuilder.WithReplacement)"
+        errorLine1=" val builder: DeprecationMessageBuilder&lt;*> = DeprecationLogger"
+        errorLine2="                                             ^">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/internal/deprecation/DeprecatedPlugin.kt"
+            line="48"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
         message="Avoid using internal Gradle APIs"
         errorLine1="import org.gradle.api.internal.GradleInternal"
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
@@ -32,6 +54,17 @@
             file="src/main/kotlin/net/twisterrob/gradle/ext/ProjectExtensions.kt"
             line="5"
             column="1"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs (method getSettings from org.gradle.api.internal.GradleInternal)"
+        errorLine1=" get() = (this.gradle as GradleInternal).settings"
+        errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/ext/ProjectExtensions.kt"
+            line="8"
+            column="10"/>
     </issue>
 
     <issue

@@ -45,7 +45,7 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 			override fun setupReports(task: CheckStyleTask, suffix: String?) {
 				super.setupReports(task, suffix)
 				with(task.reports.html) {
-					val xsl = task.project.rootProject.file("config/checkstyle/checkstyle-html.xsl")
+					val xsl = task.project.rootDir.resolve("config/checkstyle/checkstyle-html.xsl")
 					if (xsl.exists()) {
 						stylesheet = task.project.resources.text.fromFile(xsl)
 					}

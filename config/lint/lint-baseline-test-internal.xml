@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.8.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.8.0)" variant="all" version="8.8.0">
+<issues format="6" by="lint 8.9.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.9.2)" variant="all" version="8.9.2">
 
     <issue
         id="InternalGradleApiUsage"
@@ -32,6 +32,39 @@
             file="src/main/kotlin/net/twisterrob/gradle/test/GradleTestKitDirRelocator.kt"
             line="5"
             column="1"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs (method getInstance from org.gradle.internal.SystemProperties)"
+        errorLine1="  val props = SystemProperties.getInstance()"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/test/GradleTestKitDirRelocator.kt"
+            line="43"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs (method getUserName from org.gradle.internal.SystemProperties)"
+        errorLine1="  val dirName = &quot;.gradle-test-kit-${props.userName}-${workerId}&quot;"
+        errorLine2="                                    ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/test/GradleTestKitDirRelocator.kt"
+            line="44"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="InternalGradleApiUsage"
+        message="Avoid using internal Gradle APIs (method getJavaIoTmpDir from org.gradle.internal.SystemProperties)"
+        errorLine1="  testKitDir = File(props.javaIoTmpDir).resolve(dirName).absolutePath"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/net/twisterrob/gradle/test/GradleTestKitDirRelocator.kt"
+            line="46"
+            column="21"/>
     </issue>
 
 </issues>

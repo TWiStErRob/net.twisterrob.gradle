@@ -102,7 +102,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 		override fun preConfigure(project: Project, taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
 			project.allprojects.forEach { subproject ->
-				subproject.plugins.withType<AndroidBasePlugin> {
+				subproject.plugins.withType<AndroidBasePlugin>().configureEach {
 					subproject.configureReports(taskProvider)
 				}
 			}
