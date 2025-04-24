@@ -366,6 +366,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		""".trimIndent()
 
 	private fun calculateExceptionallyRealizedTasks(): List<String> {
+		@Suppress("detekt.UnnecessaryLet")
 		val minorVersion = gradle.gradleVersion.baseVersion
 			.version
 			.replace("""(\d+\.\d+)\.\d+""".toRegex(), "$1")
