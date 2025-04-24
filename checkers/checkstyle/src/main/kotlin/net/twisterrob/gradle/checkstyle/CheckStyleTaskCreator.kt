@@ -17,7 +17,7 @@ class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTas
 
 			override fun setupConfigLocations(task: CheckStyleTask) {
 				val subConfig = task.project.file("config/checkstyle/checkstyle.xml")
-				val rootConfig = task.project.rootProject.file("config/checkstyle/checkstyle.xml")
+				val rootConfig = task.project.rootDir.resolve("config/checkstyle/checkstyle.xml")
 				if (!task.configFile.exists() || (subConfig.exists() && rootConfig.exists())) {
 					if (!subConfig.exists() && !rootConfig.exists()) {
 						task.doFirst("Warn about missing configuration files.") {
