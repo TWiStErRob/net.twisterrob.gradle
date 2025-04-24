@@ -49,7 +49,6 @@ private class ExecuteAction : FlowAction<ExecuteAction.Parameters> {
 	}
 
 	override fun execute(parameters: Parameters) {
-		@Suppress("TYPE_MISMATCH") // It's declared nullable, it is nullable.
 		parameters.action.get().accept(parameters.failure.orNull)
 	}
 }

@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.vcs.git
 
-import net.twisterrob.gradle.ext.forUseAtConfigurationTimeCompat
 import net.twisterrob.gradle.vcs.VCSExtension
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
@@ -53,7 +52,6 @@ abstract class GitPluginExtension(
 	private inline fun <reified T : ValueSource<R, GitOperationParams>, R : Any> read(): R =
 		providers
 			.of(T::class.java) { it.parameters.gitDir.set(rootDir) }
-			.forUseAtConfigurationTimeCompat()
 			.get()
 
 	companion object {
