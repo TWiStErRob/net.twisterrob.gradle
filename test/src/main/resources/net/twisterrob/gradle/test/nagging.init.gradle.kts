@@ -113,7 +113,7 @@ doNotNagAboutForTest(
 
 // https://issuetracker.google.com/issues/408334529
 doNotNagAboutStackForTest(
-	"8.14" to "8.15",
+	"8.14" to "9.1",
 	"8.4" to "8.10",
 	// > Task :generateReleaseLintVitalReportModel
 	// Example test: AndroidMinificationPluginIntgTest.`default build setup minifies only release using AndroidX (debug) and (release)`
