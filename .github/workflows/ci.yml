@@ -741,7 +741,7 @@ jobs:
             test-task: 'testReport :plugin:tests'
 
           - name: "AGP stable on Gradle preview"
-            gradle: '8.14-rc-3' # https://services.gradle.org/distributions/
+            gradle: '9.0-milestone-3' # https://services.gradle.org/distributions/
             java: '17'
             agp: '8.9.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.1.20' # https://kotlinlang.org/docs/eap.html#build-details
@@ -749,7 +749,7 @@ jobs:
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
             test-task: 'testReport :quality:tests'
           - name: "AGP stable on Gradle preview - plugin"
-            gradle: '8.14-rc-3' # https://services.gradle.org/distributions/
+            gradle: '9.0-milestone-3' # https://services.gradle.org/distributions/
             java: '17'
             agp: '8.9.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.1.20' # https://kotlinlang.org/docs/eap.html#build-details

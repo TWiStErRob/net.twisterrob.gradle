@@ -90,21 +90,21 @@ doNotNagAboutPatternForTest(
 // https://github.com/gradle/gradle/issues/32422
 // https://issuetracker.google.com/issues/370546370
 doNotNagAboutForTest(
-	"8.13" to "8.15",
+	"8.13" to "9.1",
 	"8.2" to "8.10",
 	// > Configure project :
 	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
 	"Declaring an 'is-' property with a Boolean type has been deprecated. Starting with Gradle 9.0, this property will be ignored by Gradle. The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. Add a method named 'getCrunchPngs' with the same behavior and mark the old one with @Deprecated, or change the type of 'com.android.build.gradle.internal.dsl.BuildType\$AgpDecorated.isCrunchPngs' (and the setter) to 'boolean'. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties",
 )
 doNotNagAboutForTest(
-	"8.13" to "8.15",
+	"8.13" to "9.1",
 	"8.2" to "8.10",
 	// > Configure project :
 	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
 	"Declaring an 'is-' property with a Boolean type has been deprecated. Starting with Gradle 9.0, this property will be ignored by Gradle. The combination of method name and return type is not consistent with Java Bean property rules and will become unsupported in future versions of Groovy. Add a method named 'getUseProguard' with the same behavior and mark the old one with @Deprecated, or change the type of 'com.android.build.gradle.internal.dsl.BuildType.isUseProguard' (and the setter) to 'boolean'. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#groovy_boolean_properties",
 )
 doNotNagAboutForTest(
-	"8.13" to "8.15",
+	"8.13" to "9.1",
 	"8.2" to "8.10",
 	// > Configure project :
 	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
@@ -113,10 +113,24 @@ doNotNagAboutForTest(
 
 // https://issuetracker.google.com/issues/408334529
 doNotNagAboutStackForTest(
-	"8.14" to "8.15",
+	"8.14" to "9.1",
 	"8.4" to "8.10",
 	// > Task :generateReleaseLintVitalReportModel
 	// Example test: AndroidMinificationPluginIntgTest.`default build setup minifies only release using AndroidX (debug) and (release)`
 	"Retrieving attribute with a null key. This behavior has been deprecated. This will fail with an error in Gradle 10.0. Don't request attributes from attribute containers using null keys. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#null-attribute-lookup",
 	"at com.android.build.gradle.internal.ide.dependencies.ArtifactUtils.isAndroidProjectDependency(ArtifactUtils.kt:5",
 )
+
+if ("@net.twisterrob.test.kotlin.pluginVersion@" in "1.9.0".."1.9.25") {
+	// https://youtrack.jetbrains.com/issue/KT-64355
+	// https://youtrack.jetbrains.com/issue/KT-61457 was fixed, but then its fix deprecated again.
+	// Fixed in 2.0.0: https://github.com/JetBrains/kotlin/commit/e4050724190c4d4a25ed3aea7a26e7535bfa3e9a
+	// > Configure project : in all Kotlin tests
+	// Example test: KotlinPluginIntgTest.`can compile Kotlin`
+	doNotNagAboutStackForTest(
+		"9.0" to "9.1",
+		"0.0" to "100.0",
+		"The StartParameter.isConfigurationCacheRequested property has been deprecated. This is scheduled to be removed in Gradle 10.0. Please use 'configurationCache.requested' property on 'BuildFeatures' service instead. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#deprecated_startparameter_is_configuration_cache_requested",
+		"at org.jetbrains.kotlin.gradle.plugin.internal.DefaultConfigurationCacheStartParameterAccessor\$isConfigurationCacheRequested\$2.invoke(ConfigurationCacheStartParameterAccessor.kt:35)",
+	)
+}
