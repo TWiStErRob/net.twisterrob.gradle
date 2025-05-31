@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.fail
+import org.junit.jupiter.params.ParameterizedInvocationConstants.INDEX_PLACEHOLDER
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.ParameterizedTest.INDEX_PLACEHOLDER
 import org.junit.jupiter.params.provider.CsvSource
 import org.junitpioneer.jupiter.ClearSystemProperty
 import org.junitpioneer.jupiter.SetSystemProperty
