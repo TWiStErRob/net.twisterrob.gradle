@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.fail
+import org.junit.jupiter.params.ParameterizedInvocationConstants.INDEX_PLACEHOLDER
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.ParameterizedTest.INDEX_PLACEHOLDER
 import org.junit.jupiter.params.provider.CsvSource
 import org.junitpioneer.jupiter.ClearSystemProperty
 import org.junitpioneer.jupiter.SetSystemProperty
@@ -28,7 +28,7 @@ class AGPVersionsTest {
 
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
 		// This is not using AGPVersion() because Renovate needs to update this one. See "Update AGP version test.".
-		val expected = AGPVersion.parse("8.9.2")
+		val expected = AGPVersion.parse("8.9.3")
 
 		val actual = AGPVersions.CLASSPATH
 
