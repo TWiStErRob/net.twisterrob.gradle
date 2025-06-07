@@ -45,8 +45,8 @@ dependencies {
 		isTransitive = false
 	}
 
-	testImplementation("org.junit.jupiter:junit-jupiter:5.13.0")
-	testImplementation("org.junit.platform:junit-platform-launcher:1.13.0")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.13.1")
+	testImplementation("org.junit.platform:junit-platform-launcher:1.13.1")
 	testImplementation("org.mockito:mockito-core:5.18.0")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 	testImplementation("org.hamcrest:hamcrest:3.0")
