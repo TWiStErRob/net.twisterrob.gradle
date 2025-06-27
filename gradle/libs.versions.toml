@@ -3,7 +3,7 @@ java = "17"
 
 # Changelog: https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md
 # GitHub Releases: https://github.com/tomasbjerre/violations-lib/tags
-violations = "1.158.0"
+violations = "1.158.1"
 
 # JSR 305: Annotations for Software Defect Detection
 # Documentation: https://jcp.org/en/jsr/detail?id=305
@@ -56,7 +56,7 @@ kotlin-dsl = "6.1.1"
 junit4 = "4.13.2"
 # JUnit 5 = JUnit Platform ([junit-api]) + JUnit Jupiter ([junit-engine]) + JUnit Vintage ([junit-vintage])
 # Changelog: https://junit.org/junit5/docs/current/release-notes/index.html
-junit5 = "5.13.0"
+junit5 = "5.13.2"
 # GitHub Releases: https://github.com/junit-pioneer/junit-pioneer/releases
 junit5-pioneer = "2.3.0"
 
@@ -67,7 +67,7 @@ mockito = "5.18.0"
 # GitHub releases: https://github.com/nhaarman/mockito-kotlin/releases
 mockito-kotlin = "5.4.0"
 # GitHub releases: https://github.com/mockk/mockk/releases
-mockk = "1.14.2"
+mockk = "1.14.4"
 
 hamcrest = "3.0"
 
@@ -81,7 +81,7 @@ svnkit = "1.10.11"
 # Version history: https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
 # Changelog (Full): https://projects.eclipse.org/projects/technology.jgit
 # Changelog (Summary): https://wiki.eclipse.org/JGit/New_and_Noteworthy
-jgit = "7.2.1.202505142326-r"
+jgit = "7.3.0.202506031305-r"
 
 # Explicitly using an outdated version of diffuse, don't remember why.
 # Versions: https://github.com/JakeWharton/diffuse/tags
