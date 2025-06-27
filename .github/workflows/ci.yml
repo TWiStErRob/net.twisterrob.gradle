@@ -693,7 +693,7 @@ jobs:
           - name: "AGP 8.9.x on Gradle 8.11+"
             gradle: '8.11.1'
             java: '17'
-            agp: '8.9.2'
+            agp: '8.9.3'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -701,7 +701,7 @@ jobs:
           - name: "AGP 8.9.x on Gradle 8.11+ - plugin"
             gradle: '8.11.1'
             java: '17'
-            agp: '8.9.2'
+            agp: '8.9.3'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -709,7 +709,7 @@ jobs:
           - name: "AGP 8.9.x on Gradle 8.x"
             gradle: '8.14-rc-3'
             java: '17'
-            agp: '8.9.2'
+            agp: '8.9.3'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -717,7 +717,7 @@ jobs:
           - name: "AGP 8.9.x on Gradle 8.x - plugin"
             gradle: '8.14-rc-3'
             java: '17'
-            agp: '8.9.2'
+            agp: '8.9.3'
             kotlin: '1.8.22'
             android: '35'
             build-tools: '34.0.0'
@@ -726,7 +726,7 @@ jobs:
           - name: "AGP stable on Gradle stable"
             gradle: '8.13' # https://gradle.org/releases/
             java: '17'
-            agp: '8.9.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            agp: '8.9.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.1.20' # https://kotlinlang.org/docs/releases.html#release-details
             android: '35'
             build-tools: '34.0.0'
@@ -734,7 +734,7 @@ jobs:
           - name: "AGP stable on Gradle stable - plugin"
             gradle: '8.13' # https://gradle.org/releases/
             java: '17'
-            agp: '8.9.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            agp: '8.9.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.1.20' # https://kotlinlang.org/docs/releases.html#release-details
             android: '35'
             build-tools: '34.0.0'
@@ -743,7 +743,7 @@ jobs:
           - name: "AGP stable on Gradle preview"
             gradle: '9.0-milestone-3' # https://services.gradle.org/distributions/
             java: '17'
-            agp: '8.9.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            agp: '8.9.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.1.20' # https://kotlinlang.org/docs/eap.html#build-details
             android: '35'
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
@@ -751,7 +751,7 @@ jobs:
           - name: "AGP stable on Gradle preview - plugin"
             gradle: '9.0-milestone-3' # https://services.gradle.org/distributions/
             java: '17'
-            agp: '8.9.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            agp: '8.9.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.1.20' # https://kotlinlang.org/docs/eap.html#build-details
             android: '35'
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
