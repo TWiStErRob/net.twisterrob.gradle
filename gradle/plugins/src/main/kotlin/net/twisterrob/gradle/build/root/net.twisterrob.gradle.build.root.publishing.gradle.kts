@@ -11,8 +11,8 @@ nexusPublishing {
 	repositories {
 		sonatype {
 			// For :publish...PublicationToSonatypeRepository, projectVersion suffix chooses repo.
-			nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
-			snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+			nexusUrl = uri("https://ossrh-staging-api.central.sonatype.com/service/local/")
+			snapshotRepositoryUrl = uri("https://central.sonatype.com/repository/maven-snapshots/")
 
 			// For :closeAndReleaseSonatypeStagingRepository
 			// Set via -PsonatypeStagingProfileId to gradlew, or ORG_GRADLE_PROJECT_sonatypeStagingProfileId env var.
