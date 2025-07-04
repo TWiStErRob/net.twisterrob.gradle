@@ -11,8 +11,8 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
     * Assign drafted issues/PRs against the milestone (`gh issue edit ### --milestone x.y`)
  1. Upload
     * Set up credentials
-        * `sonatypeUsername` is the account name of https://s01.oss.sonatype.org/
-        * `sonatypePassword` is `sonatypeUsername`'s password
+        * `sonatypeUsername` is the generated user token username of https://central.sonatype.com/
+        * `sonatypePassword` is `sonatypeUsername`'s token
         * `signingKey` is GPG private armored key  
           (just the base64 part on one line, skip the last orphan part)
         * `signingPassword` is `signingKey`'s passphrase
@@ -24,14 +24,14 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       ```
     * Publish files to Sonatype
       ```shell
-      gradlew publishLibraryPublicationToSonatypeRepository publishPluginMavenPublicationToSonatypeRepository publishAllPluginMarkerMavenPublicationsToSonatypeRepository
+      gradlew publishLibraryPublicationToSonatypeRepository publishPluginMavenPublicationToSonatypeRepository publishAllPluginMarkerMavenPublicationsToSonatypeRepository :closeSonatypeStagingRepository
       ```  
       (Note: all tasks have to be executed at once, otherwise it creates multiple staging repositories.)
       * _If this fails, fix and push to Release PR._
-      * > Failed to load staging profiles, server at https://s01.oss.sonatype.org/service/local/ responded with status code 401, body:
+      * > Failed to load staging profiles, server at https://ossrh-staging-api.central.sonatype.com/service/local/ responded with status code 401, body:
 
         Means the username or password is wrong.
-    * Open [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories), log in and **close staging repository**; check output at console to validate.
+    * Open [Maven Central Repository > Deployments](https://central.sonatype.com/publishing), log in; check output at console to validate.
  1. Archive and final integration test.
     * Run `p:\repos\release\net.twisterrob.gradle\download-repo.bat`  
     * Use it in a real project from staging repository (update URL and version number!):
@@ -39,7 +39,7 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       repositories {
           exclusiveContent {
               forRepository {
-                  maven("https://s01.oss.sonatype.org/service/local/repositories/nettwisterrob-####/content/") {
+                  maven("https://ossrh-staging-api.central.sonatype.com/service/local/repositories/net.twisterrob--<guid>/content/") {
                       name = "Sonatype Staging for net.twisterrob"
                   }
               }
@@ -52,7 +52,7 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       ```
  1. Repeat previous steps as necessary.
  1. Merge the Release PR to `main`.
- 1. Release staging repository at [Sonatype Nexus Repository Manager](https://s01.oss.sonatype.org/#stagingRepositories)
+ 1. Publish deployment at [Maven Central Repository > Deployments](https://central.sonatype.com/publishing)
  1. Watch [Maven Central](https://repo1.maven.org/maven2/net/twisterrob/gradle/twister-quality/) for the artifact to appear. May take a few minutes.
 
 ## Prepare next release `x.z`

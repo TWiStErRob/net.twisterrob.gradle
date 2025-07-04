@@ -27,8 +27,8 @@ See [test/README.md](../test/README.md).
 Every commit that's built on CI is deployed to Sonatype. The version is either in `x.y-SNAPSHOT` or `x.y.branch-SNAPSHOT` form.
 
 The two main entry points are:
- * [twister-convention-plugins](https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/net/twisterrob/gradle/twister-convention-plugins/)
- * [twister-quality](https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/net/twisterrob/gradle/twister-quality/)
+ * [twister-convention-plugins](https://central.sonatype.com/repository/maven-snapshots/net/twisterrob/gradle/twister-convention-plugins/maven-metadata.xml)
+ * [twister-quality](https://central.sonatype.com/repository/maven-snapshots/net/twisterrob/gradle/twister-quality/maven-metadata.xml)
 
 To use the `-SNAPSHOT` builds it's necessary to declare the Sonatype repository:
 ```gradle
