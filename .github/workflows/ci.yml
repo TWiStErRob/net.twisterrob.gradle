@@ -790,4 +790,4 @@ jobs:
           report_individual_runs: true
           action_fail_on_inconclusive: true
           test_changes_limit: 0
-          junit_files: 'artifacts/* Test Results XMLs/**/*.xml'
+          files: 'artifacts/* Test Results XMLs/**/*.xml'
