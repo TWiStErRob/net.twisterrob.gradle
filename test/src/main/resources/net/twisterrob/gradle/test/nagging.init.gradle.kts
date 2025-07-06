@@ -137,11 +137,21 @@ doNotNagAboutForTest(
 
 // https://issuetracker.google.com/issues/408334529
 doNotNagAboutStackForTest(
-	"8.14" to "9.1",
+	"8.14" to "9.0",
 	"8.4" to "8.10",
 	// > Task :generateReleaseLintVitalReportModel
 	// Example test: AndroidMinificationPluginIntgTest.`default build setup minifies only release using AndroidX (debug) and (release)`
 	"Retrieving attribute with a null key. This behavior has been deprecated. This will fail with an error in Gradle 10.0. Don't request attributes from attribute containers using null keys. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#null-attribute-lookup",
+	"at com.android.build.gradle.internal.ide.dependencies.ArtifactUtils.isAndroidProjectDependency(ArtifactUtils.kt:5",
+)
+
+// https://issuetracker.google.com/issues/408334529
+doNotNagAboutStackForTest(
+	"9.0" to "9.1",
+	"8.4" to "8.10",
+	// > Task :generateReleaseLintVitalReportModel
+	// Example test: AndroidMinificationPluginIntgTest.`default build setup minifies only release using AndroidX (debug) and (release)`
+	"Retrieving attribute with a null key. This behavior has been deprecated. This will fail with an error in Gradle 10. Don't request attributes from attribute containers using null keys. Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#null-attribute-lookup",
 	"at com.android.build.gradle.internal.ide.dependencies.ArtifactUtils.isAndroidProjectDependency(ArtifactUtils.kt:5",
 )
 
