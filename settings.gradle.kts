@@ -168,7 +168,7 @@ if ((System.getProperty("idea.version") ?: "") < "2023.3") {
 doNotNagAbout(
 	"Retrieving attribute with a null key. " +
 			"This behavior has been deprecated. " +
-			"This will fail with an error in Gradle 10.0. " +
+			"This will fail with an error in Gradle 10. " +
 			"Don't request attributes from attribute containers using null keys. " +
 			"Consult the upgrading guide for further information: " +
 			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#null-attribute-lookup",
