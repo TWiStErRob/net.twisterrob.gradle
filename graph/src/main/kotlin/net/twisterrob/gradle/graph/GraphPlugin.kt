@@ -42,6 +42,7 @@ abstract class GraphPlugin @Inject constructor(
 				gatherer.isSimplify = extension.isSimplifyGraph
 			}
 
+			@Suppress("OVERRIDE_DEPRECATION") // TODEL False positive https://youtrack.jetbrains.com/issue/KT-80399
 			@Deprecated("Not compatible with configuration cache.")
 			override fun buildFinished(result: BuildResult) {
 				if (!extension.isKeepOpen) {
