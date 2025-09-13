@@ -136,7 +136,7 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		result.assertSuccess(":qualityVersions")
 		result.assertHasOutputLine("""Gradle version: 9.0.0""")
-		result.assertHasOutputLine("""Checkstyle version: 9.3""")
+		result.assertHasOutputLine("""Checkstyle version: 10.24.0""")
 	}
 
 	@Test fun `print pmd version (Gradle 9 latest)`() {
@@ -157,7 +157,7 @@ class VersionsTaskTest : BaseIntgTest() {
 
 		result.assertSuccess(":qualityVersions")
 		result.assertHasOutputLine("""Gradle version: 9.0.0""")
-		result.assertHasOutputLine("""PMD version: 6.55.0""")
+		result.assertHasOutputLine("""PMD version: 7.13.0""")
 	}
 
 	@Test fun `print checkstyle version (specific version)`() {
