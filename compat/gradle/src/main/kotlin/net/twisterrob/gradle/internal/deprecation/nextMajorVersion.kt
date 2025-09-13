@@ -15,7 +15,9 @@ fun nextMajorVersionNumber(current: GradleVersion): Int {
 		GradleVersion.version("8.0") <= current.baseVersion -> 9
 		GradleVersion.version("7.0") <= current.baseVersion -> 8
 		GradleVersion.version("6.3") <= current.baseVersion -> 7
-		else -> throw IllegalArgumentException("Unsupported Gradle version: ${current}, willBeRemovedInGradleX doesn't exist yet.")
+		else -> throw IllegalArgumentException(
+			"Unsupported Gradle version: ${current}, willBeRemovedInGradleX doesn't exist yet."
+		)
 	}
 	return nextMajor
 }
@@ -23,10 +25,9 @@ fun nextMajorVersionNumber(current: GradleVersion): Int {
 /**
  * Version number for deprecation.
  */
-fun nextMajorVersionStringForDeprecation(current: GradleVersion): String =
-	when {
-		GradleVersion.version("9.0") <= current.baseVersion ->
-			"Gradle ${nextMajorVersionNumber(current)}"
-		else ->
-			nextMajorVersion(current).toString()
+fun nextMajorVersionForDeprecation(current: GradleVersion): String =
+	if (GradleVersion.version("9.0") <= current.baseVersion) {
+		"Gradle ${nextMajorVersionNumber(current)}"
+	} else {
+		nextMajorVersion(current).toString()
 	}

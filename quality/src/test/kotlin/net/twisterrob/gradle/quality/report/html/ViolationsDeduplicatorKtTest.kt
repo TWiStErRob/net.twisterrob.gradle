@@ -8,7 +8,6 @@ import net.twisterrob.gradle.quality.report.html.model.build
 import net.twisterrob.gradle.test.RootProject
 import net.twisterrob.gradle.test.createSubProject
 import org.gradle.api.Project
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -288,7 +287,7 @@ class ViolationsDeduplicatorKtTest {
 		expected: List<Violations>,
 		actual: List<Violations>
 	) {
-		assertEquals(
+		org.junit.jupiter.api.Assertions.assertEquals(
 			expected.sortedBy { it.toString() }.joinToString(separator = "\n"),
 			actual.sortedBy { it.toString() }.joinToString(separator = "\n")
 		)

@@ -1,7 +1,7 @@
 package net.twisterrob.gradle
 
 import net.twisterrob.gradle.internal.deprecation.canNagUser
-import net.twisterrob.gradle.internal.deprecation.nextMajorVersionStringForDeprecation
+import net.twisterrob.gradle.internal.deprecation.nextMajorVersionForDeprecation
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -192,7 +192,6 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	}
 
 	private fun nagManyTimes(): String =
-		@Suppress("detekt.UseIfInsteadOfWhen")
 		when {
 			GradleVersion.version("8.14") <= gradle.gradleVersion.baseVersion -> {
 				"""
@@ -215,7 +214,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	private fun BuildResult.verifyNagManyTimes() {
 		when {
 			GradleVersion.version("8.14") <= gradle.gradleVersion.baseVersion -> {
-				val gradle10 = nextMajorVersionStringForDeprecation(GradleVersion.version("9.0"))
+				val gradle10 = nextMajorVersionForDeprecation(GradleVersion.version("9.0"))
 				assertHasOutputLine(
 					"The StartParameter.isConfigurationCacheRequested property has been deprecated. " +
 							"This is scheduled to be removed in ${gradle10}. " +
@@ -378,10 +377,10 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 			""".trimIndent() // Align with usages, first line will be indented already.
 		}
 
-		private val GradleRunnerRule.nextMajor: String 
+		private val GradleRunnerRule.nextMajor: String
 			get() {
 				val runnerVersion = this.gradleVersion
-				return nextMajorVersionStringForDeprecation(runnerVersion)
+				return nextMajorVersionForDeprecation(runnerVersion)
 			}
 	}
 }

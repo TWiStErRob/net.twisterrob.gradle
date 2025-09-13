@@ -73,10 +73,10 @@ class NextMajorVersionTest {
 		"9.1-rc-3, Gradle 10",
 	)
 	@ParameterizedTest
-	fun `nextMajorVersionStringForDeprecation handles Gradle 9 dropping dot 0`(input: String, expected: String) {
+	fun `nextMajorVersionForDeprecation handles Gradle 9 dropping dot 0`(input: String, expected: String) {
 		val inputVersion = GradleVersion.version(input)
 
-		val nextMajor = nextMajorVersionStringForDeprecation(inputVersion)
+		val nextMajor = nextMajorVersionForDeprecation(inputVersion)
 
 		assertEquals(expected, nextMajor)
 	}
@@ -96,6 +96,6 @@ class NextMajorVersionTest {
 
 		assertThrows<IllegalArgumentException> { nextMajorVersion(inputVersion) }
 		assertThrows<IllegalArgumentException> { nextMajorVersionNumber(inputVersion) }
-		assertThrows<IllegalArgumentException> { nextMajorVersionStringForDeprecation(inputVersion) }
+		assertThrows<IllegalArgumentException> { nextMajorVersionForDeprecation(inputVersion) }
 	}
 }

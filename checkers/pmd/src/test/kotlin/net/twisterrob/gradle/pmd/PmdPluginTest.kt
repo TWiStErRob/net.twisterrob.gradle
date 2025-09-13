@@ -243,10 +243,12 @@ class PmdPluginTest : BaseIntgTest() {
 		)
 	}
 
+	@Suppress("detekt.LongMethod") // Lot of text
 	@Test fun `allows ruleset inclusion from all sources`() {
 		gradle
 			.basedOn("android-root_app")
 			.basedOn(
+				@Suppress("detekt.UseIfInsteadOfWhen") // Preparing for future new version ranges.
 				when {
 					GradleVersion.version("9.0.0") <= gradle.gradleVersion.baseVersion -> "pmd7-multi_file_config"
 					else -> "pmd6-multi_file_config"
@@ -263,7 +265,11 @@ class PmdPluginTest : BaseIntgTest() {
 					// Gradle 9.0.0 default PMD version (7.x) split PMDTask out into a separate JAR file.
 					pmd("net.sourceforge.pmd:pmd-ant:${'$'}{pmd.toolVersion}")
 				}
-				pmd(files(tasks.register("pmdConfigJar", Jar) { archiveClassifier.set("pmd"); from(fileTree("config/pmd")) }))
+				def pmdConfigJar = tasks.register("pmdConfigJar", Jar) {
+					archiveClassifier.set("pmd")
+					from(fileTree("config/pmd"))
+				}
+				pmd(files(pmdConfigJar))
 			}
 			tasks.withType(${Pmd::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
