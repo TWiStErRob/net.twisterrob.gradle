@@ -724,7 +724,7 @@ jobs:
             test-task: 'testReport :plugin:tests'
 
           - name: "AGP stable on Gradle stable"
-            gradle: '8.13' # https://gradle.org/releases/
+            gradle: '9.0.0' # https://gradle.org/releases/
             java: '17'
             agp: '8.9.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.1.20' # https://kotlinlang.org/docs/releases.html#release-details
@@ -732,7 +732,7 @@ jobs:
             build-tools: '34.0.0'
             test-task: 'testReport :quality:tests'
           - name: "AGP stable on Gradle stable - plugin"
-            gradle: '8.13' # https://gradle.org/releases/
+            gradle: '9.0.0' # https://gradle.org/releases/
             java: '17'
             agp: '8.9.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.1.20' # https://kotlinlang.org/docs/releases.html#release-details
