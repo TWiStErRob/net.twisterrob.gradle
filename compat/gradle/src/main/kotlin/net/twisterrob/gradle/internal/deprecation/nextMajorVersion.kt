@@ -25,7 +25,7 @@ fun nextMajorVersionNumber(current: GradleVersion): Int {
  */
 fun nextMajorVersionStringForDeprecation(current: GradleVersion): String =
 	when {
-		GradleVersion.version("9.0.0") <= current.baseVersion ->
+		GradleVersion.version("9.0") <= current.baseVersion ->
 			"Gradle ${nextMajorVersionNumber(current)}"
 		else ->
 			nextMajorVersion(current).toString()
