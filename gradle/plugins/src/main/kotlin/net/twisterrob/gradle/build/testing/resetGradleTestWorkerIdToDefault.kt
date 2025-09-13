@@ -22,7 +22,9 @@ import java.util.concurrent.atomic.AtomicLong
  *
  * This method will reset the counter to the default to restart counting.
  * It is recommended to call this once at the beginning of the configuration phase.
- * The best place for this is the rootProject's build.gradle file.
+ * The best place for this is the rootProject's build.gradle file or settings.gradle.
+ * 
+ * Note: configuration cache won't execute either of those, TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/975
  */
 @Suppress("detekt.FunctionMaxLength") // Rather be explicit about what it does.
 fun Gradle.resetGradleTestWorkerIdToDefault() {
