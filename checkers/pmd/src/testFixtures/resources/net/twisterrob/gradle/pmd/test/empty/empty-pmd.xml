@@ -7,7 +7,7 @@
 	<description>Empty ruleset to make PMD happy.</description>
 
 	<rule name="NeverMatching"
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
+		class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
 		language="java"
 		message="This will never be shown">
 		<properties>
