@@ -1,5 +1,6 @@
 @file:JvmMultifileClass
 @file:JvmName("GradleUtils")
+@file:Suppress("detekt.UnusedImports") // TODEL detekt 2.0 when it supports Kotlin 2.1/2.2.
 
 package net.twisterrob.gradle
 
@@ -11,6 +12,7 @@ import org.gradle.api.flow.FlowScope
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.support.serviceOf
 import org.gradle.util.GradleVersion
 import java.util.function.Consumer
@@ -26,9 +28,9 @@ import java.util.function.Consumer
 fun Gradle.buildFinishedCompat(action: Consumer<Throwable?>) {
 	if (GradleVersion.version("8.1") <= GradleVersion.current()) {
 		serviceOf<FlowScope>().always(ExecuteAction::class.java) {
-			parameters.action.set(action)
+			parameters.action = action
 			val buildResult = serviceOf<FlowProviders>().buildWorkResult
-			parameters.failure.set(buildResult.map { workResult -> workResult.failure.orElse(null) })
+			parameters.failure = buildResult.map { workResult -> workResult.failure.orElse(null) }
 		}
 	} else {
 		@Suppress("DEPRECATION")
