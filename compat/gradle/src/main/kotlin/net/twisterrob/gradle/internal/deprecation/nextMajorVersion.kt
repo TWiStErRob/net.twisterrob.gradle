@@ -11,11 +11,11 @@ fun nextMajorVersion(current: GradleVersion): GradleVersion =
 fun nextMajorVersionNumber(current: GradleVersion): Int {
 	@Suppress("detekt.MagicNumber")
 	val nextMajor = when {
-		current.baseVersion >= GradleVersion.version("9.0") -> 10
-		current.baseVersion >= GradleVersion.version("8.0") -> 9
-		current.baseVersion >= GradleVersion.version("7.0") -> 8
-		current.baseVersion >= GradleVersion.version("6.3") -> 7
-		else -> error("Unsupported Gradle version: ${current}, willBeRemovedInGradleX doesn't exist yet.")
+		GradleVersion.version("9.0") <= current.baseVersion -> 10
+		GradleVersion.version("8.0") <= current.baseVersion -> 9
+		GradleVersion.version("7.0") <= current.baseVersion -> 8
+		GradleVersion.version("6.3") <= current.baseVersion -> 7
+		else -> throw IllegalArgumentException("Unsupported Gradle version: ${current}, willBeRemovedInGradleX doesn't exist yet.")
 	}
 	return nextMajor
 }
