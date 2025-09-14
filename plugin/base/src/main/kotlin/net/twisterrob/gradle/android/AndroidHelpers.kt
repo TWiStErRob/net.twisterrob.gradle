@@ -60,6 +60,8 @@ fun Project.addBuildConfigField(name: String, type: String, value: Provider<out 
 	val androidComponents: AndroidComponentsExtension<*, *, *> =
 		this.extensions.getByName<AndroidComponentsExtension<*, *, *>>("androidComponents")
 	androidComponents.onVariants { variant ->
-		variant.buildConfigFields.put(name, value.map { BuildConfigField(type = type, value = it, comment = null) })
+		variant
+			.buildConfigFields
+			?.put(name, value.map { BuildConfigField(type = type, value = it, comment = null) })
 	}
 }

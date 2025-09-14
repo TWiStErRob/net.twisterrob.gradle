@@ -1,8 +1,10 @@
 package net.twisterrob.gradle.quality.tasks
 
 import com.android.build.api.artifact.impl.ArtifactsImpl
+import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.DynamicFeatureVariant
 import com.android.build.api.variant.TestVariant
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
@@ -110,6 +112,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 		private fun Project.configureReports(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
 			androidComponents.finalizeDsl { android ->
+				android as CommonExtension<*, *, *, *, *, *>
 				// Make sure we have XML output, otherwise can't figure out if it failed.
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
 				// `android { lint { ... } }` DSL configuration.
