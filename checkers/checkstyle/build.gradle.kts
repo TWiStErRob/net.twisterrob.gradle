@@ -9,9 +9,9 @@ base.archivesName = "twister-quality-checkstyle"
 description = "Checkstyle: Checkstyle quality setup plugin for Gradle."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
+	@Suppress("detekt.StringLiteralDuplication")
 	plugins {
-		create("checkstyle") {
+		register("checkstyle") {
 			id = "net.twisterrob.gradle.plugin.checkstyle"
 			displayName = "Checkstyle Convention Plugin"
 			description = """

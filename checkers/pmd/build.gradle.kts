@@ -9,9 +9,9 @@ base.archivesName = "twister-quality-pmd"
 description = "PMD: PMD quality setup plugin for Gradle."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
+	@Suppress("detekt.StringLiteralDuplication")
 	plugins {
-		create("pmd") {
+		register("pmd") {
 			id = "net.twisterrob.gradle.plugin.pmd"
 			displayName = "PMD Convention Plugin"
 			description = """

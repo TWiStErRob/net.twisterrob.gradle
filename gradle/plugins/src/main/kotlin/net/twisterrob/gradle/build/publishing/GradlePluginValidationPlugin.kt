@@ -37,7 +37,6 @@ abstract class GradlePluginValidationPlugin : Plugin<Project> {
 		}
 	}
 
-	@Suppress("UnstableApiUsage")
 	private fun validateGradlePlugin(project: Project, gradlePlugin: GradlePluginDevelopmentExtension) {
 		if (!gradlePlugin.website.isPresent) {
 			error("${project} missing website for Gradle Plugin publications.")
@@ -50,7 +49,6 @@ abstract class GradlePluginValidationPlugin : Plugin<Project> {
 		}
 	}
 
-	@Suppress("UnstableApiUsage")
 	private fun validatePlugin(plugin: PluginDeclaration) {
 		plugin.id ?: error("Plugin ID for ${plugin.name} is not set.")
 		plugin.displayName ?: error("Plugin Display Name for ${plugin.id} is not set.")

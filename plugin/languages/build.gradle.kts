@@ -7,9 +7,9 @@ base.archivesName = "twister-convention-languages"
 description = "Languages Convention Plugin: Gradle Plugin to apply Java and Kotlin conventions."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
+	@Suppress("detekt.StringLiteralDuplication")
 	plugins {
-		create("java") {
+		register("java") {
 			id = "net.twisterrob.gradle.plugin.java"
 			displayName = "Java Convention Plugin"
 			description = """
@@ -20,7 +20,7 @@ gradlePlugin {
 			implementationClass = "net.twisterrob.gradle.java.JavaPlugin"
 			deprecateId(project, "net.twisterrob.java")
 		}
-		create("javaLibrary") {
+		register("javaLibrary") {
 			id = "net.twisterrob.gradle.plugin.java-library"
 			displayName = "Java Library Convention Plugin"
 			description = """
@@ -30,7 +30,7 @@ gradlePlugin {
 			implementationClass = "net.twisterrob.gradle.java.JavaLibPlugin"
 			deprecateId(project, "net.twisterrob.java-library")
 		}
-		create("kotlin") {
+		register("kotlin") {
 			id = "net.twisterrob.gradle.plugin.kotlin"
 			displayName = "Kotlin Convention Plugin"
 			description = """

@@ -16,7 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
 /**
- * See all `gradlePlugin { plugins { create() { id =` blocks in this project's build.gradle.kts files.
+ * See all `gradlePlugin { plugins { register() { id =` blocks in this project's build.gradle.kts files.
  */
 @Suppress("detekt.PropertyUsedBeforeDeclaration") // settings is a lazy property.
 @ExtendWith(GradleRunnerRuleExtension::class)

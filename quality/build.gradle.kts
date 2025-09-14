@@ -9,9 +9,9 @@ base.archivesName = "twister-quality"
 description = "Quality: All quality plugins bundled in one."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
+	@Suppress("detekt.StringLiteralDuplication")
 	plugins {
-		create("quality") {
+		register("quality") {
 			id = "net.twisterrob.gradle.plugin.quality"
 			displayName = "Gradle Quality Plugins"
 			description = """

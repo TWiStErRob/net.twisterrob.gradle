@@ -7,9 +7,9 @@ base.archivesName = "twister-convention-base"
 description = "Utilities: utility functions and classes to write convention plugins."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
+	@Suppress("detekt.StringLiteralDuplication")
 	plugins {
-		create("root") {
+		register("root") {
 			id = "net.twisterrob.gradle.plugin.root"
 			displayName = "Gradle Root Convention Plugin"
 			description = """
