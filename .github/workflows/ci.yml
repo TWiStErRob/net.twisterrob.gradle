@@ -253,6 +253,7 @@ jobs:
     name: "2 🛠️ ${{ matrix.name }}"
     needs: validate
     timeout-minutes: 45
+    
     permissions:
       # actions/checkout
       contents: read
@@ -458,6 +459,253 @@ jobs:
         #test-task: []
         include:
 
+          - name: "AGP 8.2.x on Gradle 8.2+"
+            gradle: '8.2.1'
+            java: '17'
+            agp: '8.2.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.2.x on Gradle 8.2+ - plugin"
+            gradle: '8.2.1'
+            java: '17'
+            agp: '8.2.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.2.x on Gradle 8.x"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.2.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.2.x on Gradle 8.x - plugin"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.2.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.3.x on Gradle 8.4+"
+            gradle: '8.4'
+            java: '17'
+            agp: '8.3.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.3.x on Gradle 8.4+ - plugin"
+            gradle: '8.4'
+            java: '17'
+            agp: '8.3.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.3.x on Gradle 8.x"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.3.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.3.x on Gradle 8.x - plugin"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.3.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.4.x on Gradle 8.6+"
+            gradle: '8.6'
+            java: '17'
+            agp: '8.4.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.4.x on Gradle 8.6+ - plugin"
+            gradle: '8.6'
+            java: '17'
+            agp: '8.4.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.4.x on Gradle 8.x"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.4.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.4.x on Gradle 8.x - plugin"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.4.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.5.x on Gradle 8.7+"
+            gradle: '8.7'
+            java: '17'
+            agp: '8.5.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.5.x on Gradle 8.7+ - plugin"
+            gradle: '8.7'
+            java: '17'
+            agp: '8.5.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.5.x on Gradle 8.x"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.5.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.5.x on Gradle 8.x - plugin"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.5.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.6.x on Gradle 8.7+"
+            gradle: '8.7'
+            java: '17'
+            agp: '8.6.1'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.6.x on Gradle 8.7+ - plugin"
+            gradle: '8.7'
+            java: '17'
+            agp: '8.6.1'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.6.x on Gradle 8.x"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.6.1'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.6.x on Gradle 8.x - plugin"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.6.1'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.7.x on Gradle 8.9+"
+            gradle: '8.9'
+            java: '17'
+            agp: '8.7.3'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.7.x on Gradle 8.7+ - plugin"
+            gradle: '8.9'
+            java: '17'
+            agp: '8.7.3'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.7.x on Gradle 8.x"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.7.3'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.7.x on Gradle 8.x - plugin"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.7.3'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.8.x on Gradle 8.10+"
+            gradle: '8.10.2'
+            java: '17'
+            agp: '8.8.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.8.x on Gradle 8.10+ - plugin"
+            gradle: '8.10.2'
+            java: '17'
+            agp: '8.8.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.8.x on Gradle 8.x"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.8.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.8.x on Gradle 8.x - plugin"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.8.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP 8.9.x on Gradle 8.11+"
+            gradle: '8.11.1'
+            java: '17'
+            agp: '8.9.3'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.9.x on Gradle 8.11+ - plugin"
+            gradle: '8.11.1'
+            java: '17'
+            agp: '8.9.3'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
           - name: "AGP 8.9.x on Gradle 8.x"
             gradle: '8.14.3'
             java: '17'
@@ -606,6 +854,41 @@ jobs:
             android: '35'
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
+
+          - name: "AGP stable on Gradle stable"
+            gradle: '9.0.0' # https://gradle.org/releases/
+            java: '17'
+            agp: '8.9.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '2.1.20' # https://kotlinlang.org/docs/releases.html#release-details
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP stable on Gradle stable - plugin"
+            gradle: '9.0.0' # https://gradle.org/releases/
+            java: '17'
+            agp: '8.9.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '2.1.20' # https://kotlinlang.org/docs/releases.html#release-details
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
+          - name: "AGP stable on Gradle preview"
+            gradle: '9.0.0' # https://services.gradle.org/distributions/
+            java: '17'
+            agp: '8.9.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '2.1.20' # https://kotlinlang.org/docs/eap.html#build-details
+            android: '35'
+            build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
+            test-task: 'testReport :quality:tests'
+          - name: "AGP stable on Gradle preview - plugin"
+            gradle: '9.0.0' # https://services.gradle.org/distributions/
+            java: '17'
+            agp: '8.9.3' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '2.1.20' # https://kotlinlang.org/docs/eap.html#build-details
+            android: '35'
+            build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
+            test-task: 'testReport :plugin:tests'
+
 
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
