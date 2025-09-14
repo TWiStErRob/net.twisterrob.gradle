@@ -38,6 +38,8 @@ abstract class AndroidReleasePlugin : BasePlugin() {
 		}
 
 		val releaseEachTask = registerReleaseEachTask()
+		// TODEL https://youtrack.jetbrains.com/issue/KT-80985
+		@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 		android.buildTypes.configureEach { buildType ->
 			val releaseBuildTypeTask = registerReleaseTasks(android, buildType)
 			releaseEachTask.configure { it.dependsOn(releaseBuildTypeTask) }

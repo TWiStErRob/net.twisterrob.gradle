@@ -508,6 +508,39 @@ jobs:
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
 
+          - name: "AGP 8.11.x on Gradle 8.13+"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.11.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.11.x on Gradle 8.13+ - plugin"
+            gradle: '8.13'
+            java: '17'
+            agp: '8.11.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 8.11.x on Gradle 8.x"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.11.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.11.x on Gradle 8.x - plugin"
+            gradle: '8.14.3'
+            java: '17'
+            agp: '8.11.2'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
   # Separate job for parsing the XML output, since the matrix runs on multiple machines.
   publish-test-results:
     name: "3 📢 Publish Tests Results"

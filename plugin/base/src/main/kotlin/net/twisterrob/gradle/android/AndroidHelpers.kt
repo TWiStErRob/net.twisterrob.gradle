@@ -42,7 +42,7 @@ fun PluginContainer.hasAndroid(): Boolean =
 fun PluginContainer.hasAndroidTest(): Boolean =
 	hasPlugin("com.android.test")
 
-fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) {
+fun DomainObjectCollection<out BuildType>.configure(name: String, block: (BuildType) -> Unit) {
 	configureEach { buildType ->
 		if (buildType.name == name) {
 			block(buildType)
