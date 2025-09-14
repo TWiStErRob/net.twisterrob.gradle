@@ -124,7 +124,7 @@ doNotNagAbout(
 	"at io.gitlab.arturbosch.detekt.DetektPlugin.apply(DetektPlugin.kt:28)",
 )
 
-// TODEL Gradle 9.1 vs IDEA 2025.2.1 TODO REPORT
+// TODEL Gradle 9.1 vs IDEA 2025.2.1 https://youtrack.jetbrains.com/issue/IDEA-379286
 @Suppress("detekt.MaxLineLength")
 doNotNagAbout(
 	"The Configuration.isVisible method has been deprecated. " +
