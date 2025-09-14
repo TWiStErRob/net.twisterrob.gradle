@@ -214,7 +214,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	private fun BuildResult.verifyNagManyTimes() {
 		when {
 			GradleVersion.version("8.14") <= gradle.gradleVersion.baseVersion -> {
-				val gradle10 = nextMajorVersionForDeprecation(GradleVersion.version("9.0"))
+				val gradle10 = nextMajorVersionForDeprecation(GradleVersion.version("9.0"), gradle.gradleVersion)
 				assertHasOutputLine(
 					"The StartParameter.isConfigurationCacheRequested property has been deprecated. " +
 							"This is scheduled to be removed in ${gradle10}. " +
@@ -378,9 +378,6 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		}
 
 		private val GradleRunnerRule.nextMajor: String
-			get() {
-				val runnerVersion = this.gradleVersion
-				return nextMajorVersionForDeprecation(runnerVersion)
-			}
+			get() = nextMajorVersionForDeprecation(gradleVersion, gradleVersion)
 	}
 }

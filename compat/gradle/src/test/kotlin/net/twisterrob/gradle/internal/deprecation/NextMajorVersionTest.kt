@@ -69,6 +69,19 @@ class NextMajorVersionTest {
 		"7.1, Gradle 8.0",
 		"8.0, Gradle 9.0",
 		"8.14.3, Gradle 9.0",
+		"9.0, Gradle 10.0",
+		"9.1-rc-3, Gradle 10.0",
+	)
+	@ParameterizedTest
+	fun `nextMajorVersionForDeprecation gives straight version`(input: String, expected: String) {
+		val inputVersion = GradleVersion.version(input)
+
+		assertEquals(expected, nextMajorVersionForDeprecation(inputVersion, GradleVersion.version("7.4")))
+		assertEquals(expected, nextMajorVersionForDeprecation(inputVersion, GradleVersion.version("8.0")))
+		assertEquals(expected, nextMajorVersionForDeprecation(inputVersion, GradleVersion.version("8.14.3")))
+	}
+
+	@CsvSource(
 		"9.0, Gradle 10",
 		"9.1-rc-3, Gradle 10",
 	)
@@ -76,9 +89,8 @@ class NextMajorVersionTest {
 	fun `nextMajorVersionForDeprecation handles Gradle 9 dropping dot 0`(input: String, expected: String) {
 		val inputVersion = GradleVersion.version(input)
 
-		val nextMajor = nextMajorVersionForDeprecation(inputVersion)
-
-		assertEquals(expected, nextMajor)
+		assertEquals(expected, nextMajorVersionForDeprecation(inputVersion, GradleVersion.version("9.0")))
+		assertEquals(expected, nextMajorVersionForDeprecation(inputVersion, GradleVersion.version("9.1-rc-3")))
 	}
 
 	@CsvSource(
@@ -96,6 +108,6 @@ class NextMajorVersionTest {
 
 		assertThrows<IllegalArgumentException> { nextMajorVersion(inputVersion) }
 		assertThrows<IllegalArgumentException> { nextMajorVersionNumber(inputVersion) }
-		assertThrows<IllegalArgumentException> { nextMajorVersionForDeprecation(inputVersion) }
+		assertThrows<IllegalArgumentException> { nextMajorVersionForDeprecation(inputVersion, inputVersion) }
 	}
 }
