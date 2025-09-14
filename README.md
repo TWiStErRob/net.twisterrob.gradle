@@ -23,11 +23,11 @@ For details on what was changed in different versions, see the [GitHub Releases]
 
 ## Compatibility
 
-Android Gradle Plugin 3.1.4 — 8.9.3 on Gradle 4.9 — 8.14.3 as listed in
+Android Gradle Plugin 3.1.4 — 8.9.3 on Gradle 4.9 — 9.0.0 as listed in
 [AGP's compatibility guide](https://developer.android.com/studio/releases/gradle-plugin#updating-gradle)
 are covered by different plugin versions.
 
-Currently supported version are Android Gradle Plugin 8.2.1 — 8.9.3 on Gradle 8.2 — 8.14.3 where compatible.
+Currently supported version are Android Gradle Plugin 8.2.1 — 8.9.3 on Gradle 8.2 — 9.0.0 where compatible.
 
 | AGP →<br/>Gradle ↓ |   3.1.x    |   3.2.x    |    3.3.x     |    3.4.x     |     3.5.x     |     3.6.x     |     4.0.x     |     4.1.x     |   4.2.x ^3    |    7.0.x    |    7.1.x    |    7.2.x    |    7.3.x    |  7.4.x ^4   |    8.0.x    |  8.1.x  ^4  |  8.2.x   |  8.3.x   |  8.4.x   |  8.5.x   |  8.6.x   |  8.7.x   |  8.8.x   |  8.9.x   |
 |:-------------------|:----------:|:----------:|:------------:|:------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
@@ -55,6 +55,8 @@ Currently supported version are Android Gradle Plugin 8.2.1 — 8.9.3 on Gradle 
 | 8.9 - 8.10.1       |     ?      |     ?      |      ?       |      ?       |       ?       |       ?       |       ?       |       ?       |       ?       |      ?      |      ?      |      ?      |      ?      | 0.18 - 0.18 | 0.18 - 0.18 | 0.18 - 0.18 | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ |    ×     |    ×     |
 | 8.10.2 - 8.11      |     ?      |     ?      |      ?       |      ?       |       ?       |       ?       |       ?       |       ?       |       ?       |      ?      |      ?      |      ?      |      ?      | 0.18 - 0.18 | 0.18 - 0.18 | 0.18 - 0.18 | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ |    ×     |
 | 8.11.1 - 8.13      |     ?      |     ?      |      ?       |      ?       |       ?       |       ?       |       ?       |       ?       |       ?       |      ?      |      ?      |      ?      |      ?      | 0.18 - 0.18 | 0.18 - 0.18 | 0.18 - 0.18 | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ | 0.18 - ∞ |
+| 8.14 - 8.14.3      |     ?      |     ?      |      ?       |      ?       |       ?       |       ?       |       ?       |       ?       |       ?       |      ?      |      ?      |      ?      |      ?      |      ?      |      ?      |      ?      | 0.19 - ∞ | 0.19 - ∞ | 0.19 - ∞ | 0.19 - ∞ | 0.19 - ∞ | 0.19 - ∞ | 0.19 - ∞ | 0.19 - ∞ |
+| 9.0.0              |     ?      |     ?      |      ?       |      ?       |       ?       |       ?       |       ?       |       ?       |       ?       |      ?      |      ?      |      ?      |      ?      |      ?      |      ?      |      ?      |    ?     |    ?     |    ?     |    ?     |    ?     |    ?     |    ?     | 0.19 - ∞ |
 
  * ? = not sure if it's supported by AGP, never tested.
  * × = incompatible based on AGP compatibility.

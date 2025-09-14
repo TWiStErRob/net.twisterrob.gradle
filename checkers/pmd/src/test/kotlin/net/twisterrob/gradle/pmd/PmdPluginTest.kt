@@ -15,6 +15,7 @@ import net.twisterrob.gradle.test.runFailingBuild
 import net.twisterrob.gradle.test.tasksIn
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.util.GradleVersion
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.containsStringIgnoringCase
@@ -242,11 +243,17 @@ class PmdPluginTest : BaseIntgTest() {
 		)
 	}
 
+	@Suppress("detekt.LongMethod") // Lot of text
 	@Test fun `allows ruleset inclusion from all sources`() {
 		gradle
 			.basedOn("android-root_app")
-			.basedOn("pmd-multi_file_config")
-
+			.basedOn(
+				@Suppress("detekt.UseIfInsteadOfWhen") // Preparing for future new version ranges.
+				when {
+					GradleVersion.version("9.0.0") <= gradle.gradleVersion.baseVersion -> "pmd7-multi_file_config"
+					else -> "pmd6-multi_file_config"
+				}
+			)
 		@Language("gradle")
 		val applyPmd = """
 			plugins {
@@ -254,7 +261,15 @@ class PmdPluginTest : BaseIntgTest() {
 			}
 			dependencies {
 				pmd("net.sourceforge.pmd:pmd-java:${'$'}{pmd.toolVersion}")
-				pmd(files(tasks.register("pmdConfigJar", Jar) { archiveClassifier.set("pmd"); from(fileTree("config/pmd")) }))
+				if (pmd.toolVersion.startsWith("7.")) {
+					// Gradle 9.0.0 default PMD version (7.x) split PMDTask out into a separate JAR file.
+					pmd("net.sourceforge.pmd:pmd-ant:${'$'}{pmd.toolVersion}")
+				}
+				def pmdConfigJar = tasks.register("pmdConfigJar", Jar) {
+					archiveClassifier.set("pmd")
+					from(fileTree("config/pmd"))
+				}
+				pmd(files(pmdConfigJar))
 			}
 			tasks.withType(${Pmd::class.java.name}).configureEach {
 				// output all violations to the console so that we can parse the results
@@ -267,13 +282,6 @@ class PmdPluginTest : BaseIntgTest() {
 		}
 
 		result.assertFailed(":pmdDebug")
-		result.assertHasOutputLine(
-			"Inline rule violation",
-			Regex(
-				""".*src.main.java.Pmd\.java:2:\s+""" +
-						"""InlineCustomViolation:\s+Inline custom message"""
-			)
-		)
 		result.assertHasOutputLine(
 			"Inline rule reference violation",
 			Regex(
@@ -295,6 +303,13 @@ class PmdPluginTest : BaseIntgTest() {
 						"""NoPackage:\s+All classes, interfaces, enums and annotations must belong to a named package"""
 			)
 		)
+		result.assertHasOutputLine(
+			"Inline rule violation",
+			Regex(
+				""".*src.main.java.Pmd\.java:2:\s+""" +
+						"""InlineCustomViolation:\s+Inline custom message"""
+			)
+		)
 		assertThat(
 			"Validate count to allow no more violations",
 			result.failReason, containsString("4 PMD rule violations were found.")
@@ -312,13 +327,13 @@ class PmdPluginTest : BaseIntgTest() {
 		result.assertHasOutputLine(
 			Regex(
 				"""org\.gradle\.api\.GradleException: """ +
-						"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d+\.0"""
+						"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d+(\.0)?"""
 			)
 		)
 		result.assertHasOutputLine(
 			Regex(
 				"""The net\.twisterrob\.pmd plugin has been deprecated\. """
-						+ """This is scheduled to be removed in Gradle \d+\.0\. """
+						+ """This is scheduled to be removed in Gradle \d+(\.0)?\. """
 						+ """Please use the net\.twisterrob\.gradle\.plugin\.pmd plugin instead."""
 			)
 		)

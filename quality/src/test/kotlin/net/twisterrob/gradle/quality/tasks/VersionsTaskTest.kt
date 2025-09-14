@@ -118,6 +118,48 @@ class VersionsTaskTest : BaseIntgTest() {
 		result.assertHasOutputLine("""PMD version: 6.55.0""")
 	}
 
+	@Test fun `print checkstyle version (Gradle 9 latest)`() {
+		gradle.gradleVersion = GradleVersion.version("9.0.0")
+
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("org.gradle.checkstyle")
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "qualityVersions")
+		}
+
+		result.assertSuccess(":qualityVersions")
+		result.assertHasOutputLine("""Gradle version: 9.0.0""")
+		result.assertHasOutputLine("""Checkstyle version: 10.24.0""")
+	}
+
+	@Test fun `print pmd version (Gradle 9 latest)`() {
+		gradle.gradleVersion = GradleVersion.version("9.0.0")
+
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("org.gradle.pmd")
+				id("net.twisterrob.gradle.plugin.quality") apply false
+			}
+			tasks.register("qualityVersions", ${VersionsTask::class.java.name})
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "qualityVersions")
+		}
+
+		result.assertSuccess(":qualityVersions")
+		result.assertHasOutputLine("""Gradle version: 9.0.0""")
+		result.assertHasOutputLine("""PMD version: 7.13.0""")
+	}
+
 	@Test fun `print checkstyle version (specific version)`() {
 		@Language("gradle")
 		val script = """

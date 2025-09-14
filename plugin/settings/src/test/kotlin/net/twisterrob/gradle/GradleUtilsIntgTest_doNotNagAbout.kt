@@ -1,7 +1,7 @@
 package net.twisterrob.gradle
 
 import net.twisterrob.gradle.internal.deprecation.canNagUser
-import net.twisterrob.gradle.internal.deprecation.nextMajorVersion
+import net.twisterrob.gradle.internal.deprecation.nextMajorVersionForDeprecation
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertHasOutputLine
@@ -63,12 +63,11 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 			} else {
 				""
 			}
-		val gradleVersion = nextMajorVersion(gradle.gradleVersion)
 		@Suppress("UnnecessaryQualifiedReference")
 		val script = """
 			net.twisterrob.gradle.GradleUtils.doNotNagAbout(
 				${buildFileLine}
-				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradleVersion}."
+				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradle.nextMajor}."
 			)
 			${nag("""Fake nagging for test""")}
 					
@@ -91,12 +90,11 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 			} else {
 				""
 			}
-		val gradleVersion = nextMajorVersion(gradle.gradleVersion)
 		@Suppress("UnnecessaryQualifiedReference")
 		val script = """
 			net.twisterrob.gradle.GradleUtils.doNotNagAbout(
 				${buildFileLine}
-				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradleVersion}."
+				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradle.nextMajor}."
 			)
 			tasks.register("nag") {
 				doLast {
@@ -132,12 +130,11 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	@Test fun `deprecation can be suppressed with stack trace`() {
 		assumeThat(gradle.gradleVersion.baseVersion, greaterThanOrEqualTo(GradleVersion.version("8.0")))
 
-		val gradleVersion = nextMajorVersion(gradle.gradleVersion)
 		@Suppress("UnnecessaryQualifiedReference")
 		val script = """
 			net.twisterrob.gradle.GradleUtils.doNotNagAbout(
 				"Build file '${'$'}{buildFile.absolutePath}': line 12${'$'}{System.lineSeparator()}" +
-				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradleVersion}.",
+				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradle.nextMajor}.",
 				"build.gradle:12" // specific line in generated build.gradle file
 			)
 			${nag("""Fake nagging for test""")}
@@ -153,12 +150,11 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	@Test fun `deprecation can be suppressed with stack trace (specific instance)`() {
 		assumeThat(gradle.gradleVersion.baseVersion, greaterThanOrEqualTo(GradleVersion.version("8.0")))
 
-		val gradleVersion = nextMajorVersion(gradle.gradleVersion)
 		@Suppress("UnnecessaryQualifiedReference")
 		val script = """
 			net.twisterrob.gradle.GradleUtils.doNotNagAbout(
 				"Build file '${'$'}{buildFile.absolutePath}': line 12${'$'}{System.lineSeparator()}" +
-				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradleVersion}.",
+				"Fake nagging for test has been deprecated. This is scheduled to be removed in ${gradle.nextMajor}.",
 				"build.gradle:12" // specific line in generated build.gradle file
 			)
 			${nag("""Fake nagging for test""")}
@@ -196,7 +192,6 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	}
 
 	private fun nagManyTimes(): String =
-		@Suppress("detekt.UseIfInsteadOfWhen")
 		when {
 			GradleVersion.version("8.14") <= gradle.gradleVersion.baseVersion -> {
 				"""
@@ -219,9 +214,10 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	private fun BuildResult.verifyNagManyTimes() {
 		when {
 			GradleVersion.version("8.14") <= gradle.gradleVersion.baseVersion -> {
+				val gradle10 = nextMajorVersionForDeprecation(GradleVersion.version("9.0"), gradle.gradleVersion)
 				assertHasOutputLine(
 					"The StartParameter.isConfigurationCacheRequested property has been deprecated. " +
-							"This is scheduled to be removed in Gradle 10.0. " +
+							"This is scheduled to be removed in ${gradle10}. " +
 							"Please use 'configurationCache.requested' property on 'BuildFeatures' service instead. " +
 							"Consult the upgrading guide for further information: " +
 							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/upgrading_version_8.html" +
@@ -273,6 +269,14 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 
 	private fun nagOnce(): String =
 		when {
+			GradleVersion.version("9.0.0") <= gradle.gradleVersion.baseVersion -> {
+				"""
+					// This Feature will always be inactive and hence nag about removal in next major.
+					// See org.gradle.initialization.DefaultSettings.enableFeaturePreview for nagging code.
+					//noinspection UnnecessaryQualifiedReference
+					(gradle as org.gradle.api.internal.GradleInternal).settings.enableFeaturePreview("ALWAYS_INACTIVE")
+				""".trimIndent()
+			}
 			GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion -> {
 				"""
 					// ClosureBackedAction type is deprecated, nagging is in the class initializer.
@@ -294,6 +298,17 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 
 	private fun BuildResult.verifyNagOnce() {
 		when {
+			GradleVersion.version("9.0.0") <= gradle.gradleVersion.baseVersion -> {
+				assertHasOutputLine(
+					"enableFeaturePreview('ALWAYS_INACTIVE') has been deprecated. " +
+							"This is scheduled to be removed in Gradle 10. " +
+							"The feature flag is no longer relevant, please remove it from your settings file. " +
+							"For more information, please refer to " +
+							"https://docs.gradle.org/${gradle.gradleVersion.version}/userguide/feature_lifecycle.html#feature_preview" +
+							" in the Gradle documentation."
+				)
+				assertHasOutputLine(Regex("""\tat build_[a-z0-9]+\.run\(\Q${gradle.buildFile.absolutePath}\E:10\)"""))
+			}
 			GradleVersion.version("8.0") <= gradle.gradleVersion.baseVersion -> {
 				assertHasOutputLine(
 					"The org.gradle.util.ClosureBackedAction type has been deprecated. " +
@@ -321,7 +336,7 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 	}
 
 	private fun BuildResult.verifyNagging(feature: String, line: Int) {
-		val gradleVersionRegex = Regex.escape(nextMajorVersion(gradle.gradleVersion).toString())
+		val gradleVersionRegex = Regex.escape(gradle.nextMajor)
 		assertHasOutputLine(
 			Regex(
 				"""
@@ -361,5 +376,8 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 									.nagUserWith(${varName}, net.twisterrob.gradle.internal.deprecation.DeprecationUtils.class)
 			""".trimIndent() // Align with usages, first line will be indented already.
 		}
+
+		private val GradleRunnerRule.nextMajor: String
+			get() = nextMajorVersionForDeprecation(gradleVersion, gradleVersion)
 	}
 }
