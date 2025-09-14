@@ -31,13 +31,13 @@ class AndroidLibraryPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertHasOutputLine(
 			Regex(
 				"""org\.gradle\.api\.GradleException: """ +
-						"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d+\.0"""
+						"""Deprecated Gradle features were used in this build, making it incompatible with Gradle \d+(\.0)?"""
 			)
 		)
 		result.assertHasOutputLine(
 			Regex(
 				"""The net\.twisterrob\.android-library plugin has been deprecated\. """
-						+ """This is scheduled to be removed in Gradle \d+\.0\. """
+						+ """This is scheduled to be removed in Gradle \d+(\.0)?\. """
 						+ """Please use the net\.twisterrob\.gradle\.plugin\.android-library plugin instead."""
 			)
 		)

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<ruleset
+	xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	name="Ruleset entry point"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+	<description>Ruleset referencing others.</description>
+
+	<!-- TODO Why? junit...\src\main\AndroidManifest.xml - Error while parsing <same file name> -->
+	<exclude-pattern>.*\.xml</exclude-pattern>
+
+	<!-- one from the PMD classpath -->
+	<rule ref="category/java/codestyle.xml/ShortMethodName" />
+
+	<!-- one from the same directory -->
+	<rule ref="pmd-same_dir.xml" />
+
+	<!-- one from a subdirectory -->
+	<rule ref="sub/folder/pmd-sub_dir.xml" />
+
+	<!-- one defined inline -->
+	<rule name="InlineCustomViolation"
+		class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+		language="java"
+		message="Inline custom message">
+		<properties>
+			<property name="xpath" value="//ClassDeclaration[@Visibility != 'public']" />
+		</properties>
+	</rule>
+</ruleset>

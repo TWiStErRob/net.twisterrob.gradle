@@ -63,6 +63,7 @@ class AGPVersionsTest {
 		assertThat(ex.message, containsString("net.twisterrob.test.android.pluginVersion"))
 	}
 
+	@Suppress("detekt.UnreachableCode") // REPORT Looks like `val name`'s ?: somehow produces a false positive.
 	@CsvSource(
 		"8, 1",
 		"8, 3",
