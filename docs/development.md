@@ -27,15 +27,15 @@ See [test/README.md](../test/README.md).
 Every commit that's built on CI is deployed to Sonatype. The version is either in `x.y-SNAPSHOT` or `x.y.branch-SNAPSHOT` form.
 
 The two main entry points are:
- * [twister-convention-plugins](https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/net/twisterrob/gradle/twister-convention-plugins/)
- * [twister-quality](https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/net/twisterrob/gradle/twister-quality/)
+ * [twister-convention-plugins](https://central.sonatype.com/repository/maven-snapshots/net/twisterrob/gradle/twister-convention-plugins/maven-metadata.xml)
+ * [twister-quality](https://central.sonatype.com/repository/maven-snapshots/net/twisterrob/gradle/twister-quality/maven-metadata.xml)
 
 To use the `-SNAPSHOT` builds it's necessary to declare the Sonatype repository:
 ```gradle
 // `repositories { }` in build.gradle > buildscript, or settings.gradle > pluginManagement, or buildSrc > build.gradle
 maven {
-   name = "Sonatype 01: SNAPSHOTs"
-   url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+   name = "Central SNAPSHOTs"
+   url = uri("https://central.sonatype.com/repository/maven-snapshots/")
    content {
        includeGroup("net.twisterrob.gradle")
        includeGroupByRegex("net\\.twisterrob\\.gradle\\.plugin\\..*")
@@ -48,8 +48,8 @@ maven {
 or
 ```gradle.kts
 // `repositories { }` in build.gradle.kts > buildscript, or settings.gradle.kts > pluginManagement, or buildSrc > build.gradle.kts
-maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-   name = "Sonatype 01: SNAPSHOTs"
+maven("https://central.sonatype.com/repository/maven-snapshots/") {
+   name = "Central SNAPSHOTs"
    content {
        includeGroup("net.twisterrob.gradle")
        includeGroupByRegex("""net\.twisterrob\.gradle\.plugin\..*""")
