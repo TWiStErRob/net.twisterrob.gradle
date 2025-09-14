@@ -15,6 +15,7 @@ group = "net.twisterrob.gradle"
 version = "0.1-SNAPSHOT"
 
 gradlePlugin {
+	@Suppress("detekt.StringLiteralDuplication")
 	plugins {
 		register("graph") {
 			id = "net.twisterrob.gradle.graph"

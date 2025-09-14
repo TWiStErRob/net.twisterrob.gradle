@@ -7,9 +7,9 @@ base.archivesName = "twister-convention-plugins"
 description = "Convention Plugins: Gradle Plugins used by my hobby projects."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
+	@Suppress("detekt.StringLiteralDuplication")
 	plugins {
-		create("androidApp") {
+		register("androidApp") {
 			id = "net.twisterrob.gradle.plugin.android-app"
 			displayName = "Android App Convention Plugin"
 			description = """
@@ -28,7 +28,7 @@ gradlePlugin {
 			implementationClass = "net.twisterrob.gradle.android.AndroidAppPlugin"
 			deprecateId(project, "net.twisterrob.android-app")
 		}
-		create("androidLibrary") {
+		register("androidLibrary") {
 			id = "net.twisterrob.gradle.plugin.android-library"
 			displayName = "Android Library Convention Plugin"
 			description = """
@@ -40,7 +40,7 @@ gradlePlugin {
 			implementationClass = "net.twisterrob.gradle.android.AndroidLibraryPlugin"
 			deprecateId(project, "net.twisterrob.android-library")
 		}
-		create("androidTest") {
+		register("androidTest") {
 			id = "net.twisterrob.gradle.plugin.android-test"
 			displayName = "Android Test Convention Plugin"
 			description = """

@@ -77,9 +77,7 @@ project.plugins.withId("net.twisterrob.gradle.build.module.library") {
 project.plugins.withId("net.twisterrob.gradle.build.module.gradle-plugin") {
 	registerPublicationsTasks(project)
 	project.gradlePlugin.apply {
-		@Suppress("UnstableApiUsage")
 		website = "https://github.com/TWiStErRob/net.twisterrob.gradle"
-		@Suppress("UnstableApiUsage")
 		vcsUrl = "https://github.com/TWiStErRob/net.twisterrob.gradle.git"
 	}
 	project.publishing.publications.apply {

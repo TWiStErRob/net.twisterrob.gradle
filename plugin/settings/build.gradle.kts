@@ -9,9 +9,9 @@ base.archivesName = "twister-convention-settings"
 description = "Settings Convention Plugin: Gradle Plugin to apply in settings.gradle files."
 
 gradlePlugin {
-	@Suppress("UnstableApiUsage", "detekt.StringLiteralDuplication")
+	@Suppress("detekt.StringLiteralDuplication")
 	plugins {
-		create("settings") {
+		register("settings") {
 			id = "net.twisterrob.gradle.plugin.settings"
 			displayName = "Gradle Settings Convention Plugin"
 			description = """
@@ -29,7 +29,7 @@ gradlePlugin {
 			implementationClass = "net.twisterrob.gradle.settings.SettingsPlugin"
 			// deprecateId(project, "net.twisterrob.settings") // Manually added, because Plugin<Settings>
 		}
-		create("nagging") {
+		register("nagging") {
 			id = "net.twisterrob.gradle.plugin.nagging"
 			displayName = "Gradle Nagging Settings Plugin"
 			description = """
