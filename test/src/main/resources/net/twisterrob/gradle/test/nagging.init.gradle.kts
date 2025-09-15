@@ -18,6 +18,9 @@ initscript {
 
 apply<net.twisterrob.gradle.nagging.NaggingPluginForTest>()
 
+private fun String.escape(): String =
+	Regex.escape(this)
+
 //System.setProperty("net.twisterrob.gradle.nagging.diagnostics", "true")
 
 // Below nagging suppressions are sorted by (Gradle version, AGP version) lexicographically.
@@ -168,3 +171,25 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" in "1.9.0".."1.9.25") {
 		"at org.jetbrains.kotlin.gradle.plugin.internal.DefaultConfigurationCacheStartParameterAccessor\$isConfigurationCacheRequested\$2.invoke(ConfigurationCacheStartParameterAccessor.kt:35)",
 	)
 }
+
+// TODEL Gradle 9.1 vs AGP 8.13 https://issuetracker.google.com/issues/444260628
+@Suppress("detekt.MaxLineLength")
+doNotNagAboutPatternForTest(
+	"9.1" to "9.2",
+	"8.2" to "8.14", // Lower bound unconfirmed.
+	Regex.escape("Declaring dependencies using multi-string notation has been deprecated. This will fail with an error in Gradle 10. Please use single-string notation instead: \"com.android.tools.build:aapt2:") + "\\d+\\.\\d+\\.\\d+(-(alpha|beta|rc)\\d+)?-\\d+:(windows|linux|osx)" + Regex.escape(
+		"\". Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#dependency_multi_string_notation"
+	) + ".*",
+	//"at com.android.build.gradle.internal.res.Aapt2FromMaven\$Companion.create(Aapt2FromMaven.kt:139)",
+)
+
+// TODEL Gradle 9.1 vs AGP 8.13 https://issuetracker.google.com/issues/444260628
+@Suppress("detekt.MaxLineLength")
+doNotNagAboutPatternForTest(
+	"9.1" to "9.2",
+	"8.2" to "8.14", // Lower bound unconfirmed.
+	Regex.escape("Declaring dependencies using multi-string notation has been deprecated. This will fail with an error in Gradle 10. Please use single-string notation instead: \"com.android.tools.lint:lint-gradle:") + "\\d+\\.\\d+\\.\\d+(-(alpha|beta|rc)\\d+)?" + Regex.escape(
+		"\". Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#dependency_multi_string_notation"
+	) + ".*",
+	//"at com.android.build.gradle.internal.lint.LintFromMaven\$Companion.from(AndroidLintInputs.kt:2850)",
+)
