@@ -4,7 +4,6 @@ import net.twisterrob.gradle.webjars.ExtractWebJarsTask
 extensions.create<ExtractWebJarsExtension>("webjars")
 
 val webjars by configurations.registering {
-	isVisible = false
 	isCanBeConsumed = false
 	isCanBeResolved = true
 }
