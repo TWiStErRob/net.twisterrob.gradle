@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.quality.tasks
 
 import com.android.build.api.artifact.impl.ArtifactsImpl
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import com.android.build.api.variant.DynamicFeatureVariant
 import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.api.AndroidBasePlugin
@@ -110,12 +112,17 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 		private fun Project.configureReports(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
 			androidComponents.finalizeDsl { android ->
+				val lint = when (android) {
+					is CommonExtension<*, *, *, *, *, *> -> android.lint
+					is KotlinMultiplatformAndroidLibraryExtension -> android.lint
+					else -> error("Unknown android extension: ${android::class}")
+				}
 				// Make sure we have XML output, otherwise can't figure out if it failed.
 				// Run this in finalizeDsl rather than just after configuration, to override any normal
 				// `android { lint { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
-				android.lint.abortOnError = false
-				android.lint.xmlReport = true
+				lint.abortOnError = false
+				lint.xmlReport = true
 			}
 			androidComponents.onVariants { variant ->
 				if (variant !is TestVariant && variant !is DynamicFeatureVariant) {

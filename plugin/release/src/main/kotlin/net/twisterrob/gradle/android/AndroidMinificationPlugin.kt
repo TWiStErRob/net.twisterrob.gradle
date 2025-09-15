@@ -48,6 +48,8 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 				release.setMinifyEnabled(true)
 			}
 
+			// TODEL https://youtrack.jetbrains.com/issue/KT-80985
+			@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 			buildTypes.configureEach { buildType ->
 				if (buildType.isDebuggable) {
 					buildType.proguardFile(myDebugProguardRulesFile)

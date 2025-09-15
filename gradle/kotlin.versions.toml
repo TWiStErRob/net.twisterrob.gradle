@@ -3,3 +3,4 @@ kotlin-gradle-v18x = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", ver
 kotlin-gradle-v19x = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "1.9.25" }
 kotlin-gradle-v20x = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "2.0.21" }
 kotlin-gradle-v21x = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "2.1.21" }
+kotlin-gradle-v22x = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version = "2.2.20" }

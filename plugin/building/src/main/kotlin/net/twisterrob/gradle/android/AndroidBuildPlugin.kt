@@ -112,7 +112,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			}
 		}
 
-		private fun NamedDomainObjectContainer<BuildType>.configureSuffixes(project: Project) {
+		private fun NamedDomainObjectContainer<out BuildType>.configureSuffixes(project: Project) {
 			configure("debug") { debug ->
 				project.plugins.withType<AppPlugin>().configureEach {
 					// TODO make debug buildTypes configurable, use name of buildType as suffix
@@ -127,7 +127,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			}
 		}
 
-		private fun NamedDomainObjectContainer<BuildType>.configureBuildResValues() {
+		private fun NamedDomainObjectContainer<out BuildType>.configureBuildResValues() {
 			configure("debug") { debug ->
 				debug.resValue("bool", "in_test", "true")
 				debug.resValue("bool", "in_prod", "false")

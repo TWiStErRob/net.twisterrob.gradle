@@ -42,7 +42,7 @@ fun PluginContainer.hasAndroid(): Boolean =
 fun PluginContainer.hasAndroidTest(): Boolean =
 	hasPlugin("com.android.test")
 
-fun DomainObjectCollection<BuildType>.configure(name: String, block: (BuildType) -> Unit) {
+fun DomainObjectCollection<out BuildType>.configure(name: String, block: (BuildType) -> Unit) {
 	configureEach { buildType ->
 		if (buildType.name == name) {
 			block(buildType)
@@ -60,6 +60,8 @@ fun Project.addBuildConfigField(name: String, type: String, value: Provider<out 
 	val androidComponents: AndroidComponentsExtension<*, *, *> =
 		this.extensions.getByName<AndroidComponentsExtension<*, *, *>>("androidComponents")
 	androidComponents.onVariants { variant ->
-		variant.buildConfigFields.put(name, value.map { BuildConfigField(type = type, value = it, comment = null) })
+		variant
+			.buildConfigFields
+			?.put(name, value.map { BuildConfigField(type = type, value = it, comment = null) })
 	}
 }

@@ -21,18 +21,18 @@ import org.gradle.kotlin.dsl.getByName
  */
 private const val ANDROID_COMPONENTS = "androidComponents"
 
-fun Project.androidComponents(block: Action<AndroidComponentsExtension<*, *, *>>) {
+fun Project.androidComponents(block: Action<AndroidComponentsExtension<Any, *, *>>) {
 	block.execute(this.androidComponents)
 }
 
-val Project.androidComponents: AndroidComponentsExtension<*, *, *>
+val Project.androidComponents: AndroidComponentsExtension<Any, *, *>
 	get() {
 		// REPORT hasPlugin("com.android.base") should be equivalent, but returns false during plugins.withType<ABP> { }
 		// because com.android.build.gradle.internal.plugins.BasePlugin applies ABP class not ID?
 		if (!this.plugins.hasPlugin(AndroidBasePlugin::class.java)) {
 			throw PluginInstantiationException("Cannot use this before the Android plugins are applied.")
 		}
-		return this.extensions.getByName<AndroidComponentsExtension<*, *, *>>(ANDROID_COMPONENTS)
+		return this.extensions.getByName<AndroidComponentsExtension<Any, *, *>>(ANDROID_COMPONENTS)
 	}
 
 fun Project.androidComponentsApplication(block: Action<ApplicationAndroidComponentsExtension>) {
