@@ -459,6 +459,23 @@ jobs:
         #test-task: []
         include:
 
+          - name: "AGP 8.13.x on Gradle 9.x"
+            gradle: '9.0.0'
+            java: '17'
+            agp: '8.13.0'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 8.13.x on Gradle 9.x - plugin"
+            gradle: '9.0.0'
+            java: '17'
+            agp: '8.13.0'
+            kotlin: '1.8.22'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
           - name: "AGP stable on Gradle preview"
             gradle: '9.1.0-rc-4' # https://services.gradle.org/distributions/
             java: '17'
