@@ -1,4 +1,3 @@
-import net.twisterrob.gradle.build.dsl.isCI
 import net.twisterrob.gradle.build.settings.enableFeaturePreviewQuietly
 import net.twisterrob.gradle.doNotNagAbout
 
@@ -112,70 +111,44 @@ dependencyResolutionManagement {
 	}
 }
 
-
 val gradleVersion: String = GradleVersion.current().version
 
-// TODEL Gradle 8.2 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320266.
-@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
-if ((System.getProperty("idea.version") ?: "") < "2023.3") {
-	// There are ton of warnings, ignoring them all by their class names in one suppression.
-	doNotNagAbout(
-		Regex(
-			"^" +
-					"(" +
-					Regex.escape("The Project.getConvention() method has been deprecated. ") +
-					"|" +
-					Regex.escape("The org.gradle.api.plugins.Convention type has been deprecated. ") +
-					"|" +
-					Regex.escape("The org.gradle.api.plugins.JavaPluginConvention type has been deprecated. ") +
-					")" +
-					Regex.escape("This is scheduled to be removed in Gradle 9.0. ") +
-					Regex.escape("Consult the upgrading guide for further information: ") +
-					Regex.escape("https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#") +
-					".*" +
-					"(" +
-					Regex.escape("at org.jetbrains.kotlin.idea.gradleTooling.KotlinTasksPropertyUtilsKt.") +
-					"|" +
-					Regex.escape("at org.jetbrains.plugins.gradle.tooling.util.JavaPluginUtil.") +
-					"|" +
-					Regex.escape("at org.jetbrains.plugins.gradle.tooling.builder.ExternalProjectBuilderImpl.") +
-					"|" +
-					Regex.escape("at org.jetbrains.plugins.gradle.tooling.builder.ProjectExtensionsDataBuilderImpl.") +
-					")" +
-					".*$"
-		)
-	)
-} else {
-	val error: (String) -> Unit = if (isCI) ::error else logger::warn
-	error("IDEA version changed, please review hack.")
-}
-
-// TODEL Gradle 8.2 sync in IDEA 2023.1 https://youtrack.jetbrains.com/issue/IDEA-320307.
-@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
-if ((System.getProperty("idea.version") ?: "") < "2023.3") {
-	@Suppress("detekt.MaxLineLength", "detekt.StringLiteralDuplication")
-	doNotNagAbout(
-		"The BuildIdentifier.getName() method has been deprecated. " +
-				"This is scheduled to be removed in Gradle 9.0. " +
-				"Use getBuildPath() to get a unique identifier for the build. " +
-				"Consult the upgrading guide for further information: " +
-				"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#build_identifier_name_and_current_deprecation",
-		// There are 4 stack traces coming to this line, ignore them all at once.
-		"at org.jetbrains.plugins.gradle.tooling.util.resolve.DependencyResolverImpl.resolveDependencies(DependencyResolverImpl.java:266)"
-	)
-} else {
-	val error: (String) -> Unit = if (isCI) ::error else logger::warn
-	error("IDEA version changed, please review hack.")
-}
-
-// TODEL Gradle 8.14 vs AGP 8.9 https://issuetracker.google.com/issues/408334529
+// TODEL Gradle 9.1 vs detekt 1.23.8 https://github.com/detekt/detekt/issues/8452
 @Suppress("detekt.MaxLineLength")
 doNotNagAbout(
-	"Retrieving attribute with a null key. " +
-			"This behavior has been deprecated. " +
-			"This will fail with an error in Gradle 10. " +
-			"Don't request attributes from attribute containers using null keys. " +
+	"The ReportingExtension.file(String) method has been deprecated. " +
+			"This is scheduled to be removed in Gradle 10. " +
+			"Please use the getBaseDirectory().file(String) or getBaseDirectory().dir(String) method instead. " +
 			"Consult the upgrading guide for further information: " +
-			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_8.html#null-attribute-lookup",
-	"at com.android.build.gradle.internal.ide.dependencies.ArtifactUtils.isAndroidProjectDependency(ArtifactUtils.kt:539)",
+			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#reporting_extension_file",
+	"at io.gitlab.arturbosch.detekt.DetektPlugin.apply(DetektPlugin.kt:28)",
 )
+
+// TODEL Gradle 9.1 vs IDEA 2025.2.1 https://youtrack.jetbrains.com/issue/IDEA-379286
+@Suppress("detekt.MaxLineLength")
+doNotNagAbout(
+	"The Configuration.isVisible method has been deprecated. " +
+			"This is scheduled to be removed in Gradle 10. " +
+			"Consult the upgrading guide for further information: " +
+			"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#deprecate-visible-property",
+	// Don't include line number, because of recent changes to the file.
+	// It's line 89 in 2025.2.1, but in upcoming IDEA releases it will move twice.
+	"at org.jetbrains.plugins.gradle.tooling.builder.ProjectExtensionsDataBuilderImpl\$Companion.collectConfigurations(ProjectExtensionsDataBuilderImpl.kt:",
+)
+
+// TODEL Gradle 9.1 vs AGP 8.13 https://issuetracker.google.com/issues/444260628
+@Suppress("detekt.MaxLineLength")
+doNotNagAbout(
+	Regex(
+		"Declaring dependencies using multi-string notation has been deprecated. ".escape() +
+				"This will fail with an error in Gradle 10. ".escape() +
+				"Please use single-string notation instead: ".escape() +
+				"\"${"com.android.tools.lint:lint-gradle:".escape()}\\d+\\.\\d+\\.\\d+(-(alpha|beta|rc)\\d+)?${"\". ".escape()}" +
+				"Consult the upgrading guide for further information: ".escape() +
+				"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#dependency_multi_string_notation".escape() +
+				".*",
+	),
+	//"at com.android.build.gradle.internal.lint.LintFromMaven\$Companion.from(AndroidLintInputs.kt:2850)",
+)
+
+private fun String.escape(): String = Regex.escape(this)
