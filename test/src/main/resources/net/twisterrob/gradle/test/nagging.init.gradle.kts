@@ -18,9 +18,6 @@ initscript {
 
 apply<net.twisterrob.gradle.nagging.NaggingPluginForTest>()
 
-private fun String.escape(): String =
-	Regex.escape(this)
-
 //System.setProperty("net.twisterrob.gradle.nagging.diagnostics", "true")
 
 // Below nagging suppressions are sorted by (Gradle version, AGP version) lexicographically.
