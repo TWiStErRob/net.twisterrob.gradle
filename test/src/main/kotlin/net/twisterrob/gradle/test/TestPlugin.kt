@@ -2,6 +2,7 @@ package net.twisterrob.gradle.test
 
 import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.create
 import java.net.JarURLConnection
 import java.util.jar.Attributes
 
@@ -18,10 +19,10 @@ class TestPlugin : BaseExposedPlugin() {
 			add("testImplementation", gradleTestKit())
 
 			val myManifest = getManifest()
-			val selfDependency = mapOf(
-				"group" to myManifest.getValue("Implementation-Vendor")!!,
-				"name" to myManifest.getValue("Implementation-Title")!!,
-				"version" to myManifest.getValue("Implementation-Version")!!
+			val selfDependency = create(
+				group = myManifest.getValue("Implementation-Vendor")!!,
+				name = myManifest.getValue("Implementation-Title")!!,
+				version = myManifest.getValue("Implementation-Version")!!,
 			)
 			add("testImplementation", selfDependency)
 		}
