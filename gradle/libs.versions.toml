@@ -67,7 +67,7 @@ mockito = "5.20.0"
 # GitHub releases: https://github.com/nhaarman/mockito-kotlin/releases
 mockito-kotlin = "6.0.0"
 # GitHub releases: https://github.com/mockk/mockk/releases
-mockk = "1.14.5"
+mockk = "1.14.6"
 
 hamcrest = "3.0"
 
