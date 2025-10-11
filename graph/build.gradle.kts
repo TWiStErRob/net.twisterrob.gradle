@@ -1,8 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.idea.proto.com.google.protobuf.api
-import org.jetbrains.kotlin.gradle.internal.backend.common.serialization.metadata.DynamicTypeDeserializer.id
-import org.jetbrains.kotlin.gradle.internal.types.error.ErrorModuleDescriptor.platform
-import org.jetbrains.kotlin.org.apache.commons.compress.harmony.pack200.PackingUtils.config
 
 plugins {
 	id("org.gradle.java-gradle-plugin")
