@@ -15,10 +15,8 @@ dependencies {
 	api(libs.annotations.jetbrains)
 
 	api(libs.junit.pioneer)
+	api(libs.junit.jupiter)
 	api(libs.junit.legacy) // needed for GradleRunnerRule superclass even when using Extension
-	api(libs.junit.api)
-	api(libs.junit.params)
-	runtimeOnly(libs.junit.engine)
 
 	api(libs.hamcrest)
 
