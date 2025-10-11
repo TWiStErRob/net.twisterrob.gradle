@@ -1,4 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.idea.proto.com.google.protobuf.api
+import org.jetbrains.kotlin.gradle.internal.backend.common.serialization.metadata.DynamicTypeDeserializer.id
+import org.jetbrains.kotlin.gradle.internal.types.error.ErrorModuleDescriptor.platform
+import org.jetbrains.kotlin.org.apache.commons.compress.harmony.pack200.PackingUtils.config
 
 plugins {
 	id("org.gradle.java-gradle-plugin")
@@ -62,11 +66,12 @@ javafx {
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_11
-	targetCompatibility = JavaVersion.VERSION_11
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.withType<JavaCompile>().configureEach {
+	options.release = 17
 	options.compilerArgs = options.compilerArgs + listOf(
 		"-Xlint:unchecked",
 		"-Xlint:deprecation",
@@ -75,7 +80,7 @@ tasks.withType<JavaCompile>().configureEach {
 
 kotlin {
 	compilerOptions {
-		jvmTarget = JvmTarget.fromTarget("11")
+		jvmTarget = JvmTarget.fromTarget("17")
 		allWarningsAsErrors = true
 		extraWarnings = true
 		freeCompilerArgs.addAll(
