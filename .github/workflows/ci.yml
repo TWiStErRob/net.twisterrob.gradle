@@ -49,7 +49,7 @@ jobs:
           log-accepted-android-sdk-licenses: false
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: "Set up Java."
         uses: actions/setup-java@v5
@@ -111,7 +111,7 @@ jobs:
           log-accepted-android-sdk-licenses: false
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: "Set up Java."
         uses: actions/setup-java@v5
@@ -303,7 +303,7 @@ jobs:
           sdkmanager --install "platforms;android-${CURRENT_ANDROID_VERSION}"
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: "Set up Java."
         uses: actions/setup-java@v5
