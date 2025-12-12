@@ -343,7 +343,7 @@ jobs:
           ./gradlew --no-daemon --version
 
       - name: "Cache Gradle ${{ env.GRADLE_VERSION }} files."
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ env.GRADLE_VERSION }}-all.zip"
@@ -362,7 +362,7 @@ jobs:
             ${{ runner.os }}-gradle-${{ env.GRADLE_VERSION }}-
 
       - name: "Cache Gradle Test Kit ${{ matrix.gradle }} files."
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             # Prevent "Downloading https://services.gradle.org/distributions/gradle-${{ matrix.gradle }}-all.zip"
