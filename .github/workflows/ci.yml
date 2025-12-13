@@ -145,7 +145,7 @@ jobs:
 
       - name: "Upload 'Detekt Results' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: 'Detekt Results'
           if-no-files-found: error
@@ -169,7 +169,7 @@ jobs:
 
       - name: "Upload 'Gradle Plugin Validation Report' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: 'Gradle Plugin Validation Report'
           if-no-files-found: error
@@ -178,7 +178,7 @@ jobs:
 
       - name: "Upload JARs, Maven and Gradle metadata as 'Intermediate Artifacts' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: 'Intermediate Artifacts'
           if-no-files-found: error
@@ -189,7 +189,7 @@ jobs:
 
       - name: "Upload 'mavenLocal()' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: 'mavenLocal'
           if-no-files-found: error
@@ -404,7 +404,7 @@ jobs:
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results XMLs' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: '${{ env.JOB_NAME }} Test Results XMLs'
           if-no-files-found: error
@@ -413,7 +413,7 @@ jobs:
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results HTML' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: '${{ env.JOB_NAME }} Test Results HTML'
           if-no-files-found: error
@@ -422,7 +422,7 @@ jobs:
 
       - name: "Upload '${{ env.JOB_NAME }} Test Results HTMLs' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: '${{ env.JOB_NAME }} Test Results HTMLs'
           if-no-files-found: error
@@ -924,7 +924,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: "Download '... Test Results XMLs' Artifacts."
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: '* Test Results XMLs'
           path: artifacts
