@@ -56,7 +56,7 @@ kotlin-dsl = "6.1.1"
 junit4 = "4.13.2"
 # JUnit X = JUnit Platform ([junit-api]) + JUnit Jupiter ([junit-engine]) + JUnit Vintage ([junit-vintage])
 # Changelog: https://docs.junit.org/current/release-notes/index.html
-jupiter = "6.0.1"
+jupiter = "6.0.2"
 # GitHub Releases: https://github.com/junit-pioneer/junit-pioneer/releases
 junit-pioneer = "2.3.0"
 
