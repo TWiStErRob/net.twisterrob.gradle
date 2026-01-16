@@ -49,15 +49,7 @@ T : VerificationTask {
 		// > Unsafe use of a nullable receiver of type DomainObjectSet<CapturedType(out [Suppress] BaseVariant)>
 		@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 		variants.configureEach { createTaskForVariant(it, eachTask) }
-		project.afterEvaluate {
-			project.tasks.register("${baseName}All", taskClass, variantsConfig(variants))
-		}
 	}
-
-	open fun variantsConfig(
-		variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
-	): VariantTaskCreator<T>.DefaultVariantsTaskConfig =
-		DefaultVariantsTaskConfig(taskConfigurator(), variants)
 
 	open fun variantConfig(
 		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant
@@ -87,22 +79,6 @@ T : VerificationTask {
 		eachTask.configure { it.dependsOn(variantTask) }
 	}
 
-	open inner class DefaultVariantsTaskConfig(
-		private val configurator: DefaultTaskConfig,
-		private val variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
-	) : Action<T> {
-
-		override fun execute(task: T) {
-			val variantNames = variants.joinToString(", ") { it.name }
-			task.description = "Run ${baseName} batched on variants: ${variantNames}"
-			task.checkTargetName = ALL_VARIANTS_NAME
-			configurator.setupConfigLocations(task)
-			configurator.setupSources(task, variants)
-			configurator.setupReports(task)
-			checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
-		}
-	}
-
 	open inner class DefaultVariantTaskConfig(
 		private val configurator: DefaultTaskConfig,
 		private val variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant
@@ -112,7 +88,7 @@ T : VerificationTask {
 			task.description = "Run ${baseName} on ${variant.name} variant"
 			task.checkTargetName = variant.name
 			configurator.setupConfigLocations(task)
-			configurator.setupSources(task, listOf(variant))
+			configurator.setupSources(task, variant)
 			configurator.setupReports(task, variant.name)
 			checkerExtension.taskConfigurator.execute(TaskConfigurator(task))
 		}
@@ -133,7 +109,7 @@ T : VerificationTask {
 		 */
 		open fun setupSources(
 			task: T,
-			variants: Collection<@Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>
+			variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant,
 		) {
 			// TODO classpath
 			@Suppress("detekt.MaxChainedCallsOnSameLine")
@@ -159,8 +135,8 @@ T : VerificationTask {
 			@Suppress("DEPRECATION" /* AGP 7.0 */)
 			val java = com.android.build.gradle.api.SourceKind.JAVA
 			val javaFolders =
-				variants
-					.flatMap { it.getSourceFolders(java) }
+				variant
+					.getSourceFolders(java)
 					.map { tree ->
 						// build relative path (e.g. src/main/java) and
 						// append a trailing "/" for include to treat it as recursive
@@ -168,13 +144,11 @@ T : VerificationTask {
 					}
 			task.include(javaFolders)
 
-			variants.forEach { variant ->
-				// exclude generated code
-				// "source" is hard-coded in VariantScopeImpl, e.g. getAidlSourceOutputDir
-				// single-star represents r|buildConfig|aidl|rs|etc.
-				// double-star is the package name
-				task.exclude("${relativeBuildPath}/${FD_GENERATED}/source/*/${variant.name}/**/*.java")
-			}
+			// exclude generated code
+			// "source" is hard-coded in VariantScopeImpl, e.g. getAidlSourceOutputDir
+			// single-star represents r|buildConfig|aidl|rs|etc.
+			// double-star is the package name
+			task.exclude("${relativeBuildPath}/${FD_GENERATED}/source/*/${variant.name}/**/*.java")
 		}
 
 		open fun setupReports(task: T, suffix: String? = null) {
