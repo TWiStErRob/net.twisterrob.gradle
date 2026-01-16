@@ -2,13 +2,13 @@
 
 package net.twisterrob.gradle.quality.report.html
 
-import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
 
 private typealias Module = String
 private typealias Variant = String
 private typealias Parser = String
+private const val ALL_VARIANTS_NAME: String = "*"
 
 /**
  * Remove duplicate violations.
