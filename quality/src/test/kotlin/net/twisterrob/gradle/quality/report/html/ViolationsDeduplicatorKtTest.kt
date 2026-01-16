@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.quality.report.html
 
 import com.flextrade.jfixture.JFixture
-import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.report.html.model.build
