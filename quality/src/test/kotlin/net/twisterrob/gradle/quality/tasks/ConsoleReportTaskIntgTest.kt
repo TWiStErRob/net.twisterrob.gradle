@@ -55,7 +55,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 
 		val result = gradle.runBuild {
 			basedOn("android-root_app")
-			run(script, "checkstyleAll", "pmdAll", "printViolationCount")
+			run(script, "checkstyleEach", "pmdEach", "printViolationCount")
 		}
 
 		// TODO find another CheckStyle violation that's more specific
@@ -86,7 +86,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		""".trimIndent()
 
 		val result = gradle.runBuild {
-			run(script, "checkstyleAll", "pmdAll", "printViolationCount")
+			run(script, "checkstyleEach", "pmdEach", "printViolationCount")
 		}
 
 		// TODO find another CheckStyle violation that's more specific
@@ -121,7 +121,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		""".trimIndent()
 
 		val result = gradle.runBuild {
-			run(script, "checkstyleAll", "printViolationCounts")
+			run(script, "checkstyleEach", "printViolationCounts").withDebug(true)
 		}
 
 		assertThat(
@@ -153,11 +153,11 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		""".trimIndent()
 
 		gradle.file(checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")
-		gradle.run(script, "checkstyleAll", "pmdAll", "printViolationCount").build()
+		gradle.run(script, "checkstyleEach", "pmdEach", "printViolationCount").build()
 		gradle.file(pmd.simple.content1, *SOURCE_PATH, "Pmd.java")
 
 		val result = gradle.runBuild {
-			run(null, "checkstyleAll", "pmdAll", "printViolationCount")
+			run(null, "checkstyleEach", "pmdEach", "printViolationCount")
 		}
 
 		result.assertSuccess(":printViolationCount")

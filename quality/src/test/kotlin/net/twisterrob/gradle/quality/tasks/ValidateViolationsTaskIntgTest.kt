@@ -49,7 +49,7 @@ class ValidateViolationsTaskIntgTest : BaseIntgTest() {
 
 		val result = gradle.runFailingBuild {
 			basedOn("android-root_app")
-			run(script, "checkstyleAll", "pmdAll", "validateViolations")
+			run(script, "checkstyleEach", "pmdEach", "validateViolations")
 		}
 
 		result.assertFailed(":validateViolations")

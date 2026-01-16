@@ -51,7 +51,7 @@ class FileCountReportTaskIntgTest : BaseIntgTest() {
 
 		gradle.runBuild {
 			basedOn("android-root_app")
-			run(script, "checkstyleAll", "pmdAll", "printViolationCount")
+			run(script, "checkstyleEach", "pmdEach", "printViolationCount")
 		}
 
 		val resultFile = gradle.violationsReport("count")
@@ -79,7 +79,7 @@ class FileCountReportTaskIntgTest : BaseIntgTest() {
 
 		gradle.runBuild {
 			basedOn("android-root_app")
-			run(script, "checkstyleAll", "pmdAll", "printViolationCount")
+			run(script, "checkstyleEach", "pmdEach", "printViolationCount")
 		}
 
 		val resultFile = gradle.projectFile("problems.txt")

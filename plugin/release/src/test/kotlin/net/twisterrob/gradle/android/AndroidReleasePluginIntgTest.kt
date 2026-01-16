@@ -56,7 +56,7 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebugAndroidTest")
 		result.assertNoTask(":releaseDebug")
 		result.assertNoTask(":releaseRelease")
-		result.assertNoTask(":releaseAll")
+		result.assertNoTask(":releaseEach")
 	}
 
 	@Test fun `releases location can be overridden from DSL (debug)`(@TempDir externalReleaseDir: File) {
