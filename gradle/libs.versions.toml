@@ -29,7 +29,7 @@ agp = "8.13.2"
 # @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
 # @see builder-model//version.properties
 # Versions: https://maven.google.com/web/index.html#com.android.tools.lint:lint
-agp-tools = "31.13.2"
+agp-tools = "32.0.0"
 
 # Things have to be older to make sure a Gradle-compatible version is used.
 # https://docs.gradle.org/current/userguide/compatibility.html
