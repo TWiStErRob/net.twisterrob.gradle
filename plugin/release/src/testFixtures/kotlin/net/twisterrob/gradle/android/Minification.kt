@@ -5,7 +5,7 @@ import org.intellij.lang.annotations.Language
 enum class Minification(
 	val debugTaskName: String,
 	val releaseTaskName: String,
-	@Language("properties")
+	@param:Language("properties")
 	val gradleProperties: String,
 ) {
 
