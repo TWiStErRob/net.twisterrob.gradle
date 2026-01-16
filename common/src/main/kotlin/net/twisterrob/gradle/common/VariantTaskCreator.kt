@@ -48,7 +48,10 @@ T : VerificationTask {
 		// Probably false positive:
 		// > Unsafe use of a nullable receiver of type DomainObjectSet<CapturedType(out [Suppress] BaseVariant)>
 		@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-		variants.configureEach { createTaskForVariant(it, eachTask) }
+		variants.configureEach { variant ->
+			val variantTask = createTaskForVariant(variant)
+			eachTask.configure { it.dependsOn(variantTask) }
+		}
 	}
 
 	open fun variantConfig(
@@ -72,11 +75,9 @@ T : VerificationTask {
 
 	private fun createTaskForVariant(
 		variant: @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant,
-		eachTask: TaskProvider<*>,
-	) {
+	): TaskProvider<T> {
 		val taskName = "${baseName}${variant.name.replaceFirstChar { it.uppercase(Locale.ROOT) }}"
-		val variantTask = project.tasks.register(taskName, taskClass, variantConfig(variant))
-		eachTask.configure { it.dependsOn(variantTask) }
+		return project.tasks.register(taskName, taskClass, variantConfig(variant))
 	}
 
 	open inner class DefaultVariantTaskConfig(
