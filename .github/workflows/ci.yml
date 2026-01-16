@@ -872,6 +872,39 @@ jobs:
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
 
+          - name: "AGP 9.0.x on Gradle 9.1+"
+            gradle: '9.1'
+            java: '17'
+            agp: '9.0.0'
+            kotlin: '2.2.10'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 9.0.x on Gradle 9.1+ - plugin"
+            gradle: '9.1'
+            java: '17'
+            agp: '9.0.0'
+            kotlin: '2.2.10'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 9.0.x on Gradle 8.x"
+            gradle: '9.2.1'
+            java: '17'
+            agp: '9.0.0'
+            kotlin: '2.2.10'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 9.0.x on Gradle 8.x - plugin"
+            gradle: '9.2.1'
+            java: '17'
+            agp: '9.0.0'
+            kotlin: '2.2.10'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+
           - name: "AGP stable on Gradle stable"
             gradle: '9.0.0' # https://gradle.org/releases/
             java: '17'
