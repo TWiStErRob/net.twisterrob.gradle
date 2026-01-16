@@ -179,7 +179,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":printViolationCount")
-		result.assertHasOutputLine("Summary\t(total: 1)\t   1\t          0")
+		result.assertHasOutputLine("Summary\t(total: 1)\t   1")
 	}
 
 	@Test fun `gather unique lint violations when multiple variants are linted`() {
@@ -197,7 +197,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		}
 
 		result.assertSuccess(":printViolationCount")
-		result.assertHasOutputLine("Summary\t(total: 1)\t   1\t          0")
+		result.assertHasOutputLine("Summary\t(total: 1)\t   1")
 	}
 
 	@Test fun `do not gather non-existent reports`() {

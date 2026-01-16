@@ -322,7 +322,7 @@ private fun Violations.noViolations(): Violations =
 		variant = this.variant,
 		result = this.result,
 		report = this.report,
-		violations = emptyList(),
+		violations = null,
 	)
 
 private fun Violations.unknownReports(): Violations =

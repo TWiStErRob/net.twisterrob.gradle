@@ -53,6 +53,7 @@ private fun removeOptionalDuplicates(from: List<Violation>?, using: List<Violati
 	if (from == null) return null // Nothing to remove from, identity.
 	if (using == null) return from // No duplicates to remove, keep everything.
 	return removeDuplicates(from, using)
+		.takeIf { it.isNotEmpty() } // Clean up merged results.
 }
 
 @Suppress("ConvertArgumentToSet")
