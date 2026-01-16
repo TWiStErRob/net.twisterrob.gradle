@@ -35,9 +35,9 @@ agp-tools = "32.0.0"
 # https://docs.gradle.org/current/userguide/compatibility.html
 
 # Actual Kotlin version for dependencies.
-kotlin-target = "1.8.22"
+kotlin-target = "2.0.0"
 # Actual Kotlin language and API version for compilation, it restricts language features and metadata.
-kotlin-language = "1.8"
+kotlin-language = "2.0"
 # Version of Kotlin Gradle Plugin used for compilation.
 kotlin-build = "2.3.0"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
