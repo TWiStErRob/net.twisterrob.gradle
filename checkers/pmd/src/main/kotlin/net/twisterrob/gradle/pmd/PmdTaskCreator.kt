@@ -7,7 +7,7 @@ import java.io.File
 class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 	project,
 	"pmd",
-	"pmd",
+	"org.gradle.pmd",
 	PmdTask::class.java,
 	PmdExtension::class.java
 ) {

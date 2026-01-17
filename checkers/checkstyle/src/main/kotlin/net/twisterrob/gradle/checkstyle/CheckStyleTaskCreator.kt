@@ -6,7 +6,7 @@ import org.gradle.api.Project
 class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTask>(
 	project,
 	"checkstyle",
-	"checkstyle",
+	"org.gradle.checkstyle",
 	CheckStyleTask::class.java,
 	CheckStyleExtension::class.java
 ) {
