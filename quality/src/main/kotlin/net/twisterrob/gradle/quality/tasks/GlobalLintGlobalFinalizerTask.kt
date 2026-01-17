@@ -113,7 +113,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 		private fun Project.configureReports(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
 			androidComponents.finalizeDsl { android ->
 				val lint = when (android) {
-					is CommonExtension<*, *, *, *, *, *> -> android.lint
+					is CommonExtension -> android.lint
 					is KotlinMultiplatformAndroidLibraryExtension -> android.lint
 					else -> error("Unknown android extension: ${android::class}")
 				}
