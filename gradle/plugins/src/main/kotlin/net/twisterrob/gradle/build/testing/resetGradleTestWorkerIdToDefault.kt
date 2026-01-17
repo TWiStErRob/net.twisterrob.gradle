@@ -1,7 +1,9 @@
 package net.twisterrob.gradle.build.testing
 
+import org.gradle.api.Task
 import org.gradle.api.internal.tasks.testing.worker.TestWorker
 import org.gradle.api.invocation.Gradle
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.internal.id.LongIdGenerator
 import org.gradle.kotlin.dsl.support.serviceOf
 import org.gradle.process.internal.worker.DefaultWorkerProcessBuilder
@@ -28,8 +30,33 @@ import java.util.concurrent.atomic.AtomicLong
  */
 @Suppress("detekt.FunctionMaxLength") // Rather be explicit about what it does.
 fun Gradle.resetGradleTestWorkerIdToDefault() {
+	rootProject {
+		val workerProcessFactory: WorkerProcessFactory = gradle.serviceOf()
+		val resetTestWorkerIdToDefault: TaskProvider<Task> = tasks.register("resetTestWorkerIdToDefault") {
+			group = "verification"
+			description = "Resets Gradle TestWorker ID generator to improve Gradle TestKit directory reuse."
+			outputs.upToDateWhen { false }
+			doLast { workerProcessFactory.resetWorkerIdToDefault() }
+		}
+		allprojects {
+			// Note: allprojects does not include :, nor includedBuilds.
+			// Note: could use .withType<Test>(), but then the worker ID resets mid-build, which might cause other problems.
+			tasks.configureEach task@{
+				if (this@task.name != resetTestWorkerIdToDefault.name) {
+					dependsOn(resetTestWorkerIdToDefault)
+				}
+			}
+		}
+	}
+}
+
+/**
+ * @see DefaultWorkerProcessFactory.idGenerator
+ * @see LongIdGenerator.nextId
+ */
+private fun WorkerProcessFactory.resetWorkerIdToDefault() {
 	// This factory is "static" and it holds the state we need to mutate in order to make the workers reuse IDs.
-	val factory: DefaultWorkerProcessFactory = serviceOf<WorkerProcessFactory>() as DefaultWorkerProcessFactory
+	val factory: DefaultWorkerProcessFactory = this as DefaultWorkerProcessFactory
 	val idGenerator: LongIdGenerator = factory.getPrivateField("idGenerator")
 	val nextId: AtomicLong = idGenerator.getPrivateField("nextId")
 	nextId.set(1)
