@@ -1,3 +1,4 @@
+import net.twisterrob.gradle.build.testing.TestKitSlotService
 import net.twisterrob.gradle.build.testing.configureVerboseReportsForGithubActions
 
 plugins {
@@ -56,4 +57,23 @@ tasks.withType<Test>().configureEach {
 	// TODEL https://github.com/gradle/gradle/issues/861
 	properties.forEach { (name, value) -> inputs.property(name, value.get()) }
 	properties.forEach { (name, value) -> jvmArgs("-D${name}=${value.get()}") }
+}
+
+val testKitSlots = gradle.sharedServices.registerIfAbsent("testKitSlots", TestKitSlotService::class.java) {}
+
+// Release immediately after each task finishes (success or failure), so `--continue` doesn't burn through ids.
+gradle.taskGraph.addTaskExecutionListener(object : org.gradle.api.execution.TaskExecutionListener {
+	override fun beforeExecute(task: org.gradle.api.Task) = Unit
+	override fun afterExecute(task: org.gradle.api.Task, state: org.gradle.api.tasks.TaskState) {
+		testKitSlots.get().releaseAll(task.path)
+	}
+})
+
+tasks.withType<Test>().configureEach {
+	usesService(testKitSlots)
+	// Allocate at execution time so configuration cache can be reused without doing any work.
+	doFirst {
+		val id = testKitSlots.get().lease(path)
+		systemProperty("net.twisterrob.testkit.slot", id.toString())
+	}
 }
