@@ -49,7 +49,7 @@ class PmdTaskTest_ConfigLocation : BaseIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
-	private val pmd = PmdTestResources()
+	private val pmd = PmdTestResources { gradle.gradleVersion }
 
 	@Test fun `uses rootProject pmd config as a fallback`() {
 		gradle.file(pmd.simple.config, *CONFIG_PATH)

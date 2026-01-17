@@ -37,7 +37,7 @@ class PmdPluginTest : BaseIntgTest() {
 
 	override lateinit var gradle: GradleRunnerRule
 
-	private val pmd = PmdTestResources()
+	private val pmd = PmdTestResources { gradle.gradleVersion }
 
 	@Test fun `does not apply to empty project`() {
 		@Language("gradle")

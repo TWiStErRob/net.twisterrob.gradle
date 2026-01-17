@@ -1,12 +1,14 @@
 package net.twisterrob.gradle.pmd.test
 
+import org.gradle.util.GradleVersion
+
 /**
  * Test resources for PMD static analyser.
  *
  * Usage:
  * ```
  * private lateinit var gradle: GradleRunnerRule
- * private val pmd = PmdTestResources()
+ * private val pmd = PmdTestResources { gradle.gradleVersion }
  *
  * @Test fun test() {
  *     gradle.file(pmd.….config, "config", "pmd", "pmd.xml")
@@ -14,14 +16,23 @@ package net.twisterrob.gradle.pmd.test
  * ```
  */
 @Suppress("detekt.UseDataClass") // https://github.com/detekt/detekt/issues/5339
-class PmdTestResources {
+class PmdTestResources(
+	private val gradleVersion: () -> GradleVersion,
+) {
 
-	val empty: EmptyConfiguration = object : EmptyConfiguration {}
+	val empty: EmptyConfiguration = object : EmptyConfiguration() {}
 	val simple: SimpleFailures = object : SimpleFailures {}
 
-	interface EmptyConfiguration {
+	abstract inner class EmptyConfiguration {
 		val config: String
-			get() = read("empty/empty-pmd.xml")
+			get() =
+				@Suppress("detekt.UseIfInsteadOfWhen") // Preparing for future new version ranges.
+				when {
+					GradleVersion.version("9.0.0") <= gradleVersion().baseVersion ->
+						read("empty/empty-pmd7.xml")
+					else ->
+						read("empty/empty-pmd6.xml")
+				}
 	}
 
 	interface SimpleFailures {
