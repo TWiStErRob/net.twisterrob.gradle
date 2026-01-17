@@ -169,13 +169,13 @@ abstract class BaseViolationsTask : DefaultTask() {
 				projectDir.resolve(path)
 
 			companion object {
-				@Suppress("ConstPropertyName", "UnusedPrivateProperty") // Java magic.
+				@Suppress("UnusedPrivateProperty") // Java magic.
 				private const val serialVersionUID: Long = 1
 			}
 		}
 
 		companion object {
-			@Suppress("ConstPropertyName", "UnusedPrivateProperty") // Java magic.
+			@Suppress("UnusedPrivateProperty") // Java magic.
 			private const val serialVersionUID: Long = 1
 		}
 	}
