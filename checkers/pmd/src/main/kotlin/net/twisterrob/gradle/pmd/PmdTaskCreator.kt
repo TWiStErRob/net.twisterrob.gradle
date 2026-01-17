@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.pmd
 
 import com.android.build.api.variant.Variant
+import net.twisterrob.gradle.android.manifestsCompat
 import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.Project
 import java.io.File
@@ -64,7 +65,7 @@ open class PmdTaskCreator @Inject constructor(
 				}
 
 				task.source(variant.sources.res?.all)
-				task.source(variant.sources.manifests.all)
+				task.source(variant.sources.manifestsCompat)
 			}
 		}
 }
