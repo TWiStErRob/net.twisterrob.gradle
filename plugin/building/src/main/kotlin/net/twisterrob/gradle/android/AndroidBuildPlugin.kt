@@ -6,7 +6,6 @@ import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ResValue
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.BasePlugin
 import com.android.build.gradle.internal.component.ComponentCreationConfig
 import com.android.build.gradle.internal.dsl.BuildType
@@ -44,7 +43,8 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-		val android = project.extensions.getByName<BaseExtension>("android")
+		@Suppress("DEPRECATION" /* AGP 9.0 */)
+		val android = project.extensions.getByName<com.android.build.gradle.BaseExtension>("android")
 		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
 		if (shouldAddAutoRepositoriesTo(project)) {
@@ -101,8 +101,9 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	companion object {
 
-		private fun BaseExtension.configureLint() {
-			(this as CommonExtension<*, *, *, *, *, *>).lint {
+		@Suppress("DEPRECATION" /* AGP 9.0 */)
+		private fun com.android.build.gradle.BaseExtension.configureLint() {
+			(this as CommonExtension<*, *, *, *, *, *>).lint.apply {
 				xmlReport = false
 				checkAllWarnings = true
 				abortOnError = true
@@ -167,7 +168,8 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				"**/README.md",
 			)
 
-		private fun BaseExtension.decorateBuildConfig(project: Project, twisterrob: AndroidBuildPluginExtension) {
+		@Suppress("DEPRECATION" /* AGP 9.0 */)
+		private fun com.android.build.gradle.BaseExtension.decorateBuildConfig(project: Project, twisterrob: AndroidBuildPluginExtension) {
 			val buildTimeTaskProvider =
 				project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
 			val vcsTaskProvider =

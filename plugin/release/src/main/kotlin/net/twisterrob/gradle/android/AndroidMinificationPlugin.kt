@@ -3,7 +3,6 @@ package net.twisterrob.gradle.android
 import com.android.SdkConstants
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
@@ -25,7 +24,8 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
-		val android = project.extensions["android"] as BaseExtension
+		@Suppress("DEPRECATION" /* AGP 9.0 */)
+		val android = project.extensions["android"] as com.android.build.gradle.BaseExtension
 
 		/**
 		 * @see com.android.build.gradle.ProguardFiles#getDefaultProguardFile
@@ -86,7 +86,8 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 		}
 	}
 
-	private fun BaseExtension.setupAutoProguardFiles() {
+	@Suppress("DEPRECATION" /* AGP 9.0 */)
+	private fun com.android.build.gradle.BaseExtension.setupAutoProguardFiles() {
 		val autoProguardFile = project.file("src/main/proguard.pro")
 		if (autoProguardFile.exists() && autoProguardFile.isFile) {
 			defaultConfig.proguardFiles.add(autoProguardFile)

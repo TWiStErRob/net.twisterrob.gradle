@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.java
 
-import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.Project
@@ -18,7 +17,8 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 		super.apply(target)
 
 		if (project.plugins.hasAndroid()) {
-			val android: BaseExtension = project.extensions["android"] as BaseExtension
+			@Suppress("DEPRECATION" /* AGP 9.0 */)
+			val android = project.extensions["android"] as com.android.build.gradle.BaseExtension
 			with(android.compileOptions) {
 				encoding = DEFAULT_ENCODING
 			}
