@@ -2,6 +2,7 @@ package net.twisterrob.gradle.common
 
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.Variant
+import net.twisterrob.gradle.android.staticCompat
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -126,7 +127,7 @@ T : VerificationTask {
 				return
 			}
 
-			task.source( variant.sources.java?.static)
+			task.source( variant.sources.java?.staticCompat)
 		}
 
 		open fun setupReports(task: T, suffix: String? = null) {
