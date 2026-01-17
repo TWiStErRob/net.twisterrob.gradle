@@ -1,9 +1,7 @@
 package net.twisterrob.gradle.quality.tasks
 
-import net.twisterrob.gradle.checkstyle.CheckStyleTask
 import net.twisterrob.gradle.common.grouper.Grouper
 import net.twisterrob.gradle.common.nullSafeSum
-import net.twisterrob.gradle.pmd.PmdTask
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
@@ -16,6 +14,8 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.plugins.quality.Checkstyle
+import org.gradle.api.plugins.quality.Pmd
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
@@ -27,6 +27,7 @@ import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
 import java.io.File
 import java.io.Serializable
+import kotlin.jvm.java
 
 @UntrackedTask(because = "Abstract super-class, not to be instantiated directly.")
 abstract class BaseViolationsTask : DefaultTask() {
@@ -169,13 +170,13 @@ abstract class BaseViolationsTask : DefaultTask() {
 				projectDir.resolve(path)
 
 			companion object {
-				@Suppress("ConstPropertyName", "UnusedPrivateProperty") // Java magic.
+				@Suppress("UnusedPrivateProperty") // Java magic.
 				private const val serialVersionUID: Long = 1
 			}
 		}
 
 		companion object {
-			@Suppress("ConstPropertyName", "UnusedPrivateProperty") // Java magic.
+			@Suppress("UnusedPrivateProperty") // Java magic.
 			private const val serialVersionUID: Long = 1
 		}
 	}
@@ -184,9 +185,25 @@ abstract class BaseViolationsTask : DefaultTask() {
 		@Suppress("UNCHECKED_CAST")
 		private val GATHERERS: List<TaskReportGatherer<Task>> = run {
 			val gradleGatherers = listOf(
-				QualityTaskReportGatherer("checkstyle", CheckStyleTask::class.java, Parser.CHECKSTYLE),
-				QualityTaskReportGatherer("pmd", PmdTask::class.java, Parser.PMD),
-//				ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination}),
+				QualityTaskReportGatherer(
+					baseName = "checkstyle",
+					displayName = "checkstyle",
+					taskType = Checkstyle::class.java,
+					parser = Parser.CHECKSTYLE,
+				),
+				QualityTaskReportGatherer(
+					baseName = "pmd",
+					displayName = "pmd",
+					taskType = Pmd::class.java,
+					parser = Parser.PMD,
+				),
+//				QualityTaskReportGatherer(
+//					baseName = "cpd",
+//					displayName = "cpd",
+//					taskType = Cpd::class.java,
+//					parser = Parser.CPD,
+//					{it.reports.xml.destination},
+//				),
 //				TestReportGatherer<>("test", Test),
 			)
 			val agpGatherers = listOf(

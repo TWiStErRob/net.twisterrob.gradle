@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.checkstyle
 
-import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.common.TargetChecker
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.quality.Checkstyle
@@ -11,8 +10,9 @@ import org.gradle.api.tasks.Input
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class CheckStyleTask : Checkstyle(), TargetChecker {
 
+	@Suppress("detekt.LateinitUsage")
 	@Input
-	override var checkTargetName: String = ALL_VARIANTS_NAME
+	override lateinit var checkTargetName: String
 
 	init {
 		group = JavaBasePlugin.VERIFICATION_GROUP

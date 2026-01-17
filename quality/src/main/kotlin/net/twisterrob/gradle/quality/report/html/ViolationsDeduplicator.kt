@@ -2,13 +2,13 @@
 
 package net.twisterrob.gradle.quality.report.html
 
-import net.twisterrob.gradle.common.ALL_VARIANTS_NAME
 import net.twisterrob.gradle.quality.Violation
 import net.twisterrob.gradle.quality.Violations
 
 private typealias Module = String
 private typealias Variant = String
 private typealias Parser = String
+private const val ALL_VARIANTS_NAME: String = "*"
 
 /**
  * Remove duplicate violations.
@@ -53,6 +53,7 @@ private fun removeOptionalDuplicates(from: List<Violation>?, using: List<Violati
 	if (from == null) return null // Nothing to remove from, identity.
 	if (using == null) return from // No duplicates to remove, keep everything.
 	return removeDuplicates(from, using)
+		.takeIf { it.isNotEmpty() } // Clean up merged results.
 }
 
 @Suppress("ConvertArgumentToSet")

@@ -55,7 +55,7 @@ class CheckStylePluginTest : BaseIntgTest() {
 		assertThat(result.failReason, startsWith("Task 'checkstyle' not found"))
 	}
 
-	@Test fun `does not apply to a Java project`() {
+	@Test fun `applies without a hitch to an Java project`() {
 		@Language("gradle")
 		val script = """
 			plugins {
@@ -64,11 +64,13 @@ class CheckStylePluginTest : BaseIntgTest() {
 			}
 		""".trimIndent()
 
-		val result = gradle.runFailingBuild {
-			run(script, "checkstyle")
+		val result = gradle.runBuild {
+			run(script, "checkstyleEach")
 		}
 
-		assertThat(result.failReason, startsWith("Task 'checkstyle' not found"))
+		result.assertUpToDate(":checkstyleEach")
+		result.assertNoSource(":checkstyleMain")
+		result.assertNoSource(":checkstyleTest")
 	}
 
 	@Test fun `applies without a hitch to an Android project`() {

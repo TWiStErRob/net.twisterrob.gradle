@@ -6,7 +6,9 @@ import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertFailed
 import net.twisterrob.gradle.test.assertHasOutputLine
+import net.twisterrob.gradle.test.assertNoSource
 import net.twisterrob.gradle.test.assertSuccess
+import net.twisterrob.gradle.test.assertUpToDate
 import net.twisterrob.gradle.test.failReason
 import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.minus
@@ -52,7 +54,7 @@ class PmdPluginTest : BaseIntgTest() {
 		assertThat(result.failReason, startsWith("Task 'pmd' not found"))
 	}
 
-	@Test fun `does not apply to a Java project`() {
+	@Test fun `applies without a hitch to an Java project`() {
 		@Language("gradle")
 		val script = """
 			plugins {
@@ -61,11 +63,13 @@ class PmdPluginTest : BaseIntgTest() {
 			}
 		""".trimIndent()
 
-		val result = gradle.runFailingBuild {
-			run(script, "pmd")
+		val result = gradle.runBuild {
+			run(script, "pmdEach")
 		}
 
-		assertThat(result.failReason, startsWith("Task 'pmd' not found"))
+		result.assertUpToDate(":pmdEach")
+		result.assertNoSource(":pmdMain")
+		result.assertNoSource(":pmdTest")
 	}
 
 	@Test fun `applies without a hitch to an Android project`() {

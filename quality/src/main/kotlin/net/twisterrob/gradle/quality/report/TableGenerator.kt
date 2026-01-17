@@ -53,7 +53,7 @@ class TableGenerator(
 			byModule.value.flatMap row@{ byVariant ->
 				val byParserCounts = byVariant.value
 				if (!isPrintEmptyRows && byParserCounts.values.count { it != null } == 0) {
-					return@row emptyList<String>()
+					return@row emptyList()
 				}
 				val cells = parsers.map cell@{ parser ->
 					when (val count = byParserCounts[parser]) {

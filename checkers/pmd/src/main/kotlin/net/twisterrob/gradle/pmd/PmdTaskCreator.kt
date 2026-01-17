@@ -7,7 +7,7 @@ import java.io.File
 class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 	project,
 	"pmd",
-	"pmd",
+	"org.gradle.pmd",
 	PmdTask::class.java,
 	PmdExtension::class.java
 ) {
@@ -43,9 +43,9 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 
 			override fun setupSources(
 				task: PmdTask,
-				variants: Collection<@Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant>
+				variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
 			) {
-				super.setupSources(task, variants)
+				super.setupSources(task, variant)
 
 				@Suppress("detekt.MaxChainedCallsOnSameLine")
 				val buildPath = task.project.layout.buildDirectory.get().asFile.toPath()
@@ -62,9 +62,8 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 					return
 				}
 
-				task.include(variants
-					.asSequence()
-					.flatMap { it.sourceSets }
+				task.include(variant
+					.sourceSets
 					.flatMap { it.resDirectories }
 					.map { dir ->
 						// build relative path (e.g. src/main/res) and
@@ -74,9 +73,8 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 					.toList()
 				)
 
-				task.include(variants
-					.asSequence()
-					.flatMap { it.sourceSets }
+				task.include(variant
+					.sourceSets
 					.map { it.manifestFile }
 					.map { file ->
 						// build relative path (e.g. src/main/AndroidManifest.xml)

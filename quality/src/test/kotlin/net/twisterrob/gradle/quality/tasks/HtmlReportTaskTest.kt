@@ -358,17 +358,11 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		//assertEquals(count, """<div class="violation"""".toRegex().findAll(violationsReport).count())
 	}
 
-	@Test fun `runs on multiple reports`(test: TestInfo) {
+	@Test fun `runs on multiple jvm reports`(test: TestInfo) {
 		val violations = ViolationTestResources(gradle.root)
 		val checkstyle = CheckstyleTestResources()
 		val pmd = PmdTestResources()
-		gradle.basedOn("android-root_app")
-		listOf(
-			"Autofill",
-			"IconMissingDensityFolder",
-			"UnusedIds",
-			"UnusedResources"
-		).forEach { check -> gradle.basedOn("lint-$check") }
+		gradle.basedOn("jvm-root_app")
 
 		checkstyle.multi.contents.forEach { (name, content) ->
 			gradle.file(content, "src", "main", "java", name)
@@ -377,9 +371,8 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		gradle.file(pmd.simple.content1, "src", "main", "java", "WithoutPackage.java")
 		gradle.file(pmd.simple.content2, "src", "main", "java", "pmd", "PrintStack.java")
 
-		gradle.file(violations.everything.lintReport, "build", "reports", "lint-results-debug.xml")
-		gradle.file(violations.everything.checkstyleReport, "build", "reports", "checkstyle.xml")
-		gradle.file(violations.everything.pmdReport, "build", "reports", "pmd.xml")
+		gradle.file(violations.everythingJvm.checkstyleReport, "build", "reports", "checkstyle", "main.xml")
+		gradle.file(violations.everythingJvm.pmdReport, "build", "reports", "pmd", "main.xml")
 
 		@Language("gradle")
 		val script = """
@@ -398,17 +391,75 @@ class HtmlReportTaskTest : BaseIntgTest() {
 		assertThat(gradle.violationsReport("xsl"), anExistingFile())
 		assertThat(gradle.violationsReport("xml"), anExistingFile())
 		assertThat(gradle.violationsReport("html"), anExistingFile())
-		exposeViolationsInReport(test, violations.everything)
+		exposeViolationsInReport(test, violations.everythingJvm)
 		assertThat(gradle.violationsReport("xsl"), aFileWithSize(greaterThan(0)))
 		// If this fails, see net.twisterrob.gradle.quality.tasks.ViolationTestResources.Everything.
 		assertEquals(
-			violations.everything.violationsXml,
+			violations.everythingJvm.violationsXml,
 			gradle.violationsReport("xml").readText(),
 			gradle.violationsReport("xml").absolutePath
 		)
 		// If this fails, see net.twisterrob.gradle.quality.tasks.ViolationTestResources.Everything.
 		assertEquals(
-			violations.everything.violationsHtml,
+			violations.everythingJvm.violationsHtml,
+			gradle.violationsReport("html").readText(),
+			gradle.violationsReport("html").absolutePath
+		)
+	}
+
+	@Test fun `runs on multiple android reports`(test: TestInfo) {
+		val violations = ViolationTestResources(gradle.root)
+		val checkstyle = CheckstyleTestResources()
+		val pmd = PmdTestResources()
+		gradle.basedOn("android-root_app")
+		listOf(
+			"Autofill",
+			"IconMissingDensityFolder",
+			"UnusedIds",
+			"UnusedResources"
+		).forEach { check -> gradle.basedOn("lint-$check") }
+
+		checkstyle.multi.contents.forEach { (name, content) ->
+			gradle.file(content, "src", "main", "java", name)
+		}
+
+		gradle.file(pmd.simple.content1, "src", "main", "java", "WithoutPackage.java")
+		gradle.file(pmd.simple.content2, "src", "main", "java", "pmd", "PrintStack.java")
+
+		gradle.file(violations.everythingAndroid.lintReport, "build", "reports", "lint-results-debug.xml")
+		gradle.file(violations.everythingAndroid.checkstyleReport, "build", "reports", "checkstyle-debug.xml")
+		gradle.file(violations.everythingAndroid.checkstyleReport, "build", "reports", "checkstyle-release.xml")
+		gradle.file(violations.everythingAndroid.pmdReport, "build", "reports", "pmd-debug.xml")
+		gradle.file(violations.everythingAndroid.pmdReport, "build", "reports", "pmd-release.xml")
+
+		@Language("gradle")
+		val script = """
+			plugins {
+				id("net.twisterrob.gradle.plugin.checkstyle")
+				id("net.twisterrob.gradle.plugin.pmd")
+			}
+			tasks.register("htmlReport", ${HtmlReportTask::class.java.name})
+		""".trimIndent()
+
+		val result = gradle.runBuild {
+			run(script, "htmlReport")
+		}
+
+		result.assertSuccess(":htmlReport")
+		assertThat(gradle.violationsReport("xsl"), anExistingFile())
+		assertThat(gradle.violationsReport("xml"), anExistingFile())
+		assertThat(gradle.violationsReport("html"), anExistingFile())
+		exposeViolationsInReport(test, violations.everythingAndroid)
+		assertThat(gradle.violationsReport("xsl"), aFileWithSize(greaterThan(0)))
+		// If this fails, see net.twisterrob.gradle.quality.tasks.ViolationTestResources.Everything.
+		assertEquals(
+			violations.everythingAndroid.violationsXml,
+			gradle.violationsReport("xml").readText(),
+			gradle.violationsReport("xml").absolutePath
+		)
+		// If this fails, see net.twisterrob.gradle.quality.tasks.ViolationTestResources.Everything.
+		assertEquals(
+			violations.everythingAndroid.violationsHtml,
 			gradle.violationsReport("html").readText(),
 			gradle.violationsReport("html").absolutePath
 		)

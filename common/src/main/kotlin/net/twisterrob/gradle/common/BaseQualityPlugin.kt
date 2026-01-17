@@ -24,6 +24,10 @@ abstract class BaseQualityPlugin(
 			val taskCreator = taskCreatorType.newInstance(project)
 			AndroidVariantApplier(project).applyVariants(taskCreator::applyTo)
 		}
+		project.plugins.withId("org.gradle.java") {
+			val taskCreator = taskCreatorType.newInstance(project)
+			taskCreator.applyToJvm()
+		}
 	}
 }
 
