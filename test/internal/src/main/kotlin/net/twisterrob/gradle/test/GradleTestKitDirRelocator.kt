@@ -41,9 +41,7 @@ class GradleTestKitDirRelocator : BeforeEachCallback {
 	 */
 	private fun setTestKitDir() {
 		val props = SystemProperties.getInstance()
-		val id = System.getProperty("net.twisterrob.testkit.slot")
-			?: workerId
-		val dirName = ".gradle-test-kit-${props.userName}-${id}"
+		val dirName = ".gradle-test-kit-${props.userName}-${workerId}"
 		@Suppress("DEPRECATION")
 		testKitDir = File(props.javaIoTmpDir).resolve(dirName).absolutePath
 	}
