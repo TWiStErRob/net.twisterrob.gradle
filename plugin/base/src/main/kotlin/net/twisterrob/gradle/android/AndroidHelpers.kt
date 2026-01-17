@@ -4,12 +4,12 @@
 package net.twisterrob.gradle.android
 
 import com.android.SdkConstants
+import com.android.build.api.dsl.BuildType
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.BuildConfigField
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.TestPlugin
-import com.android.build.gradle.internal.dsl.BuildType
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFile

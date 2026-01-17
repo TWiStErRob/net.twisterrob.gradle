@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.dsl.BuildType
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ResValue
@@ -8,7 +9,6 @@ import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BasePlugin
 import com.android.build.gradle.internal.component.ComponentCreationConfig
-import com.android.build.gradle.internal.dsl.BuildType
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addBuildConfigFields
