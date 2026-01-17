@@ -7,23 +7,10 @@ class ViolationTestResources(
 	private val rootProject: File
 ) {
 
-	val everything: Everything = Everything()
+	val everythingAndroid: EverythingAndroid = EverythingAndroid()
 
-	/**
-	 * How to replace [violationsXml] and [violationsHtml]?
-	 *  1. Run the [net.twisterrob.gradle.quality.tasks.HtmlReportTaskTest.runs on multiple reports] test..
-	 *  1. Check the output in `:quality/build/reports/tests/test/outputs`.
-	 *  1. Overwrite the file in `src/test/resources`.
-	 *  1. Commit the change externally via git command line.
-	 *    * See [Keep different line separators in the file](https://youtrack.jetbrains.com/issue/IDEA-171699)
-	 *    * See [Committing a mixed-EOL will convert all the EOLs](https://youtrack.jetbrains.com/issue/IDEA-79736)
-	 *  1. Replace the project name (junit...) in this file with the new name.
-	 *  1. Run the test again to validate.
-	 *  1. Amend the commit to include changes in this file.
-	 *  1. Run the test in `Settings | Build, Execution, Deployment | Build Tools | Gradle`.
-	 */
 	@Suppress("detekt.StringLiteralDuplication")
-	inner class Everything {
+	inner class EverythingAndroid : Everything() {
 
 		val checkstyleReport: String
 			get() = read("ViolationTestResources/everything/checkstyle-multiple.xml")
@@ -38,30 +25,89 @@ class ViolationTestResources(
 				.replace("{{rootProject}}", rootProject.absolutePath)
 
 		/**
-		 * @warning DO NOT EDIT (https://youtrack.jetbrains.com/issue/IDEA-171699)
-		 * NOR COMMIT THIS FILE IN IDEA (https://youtrack.jetbrains.com/issue/IDEA-79736)
+		 * @warning do not edit nor commit this file in IDEA.
 		 * @see Everything for how to update this.
 		 */
+		override val violationsXml: String
+			get() = read("ViolationTestResources/everything/violations-android.xml")
+				.cleanupViolationsXml("junit15407943508211507412")
+
+		/**
+		 * @warning do not edit nor commit this file in IDEA.
+		 * @see Everything for how to update this.
+		 */
+		override val violationsHtml: String
+			get() = read("ViolationTestResources/everything/violations-android.html")
+				.cleanupViolationsHtml("junit15407943508211507412")
+	}
+
+	val everythingJvm: EverythingJvm = EverythingJvm()
+
+	@Suppress("detekt.StringLiteralDuplication")
+	inner class EverythingJvm : Everything() {
+
+		val checkstyleReport: String
+			get() = read("ViolationTestResources/everything/checkstyle-multiple.xml")
+				.replace("{{rootProject}}", rootProject.absolutePath)
+
+		val pmdReport: String
+			get() = read("ViolationTestResources/everything/pmd-multiple.xml")
+				.replace("{{rootProject}}", rootProject.absolutePath)
+
+		/**
+		 * @warning do not edit nor commit this file in IDEA.
+		 * @see Everything for how to update this.
+		 */
+		override val violationsXml: String
+			get() = read("ViolationTestResources/everything/violations-jvm.xml")
+				.cleanupViolationsXml("junit10140171383526166813")
+
+		/**
+		 * @warning do not edit nor commit this file in IDEA.
+		 * @see Everything for how to update this.
+		 */
+		override val violationsHtml: String
+			get() = read("ViolationTestResources/everything/violations-jvm.html")
+				.cleanupViolationsHtml("junit10140171383526166813")
+	}
+
+	/**
+	 * How to replace `violationsXmlAndroid`/`violationsXmlJvm` and `violationsHtmlAndroid`/`violationsHtmlJvm`?
+	 *  1. Run the `runs on multiple * reports` test in [net.twisterrob.gradle.quality.tasks.HtmlReportTaskTest].
+	 *  1. Check the output in `:quality/build/reports/tests/test/outputs`.
+	 *  1. Overwrite the file in `src/test/resources`.
+	 *  1. Commit the change externally via git command line.
+	 *    * See [Keep different line separators in the file](https://youtrack.jetbrains.com/issue/IDEA-171699)
+	 *    * See [Committing a mixed-EOL will convert all the EOLs](https://youtrack.jetbrains.com/issue/IDEA-79736)
+	 *  1. Replace the project name (junit...) in this file with the new name.
+	 *  1. Run the test again to validate.
+	 *  1. Amend the commit to include changes in this file.
+	 *  1. Run the test in `Settings | Build, Execution, Deployment | Build Tools | Gradle`.
+	 */
+	abstract inner class Everything {
+		abstract val violationsXml: String
+		abstract val violationsHtml: String
+
 		@Suppress("detekt.MaxLineLength")
-		val violationsXml: String
-			get() = read("ViolationTestResources/everything/violations.xml")
+		fun String.cleanupViolationsXml(testFolder: String): String =
+			this
 				// <violations project="..."
 				.replace(
-					"""(?<=project=")junit14110403642675258434(?=")""".toRegex(),
+					"""(?<=project=")${testFolder}(?=")""".toRegex(),
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <location file="..."
-				.replace("""(?<=")C:\\Users\\TWiStEr\\AppData\\Local\\Temp\\junit14110403642675258434((?:\\[^"]+)+)(?=")""".toRegex()) { match ->
+				.replace("""(?<=")Z:\\caches\\gradle-test-kit\\${testFolder}((?:\\[^"]+)+)(?=")""".toRegex()) { match ->
 					val group1 = match.groupValues[1]
 					rootProject.absolutePath + group1.replace("\\", File.separator)
 				}
 				// <location fileAbsoluteAsUrl="..."
-				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit14110403642675258434((?:/[^"]+)+)(?=")""".toRegex()) { match ->
+				.replace("""(?<=")file:/Z:/caches/gradle-test-kit/${testFolder}((?:/[^"]+)+)(?=")""".toRegex()) { match ->
 					val group1 = match.groupValues[1]
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
 				// <violation[details/@rule="IconMissingDensityFolder"]/description
-				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit14110403642675258434""".toRegex()) {
+				.replace("""(?<=\\`)Z:\\\\caches\\\\gradle-test-kit\\\\${testFolder}""".toRegex()) {
 					// Not replacing the rest of the path with File.separator, because this is just text,
 					// but the rootDir is dynamic in the source lint report in test resources.
 					rootProject.absolutePath.replace("\\", "\\\\")
@@ -85,32 +131,27 @@ class ViolationTestResources(
 					}
 				}
 
-		/**
-		 * @warning DO NOT EDIT (https://youtrack.jetbrains.com/issue/IDEA-171699)
-		 * NOR COMMIT THIS FILE IN IDEA (https://youtrack.jetbrains.com/issue/IDEA-79736)
-		 * @see Everything for how to update this.
-		 */
 		@Suppress("detekt.MaxLineLength")
-		val violationsHtml: String
-			get() = read("ViolationTestResources/everything/violations.html")
+		fun String.cleanupViolationsHtml(testFolder: String): String =
+			this
 				// <title>...
 				.replace(
-					"""(?<=<title>)junit14110403642675258434""".toRegex(),
+					"""(?<=<title>)${testFolder}""".toRegex(),
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <h1 id="top">Violations report for ...</h1>
 				.replace(
-					"""junit14110403642675258434(?=</h1>)""".toRegex(),
+					"""${testFolder}(?=</h1>)""".toRegex(),
 					Regex.escapeReplacement(rootProject.name)
 				)
 				// <script>render.markdown(`...\`...\`...`)</script>
-				.replace("""(?<=\\`)C:\\\\Users\\\\TWiStEr\\\\AppData\\\\Local\\\\Temp\\\\junit14110403642675258434""".toRegex()) {
+				.replace("""(?<=\\`)Z:\\\\caches\\\\gradle-test-kit\\\\${testFolder}""".toRegex()) {
 					// Not replacing the rest of the path with File.separator, because this is just text,
 					// but the rootDir is dynamic in the source lint report in test resources.
 					rootProject.absolutePath.replace("\\", "\\\\")
 				}
 				// <a class="file" href="file:/...">src\main\<b>
-				.replace("""(?<=")file:/C:/Users/TWiStEr/AppData/Local/Temp/junit14110403642675258434((?:/[^"]+)+)(?=")""".toRegex()) { match ->
+				.replace("""(?<=")file:/Z:/caches/gradle-test-kit/${testFolder}((?:/[^"]+)+)(?=")""".toRegex()) { match ->
 					val group1 = match.groupValues[1]
 					rootProject.toURI().toString().removeSuffix("/") + group1.replace("\\", File.separator)
 				}
