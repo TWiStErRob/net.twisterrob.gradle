@@ -36,6 +36,8 @@ abstract class KotlinPlugin : BasePlugin() {
 				project.addTestDependencies(DependencyHandler::testImplementation)
 			}
 			val android: BaseExtension = project.extensions["android"] as BaseExtension
+			// TODEL https://youtrack.jetbrains.com/issue/KT-80985
+			@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 			android.sourceSets.configureEach {
 				it.java.srcDir("src/${it.name}/kotlin")
 			}
