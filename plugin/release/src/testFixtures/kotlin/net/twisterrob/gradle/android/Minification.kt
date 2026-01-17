@@ -5,6 +5,7 @@ import org.intellij.lang.annotations.Language
 enum class Minification(
 	val debugTaskName: String,
 	val releaseTaskName: String,
+	@Suppress("detekt.UnnecessaryAnnotationUseSiteTarget") // In 2.3 it is necessary.
 	@param:Language("properties")
 	val gradleProperties: String,
 ) {
