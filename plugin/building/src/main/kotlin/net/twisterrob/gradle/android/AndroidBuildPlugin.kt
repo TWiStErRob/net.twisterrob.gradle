@@ -6,7 +6,6 @@ import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ResValue
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.BasePlugin
 import com.android.build.gradle.internal.component.ComponentCreationConfig
 import com.android.build.gradle.internal.dsl.BuildType
@@ -18,7 +17,6 @@ import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companio
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
 import net.twisterrob.gradle.internal.android.description
 import net.twisterrob.gradle.internal.android.taskContainer
-import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
@@ -102,7 +100,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 	companion object {
 
 		private fun BaseExtension.configureLint() {
-			(this as CommonExtension<*, *, *, *, *, *>).lint {
+			(this as CommonExtension).lint {
 				xmlReport = false
 				checkAllWarnings = true
 				abortOnError = true

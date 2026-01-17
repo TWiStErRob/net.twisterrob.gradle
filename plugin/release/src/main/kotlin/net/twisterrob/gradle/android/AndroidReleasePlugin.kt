@@ -4,12 +4,10 @@ import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.Variant
 import com.android.build.api.variant.impl.BuiltArtifactsImpl
-import com.android.build.gradle.BaseExtension
 import com.android.builder.model.BuildType
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.ext.zip
 import net.twisterrob.gradle.internal.android.unwrapCast
-import net.twisterrob.gradle.kotlin.dsl.extensions
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory

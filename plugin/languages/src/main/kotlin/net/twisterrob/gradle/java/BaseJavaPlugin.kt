@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.java
 
-import com.android.build.gradle.BaseExtension
+import net.twisterrob.gradle.android.BaseExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.Project

@@ -1,13 +1,13 @@
 package net.twisterrob.gradle.quality.tasks
 
 import com.android.build.api.artifact.impl.ArtifactsImpl
-import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import com.android.build.api.variant.DynamicFeatureVariant
 import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.scope.InternalArtifactType
+import net.twisterrob.gradle.android.CommonExtension
 import net.twisterrob.gradle.android.androidComponents
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
@@ -113,7 +113,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 		private fun Project.configureReports(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
 			androidComponents.finalizeDsl { android ->
 				val lint = when (android) {
-					is CommonExtension<*, *, *, *, *, *> -> android.lint
+					is CommonExtension -> android.lint
 					is KotlinMultiplatformAndroidLibraryExtension -> android.lint
 					else -> error("Unknown android extension: ${android::class}")
 				}
