@@ -13,32 +13,54 @@ import kotlin.concurrent.withLock
  */
 abstract class TestKitSlotService : BuildService<BuildServiceParameters.None>, AutoCloseable {
 
-	private val lock = ReentrantLock()
-	private val leased = BitSet() // true = taken
-	private val leasesByOwner = mutableMapOf<String, MutableSet<Int>>()
+	private val lock: ReentrantLock = ReentrantLock()
+	private val leased: BitSet = BitSet() // true = taken
+	private val slotByOwner: MutableMap<String, Int> = mutableMapOf()
+
+	private val taskSlotByOwner = mutableMapOf<String, Int>()
+	private val forkSlotsByOwner = mutableMapOf<String, MutableMap<Long, Int>>()
 
 	/**
-	 * Lease a slot id (1-based) and associate it with an owner key (e.g. task path).
-	 * Reuses freed ids first.
+	 * Lease a stable slot for a Test task execution (1-based), reused after release.
 	 */
-	fun lease(owner: String): Int = lock.withLock {
-		val index0 = leased.nextClearBit(0)
-		leased.set(index0)
-		val id = index0 + 1
-		leasesByOwner.getOrPut(owner) { mutableSetOf() }.add(id)
-		id
+	fun leaseTask(owner: String): Int = lock.withLock {
+		taskSlotByOwner[owner] ?: run {
+			val index0 = leased.nextClearBit(0)
+			leased.set(index0)
+			val id = index0 + 1
+			taskSlotByOwner[owner] = id
+			id
+		}
+	}
+
+	/**
+	 * Lease a per-fork slot id for a specific Test task owner.
+	 *
+	 * @param owner task path
+	 * @param forkId a stable id per fork within the build invocation (e.g. org.gradle.test.worker.id)
+	 */
+	fun leaseFork(owner: String, forkId: Long): Int = lock.withLock {
+		val forks = forkSlotsByOwner.getOrPut(owner) { mutableMapOf() }
+		forks[forkId] ?: run {
+			// Fork slots are local to the task; start from 1.
+			val next = (forks.values.maxOrNull() ?: 0) + 1
+			forks[forkId] = next
+			next
+		}
 	}
 
 	/** Release all slots leased by the given owner (e.g. a task). */
 	fun releaseAll(owner: String) {
 		lock.withLock {
-			val ids = leasesByOwner.remove(owner).orEmpty()
-			ids.forEach { leased.clear(it - 1) }
+			forkSlotsByOwner.remove(owner)
+			taskSlotByOwner.remove(owner)?.let { leased.clear(it - 1) }
 		}
 	}
+
+	@Deprecated("use leaseTask/leaseFork")
+	fun lease(owner: String): Int = leaseTask(owner)
 
 	override fun close() {
 		// nothing to cleanup; service is scoped to the build.
 	}
 }
-
