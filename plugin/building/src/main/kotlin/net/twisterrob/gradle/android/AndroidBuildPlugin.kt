@@ -103,7 +103,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 		@Suppress("DEPRECATION" /* AGP 9.0 */)
 		private fun com.android.build.gradle.BaseExtension.configureLint() {
-			(this as CommonExtension).lint.apply {
+			(this as CommonExtension<*, *, *, *, *, *>).lint.apply {
 				xmlReport = false
 				checkAllWarnings = true
 				abortOnError = true
