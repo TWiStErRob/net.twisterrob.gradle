@@ -121,7 +121,7 @@ class ConsoleReportTaskIntgTest : BaseIntgTest() {
 		""".trimIndent()
 
 		val result = gradle.runBuild {
-			run(script, "checkstyleEach", "printViolationCounts").withDebug(true)
+			run(script, "checkstyleEach", "printViolationCounts")
 		}
 
 		assertThat(
