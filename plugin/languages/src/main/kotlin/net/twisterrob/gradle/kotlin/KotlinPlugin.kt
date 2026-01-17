@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.kotlin
 
+import com.android.build.gradle.BaseExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.android.hasAndroidTest
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
@@ -34,10 +35,8 @@ abstract class KotlinPlugin : BasePlugin() {
 			} else {
 				project.addTestDependencies(DependencyHandler::testImplementation)
 			}
-			@Suppress("DEPRECATION" /* AGP 9.0 */)
-			val android = project.extensions["android"] as com.android.build.gradle.BaseExtension
+			val android: BaseExtension = project.extensions["android"] as BaseExtension
 			android.sourceSets.configureEach {
-				@Suppress("DEPRECATION" /* AGP 9.0 */)
 				it.java.srcDir("src/${it.name}/kotlin")
 			}
 		} else {

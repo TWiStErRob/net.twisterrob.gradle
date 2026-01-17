@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.dsl.SigningConfig
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
@@ -14,8 +15,7 @@ abstract class AndroidSigningPlugin : BasePlugin() {
 		val keyStoreFile = project.file(optionalProp(STORE_FILE) ?: DEFAULT_STORE_FILE)
 		if (keyStoreFile.isFile && keyStoreFile.exists() && keyStoreFile.canRead()) {
 			LOG.info("Attaching release.signingConfig.{} using '{}'", SIGNING_CONFIG_NAME, keyStoreFile)
-			@Suppress("DEPRECATION" /* AGP 9.0 */)
-			val android = project.extensions["android"] as com.android.build.gradle.BaseExtension
+			val android = project.extensions["android"] as BaseExtension
 			val sign: SigningConfig = android.signingConfigs.create(SIGNING_CONFIG_NAME).apply {
 				setStoreFile(keyStoreFile)
 				setStorePassword(mandatoryProp(STORE_PASSWORD))

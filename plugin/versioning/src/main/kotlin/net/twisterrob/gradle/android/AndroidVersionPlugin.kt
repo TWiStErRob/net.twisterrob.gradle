@@ -4,7 +4,9 @@ import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ComponentIdentity
 import com.android.build.api.variant.GeneratesApk
 import com.android.build.api.variant.impl.VariantOutputImpl
+import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.ext.zip
@@ -152,10 +154,7 @@ abstract class AndroidVersionExtension {
 		internal const val NAME: String = "version"
 		internal const val DEFAULT_FILE_NAME: String = "version.properties"
 
-		fun from(
-			android: @Suppress("DEPRECATION" /* AGP 9.0 */)
-			com.android.build.gradle.BaseExtension
-		): AndroidVersionExtension =
+		fun from(android: BaseExtension): AndroidVersionExtension =
 			from(android.defaultConfig)
 
 		fun from(defaultConfig: DefaultConfig): AndroidVersionExtension =
@@ -166,12 +165,11 @@ abstract class AndroidVersionExtension {
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidVersionPlugin : BasePlugin() {
 
-	@Suppress("DEPRECATION" /* AGP 9.0 */)
-	private val android: com.android.build.gradle.AppExtension by lazy {
+	private val android: AppExtension by lazy {
 		if (!project.plugins.hasPlugin("com.android.application")) {
 			throw PluginInstantiationException("Can only use versioning with Android applications")
 		}
-		project.extensions["android"] as com.android.build.gradle.AppExtension
+		project.extensions["android"] as AppExtension
 	}
 
 	@Suppress("detekt.LateinitUsage") // TODO can be probably refactored to put the when inside the withId and pass params.
