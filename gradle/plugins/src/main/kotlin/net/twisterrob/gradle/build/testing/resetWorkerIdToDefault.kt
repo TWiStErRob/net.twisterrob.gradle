@@ -1,7 +1,9 @@
 package net.twisterrob.gradle.build.testing
 
+import org.gradle.api.Task
 import org.gradle.api.internal.tasks.testing.worker.TestWorker
 import org.gradle.api.invocation.Gradle
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.internal.id.LongIdGenerator
 import org.gradle.kotlin.dsl.support.serviceOf
 import org.gradle.process.internal.worker.DefaultWorkerProcessBuilder
@@ -23,13 +25,36 @@ import java.util.concurrent.atomic.AtomicLong
  * This method will reset the counter to the default to restart counting.
  * It is recommended to call this once at the beginning of the configuration phase.
  * The best place for this is the rootProject's build.gradle file or settings.gradle.
- *
- * Note: configuration cache won't execute either of those, TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/975
  */
 @Suppress("detekt.FunctionMaxLength") // Rather be explicit about what it does.
-fun Gradle.resetGradleTestWorkerIdToDefault() {
+fun Gradle.resetWorkerIdToDefault() {
+	rootProject {
+		val workerProcessFactory: WorkerProcessFactory = gradle.serviceOf()
+		val resetWorkerIdToDefault: TaskProvider<Task> = tasks.register("resetWorkerIdToDefault") {
+			group = "verification"
+			description = "Resets Gradle TestWorker ID generator to improve Gradle TestKit directory reuse."
+			outputs.upToDateWhen { false }
+			doLast { workerProcessFactory.resetWorkerIdToDefault() }
+		}
+		allprojects {
+			// Note: allprojects does not include :, nor includedBuilds.
+			// Note: could use .withType<Test>(), but then the worker ID resets mid-build, which might cause other problems.
+			tasks.configureEach task@{
+				if (this@task.name != resetWorkerIdToDefault.name) {
+					dependsOn(resetWorkerIdToDefault)
+				}
+			}
+		}
+	}
+}
+
+/**
+ * @see DefaultWorkerProcessFactory.idGenerator
+ * @see LongIdGenerator.nextId
+ */
+private fun WorkerProcessFactory.resetWorkerIdToDefault() {
 	// This factory is "static" and it holds the state we need to mutate in order to make the workers reuse IDs.
-	val factory: DefaultWorkerProcessFactory = serviceOf<WorkerProcessFactory>() as DefaultWorkerProcessFactory
+	val factory: DefaultWorkerProcessFactory = this as DefaultWorkerProcessFactory
 	val idGenerator: LongIdGenerator = factory.getPrivateField("idGenerator")
 	val nextId: AtomicLong = idGenerator.getPrivateField("nextId")
 	nextId.set(1)
