@@ -10,6 +10,7 @@ import org.gradle.api.tasks.Input
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class CheckStyleTask : Checkstyle(), TargetChecker {
 
+	@Suppress("detekt.LateinitUsage")
 	@Input
 	override lateinit var checkTargetName: String
 

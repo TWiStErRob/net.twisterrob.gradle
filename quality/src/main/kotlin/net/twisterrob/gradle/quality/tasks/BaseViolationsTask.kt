@@ -27,6 +27,7 @@ import se.bjurr.violations.lib.model.SEVERITY
 import se.bjurr.violations.lib.reports.Parser
 import java.io.File
 import java.io.Serializable
+import kotlin.jvm.java
 
 @UntrackedTask(because = "Abstract super-class, not to be instantiated directly.")
 abstract class BaseViolationsTask : DefaultTask() {
@@ -184,9 +185,25 @@ abstract class BaseViolationsTask : DefaultTask() {
 		@Suppress("UNCHECKED_CAST")
 		private val GATHERERS: List<TaskReportGatherer<Task>> = run {
 			val gradleGatherers = listOf(
-				QualityTaskReportGatherer("checkstyle", "checkstyle", Checkstyle::class.java, Parser.CHECKSTYLE),
-				QualityTaskReportGatherer("pmd", "pmd", Pmd::class.java, Parser.PMD),
-//				ViolationChecker("cpd", Cpd::class.java, Parser.CPD, {it.reports.xml.destination}),
+				QualityTaskReportGatherer(
+					baseName = "checkstyle",
+					displayName = "checkstyle",
+					taskType = Checkstyle::class.java,
+					parser = Parser.CHECKSTYLE,
+				),
+				QualityTaskReportGatherer(
+					baseName = "pmd",
+					displayName = "pmd",
+					taskType = Pmd::class.java,
+					parser = Parser.PMD,
+				),
+//				QualityTaskReportGatherer(
+//					baseName = "cpd",
+//					displayName = "cpd",
+//					taskType = Cpd::class.java,
+//					parser = Parser.CPD,
+//					{it.reports.xml.destination},
+//				),
 //				TestReportGatherer<>("test", Test),
 			)
 			val agpGatherers = listOf(
