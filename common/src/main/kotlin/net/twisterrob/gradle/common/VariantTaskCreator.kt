@@ -12,9 +12,11 @@ import org.gradle.api.reporting.ReportContainer
 import org.gradle.api.reporting.Reporting
 import org.gradle.api.reporting.ReportingExtension
 import org.gradle.api.reporting.SingleFileReport
+import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.VerificationTask
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.named
 import java.io.File
 import java.util.Locale
@@ -39,6 +41,15 @@ T : VerificationTask {
 			val quality = project.extensions.getByName("quality") as ExtensionAware
 			return quality.extensions.getByType(extensionClass)
 		}
+
+	fun applyToJvm() {
+		project.plugins.apply(pluginName)
+		val eachTask = createGlobalTask()
+		project.extensions.getByName<SourceSetContainer>("sourceSets").configureEach { sourceSet ->
+			val taskName = sourceSet.getTaskName(baseName, null)
+			eachTask.configure { it.dependsOn(taskName) }
+		}
+	}
 
 	fun applyTo(
 		variants: DomainObjectSet<out @Suppress("TYPEALIAS_EXPANSION_DEPRECATION" /* AGP 7.0 */) BaseVariant>

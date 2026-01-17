@@ -10,12 +10,12 @@ import se.bjurr.violations.lib.reports.Parser
 import java.io.File
 
 class QualityTaskReportGatherer<T>(
+	private val baseName: String,
 	private val displayName: String,
 	taskType: Class<T>,
 	private var parser: Parser
 ) : TaskReportGatherer<T>(taskType) where
 T : Task,
-T : TargetChecker,
 T : Reporting<out ReportContainer<out SingleFileReport>> {
 
 	override fun getParsableReportLocation(task: T): File =
@@ -33,7 +33,11 @@ T : Reporting<out ReportContainer<out SingleFileReport>> {
 		task.reports.getByName("html").outputLocation.get().asFile
 
 	override fun getName(task: T): String =
-		task.checkTargetName
+		if (task is TargetChecker) {
+			task.checkTargetName
+		} else {
+			task.name.removePrefix(baseName).replaceFirstChar { it.lowercaseChar() }
+		}
 
 	override fun getDisplayName(task: T): String =
 		displayName
