@@ -51,9 +51,6 @@ T : VerificationTask {
 	fun applyTo(androidComponents: AndroidComponentsExtension<*, *, *>) {
 		project.plugins.apply(pluginName)
 		val eachTask = createGlobalTask()
-		// Probably false positive:
-		// > Unsafe use of a nullable receiver of type DomainObjectSet<CapturedType(out [Suppress] BaseVariant)>
-		@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 		androidComponents.onVariants { variant ->
 			val variantTask = createTaskForVariant(variant)
 			eachTask.configure { it.dependsOn(variantTask) }
