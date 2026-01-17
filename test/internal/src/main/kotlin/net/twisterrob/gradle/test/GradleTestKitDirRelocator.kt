@@ -41,18 +41,8 @@ class GradleTestKitDirRelocator : BeforeEachCallback {
 	 */
 	private fun setTestKitDir() {
 		val props = SystemProperties.getInstance()
-		val slot = System.getProperty("net.twisterrob.testkit.slot")
-		val worker = workerId
-		// If slot is present, create a bounded set of folders per slot by bucketing worker ids.
-		val forkBucket = System.getProperty("net.twisterrob.testkit.forkBuckets")?.toIntOrNull()
-		val id = if (slot != null && forkBucket != null && forkBucket > 0) {
-			val bucket = ((worker.toLongOrNull() ?: 0L) % forkBucket).toInt() + 1
-			"${slot}-${bucket}"
-		} else if (slot != null) {
-			slot
-		} else {
-			worker
-		}
+		val id = System.getProperty("net.twisterrob.testkit.slot")
+			?: workerId
 		val dirName = ".gradle-test-kit-${props.userName}-${id}"
 		@Suppress("DEPRECATION")
 		testKitDir = File(props.javaIoTmpDir).resolve(dirName).absolutePath

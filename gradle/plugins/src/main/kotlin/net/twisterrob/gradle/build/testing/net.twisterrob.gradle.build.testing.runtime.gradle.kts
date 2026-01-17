@@ -59,27 +59,21 @@ tasks.withType<Test>().configureEach {
 	properties.forEach { (name, value) -> jvmArgs("-D${name}=${value.get()}") }
 }
 
-val testKitSlots: org.gradle.api.provider.Provider<TestKitSlotService> =
-	gradle.sharedServices.registerIfAbsent("testKitSlots", TestKitSlotService::class.java) {}
+val testKitSlots = gradle.sharedServices.registerIfAbsent("testKitSlots", TestKitSlotService::class.java) {}
 
-// Replace deprecated TaskExecutionListener approach with per-task finalizers.
+// Release immediately after each task finishes (success or failure), so `--continue` doesn't burn through ids.
+gradle.taskGraph.addTaskExecutionListener(object : org.gradle.api.execution.TaskExecutionListener {
+	override fun beforeExecute(task: org.gradle.api.Task) = Unit
+	override fun afterExecute(task: org.gradle.api.Task, state: org.gradle.api.tasks.TaskState) {
+		testKitSlots.get().releaseAll(task.path)
+	}
+})
+
 tasks.withType<Test>().configureEach {
 	usesService(testKitSlots)
-	
-	// Allocate at execution time (per task execution, not per fork).
+	// Allocate at execution time so configuration cache can be reused without doing any work.
 	doFirst {
 		val id = testKitSlots.get().lease(path)
 		systemProperty("net.twisterrob.testkit.slot", id.toString())
 	}
-
-	// Ensure release runs even if the Test task fails.
-	val releaseTaskName = "releaseTestKitSlotFor${name.replaceFirstChar { it.uppercaseChar() }}"
-	val release = project.tasks.register(releaseTaskName) {
-		usesService(testKitSlots)
-		doLast {
-			testKitSlots.get().releaseAll(this@configureEach.path)
-		}
-	}
-	finalizedBy(release)
 }
-
