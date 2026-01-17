@@ -70,7 +70,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 	fun failOnFailures() {
 		val gatherer = LintReportGatherer()
 		val violationsByFile = xmlReports
-			.getOrElse(emptyList())
+			.getOrElse(@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS") emptyList())
 			.map { it.asFile }
 			.filter(File::exists)
 			.associateBy({ it }) { gatherer.findViolations(it) }
