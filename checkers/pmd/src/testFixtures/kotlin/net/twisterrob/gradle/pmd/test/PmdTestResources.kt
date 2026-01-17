@@ -23,6 +23,7 @@ class PmdTestResources(
 	val empty: EmptyConfiguration = object : EmptyConfiguration() {}
 	val simple: SimpleFailures = object : SimpleFailures {}
 
+	@Suppress("detekt.UnnecessaryAbstractClass") // REPORT false positive, inner interface not possible.
 	abstract inner class EmptyConfiguration {
 		val config: String
 			get() =
