@@ -25,14 +25,12 @@ import java.util.concurrent.atomic.AtomicLong
  * This method will reset the counter to the default to restart counting.
  * It is recommended to call this once at the beginning of the configuration phase.
  * The best place for this is the rootProject's build.gradle file or settings.gradle.
- *
- * Note: configuration cache won't execute either of those, TODO https://github.com/TWiStErRob/net.twisterrob.gradle/issues/975
  */
 @Suppress("detekt.FunctionMaxLength") // Rather be explicit about what it does.
-fun Gradle.resetGradleTestWorkerIdToDefault() {
+fun Gradle.resetWorkerIdToDefault() {
 	rootProject {
 		val workerProcessFactory: WorkerProcessFactory = gradle.serviceOf()
-		val resetTestWorkerIdToDefault: TaskProvider<Task> = tasks.register("resetTestWorkerIdToDefault") {
+		val resetWorkerIdToDefault: TaskProvider<Task> = tasks.register("resetWorkerIdToDefault") {
 			group = "verification"
 			description = "Resets Gradle TestWorker ID generator to improve Gradle TestKit directory reuse."
 			outputs.upToDateWhen { false }
@@ -42,8 +40,8 @@ fun Gradle.resetGradleTestWorkerIdToDefault() {
 			// Note: allprojects does not include :, nor includedBuilds.
 			// Note: could use .withType<Test>(), but then the worker ID resets mid-build, which might cause other problems.
 			tasks.configureEach task@{
-				if (this@task.name != resetTestWorkerIdToDefault.name) {
-					dependsOn(resetTestWorkerIdToDefault)
+				if (this@task.name != resetWorkerIdToDefault.name) {
+					dependsOn(resetWorkerIdToDefault)
 				}
 			}
 		}

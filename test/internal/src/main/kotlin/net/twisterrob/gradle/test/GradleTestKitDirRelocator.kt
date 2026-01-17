@@ -37,7 +37,7 @@ class GradleTestKitDirRelocator : BeforeEachCallback {
 	 * See [org.gradle.api.tasks.testing.Test.executeTests] which sets the default.
 	 *
 	 * To reduce disk space it is recommended to reset the worker ID on every execution,
-	 * see `resetGradleTestWorkerIdToDefault.kt` how.
+	 * see `resetWorkerIdToDefault.kt` how.
 	 */
 	private fun setTestKitDir() {
 		val props = SystemProperties.getInstance()
