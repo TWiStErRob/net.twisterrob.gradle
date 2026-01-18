@@ -1,5 +1,6 @@
 package net.twisterrob.gradle
 
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.KotlinVersions
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
@@ -171,6 +172,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
+				${if (AGPVersions.v9xx <= AGPVersions.UNDER_TEST) "" else """id("org.jetbrains.kotlin.android")"""}
 				id("net.twisterrob.gradle.plugin.android-app")
 				id("${pluginId}")
 			}
@@ -202,6 +204,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
+				${if (AGPVersions.v9xx <= AGPVersions.UNDER_TEST) "" else """id("org.jetbrains.kotlin.android")"""}
 				id("net.twisterrob.gradle.plugin.android-library")
 				id("${pluginId}")
 			}
@@ -237,7 +240,6 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.jetbrains.kotlin.android")
 				id("net.twisterrob.gradle.plugin.android-app")
 				id("${pluginId}")
 			}
@@ -273,7 +275,6 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.jetbrains.kotlin.android")
 				id("net.twisterrob.gradle.plugin.android-library")
 				id("${pluginId}")
 			}
@@ -293,7 +294,7 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.jetbrains.kotlin.android")
+				${if (AGPVersions.v9xx <= AGPVersions.UNDER_TEST) "" else """id("org.jetbrains.kotlin.android")"""}
 				id("net.twisterrob.gradle.plugin.android-app") // :plugin
 				// Android: id("net.twisterrob.gradle.plugin.android-library") // :plugin
 				id("net.twisterrob.gradle.plugin.root") // :plugin:base

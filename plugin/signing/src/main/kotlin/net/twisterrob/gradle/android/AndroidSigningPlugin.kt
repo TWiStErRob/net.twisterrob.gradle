@@ -1,10 +1,11 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.internal.dsl.SigningConfig
+import com.android.build.api.dsl.ApplicationBuildType
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.TestBuildType
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidSigningPlugin : BasePlugin() {
@@ -15,14 +16,19 @@ abstract class AndroidSigningPlugin : BasePlugin() {
 		val keyStoreFile = project.file(optionalProp(STORE_FILE) ?: DEFAULT_STORE_FILE)
 		if (keyStoreFile.isFile && keyStoreFile.exists() && keyStoreFile.canRead()) {
 			LOG.info("Attaching release.signingConfig.{} using '{}'", SIGNING_CONFIG_NAME, keyStoreFile)
-			val android = project.extensions["android"] as BaseExtension
-			val sign: SigningConfig = android.signingConfigs.create(SIGNING_CONFIG_NAME).apply {
-				setStoreFile(keyStoreFile)
-				setStorePassword(mandatoryProp(STORE_PASSWORD))
-				setKeyAlias(optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS)
-				setKeyPassword(mandatoryProp(KEY_PASSWORD))
+			val android = project.extensions.getByName<CommonExtension>("android")
+			val sign = android.signingConfigs.create(SIGNING_CONFIG_NAME) {
+				it.storeFile = keyStoreFile
+				it.storePassword = mandatoryProp(STORE_PASSWORD)
+				it.keyAlias = optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS
+				it.keyPassword = mandatoryProp(KEY_PASSWORD)
 			}
-			android.buildTypes["release"].setSigningConfig(sign)
+			android.buildTypes.configure("release") {
+				when (it) {
+					is ApplicationBuildType -> it.signingConfig = sign
+					is TestBuildType -> it.signingConfig = sign
+				}
+			}
 		} else if (project.providers.gradleProperty(STORE_FILE).isPresent) {
 			LOG.error("Keystore file (from {}) '{}' is not valid.", STORE_FILE, keyStoreFile.absolutePath)
 		}

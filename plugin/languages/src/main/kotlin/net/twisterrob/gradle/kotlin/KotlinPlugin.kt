@@ -1,14 +1,16 @@
 package net.twisterrob.gradle.kotlin
 
-import com.android.build.gradle.BaseExtension
+import com.android.build.api.dsl.CommonExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.android.hasAndroidTest
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import java.util.Locale
 import kotlin.reflect.KCallable
 
@@ -23,9 +25,11 @@ abstract class KotlinPlugin : BasePlugin() {
 		super.apply(target)
 
 		if (project.plugins.hasAndroid()) {
-			// CONSIDER https://github.com/griffio/dagger2-kotlin/blob/master/README.md
-			project.plugins.apply("org.jetbrains.kotlin.android")
-			project.plugins.apply("org.jetbrains.kotlin.kapt")
+			if (AGPVersions.CLASSPATH < AGPVersions.v9xx) {
+				// CONSIDER https://github.com/griffio/dagger2-kotlin/blob/b62c06aa8ebdc78f2d3ba95ca29fd79bff77b848/README.md
+				project.plugins.apply("org.jetbrains.kotlin.android")
+				project.plugins.apply("org.jetbrains.kotlin.kapt")
+			}
 			if (shouldAddAutoRepositoriesTo(project)) {
 				project.repositories.mavenCentral()
 			}
@@ -35,9 +39,11 @@ abstract class KotlinPlugin : BasePlugin() {
 			} else {
 				project.addTestDependencies(DependencyHandler::testImplementation)
 			}
-			val android: BaseExtension = project.extensions["android"] as BaseExtension
+			val android = project.extensions.getByName<CommonExtension>("android")
+			// TODEL https://youtrack.jetbrains.com/issue/KT-80985
+			@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 			android.sourceSets.configureEach {
-				it.java.srcDir("src/${it.name}/kotlin")
+				it.java.directories.add("src/${it.name}/kotlin")
 			}
 		} else {
 			project.plugins.apply("org.jetbrains.kotlin.jvm")

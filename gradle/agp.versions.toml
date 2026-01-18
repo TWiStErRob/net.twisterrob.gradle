@@ -12,3 +12,4 @@ android-gradle-v810x = { module = "com.android.tools.build:gradle", version = "8
 android-gradle-v811x = { module = "com.android.tools.build:gradle", version = "8.11.2" }
 android-gradle-v812x = { module = "com.android.tools.build:gradle", version = "8.12.3" }
 android-gradle-v813x = { module = "com.android.tools.build:gradle", version = "8.13.2" }
+android-gradle-v90x = { module = "com.android.tools.build:gradle", version = "9.0.0" }

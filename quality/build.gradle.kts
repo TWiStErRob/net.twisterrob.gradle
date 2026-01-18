@@ -30,7 +30,6 @@ dependencies {
 	api(projects.pmd)
 
 	implementation(projects.compat.gradle)
-	implementation(projects.compat.agpBase)
 	implementation(projects.compat.agp)
 
 	compileOnly(libs.annotations.jetbrains)

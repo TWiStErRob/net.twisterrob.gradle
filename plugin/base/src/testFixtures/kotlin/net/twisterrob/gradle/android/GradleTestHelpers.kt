@@ -4,6 +4,7 @@ import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.jakewharton.dex.DexMethod
 import net.twisterrob.gradle.android.SdkVersions.asName
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.test.process.assertOutput
 import net.twisterrob.test.withRootCause
 import org.hamcrest.Description
@@ -176,21 +177,38 @@ fun assertDefaultBadging(
 				""".trimIndent()
 			} else {
 				// TODO versionCode and versionName is not verified!
-				"compileSdkVersion >= 28 && isAndroidTestApk" to """
-					package: name='$applicationId' versionCode='' versionName='' platformBuildVersionName='$compileSdkVersionName' platformBuildVersionCode='$compileSdkVersion' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
-					sdkVersion:'$minSdkVersion'
-					targetSdkVersion:'$targetSdkVersion'
-					application: label='' icon=''
-					application-debuggable
-					uses-library:'android.test.runner'
-					feature-group: label=''
-					  uses-feature: name='android.hardware.faketouch'
-					  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
-					supports-screens: 'small' 'normal' 'large' 'xlarge'
-					supports-any-density: 'true'
-					locales: '--_--'
-					densities: '160'
-				""".trimIndent()
+				if (AGPVersions.v9xx <= AGPVersions.UNDER_TEST) {
+					"compileSdkVersion >= 28 && isAndroidTestApk" to """
+						package: name='$applicationId' versionCode='' versionName='' platformBuildVersionName='$compileSdkVersionName' platformBuildVersionCode='$compileSdkVersion' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
+						sdkVersion:'$minSdkVersion'
+						targetSdkVersion:'$targetSdkVersion'
+						application: label='' icon=''
+						application-debuggable
+						feature-group: label=''
+						  uses-feature: name='android.hardware.faketouch'
+						  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+						supports-screens: 'small' 'normal' 'large' 'xlarge'
+						supports-any-density: 'true'
+						locales: '--_--'
+						densities: '160'
+					""".trimIndent()
+				} else {
+					"compileSdkVersion >= 28 && isAndroidTestApk" to """
+						package: name='$applicationId' versionCode='' versionName='' platformBuildVersionName='$compileSdkVersionName' platformBuildVersionCode='$compileSdkVersion' compileSdkVersion='$compileSdkVersion' compileSdkVersionCodename='$compileSdkVersionName'
+						sdkVersion:'$minSdkVersion'
+						targetSdkVersion:'$targetSdkVersion'
+						application: label='' icon=''
+						application-debuggable
+						uses-library:'android.test.runner'
+						feature-group: label=''
+						  uses-feature: name='android.hardware.faketouch'
+						  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+						supports-screens: 'small' 'normal' 'large' 'xlarge'
+						supports-any-density: 'true'
+						locales: '--_--'
+						densities: '160'
+					""".trimIndent()
+				}
 			}
 		}
 	assertOutput(listOf(resolveFromAndroidSDK("aapt"), "dump", "badging", apk), expectedOutput, expectation)

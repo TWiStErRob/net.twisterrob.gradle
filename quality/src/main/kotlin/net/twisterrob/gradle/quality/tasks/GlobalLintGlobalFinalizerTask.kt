@@ -12,6 +12,7 @@ import net.twisterrob.gradle.android.androidComponents
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
 import net.twisterrob.gradle.internal.android.unwrapCast
+import net.twisterrob.gradle.kotlin.dsl.withId
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
 import net.twisterrob.gradle.quality.gather.LintReportGatherer
@@ -30,7 +31,6 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.UntrackedTask
-import org.gradle.kotlin.dsl.withType
 import se.bjurr.violations.lib.model.Violation
 import java.io.File
 
@@ -104,7 +104,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 
 		override fun preConfigure(project: Project, taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
 			project.allprojects.forEach { subproject ->
-				subproject.plugins.withType<AndroidBasePlugin>().configureEach {
+				subproject.plugins.withId<AndroidBasePlugin>("com.android.base") {
 					subproject.configureReports(taskProvider)
 				}
 			}
@@ -113,7 +113,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 		private fun Project.configureReports(taskProvider: TaskProvider<GlobalLintGlobalFinalizerTask>) {
 			androidComponents.finalizeDsl { android ->
 				val lint = when (android) {
-					is CommonExtension<*, *, *, *, *, *> -> android.lint
+					is CommonExtension -> android.lint
 					is KotlinMultiplatformAndroidLibraryExtension -> android.lint
 					else -> error("Unknown android extension: ${android::class}")
 				}

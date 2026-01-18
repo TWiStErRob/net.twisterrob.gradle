@@ -11,6 +11,7 @@ import net.twisterrob.gradle.test.assertNoSource
 import net.twisterrob.gradle.test.assertNoTask
 import net.twisterrob.gradle.test.assertSuccess
 import net.twisterrob.gradle.test.assertUpToDate
+import net.twisterrob.gradle.test.fixtures.ContentMergeMode
 import net.twisterrob.gradle.test.minus
 import net.twisterrob.gradle.test.runBuild
 import net.twisterrob.gradle.test.runFailingBuild
@@ -107,6 +108,12 @@ class GlobalTestFinalizerTaskTest : BaseIntgTest() {
 
 	@Test fun `gathers results from root app`() {
 		gradle.file(testFile, "src", "test", "java", "Tests.java")
+
+		@Language("properties")
+		val properties = """
+			android.onlyEnableUnitTestForTheTestedBuildType=false
+		""".trimIndent()
+		gradle.file(properties, ContentMergeMode.APPEND, "gradle.properties")
 
 		@Language("gradle")
 		val script = """

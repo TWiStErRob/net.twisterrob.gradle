@@ -14,17 +14,6 @@
 
     <issue
         id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs"
-        errorLine1="import com.android.build.gradle.internal.dsl.BuildType"
-        errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/android/AndroidBuildPlugin.kt"
-            line="12"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
         message="Avoid using internal Android Gradle Plugin APIs (method getInstallTask from com.android.build.gradle.internal.scope.TaskContainer)"
         errorLine1="     variant.taskContainer.installTask"
         errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
