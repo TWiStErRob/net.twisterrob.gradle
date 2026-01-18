@@ -873,7 +873,7 @@ jobs:
             test-task: 'testReport :plugin:tests'
 
           - name: "AGP 9.0.x on Gradle 9.1+"
-            gradle: '9.1'
+            gradle: '9.1.0'
             java: '17'
             agp: '9.0.0'
             kotlin: '2.2.10'
@@ -881,7 +881,7 @@ jobs:
             build-tools: '34.0.0'
             test-task: 'testReport :quality:tests'
           - name: "AGP 9.0.x on Gradle 9.1+ - plugin"
-            gradle: '9.1'
+            gradle: '9.1.0'
             java: '17'
             agp: '9.0.0'
             kotlin: '2.2.10'
