@@ -3,6 +3,7 @@ plugins {
 	id("net.twisterrob.gradle.plugin.quality") version "0.18"
 }
 
+@Suppress("DEPRECATION")
 android {
 	compileSdk = 35
 	defaultConfig {
