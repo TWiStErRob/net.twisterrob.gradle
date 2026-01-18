@@ -42,8 +42,8 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 		val myReleaseProguardRulesFile = proguardBase.map { it.file("twisterrob-release.pro") }
 
 		android.apply android@{
-			defaultConfig.proguardFile(defaultAndroidRulesFile)
-			defaultConfig.proguardFile(myProguardRulesFile)
+			defaultConfig.proguardFile(defaultAndroidRulesFile.get())
+			defaultConfig.proguardFile(myProguardRulesFile.get())
 
 			project.plugins.withId<AppPlugin>("com.android.application") {
 				this@android as ApplicationExtension
@@ -54,9 +54,9 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 				@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 				buildTypes.configureEach { buildType ->
 					if (buildType.isDebuggable) {
-						buildType.proguardFile(myDebugProguardRulesFile)
+						buildType.proguardFile(myDebugProguardRulesFile.get())
 					} else {
-						buildType.proguardFile(myReleaseProguardRulesFile)
+						buildType.proguardFile(myReleaseProguardRulesFile.get())
 					}
 				}
 			}
