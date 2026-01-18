@@ -2,6 +2,7 @@ package net.twisterrob.gradle.android
 
 import com.android.SdkConstants
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
@@ -40,12 +41,12 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 		val myDebugProguardRulesFile = proguardBase.map { it.file("twisterrob-debug.pro") }
 		val myReleaseProguardRulesFile = proguardBase.map { it.file("twisterrob-release.pro") }
 
-		android.apply {
+		android.apply android@{
 			defaultConfig.proguardFile(defaultAndroidRulesFile)
 			defaultConfig.proguardFile(myProguardRulesFile)
 
 			project.plugins.withId<AppPlugin>("com.android.application") {
-				this@apply as ApplicationExtension
+				this@android as ApplicationExtension
 				buildTypes.configure("release") {
 					it.isMinifyEnabled = true
 				}
@@ -97,6 +98,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 			defaultConfig.multiDexKeepProguard = autoDexMainFile
 		}
 		project.plugins.withId<LibraryPlugin>("com.android.library") {
+			this@setupAutoProguardFiles as LibraryExtension
 			val autoConsumerFile = project.file("src/main/consumer.pro")
 			if (autoConsumerFile.exists() && autoConsumerFile.isFile) {
 				defaultConfig.consumerProguardFiles(autoConsumerFile)

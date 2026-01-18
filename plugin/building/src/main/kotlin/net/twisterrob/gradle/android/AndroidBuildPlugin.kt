@@ -2,8 +2,8 @@ package net.twisterrob.gradle.android
 
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.dsl.ApplicationBuildType
+import com.android.build.api.dsl.ApplicationDefaultConfig
 import com.android.build.api.dsl.BuildType
-import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ResValue
 import com.android.build.api.variant.Variant
@@ -57,18 +57,22 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		@Suppress("NestedScopeFunctions")
 		with(android) {
 			configureLint()
-			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
+			compileSdk = VERSION_SDK_COMPILE
 
 			with(defaultConfig) {
 				minSdk = VERSION_SDK_MINIMUM
-				targetSdk = VERSION_SDK_TARGET
+				if (this is ApplicationDefaultConfig) {
+					targetSdk = VERSION_SDK_TARGET
+				}
+				testOptions.targetSdk = VERSION_SDK_TARGET
+				lint.targetSdk = VERSION_SDK_TARGET
 				vectorDrawables.useSupportLibrary = true
 			}
 			with(buildTypes) {
 				configureSuffixes(project)
 				configureBuildResValues()
 			}
-			with(packagingOptions) {
+			with(packaging) {
 				resources.excludes.addAll(knownUnneededFiles())
 			}
 			decorateBuildConfig(project, twisterrob)
@@ -102,7 +106,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 	companion object {
 
 		private fun BaseExtension.configureLint() {
-			(this as CommonExtension).lint {
+			lint {
 				xmlReport = false
 				checkAllWarnings = true
 				abortOnError = true
