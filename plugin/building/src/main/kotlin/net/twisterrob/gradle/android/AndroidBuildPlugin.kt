@@ -44,7 +44,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-		val android = project.extensions.getByName<BaseExtension>("android")
+		val android = project.extensions.getByName<CommonExtension>("android")
 		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
 		if (shouldAddAutoRepositoriesTo(project)) {
@@ -105,7 +105,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	companion object {
 
-		private fun BaseExtension.configureLint() {
+		private fun CommonExtension.configureLint() {
 			lint {
 				xmlReport = false
 				checkAllWarnings = true
@@ -173,7 +173,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				"**/README.md",
 			)
 
-		private fun BaseExtension.decorateBuildConfig(project: Project, twisterrob: AndroidBuildPluginExtension) {
+		private fun CommonExtension.decorateBuildConfig(project: Project, twisterrob: AndroidBuildPluginExtension) {
 			val buildTimeTaskProvider =
 				project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
 			val vcsTaskProvider =

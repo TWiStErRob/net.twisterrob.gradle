@@ -4,7 +4,7 @@ import com.android.build.api.dsl.ApplicationBuildType
 import com.android.build.api.dsl.TestBuildType
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidSigningPlugin : BasePlugin() {
@@ -15,7 +15,7 @@ abstract class AndroidSigningPlugin : BasePlugin() {
 		val keyStoreFile = project.file(optionalProp(STORE_FILE) ?: DEFAULT_STORE_FILE)
 		if (keyStoreFile.isFile && keyStoreFile.exists() && keyStoreFile.canRead()) {
 			LOG.info("Attaching release.signingConfig.{} using '{}'", SIGNING_CONFIG_NAME, keyStoreFile)
-			val android = project.extensions["android"] as BaseExtension
+			val android = project.extensions.getByName<CommonExtension>("android")
 			val sign = android.signingConfigs.create(SIGNING_CONFIG_NAME) {
 				it.storeFile = keyStoreFile
 				it.storePassword = mandatoryProp(STORE_PASSWORD)

@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.kotlin
 
-import net.twisterrob.gradle.android.BaseExtension
+import net.twisterrob.gradle.android.CommonExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.android.hasAndroidTest
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
@@ -9,6 +9,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import java.util.Locale
 import kotlin.reflect.KCallable
 
@@ -35,7 +36,7 @@ abstract class KotlinPlugin : BasePlugin() {
 			} else {
 				project.addTestDependencies(DependencyHandler::testImplementation)
 			}
-			val android: BaseExtension = project.extensions["android"] as BaseExtension
+			val android = project.extensions.getByName<CommonExtension>("android")
 			// TODEL https://youtrack.jetbrains.com/issue/KT-80985
 			@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 			android.sourceSets.configureEach {

@@ -17,7 +17,7 @@ import org.gradle.api.Task
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
@@ -27,7 +27,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
-		val android = project.extensions["android"] as BaseExtension
+		val android = project.extensions.getByName<CommonExtension>("android")
 
 		/**
 		 * @see com.android.build.gradle.ProguardFiles#getDefaultProguardFile
@@ -90,7 +90,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 		}
 	}
 
-	private fun BaseExtension.setupAutoProguardFiles() {
+	private fun CommonExtension.setupAutoProguardFiles() {
 		val autoProguardFile = project.file("src/main/proguard.pro")
 		if (autoProguardFile.exists() && autoProguardFile.isFile) {
 			defaultConfig.proguardFiles.add(autoProguardFile)

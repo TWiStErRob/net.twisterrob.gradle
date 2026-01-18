@@ -153,7 +153,7 @@ abstract class AndroidVersionExtension {
 		internal const val NAME: String = "version"
 		internal const val DEFAULT_FILE_NAME: String = "version.properties"
 
-		fun from(android: BaseExtension): AndroidVersionExtension =
+		fun from(android: CommonExtension): AndroidVersionExtension =
 			from(android.defaultConfig)
 
 		fun from(defaultConfig: DefaultConfig): AndroidVersionExtension =

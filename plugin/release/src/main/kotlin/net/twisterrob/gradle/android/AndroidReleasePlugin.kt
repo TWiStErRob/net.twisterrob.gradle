@@ -29,7 +29,7 @@ abstract class AndroidReleasePlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-		val android = project.extensions.getByName<BaseExtension>("android")
+		val android = project.extensions.getByName<CommonExtension>("android")
 		@Suppress("detekt.UnnecessaryApply") // Conventional Gradle pattern.
 		android.extensions.create<AndroidReleaseExtension>(AndroidReleaseExtension.NAME).apply {
 			directory.convention(project.releaseDirectory())
@@ -50,7 +50,7 @@ abstract class AndroidReleasePlugin : BasePlugin() {
 			description = "Calls each release task for all build types"
 		}
 
-	private fun registerReleaseTasks(android: BaseExtension, buildType: BuildType): TaskProvider<Task> {
+	private fun registerReleaseTasks(android: CommonExtension, buildType: BuildType): TaskProvider<Task> {
 		val buildTypeName = buildType.name.replaceFirstChar { it.uppercase(Locale.ROOT) }
 		val releaseBuildTypeTask = project.tasks.register<Task>("releaseAll${buildTypeName}") {
 			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP

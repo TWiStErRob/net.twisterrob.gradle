@@ -1,11 +1,11 @@
 package net.twisterrob.gradle.java
 
-import net.twisterrob.gradle.android.BaseExtension
+import net.twisterrob.gradle.android.CommonExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.common.BaseExposedPlugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.withType
 
 private const val DEFAULT_ENCODING = "UTF-8"
@@ -18,7 +18,7 @@ abstract class BaseJavaPlugin : BaseExposedPlugin() {
 		super.apply(target)
 
 		if (project.plugins.hasAndroid()) {
-			val android: BaseExtension = project.extensions["android"] as BaseExtension
+			val android = project.extensions.getByName<CommonExtension>("android")
 			with(android.compileOptions) {
 				encoding = DEFAULT_ENCODING
 			}
