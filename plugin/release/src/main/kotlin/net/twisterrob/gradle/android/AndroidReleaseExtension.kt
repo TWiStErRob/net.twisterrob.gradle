@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.kotlin.dsl.getByName
 

@@ -2,6 +2,7 @@ package net.twisterrob.gradle.android
 
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.dsl.BuildType
+import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.Variant
 import com.android.build.api.variant.impl.BuiltArtifactsImpl

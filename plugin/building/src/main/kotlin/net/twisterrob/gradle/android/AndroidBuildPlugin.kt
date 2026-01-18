@@ -4,6 +4,7 @@ import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.dsl.ApplicationBuildType
 import com.android.build.api.dsl.ApplicationDefaultConfig
 import com.android.build.api.dsl.BuildType
+import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryDefaultConfig
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ResValue

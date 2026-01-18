@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.dsl.ApplicationBuildType
+import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.TestBuildType
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project

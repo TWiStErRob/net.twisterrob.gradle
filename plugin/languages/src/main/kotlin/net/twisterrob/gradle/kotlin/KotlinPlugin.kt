@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.kotlin
 
-import net.twisterrob.gradle.android.CommonExtension
+import com.android.build.api.dsl.CommonExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.android.hasAndroidTest
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo

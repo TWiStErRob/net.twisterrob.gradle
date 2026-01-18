@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.DefaultConfig
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ComponentIdentity
