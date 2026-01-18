@@ -1,11 +1,11 @@
 package net.twisterrob.gradle.android
 
+import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.DefaultConfig
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ComponentIdentity
 import com.android.build.api.variant.GeneratesApk
 import com.android.build.api.variant.impl.VariantOutputImpl
-import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import net.twisterrob.gradle.common.BasePlugin
 import net.twisterrob.gradle.ext.zip
@@ -164,11 +164,11 @@ abstract class AndroidVersionExtension {
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidVersionPlugin : BasePlugin() {
 
-	private val android: AppExtension by lazy {
+	private val android: ApplicationExtension by lazy {
 		if (!project.plugins.hasPlugin("com.android.application")) {
 			throw PluginInstantiationException("Can only use versioning with Android applications")
 		}
-		project.extensions["android"] as AppExtension
+		project.extensions["android"] as ApplicationExtension
 	}
 
 	@Suppress("detekt.LateinitUsage") // TODO can be probably refactored to put the when inside the withId and pass params.
@@ -203,8 +203,8 @@ abstract class AndroidVersionPlugin : BasePlugin() {
 	 */
 	private fun autoVersion() {
 		if (version.isAutoVersion) {
-			android.defaultConfig.setVersionCode(version.versionCodeFormat(version))
-			android.defaultConfig.setVersionName(version.versionNameFormat(version))
+			android.defaultConfig.versionCode = version.versionCodeFormat(version)
+			android.defaultConfig.versionName = version.versionNameFormat(version)
 		}
 	}
 
