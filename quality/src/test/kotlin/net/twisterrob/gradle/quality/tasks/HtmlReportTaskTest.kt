@@ -361,7 +361,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 	@Test fun `runs on multiple jvm reports`(test: TestInfo) {
 		val violations = ViolationTestResources(gradle.root)
 		val checkstyle = CheckstyleTestResources()
-		val pmd = PmdTestResources()
+		val pmd = PmdTestResources { gradle.gradleVersion }
 		gradle.basedOn("jvm-root_app")
 
 		checkstyle.multi.contents.forEach { (name, content) ->
@@ -410,7 +410,7 @@ class HtmlReportTaskTest : BaseIntgTest() {
 	@Test fun `runs on multiple android reports`(test: TestInfo) {
 		val violations = ViolationTestResources(gradle.root)
 		val checkstyle = CheckstyleTestResources()
-		val pmd = PmdTestResources()
+		val pmd = PmdTestResources { gradle.gradleVersion }
 		gradle.basedOn("android-root_app")
 		listOf(
 			"Autofill",

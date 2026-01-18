@@ -29,7 +29,7 @@ class ValidateViolationsTaskIntgTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 
 	private val checkstyle = CheckstyleTestResources()
-	private val pmd = PmdTestResources()
+	private val pmd = PmdTestResources { gradle.gradleVersion }
 
 	@Test fun `fails when violations`() {
 		gradle.file(checkstyle.simple.content, *SOURCE_PATH, "Checkstyle.java")
