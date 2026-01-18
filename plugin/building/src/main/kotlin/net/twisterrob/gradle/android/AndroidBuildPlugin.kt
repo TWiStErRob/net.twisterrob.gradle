@@ -4,11 +4,13 @@ import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.dsl.ApplicationBuildType
 import com.android.build.api.dsl.ApplicationDefaultConfig
 import com.android.build.api.dsl.BuildType
+import com.android.build.api.dsl.LibraryDefaultConfig
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ResValue
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BasePlugin
+import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.component.ComponentCreationConfig
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
@@ -59,12 +61,16 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			configureLint()
 			compileSdk = VERSION_SDK_COMPILE
 
-			with(defaultConfig) {
+			with(defaultConfig) defaultConfig@{
 				minSdk = VERSION_SDK_MINIMUM
-				if (this is ApplicationDefaultConfig) {
+				project.plugins.withId<AppPlugin>("com.android.application") {
+					this@defaultConfig as ApplicationDefaultConfig
 					targetSdk = VERSION_SDK_TARGET
 				}
-				testOptions.targetSdk = VERSION_SDK_TARGET
+				project.plugins.withId<LibraryPlugin>("com.android.library") {
+					this@defaultConfig as LibraryDefaultConfig
+					testOptions.targetSdk = VERSION_SDK_TARGET
+				}
 				lint.targetSdk = VERSION_SDK_TARGET
 				vectorDrawables.useSupportLibrary = true
 			}
