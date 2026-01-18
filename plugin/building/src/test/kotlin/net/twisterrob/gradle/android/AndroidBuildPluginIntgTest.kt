@@ -122,7 +122,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug"),
-			minSdkVersion = 19
+			minSdkVersion = 19,
 		)
 	}
 
@@ -140,7 +140,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
-			minSdkVersion = 19
+			minSdkVersion = 19,
 		)
 	}
 
@@ -158,7 +158,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug"),
-			targetSdkVersion = 28
+			targetSdkVersion = 28,
 		)
 	}
 
@@ -177,7 +177,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
-			targetSdkVersion = 28
+			targetSdkVersion = 28,
 		)
 	}
 
@@ -187,7 +187,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.compileSdk = 23
+			android.compileSdk = 30
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
@@ -195,8 +195,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug"),
-			compileSdkVersion = 23
-			//compileSdkVersionName = "6.0-2704002"
+			compileSdkVersion = 30,
 		)
 	}
 
@@ -206,7 +205,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.compileSdk = 23
+			android.compileSdk = 30
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -214,8 +213,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
-			compileSdkVersion = 23
-			//compileSdkVersionName = "6.0-2704002"
+			compileSdkVersion = 30,
 		)
 	}
 
