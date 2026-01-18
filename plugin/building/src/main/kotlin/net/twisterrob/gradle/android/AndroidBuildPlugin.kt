@@ -106,7 +106,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 	companion object {
 
 		private fun CommonExtension.configureLint() {
-			lint {
+			lint.apply {
 				xmlReport = false
 				checkAllWarnings = true
 				abortOnError = true
