@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.SdkConstants
+import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
@@ -44,19 +45,19 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 			defaultConfig.proguardFile(myProguardRulesFile)
 
 			project.plugins.withId<AppPlugin>("com.android.application") {
-				val release = buildTypes["release"]
-				release.setMinifyEnabled(true)
-			}
-
-			// TODEL https://youtrack.jetbrains.com/issue/KT-80985
-			@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-			buildTypes.configureEach { buildType ->
-				if (buildType.isDebuggable) {
-					buildType.proguardFile(myDebugProguardRulesFile)
-				} else {
-					buildType.proguardFile(myReleaseProguardRulesFile)
+				this@apply as ApplicationExtension
+				buildTypes.configure("release") {
+					it.isMinifyEnabled = true
+				}
+				buildTypes.configureEach { buildType ->
+					if (buildType.isDebuggable) {
+						buildType.proguardFile(myDebugProguardRulesFile)
+					} else {
+						buildType.proguardFile(myReleaseProguardRulesFile)
+					}
 				}
 			}
+
 			setupAutoProguardFiles()
 		}
 

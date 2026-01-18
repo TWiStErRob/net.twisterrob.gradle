@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.dsl.ApplicationBuildType
 import com.android.build.api.dsl.BuildType
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.ApplicationVariant
@@ -112,17 +113,19 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		}
 
 		private fun NamedDomainObjectContainer<out BuildType>.configureSuffixes(project: Project) {
-			configure("debug") { debug ->
-				project.plugins.withId<AppPlugin>("com.android.application") {
+			project.plugins.withId<AppPlugin>("com.android.application") {
+				@Suppress("UNCHECKED_CAST")
+				this@configureSuffixes as NamedDomainObjectContainer<ApplicationBuildType>
+				configure("debug") { debug ->
 					// TODO make debug buildTypes configurable, use name of buildType as suffix
-					debug.setApplicationIdSuffix(".${debug.name}")
+					debug.applicationIdSuffix = ".${debug.name}"
+					debug.versionNameSuffix = "d"
 				}
-				debug.setVersionNameSuffix("d")
-			}
-			@Suppress("UNUSED_ANONYMOUS_PARAMETER") // Keep for reference.
-			configure("release") { release ->
-				//release.setApplicationIdSuffix(null)
-				//release.setVersionNameSuffix(null)
+				@Suppress("UNUSED_ANONYMOUS_PARAMETER") // Keep for reference.
+				configure("release") { release ->
+					//release.applicationIdSuffix = null
+					//release.versionNameSuffix = null
+				}
 			}
 		}
 

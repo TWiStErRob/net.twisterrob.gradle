@@ -42,10 +42,11 @@ fun PluginContainer.hasAndroid(): Boolean =
 fun PluginContainer.hasAndroidTest(): Boolean =
 	hasPlugin("com.android.test")
 
-fun DomainObjectCollection<out BuildType>.configure(name: String, block: (BuildType) -> Unit) {
+fun <T : BuildType> DomainObjectCollection<out T>.configure(name: String, block: (T) -> Unit) {
 	configureEach { buildType ->
 		if (buildType.name == name) {
-			block(buildType)
+			@Suppress("UNCHECKED_CAST") // Whatever the user wants.
+			block(buildType as T)
 		}
 	}
 }

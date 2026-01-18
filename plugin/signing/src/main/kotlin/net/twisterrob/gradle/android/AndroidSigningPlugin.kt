@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.gradle.internal.dsl.SigningConfig
+import com.android.build.api.dsl.ApplicationBuildType
+import com.android.build.api.dsl.TestBuildType
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.get
@@ -20,8 +22,12 @@ abstract class AndroidSigningPlugin : BasePlugin() {
 				setStorePassword(mandatoryProp(STORE_PASSWORD))
 				setKeyAlias(optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS)
 				setKeyPassword(mandatoryProp(KEY_PASSWORD))
+			android.buildTypes.configure("release") {
+				when (it) {
+					is ApplicationBuildType -> it.signingConfig = sign
+					is TestBuildType -> it.signingConfig = sign
+				}
 			}
-			android.buildTypes["release"].setSigningConfig(sign)
 		} else if (project.providers.gradleProperty(STORE_FILE).isPresent) {
 			LOG.error("Keystore file (from {}) '{}' is not valid.", STORE_FILE, keyStoreFile.absolutePath)
 		}
