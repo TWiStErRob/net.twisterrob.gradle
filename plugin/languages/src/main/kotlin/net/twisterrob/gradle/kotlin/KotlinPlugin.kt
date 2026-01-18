@@ -40,7 +40,7 @@ abstract class KotlinPlugin : BasePlugin() {
 			// TODEL https://youtrack.jetbrains.com/issue/KT-80985
 			@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 			android.sourceSets.configureEach {
-				it.java.srcDir("src/${it.name}/kotlin")
+				it.java.directories.add("src/${it.name}/kotlin")
 			}
 		} else {
 			project.plugins.apply("org.jetbrains.kotlin.jvm")
