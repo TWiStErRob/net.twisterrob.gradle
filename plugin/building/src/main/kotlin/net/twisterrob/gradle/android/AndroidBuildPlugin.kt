@@ -17,6 +17,7 @@ import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companio
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
 import net.twisterrob.gradle.internal.android.description
 import net.twisterrob.gradle.internal.android.taskContainer
+import net.twisterrob.gradle.kotlin.dsl.withId
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
@@ -72,7 +73,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			decorateBuildConfig(project, twisterrob)
 		}
 
-		project.plugins.withType<AppPlugin>().configureEach {
+		project.plugins.withId<AppPlugin>("com.android.application") {
 			if (twisterrob.isDecorateBuildConfig) {
 				project.androidComponentsApplication.onVariants { variant ->
 					addPackageName(variant)
@@ -90,7 +91,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				}
 			}
 		}
-		project.plugins.withType<AppPlugin>().configureEach {
+		project.plugins.withId<AppPlugin>("com.android.application") {
 			project.androidComponentsApplication.onVariants { variant ->
 				registerRunTask(project, variant)
 			}
@@ -112,7 +113,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 		private fun NamedDomainObjectContainer<out BuildType>.configureSuffixes(project: Project) {
 			configure("debug") { debug ->
-				project.plugins.withType<AppPlugin>().configureEach {
+				project.plugins.withId<AppPlugin>("com.android.application") {
 					// TODO make debug buildTypes configurable, use name of buildType as suffix
 					debug.setApplicationIdSuffix(".${debug.name}")
 				}

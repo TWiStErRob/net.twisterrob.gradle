@@ -9,6 +9,7 @@ import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.lint.LintModelWriterTask
 import com.android.build.gradle.internal.tasks.R8Task
 import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.kotlin.dsl.withId
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.RegularFile
@@ -42,7 +43,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 			defaultConfig.proguardFile(defaultAndroidRulesFile)
 			defaultConfig.proguardFile(myProguardRulesFile)
 
-			project.plugins.withType<AppPlugin>().configureEach {
+			project.plugins.withId<AppPlugin>("com.android.application") {
 				val release = buildTypes["release"]
 				release.setMinifyEnabled(true)
 			}
@@ -94,7 +95,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 		if (autoDexMainFile.exists() && autoDexMainFile.isFile) {
 			defaultConfig.multiDexKeepProguard = autoDexMainFile
 		}
-		project.plugins.withType<LibraryPlugin>().configureEach {
+		project.plugins.withId<LibraryPlugin>("com.android.library") {
 			val autoConsumerFile = project.file("src/main/consumer.pro")
 			if (autoConsumerFile.exists() && autoConsumerFile.isFile) {
 				defaultConfig.consumerProguardFiles(autoConsumerFile)
