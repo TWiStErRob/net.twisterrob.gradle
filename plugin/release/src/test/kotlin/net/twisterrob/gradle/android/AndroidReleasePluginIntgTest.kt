@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.android
 
+import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleRunnerRule
 import net.twisterrob.gradle.test.GradleRunnerRuleExtension
 import net.twisterrob.gradle.test.assertFailed
@@ -137,23 +138,27 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 
 	private fun BuildResult.assertReleaseArchive(releasesDir: File, minification: Minification) {
 		assertArchive(releasesDir.resolve("${packageName}@10203004-v1.2.3#4+archive.zip")) { archive ->
-			assertThat(archive, hasZipEntry("${packageName}@10203004-v1.2.3#4+release.apk"))
-			assertThat(archive, hasZipEntry("proguard_configuration.txt"))
+			var count = 0
+			assertThat(archive, hasZipEntry("${packageName}@10203004-v1.2.3#4+release.apk")); count++
+			assertThat(archive, hasZipEntry("proguard_configuration.txt")); count++
 			when (minification) {
 				Minification.R8 -> {
-					assertThat(archive, hasZipEntry("proguard_mapping.txt"))
+					assertThat(archive, hasZipEntry("proguard_mapping.txt")); count++
 				}
 				Minification.R8Full -> {
 					// TODO for some reason the full R8 doesn't output the mapping. Probably because nothing was renamed.
-					assertThat(archive, hasZipEntry("proguard_mapping.txt", withSize(greaterThanOrEqualTo(0L))))
+					assertThat(archive, hasZipEntry("proguard_mapping.txt", withSize(greaterThanOrEqualTo(0L)))); count++
 				}
 			}
-			assertThat(archive, hasZipEntry("proguard_seeds.txt"))
-			assertThat(archive, hasZipEntry("proguard_usage.txt"))
+			assertThat(archive, hasZipEntry("proguard_seeds.txt")); count++
+			assertThat(archive, hasZipEntry("proguard_usage.txt")); count++
 			assertThat(archive, not(hasZipEntry("output.json")))
 			assertThat(archive, not(hasZipEntry("metadata.json")))
 			assertThat(archive, not(hasZipEntry("output-metadata.json")))
-			assertThat(archive, hasEntryCount(equalTo(5)))
+			if (AGPVersions.v9xx <= AGPVersions.UNDER_TEST) {
+				assertThat(archive, hasZipEntry("proguard_mapping.prt")); count++
+			}
+			assertThat(archive, hasEntryCount(equalTo(count)))
 			this.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
 		}
 	}
