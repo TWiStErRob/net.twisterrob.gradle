@@ -1,10 +1,15 @@
 package net.twisterrob.gradle.pmd
 
+import com.android.build.api.variant.Variant
+import net.twisterrob.gradle.android.manifestsCompat
 import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.Project
 import java.io.File
+import javax.inject.Inject
 
-class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
+open class PmdTaskCreator @Inject constructor(
+	project: Project,
+) : VariantTaskCreator<PmdTask>(
 	project,
 	"pmd",
 	"org.gradle.pmd",
@@ -41,10 +46,7 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 						task.project.files(task.ruleSetFiles.map { it.parentFile })
 			}
 
-			override fun setupSources(
-				task: PmdTask,
-				variant: @Suppress("DEPRECATION" /* AGP 7.0 */) com.android.build.gradle.api.BaseVariant,
-			) {
+			override fun setupSources(task: PmdTask, variant: Variant) {
 				super.setupSources(task, variant)
 
 				@Suppress("detekt.MaxChainedCallsOnSameLine")
@@ -62,26 +64,8 @@ class PmdTaskCreator(project: Project) : VariantTaskCreator<PmdTask>(
 					return
 				}
 
-				task.include(variant
-					.sourceSets
-					.flatMap { it.resDirectories }
-					.map { dir ->
-						// build relative path (e.g. src/main/res) and
-						// append a trailing "/" for include to treat it as recursive
-						projectPath.relativize(dir.toPath()).toString() + File.separator
-					}
-					.toList()
-				)
-
-				task.include(variant
-					.sourceSets
-					.map { it.manifestFile }
-					.map { file ->
-						// build relative path (e.g. src/main/AndroidManifest.xml)
-						projectPath.relativize(file.toPath()).toString()
-					}
-					.toList()
-				)
+				task.source(variant.sources.res?.all)
+				task.source(variant.sources.manifestsCompat)
 			}
 		}
 }

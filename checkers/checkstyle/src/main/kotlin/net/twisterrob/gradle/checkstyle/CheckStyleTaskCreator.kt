@@ -2,8 +2,11 @@ package net.twisterrob.gradle.checkstyle
 
 import net.twisterrob.gradle.common.VariantTaskCreator
 import org.gradle.api.Project
+import javax.inject.Inject
 
-class CheckStyleTaskCreator(project: Project) : VariantTaskCreator<CheckStyleTask>(
+open class CheckStyleTaskCreator @Inject constructor(
+	project: Project,
+) : VariantTaskCreator<CheckStyleTask>(
 	project,
 	"checkstyle",
 	"org.gradle.checkstyle",

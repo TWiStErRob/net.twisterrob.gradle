@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.common
 
+import net.twisterrob.gradle.android.androidComponents
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.SourceTask
@@ -21,8 +22,8 @@ abstract class BaseQualityPlugin(
 
 		// level of indirection with base is to prevent loading classes in project not having Android
 		project.plugins.withId("com.android.base") {
-			val taskCreator = taskCreatorType.newInstance(project)
-			AndroidVariantApplier(project).applyVariants(taskCreator::applyTo)
+			val taskCreator = project.objects.newInstance(taskCreatorType)
+			project.androidComponents(taskCreator::applyTo)
 		}
 		project.plugins.withId("org.gradle.java") {
 			val taskCreator = taskCreatorType.newInstance(project)
