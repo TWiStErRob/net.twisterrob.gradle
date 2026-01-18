@@ -76,6 +76,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			}
 			with(buildTypes) {
 				configureSuffixes(project)
+				buildFeatures.resValues = true
 				configureBuildResValues()
 			}
 			with(packaging) {
@@ -86,6 +87,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 		project.plugins.withId<AppPlugin>("com.android.application") {
 			if (twisterrob.isDecorateBuildConfig) {
+				android.buildFeatures.resValues = true
 				project.androidComponentsApplication.onVariants { variant ->
 					addPackageName(variant)
 				}
