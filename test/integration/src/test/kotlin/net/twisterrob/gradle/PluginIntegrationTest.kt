@@ -237,7 +237,6 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.jetbrains.kotlin.android") // STOPSHIP AGP 9.0 remove as part of built-in kotlin?
 				id("net.twisterrob.gradle.plugin.android-app")
 				id("${pluginId}")
 			}
@@ -273,7 +272,6 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.jetbrains.kotlin.android") // STOPSHIP AGP 9.0 remove as part of built-in kotlin?
 				id("net.twisterrob.gradle.plugin.android-library")
 				id("${pluginId}")
 			}
@@ -293,7 +291,6 @@ class PluginIntegrationTest : BaseIntgTest() {
 		@Language("gradle")
 		val script = """
 			plugins {
-				id("org.jetbrains.kotlin.android") // STOPSHIP AGP 9.0 remove as part of built-in kotlin?
 				id("net.twisterrob.gradle.plugin.android-app") // :plugin
 				// Android: id("net.twisterrob.gradle.plugin.android-library") // :plugin
 				id("net.twisterrob.gradle.plugin.root") // :plugin:base
