@@ -3,6 +3,7 @@ package net.twisterrob.gradle.kotlin
 import com.android.build.api.dsl.CommonExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.android.hasAndroidTest
+import net.twisterrob.gradle.android.srcDirCompat
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.BasePlugin
@@ -43,7 +44,7 @@ abstract class KotlinPlugin : BasePlugin() {
 			// TODEL https://youtrack.jetbrains.com/issue/KT-80985
 			@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 			android.sourceSets.configureEach {
-				it.java.directories.add("src/${it.name}/kotlin")
+				it.java.srcDirCompat("src/${it.name}/kotlin")
 			}
 		} else {
 			project.plugins.apply("org.jetbrains.kotlin.jvm")
