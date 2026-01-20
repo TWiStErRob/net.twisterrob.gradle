@@ -184,7 +184,7 @@ abstract class AndroidVersionPlugin : BasePlugin() {
 	}
 
 	private fun init() {
-		version = android.defaultConfig.extensions.create(AndroidVersionExtension.NAME)
+		version = android.defaultConfigCompat.extensions.create(AndroidVersionExtension.NAME)
 		version.versionByProperties(readVersion(project.file(AndroidVersionExtension.DEFAULT_FILE_NAME)))
 		project.androidComponents.onVariants { variant ->
 			if (version.isRenameAPK) {
@@ -204,8 +204,8 @@ abstract class AndroidVersionPlugin : BasePlugin() {
 	 */
 	private fun autoVersion() {
 		if (version.isAutoVersion) {
-			android.defaultConfig.versionCode = version.versionCodeFormat(version)
-			android.defaultConfig.versionName = version.versionNameFormat(version)
+			android.defaultConfigCompat.versionCode = version.versionCodeFormat(version)
+			android.defaultConfigCompat.versionName = version.versionNameFormat(version)
 		}
 	}
 

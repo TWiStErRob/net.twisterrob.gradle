@@ -32,7 +32,7 @@ abstract class AndroidReleasePlugin : BasePlugin() {
 		super.apply(target)
 		val android = project.extensions.getByName<CommonExtension>("android")
 		@Suppress("detekt.UnnecessaryApply") // Conventional Gradle pattern.
-		android.extensions.create<AndroidReleaseExtension>(AndroidReleaseExtension.NAME).apply {
+		android.extensionsCompat.create<AndroidReleaseExtension>(AndroidReleaseExtension.NAME).apply {
 			directory.convention(project.releaseDirectory())
 		}
 

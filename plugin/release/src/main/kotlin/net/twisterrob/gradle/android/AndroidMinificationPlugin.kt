@@ -104,7 +104,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 			this@setupAutoProguardFiles as LibraryExtension
 			val autoConsumerFile = project.file("src/main/consumer.pro")
 			if (autoConsumerFile.exists() && autoConsumerFile.isFile) {
-				defaultConfig.consumerProguardFiles(autoConsumerFile)
+				defaultConfigCompat.consumerProguardFiles(autoConsumerFile)
 			}
 		}
 	}

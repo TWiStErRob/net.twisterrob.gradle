@@ -48,7 +48,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 		val android = project.extensions.getByName<CommonExtension>("android")
-		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
+		val twisterrob = android.extensionsCompat.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
 		if (shouldAddAutoRepositoriesTo(project)) {
 			// most of Android's stuff is distributed here, so add by default

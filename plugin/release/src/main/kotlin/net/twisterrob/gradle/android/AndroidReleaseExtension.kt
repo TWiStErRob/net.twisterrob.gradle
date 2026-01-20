@@ -14,6 +14,6 @@ abstract class AndroidReleaseExtension {
 		internal const val NAME: String = "release"
 
 		fun from(android: CommonExtension): AndroidReleaseExtension =
-			android.extensions.getByName<AndroidReleaseExtension>(NAME)
+			android.extensionsCompat.getByName<AndroidReleaseExtension>(NAME)
 	}
 }
