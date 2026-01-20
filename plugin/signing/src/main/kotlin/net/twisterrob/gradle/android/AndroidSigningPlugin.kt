@@ -2,6 +2,7 @@ package net.twisterrob.gradle.android
 
 import com.android.build.api.dsl.ApplicationBuildType
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryBuildType
 import com.android.build.api.dsl.TestBuildType
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
@@ -23,10 +24,12 @@ abstract class AndroidSigningPlugin : BasePlugin() {
 				config.keyAlias = optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS
 				config.keyPassword = mandatoryProp(KEY_PASSWORD)
 			}
-			android.buildTypes.configure("release") {
-				when (it) {
-					is ApplicationBuildType -> it.signingConfig = sign
-					is TestBuildType -> it.signingConfig = sign
+			android.buildTypes.configure("release") { buildType ->
+				when (buildType) {
+					is ApplicationBuildType -> buildType.signingConfig = sign
+					is LibraryBuildType -> buildType.signingConfig = sign
+					is TestBuildType -> buildType.signingConfig = sign
+					else -> error("Where am I? ${buildType}")
 				}
 			}
 		} else if (project.providers.gradleProperty(STORE_FILE).isPresent) {
