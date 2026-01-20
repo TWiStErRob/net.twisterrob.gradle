@@ -1,8 +1,9 @@
 plugins {
-	id("com.android.application") version "8.13.2"
+	id("com.android.application") version "9.0.0"
 	id("net.twisterrob.gradle.plugin.quality") version "0.18"
 }
 
+@Suppress("DEPRECATION") // android {} is deprecated in newDsl=false mode from 9.x.
 android {
 	compileSdk = 35
 	defaultConfig {

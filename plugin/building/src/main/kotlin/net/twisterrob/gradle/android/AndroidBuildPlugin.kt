@@ -1,15 +1,18 @@
 package net.twisterrob.gradle.android
 
 import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.dsl.ApplicationBuildType
+import com.android.build.api.dsl.ApplicationDefaultConfig
+import com.android.build.api.dsl.BuildType
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryDefaultConfig
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.ResValue
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.BasePlugin
+import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.component.ComponentCreationConfig
-import com.android.build.gradle.internal.dsl.BuildType
 import net.twisterrob.gradle.android.tasks.AndroidInstallRunnerTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask
 import net.twisterrob.gradle.android.tasks.CalculateBuildTimeTask.Companion.addBuildConfigFields
@@ -18,7 +21,7 @@ import net.twisterrob.gradle.android.tasks.CalculateVCSRevisionInfoTask.Companio
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
 import net.twisterrob.gradle.internal.android.description
 import net.twisterrob.gradle.internal.android.taskContainer
-import net.twisterrob.gradle.kotlin.dsl.extensions
+import net.twisterrob.gradle.kotlin.dsl.withId
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
@@ -39,13 +42,16 @@ abstract class AndroidBuildPluginExtension {
 	}
 }
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress(
+	"detekt.UnnecessaryAbstractClass", // Gradle convention.
+	"detekt.StringLiteralDuplication", // Simpler without constants.
+)
 abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	override fun apply(target: Project) {
 		super.apply(target)
-		val android = project.extensions.getByName<BaseExtension>("android")
-		val twisterrob = android.extensions.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
+		val android = project.extensions.getByName<CommonExtension>("android")
+		val twisterrob = android.extensionsCompat.create<AndroidBuildPluginExtension>(AndroidBuildPluginExtension.NAME)
 
 		if (shouldAddAutoRepositoriesTo(project)) {
 			// most of Android's stuff is distributed here, so add by default
@@ -57,25 +63,35 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		@Suppress("NestedScopeFunctions")
 		with(android) {
 			configureLint()
-			compileSdkVersion = "android-${VERSION_SDK_COMPILE}"
+			compileSdk = VERSION_SDK_COMPILE
 
-			with(defaultConfig) {
+			with(defaultConfig) defaultConfig@{
 				minSdk = VERSION_SDK_MINIMUM
-				targetSdk = VERSION_SDK_TARGET
+				project.plugins.withId<AppPlugin>("com.android.application") {
+					this@defaultConfig as ApplicationDefaultConfig
+					targetSdk = VERSION_SDK_TARGET
+				}
+				project.plugins.withId<LibraryPlugin>("com.android.library") {
+					this@defaultConfig as LibraryDefaultConfig
+					testOptions.targetSdk = VERSION_SDK_TARGET
+				}
+				lint.targetSdk = VERSION_SDK_TARGET
 				vectorDrawables.useSupportLibrary = true
 			}
 			with(buildTypes) {
 				configureSuffixes(project)
+				buildFeatures.resValues = true
 				configureBuildResValues()
 			}
-			with(packagingOptions) {
+			with(packaging) {
 				resources.excludes.addAll(knownUnneededFiles())
 			}
 			decorateBuildConfig(project, twisterrob)
 		}
 
-		project.plugins.withType<AppPlugin>().configureEach {
+		project.plugins.withId<AppPlugin>("com.android.application") {
 			if (twisterrob.isDecorateBuildConfig) {
+				android.buildFeatures.resValues = true
 				project.androidComponentsApplication.onVariants { variant ->
 					addPackageName(variant)
 				}
@@ -92,7 +108,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				}
 			}
 		}
-		project.plugins.withType<AppPlugin>().configureEach {
+		project.plugins.withId<AppPlugin>("com.android.application") {
 			project.androidComponentsApplication.onVariants { variant ->
 				registerRunTask(project, variant)
 			}
@@ -101,8 +117,8 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	companion object {
 
-		private fun BaseExtension.configureLint() {
-			(this as CommonExtension<*, *, *, *, *, *>).lint {
+		private fun CommonExtension.configureLint() {
+			lint.apply {
 				xmlReport = false
 				checkAllWarnings = true
 				abortOnError = true
@@ -113,17 +129,19 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 		}
 
 		private fun NamedDomainObjectContainer<out BuildType>.configureSuffixes(project: Project) {
-			configure("debug") { debug ->
-				project.plugins.withType<AppPlugin>().configureEach {
+			project.plugins.withId<AppPlugin>("com.android.application") {
+				@Suppress("UNCHECKED_CAST")
+				this@configureSuffixes as NamedDomainObjectContainer<ApplicationBuildType>
+				configure("debug") { debug ->
 					// TODO make debug buildTypes configurable, use name of buildType as suffix
-					debug.setApplicationIdSuffix(".${debug.name}")
+					debug.applicationIdSuffix = ".${debug.name}"
+					debug.versionNameSuffix = "d"
 				}
-				debug.setVersionNameSuffix("d")
-			}
-			@Suppress("UNUSED_ANONYMOUS_PARAMETER") // Keep for reference.
-			configure("release") { release ->
-				//release.setApplicationIdSuffix(null)
-				//release.setVersionNameSuffix(null)
+				@Suppress("UNUSED_ANONYMOUS_PARAMETER") // Keep for reference.
+				configure("release") { release ->
+					//release.applicationIdSuffix = null
+					//release.versionNameSuffix = null
+				}
 			}
 		}
 
@@ -167,7 +185,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 				"**/README.md",
 			)
 
-		private fun BaseExtension.decorateBuildConfig(project: Project, twisterrob: AndroidBuildPluginExtension) {
+		private fun CommonExtension.decorateBuildConfig(project: Project, twisterrob: AndroidBuildPluginExtension) {
 			val buildTimeTaskProvider =
 				project.tasks.register<CalculateBuildTimeTask>("calculateBuildConfigBuildTime")
 			val vcsTaskProvider =

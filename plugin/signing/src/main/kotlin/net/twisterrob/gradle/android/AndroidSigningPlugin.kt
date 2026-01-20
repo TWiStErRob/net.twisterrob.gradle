@@ -1,10 +1,12 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.internal.dsl.SigningConfig
+import com.android.build.api.dsl.ApplicationBuildType
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryBuildType
+import com.android.build.api.dsl.TestBuildType
 import net.twisterrob.gradle.common.BasePlugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 
 @Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
 abstract class AndroidSigningPlugin : BasePlugin() {
@@ -15,14 +17,21 @@ abstract class AndroidSigningPlugin : BasePlugin() {
 		val keyStoreFile = project.file(optionalProp(STORE_FILE) ?: DEFAULT_STORE_FILE)
 		if (keyStoreFile.isFile && keyStoreFile.exists() && keyStoreFile.canRead()) {
 			LOG.info("Attaching release.signingConfig.{} using '{}'", SIGNING_CONFIG_NAME, keyStoreFile)
-			val android = project.extensions["android"] as BaseExtension
-			val sign: SigningConfig = android.signingConfigs.create(SIGNING_CONFIG_NAME).apply {
-				setStoreFile(keyStoreFile)
-				setStorePassword(mandatoryProp(STORE_PASSWORD))
-				setKeyAlias(optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS)
-				setKeyPassword(mandatoryProp(KEY_PASSWORD))
+			val android = project.extensions.getByName<CommonExtension>("android")
+			val sign = android.signingConfigs.create(SIGNING_CONFIG_NAME) { config ->
+				config.storeFile = keyStoreFile
+				config.storePassword = mandatoryProp(STORE_PASSWORD)
+				config.keyAlias = optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS
+				config.keyPassword = mandatoryProp(KEY_PASSWORD)
 			}
-			android.buildTypes["release"].setSigningConfig(sign)
+			android.buildTypes.configure("release") { buildType ->
+				when (buildType) {
+					is ApplicationBuildType -> buildType.signingConfig = sign
+					is LibraryBuildType -> buildType.signingConfig = sign
+					is TestBuildType -> buildType.signingConfig = sign
+					else -> error("Where am I? ${buildType}")
+				}
+			}
 		} else if (project.providers.gradleProperty(STORE_FILE).isPresent) {
 			LOG.error("Keystore file (from {}) '{}' is not valid.", STORE_FILE, keyStoreFile.absolutePath)
 		}

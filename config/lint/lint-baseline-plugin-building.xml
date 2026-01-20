@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.9.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.9.2)" variant="all" version="8.9.2">
+<issues format="6" by="lint 9.0.0" type="baseline" client="gradle" dependencies="false" name="AGP (9.0.0)" variant="all" version="9.0.0">
 
     <issue
         id="InternalAgpApiUsage"
@@ -8,18 +8,7 @@
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/android/AndroidBuildPlugin.kt"
-            line="11"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs"
-        errorLine1="import com.android.build.gradle.internal.dsl.BuildType"
-        errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/android/AndroidBuildPlugin.kt"
-            line="12"
+            line="15"
             column="1"/>
     </issue>
 
@@ -30,7 +19,7 @@
         errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/android/AndroidBuildPlugin.kt"
-            line="200"
+            line="218"
             column="6"/>
     </issue>
 
@@ -41,7 +30,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/android/AndroidBuildPlugin.kt"
-            line="211"
+            line="229"
             column="5"/>
     </issue>
 
@@ -52,7 +41,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/android/AndroidBuildPlugin.kt"
-            line="216"
+            line="234"
             column="5"/>
     </issue>
 
@@ -65,116 +54,6 @@
             file="src/main/kotlin/net/twisterrob/gradle/android/tasks/AndroidInstallRunnerTask.kt"
             line="3"
             column="1"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs"
-        errorLine1="import com.android.build.gradle.internal.variant.BaseVariantData"
-        errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/android/build/gradle/internal/api/index.kt"
-            line="3"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs"
-        errorLine1=" get() = (this as BaseVariantImpl).variantData"
-        errorLine2="                  ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/android/build/gradle/internal/api/index.kt"
-            line="7"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs (method getVariantData from com.android.build.gradle.internal.api.BaseVariantImpl)"
-        errorLine1=" get() = (this as BaseVariantImpl).variantData"
-        errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/android/build/gradle/internal/api/index.kt"
-            line="7"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs"
-        errorLine1=" get() = this as BaseVariantImpl"
-        errorLine2="                 ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/android/build/gradle/internal/api/index.kt"
-            line="11"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs"
-        errorLine1=" get() = (this as TestedVariant).testVariant as BaseVariantImpl?"
-        errorLine2="                  ~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/android/build/gradle/internal/api/index.kt"
-            line="16"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs"
-        errorLine1=" get() = (this as TestedVariant).testVariant as BaseVariantImpl?"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/android/build/gradle/internal/api/index.kt"
-            line="16"
-            column="49"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs (method getTestVariant from com.android.build.gradle.internal.api.TestedVariant)"
-        errorLine1=" get() = (this as TestedVariant).testVariant as BaseVariantImpl?"
-        errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/android/build/gradle/internal/api/index.kt"
-            line="16"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs"
-        errorLine1=" get() = (this as TestedVariant).unitTestVariant as BaseVariantImpl?"
-        errorLine2="                  ~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/android/build/gradle/internal/api/index.kt"
-            line="21"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs"
-        errorLine1=" get() = (this as TestedVariant).unitTestVariant as BaseVariantImpl?"
-        errorLine2="                                                    ~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/android/build/gradle/internal/api/index.kt"
-            line="21"
-            column="53"/>
-    </issue>
-
-    <issue
-        id="InternalAgpApiUsage"
-        message="Avoid using internal Android Gradle Plugin APIs (method getUnitTestVariant from com.android.build.gradle.internal.api.TestedVariant)"
-        errorLine1=" get() = (this as TestedVariant).unitTestVariant as BaseVariantImpl?"
-        errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/android/build/gradle/internal/api/index.kt"
-            line="21"
-            column="10"/>
     </issue>
 
     <issue

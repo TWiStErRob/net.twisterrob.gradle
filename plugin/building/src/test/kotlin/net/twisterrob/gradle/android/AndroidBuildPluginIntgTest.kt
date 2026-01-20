@@ -120,7 +120,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug"),
-			minSdkVersion = 19
+			minSdkVersion = 19,
 		)
 	}
 
@@ -138,7 +138,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
-			minSdkVersion = 19
+			minSdkVersion = 19,
 		)
 	}
 
@@ -156,7 +156,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug"),
-			targetSdkVersion = 28
+			targetSdkVersion = 28,
 		)
 	}
 
@@ -175,7 +175,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
-			targetSdkVersion = 28
+			targetSdkVersion = 28,
 		)
 	}
 
@@ -185,7 +185,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.compileSdk = 23
+			android.compileSdk = 30
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleDebug").build()
@@ -193,8 +193,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleDebug")
 		assertDefaultDebugBadging(
 			apk = gradle.root.apk("debug"),
-			compileSdkVersion = 23
-			//compileSdkVersionName = "6.0-2704002"
+			compileSdkVersion = 30,
 		)
 	}
 
@@ -204,7 +203,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			plugins {
 				id("net.twisterrob.gradle.plugin.android-app")
 			}
-			android.compileSdk = 23
+			android.compileSdk = 30
 		""".trimIndent()
 
 		val result = gradle.run(script, "assembleRelease").build()
@@ -212,8 +211,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		result.assertSuccess(":assembleRelease")
 		assertDefaultReleaseBadging(
 			apk = gradle.root.apk("release"),
-			compileSdkVersion = 23
-			//compileSdkVersionName = "6.0-2704002"
+			compileSdkVersion = 30,
 		)
 	}
 
@@ -298,6 +296,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("properties")
 		val properties = """
 			android.useAndroidX=true
+			android.onlyEnableUnitTestForTheTestedBuildType=false
 		""".trimIndent()
 		gradle.file(properties, ContentMergeMode.APPEND, "gradle.properties")
 
@@ -366,6 +365,7 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 		@Language("properties")
 		val properties = """
 			android.useAndroidX=true
+			android.onlyEnableUnitTestForTheTestedBuildType=false
 		""".trimIndent()
 		gradle.file(properties, ContentMergeMode.APPEND, "gradle.properties")
 
@@ -464,16 +464,23 @@ class AndroidBuildPluginIntgTest : BaseAndroidIntgTest() {
 			tasks.named("calculateBuildConfigBuildTime").configure { buildTime.set(1234567890L) }
 		""".trimIndent()
 
-		val result = gradle.run(script, "testReleaseUnitTest").build()
+		val result = gradle.run(script, "testDebugUnitTest").build()
 
-		result.assertSuccess(":testReleaseUnitTest")
-		result.assertHasOutputLine("    release.BUILD_TIME=1234567890")
+		result.assertSuccess(":testDebugUnitTest")
+		result.assertHasOutputLine("    debug.BUILD_TIME=1234567890")
 	}
 
 	/**
 	 * @see AndroidBuildPlugin.fixVariantTaskGroups
 	 */
 	@Test fun `metadata of compilation tasks is present`() {
+		@Language("properties")
+		val properties = """
+			android.useAndroidX=true
+			android.onlyEnableUnitTestForTheTestedBuildType=false
+		""".trimIndent()
+		gradle.file(properties, ContentMergeMode.APPEND, "gradle.properties")
+
 		@Language("gradle")
 		val script = """
 			plugins {

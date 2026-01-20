@@ -76,7 +76,7 @@ jobs:
           -x lint
           :app:testR
           :a:aR
-          --exclude-task compileRShaders
+          --exclude-task generateRResources
           -Pfast
 
 
@@ -872,36 +872,52 @@ jobs:
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
 
-          - name: "AGP stable on Gradle stable"
-            gradle: '9.0.0' # https://gradle.org/releases/
+          - name: "AGP 9.0.x on Gradle 9.1+"
+            gradle: '9.1.0'
             java: '17'
-            agp: '8.13.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
-            kotlin: '2.2.20' # https://kotlinlang.org/docs/releases.html#release-details
+            agp: '9.0.0'
+            kotlin: '2.2.10'
             android: '35'
             build-tools: '34.0.0'
             test-task: 'testReport :quality:tests'
-          - name: "AGP stable on Gradle stable - plugin"
-            gradle: '9.0.0' # https://gradle.org/releases/
+          - name: "AGP 9.0.x on Gradle 9.1+ - plugin"
+            gradle: '9.1.0'
             java: '17'
-            agp: '8.13.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
-            kotlin: '2.2.20' # https://kotlinlang.org/docs/releases.html#release-details
+            agp: '9.0.0'
+            kotlin: '2.2.10'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :plugin:tests'
+          - name: "AGP 9.0.x on Gradle 9.x"
+            gradle: '9.2.1'
+            java: '17'
+            agp: '9.0.0'
+            kotlin: '2.2.10'
+            android: '35'
+            build-tools: '34.0.0'
+            test-task: 'testReport :quality:tests'
+          - name: "AGP 9.0.x on Gradle 9.x - plugin"
+            gradle: '9.2.1'
+            java: '17'
+            agp: '9.0.0'
+            kotlin: '2.2.10'
             android: '35'
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
 
-          - name: "AGP stable on Gradle preview"
-            gradle: '9.1.0' # https://services.gradle.org/distributions/
+          - name: "Latest stables"
+            gradle: '9.2.1' # https://gradle.org/releases/
             java: '17'
-            agp: '8.13.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
-            kotlin: '2.2.20' # https://kotlinlang.org/docs/eap.html#build-details
+            agp: '9.0.0' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '2.3.0' # https://kotlinlang.org/docs/releases.html#release-details
             android: '35'
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
             test-task: 'testReport :quality:tests'
-          - name: "AGP stable on Gradle preview - plugin"
-            gradle: '9.1.0' # https://services.gradle.org/distributions/
+          - name: "Latest stables - plugin"
+            gradle: '9.2.1' # https://gradle.org/releases/
             java: '17'
-            agp: '8.13.2' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
-            kotlin: '2.2.20' # https://kotlinlang.org/docs/eap.html#build-details
+            agp: '9.0.0' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            kotlin: '2.3.0' # https://kotlinlang.org/docs/releases.html#release-details
             android: '35'
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
             test-task: 'testReport :plugin:tests'

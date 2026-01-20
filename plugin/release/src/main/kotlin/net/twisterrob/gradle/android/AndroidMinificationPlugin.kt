@@ -1,21 +1,24 @@
 package net.twisterrob.gradle.android
 
 import com.android.SdkConstants
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
 import com.android.build.gradle.internal.lint.LintModelWriterTask
 import com.android.build.gradle.internal.tasks.R8Task
 import net.twisterrob.gradle.common.BasePlugin
+import net.twisterrob.gradle.kotlin.dsl.withId
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
@@ -25,7 +28,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 	override fun apply(target: Project) {
 		super.apply(target)
 
-		val android = project.extensions["android"] as BaseExtension
+		val android = project.extensions.getByName<CommonExtension>("android")
 
 		/**
 		 * @see com.android.build.gradle.ProguardFiles#getDefaultProguardFile
@@ -39,24 +42,26 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 		val myDebugProguardRulesFile = proguardBase.map { it.file("twisterrob-debug.pro") }
 		val myReleaseProguardRulesFile = proguardBase.map { it.file("twisterrob-release.pro") }
 
-		android.apply {
-			defaultConfig.proguardFile(defaultAndroidRulesFile)
-			defaultConfig.proguardFile(myProguardRulesFile)
+		android.apply android@{
+			defaultConfig.proguardFile(defaultAndroidRulesFile.get())
+			defaultConfig.proguardFile(myProguardRulesFile.get())
 
-			project.plugins.withType<AppPlugin>().configureEach {
-				val release = buildTypes["release"]
-				release.setMinifyEnabled(true)
-			}
-
-			// TODEL https://youtrack.jetbrains.com/issue/KT-80985
-			@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-			buildTypes.configureEach { buildType ->
-				if (buildType.isDebuggable) {
-					buildType.proguardFile(myDebugProguardRulesFile)
-				} else {
-					buildType.proguardFile(myReleaseProguardRulesFile)
+			project.plugins.withId<AppPlugin>("com.android.application") {
+				this@android as ApplicationExtension
+				buildTypes.configure("release") {
+					it.isMinifyEnabled = true
+				}
+				// TODEL https://youtrack.jetbrains.com/issue/KT-80985
+				@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+				buildTypes.configureEach { buildType ->
+					if (buildType.isDebuggable) {
+						buildType.proguardFile(myDebugProguardRulesFile.get())
+					} else {
+						buildType.proguardFile(myReleaseProguardRulesFile.get())
+					}
 				}
 			}
+
 			setupAutoProguardFiles()
 		}
 
@@ -86,7 +91,7 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 		}
 	}
 
-	private fun BaseExtension.setupAutoProguardFiles() {
+	private fun CommonExtension.setupAutoProguardFiles() {
 		val autoProguardFile = project.file("src/main/proguard.pro")
 		if (autoProguardFile.exists() && autoProguardFile.isFile) {
 			defaultConfig.proguardFiles.add(autoProguardFile)
@@ -95,10 +100,11 @@ abstract class AndroidMinificationPlugin : BasePlugin() {
 		if (autoDexMainFile.exists() && autoDexMainFile.isFile) {
 			defaultConfig.multiDexKeepProguard = autoDexMainFile
 		}
-		project.plugins.withType<LibraryPlugin>().configureEach {
+		project.plugins.withId<LibraryPlugin>("com.android.library") {
+			this@setupAutoProguardFiles as LibraryExtension
 			val autoConsumerFile = project.file("src/main/consumer.pro")
 			if (autoConsumerFile.exists() && autoConsumerFile.isFile) {
-				defaultConfig.consumerProguardFiles(autoConsumerFile)
+				defaultConfigCompat.consumerProguardFiles(autoConsumerFile)
 			}
 		}
 	}

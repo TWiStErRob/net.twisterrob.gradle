@@ -4,12 +4,12 @@
 package net.twisterrob.gradle.android
 
 import com.android.SdkConstants
+import com.android.build.api.dsl.BuildType
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.BuildConfigField
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.TestPlugin
-import com.android.build.gradle.internal.dsl.BuildType
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
@@ -42,10 +42,11 @@ fun PluginContainer.hasAndroid(): Boolean =
 fun PluginContainer.hasAndroidTest(): Boolean =
 	hasPlugin("com.android.test")
 
-fun DomainObjectCollection<out BuildType>.configure(name: String, block: (BuildType) -> Unit) {
+fun <T : BuildType> DomainObjectCollection<out T>.configure(name: String, block: (T) -> Unit) {
 	configureEach { buildType ->
 		if (buildType.name == name) {
-			block(buildType)
+			@Suppress("UNCHECKED_CAST") // Whatever the user wants.
+			block(buildType as T)
 		}
 	}
 }

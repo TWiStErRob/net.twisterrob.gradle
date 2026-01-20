@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.android
 
-import com.android.build.gradle.BaseExtension
-import net.twisterrob.gradle.kotlin.dsl.extensions
+import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.kotlin.dsl.getByName
 
@@ -14,7 +13,7 @@ abstract class AndroidReleaseExtension {
 
 		internal const val NAME: String = "release"
 
-		fun from(android: BaseExtension): AndroidReleaseExtension =
-			android.extensions.getByName<AndroidReleaseExtension>(NAME)
+		fun from(android: CommonExtension): AndroidReleaseExtension =
+			android.extensionsCompat.getByName<AndroidReleaseExtension>(NAME)
 	}
 }

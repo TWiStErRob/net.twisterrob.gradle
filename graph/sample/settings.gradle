@@ -1,6 +1,3 @@
-import java.util.regex.Pattern
-import static net.twisterrob.gradle.GradleUtils.doNotNagAbout
-
 pluginManagement {
 	includeBuild("../") // alternatively use mavenLocal() and `version "0.1-SNAPSHOT"` when referenced.
 	repositories {
@@ -8,14 +5,13 @@ pluginManagement {
 		mavenCentral()
 	}
 	plugins {
-		id("com.android.application") version "8.13.2"
-		id("com.android.library") version "8.13.2"
+		id("com.android.application") version "9.0.0"
+		id("com.android.library") version "9.0.0"
 	}
 }
 
 plugins {
 	id("net.twisterrob.gradle.graph")
-	id("net.twisterrob.gradle.plugin.nagging") version "0.18"
 }
 
 graphSettings {
@@ -33,33 +29,3 @@ dependencyResolutionManagement {
 
 include(":app")
 include(":lib")
-
-def gradleVersion = GradleVersion.current().version
-
-// TODEL Gradle 9.1 vs AGP 8.13 https://issuetracker.google.com/issues/444260628
-doNotNagAbout(
-		Pattern.compile(
-				Pattern.quote("Declaring dependencies using multi-string notation has been deprecated. ") +
-						Pattern.quote("This will fail with an error in Gradle 10. ") +
-						Pattern.quote("Please use single-string notation instead: ") +
-						"\"${Pattern.quote("com.android.tools.build:aapt2:")}\\d+\\.\\d+\\.\\d+(-(alpha|beta|rc)\\d+)?-\\d+:(windows|linux|osx)${Pattern.quote("\". ")}" +
-						Pattern.quote("Consult the upgrading guide for further information: ") +
-						Pattern.quote("https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#dependency_multi_string_notation") +
-						".*",
-		),
-		//"at com.android.build.gradle.internal.res.Aapt2FromMaven\$Companion.create(Aapt2FromMaven.kt:139)",
-)
-
-// TODEL Gradle 9.1 vs AGP 8.13 https://issuetracker.google.com/issues/444260628
-doNotNagAbout(
-		Pattern.compile(
-				Pattern.quote("Declaring dependencies using multi-string notation has been deprecated. ") +
-						Pattern.quote("This will fail with an error in Gradle 10. ") +
-						Pattern.quote("Please use single-string notation instead: ") +
-						"\"${Pattern.quote("com.android.tools.lint:lint-gradle:")}\\d+\\.\\d+\\.\\d+(-(alpha|beta|rc)\\d+)?${Pattern.quote("\". ")}" +
-						Pattern.quote("Consult the upgrading guide for further information: ") +
-						Pattern.quote("https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#dependency_multi_string_notation") +
-						".*",
-		),
-		//"at com.android.build.gradle.internal.lint.LintFromMaven\$Companion.from(AndroidLintInputs.kt:2850)",
-)

@@ -51,6 +51,11 @@ include(":compat:agp-86x")
 include(":compat:agp-87x")
 include(":compat:agp-88x")
 include(":compat:agp-89x")
+include(":compat:agp-810x")
+include(":compat:agp-811x")
+include(":compat:agp-812x")
+include(":compat:agp-813x")
+include(":compat:agp-90x")
 include(":compat:gradle")
 include(":compat:kotlin-base")
 
@@ -70,6 +75,7 @@ include(":browser:agp-810x")
 include(":browser:agp-811x")
 include(":browser:agp-812x")
 include(":browser:agp-813x")
+include(":browser:agp-90x")
 include(":browser:kotlin-18x")
 include(":browser:kotlin-19x")
 include(":browser:kotlin-20x")
@@ -135,20 +141,3 @@ doNotNagAbout(
 	// It's line 89 in 2025.2.1, but in upcoming IDEA releases it will move twice.
 	"at org.jetbrains.plugins.gradle.tooling.builder.ProjectExtensionsDataBuilderImpl\$Companion.collectConfigurations(ProjectExtensionsDataBuilderImpl.kt:",
 )
-
-// TODEL Gradle 9.1 vs AGP 8.13 https://issuetracker.google.com/issues/444260628
-@Suppress("detekt.MaxLineLength")
-doNotNagAbout(
-	Regex(
-		"Declaring dependencies using multi-string notation has been deprecated. ".escape() +
-				"This will fail with an error in Gradle 10. ".escape() +
-				"Please use single-string notation instead: ".escape() +
-				"\"${"com.android.tools.lint:lint-gradle:".escape()}\\d+\\.\\d+\\.\\d+(-(alpha|beta|rc)\\d+)?${"\". ".escape()}" +
-				"Consult the upgrading guide for further information: ".escape() +
-				"https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#dependency_multi_string_notation".escape() +
-				".*",
-	),
-	//"at com.android.build.gradle.internal.lint.LintFromMaven\$Companion.from(AndroidLintInputs.kt:2850)",
-)
-
-private fun String.escape(): String = Regex.escape(this)
