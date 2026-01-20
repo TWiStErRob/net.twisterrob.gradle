@@ -37,6 +37,7 @@ object AGPVersions {
 	val v81x: AGPVersion = AGPVersion(major = 8, minor = 1, type = null, patch = null)
 	val v83x: AGPVersion = AGPVersion(major = 8, minor = 3, type = null, patch = null)
 	val v84x: AGPVersion = AGPVersion(major = 8, minor = 4, type = null, patch = null)
+	val v85x: AGPVersion = AGPVersion(major = 8, minor = 5, type = null, patch = null)
 	val v9xx: AGPVersion = AGPVersion(major = 9, minor = null, type = null, patch = null)
 	// Note: adding a version here requires updating the test in AGPVersionsTest.kt.
 

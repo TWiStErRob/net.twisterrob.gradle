@@ -68,6 +68,7 @@ class AGPVersionsTest {
 		"8, 1",
 		"8, 3",
 		"8, 4",
+		"8, 5",
 		"9, ",
 	)
 	@ParameterizedTest(name = "[$INDEX_PLACEHOLDER] v{0}.{1}.x")
