@@ -76,7 +76,7 @@ jobs:
           -x lint
           :app:testR
           :a:aR
-          --exclude-task compileRShaders
+          --exclude-task generateRResources
           -Pfast
 
 
