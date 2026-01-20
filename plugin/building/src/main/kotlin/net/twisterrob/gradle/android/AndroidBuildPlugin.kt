@@ -42,7 +42,10 @@ abstract class AndroidBuildPluginExtension {
 	}
 }
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress(
+	"detekt.UnnecessaryAbstractClass", // Gradle convention.
+	"detekt.StringLiteralDuplication", // Simpler without constants.
+)
 abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 	override fun apply(target: Project) {

@@ -17,11 +17,11 @@ abstract class AndroidSigningPlugin : BasePlugin() {
 		if (keyStoreFile.isFile && keyStoreFile.exists() && keyStoreFile.canRead()) {
 			LOG.info("Attaching release.signingConfig.{} using '{}'", SIGNING_CONFIG_NAME, keyStoreFile)
 			val android = project.extensions.getByName<CommonExtension>("android")
-			val sign = android.signingConfigs.create(SIGNING_CONFIG_NAME) {
-				it.storeFile = keyStoreFile
-				it.storePassword = mandatoryProp(STORE_PASSWORD)
-				it.keyAlias = optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS
-				it.keyPassword = mandatoryProp(KEY_PASSWORD)
+			val sign = android.signingConfigs.create(SIGNING_CONFIG_NAME) { config ->
+				config.storeFile = keyStoreFile
+				config.storePassword = mandatoryProp(STORE_PASSWORD)
+				config.keyAlias = optionalProp(KEY_ALIAS) ?: DEFAULT_KEY_ALIAS
+				config.keyPassword = mandatoryProp(KEY_PASSWORD)
 			}
 			android.buildTypes.configure("release") {
 				when (it) {

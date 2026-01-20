@@ -15,5 +15,6 @@ import org.gradle.api.plugins.ExtensionContainer
 val CommonExtension.extensionsCompat: ExtensionContainer
 	get() = when {
 		AGPVersions.v9xx <= AGPVersions.CLASSPATH -> this.extensions
-		else -> (this as ExtensionAware).extensions
+		AGPVersions.v81x <= AGPVersions.CLASSPATH -> (this as ExtensionAware).extensions
+		else -> AGPVersions.olderThan81NotSupported(AGPVersions.CLASSPATH)
 	}

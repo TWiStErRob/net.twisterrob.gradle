@@ -18,5 +18,6 @@ import net.twisterrob.gradle.common.AGPVersions
 val LibraryExtension.defaultConfigCompat: LibraryDefaultConfig
 	get() = when {
 		AGPVersions.v9xx <= AGPVersions.CLASSPATH -> this.defaultConfig
-		else -> (this as CommonExtension).defaultConfig as LibraryDefaultConfig
+		AGPVersions.v81x <= AGPVersions.CLASSPATH -> (this as CommonExtension).defaultConfig as LibraryDefaultConfig
+		else -> AGPVersions.olderThan81NotSupported(AGPVersions.CLASSPATH)
 	}

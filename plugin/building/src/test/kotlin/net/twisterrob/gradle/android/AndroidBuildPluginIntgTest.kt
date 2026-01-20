@@ -1,7 +1,6 @@
 package net.twisterrob.gradle.android
 
 import junit.runner.Version
-import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -14,7 +13,6 @@ import net.twisterrob.gradle.test.root
 import org.gradle.api.JavaVersion
 import org.gradle.api.artifacts.ArtifactRepositoryContainer
 import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
-import org.gradle.testkit.runner.BuildResult
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
