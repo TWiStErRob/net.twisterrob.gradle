@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.9.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.9.2)" variant="all" version="8.9.2">
+<issues format="6" by="lint 9.0.0" type="baseline" client="gradle" dependencies="false" name="AGP (9.0.0)" variant="all" version="9.0.0">
 
     <issue
         id="InternalAgpApiUsage"
@@ -8,7 +8,7 @@
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/android/AndroidMinificationPlugin.kt"
-            line="8"
+            line="10"
             column="1"/>
     </issue>
 
@@ -19,7 +19,7 @@
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/android/AndroidMinificationPlugin.kt"
-            line="9"
+            line="11"
             column="1"/>
     </issue>
 
@@ -30,7 +30,7 @@
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/android/AndroidMinificationPlugin.kt"
-            line="10"
+            line="12"
             column="1"/>
     </issue>
 
@@ -41,7 +41,7 @@
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/android/AndroidMinificationPlugin.kt"
-            line="11"
+            line="13"
             column="1"/>
     </issue>
 
@@ -52,7 +52,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/android/AndroidMinificationPlugin.kt"
-            line="107"
+            line="115"
             column="9"/>
     </issue>
 

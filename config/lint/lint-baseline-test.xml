@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.9.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.9.2)" variant="all" version="8.9.2">
+<issues format="6" by="lint 9.0.0" type="baseline" client="gradle" dependencies="false" name="AGP (9.0.0)" variant="all" version="9.0.0">
 
     <issue
         id="InternalGradleApiUsage"
@@ -48,55 +48,33 @@
     <issue
         id="InternalGradleApiUsage"
         message="Avoid using internal Gradle APIs"
-        errorLine1="import org.gradle.internal.Factory"
-        errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/test/testkit/setJavaHome.kt"
-            line="3"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="InternalGradleApiUsage"
-        message="Avoid using internal Gradle APIs"
-        errorLine1="import org.gradle.internal.service.DefaultServiceRegistry"
-        errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/net/twisterrob/gradle/test/testkit/setJavaHome.kt"
-            line="4"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="InternalGradleApiUsage"
-        message="Avoid using internal Gradle APIs"
         errorLine1="import org.gradle.tooling.internal.consumer.ConnectorServices"
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/test/testkit/setJavaHome.kt"
-            line="8"
+            line="6"
             column="1"/>
     </issue>
 
     <issue
         id="InternalGradleApiUsage"
         message="Avoid using internal Gradle APIs"
-        errorLine1="import org.gradle.tooling.internal.consumer.DefaultGradleConnector"
+        errorLine1="import org.gradle.tooling.internal.consumer.GradleConnectorFactory"
         errorLine2="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/test/testkit/setJavaHome.kt"
-            line="9"
+            line="7"
             column="1"/>
     </issue>
 
     <issue
         id="InternalGradleApiUsage"
-        message="Avoid using internal Gradle APIs (method create from org.gradle.internal.Factory)"
+        message="Avoid using internal Gradle APIs (method createConnector from org.gradle.tooling.internal.consumer.GradleConnectorFactory)"
         errorLine1="   doAnswer { intercept(it.callRealMethod() as GradleConnector) }"
         errorLine2="   ^">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/test/testkit/setJavaHome.kt"
-            line="54"
+            line="44"
             column="4"/>
     </issue>
 
@@ -118,7 +96,7 @@
         errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/test/testkit/withJvmArguments.kt"
-            line="7"
+            line="8"
             column="2"/>
     </issue>
 
@@ -129,7 +107,7 @@
         errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/kotlin/net/twisterrob/gradle/test/testkit/withJvmArguments.kt"
-            line="11"
+            line="13"
             column="2"/>
     </issue>
 
