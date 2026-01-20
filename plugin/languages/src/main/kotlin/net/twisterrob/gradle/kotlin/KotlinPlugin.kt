@@ -82,15 +82,15 @@ abstract class KotlinPlugin : BasePlugin() {
 			val realConfiguration = configurations[name]
 			realConfiguration.allDependencies.configureEach { dep ->
 				if (dep.existingDependency()) {
-					realConfiguration.extendsFrom(
-						configurations.create("twisterrobKotlin${name.replaceFirstChar { it.uppercase(Locale.ROOT) }}") { temp ->
-							temp.isCanBeConsumed = false
-							temp.isCanBeResolved = false
-							temp.defaultDependencies { dependencies ->
-								dependencies.add(project.dependencies.create(newDependency))
-							}
+					val extraName = "twisterrobKotlin${name.replaceFirstChar { it.uppercase(Locale.ROOT) }}"
+					val extraConfiguration = configurations.create(extraName) { temp ->
+						temp.isCanBeConsumed = false
+						temp.isCanBeResolved = false
+						temp.defaultDependencies { dependencies ->
+							dependencies.add(project.dependencies.create(newDependency))
 						}
-					)
+					}
+					realConfiguration.extendsFrom(extraConfiguration)
 				}
 
 			}
