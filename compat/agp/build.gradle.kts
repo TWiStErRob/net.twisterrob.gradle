@@ -19,6 +19,9 @@ dependencies {
 	implementation(projects.compat.agp87x)
 	implementation(projects.compat.agp88x)
 	implementation(projects.compat.agp89x)
+	implementation(projects.compat.agp810x)
+	implementation(projects.compat.agp811x)
+	implementation(projects.compat.agp812x)
 	implementation(projects.compat.agp813x)
 	implementation(projects.compat.agp90x)
 
