@@ -27,7 +27,7 @@ class TableGenerator(
 		val modules = byModuleByVariantByParserCounts.keys
 		val variants = byModuleByVariantByParserCounts.flatMap { it.value.keys }.distinct()
 		var parsers = byModuleByVariantByParserCounts.flatMap { it.value.values }.flatMap { it.keys }.distinct()
-		val summary: Map<Parser, MaybeCount> = parsers.associateBy({ it }) { parser ->
+		val summary: Map<Parser, MaybeCount> = parsers.associateWith { parser ->
 			byModuleByVariantByParserCounts
 				.values
 				.asSequence()
