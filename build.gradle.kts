@@ -20,15 +20,21 @@ project.tasks.register<TestReport>("testReport") {
 
 	doLast {
 		val reportFile = destinationDirectory.file("index.html").get().asFile
-		val failureRegex = Regex("""(?s).*<div class="infoBox" id="failures">\s*<div class="counter">(\d+)<\/div>.*""")
-		val failureMatch = failureRegex.matchEntire(reportFile.readText())
-		val reportPath = reportFile.toURI().toString().replace("file:/([A-Z])".toRegex(), "file:///\$1")
-		if (failureMatch == null) {
-			throw GradleException("Cannot determine if the tests failed. See the report at: ${reportPath}")
+		val reportHtml = reportFile.readText()
+		val failureRegex =
+			"""(?s)<div class="infoBox">\s*<div class="counter">(\d+)<\/div>\s*<p>failures</p>""".toRegex()
+		val clickableUri = reportFile.toURI().toString().replace("file:/", "file:///")
+		if (!failureRegex.containsMatchIn(reportHtml)) {
+			throw GradleException("Cannot determine if the tests failed. See the report at: ${clickableUri}")
 		} else {
-			val failCount = failureMatch.groups[1]!!.value
-			if (failCount != "0") {
-				throw GradleException("There were ${failCount} failing tests. See the report at: ${reportPath}")
+			val failures = failureRegex
+				.findAll(reportHtml)
+				.map { it.groups[1]?.value?.toInt() }
+				.filterNotNull()
+				.filter { it != 0 }
+				.toList()
+			if (failures.isNotEmpty()) {
+				throw GradleException("There were ${failures.sum()} failing tests. See the report at: ${clickableUri}")
 			}
 		}
 	}
