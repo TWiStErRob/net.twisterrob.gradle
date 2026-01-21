@@ -115,7 +115,7 @@ private class ResolveDependencies(
 		}
 		val deps: Set<Task> =
 			try {
-				taskData.task.taskDependencies.getDependencies(taskData.task) as Set<Task>
+				taskData.task.taskDependencies.getDependencies(taskData.task)
 			} catch (ex: TaskDependencyResolveException) {
 				// TODO why is this erroring on sample project 3 times?
 				// Not passing the exception to the logger, because don't want full stack trace here.

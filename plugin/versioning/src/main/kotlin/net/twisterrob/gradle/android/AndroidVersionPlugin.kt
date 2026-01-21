@@ -212,10 +212,8 @@ abstract class AndroidVersionPlugin : BasePlugin() {
 	private fun renameAPK(variant: ApplicationVariant) {
 		// TODO replace with new Variant API transformation. https://github.com/TWiStErRob/net.twisterrob.gradle/issues/456
 		val variantOutput = variant.outputs.filterIsInstance<VariantOutputImpl>().single()
-		@Suppress("UNCHECKED_CAST")
-		val versionCode = variantOutput.versionCode.orElse(-1) as Provider<Int>
-		@Suppress("UNCHECKED_CAST")
-		val versionName = variantOutput.versionName.orElse("") as Provider<String>
+		val versionCode = variantOutput.versionCode.orElse(-1)
+		val versionName = variantOutput.versionName.orElse("")
 
 		variantOutput.outputFileName.set(
 			variant.replacementApkNameProvider(versionCode, versionName)
