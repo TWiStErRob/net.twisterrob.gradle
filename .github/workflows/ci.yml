@@ -889,7 +889,7 @@ jobs:
             build-tools: '34.0.0'
             test-task: 'testReport :plugin:tests'
           - name: "AGP 9.0.x on Gradle 9.x"
-            gradle: '9.3.0'
+            gradle: '9.3.1'
             java: '17'
             agp: '9.0.0'
             kotlin: '2.2.10'
@@ -897,7 +897,7 @@ jobs:
             build-tools: '34.0.0'
             test-task: 'testReport :quality:tests'
           - name: "AGP 9.0.x on Gradle 9.x - plugin"
-            gradle: '9.3.0'
+            gradle: '9.3.1'
             java: '17'
             agp: '9.0.0'
             kotlin: '2.2.10'
@@ -906,7 +906,7 @@ jobs:
             test-task: 'testReport :plugin:tests'
 
           - name: "Latest stables"
-            gradle: '9.3.0' # https://gradle.org/releases/
+            gradle: '9.3.1' # https://gradle.org/releases/
             java: '17'
             agp: '9.0.0' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.3.0' # https://kotlinlang.org/docs/releases.html#release-details
@@ -914,7 +914,7 @@ jobs:
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
             test-task: 'testReport :quality:tests'
           - name: "Latest stables - plugin"
-            gradle: '9.3.0' # https://gradle.org/releases/
+            gradle: '9.3.1' # https://gradle.org/releases/
             java: '17'
             agp: '9.0.0' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.3.0' # https://kotlinlang.org/docs/releases.html#release-details
