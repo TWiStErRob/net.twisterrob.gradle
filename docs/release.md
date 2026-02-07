@@ -66,7 +66,6 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
     * `docs/examples/local/build.gradle.kts` + `settings.gradle.kts`: plugin version `x.z-SNAPSHOT`
     * `docs/examples/snapshot/build.gradle.kts` + `settings.gradle.kts`: plugin version `x.z-SNAPSHOT`
     * `docs/examples/release/build.gradle.kts` + `settings.gradle.kts`: plugin version `x.y`
-    * `sample/sample/settings.gradle`: plugin version `x.y`
     * Label the PR `a:feature`, `in:meta`.
  1. [Create milestone](https://github.com/TWiStErRob/net.twisterrob.gradle/milestones/new) `vx.z`, if doesn't exist yet.
 
