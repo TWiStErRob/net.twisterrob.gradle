@@ -164,8 +164,7 @@ jobs:
         uses: andymckay/cancel-action@0.5
 
       - name: "Publish Gradle plugins to mavenLocal()."
-        # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
-        run: ./gradlew --no-daemon --no-build-cache --no-configuration-cache --stacktrace publishToMavenLocal
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace publishToMavenLocal
 
       - name: "Upload 'Gradle Plugin Validation Report' artifact."
         if: ${{ success() || failure() }}
@@ -228,12 +227,10 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
           # Implicit: -PsonatypePassword=...
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
-        # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
         run: >
           ./gradlew
           --no-daemon
           --no-build-cache
-          --no-configuration-cache
           --no-watch-fs
           --stacktrace
           publishLibraryPublicationToSonatypeRepository
