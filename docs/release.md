@@ -24,23 +24,28 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
       ```
     * Publish files to Sonatype
       ```shell
-      gradlew publishLibraryPublicationToSonatypeRepository publishPluginMavenPublicationToSonatypeRepository publishAllPluginMarkerMavenPublicationsToSonatypeRepository :closeSonatypeStagingRepository
+      # TODEL --no-configuration-cache https://github.com/gradle-nexus/publish-plugin/issues/221
+      gradlew --no-configuration-cache publishLibraryPublicationToSonatypeRepository publishPluginMavenPublicationToSonatypeRepository publishAllPluginMarkerMavenPublicationsToSonatypeRepository :closeSonatypeStagingRepository
       ```  
       (Note: all tasks have to be executed at once, otherwise it creates multiple staging repositories.)
       * _If this fails, fix and push to Release PR._
-      * > Failed to load staging profiles, server at https://ossrh-staging-api.central.sonatype.com/service/local/ responded with status code 401, body:
-
-        Means the username or password is wrong.
     * Open [Maven Central Repository > Deployments](https://central.sonatype.com/publishing), log in; check output at console to validate.
  1. Archive and final integration test.
-    * Run `p:\repos\release\net.twisterrob.gradle\download-repo.bat`  
-    * Use it in a real project from staging repository (update URL and version number!):
+    * Run `p:\repos\release\net.twisterrob.gradle\temp`: `kotlin ../download.main.kts`  
+    * Use it in a real project from staging repository (update version number!):
       ```kotlin
       repositories {
           exclusiveContent {
               forRepository {
-                  maven("https://ossrh-staging-api.central.sonatype.com/service/local/repositories/net.twisterrob--<guid>/content/") {
-                      name = "Sonatype Staging for net.twisterrob"
+                  maven("https://central.sonatype.com/api/v1/publisher/deployments/download/") {
+                      name = "Maven Central Unpublished"
+                      credentials(HttpHeaderCredentials::class) {
+                          name = "Authorization"
+                          value = "Bearer ${System.getenv("SONATYPE_TOKEN")}"
+                      }
+                      authentication {
+                          create<HttpHeaderAuthentication>("header")
+                      }
                   }
               }
               filter {
@@ -66,3 +71,15 @@ For the full process see [.github/release.md](https://github.com/TWiStErRob/.git
  1. [Create milestone](https://github.com/TWiStErRob/net.twisterrob.gradle/milestones/new) `vx.z`, if doesn't exist yet.
 
 [1]: https://github.com/TWiStErRob/.github/blob/main/RELEASE.md#release-process
+
+## Diagnostics
+
+List all repositories
+```shell
+curl -u "%ORG_GRADLE_PROJECT_sonatypeUsername%:%ORG_GRADLE_PROJECT_sonatypePassword%" "https://ossrh-staging-api.central.sonatype.com/manual/search/repositories?ip=any&profile_id=net.twisterrob" | jq
+```
+
+Drop a repository
+```shell
+curl -X DELETE -u "%ORG_GRADLE_PROJECT_sonatypeUsername%:%ORG_GRADLE_PROJECT_sonatypePassword%" "https://ossrh-staging-api.central.sonatype.com/manual/drop/repository/<ID from list>"
+```
