@@ -222,7 +222,7 @@ jobs:
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
       - name: "Publish Gradle plugins to Sonatype Snapshot with version ${{ env.SNAPSHOT_VERSION }}."
-        if: ${{ false }} # ${{ env.SNAPSHOT_VERSION != '' }} # TODO https://github.com/TWiStErRob/net.twisterrob.gradle/pull/951
+        if: ${{ env.SNAPSHOT_VERSION != '' }}
         env:
           # Implicit: -PsonatypeUsername=...
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
@@ -243,7 +243,7 @@ jobs:
 
       - name: "Verify docs/examples/snapshot with version ${{ env.SNAPSHOT_VERSION }}."
         working-directory: docs/examples/snapshot
-        if:  ${{ false }} # ${{ env.SNAPSHOT_VERSION != '' }} # TODO https://github.com/TWiStErRob/net.twisterrob.gradle/pull/951
+        if: ${{ env.SNAPSHOT_VERSION != '' }}
         run: |
           sed -i.bak -re "s/version \"${PROJECT_VERSION}\"/version \"${SNAPSHOT_VERSION}\"/g" build.gradle.kts
           sed -i.bak -re "s/version \"${PROJECT_VERSION}\"/version \"${SNAPSHOT_VERSION}\"/g" settings.gradle.kts
