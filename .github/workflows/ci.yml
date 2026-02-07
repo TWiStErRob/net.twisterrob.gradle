@@ -227,16 +227,17 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
           # Implicit: -PsonatypePassword=...
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
+        # TODEL --no-configuration-cache https://github.com/gradle-nexus/publish-plugin/issues/221
         run: >
           ./gradlew
           --no-daemon
+          --no-configuration-cache
           --no-build-cache
           --no-watch-fs
           --stacktrace
           publishLibraryPublicationToSonatypeRepository
           publishPluginMavenPublicationToSonatypeRepository
           publishAllPluginMarkerMavenPublicationsToSonatypeRepository
-           :closeSonatypeStagingRepository
           -PprojectVersion="${SNAPSHOT_VERSION}"
 
       - name: "Verify docs/examples/snapshot with version ${{ env.SNAPSHOT_VERSION }}."
