@@ -15,7 +15,7 @@ concurrency:
 jobs:
   validate:
     name: "0 🦺 Validation"
-    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@cb91b4b05800bd3de29bc0e63900f304a45fbf06 # v3
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@c5544e2db24efa2e06a06deb7008b1bf7d0ff21f # v3
     permissions:
       contents: read
       security-events: write
@@ -164,8 +164,7 @@ jobs:
         uses: andymckay/cancel-action@0.5
 
       - name: "Publish Gradle plugins to mavenLocal()."
-        # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
-        run: ./gradlew --no-daemon --no-build-cache --no-configuration-cache --stacktrace publishToMavenLocal
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace publishToMavenLocal
 
       - name: "Upload 'Gradle Plugin Validation Report' artifact."
         if: ${{ success() || failure() }}
@@ -222,18 +221,18 @@ jobs:
         run: ./gradlew --no-daemon --no-build-cache --stacktrace assemble check
 
       - name: "Publish Gradle plugins to Sonatype Snapshot with version ${{ env.SNAPSHOT_VERSION }}."
-        if: ${{ false }} # ${{ env.SNAPSHOT_VERSION != '' }} # TODO https://github.com/TWiStErRob/net.twisterrob.gradle/pull/951
+        if: ${{ env.SNAPSHOT_VERSION != '' }}
         env:
           # Implicit: -PsonatypeUsername=...
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
           # Implicit: -PsonatypePassword=...
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
-        # TODEL --no-configuration-cache, because https://github.com/Kotlin/dokka/issues/2231
+        # TODEL --no-configuration-cache https://github.com/gradle-nexus/publish-plugin/issues/221
         run: >
           ./gradlew
           --no-daemon
-          --no-build-cache
           --no-configuration-cache
+          --no-build-cache
           --no-watch-fs
           --stacktrace
           publishLibraryPublicationToSonatypeRepository
@@ -243,7 +242,7 @@ jobs:
 
       - name: "Verify docs/examples/snapshot with version ${{ env.SNAPSHOT_VERSION }}."
         working-directory: docs/examples/snapshot
-        if:  ${{ false }} # ${{ env.SNAPSHOT_VERSION != '' }} # TODO https://github.com/TWiStErRob/net.twisterrob.gradle/pull/951
+        if: ${{ env.SNAPSHOT_VERSION != '' }}
         run: |
           sed -i.bak -re "s/version \"${PROJECT_VERSION}\"/version \"${SNAPSHOT_VERSION}\"/g" build.gradle.kts
           sed -i.bak -re "s/version \"${PROJECT_VERSION}\"/version \"${SNAPSHOT_VERSION}\"/g" settings.gradle.kts

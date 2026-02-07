@@ -15,8 +15,8 @@ pluginManagement {
 		}
 		exclusiveContent {
 			forRepository {
-				maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-					name = "Sonatype 01"
+				maven("https://central.sonatype.com/repository/maven-snapshots/") {
+					name = "Central SNAPSHOTs"
 					mavenContent {
 						snapshotsOnly()
 					}
