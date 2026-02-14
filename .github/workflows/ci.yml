@@ -874,7 +874,7 @@ jobs:
           - name: "AGP 9.0.x on Gradle 9.1+"
             gradle: '9.1.0'
             java: '17'
-            agp: '9.0.0'
+            agp: '9.0.1'
             kotlin: '2.2.10'
             android: '35'
             build-tools: '34.0.0'
@@ -882,7 +882,7 @@ jobs:
           - name: "AGP 9.0.x on Gradle 9.1+ - plugin"
             gradle: '9.1.0'
             java: '17'
-            agp: '9.0.0'
+            agp: '9.0.1'
             kotlin: '2.2.10'
             android: '35'
             build-tools: '34.0.0'
@@ -890,7 +890,7 @@ jobs:
           - name: "AGP 9.0.x on Gradle 9.x"
             gradle: '9.3.1'
             java: '17'
-            agp: '9.0.0'
+            agp: '9.0.1'
             kotlin: '2.2.10'
             android: '35'
             build-tools: '34.0.0'
@@ -898,7 +898,7 @@ jobs:
           - name: "AGP 9.0.x on Gradle 9.x - plugin"
             gradle: '9.3.1'
             java: '17'
-            agp: '9.0.0'
+            agp: '9.0.1'
             kotlin: '2.2.10'
             android: '35'
             build-tools: '34.0.0'
@@ -907,7 +907,7 @@ jobs:
           - name: "Latest stables"
             gradle: '9.3.1' # https://gradle.org/releases/
             java: '17'
-            agp: '9.0.0' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            agp: '9.0.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.3.0' # https://kotlinlang.org/docs/releases.html#release-details
             android: '35'
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
@@ -915,7 +915,7 @@ jobs:
           - name: "Latest stables - plugin"
             gradle: '9.3.1' # https://gradle.org/releases/
             java: '17'
-            agp: '9.0.0' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
+            agp: '9.0.1' # https://maven.google.com/web/index.html?q=build#com.android.tools.build:gradle
             kotlin: '2.3.0' # https://kotlinlang.org/docs/releases.html#release-details
             android: '35'
             build-tools: '34.0.0' # https://dl.google.com/android/repository/repository2-3.xml <remotePackage path="build-tools;
