@@ -46,7 +46,7 @@ dependencies {
 		isTransitive = false
 	}
 
-	testImplementation("org.junit.jupiter:junit-jupiter:6.0.2")
+	testImplementation("org.junit.jupiter:junit-jupiter:6.0.3")
 	testImplementation("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.mockito:mockito-core:5.21.0")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:6.2.3")
