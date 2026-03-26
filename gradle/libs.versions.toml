@@ -18,7 +18,7 @@ jetbrains = "26.1.0"
 nexus = "2.0.0"
 
 # https://docs.gradle.com/enterprise/gradle-plugin/#release_history
-gradle-develocity = "4.3.2"
+gradle-develocity = "4.4.0"
 gradle-publish = "2.1.1"
 
 # See [lint] which is affected by this.
