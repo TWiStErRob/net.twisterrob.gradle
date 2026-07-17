@@ -193,6 +193,7 @@ private fun CacheBuilder.withInitialLockModeCompat(mode: FileLockManager.LockMod
 			data class SimpleLockOptions(private val mode: FileLockManager.LockMode) : LockOptions {
 				override fun getMode(): FileLockManager.LockMode = this.mode
 				override fun isUseCrossVersionImplementation(): Boolean = false
+				override fun isEnsureAcquiredLockRepresentsStateOnFileSystem(): Boolean = false
 				override fun copyWithMode(mode: FileLockManager.LockMode): LockOptions = SimpleLockOptions(mode)
 				@Override @Suppress("unused") // Hopefully "overrides" the Gradle <8.7 method.
 				fun withMode(mode: FileLockManager.LockMode): LockOptions = SimpleLockOptions(mode)
