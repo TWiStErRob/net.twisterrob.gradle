@@ -62,6 +62,10 @@ class TestPluginTest : BaseIntgTest() {
 			?: error("Missing property: net.twisterrob.gradle.test.artifactPath")
 		@Language("gradle")
 		val script = """
+			import org.gradle.api.tasks.testing.TestDescriptor
+			import org.gradle.api.tasks.testing.TestListener
+			import org.gradle.api.tasks.testing.TestResult
+
 			plugins {
 				id("org.gradle.groovy")
 				id("net.twisterrob.gradle.plugin.gradle.test")
@@ -88,9 +92,14 @@ class TestPluginTest : BaseIntgTest() {
 			}
 			// Output test execution result, so we can verify it actually ran.
 			// This doesn't work with configuration cache: https://github.com/gradle/gradle/issues/25311
-			test.afterTest { desc, result ->
-				logger.quiet("${'$'}{desc.className} > ${'$'}{desc.name}: ${'$'}{result.resultType}")
-			}
+			test.addTestListener(new TestListener() {
+				@Override void beforeSuite(TestDescriptor suite) { }
+				@Override void afterSuite(TestDescriptor suite, TestResult result) { }
+				@Override void beforeTest(TestDescriptor desc) { }
+				@Override void afterTest(TestDescriptor desc, TestResult result) {
+					test.logger.quiet("${'$'}{desc.className} > ${'$'}{desc.name}: ${'$'}{result.resultType}")
+				}
+			})
 		""".trimIndent()
 
 		val result = gradle.runBuild {
