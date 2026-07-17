@@ -74,7 +74,7 @@ jobs:
           --continue
           --no-daemon
           -x lint
-          :app:testR
+          :app:testRel
           :a:aR
           --exclude-task generateRResources
           -Pfast
