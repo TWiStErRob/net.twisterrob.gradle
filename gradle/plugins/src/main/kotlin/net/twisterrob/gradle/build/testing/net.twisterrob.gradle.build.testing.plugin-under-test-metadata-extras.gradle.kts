@@ -61,7 +61,7 @@ configurations {
 	 * Example test that fails without this:
 	 * [net.twisterrob.gradle.android.AndroidBuildPluginIntgTest].`can disable buildConfig generation (debug)`
 	 */
-	val testInjectedPluginClasspath by creating {
+	val testInjectedPluginClasspath = create("testInjectedPluginClasspath") {
 		isCanBeConsumed = false
 		isCanBeResolved = true
 	}
