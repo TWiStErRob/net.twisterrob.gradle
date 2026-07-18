@@ -1,17 +1,15 @@
 package net.twisterrob.gradle.quality.tasks
 
-import com.android.build.api.artifact.impl.ArtifactsImpl
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import com.android.build.api.variant.DynamicFeatureVariant
 import com.android.build.api.variant.TestVariant
 import com.android.build.gradle.api.AndroidBasePlugin
 import com.android.build.gradle.internal.lint.AndroidLintGlobalTask
-import com.android.build.gradle.internal.scope.InternalArtifactType
 import net.twisterrob.gradle.android.androidComponents
+import net.twisterrob.gradle.android.lintXmlReport
 import net.twisterrob.gradle.common.TaskCreationConfiguration
 import net.twisterrob.gradle.common.wasLaunchedExplicitly
-import net.twisterrob.gradle.internal.android.unwrapCast
 import net.twisterrob.gradle.kotlin.dsl.withId
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_CONSOLE_TASK_NAME
 import net.twisterrob.gradle.quality.QualityPlugin.Companion.REPORT_HTML_TASK_NAME
@@ -127,9 +125,8 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 			androidComponents.onVariants { variant ->
 				if (variant !is TestVariant && variant !is DynamicFeatureVariant) {
 					taskProvider.configure { task ->
-						val artifacts = variant.artifacts.unwrapCast<ArtifactsImpl>()
 						task.xmlReports.add(
-							artifacts.get(InternalArtifactType.LINT_XML_REPORT)
+							variant.artifacts.lintXmlReport
 								// TODO call append in Gradle 8.7, see "Empty provider values are ignored" section at
 								//  https://docs.gradle.org/8.7-rc-1/release-notes.html#convenient-api-for-updating-collection-properties
 								.orElse(layout.projectDirectory.file("definitely-non-existent-file"))
