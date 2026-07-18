@@ -18,7 +18,15 @@ import java.nio.file.Path
  * TODEL https://github.com/gradle/gradle/issues/20383#issuecomment-1236419331
  */
 fun VersionCatalogBuilder.load(file: File) {
-	if (GradleVersion.version("8.4") <= GradleVersion.current().baseVersion) {
+	if (GradleVersion.version("9.6") <= GradleVersion.current().baseVersion) {
+		val problemsProvider = {
+			org.gradle.api.internal.catalog.DefaultVersionCatalogBuilder::class.java
+				.getDeclaredMethod("getProblemsService")
+				.apply { isAccessible = true }
+				.invoke(this@load) as Problems
+		}
+		org.gradle.api.internal.catalog.parser.TomlCatalogFileParser.parse(file.toPath(), this, problemsProvider)
+	} else if (GradleVersion.version("8.4") <= GradleVersion.current().baseVersion) {
 		// 8.4.0-RC1 https://github.com/gradle/gradle/commit/16bd24c5a1fe94c9ab84103d745536ccaefde0b9
 		val problemsProvider = {
 			org.gradle.api.internal.catalog.DefaultVersionCatalogBuilder::class.java
