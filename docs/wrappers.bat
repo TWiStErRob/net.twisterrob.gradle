@@ -1,4 +1,4 @@
-set version=9.5.1
+set version=9.6.1
 call gradlew wrapper --distribution-type=all --gradle-version=%version%
 call gradlew -p gradle/plugins wrapper --distribution-type=all --gradle-version=%version%
 call gradlew -p graph wrapper --distribution-type=all --gradle-version=%version%
