@@ -28,7 +28,7 @@ class AGPVersionsTest {
 
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
 		// This is not using AGPVersion() because Renovate needs to update this one. See "Update AGP version test.".
-		val expected = AGPVersion.parse("9.1.1")
+		val expected = AGPVersion.parse("9.2.1")
 
 		val actual = AGPVersions.CLASSPATH
 
@@ -70,6 +70,7 @@ class AGPVersionsTest {
 		"8, 4",
 		"8, 5",
 		"9, ",
+		"9, 2",
 	)
 	@ParameterizedTest(name = "[$INDEX_PLACEHOLDER] v{0}.{1}.x")
 	fun `vXXX constants have the right version`(major: Int, minor: Int?) {
