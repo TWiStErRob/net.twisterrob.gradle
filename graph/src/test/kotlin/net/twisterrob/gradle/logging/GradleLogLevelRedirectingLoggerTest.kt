@@ -94,7 +94,7 @@ class GradleLogLevelRedirectingLoggerTest {
 		val logger = GradleLogLevelRedirectingLogger(delegate) { output.level }
 		with(input) { logger.logArg1("test", arg1) }
 
-		with(output) { verify(delegate).logVarArg("test", arrayOf(arg1)) }
+		with(output) { verify(delegate).logVarArg("test", arrayOf<Any?>(arg1)) }
 	}
 
 	private fun withTwoArgs(input: Slf4jLevel, output: GradleLevel) {
