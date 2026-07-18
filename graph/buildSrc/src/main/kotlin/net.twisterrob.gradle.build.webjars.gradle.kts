@@ -3,7 +3,7 @@ import net.twisterrob.gradle.webjars.ExtractWebJarsTask
 
 extensions.create<ExtractWebJarsExtension>("webjars")
 
-val webjars by configurations.registering {
+val webjars = configurations.register("webjars") {
 	isCanBeConsumed = false
 	isCanBeResolved = true
 }
@@ -11,7 +11,7 @@ val webjars by configurations.registering {
 // Expose it to the compiler, so it's visible as a dependency too.
 configurations.named("compileOnly").configure { extendsFrom(webjars.get()) }
 
-val extractWebJars by tasks.registering(ExtractWebJarsTask::class) {
+val extractWebJars = tasks.register<ExtractWebJarsTask>("extractWebJars") {
 	fromConfiguration(configurations.named("webjars"))
 	cleanFirst = true
 	outputDirectory = project.layout.buildDirectory.dir("webjars-as-resources")
