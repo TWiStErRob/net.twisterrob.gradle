@@ -89,7 +89,7 @@ doNotNagAboutPatternForTest(
 
 // https://github.com/gradle/gradle/issues/32422
 // https://issuetracker.google.com/issues/370546370
-doNotNagAboutForTest(
+doNotNagAboutStackForTest(
 	"8.13" to "9.0",
 	"8.2" to "8.11",
 	// > Configure project :
@@ -136,7 +136,7 @@ doNotNagAboutForTest(
 )
 
 // https://issuetracker.google.com/issues/408334529
-doNotNagAboutStackForTest(
+doNotNagAboutForTest(
 	"8.14" to "9.0",
 	"8.4" to "8.12",
 	// > Task :generateReleaseLintVitalReportModel
@@ -199,5 +199,6 @@ doNotNagAboutStackForTest(
 			"This will fail with an error in Gradle 10. " +
 			"Please use the project(String) method on DependencyHandler or the createProjectDependency(String) method on DependencyFactory instead. " +
 			"Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#dependency_project_notation",
-	"at com.android.build.gradle.internal.dependency.VariantDependenciesBuilder.build(VariantDependenciesBuilder.java:279)",
+	// :279, :333
+	"at com.android.build.gradle.internal.dependency.VariantDependenciesBuilder.build(VariantDependenciesBuilder.java:",
 )
