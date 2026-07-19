@@ -199,6 +199,5 @@ doNotNagAboutStackForTest(
 			"This will fail with an error in Gradle 10. " +
 			"Please use the project(String) method on DependencyHandler or the createProjectDependency(String) method on DependencyFactory instead. " +
 			"Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#dependency_project_notation",
-	// :279, :333
-	"at com.android.build.gradle.internal.dependency.VariantDependenciesBuilder.build(VariantDependenciesBuilder.java:",
+	"at com.android.build.gradle.internal.dependency.VariantDependenciesBuilder.build(VariantDependenciesBuilder.java:", // :279, :333
 )

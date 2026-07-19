@@ -49,6 +49,5 @@ doNotNagAbout(
 	"Using a Project object as a dependency notation has been deprecated. " +
 			"This will fail with an error in Gradle 10. " +
 			"Please use the project(String) method on DependencyHandler or the createProjectDependency(String) method on DependencyFactory instead.",
-	// :279, :333
-	"at com.android.build.gradle.internal.dependency.VariantDependenciesBuilder.build(VariantDependenciesBuilder.java:",
+	"at com.android.build.gradle.internal.dependency.VariantDependenciesBuilder.build(VariantDependenciesBuilder.java:", // :279, :333
 )
