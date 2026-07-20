@@ -141,9 +141,9 @@ fun setupSigning(project: Project) {
 	project.configure<SigningExtension> {
 		//val signingKeyId: String? by project // Gradle 6+ only
 		// -PsigningKey to gradlew, or ORG_GRADLE_PROJECT_signingKey env var
-		val signingKey = project.findProperty("signingKey") as String?
+		val signingKey = project.providers.gradleProperty("signingKey").orNull
 		// -PsigningPassword to gradlew, or ORG_GRADLE_PROJECT_signingPassword env var
-		val signingPassword = project.findProperty("signingPassword") as String?
+		val signingPassword = project.providers.gradleProperty("signingPassword").orNull
 		if (signingKey != null && signingPassword != null) {
 			useInMemoryPgpKeys(signingKey, signingPassword)
 		} else {

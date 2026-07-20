@@ -16,11 +16,11 @@ nexusPublishing {
 
 			// For :closeAndReleaseSonatypeStagingRepository
 			// Set via -PsonatypeStagingProfileId to gradlew, or ORG_GRADLE_PROJECT_sonatypeStagingProfileId env var.
-			val sonatypeStagingProfileId = project.findProperty("sonatypeStagingProfileId") as String?
+			val sonatypeStagingProfileId = project.providers.gradleProperty("sonatypeStagingProfileId").orNull
 			stagingProfileId = sonatypeStagingProfileId
 
-			val sonatypeUsername = project.findProperty("sonatypeUsername") as String?
-			val sonatypePassword = project.findProperty("sonatypePassword") as String?
+			val sonatypeUsername = project.providers.gradleProperty("sonatypeUsername").orNull
+			val sonatypePassword = project.providers.gradleProperty("sonatypePassword").orNull
 			@Suppress("UnnecessaryParentheses") // REPORT Would be confusing without.
 			require((sonatypeUsername == null) == (sonatypePassword == null)) {
 				// Explicit check for existence of both, because otherwise it just fails with a misleading error:
