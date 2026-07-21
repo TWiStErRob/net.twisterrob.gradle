@@ -71,6 +71,7 @@ class AGPVersionsTest {
 		"8, 5",
 		"9, ",
 		"9, 2",
+		"9, 3",
 	)
 	@ParameterizedTest(name = "[$INDEX_PLACEHOLDER] v{0}.{1}.x")
 	fun `vXXX constants have the right version`(major: Int, minor: Int?) {
