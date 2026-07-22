@@ -8,7 +8,7 @@ plugins {
 }
 plugins.apply(JavaCompatibilityPlugin::class)
 
-val sourcesOnly: Configuration by configurations.creating {
+val sourcesOnly = configurations.create("sourcesOnly") {
 	description = "Classpath to be exposed to IntelliJ IDEA for Gradle Sync."
 	isCanBeResolved = true
 	isCanBeConsumed = false

@@ -30,8 +30,7 @@ abstract class InitScriptMetadataPlugin : Plugin<Project> {
 	}
 
 	private fun Project.createClasspath(): Provider<Configuration> {
-		@Suppress("UnstableApiUsage")
-		val testRuntime = this.dependencyFactory.create(project(":test:internal:runtime"))
+		val testRuntime = this.dependencies.project(mapOf("path" to ":test:internal:runtime"))
 		return this.configurations.register(DEFAULT_CONFIGURATION_NAME) {
 			isCanBeConsumed = false
 			isCanBeResolved = true

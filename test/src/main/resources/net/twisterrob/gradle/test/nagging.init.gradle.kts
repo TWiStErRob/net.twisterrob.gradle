@@ -169,7 +169,7 @@ if ("@net.twisterrob.test.kotlin.pluginVersion@" in "1.9.0".."1.9.25") {
 	)
 }
 
-// TODEL Gradle 9.1 vs AGP 8.13 https://issuetracker.google.com/issues/444260628
+// Gradle 9.1 vs AGP 8.13 https://issuetracker.google.com/issues/444260628
 @Suppress("detekt.MaxLineLength")
 doNotNagAboutPatternForTest(
 	"9.1" to "9.2",
@@ -180,7 +180,7 @@ doNotNagAboutPatternForTest(
 	//"at com.android.build.gradle.internal.res.Aapt2FromMaven\$Companion.create(Aapt2FromMaven.kt:139)",
 )
 
-// TODEL Gradle 9.1 vs AGP 8.13 https://issuetracker.google.com/issues/444260628
+// Gradle 9.1 vs AGP 8.13 https://issuetracker.google.com/issues/444260628
 @Suppress("detekt.MaxLineLength")
 doNotNagAboutPatternForTest(
 	"9.1" to "9.2",
@@ -189,4 +189,15 @@ doNotNagAboutPatternForTest(
 		"\". Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#dependency_multi_string_notation"
 	) + ".*",
 	//"at com.android.build.gradle.internal.lint.LintFromMaven\$Companion.from(AndroidLintInputs.kt:2850)",
+)
+
+// Gradle 9.6 vs AGP 9.2 https://issuetracker.google.com/issues/495889752, fixed in AGP 9.3
+doNotNagAboutStackForTest(
+	"9.6" to "9.7",
+	"9.2" to "9.3",
+	"Using a Project object as a dependency notation has been deprecated. " +
+			"This will fail with an error in Gradle 10. " +
+			"Please use the project(String) method on DependencyHandler or the createProjectDependency(String) method on DependencyFactory instead. " +
+			"Consult the upgrading guide for further information: https://docs.gradle.org/${gradleVersion}/userguide/upgrading_version_9.html#dependency_project_notation",
+	"at com.android.build.gradle.internal.dependency.VariantDependenciesBuilder.build(VariantDependenciesBuilder.java:", // :279, :333
 )
