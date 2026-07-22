@@ -58,7 +58,7 @@ class TestReportGeneratorIntgTest : BaseIntgTest() {
 		val result = gradle.run(script, "generateHtmlReportFromXml").buildAndFail()
 
 		val expectedError =
-			"Type '${TestReportGenerator::class.java.name}' property 'output' doesn't have a configured value."
+			"Type '${TestReportGenerator::class.java.name}' property 'output' doesn't have a configured value"
 		assertThat(result.failReason, containsString(expectedError))
 	}
 
@@ -76,7 +76,7 @@ class TestReportGeneratorIntgTest : BaseIntgTest() {
 		val result = gradle.run(script, "generateHtmlReportFromXml").buildAndFail()
 
 		val expectedError =
-			"Type '${TestReportGenerator::class.java.name}' property 'input' doesn't have a configured value."
+			"Type '${TestReportGenerator::class.java.name}' property 'input' doesn't have a configured value"
 		assertThat(result.failReason, containsString(expectedError))
 	}
 }

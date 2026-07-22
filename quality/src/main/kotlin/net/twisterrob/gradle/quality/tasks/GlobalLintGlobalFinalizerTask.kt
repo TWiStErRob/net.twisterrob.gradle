@@ -120,6 +120,7 @@ abstract class GlobalLintGlobalFinalizerTask : DefaultTask() {
 				// `android { lint { ... } }` DSL configuration.
 				// This is also consistently configuring the task, making it up-to-date when possible.
 				lint.abortOnError = false
+				@Suppress("DEPRECATION") // Required before AGP 9.3, where XML reports weren't always generated.
 				lint.xmlReport = true
 			}
 			androidComponents.onVariants { variant ->

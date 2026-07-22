@@ -158,6 +158,10 @@ class AndroidReleasePluginIntgTest : BaseAndroidIntgTest() {
 			if (AGPVersions.v9xx <= AGPVersions.UNDER_TEST) {
 				assertThat(archive, hasZipEntry("proguard_mapping.prt")); count++
 			}
+			if (AGPVersions.v93x <= AGPVersions.UNDER_TEST) {
+				assertThat(archive, hasZipEntry("proguard_configanalyzer.html")); count++
+				assertThat(archive, hasZipEntry("proguard_configanalyzer.pb")); count++
+			}
 			assertThat(archive, hasEntryCount(equalTo(count)))
 			this.assertHasOutputLine("Published release artifacts to ${archive.absolutePath}:")
 		}

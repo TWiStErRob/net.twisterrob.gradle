@@ -24,7 +24,6 @@ import org.hamcrest.Matchers.containsStringIgnoringCase
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
-import org.hamcrest.Matchers.startsWith
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -51,7 +50,7 @@ class PmdPluginTest : BaseIntgTest() {
 			run(script, "pmd")
 		}
 
-		assertThat(result.failReason, startsWith("Task 'pmd' not found"))
+		assertThat(result.failReason, containsString("Task 'pmd' not found"))
 	}
 
 	@Test fun `applies without a hitch to an Java project`() {

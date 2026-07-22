@@ -119,6 +119,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 		private fun CommonExtension.configureLint() {
 			lint.apply {
+				@Suppress("DEPRECATION") // Controls XML report generation before AGP 9.3; ignored by AGP 9.3+.
 				xmlReport = false
 				checkAllWarnings = true
 				abortOnError = true
