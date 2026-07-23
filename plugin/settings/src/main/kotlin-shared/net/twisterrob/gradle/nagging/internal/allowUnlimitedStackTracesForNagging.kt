@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory
 internal fun Gradle.allowUnlimitedStacksForNagging() {
 	if (GradleVersion.version("8.3") <= GradleVersion.current().baseVersion) {
 		try {
-			GradleNaggingReflection.remainingStackTraces.set(Integer.MAX_VALUE)
+			GradleNaggingReflection.remainingStackTraces.forEach { it.set(Integer.MAX_VALUE) }
 		} catch(ex: ReflectiveOperationException) {
 			val logger = LoggerFactory.getLogger("allowUnlimitedStacksForNagging")
 			logger.warn("Failed to set unlimited stack traces for nagging.", ex)
