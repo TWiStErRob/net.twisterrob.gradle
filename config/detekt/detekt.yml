@@ -21,11 +21,11 @@ console-reports:
 
 comments:
 
-  CommentOverPrivateFunction:
+  DocumentationOverPrivateFunction:
     # Disabled as I don't agree with it, if a function needs docs, it needs docs. Visibility doesn't change that.
     active: false
 
-  CommentOverPrivateProperty:
+  DocumentationOverPrivateProperty:
     # Disabled as I don't agree with it, if a function needs docs, it needs docs. Visibility doesn't change that.
     active: false
 
@@ -63,7 +63,7 @@ naming:
   ClassNaming:
     classPattern: '[A-Z][a-zA-Z0-9]*(Test(_[a-zA-Z0-9]+)?)?'
 
-  FunctionMaxLength:
+  FunctionNameMaxLength:
     excludes:
       - '**/src/test/kotlin/**'
 
