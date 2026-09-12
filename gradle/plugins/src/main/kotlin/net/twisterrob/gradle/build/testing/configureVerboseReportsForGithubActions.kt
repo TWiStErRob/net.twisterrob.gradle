@@ -12,7 +12,7 @@ import kotlin.math.absoluteValue
 
 @Suppress(
 	"detekt.CyclomaticComplexMethod", "detekt.CognitiveComplexMethod", // TODO
-	"detekt.FunctionMaxLength" // Rather be explicit about what it does.
+	"detekt.FunctionNameMaxLength" // Rather be explicit about what it does.
 )
 fun Test.configureVerboseReportsForGithubActions() {
 	testLogging {
