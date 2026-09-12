@@ -1,6 +1,5 @@
 @file:JvmMultifileClass
 @file:JvmName("GradleUtils")
-@file:Suppress("detekt.UnusedImports") // TODEL detekt 2.0 when it supports Kotlin 2.1/2.2.
 
 package net.twisterrob.gradle
 
