@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.build.dsl
 
-import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+import dev.detekt.gradle.extensions.DetektExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByName
 

@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.build.detekt
 
-import io.gitlab.arturbosch.detekt.Detekt
+import dev.detekt.gradle.Detekt
 import net.twisterrob.gradle.build.dsl.detekt
 import net.twisterrob.gradle.build.dsl.isCI
 import net.twisterrob.gradle.build.dsl.libs
@@ -14,16 +14,16 @@ import org.gradle.kotlin.dsl.withType
 internal abstract class DetektPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
-		project.plugins.apply("io.gitlab.arturbosch.detekt")
+		project.plugins.apply("dev.detekt")
 		project.detekt {
 			// TODEL https://github.com/detekt/detekt/issues/4926
 			buildUponDefaultConfig = false
 			allRules = true
 			ignoreFailures = isCI
 			//debug = true
-			config.setFrom(project.rootProject.file("config/detekt/detekt.yml"))
+			config.from(project.rootProject.file("config/detekt/detekt.yml"))
 			baseline = project.rootProject.file("config/detekt/detekt-baseline-${project.slug}.xml")
-			basePath = project.rootProject.projectDir.absolutePath
+			basePath = project.rootProject.layout.projectDirectory
 
 			parallel = true
 
@@ -35,7 +35,7 @@ internal abstract class DetektPlugin : Plugin<Project> {
 				@Suppress("detekt.Deprecation")
 				reports {
 					html.required = true // human
-					txt.required = true // console
+					markdown.required = true // console
 				}
 			}
 		}

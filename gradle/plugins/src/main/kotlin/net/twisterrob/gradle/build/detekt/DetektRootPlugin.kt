@@ -1,9 +1,9 @@
 package net.twisterrob.gradle.build.detekt
 
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.extensions.DetektReport
-import io.gitlab.arturbosch.detekt.extensions.DetektReports
-import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+import dev.detekt.gradle.Detekt
+import dev.detekt.gradle.extensions.DetektReport
+import dev.detekt.gradle.extensions.DetektReports
+import dev.detekt.gradle.report.ReportMergeTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
@@ -26,8 +26,8 @@ internal abstract class DetektRootPlugin : Plugin<Project> {
 
 	@Suppress("detekt.NamedArguments")
 	private fun configureDetektReportMerging(project: Project) {
-		configureDetektReportMerging(project, "sarif", DetektReports::sarif, Detekt::sarifReportFile)
-		configureDetektReportMerging(project, "xml", DetektReports::xml, Detekt::xmlReportFile)
+		configureDetektReportMerging(project, "sarif", DetektReports::sarif) { reports.sarif.outputLocation }
+		configureDetektReportMerging(project, "xml", DetektReports::checkstyle) { reports.checkstyle.outputLocation }
 	}
 }
 
@@ -82,4 +82,3 @@ private fun ReportMergeTask.mergeReportFrom(
 	val reportPath = "build/reports/detekt/${detektReportName}"
 	this.input.from(includedBuild.projectDir.resolve(reportPath))
 }
-
