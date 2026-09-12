@@ -44,8 +44,17 @@ internal object GradleNaggingReflection {
 	/**
 	 * @since Gradle 8.3-rc-1 because of [problemStreamField] and [remainingStackTracesField].
 	 */
-	val remainingStackTraces: AtomicInteger
-		get() = deprecatedFeatureHandler.get<Any>(problemStreamField).get(remainingStackTracesField)
+	val remainingStackTraces: List<AtomicInteger>
+		get() {
+			val problemStream = deprecatedFeatureHandler.get<Any>(problemStreamField)
+			return when {
+				GradleVersion.version("9.7") <= GradleVersion.current().baseVersion -> {
+					val capturer = problemStream.get<Any>(capturerField)
+					listOf(capturer.get(remainingFullField), capturer.get(remainingBoundedField))
+				}
+				else -> listOf(problemStream.get(remainingStackTracesField))
+			}
+		}
 
 	/**
 	 * History:
@@ -163,6 +172,33 @@ internal object GradleNaggingReflection {
 				error("Gradle ${GradleVersion.current()} too old, there's no limit on nagging stack traces.")
 			}
 		}
+	}
+
+	/**
+	 * @since Gradle 9.7-rc-1, which moved stack trace limits into a separate capturer.
+	 */
+	private val capturerField: Field by lazy {
+		Class.forName("org.gradle.internal.problems.DefaultProblemDiagnosticsFactory\$DefaultProblemStream")
+			.getDeclaredField("capturer")
+			.apply { isAccessible = true }
+	}
+
+	/**
+	 * @since Gradle 9.7-rc-1, which split full and bounded stack trace limits.
+	 */
+	private val remainingFullField: Field by lazy {
+		Class.forName("org.gradle.internal.problems.StackTraceCapturer")
+			.getDeclaredField("remainingFull")
+			.apply { isAccessible = true }
+	}
+
+	/**
+	 * @since Gradle 9.7-rc-1, which split full and bounded stack trace limits.
+	 */
+	private val remainingBoundedField: Field by lazy {
+		Class.forName("org.gradle.internal.problems.StackTraceCapturer")
+			.getDeclaredField("remainingBounded")
+			.apply { isAccessible = true }
 	}
 }
 

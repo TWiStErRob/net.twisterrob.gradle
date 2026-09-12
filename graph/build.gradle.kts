@@ -80,6 +80,7 @@ kotlin {
 		allWarningsAsErrors = true
 		extraWarnings = true
 		freeCompilerArgs.addAll(
+			"-Xskip-metadata-version-check",
 			// Opt in to https://youtrack.jetbrains.com/issue/KT-59109 for now to see how to suppress warnings/errors.
 			"-Xrender-internal-diagnostic-names",
 		)
