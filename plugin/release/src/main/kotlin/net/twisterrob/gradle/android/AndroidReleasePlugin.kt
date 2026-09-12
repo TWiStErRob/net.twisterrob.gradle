@@ -25,7 +25,7 @@ import java.io.IOException
 import java.util.Locale
 import java.util.zip.ZipFile
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class AndroidReleasePlugin : BasePlugin() {
 
 	override fun apply(target: Project) {

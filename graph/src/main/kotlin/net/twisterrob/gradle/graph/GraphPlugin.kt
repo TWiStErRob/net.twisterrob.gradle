@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 private val LOG = logger<GraphPlugin>()
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class GraphPlugin @Inject constructor(
 	private val cacheRepository: ScopedCacheBuilderFactory,
 ) : Plugin<Settings> {
@@ -120,7 +120,7 @@ abstract class GraphPlugin @Inject constructor(
 	}
 }
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class GraphSettingsExtension {
 
 	var isKeepOpen: Boolean = false

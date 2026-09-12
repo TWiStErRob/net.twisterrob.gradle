@@ -15,7 +15,7 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.security.Permission
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class SvnPluginExtension(
 	private val rootDir: Directory
 ) : VCSExtension {

@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.java
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class JavaPlugin : BaseJavaPlugin() {
 
 	override fun applyDefaultPlugin() {
