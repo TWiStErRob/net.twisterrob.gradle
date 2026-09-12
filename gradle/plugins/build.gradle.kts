@@ -72,10 +72,10 @@ detekt {
 
 	parallel = true
 
-	project.tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+	project.tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 		reports {
 			html.required = true // human
-		markdown.required = true // console
+			markdown.required = true // console
 		}
 		if (this.name == "detektMain") {
 			// Detekt fails on these files with an internal compile error, so exclude for now.
