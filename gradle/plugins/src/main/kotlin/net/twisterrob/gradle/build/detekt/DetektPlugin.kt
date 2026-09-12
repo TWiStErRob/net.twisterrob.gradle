@@ -27,9 +27,11 @@ internal abstract class DetektPlugin : Plugin<Project> {
 
 			parallel = true
 
+			// Detekt 2 only accepts Kotlin 2.x language/API versions, unlike this project's 1.8 compatibility settings.
+			val detektKotlinVersion = project.libs.versions.kotlin.build.map { it.substringBeforeLast(".") }
 			project.tasks.withType<Detekt>().configureEach {
-				@Suppress("detekt.MaxChainedCallsOnSameLine")
-				languageVersion = project.libs.versions.kotlin.language.get()
+				apiVersion = detektKotlinVersion
+				languageVersion = detektKotlinVersion
 				jvmTarget = project.libs.versions.java.get()
 				// Detekt falsely resolves this to DetektExtension.report because of Kotlin DSL.
 				@Suppress("detekt.Deprecation")
