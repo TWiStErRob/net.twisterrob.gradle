@@ -15,7 +15,7 @@ abstract class VisualizerOptions<Options : Any> protected constructor(
 	private val cache: PersistentCache
 ) : Closeable {
 
-	@Suppress("PrivatePropertyName", "VariableNaming") // Keep conventional name.
+	@Suppress("PrivatePropertyName", "detekt.VariableNaming") // Keep conventional name.
 	private val LOG = logger(this)
 
 	private val storageFileName: String

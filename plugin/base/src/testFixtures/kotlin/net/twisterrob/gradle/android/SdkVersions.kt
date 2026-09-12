@@ -10,9 +10,9 @@ object SdkVersions {
 	/**
 	 * Calculates versionName from SDK level.
 	 */
-	@Suppress("CyclomaticComplexMethod")
+	@Suppress("detekt.CyclomaticComplexMethod")
 	fun Int.asName(): String =
-		@Suppress("MagicNumber") // SDK levels are magic numbers, see https://apilevels.com
+		@Suppress("detekt.MagicNumber") // SDK levels are magic numbers, see https://apilevels.com
 		when (this) {
 			35 -> "15"
 			34 -> "14"

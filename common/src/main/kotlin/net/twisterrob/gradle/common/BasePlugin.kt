@@ -15,7 +15,7 @@ abstract class BasePlugin : Plugin<Project> {
 	@Suppress(
 		"PropertyName", // Keep it consistent with external loggers.
 		"MemberVisibilityCanBePrivate",
-		"VariableNaming", // Keep it consistent with external loggers.
+		"detekt.VariableNaming", // Keep it consistent with external loggers.
 	)
 	protected val LOG: Logger = LoggerFactory.getLogger(this::class.java)
 

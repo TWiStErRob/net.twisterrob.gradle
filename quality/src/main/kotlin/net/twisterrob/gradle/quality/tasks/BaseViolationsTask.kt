@@ -165,18 +165,18 @@ abstract class BaseViolationsTask : DefaultTask() {
 			val projectDir: File,
 		) : Serializable {
 
-			@Suppress("DataClassContainsFunctions")
+			@Suppress("detekt.DataClassContainsFunctions")
 			internal fun file(path: String): File =
 				projectDir.resolve(path)
 
 			companion object {
-				@Suppress("UnusedPrivateProperty") // Java magic.
+				@Suppress("detekt.UnusedPrivateProperty") // Java magic.
 				private const val serialVersionUID: Long = 1
 			}
 		}
 
 		companion object {
-			@Suppress("UnusedPrivateProperty") // Java magic.
+			@Suppress("detekt.UnusedPrivateProperty") // Java magic.
 			private const val serialVersionUID: Long = 1
 		}
 	}

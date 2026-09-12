@@ -116,7 +116,7 @@ open class GradleRunnerRule : TestRule {
 
 	protected fun after(success: Boolean) {
 		tearDown()
-		@Suppress("ComplexCondition")
+		@Suppress("detekt.ComplexCondition")
 		if ((success && needClearAfterSuccess) || (!success && needClearAfterFailure)) {
 			temp.delete()
 		}
@@ -325,4 +325,3 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 	//endregion
 }
-

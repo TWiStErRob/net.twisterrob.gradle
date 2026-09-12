@@ -60,7 +60,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
 		}
 
-		@Suppress("NestedScopeFunctions")
+		@Suppress("detekt.NestedScopeFunctions")
 		with(android) {
 			configureLint()
 			compileSdk = VERSION_SDK_COMPILE
