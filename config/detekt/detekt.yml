@@ -68,6 +68,13 @@ naming:
       - '**/src/test/kotlin/**'
 
 
+potential-bugs:
+
+  UnnamedParameterUse:
+    # Too many to fix at the moment. Disable for now.
+    active: false
+
+
 style:
 
   ClassOrdering:
