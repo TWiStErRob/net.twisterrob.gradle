@@ -12,11 +12,11 @@ console-reports:
     # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
     - 'NotificationReport'
     # Disabled because it's very verbose. 
-    - 'FindingsReport'
-    # Disabled because it's very verbose, even more so than FindingsReport.
-    - 'FileBasedFindingsReport'
+    - 'IssuesReport'
+    # Disabled because it's very verbose, even more so than IssuesReport.
+    - 'FileBasedIssuesReport'
     # Enabled, because this gives enough context to see the problems.
-    #- 'LiteFindingsReport'
+    #- 'LiteIssuesReport'
 
 
 comments:
