@@ -16,8 +16,7 @@ internal abstract class DetektPlugin : Plugin<Project> {
 	override fun apply(project: Project) {
 		project.plugins.apply("dev.detekt")
 		project.detekt {
-			// TODEL https://github.com/detekt/detekt/issues/4926
-			buildUponDefaultConfig = false
+			buildUponDefaultConfig = true
 			allRules = true
 			ignoreFailures = isCI
 			//debug = true

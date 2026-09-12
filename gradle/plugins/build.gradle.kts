@@ -58,8 +58,7 @@ kotlin {
 
 // Note: duplicated from DetektPlugin because can't apply project this build.gradle.kts is defining.
 detekt {
-	// TODEL https://github.com/detekt/detekt/issues/4926
-	buildUponDefaultConfig = false
+	buildUponDefaultConfig = true
 	allRules = true
 	ignoreFailures = true
 	//debug = true

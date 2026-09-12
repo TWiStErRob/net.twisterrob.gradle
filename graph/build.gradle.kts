@@ -133,7 +133,7 @@ idea {
 }
 
 detekt {
-	buildUponDefaultConfig = false
+	buildUponDefaultConfig = true
 	allRules = true
 	config.from(rootProject.file("../config/detekt/detekt.yml"))
 	baseline = rootProject.file("../config/detekt/detekt-baseline-graph.xml")
