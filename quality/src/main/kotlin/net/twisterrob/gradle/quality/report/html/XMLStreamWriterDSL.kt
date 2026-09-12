@@ -49,7 +49,7 @@ inline fun XMLStreamWriter.element(
 		writeEndElement()
 	}
 
-@Suppress("detekt.CanBeNonNullable") // TODEL https://github.com/detekt/detekt/issues/5331
+@Suppress("detekt.CanBeNonNullable") // Nullable input is this convenience API's purpose.
 inline fun <T : Any> XMLStreamWriter.optionalElement(
 	name: String,
 	value: T?,
@@ -78,7 +78,7 @@ inline fun XMLStreamWriter.attribute(name: String, value: Any) {
 	writeAttribute(name, value.toString())
 }
 
-@Suppress("detekt.CanBeNonNullable") // TODEL https://github.com/detekt/detekt/issues/5331
+@Suppress("detekt.CanBeNonNullable") // Nullable input is this convenience API's purpose.
 inline fun <T : Any> XMLStreamWriter.optionalAttribute(
 	name: String,
 	value: T?,
