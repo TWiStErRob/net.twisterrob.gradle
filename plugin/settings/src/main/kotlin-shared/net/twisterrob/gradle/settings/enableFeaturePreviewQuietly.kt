@@ -18,6 +18,7 @@ import org.gradle.util.GradleVersion
  * or as usages of [org.gradle.util.internal.IncubationLogger.incubatingFeatureUsed].
  * See [GitHub](https://github.com/gradle/gradle/search?q=incubatingFeatureUsed) for examples in most recent Gradle.
  */
+@Suppress("detekt.UnnecessaryFullyQualifiedName") // Using them to distinguish name changes in history.
 fun Settings.enableFeaturePreviewQuietly(name: String, summary: String) {
 	enableFeaturePreview(name)
 	val incubationLogger = when {

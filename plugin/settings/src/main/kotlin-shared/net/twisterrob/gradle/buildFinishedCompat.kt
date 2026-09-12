@@ -1,5 +1,6 @@
 @file:JvmMultifileClass
 @file:JvmName("GradleUtils")
+@file:Suppress("UnusedImport", "detekt.UnusedImport") // kotlin-dsl
 
 package net.twisterrob.gradle
 

@@ -13,9 +13,9 @@ fun Writer.xmlWriter(): XMLStreamWriter =
 	bestXMLOutputFactory()
 		.createXMLStreamWriter(this)
 
-fun XMLStreamWriter.use(block: (XMLStreamWriter) -> Unit) {
+fun <R> XMLStreamWriter.use(block: (XMLStreamWriter) -> R): R {
 	val writer = this@use
-	AutoCloseable {
+	return AutoCloseable {
 		writer.flush()
 		writer.close()
 	}.use { block(writer) }

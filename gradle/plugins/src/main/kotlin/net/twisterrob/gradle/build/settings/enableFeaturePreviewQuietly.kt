@@ -5,6 +5,7 @@ import org.gradle.api.initialization.Settings
 /**
  * @see <a href="https://github.com/gradle/gradle/issues/19069">Feature request</a>
  */
+@Suppress("detekt.UnnecessaryFullyQualifiedName") // Using them to distinguish name changes in history.
 fun Settings.enableFeaturePreviewQuietly(name: String, summary: String) {
 	enableFeaturePreview(name)
 	val logger: Any = org.gradle.util.internal.IncubationLogger::class.java

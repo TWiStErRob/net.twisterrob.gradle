@@ -191,6 +191,7 @@ class RedirectParserTest {
 		}
 	}
 
+	@Suppress("detekt.IgnoredReturnValue") // REPORT yeah, duh, assertThrows { } expects failure.
 	@Nested
 	inner class `error cases` {
 		@Test fun `missing destination`() {

@@ -26,7 +26,7 @@ class DevelopmentTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 	private val resources = DevelopmentTestResources()
 
-	//	@Test
+	@Test
 	fun `manual test for running XSL on XML output`() {
 		val originalViolationsXml =
 			File("""P:\projects\workspace\net.twisterrob.gradle\temp\examples\ColorFilters\build\reports\violations.xml""")
@@ -35,8 +35,11 @@ class DevelopmentTest : BaseIntgTest() {
 
 		TransformerFactory
 			.newInstance()
-			.newTransformer(StreamSource(HtmlReportTask::class.java.getResourceAsStream("/violations.xsl")!!.reader()))
-			.transform(StreamSource(originalViolationsXml.reader()), StreamResult(violationsHtml))
+			.newTransformer(StreamSource(HtmlReportTask::class.java.getResource("/violations.xsl")!!.toExternalForm()))
+			.transform(
+				StreamSource(originalViolationsXml),
+				StreamResult(violationsHtml),
+			)
 
 		openHtml(violationsHtml)
 	}

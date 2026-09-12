@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.graph.vis.d3
 
 import com.google.gson.GsonBuilder
+import com.sun.javafx.webkit.WebConsoleListener
+import com.sun.webkit.WebPage
 import javafx.concurrent.Worker
 import javafx.scene.Scene
 import javafx.scene.layout.BorderPane
@@ -60,17 +62,16 @@ abstract class GraphWindow : TaskVisualizer {
 			webEngine.userStyleSheetLocation = buildCSSDataURI()
 		}
 		if (LOG.isDebugEnabled) {
-			com.sun.javafx.webkit.WebConsoleListener
-				.setDefaultListener { _, message, lineNumber, sourceId: String? ->
-					/** Enables clickable links from logs. */
-					fun String.relocate(): String =
-						this.replace(
-							"""jar:file:/.*?/graph-.*?\.jar!/""".toRegex(),
-							// TODO extract somehow
-							Regex.escapeReplacement("""P:\projects\workspace\net.twisterrob.gradle\graph\src\main\resources\""")
-						)
-					LOG.debug("console: ${message.relocate()} (${sourceId?.relocate() ?: "no sourceId"}:${lineNumber})")
-				}
+			WebConsoleListener.setDefaultListener { _, message, lineNumber, sourceId: String? ->
+				/** Enables clickable links from logs. */
+				fun String.relocate(): String =
+					this.replace(
+						"""jar:file:/.*?/graph-.*?\.jar!/""".toRegex(),
+						// TODO extract somehow
+						Regex.escapeReplacement("""P:\projects\workspace\net.twisterrob.gradle\graph\src\main\resources\""")
+					)
+				LOG.debug("console: ${message.relocate()} (${sourceId?.relocate() ?: "no sourceId"}:${lineNumber})")
+			}
 		}
 		// Used in d3-graph.html.
 		(webEngine.executeScript("window") as JSObject).setMember("isJavaHosted", true)
@@ -79,8 +80,8 @@ abstract class GraphWindow : TaskVisualizer {
 			when (newState) {
 				null -> error("newState cannot be null")
 				Worker.State.READY -> error("It never becomes ready, it starts there.")
-				Worker.State.SCHEDULED -> { } // Normal operation
-				Worker.State.RUNNING -> { } // Normal operation
+				Worker.State.SCHEDULED -> {} // Normal operation
+				Worker.State.RUNNING -> {} // Normal operation
 				Worker.State.SUCCEEDED -> bridge = JavaToJavaScriptModelBridge(webEngine)
 				Worker.State.CANCELLED -> error("Web loading cancelled.")
 				Worker.State.FAILED -> LOG.error("Couldn't load page.", webEngine.loadWorker.exception)
@@ -144,7 +145,7 @@ abstract class GraphWindow : TaskVisualizer {
 	companion object {
 
 		private fun setBackgroundColor(page: Any?) {
-			if (page is com.sun.webkit.WebPage) {
+			if (page is WebPage) {
 				LOG.trace("webpane.platform")
 				page.setBackgroundColor(0x00000000)
 			} else {

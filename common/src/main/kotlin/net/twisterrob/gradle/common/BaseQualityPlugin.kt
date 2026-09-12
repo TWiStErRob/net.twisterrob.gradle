@@ -35,5 +35,5 @@ abstract class BaseQualityPlugin(
 private inline fun <T, reified P1> Class<T>.newInstance(p1: P1?): T =
 	this.getDeclaredConstructor(P1::class.java).newInstance(p1)
 
-@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeInterface") // Gradle convention.
 private abstract class FakeQualityExtension

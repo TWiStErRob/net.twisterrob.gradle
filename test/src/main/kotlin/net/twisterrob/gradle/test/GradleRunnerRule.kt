@@ -128,6 +128,7 @@ open class GradleRunnerRule : TestRule {
 	//@Before(automatic with @Rule)
 	protected open fun setUp() {
 		buildFile = temp.newFile("build.gradle")
+		@Suppress("detekt.MissingUseCall") // Don't want to close stdout/stderr.
 		runner = GradleRunner
 			.create()
 			//.forwardOutput() // need to customize forwarding because of test output

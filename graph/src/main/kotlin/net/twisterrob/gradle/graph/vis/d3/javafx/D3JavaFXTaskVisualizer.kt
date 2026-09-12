@@ -17,6 +17,7 @@ class D3JavaFXTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 	private val options: Options
 
 	init {
+		@Suppress("detekt.MissingUseCall") // Lifecycle is handled.
 		options = Options(cache)
 	}
 
