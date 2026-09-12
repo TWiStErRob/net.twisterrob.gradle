@@ -137,6 +137,6 @@ detekt {
 	allRules = true
 	config.from(rootProject.file("../config/detekt/detekt.yml"))
 	baseline = rootProject.file("../config/detekt/detekt-baseline-graph.xml")
-	basePath = rootProject.layout.projectDirectory.dir("..")
+	basePath = rootProject.layout.projectDirectory
 	parallel = true
 }
