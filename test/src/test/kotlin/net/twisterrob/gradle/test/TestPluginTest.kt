@@ -26,7 +26,6 @@ class TestPluginTest : BaseIntgTest() {
 	 */
 	@Suppress("detekt.LongMethod") // Multiple files are listed in this one method.
 	@Test fun `gradle test plugin test`() {
-		@Suppress("detekt.StringShouldBeRawString") // https://github.com/detekt/detekt/issues/6145#issuecomment-1563091070
 		val triplet = "\"\"\""
 		@Suppress("GrPackage") // It will be written to the right folder.
 		@Language("groovy")

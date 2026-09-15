@@ -21,7 +21,7 @@ fun GradlePluginDevelopmentExtension.disableGradlePluginValidation(project: Proj
 		}
 	}
 
-	@Suppress("LocalVariableName", "VariableNaming") // Reflection.
+	@Suppress("LocalVariableName", "detekt.VariableNaming") // Reflection.
 	project.tasks.named<Jar>("jar") {
 		val PluginValidationAction =
 			Class.forName("org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin\$PluginValidationAction")

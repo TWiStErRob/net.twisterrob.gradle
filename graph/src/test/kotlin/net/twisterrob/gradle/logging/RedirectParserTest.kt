@@ -72,7 +72,7 @@ class RedirectParserTest {
 			val mapper = testMapping(" DEBUG  ->WARN   ,     INFO->     ERROR ")
 
 			LOG_LEVELS.forEach { level ->
-				@Suppress("ElseCaseInsteadOfExhaustiveWhen") // else is really else in this case.
+				@Suppress("detekt.ElseCaseInsteadOfExhaustiveWhen") // else is really else in this case.
 				val expectedLevel = when (level) {
 					LogLevel.DEBUG -> LogLevel.WARN
 					LogLevel.INFO -> LogLevel.ERROR
@@ -121,7 +121,7 @@ class RedirectParserTest {
 			val mapper = testMapping("DEBUG->WARN,INFO->ERROR")
 
 			LOG_LEVELS.forEach { level ->
-				@Suppress("ElseCaseInsteadOfExhaustiveWhen") // else is really else in this case.
+				@Suppress("detekt.ElseCaseInsteadOfExhaustiveWhen") // else is really else in this case.
 				val expectedLevel = when (level) {
 					LogLevel.DEBUG -> LogLevel.WARN
 					LogLevel.INFO -> LogLevel.ERROR
@@ -144,7 +144,7 @@ class RedirectParserTest {
 			val mapper = testMapping("WARN->ERROR,ERROR->WARN")
 
 			LOG_LEVELS.forEach { level ->
-				@Suppress("ElseCaseInsteadOfExhaustiveWhen") // else is really else in this case.
+				@Suppress("detekt.ElseCaseInsteadOfExhaustiveWhen") // else is really else in this case.
 				val expectedLevel = when (level) {
 					LogLevel.WARN -> LogLevel.ERROR
 					LogLevel.ERROR -> LogLevel.WARN
@@ -191,6 +191,7 @@ class RedirectParserTest {
 		}
 	}
 
+	@Suppress("detekt.IgnoredReturnValue") // REPORT yeah, duh, assertThrows { } expects failure.
 	@Nested
 	inner class `error cases` {
 		@Test fun `missing destination`() {

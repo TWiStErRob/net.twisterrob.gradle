@@ -44,7 +44,7 @@ import java.util.Properties
  */
 @Suppress(
 	"MemberVisibilityCanBePrivate",
-	"detekt.UnnecessaryAbstractClass", // Gradle convention.
+	"detekt.AbstractClassCanBeConcreteClass", // Gradle convention.
 )
 abstract class AndroidVersionExtension {
 
@@ -162,7 +162,7 @@ abstract class AndroidVersionExtension {
 	}
 }
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class AndroidVersionPlugin : BasePlugin() {
 
 	private val android: ApplicationExtension by lazy {

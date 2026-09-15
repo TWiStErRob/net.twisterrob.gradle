@@ -5,7 +5,7 @@ plugins {
 	id("org.gradle.maven-publish")
 	id("org.openjfx.javafxplugin") version "0.0.14"
 	id("org.jetbrains.kotlin.jvm") version "2.2.21"
-	id("io.gitlab.arturbosch.detekt") version "1.23.8"
+	id("dev.detekt") version "2.0.0-alpha.6"
 	id("org.gradle.idea")
 	id("net.twisterrob.gradle.build.webjars")
 	id("org.jetbrains.kotlinx.kover") version "0.9.9"
@@ -133,10 +133,10 @@ idea {
 }
 
 detekt {
-	buildUponDefaultConfig = false
+	buildUponDefaultConfig = true
 	allRules = true
-	config.setFrom(rootProject.file("../config/detekt/detekt.yml"))
+	config.from(rootProject.file("../config/detekt/detekt.yml"))
 	baseline = rootProject.file("../config/detekt/detekt-baseline-graph.xml")
-	basePath = rootProject.projectDir.absolutePath
+	basePath = rootProject.layout.projectDirectory
 	parallel = true
 }

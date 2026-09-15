@@ -88,7 +88,7 @@ private fun JavaCompile.removeDuplicateCompilerArgs() {
  * Since the suggested usage is [org.gradle.api.Task.doFirst],
  * it doesn't matter if it's before or after the relevant `options.compilerArgs += [ ... ]` setup.
  */
-@Suppress("detekt.StringLiteralDuplication", "detekt.UnusedPrivateMember")
+@Suppress("detekt.StringLiteralDuplication", "detekt.UnusedPrivateFunction")
 private fun JavaCompile.removeDuplicateCompilerArgs2() {
 	logger.debug("${this} (input): ${options.compilerArgs}")
 	fun xlintName(arg: String): String? =

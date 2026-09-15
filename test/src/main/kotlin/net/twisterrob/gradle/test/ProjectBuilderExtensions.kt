@@ -11,7 +11,7 @@ inline fun ProjectBuilder(): ProjectBuilder =
 inline fun Project(): Project =
 	ProjectBuilder().build()
 
-@Suppress("FunctionName")
+@Suppress("FunctionName", "detekt.FunctionNaming")
 inline fun RootProject(): Project =
 	ProjectBuilder().build()
 

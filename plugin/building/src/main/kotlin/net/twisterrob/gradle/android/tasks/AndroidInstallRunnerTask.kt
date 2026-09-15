@@ -46,7 +46,7 @@ abstract class AndroidInstallRunnerTask : Exec() {
 	}
 
 	override fun exec() {
-		val activityClass = getMainActivity(manifestFile.get().asFile.inputStream())
+		val activityClass = manifestFile.get().asFile.inputStream().use(::getMainActivity)
 			?: error("Cannot get MAIN/LAUNCHER activity from ${manifestFile.get()}.")
 		// doesn't work: setCommandLine(android.adbExe, "shell", "am", "start", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", variant.applicationId)
 		setCommandLine(adbExecutable.get(), "shell", "am", "start", "-n", "${applicationId.get()}/${activityClass}")

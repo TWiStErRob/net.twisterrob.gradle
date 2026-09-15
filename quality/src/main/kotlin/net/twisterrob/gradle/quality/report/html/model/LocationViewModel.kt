@@ -4,7 +4,6 @@ import net.twisterrob.gradle.quality.Violation
 import java.io.File
 import java.net.URI
 
-@Suppress("detekt.UseDataClass") // TODEL https://github.com/detekt/detekt/issues/5339
 class LocationViewModel(violation: Violation) {
 	private val loc: Violation.Location = violation.location
 	private val module: Violation.Module = loc.module

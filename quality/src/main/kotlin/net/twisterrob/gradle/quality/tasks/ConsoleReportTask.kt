@@ -7,7 +7,7 @@ import net.twisterrob.gradle.quality.report.ResultGenerator
 import net.twisterrob.gradle.quality.report.TableGenerator
 import org.gradle.api.tasks.UntrackedTask
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 @UntrackedTask(because = "It is used to inspect state, output is console.")
 abstract class ConsoleReportTask : BaseViolationsTask() {
 

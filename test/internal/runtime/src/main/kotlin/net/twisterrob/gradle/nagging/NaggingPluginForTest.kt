@@ -9,7 +9,7 @@ import org.gradle.api.plugins.ExtensionAware
  */
 @Suppress(
 	"unused", // Used from nagging.init.gradle.kts
-	"detekt.UnnecessaryAbstractClass",  // Gradle convention.
+	"detekt.AbstractClassCanBeConcreteClass",  // Gradle convention.
 )
 abstract class NaggingPluginForTest : Plugin<Gradle> {
 	override fun apply(gradle: Gradle) {

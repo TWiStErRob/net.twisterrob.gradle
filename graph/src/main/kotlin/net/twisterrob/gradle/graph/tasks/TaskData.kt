@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.graph.tasks
 
 import org.gradle.api.Task
+import java.util.Locale
 import java.util.TreeMap
 import java.util.TreeSet
 
@@ -26,7 +27,7 @@ class TaskData(
 		this.task.compareTo(other.task)
 
 	override fun toString(): String =
-		"{%s, type=%s, state=%s, deps=%s}".format(task.path, type, state, deps.map { it.task.path })
+		"{%s, type=%s, state=%s, deps=%s}".format(Locale.ROOT,task.path, type, state, deps.map { it.task.path })
 
 	companion object {
 
