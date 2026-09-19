@@ -42,11 +42,11 @@ fun VersionCatalogBuilder.load(file: File) {
 			.getDeclaredMethod("parse", Path::class.java, VersionCatalogBuilder::class.java)
 			.invoke(file.toPath(), this)
 	} else if (GradleVersion.version("7.0") <= GradleVersion.current().baseVersion) {
-		file.inputStream().use {
+		file.inputStream().use { stream ->
 			// 7.0.0-RC1 https://github.com/gradle/gradle/commit/221d143dc7a73ec2dbf28fe2032223418cefcaf3
 			org.gradle.api.internal.catalog.parser.TomlCatalogFileParser::class.java
 				.getDeclaredMethod("parse", InputStream::class.java, VersionCatalogBuilder::class.java)
-				.invoke(it, this)
+				.invoke(stream, this)
 		}
 	} else {
 		// There are possibilities for older versions too, but it needs more research and hacks.
