@@ -29,7 +29,7 @@ open class GradleRunnerRule : TestRule {
 	 *  * `net.twisterrob.gradle.runner.clearAfterFailure` system property (not set &rarr; next)
 	 *  * automatically clear (when none of the above are specified)
 	 *
-	 * @param value `null` = automatic, `true` clean, `false` keep
+	 * Potential values: `null` = automatic, `true` clean, `false` keep.
 	 * @see GradleRunner.getProjectDir `runner.projectDir`
 	 */
 	@Suppress("KDocUnresolvedReference")
@@ -48,7 +48,7 @@ open class GradleRunnerRule : TestRule {
 	 *  * `net.twisterrob.gradle.runner.clearAfterFailure` system property (not set &rarr; next)
 	 *  * automatically clear (when none of the above are specified)
 	 *
-	 * @param value `null` = automatic, `true` clean, `false` keep
+	 * Potential values: `null` = automatic, `true` clean, `false` keep.
 	 * @see GradleRunner.getProjectDir `runner.projectDir`
 	 */
 	@Suppress("KDocUnresolvedReference")
@@ -325,4 +325,3 @@ ${classPaths.prependIndent("\t\t\t\t\t")}
 	}
 	//endregion
 }
-
