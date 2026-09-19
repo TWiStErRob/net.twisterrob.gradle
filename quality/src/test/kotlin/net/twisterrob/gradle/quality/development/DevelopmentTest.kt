@@ -26,7 +26,7 @@ class DevelopmentTest : BaseIntgTest() {
 	override lateinit var gradle: GradleRunnerRule
 	private val resources = DevelopmentTestResources()
 
-	@Test
+	//	@Test
 	fun `manual test for running XSL on XML output`() {
 		val originalViolationsXml =
 			File("""P:\projects\workspace\net.twisterrob.gradle\temp\examples\ColorFilters\build\reports\violations.xml""")
