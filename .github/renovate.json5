@@ -235,6 +235,20 @@
 			versioningTemplate: "gradle",
 		},
 		{
+			description: "Update Gradle version in wrapper update script.",
+			customType: "regex",
+			matchStringsStrategy: "any",
+			managerFilePatterns: [
+				"docs/wrappers.bat",
+			],
+			datasourceTemplate: "gradle-version",
+			depNameTemplate: "gradle",
+			matchStrings: [
+				"set version=(?<currentValue>.+)",
+			],
+			versioningTemplate: "gradle",
+		},
+		{
 			description: "Update Gradle latest tests.",
 			customType: "regex",
 			matchStringsStrategy: "any",
