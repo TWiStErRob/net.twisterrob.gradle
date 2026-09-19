@@ -172,7 +172,7 @@
 			registryUrlTemplate: "https://maven.google.com",
 			depNameTemplate: "com.android.tools.build:gradle",
 			matchStrings: [
-				"  agp: '(?<currentValue>.*)'",
+				"  agp: '(?<currentValue>.+?)'",
 			],
 			versioningTemplate: "gradle",
 		},
@@ -187,7 +187,7 @@
 			registryUrlTemplate: "https://maven.google.com",
 			depNameTemplate: "com.android.tools.build:gradle",
 			matchStrings: [
-				"val expected = AGPVersion\\.parse\\(\"(?<currentValue>.*)\"\\)",
+				"val expected = AGPVersion\\.parse\\(\"(?<currentValue>.+?)\"\\)",
 			],
 			versioningTemplate: "gradle",
 		},
@@ -202,7 +202,7 @@
 			registryUrlTemplate: "https://maven.google.com",
 			depNameTemplate: "com.android.tools.build:gradle",
 			matchStrings: [
-				"net.twisterrob.test.android.pluginVersion=(?<currentValue>.*)",
+				"net.twisterrob.test.android.pluginVersion=(?<currentValue>.+)",
 			],
 			versioningTemplate: "gradle",
 		},
@@ -216,7 +216,7 @@
 			datasourceTemplate: "gradle-version",
 			depNameTemplate: "gradle",
 			matchStrings: [
-				"  gradle: '(?<currentValue>.*)'",
+				"  gradle: '(?<currentValue>.+?)'",
 			],
 			versioningTemplate: "gradle",
 		},
@@ -230,7 +230,7 @@
 			datasourceTemplate: "gradle-version",
 			depNameTemplate: "gradle",
 			matchStrings: [
-				"net.twisterrob.gradle.runner.gradleVersion=(?<currentValue>.*)",
+				"net.twisterrob.gradle.runner.gradleVersion=(?<currentValue>.+)",
 			],
 			versioningTemplate: "gradle",
 		},
@@ -244,8 +244,8 @@
 			datasourceTemplate: "gradle-version",
 			depNameTemplate: "gradle",
 			matchStrings: [
-				"gradle\\.gradleVersion = GradleVersion\\.version\\(\"(?<currentValue>.*)\"\\)",
-				"result\\.assertHasOutputLine\\(\"\"\"Gradle version: (?<currentValue>.*)\"\"\"\\)",
+				"gradle\\.gradleVersion = GradleVersion\\.version\\(\"(?<currentValue>.+?)\"\\)",
+				"result\\.assertHasOutputLine\\(\"\"\"Gradle version: (?<currentValue>.+?)\"\"\"\\)",
 			],
 			versioningTemplate: "gradle",
 		},
