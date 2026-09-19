@@ -17,6 +17,7 @@ import java.nio.file.Path
  *
  * TODEL https://github.com/gradle/gradle/issues/20383#issuecomment-1236419331
  */
+@Suppress("detekt.UnnecessaryFullyQualifiedName") // Using them to distinguish name changes in history.
 fun VersionCatalogBuilder.load(file: File) {
 	if (GradleVersion.version("8.6") <= GradleVersion.current().baseVersion) {
 		// 8.6.0-RC1 https://github.com/gradle/gradle/commit/9e83bc69518e513018b8bed4716e0927c2fc8642
@@ -41,10 +42,12 @@ fun VersionCatalogBuilder.load(file: File) {
 			.getDeclaredMethod("parse", Path::class.java, VersionCatalogBuilder::class.java)
 			.invoke(file.toPath(), this)
 	} else if (GradleVersion.version("7.0") <= GradleVersion.current().baseVersion) {
-		// 7.0.0-RC1 https://github.com/gradle/gradle/commit/221d143dc7a73ec2dbf28fe2032223418cefcaf3
-		org.gradle.api.internal.catalog.parser.TomlCatalogFileParser::class.java
-			.getDeclaredMethod("parse", InputStream::class.java, VersionCatalogBuilder::class.java)
-			.invoke(file.inputStream(), this)
+		file.inputStream().use { stream ->
+			// 7.0.0-RC1 https://github.com/gradle/gradle/commit/221d143dc7a73ec2dbf28fe2032223418cefcaf3
+			org.gradle.api.internal.catalog.parser.TomlCatalogFileParser::class.java
+				.getDeclaredMethod("parse", InputStream::class.java, VersionCatalogBuilder::class.java)
+				.invoke(stream, this)
+		}
 	} else {
 		// There are possibilities for older versions too, but it needs more research and hacks.
 		error("Unsupported Gradle version: ${GradleVersion.current()}")

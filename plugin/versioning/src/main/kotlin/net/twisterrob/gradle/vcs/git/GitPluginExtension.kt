@@ -8,7 +8,7 @@ import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.provider.ValueSource
 import javax.inject.Inject
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class GitPluginExtension(
 	private val rootDir: Directory
 ) : VCSExtension {

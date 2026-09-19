@@ -24,7 +24,7 @@ class GrouperTest {
 
 	@Test fun `group nothing on 1 level (with Groovy sugar)`() {
 		val grouper = Grouper.create(emptyList<TFO>())
-		@Suppress("UNCHECKED_CAST")
+		@Suppress("UNCHECKED_CAST", "detekt.CastNullableToNonNullableType")
 		val e = grouper.getProperty("e") as Grouper<Any, List<TFO>>
 		val grouping = e.group()
 		assertEquals(emptyMap<Any, List<TFO>>(), grouping)
@@ -40,9 +40,9 @@ class GrouperTest {
 
 	@Test fun `group nothing on 2 levels (with Groovy sugar)`() {
 		val grouper = Grouper.create(emptyList<TFO>())
-		@Suppress("UNCHECKED_CAST")
+		@Suppress("UNCHECKED_CAST", "detekt.CastNullableToNonNullableType")
 		val e = grouper.getProperty("e") as Grouper<Any, List<TFO>>
-		@Suppress("UNCHECKED_CAST")
+		@Suppress("UNCHECKED_CAST", "detekt.CastNullableToNonNullableType")
 		val f = e.getProperty("f") as Grouper<Any, Map<*, List<TFO>>>
 		val grouping = f.group()
 		assertEquals(emptyMap<Any, Map<Any, List<TFO>>>(), grouping)

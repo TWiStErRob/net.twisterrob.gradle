@@ -27,6 +27,7 @@ internal fun setJavaHome(javaHome: File) {
 	}.configure()
 }
 
+@Suppress("detekt.MissingUseCall") // We don't own things, just intercept them.
 private class BuildLauncherInterceptor(private val configuration: BuildLauncher.() -> BuildLauncher) {
 
 	fun configure() {

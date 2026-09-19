@@ -11,7 +11,7 @@ import org.gradle.api.initialization.Settings
  * }
  * ```
  */
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class SettingsPlugin : Plugin<Settings> {
 	override fun apply(settings: Settings) {
 		// Nothing to do, yet.

@@ -15,6 +15,7 @@ internal inline fun <T> inRepo(dir: File, block: Git.() -> T): T {
 internal val Git.head: ObjectId
 	get() = this.repository.resolve("HEAD")
 
+@Suppress("detekt.MissingUseCall") // TODEL https://github.com/detekt/detekt/issues/9721
 internal inline fun <T> Git.walk(block: RevWalk.() -> T): T {
 	val walk = RevWalk(this.repository)
 	return walk.use(block)

@@ -1,5 +1,6 @@
 package net.twisterrob.gradle.graph
 
+import javafx.application.Platform
 import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskGatherer
 import net.twisterrob.gradle.graph.tasks.TaskResult
@@ -22,7 +23,7 @@ import javax.inject.Inject
 
 private val LOG = logger<GraphPlugin>()
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class GraphPlugin @Inject constructor(
 	private val cacheRepository: ScopedCacheBuilderFactory,
 ) : Plugin<Settings> {
@@ -57,7 +58,7 @@ abstract class GraphPlugin @Inject constructor(
 			}
 		}
 
-		@Suppress("DEPRECATION") // TODO Configuration cache.
+		@Suppress("DEPRECATION", "UnnecessaryFullyQualifiedName") // TODO Configuration cache.
 		settings.gradle.taskGraph.addTaskExecutionListener(object : org.gradle.api.execution.TaskExecutionListener {
 			override fun beforeExecute(task: Task) {
 				vis.update(task, TaskResult.Executing)
@@ -120,7 +121,7 @@ abstract class GraphPlugin @Inject constructor(
 	}
 }
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class GraphSettingsExtension {
 
 	var isKeepOpen: Boolean = false
@@ -133,7 +134,7 @@ abstract class GraphSettingsExtension {
 
 private fun hasJavaFX(): Boolean =
 	try {
-		javafx.application.Platform::class.java
+		Platform::class.java
 		true
 	} catch (ex: NoClassDefFoundError) {
 		val dependency = """

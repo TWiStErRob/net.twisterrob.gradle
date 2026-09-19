@@ -9,7 +9,7 @@ import org.gradle.internal.deprecation.DeprecationLogger
 import org.gradle.internal.deprecation.DeprecationMessageBuilder
 import org.gradle.util.GradleVersion
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class DeprecatedProjectPlugin(
 	private val oldName: String,
 	private val newName: String,
@@ -21,7 +21,7 @@ abstract class DeprecatedProjectPlugin(
 	}
 }
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class DeprecatedSettingsPlugin(
 	private val oldName: String,
 	private val newName: String,

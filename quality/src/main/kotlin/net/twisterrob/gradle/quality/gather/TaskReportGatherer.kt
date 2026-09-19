@@ -34,7 +34,7 @@ abstract class TaskReportGatherer<T>(
 		project.tasks.withType(taskType)
 
 	companion object {
-		@Suppress("UnusedPrivateProperty") // Java magic.
+		@Suppress("detekt.UnusedPrivateProperty") // Java magic.
 		private const val serialVersionUID: Long = 1
 	}
 }

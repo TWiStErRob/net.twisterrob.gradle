@@ -3,6 +3,7 @@ package net.twisterrob.gradle.quality.report
 import java.lang.management.ManagementFactory
 import javax.xml.stream.XMLOutputFactory
 import javax.xml.transform.TransformerFactory
+import kotlin.reflect.KCallable
 import kotlin.reflect.full.declaredMembers
 import kotlin.reflect.full.staticFunctions
 import kotlin.reflect.jvm.isAccessible
@@ -26,7 +27,8 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 		// XMLOutputFactory.newDefaultFactory() is @since Java 9.
 		return XMLOutputFactory::class.staticFunctions
 			.first { it.name == "newDefaultFactory" && it.parameters.isEmpty() }
-			.call() as XMLOutputFactory
+			.returns<XMLOutputFactory>()
+			.call()
 	}
 
 	val defaultImpl =
@@ -34,7 +36,7 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 			.singleOrNull { it.name == "DEFAULIMPL" }
 			?.let { field ->
 				field.isAccessible = true
-				field.call() as String
+				field.returns<String>().call()
 			}
 			?: "com.sun.xml.internal.stream.XMLOutputFactoryImpl"
 	if (defaultImpl.isClassLoadable()) {
@@ -56,6 +58,7 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 						&& staticFun.parameters[0].type.javaType == String::class.java
 						&& staticFun.parameters[1].type.javaType == ClassLoader::class.java
 			}
+			?.returns<XMLOutputFactory>()
 		if (newFactory != null) {
 			/**
 			 * This is a very silly (documented) API,
@@ -65,7 +68,7 @@ internal fun bestXMLOutputFactory(): XMLOutputFactory {
 			val factoryId = ::bestXMLOutputFactory.name + ".temporary.xml.output.factory"
 			System.setProperty(factoryId, defaultImpl)
 			try {
-				return newFactory.call(factoryId, null) as XMLOutputFactory
+				return newFactory.call(factoryId, null)
 			} finally {
 				System.clearProperty(factoryId)
 			}
@@ -92,7 +95,8 @@ internal fun bestXMLTransformerFactory(): TransformerFactory {
 		// return TransformerFactory.newDefaultInstance() // which is @since Java 9.
 		return TransformerFactory::class.staticFunctions
 			.single { it.name == "newDefaultInstance" && it.parameters.isEmpty() }
-			.call() as TransformerFactory
+			.returns<TransformerFactory>()
+			.call()
 	}
 
 	val defaultImpl = "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl"
@@ -102,6 +106,10 @@ internal fun bestXMLTransformerFactory(): TransformerFactory {
 	// Useful link: https://stackoverflow.com/questions/11314604/how-to-set-saxon-as-the-xslt-processor-in-java
 	return TransformerFactory.newInstance()
 }
+
+@Suppress("UNCHECKED_CAST")
+private fun <T> KCallable<*>.returns(): KCallable<T> =
+	this as KCallable<T>
 
 private fun String.isClassLoadable(): Boolean =
 	try {

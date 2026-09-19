@@ -35,8 +35,11 @@ class DevelopmentTest : BaseIntgTest() {
 
 		TransformerFactory
 			.newInstance()
-			.newTransformer(StreamSource(HtmlReportTask::class.java.getResourceAsStream("/violations.xsl")!!.reader()))
-			.transform(StreamSource(originalViolationsXml.reader()), StreamResult(violationsHtml))
+			.newTransformer(StreamSource(HtmlReportTask::class.java.getResource("/violations.xsl")!!.toExternalForm()))
+			.transform(
+				StreamSource(originalViolationsXml),
+				StreamResult(violationsHtml),
+			)
 
 		openHtml(violationsHtml)
 	}

@@ -28,7 +28,7 @@ data class AGPVersion(
 
 	@Suppress(
 		"detekt.ReturnCount",
-		"detekt.DataClassContainsFunctions", // TODEL https://github.com/detekt/detekt/issues/5321
+		"detekt.DataClassContainsFunctions", // A version-matching operation belongs to this data class.
 	)
 	infix fun compatible(other: AGPVersion): Boolean {
 		require(other.minor == null || other.type == null || other.patch == null) { "${other} must be a joker." }

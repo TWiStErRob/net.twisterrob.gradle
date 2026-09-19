@@ -1,6 +1,7 @@
 package net.twisterrob.gradle.quality.report
 
 import net.twisterrob.gradle.common.safeAdd
+import java.util.Locale
 import kotlin.math.log10
 
 private typealias Module = String
@@ -25,8 +26,15 @@ class TableGenerator(
 	)
 	fun build(byModuleByVariantByParserCounts: Map<Module, Map<Variant, Map<Parser, MaybeCount>>>): String {
 		val modules = byModuleByVariantByParserCounts.keys
-		val variants = byModuleByVariantByParserCounts.flatMap { it.value.keys }.distinct()
-		var parsers = byModuleByVariantByParserCounts.flatMap { it.value.values }.flatMap { it.keys }.distinct()
+		val variants = byModuleByVariantByParserCounts
+			.asSequence()
+			.flatMap { it.value.keys }
+			.distinct()
+		var parsers = byModuleByVariantByParserCounts
+			.asSequence()
+			.flatMap { it.value.values }
+			.flatMap { it.keys }
+			.distinct()
 		val summary: Map<Parser, MaybeCount> = parsers.associateWith { parser ->
 			byModuleByVariantByParserCounts
 				.values
@@ -48,7 +56,7 @@ class TableGenerator(
 		val variantWidth = (longestVariant?.length ?: 0).coerceAtLeast(MIN_VARIANT_LENGTH + totalCountWidth)
 		val rowHeaderFormat = "%-${moduleWidth}s${columnSeparator}%-${variantWidth}s"
 		val rowFormat = "${rowHeaderFormat}${format}"
-		val header = String.format(rowFormat, *(listOf("module", "variant") + parsers).toTypedArray())
+		val header = String.format(Locale.ROOT, rowFormat, *(listOf("module", "variant") + parsers).toTypedArray())
 		val rows = byModuleByVariantByParserCounts.flatMap { byModule ->
 			byModule.value.flatMap row@{ byVariant ->
 				val byParserCounts = byVariant.value
@@ -62,14 +70,14 @@ class TableGenerator(
 						else -> count.toString()
 					}
 				}
-				val row = String.format(rowFormat, *(listOf(byModule.key, byVariant.key) + cells).toTypedArray())
+				val row = String.format(Locale.ROOT, rowFormat, *(listOf(byModule.key, byVariant.key) + cells).toTypedArray())
 				return@row listOf(row)
 			}
 		}
 		val footer = if (isPrintSummaryRow) {
 			val summaryHeader = listOf("Summary", "(total: ${total})")
 			val summaryData = parsers.map { summary[it]?.toString() ?: missingCount }
-			val summaryRow = String.format(rowFormat, *(summaryHeader + summaryData).toTypedArray())
+			val summaryRow = String.format(Locale.ROOT, rowFormat, *(summaryHeader + summaryData).toTypedArray())
 			listOf(summaryRow)
 		} else {
 			emptyList()

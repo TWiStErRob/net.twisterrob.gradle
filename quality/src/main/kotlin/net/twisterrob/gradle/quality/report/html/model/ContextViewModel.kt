@@ -10,7 +10,7 @@ import java.util.zip.ZipFile
 import kotlin.math.max
 import kotlin.math.min
 
-sealed class ContextViewModel {
+sealed interface ContextViewModel {
 
 	/**
 	 * Make sure that any external dependencies are resolved and lazy properties calculated.
@@ -19,12 +19,13 @@ sealed class ContextViewModel {
 	 */
 	open fun resolve() {}
 
-	object EmptyContext : ContextViewModel()
+	object EmptyContext : ContextViewModel
 
 	class ErrorContext(
-		@Suppress("UNUSED_PARAMETER") context: ContextViewModel,
+		@Suppress("UNUSED_PARAMETER", "detekt.UnusedPrivateProperty")
+		context: ContextViewModel,
 		private val ex: Throwable
-	) : ContextViewModel() {
+	) : ContextViewModel {
 
 		val message: String by lazy {
 			val exceptions = generateSequence(ex) { it.cause }
@@ -38,9 +39,9 @@ sealed class ContextViewModel {
 		}
 	}
 
-	class CodeContext(private val v: Violation) : ContextViewModel() {
+	class CodeContext(private val v: Violation) : ContextViewModel {
 
-		private val context by lazy { getContext(v) }
+		private val context: Triple<String, Int, Int> by lazy { getContext(v) }
 		val type: String get() = "code"
 		val language: String
 			get() = when (v.location.file.extension) {
@@ -95,7 +96,7 @@ sealed class ContextViewModel {
 		}
 	}
 
-	class DirectoryContext(private val v: Violation) : ContextViewModel() {
+	class DirectoryContext(private val v: Violation) : ContextViewModel {
 
 		val listing: String by lazy {
 			fun <E> Iterable<E>.replace(old: E, new: E): Iterable<E> =
@@ -123,7 +124,7 @@ sealed class ContextViewModel {
 		}
 	}
 
-	class ImageContext(private val v: Violation) : ContextViewModel() {
+	class ImageContext(private val v: Violation) : ContextViewModel {
 
 		val embeddedPixels: String by lazy {
 			val data = Base64.getEncoder().encodeToString(v.location.file.readBytes())
@@ -135,7 +136,7 @@ sealed class ContextViewModel {
 		}
 	}
 
-	class ArchiveContext(private val v: Violation) : ContextViewModel() {
+	class ArchiveContext(private val v: Violation) : ContextViewModel {
 
 		val listing: String by lazy {
 			val entries = ZipFile(v.location.file).use { it.entries().toList() }
