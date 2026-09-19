@@ -200,8 +200,8 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 
 		/**
 		 * This is a new incubating way of adding buildConfigFields introduced in AGP 4.1.
-		 * @see https://issuetracker.google.com/issues/172657565
-		 * @see https://github.com/android/gradle-recipes/blob/8d0c14d6fed86726df60fb8c8f79e5a03c66fdee/Kotlin/addCustomFieldWithValueFromTask/app/build.gradle.kts
+		 * @see <a href="https://issuetracker.google.com/issues/172657565">Android issue 172657565</a>
+		 * @see <a href="https://github.com/android/gradle-recipes/blob/8d0c14d6fed86726df60fb8c8f79e5a03c66fdee/Kotlin/addCustomFieldWithValueFromTask/app/build.gradle.kts">Android Gradle Plugin recipe</a>
 		 */
 		private fun Project.decorateBuildConfig(
 			buildTimeTaskProvider: TaskProvider<CalculateBuildTimeTask>,
