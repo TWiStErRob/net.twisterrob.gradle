@@ -17,7 +17,7 @@ pluginManagement {
 }
 
 plugins {
-	id("net.twisterrob.gradle.plugin.settings") version "0.19"
+	id("net.twisterrob.gradle.plugin.settings") version "0.20"
 }
 
 dependencyResolutionManagement {
