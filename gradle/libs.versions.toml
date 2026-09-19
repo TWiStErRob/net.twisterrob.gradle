@@ -100,6 +100,7 @@ gradle-publish = { module = "com.gradle.plugin-publish:com.gradle.plugin-publish
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 android-tools-ddmLib = { module = "com.android.tools.ddms:ddmlib", version.ref = "agp-tools" }
 android-tools-common = { module = "com.android.tools:common", version.ref = "agp-tools" }
+android-tools-sdklib = { module = "com.android.tools:sdklib", version.ref = "agp-tools" }
 android-lint-main = { module = "com.android.tools.lint:lint", version.ref = "agp-tools" }
 android-lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "agp-tools" }
 android-lint-gradle = { module = "com.android.tools.lint:lint-gradle", version.ref = "agp-tools" }
