@@ -191,6 +191,33 @@ class GradleUtilsIntgTest_doNotNagAbout : BaseIntgTest() {
 		result.verifyNagOnce()
 	}
 
+	@Test fun `stack based suppression works after deprecation stack trace budget is exhausted`() {
+		assumeThat(gradle.gradleVersion.baseVersion, greaterThanOrEqualTo(GradleVersion.version("8.3")))
+
+		val script = """
+			net.twisterrob.gradle.GradleUtils.doNotNagAbout(
+				~/.*Noise nagging \d+ has been deprecated\..*/
+			)
+
+			for (int i in 1..1000) {
+				${nag("""Noise nagging ${'$'}{i}""")}
+			}
+
+			net.twisterrob.gradle.GradleUtils.doNotNagAbout(
+				"Build file '${'$'}{buildFile.absolutePath}': line 28${'$'}{System.lineSeparator()}" +
+				"Target nagging has been deprecated. This is scheduled to be removed in ${gradle.nextMajor}.",
+				"build.gradle:28"
+			)
+
+			${nag("""Target nagging""")}
+	  """.trimIndent()
+
+		gradle.runBuild {
+			run(script, "--stacktrace")
+		}
+	}
+
+
 	private fun nagManyTimes(): String =
 		when {
 			GradleVersion.version("8.14") <= gradle.gradleVersion.baseVersion -> {
