@@ -29,8 +29,8 @@ private fun process(violations: List<Violations>): List<Violations> {
 	val byVariant = violations.groupBy { it.variant as Variant }
 	val all = byVariant[ALL_VARIANTS_NAME] ?: return violations
 	val filtered = byVariant.filterKeys { it != ALL_VARIANTS_NAME }
-	val deduplicated = filtered.flatMap { (_, violations) ->
-		violations.map { removeDuplicates(from = it, using = all) }
+	val deduplicated = filtered.flatMap { (_, violationsByVariant) ->
+		violationsByVariant.map { removeDuplicates(from = it, using = all) }
 	}
 	return all + deduplicated
 }

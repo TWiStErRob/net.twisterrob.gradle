@@ -1,6 +1,6 @@
 @file:JvmMultifileClass
 @file:JvmName("GradleUtils")
-@file:Suppress("detekt.UnusedImports") // TODEL detekt 2.0 when it supports Kotlin 2.1/2.2.
+@file:Suppress("UnusedImport", "detekt.UnusedImport") // kotlin-dsl
 
 package net.twisterrob.gradle
 

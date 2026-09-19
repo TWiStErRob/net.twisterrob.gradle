@@ -31,7 +31,7 @@ import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import java.util.Locale
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class AndroidBuildPluginExtension {
 
 	var isDecorateBuildConfig: Boolean = true
@@ -43,7 +43,7 @@ abstract class AndroidBuildPluginExtension {
 }
 
 @Suppress(
-	"detekt.UnnecessaryAbstractClass", // Gradle convention.
+	"detekt.AbstractClassCanBeConcreteClass", // Gradle convention.
 	"detekt.StringLiteralDuplication", // Simpler without constants.
 )
 abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
@@ -60,7 +60,7 @@ abstract class AndroidBuildPlugin : net.twisterrob.gradle.common.BasePlugin() {
 			project.repositories.mavenCentral() // https://repo.maven.apache.org/maven2/
 		}
 
-		@Suppress("NestedScopeFunctions")
+		@Suppress("detekt.NestedScopeFunctions")
 		with(android) {
 			configureLint()
 			compileSdk = VERSION_SDK_COMPILE

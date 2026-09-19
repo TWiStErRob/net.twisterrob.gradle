@@ -1,6 +1,6 @@
 package net.twisterrob.gradle.build.detekt
 
-import io.gitlab.arturbosch.detekt.Detekt
+import dev.detekt.gradle.Detekt
 import net.twisterrob.gradle.build.dsl.detekt
 import net.twisterrob.gradle.build.dsl.isCI
 import net.twisterrob.gradle.build.dsl.libs
@@ -10,32 +10,33 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.withType
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 internal abstract class DetektPlugin : Plugin<Project> {
 
 	override fun apply(project: Project) {
-		project.plugins.apply("io.gitlab.arturbosch.detekt")
+		project.plugins.apply("dev.detekt")
 		project.detekt {
-			// TODEL https://github.com/detekt/detekt/issues/4926
-			buildUponDefaultConfig = false
+			buildUponDefaultConfig = true
 			allRules = true
 			ignoreFailures = isCI
 			//debug = true
-			config.setFrom(project.rootProject.file("config/detekt/detekt.yml"))
+			config.from(project.rootProject.file("config/detekt/detekt.yml"))
 			baseline = project.rootProject.file("config/detekt/detekt-baseline-${project.slug}.xml")
-			basePath = project.rootProject.projectDir.absolutePath
+			basePath = project.rootProject.layout.projectDirectory
 
 			parallel = true
 
+			@Suppress("detekt.MaxChainedCallsOnSameLine")
+			val detektKotlinVersion = project.libs.versions.kotlin.build.map { it.substringBeforeLast(".") }
 			project.tasks.withType<Detekt>().configureEach {
-				@Suppress("detekt.MaxChainedCallsOnSameLine")
-				languageVersion = project.libs.versions.kotlin.language.get()
+				apiVersion = detektKotlinVersion
+				languageVersion = detektKotlinVersion
 				jvmTarget = project.libs.versions.java.get()
 				// Detekt falsely resolves this to DetektExtension.report because of Kotlin DSL.
 				@Suppress("detekt.Deprecation")
 				reports {
 					html.required = true // human
-					txt.required = true // console
+					markdown.required = true // console
 				}
 			}
 		}

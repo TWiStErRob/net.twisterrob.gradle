@@ -436,7 +436,7 @@ class AGPVersionTest {
 	}
 
 	@Test fun sorting() {
-		val all = (mavenGoogle() + mavenCentral()).reversed().map { it.get()[1] as AGPVersion }
+		val all = (mavenGoogle() + mavenCentral()).reversed().map { it.get()[1]!! as AGPVersion }
 		assertThat(all.sorted(), contains(*all.toTypedArray()))
 
 		val unsorted = all.shuffled()

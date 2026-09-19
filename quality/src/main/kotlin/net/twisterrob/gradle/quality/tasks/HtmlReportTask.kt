@@ -108,8 +108,8 @@ abstract class HtmlReportTask : BaseViolationsTask() {
 			// We're expecting to get [com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl]
 			// Creating [com.sun.org.apache.xalan.internal.xsltc.trax.TransformerImpl].
 			bestXMLTransformerFactory()
-				.newTransformer(StreamSource(xslOutputFile.reader()))
-				.transform(StreamSource(xmlFile.reader()), StreamResult(htmlFile))
+				.newTransformer(StreamSource(xslOutputFile))
+				.transform(StreamSource(xmlFile), StreamResult(htmlFile))
 			logger.lifecycle("Wrote HTML report to ${SdkUtils.fileToUrlString(htmlFile.absoluteFile)}")
 		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Throwable) {
 			// Slap on more information to the exception.

@@ -4,7 +4,7 @@ import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.kotlin.dsl.getByName
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeInterface") // Gradle convention.
 abstract class AndroidReleaseExtension {
 
 	abstract val directory: DirectoryProperty

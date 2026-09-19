@@ -10,6 +10,7 @@ import org.eclipse.jgit.revwalk.RevCommit
 import java.io.File
 import java.util.concurrent.Callable
 
+@Suppress("detekt.MissingUseCall") // TODEL https://github.com/detekt/detekt/issues/9721
 inline fun git(repoDir: File, block: Git.() -> Unit) {
 	val repo = createGitRepository(repoDir)
 	repo.use(block)

@@ -73,6 +73,7 @@ class TaskGatherer(
 //		// TODO figure out how to reinstate this
 //		val selector = (settings.gradle as GradleInternal).serviceOf<TaskSelector>()
 		val tasks: MutableSet<Task> = HashSet()
+		@Suppress("UNUSED_PARAMETER", "detekt.UnusedVariable") // Commented code.
 		for (path in settings.gradle.startParameter.excludedTaskNames) {
 //			val selection = selector.getSelection(path)
 //			LOG.debug("-${path} -> ${selection.tasks.map { it.name }}")
@@ -88,6 +89,7 @@ class TaskGatherer(
 //		val selector = (settings.gradle as GradleInternal).serviceOf<TaskSelector>()
 		val tasks: MutableSet<Task> = HashSet()
 		for (request in settings.gradle.startParameter.taskRequests) {
+			@Suppress("UNUSED_PARAMETER", "detekt.UnusedVariable") // Commented code.
 			for (path in request.args) {
 //				val selection = selector.getSelection(request.projectPath, path)
 //				LOG.debug("${request.projectPath}:${path} -> ${selection.tasks.map { it.name }}")

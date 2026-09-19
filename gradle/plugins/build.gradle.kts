@@ -58,24 +58,23 @@ kotlin {
 
 // Note: duplicated from DetektPlugin because can't apply project this build.gradle.kts is defining.
 detekt {
-	// TODEL https://github.com/detekt/detekt/issues/4926
-	buildUponDefaultConfig = false
+	buildUponDefaultConfig = true
 	allRules = true
 	ignoreFailures = true
 	//debug = true
-	config.setFrom(
+	config.from(
 		project.rootProject.file("../../config/detekt/detekt.yml"),
 		project.rootProject.file("../../config/detekt/detekt-kotlin-dsl.yml"),
 	)
 	baseline = project.rootProject.file("../../config/detekt/detekt-baseline-gradle-plugins.xml")
-	basePath = project.rootProject.projectDir.resolve("../..").absolutePath
+	basePath = project.rootProject.layout.projectDirectory.dir("../..")
 
 	parallel = true
 
-	project.tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+	project.tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
 		reports {
 			html.required = true // human
-			txt.required = true // console
+			markdown.required = true // console
 		}
 		if (this.name == "detektMain") {
 			// Detekt fails on these files with an internal compile error, so exclude for now.

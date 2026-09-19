@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 /**
  * @see /android-plugin_app/build.gradle
  */
-@Suppress("TopLevelPropertyNaming") // Match style of AGP.
+@Suppress("detekt.TopLevelPropertyNaming") // Match style of AGP.
 const val packageName: String = "net.twisterrob.gradle.test_app"
 
 val packageFolder: String

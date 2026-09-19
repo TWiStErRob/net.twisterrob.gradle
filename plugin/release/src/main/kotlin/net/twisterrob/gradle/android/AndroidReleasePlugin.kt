@@ -14,6 +14,7 @@ import org.gradle.api.Task
 import org.gradle.api.file.Directory
 import org.gradle.api.logging.Logger
 import org.gradle.api.provider.Provider
+import org.gradle.api.publish.plugins.PublishingPlugin
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.kotlin.dsl.closureOf
@@ -25,7 +26,7 @@ import java.io.IOException
 import java.util.Locale
 import java.util.zip.ZipFile
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class AndroidReleasePlugin : BasePlugin() {
 
 	override fun apply(target: Project) {
@@ -47,14 +48,14 @@ abstract class AndroidReleasePlugin : BasePlugin() {
 
 	private fun registerReleaseEachTask(): TaskProvider<Task> =
 		project.tasks.register<Task>("release") {
-			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
+			group = PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Calls each release task for all build types"
 		}
 
 	private fun registerReleaseTasks(android: CommonExtension, buildType: BuildType): TaskProvider<Task> {
 		val buildTypeName = buildType.name.replaceFirstChar { it.uppercase(Locale.ROOT) }
 		val releaseBuildTypeTask = project.tasks.register<Task>("releaseAll${buildTypeName}") {
-			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
+			group = PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives all ${buildType.name} builds"
 		}
 		LOG.debug("Creating tasks for {}", buildType.name)
@@ -76,7 +77,7 @@ abstract class AndroidReleasePlugin : BasePlugin() {
 		variant: ApplicationVariant
 	): TaskProvider<Zip> =
 		project.tasks.register<Zip>("release${variant.name.replaceFirstChar { it.uppercase(Locale.ROOT) }}") {
-			group = org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
+			group = PublishingPlugin.PUBLISH_TASK_GROUP
 			description = "Assembles and archives apk and its ProGuard mapping for ${variant.name} build"
 			destinationDirectory.convention(release.directory)
 			val out = variant.outputs.single()

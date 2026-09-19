@@ -12,7 +12,7 @@ import org.gradle.api.initialization.Settings
  * }
  * ```
  */
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class NaggingPlugin : Plugin<Settings> {
 	override fun apply(settings: Settings) {
 		settings.gradle.reviewIfNaggingCausesFailure()

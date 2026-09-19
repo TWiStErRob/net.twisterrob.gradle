@@ -47,7 +47,7 @@ class TaskCreationConfigurationTest {
 		verifyNoMoreInteractions(mockConfiguration)
 	}
 
-	@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+	@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 	internal abstract class TestTask : DefaultTask()
 }
 

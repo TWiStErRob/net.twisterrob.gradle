@@ -15,7 +15,7 @@ abstract class VisualizerOptions<Options : Any> protected constructor(
 	private val cache: PersistentCache
 ) : Closeable {
 
-	@Suppress("PrivatePropertyName", "VariableNaming") // Keep conventional name.
+	@Suppress("PrivatePropertyName", "detekt.VariableNaming") // Keep conventional name.
 	private val LOG = logger(this)
 
 	private val storageFileName: String
@@ -27,7 +27,7 @@ abstract class VisualizerOptions<Options : Any> protected constructor(
 				val propsFile = File(cache.baseDir, storageFileName)
 				val props = Properties()
 				try {
-					props.load(FileReader(propsFile))
+					FileReader(propsFile).use { props.load(it) }
 					readOptions(props)
 				} catch (ignore: FileNotFoundException) {
 					readOptions(Properties()) // First startup.
@@ -45,7 +45,7 @@ abstract class VisualizerOptions<Options : Any> protected constructor(
 				cache.useCache {
 					val propsFile = File(cache.baseDir, storageFileName)
 					try {
-						props.store(FileWriter(propsFile), null)
+						FileWriter(propsFile).use { props.store(it, null) }
 					} catch (ex: IOException) {
 						throw IllegalStateException("Cannot save options to ${propsFile}", ex)
 					}

@@ -77,7 +77,7 @@ val BuildResult.fullException: String
 fun BuildResult.findFailureBlock(label: String): String {
 	val fullLabel = "* ${label}:"
 	return output
-		.split(System.lineSeparator())
+		.splitToSequence(System.lineSeparator())
 		.dropWhile { it != fullLabel }
 		.drop(1)
 		.takeWhile { !it.startsWith("* ") }

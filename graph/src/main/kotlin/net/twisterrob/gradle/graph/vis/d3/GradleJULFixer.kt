@@ -1,6 +1,8 @@
 package net.twisterrob.gradle.graph.vis.d3
 
 import net.twisterrob.gradle.graph.logger
+import java.util.logging.Level
+import java.util.logging.Logger
 
 private val LOG = logger<GraphWindow>()
 
@@ -59,10 +61,10 @@ class GradleJULFixer : Thread(GradleJULFixer::class.java.name) {
 		}
 
 		private fun enabled(name: String): Boolean =
-			java.util.logging.Logger.getLogger(name).isLoggable(java.util.logging.Level.FINE)
+			Logger.getLogger(name).isLoggable(Level.FINE)
 
 		private fun disable(name: String) {
-			java.util.logging.Logger.getLogger(name).level = java.util.logging.Level.OFF
+			Logger.getLogger(name).level = Level.OFF
 		}
 	}
 }

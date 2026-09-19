@@ -15,7 +15,7 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.security.Permission
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class SvnPluginExtension(
 	private val rootDir: Directory
 ) : VCSExtension {
@@ -73,18 +73,19 @@ abstract class SvnPluginExtension(
 			}
 		}
 
-		private inline fun captureSystemOut(block: () -> Unit): String {
-			val baos = ByteArrayOutputStream()
-			val oldSystemOut = System.out
-			System.setOut(PrintStream(baos))
-			try {
-				block()
-				System.out.flush()
-				return baos.toString(Charsets.UTF_8)
-			} finally {
-				System.setOut(oldSystemOut)
+		private inline fun captureSystemOut(block: () -> Unit): String =
+			ByteArrayOutputStream().use { buffer ->
+				PrintStream(buffer).use { capturedOut ->
+					val oldSystemOut = System.out
+					System.setOut(capturedOut)
+					try {
+						block()
+						buffer.toString(Charsets.UTF_8)
+					} finally {
+						System.setOut(oldSystemOut)
+					}
+				}
 			}
-		}
 	}
 
 	private object NonExitingSecurityManager : @Suppress("DEPRECATION") SecurityManager() {

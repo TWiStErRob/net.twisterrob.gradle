@@ -37,7 +37,7 @@ internal abstract class DeprecatedPluginKotlinGeneratingTask : DefaultTask() {
 			
 			import net.twisterrob.gradle.internal.deprecation.DeprecatedProjectPlugin
 			
-			@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+			@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 			internal abstract class ${className}Deprecated : DeprecatedProjectPlugin(
 				oldName = "${oldName.get()}",
 				newName = "${newName.get()}",

@@ -6,6 +6,7 @@ import net.twisterrob.gradle.graph.logger
 import net.twisterrob.gradle.graph.tasks.TaskData
 import net.twisterrob.gradle.graph.tasks.TaskResult
 import net.twisterrob.gradle.graph.vis.d3.GradleJULFixer
+import net.twisterrob.gradle.graph.vis.d3.GraphWindow
 import org.gradle.api.Task
 import org.gradle.api.initialization.Settings
 import org.gradle.cache.PersistentCache
@@ -19,14 +20,15 @@ import javax.swing.WindowConstants
 private val LOG = logger<D3SwingTaskVisualizer>()
 
 class D3SwingTaskVisualizer(
-	cache: PersistentCache
-) : net.twisterrob.gradle.graph.vis.d3.GraphWindow() {
+	cache: PersistentCache,
+) : GraphWindow() {
 
 	private val options: Options
 	var window: JFrame? = null
 
 	//private final GradleJULFixer fixer = new GradleJULFixer();
 	init {
+		@Suppress("detekt.MissingUseCall") // Lifecycle is handled.
 		options = Options(cache)
 		SwingUtilities.invokeLater {
 			/** @thread Swing Event Dispatch Thread */

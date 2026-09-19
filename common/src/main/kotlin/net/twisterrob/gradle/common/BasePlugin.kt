@@ -9,13 +9,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class BasePlugin : Plugin<Project> {
 
 	@Suppress(
 		"PropertyName", // Keep it consistent with external loggers.
 		"MemberVisibilityCanBePrivate",
-		"VariableNaming", // Keep it consistent with external loggers.
+		"detekt.VariableNaming", // Keep it consistent with external loggers.
 	)
 	protected val LOG: Logger = LoggerFactory.getLogger(this::class.java)
 
