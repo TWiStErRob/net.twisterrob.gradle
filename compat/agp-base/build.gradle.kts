@@ -8,6 +8,8 @@ description = "AGP Compatibility: Support classes for compatibility layers of An
 
 dependencies {
 	implementation(gradleApi())
+	// KDoc references com.android.Version, but production code loads it reflectively.
+	dokkaClasspath(libs.android.tools.common)
 
 	testImplementation(projects.test.internal)
 	testRuntimeOnly(libs.android.gradle)

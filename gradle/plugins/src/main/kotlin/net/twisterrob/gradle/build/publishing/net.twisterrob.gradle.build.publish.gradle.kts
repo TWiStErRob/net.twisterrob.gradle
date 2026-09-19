@@ -115,6 +115,14 @@ fun MavenPublication.handleTestFixtures() {
 }
 
 fun setupDoc(project: Project) {
+	val dokkaClasspath = project.configurations.dependencyScope("dokkaClasspath") {
+		description = "Additional dependencies for resolving KDoc references."
+	}
+	val dokkaAnalysisClasspath = project.configurations.resolvable("dokkaAnalysisClasspath") {
+		description = "Additional classpath for Dokka source analysis."
+		extendsFrom(dokkaClasspath.get())
+		isTransitive = false
+	}
 	project.extensions.configure<DokkaExtension> {
 		moduleName = project.base.archivesName
 		dokkaPublications.named("html").configure {
@@ -124,6 +132,7 @@ fun setupDoc(project: Project) {
 			failOnWarning = true
 		}
 		dokkaSourceSets.configureEach {
+			classpath.from(dokkaAnalysisClasspath)
 			reportUndocumented = false
 		}
 		dokkaGeneratorIsolation = ProcessIsolation {
