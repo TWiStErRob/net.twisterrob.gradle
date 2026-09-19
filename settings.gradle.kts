@@ -1,4 +1,3 @@
-import com.gradle.scan.agent.serialization.scan.serializer.kryo.it
 import net.twisterrob.gradle.build.settings.enableFeaturePreviewQuietly
 import net.twisterrob.gradle.doNotNagAbout
 
@@ -9,7 +8,7 @@ rootProject.name = "net-twisterrob-gradle"
 
 pluginManagement {
 	includeBuild("gradle/plugins")
-//	includeBuild("graph")
+	includeBuild("graph")
 	repositories {
 		mavenCentral()
 		gradlePluginPortal()
