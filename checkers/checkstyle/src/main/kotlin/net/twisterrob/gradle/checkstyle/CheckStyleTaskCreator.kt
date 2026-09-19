@@ -14,7 +14,6 @@ open class CheckStyleTaskCreator @Inject constructor(
 	CheckStyleExtension::class.java
 ) {
 
-	@Suppress("detekt.CognitiveComplexMethod") // TODEL https://github.com/detekt/detekt/issues/5560
 	override fun taskConfigurator(): VariantTaskCreator<CheckStyleTask>.DefaultTaskConfig =
 		object : VariantTaskCreator<CheckStyleTask>.DefaultTaskConfig() {
 

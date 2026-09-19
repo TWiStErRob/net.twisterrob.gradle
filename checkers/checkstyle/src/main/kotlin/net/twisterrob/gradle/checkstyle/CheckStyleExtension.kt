@@ -2,5 +2,5 @@ package net.twisterrob.gradle.checkstyle
 
 import net.twisterrob.gradle.common.BaseQualityExtension
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class CheckStyleExtension : BaseQualityExtension<CheckStyleTask>()

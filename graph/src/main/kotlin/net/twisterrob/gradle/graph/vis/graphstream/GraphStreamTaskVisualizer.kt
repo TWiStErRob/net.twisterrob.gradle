@@ -125,11 +125,11 @@ class GraphStreamTaskVisualizer(cache: PersistentCache) : TaskVisualizer {
 				check(this.keys.size == TaskType.values().size)
 			}
 
-		@Suppress("FunctionMinLength")
+		@Suppress("detekt.FunctionNameMinLength")
 		private fun id(task: Task): String =
 			task.path
 
-		@Suppress("FunctionMinLength")
+		@Suppress("detekt.FunctionNameMinLength")
 		private fun id(from: Task, to: Task): String =
 			id(from) + "->" + id(to)
 	}

@@ -14,7 +14,7 @@ private val LOG = logger<JavaScriptToJavaConsoleBridge>()
  * @see com.sun.javafx.webkit.WebConsoleListener.setDefaultListener
  */
 class JavaScriptToJavaConsoleBridge private constructor(
-	@Suppress("PrivatePropertyName", "ConstructorParameterNaming") // Mimic real JS code.
+	@Suppress("PrivatePropertyName", "detekt.ConstructorParameterNaming") // Mimic real JS code.
 	private val JSON: JSObject,
 ) {
 	/**

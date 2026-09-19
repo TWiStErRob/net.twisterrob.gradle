@@ -47,7 +47,7 @@ class LintMessageDetailsSplitter {
 									
 									```
 									Exception in thread "lint" ${match.groupValues[2]}:${
-										match.groupValues[@Suppress("MagicNumber") 3]
+										match.groupValues[@Suppress("detekt.MagicNumber") 3]
 											.replace("←", "\n\tat ")
 											.prependIndent("\t\t\t\t\t\t\t\t\t")
 											.trimStart('\t')

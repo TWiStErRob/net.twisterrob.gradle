@@ -27,9 +27,7 @@ class ViolationsRendererTest {
 	}
 
 	@Test fun `xmlWriter produces a supported writer for test`() {
-		val writer = StringWriter().xmlWriter()
-
-		val actual = writer::class.fqcn
+		val actual = StringWriter().xmlWriter().use { it::class.fqcn }
 
 		assertEquals("com.sun.xml.internal.stream.writers.XMLStreamWriterImpl", actual)
 	}
@@ -228,13 +226,13 @@ class ViolationsRendererTest {
 			violations: Map<Category?, Map<Reporter, List<Violation>>> = emptyMap(),
 			projectName: String = "test project",
 			xslPath: String? = null
-		): String {
-			val out = StringWriter()
-			out.xmlWriter().use {
-				renderXml(to = it, from = violations, projectName = projectName, xslPath = xslPath)
+		): String =
+			StringWriter().use { out ->
+				out.xmlWriter().use {
+					renderXml(to = it, from = violations, projectName = projectName, xslPath = xslPath)
+				}
+				out.toString()
 			}
-			return out.toString()
-		}
 	}
 }
 

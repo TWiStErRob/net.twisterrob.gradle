@@ -193,8 +193,10 @@ doNotNagAboutPatternForTest(
 
 // Gradle 9.6 vs AGP 9.2 https://issuetracker.google.com/issues/495889752, fixed in AGP 9.3
 doNotNagAboutForTest(
-	"9.6" to "9.7",
+	"9.6" to "9.8",
 	"9.0" to "9.3",
+	// > Configure project :
+	// Example test: AndroidBuildPluginIntgTest.`can override compileSdk (debug)`
 	"Using a Project object as a dependency notation has been deprecated. " +
 			"This will fail with an error in Gradle 10. " +
 			"Please use the project(String) method on DependencyHandler or the createProjectDependency(String) method on DependencyFactory instead. " +

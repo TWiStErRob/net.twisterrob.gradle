@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import java.net.JarURLConnection
 import java.util.jar.Attributes
 
-//@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+//@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 class TestPlugin : BaseExposedPlugin() {
 
 	override fun apply(target: Project) {

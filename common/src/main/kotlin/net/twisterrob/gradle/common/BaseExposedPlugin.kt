@@ -1,4 +1,4 @@
 package net.twisterrob.gradle.common
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class BaseExposedPlugin : BasePlugin()

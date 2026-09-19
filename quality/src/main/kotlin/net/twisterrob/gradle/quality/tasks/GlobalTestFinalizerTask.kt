@@ -17,7 +17,7 @@ import org.gradle.work.DisableCachingByDefault
 import se.bjurr.violations.lib.model.SEVERITY
 
 @DisableCachingByDefault(because = "Base class is not cacheable yet. (Gradle 8.0)")
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class GlobalTestFinalizerTask : TestReport() {
 
 	/**

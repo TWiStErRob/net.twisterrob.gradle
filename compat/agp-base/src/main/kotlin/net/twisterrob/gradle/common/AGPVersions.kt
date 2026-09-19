@@ -75,6 +75,7 @@ private val ANDROID_GRADLE_PLUGIN_VERSION: String
 	@Throws(IllegalStateException::class)
 	get() {
 		val versionClass: Class<*> =
+			@Suppress("detekt.UnnecessaryFullyQualifiedName")
 			// Cannot use compatibility AGPVersions.CLASSPATH to create a `when` in this one, as this is defining it.
 			kotlin
 				.runCatching {

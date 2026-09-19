@@ -6,7 +6,7 @@ import net.twisterrob.gradle.vcs.VCSPluginExtension.Companion.vcs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class GitPlugin : BasePlugin() {
 
 	override fun apply(target: Project) {

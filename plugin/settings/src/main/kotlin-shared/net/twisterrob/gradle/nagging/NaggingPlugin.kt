@@ -1,6 +1,5 @@
 package net.twisterrob.gradle.nagging
 
-import net.twisterrob.gradle.nagging.internal.allowUnlimitedStacksForNagging
 import net.twisterrob.gradle.nagging.internal.reviewIfNaggingCausesFailure
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
@@ -13,10 +12,9 @@ import org.gradle.api.initialization.Settings
  * }
  * ```
  */
-@Suppress("detekt.UnnecessaryAbstractClass") // Gradle convention.
+@Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class NaggingPlugin : Plugin<Settings> {
 	override fun apply(settings: Settings) {
-		settings.gradle.allowUnlimitedStacksForNagging()
 		settings.gradle.reviewIfNaggingCausesFailure()
 	}
 }
