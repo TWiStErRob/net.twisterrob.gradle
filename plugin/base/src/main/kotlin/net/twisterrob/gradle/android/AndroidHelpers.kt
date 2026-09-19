@@ -55,7 +55,7 @@ fun Project.intermediateRegularFile(relativePath: String): Provider<RegularFile>
 	this.layout.buildDirectory.file("${SdkConstants.FD_INTERMEDIATES}/$relativePath")
 
 /**
- * @see https://android-developers.googleblog.com/2020/12/announcing-android-gradle-plugin.html
+ * @see <a href="https://android-developers.googleblog.com/2020/12/announcing-android-gradle-plugin.html">Android Gradle Plugin announcement</a>
  */
 fun Project.addBuildConfigField(name: String, type: String, value: Provider<out Serializable>) {
 	val androidComponents: AndroidComponentsExtension<*, *, *> =

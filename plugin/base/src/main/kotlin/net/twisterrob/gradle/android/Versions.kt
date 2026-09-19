@@ -24,6 +24,6 @@ const val VERSION_SDK_COMPILE: Int = 35
 /**
  * Note: format changed at 9 Pie, was 8.1.0 Oreo.
  *
- * @see https://apilevels.com/
+ * @see <a href="https://apilevels.com/">Android API levels</a>
  */
 const val VERSION_SDK_COMPILE_NAME: String = "15" // Android 15 (V)

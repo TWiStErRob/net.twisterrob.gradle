@@ -35,6 +35,8 @@ dependencies {
 	implementation(projects.compat.gradle)
 	implementation(projects.compat.agpBase)
 	api(projects.compat.agp)
+	// KDoc references SdkVersionInfo, which is only a runtime dependency of AGP.
+	dokkaClasspath(libs.android.tools.sdklib)
 
 	testImplementation(projects.test.internal)
 
