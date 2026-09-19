@@ -3,7 +3,7 @@ java = "17"
 
 # Changelog: https://github.com/tomasbjerre/violations-lib/blob/master/CHANGELOG.md
 # GitHub Releases: https://github.com/tomasbjerre/violations-lib/tags
-violations = "1.160.5"
+violations = "2.0.2"
 
 # JSR 305: Annotations for Software Defect Detection
 # Documentation: https://jcp.org/en/jsr/detail?id=305
@@ -23,13 +23,13 @@ gradle-publish = "2.2.1"
 
 # See [lint] which is affected by this.
 # Versions: https://maven.google.com/web/index.html#com.android.tools.build:gradle
-agp = "9.4.0"
+agp = "9.4.1"
 
 # = 23.0.0 + [agp].
 # @see com.android.build.gradle.internal.plugins.BasePlugin.createLintClasspathConfiguration
 # @see builder-model//version.properties
 # Versions: https://maven.google.com/web/index.html#com.android.tools.lint:lint
-agp-tools = "32.4.0"
+agp-tools = "32.4.1"
 
 # Things have to be older to make sure a Gradle-compatible version is used.
 # https://docs.gradle.org/current/userguide/compatibility.html
