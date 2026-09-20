@@ -146,7 +146,7 @@
 			matchFileNames: [
 				"gradle/libs.versions.toml",
 			],
-			matchCurrentVersion: "1.8.22",
+			matchCurrentVersion: "2.2.21",
 			matchUpdateTypes: ["major", "minor"],
 			enabled: false,
 		},

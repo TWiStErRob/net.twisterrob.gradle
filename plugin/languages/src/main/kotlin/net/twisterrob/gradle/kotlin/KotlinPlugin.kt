@@ -17,7 +17,7 @@ import kotlin.reflect.KCallable
 
 private typealias DependencyAdder = DependencyHandler.(Any) -> Dependency?
 
-const val VERSION_KOTLIN: String = "1.4.32"
+const val VERSION_KOTLIN: String = "2.2.21"
 
 @Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class KotlinPlugin : BasePlugin() {

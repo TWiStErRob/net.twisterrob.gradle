@@ -62,9 +62,6 @@ kotlin {
 			"-Xskip-metadata-version-check",
 			// Opt in to https://youtrack.jetbrains.com/issue/KT-59109 for now to see how to suppress warnings/errors.
 			"-Xrender-internal-diagnostic-names",
-			// Kotlin 2.2.0
-			// > w: Language version 1.8 is deprecated and its support will be removed in a future version of Kotlin
-			"-Xsuppress-version-warnings",
 		)
 	}
 }
