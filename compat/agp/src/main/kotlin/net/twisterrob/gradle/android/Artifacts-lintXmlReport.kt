@@ -13,6 +13,5 @@ import org.gradle.api.provider.Provider
 val Artifacts.lintXmlReport: Provider<RegularFile>
 	get() = when {
 		AGPVersions.v92x <= AGPVersions.CLASSPATH -> this.get(SingleArtifact.LINT_XML_REPORT)
-		AGPVersions.v81x <= AGPVersions.CLASSPATH -> this.unwrapCast<ArtifactsImpl>().lintXmlReport81x
-		else -> AGPVersions.olderThan81NotSupported(AGPVersions.CLASSPATH)
+		else -> this.unwrapCast<ArtifactsImpl>().lintXmlReport81x
 	}
