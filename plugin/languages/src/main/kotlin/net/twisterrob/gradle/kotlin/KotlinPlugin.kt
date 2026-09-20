@@ -34,7 +34,7 @@ abstract class KotlinPlugin : BasePlugin() {
 			if (shouldAddAutoRepositoriesTo(project)) {
 				project.repositories.mavenCentral()
 			}
-			project.dependencies.implementation(kotlin("stdlib-jdk7"))
+			project.dependencies.implementation(kotlin("stdlib"))
 			if (project.plugins.hasAndroidTest()) {
 				project.addTestDependencies(DependencyHandler::implementation)
 			} else {

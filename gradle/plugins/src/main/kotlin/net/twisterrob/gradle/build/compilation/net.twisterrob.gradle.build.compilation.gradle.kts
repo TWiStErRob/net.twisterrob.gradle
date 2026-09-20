@@ -8,7 +8,6 @@ plugins {
 
 dependencies {
 	api(libs.kotlin.stdlib)
-	api(libs.kotlin.stdlib.jdk8)
 	api(libs.kotlin.reflect)
 	compileOnly(libs.kotlin.dsl) {
 		isTransitive = false // make sure to not pull in kotlin-compiler-embeddable
