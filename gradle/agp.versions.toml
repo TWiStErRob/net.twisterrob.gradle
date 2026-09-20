@@ -1,16 +1,4 @@
 [libraries]
-android-gradle-v81x = { module = "com.android.tools.build:gradle", version = "8.1.4" }
-android-gradle-v82x = { module = "com.android.tools.build:gradle", version = "8.2.2" }
-android-gradle-v83x = { module = "com.android.tools.build:gradle", version = "8.3.2" }
-android-gradle-v84x = { module = "com.android.tools.build:gradle", version = "8.4.2" }
-android-gradle-v85x = { module = "com.android.tools.build:gradle", version = "8.5.2" }
-android-gradle-v86x = { module = "com.android.tools.build:gradle", version = "8.6.1" }
-android-gradle-v87x = { module = "com.android.tools.build:gradle", version = "8.7.3" }
-android-gradle-v88x = { module = "com.android.tools.build:gradle", version = "8.8.2" }
-android-gradle-v89x = { module = "com.android.tools.build:gradle", version = "8.9.3" }
-android-gradle-v810x = { module = "com.android.tools.build:gradle", version = "8.10.1" }
-android-gradle-v811x = { module = "com.android.tools.build:gradle", version = "8.11.2" }
-android-gradle-v812x = { module = "com.android.tools.build:gradle", version = "8.12.3" }
 android-gradle-v813x = { module = "com.android.tools.build:gradle", version = "8.13.2" }
 android-gradle-v90x = { module = "com.android.tools.build:gradle", version = "9.0.1" }
 android-gradle-v91x = { module = "com.android.tools.build:gradle", version = "9.1.1" }
