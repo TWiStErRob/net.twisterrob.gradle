@@ -31,6 +31,9 @@ class BasePluginTest {
 		verifyVersionDisallowed("8.1")
 		verifyVersionDisallowed("8.1.0")
 		verifyVersionDisallowed("8.1.1")
+		verifyVersionDisallowed("8.12")
+		verifyVersionDisallowed("8.12.0")
+		verifyVersionDisallowed("8.12.1")
 	}
 
 	@Test fun `fails for incompatible version`() {
@@ -40,17 +43,18 @@ class BasePluginTest {
 	}
 
 	@Test fun `passes for newer version`() {
-		verifyVersionAllowed("8.3")
-		verifyVersionAllowed("8.10")
-		verifyVersionAllowed("8.10.2")
 		verifyVersionAllowed("8.14-rc-3")
+		verifyVersionAllowed("8.14")
+		verifyVersionAllowed("8.14.5")
 		verifyVersionAllowed("9.0-milestone-3")
 		verifyVersionAllowed("9.0.0-milestone-3")
 		verifyVersionAllowed("9.1.0-rc-2")
+		verifyVersionAllowed("9.4.0")
+		verifyVersionAllowed("9.4.1")
 	}
 
 	@Test fun `passes compatible version`() {
-		verifyVersionAllowed("8.2")
-		verifyVersionAllowed("8.2.1")
+		verifyVersionAllowed("8.13")
+		verifyVersionAllowed("8.13.1")
 	}
 }
