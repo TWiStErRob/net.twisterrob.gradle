@@ -15,6 +15,7 @@ dependencies {
 	implementation(projects.compat.agp91x)
 	implementation(projects.compat.agp92x)
 	implementation(projects.compat.agp93x)
+	implementation(projects.compat.agp94x)
 
 	testImplementation(projects.test.internal)
 	testRuntimeOnly(libs.android.gradle)
