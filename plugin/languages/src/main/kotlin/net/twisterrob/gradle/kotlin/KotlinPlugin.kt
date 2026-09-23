@@ -3,7 +3,6 @@ package net.twisterrob.gradle.kotlin
 import com.android.build.api.dsl.CommonExtension
 import net.twisterrob.gradle.android.hasAndroid
 import net.twisterrob.gradle.android.hasAndroidTest
-import net.twisterrob.gradle.android.srcDirCompat
 import net.twisterrob.gradle.base.shouldAddAutoRepositoriesTo
 import net.twisterrob.gradle.common.AGPVersions
 import net.twisterrob.gradle.common.BasePlugin
@@ -17,7 +16,7 @@ import kotlin.reflect.KCallable
 
 private typealias DependencyAdder = DependencyHandler.(Any) -> Dependency?
 
-const val VERSION_KOTLIN: String = "1.4.32"
+const val VERSION_KOTLIN: String = "2.2.21"
 
 @Suppress("detekt.AbstractClassCanBeConcreteClass") // Gradle convention.
 abstract class KotlinPlugin : BasePlugin() {
@@ -34,7 +33,7 @@ abstract class KotlinPlugin : BasePlugin() {
 			if (shouldAddAutoRepositoriesTo(project)) {
 				project.repositories.mavenCentral()
 			}
-			project.dependencies.implementation(kotlin("stdlib-jdk7"))
+			project.dependencies.implementation(kotlin("stdlib"))
 			if (project.plugins.hasAndroidTest()) {
 				project.addTestDependencies(DependencyHandler::implementation)
 			} else {
@@ -44,7 +43,7 @@ abstract class KotlinPlugin : BasePlugin() {
 			// TODEL https://youtrack.jetbrains.com/issue/KT-80985
 			@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 			android.sourceSets.configureEach {
-				it.java.srcDirCompat("src/${it.name}/kotlin")
+				it.java.directories.add("src/${it.name}/kotlin")
 			}
 		} else {
 			project.plugins.apply("org.jetbrains.kotlin.jvm")

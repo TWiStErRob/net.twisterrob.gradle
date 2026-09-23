@@ -35,9 +35,9 @@ agp-tools = "32.4.1"
 # https://docs.gradle.org/current/userguide/compatibility.html
 
 # Actual Kotlin version for dependencies.
-kotlin-target = "1.8.22"
+kotlin-target = "2.2.21"
 # Actual Kotlin language and API version for compilation, it restricts language features and metadata.
-kotlin-language = "1.8"
+kotlin-language = "2.2"
 # Version of Kotlin Gradle Plugin used for compilation.
 kotlin-build = "2.2.21"
 # Dokka is sometimes lagging behind and is not using the same release vehicle as Kotlin main.
@@ -110,12 +110,6 @@ androidx-lint = { module = "androidx.lint:lint-gradle", version.ref = "androidx-
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin-target" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-build" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin-target" }
-# @Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk7"))
-kotlin-stdlib-jre7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre7", version.ref = "kotlin-target" }
-kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlin-target" }
-# @Deprecated("Don't use directly", replaceWith = ReplaceWith("stdlibJdk8"))
-kotlin-stdlib-jre8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jre8", version.ref = "kotlin-target" }
-kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-target" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-target" }
 kotlin-dsl = { module = "org.gradle:gradle-kotlin-dsl", version.ref = "kotlin-dsl" }
 
