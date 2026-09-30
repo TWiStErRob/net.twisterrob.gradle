@@ -8,7 +8,7 @@ plugins {
 	id("dev.detekt") version "2.0.0-alpha.6"
 	id("org.gradle.idea")
 	id("net.twisterrob.gradle.build.webjars")
-	id("org.jetbrains.kotlinx.kover") version "0.9.9"
+	id("org.jetbrains.kotlinx.kover") version "0.9.11"
 }
 
 group = "net.twisterrob.gradle"
