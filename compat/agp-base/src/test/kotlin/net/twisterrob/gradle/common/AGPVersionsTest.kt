@@ -15,17 +15,6 @@ import kotlin.reflect.full.declaredMembers
 
 class AGPVersionsTest {
 
-	@Test fun `olderThan81NotSupported returns the right message`() {
-		@Suppress("detekt.NamedArguments")
-		val version = AGPVersion(1, 2, AGPVersion.ReleaseType.Stable, 4)
-
-		val ex = assertThrows<IllegalStateException> {
-			AGPVersions.olderThan81NotSupported(version)
-		}
-
-		assertEquals("AGP 1.2.Stable.4 is not supported, because it's older than 8.1.*.*", ex.message)
-	}
-
 	@Test fun `CLASSPATH version is what the project is compiled with`() {
 		// This is not using AGPVersion() because Renovate needs to update this one. See "Update AGP version test.".
 		val expected = AGPVersion.parse("9.4.1")
@@ -65,10 +54,6 @@ class AGPVersionsTest {
 
 	@Suppress("detekt.UnreachableCode") // REPORT Looks like `val name`'s ?: somehow produces a false positive.
 	@CsvSource(
-		"8, 1",
-		"8, 3",
-		"8, 4",
-		"8, 5",
 		"9, ",
 		"9, 2",
 		"9, 3",

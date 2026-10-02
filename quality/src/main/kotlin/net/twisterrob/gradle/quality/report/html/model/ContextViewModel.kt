@@ -17,7 +17,7 @@ sealed interface ContextViewModel {
 	 * After returning from this function, a [ContextViewModel] is considered ready for consumption
 	 * and not expected to fail for any reason.
 	 */
-	open fun resolve() {}
+	fun resolve() {}
 
 	object EmptyContext : ContextViewModel
 

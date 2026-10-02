@@ -40,7 +40,7 @@ class TableGenerator(
 				.values
 				.asSequence()
 				.flatMap { it.values }
-				.map { it[parser] }
+				.map { it.getOrElse(parser) { null } }
 				.reduce(::safeAdd)
 		}
 
