@@ -1,7 +1,6 @@
 package net.twisterrob.gradle
 
 import net.twisterrob.gradle.common.AGPVersions
-import net.twisterrob.gradle.common.KotlinVersions
 import net.twisterrob.gradle.test.GradleBuildTestResources
 import net.twisterrob.gradle.test.GradleBuildTestResources.basedOn
 import net.twisterrob.gradle.test.GradleRunnerRule
@@ -375,31 +374,8 @@ class PluginIntegrationTest : BaseIntgTest() {
 		val generalTasks: List<String> = listOf(
 			":help",
 		)
-		val kgpTasks: List<String> =
-			if (KotlinVersions.UNDER_TEST.inRange(KotlinVersions.v1720, KotlinVersions.v190)) {
-				// https://youtrack.jetbrains.com/issue/KT-54468
-				// Known bad tasks on Kotlin 1.7.20-1.8.21 (fixed in 1.9.0):
-				listOf(
-					":compileDebugKotlin",
-					":compileReleaseKotlin",
-					":compileDebugUnitTestKotlin",
-					":compileReleaseUnitTestKotlin",
-					":compileDebugAndroidTestKotlin",
-				)
-			} else {
-				emptyList()
-			}
 		val gradleTasks: List<String> =
-			if (KotlinVersions.UNDER_TEST < KotlinVersions.v200
-				&& minorVersion in GradleVersion.version("8.3")..GradleVersion.version("8.14")
-			) {
-				// This only affects `kotlin project doesn't create tasks when using plugin`(String) test.
-				// https://youtrack.jetbrains.com/issue/KT-60664 fixed in 2.0.0-Beta4.
-				// (originally: https://github.com/gradle/gradle/issues/25841)
-				listOf(
-					":compileJava",
-				)
-			} else if (minorVersion == GradleVersion.version("9.0")) {
+			if (minorVersion == GradleVersion.version("9.0")) {
 				// This only affects `kotlin project doesn't create tasks when using plugin`(String) test.
 				// REPORT
 				listOf(
@@ -408,16 +384,6 @@ class PluginIntegrationTest : BaseIntgTest() {
 			} else {
 				emptyList()
 			}
-		return generalTasks + kgpTasks + gradleTasks
+		return generalTasks + gradleTasks
 	}
 }
-
-@Suppress("UnusedReceiverParameter") // To make it only available through the object.
-private val KotlinVersions.v1720: KotlinVersion get() = KotlinVersion(1, 7, 20)
-@Suppress("UnusedReceiverParameter") // To make it only available through the object.
-private val KotlinVersions.v190: KotlinVersion get() = KotlinVersion(1, 9, 0)
-@Suppress("UnusedReceiverParameter") // To make it only available through the object.
-private val KotlinVersions.v200: KotlinVersion get() = KotlinVersion(2, 0, 0)
-
-private fun KotlinVersion.inRange(fromInclusive: KotlinVersion, toExcl: KotlinVersion): Boolean =
-	fromInclusive <= this && this < toExcl
