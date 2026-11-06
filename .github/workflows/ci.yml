@@ -31,7 +31,7 @@ jobs:
       # actions/checkout
       contents: read
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         shell: bash
@@ -93,7 +93,7 @@ jobs:
       # andymckay/cancel-action
       actions: write
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         shell: bash
@@ -265,7 +265,7 @@ jobs:
       # Value will be written in a later step using `>> "${GITHUB_ENV}"`.
       GRADLE_VERSION: '0.0.0'
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         shell: bash
@@ -1035,7 +1035,7 @@ jobs:
       # EnricoMi/publish-unit-test-result-action
       checks: write
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: "Download '... Test Results XMLs' Artifacts."
         uses: actions/download-artifact@v8
